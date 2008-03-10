@@ -1,4 +1,4 @@
-.TH PGAClearDebugLevel l "05/01/95" " " "PGAPack"
+.TH PGAClearDebugLevel 3 "05/01/95" " " "PGAPack"
 .SH NAME
 PGAClearDebugLevel \- Turn off a debul level.  Only valid if PGAPack
 was compiled to include debugging calls.  See the user guide for details.

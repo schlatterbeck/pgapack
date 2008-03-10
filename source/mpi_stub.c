@@ -1,65 +1,41 @@
 /*
- *  
- *  ********************************************************************* 
- *  (C) COPYRIGHT 1995 UNIVERSITY OF CHICAGO 
- *  *********************************************************************
- *  
- *  This software was authored by
- *  
- *  D. Levine
- *  Mathematics and Computer Science Division Argonne National Laboratory
- *  Argonne IL 60439
- *  levine@mcs.anl.gov
- *  (708) 252-6735
- *  (708) 252-5986 (FAX)
- *  
- *  with programming assistance of participants in Argonne National 
- *  Laboratory's SERS program.
- *  
- *  This program contains material protectable under copyright laws of the 
- *  United States.  Permission is hereby granted to use it, reproduce it, 
- *  to translate it into another language, and to redistribute it to 
- *  others at no charge except a fee for transferring a copy, provided 
- *  that you conspicuously and appropriately publish on each copy the 
- *  University of Chicago's copyright notice, and the disclaimer of 
- *  warranty and Government license included below.  Further, permission 
- *  is hereby granted, subject to the same provisions, to modify a copy or 
- *  copies or any portion of it, and to distribute to others at no charge 
- *  materials containing or derived from the material.
- *  
- *  The developers of the software ask that you acknowledge its use in any 
- *  document referencing work based on the  program, such as published 
- *  research.  Also, they ask that you supply to Argonne National 
- *  Laboratory a copy of any published research referencing work based on 
- *  the software.
- *  
- *  Any entity desiring permission for further use must contact:
- *  
- *  J. Gleeson
- *  Industrial Technology Development Center Argonne National Laboratory
- *  Argonne IL 60439
- *  gleesonj@smtplink.eid.anl.gov
- *  (708) 252-6055
- *  
- *  ******************************************************************** 
- *  DISCLAIMER
- *  
- *  THIS PROGRAM WAS PREPARED AS AN ACCOUNT OF WORK SPONSORED BY AN AGENCY 
- *  OF THE UNITED STATES GOVERNMENT.  NEITHER THE UNIVERSITY OF CHICAGO, 
- *  THE UNITED STATES GOVERNMENT NOR ANY OF THEIR EMPLOYEES MAKE ANY 
- *  WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LEGAL LIABILITY OR 
- *  RESPONSIBILITY FOR THE ACCURACY, COMPLETENESS, OR USEFULNESS OF ANY 
- *  INFORMATION OR PROCESS DISCLOSED, OR REPRESENTS THAT ITS USE WOULD NOT 
- *  INFRINGE PRIVATELY OWNED RIGHTS.
- *  
- *  ********************************************************************** 
- *  GOVERNMENT LICENSE
- *  
- *  The Government is granted for itself and others acting on its behalf a 
- *  paid-up, non-exclusive, irrevocable worldwide license in this computer 
- *  software to reproduce, prepare derivative works, and perform publicly 
- *  and display publicly.
- */
+COPYRIGHT
+
+The following is a notice of limited availability of the code, and disclaimer
+which must be included in the prologue of the code and in all source listings
+of the code.
+
+(C) COPYRIGHT 2008 University of Chicago
+
+Permission is hereby granted to use, reproduce, prepare derivative works, and
+to redistribute to others. This software was authored by:
+
+D. Levine
+Mathematics and Computer Science Division 
+Argonne National Laboratory Group
+
+with programming assistance of participants in Argonne National 
+Laboratory's SERS program.
+
+GOVERNMENT LICENSE
+
+Portions of this material resulted from work developed under a
+U.S. Government Contract and are subject to the following license: the
+Government is granted for itself and others acting on its behalf a paid-up,
+nonexclusive, irrevocable worldwide license in this computer software to
+reproduce, prepare derivative works, and perform publicly and display
+publicly.
+
+DISCLAIMER
+
+This computer code material was prepared, in part, as an account of work
+sponsored by an agency of the United States Government. Neither the United
+States, nor the University of Chicago, nor any of their employees, makes any
+warranty express or implied, or assumes any legal liability or responsibility
+for the accuracy, completeness, or usefulness of any information, apparatus,
+product, or process disclosed, or represents that its use would not infringe
+privately owned rights.
+*/
 
 /******************************************************************************
 *     FILE: mpi_stub.c:  MPI stubs needed for PGAPack operation without
@@ -70,7 +46,41 @@
 
 #include "pgapack.h"
 
+/*
+ *
+ * In the object files created by gcc the names of functions are the same as
+ * in the corresponding source files. fort77 and g77 append an underscore to
+ * each name when creating the object files. To make it possible to call
+ * the functions with the same name in C and fortran, the fortran versions
+ * in pgapack have an additional underscore.
+ *
+ * This works perfectly well when the function name does not contain one or
+ * more underscores. In this case fort77 and g77 append two underscores.
+ *
+ * The following block of defines was added to take care of that.
+ *
+ * Andreas Franzen <anfra@debian.org>, 24 Sep 1998
+ *
+ */
 
+#define mpi_address_      mpi_address__
+#define mpi_bcast_        mpi_bcast__
+#define mpi_comm_dup_     mpi_comm_dup__
+#define mpi_comm_free_    mpi_comm_free__
+#define mpi_comm_rank_    mpi_comm_rank__
+#define mpi_comm_size_    mpi_comm_size__
+#define mpi_finalize_     mpi_finalize__
+#define mpi_init_         mpi_init__
+#define mpi_initialized_  mpi_initialized__
+#define mpi_probe_        mpi_probe__
+#define mpi_send_         mpi_send__
+#define mpi_recv_         mpi_recv__
+#define mpi_sendrecv_     mpi_sendrecv__
+#define mpi_type_commit_  mpi_type_commit__
+#define mpi_type_free_    mpi_type_free__
+#define mpi_type_struct_  mpi_type_struct__
+
+/*
 #if defined(FORTRANCAP)
 #define mpi_address_      MPI_ADDRESS
 #define mpi_bcast_        MPI_BCAST
@@ -106,7 +116,7 @@
 #define mpi_type_free_    mpi_type_free
 #define mpi_type_struct_  mpi_type_struct
 #endif
-
+*/
 
 
 /*  Places the address of "location" into "address"

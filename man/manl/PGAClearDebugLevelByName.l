@@ -1,4 +1,4 @@
-.TH PGAClearDebugLevelByName l "05/01/95" " " "PGAPack"
+.TH PGAClearDebugLevelByName 3 "05/01/95" " " "PGAPack"
 .SH NAME
 PGAClearDebugLevelByName \- Turn off debugging of the named function.
 .SH INPUT PARAMETERS

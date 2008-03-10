@@ -1,3 +1,11 @@
+
+[ Updated March 2008:  
+  -- the original README, minus two references to now obsolete
+     website and mailing lists, follows below
+  -- PGAPack has also been built successfully against LAM/MPI 
+     and Open MPI. ]
+
+
 This is the top-level README for PGAPack V1.0
 
 Copyright
@@ -7,7 +15,7 @@ See the file COPYRIGHT for Copyright and disclaimer information.
 Introduction
 ============
 PGAPack is a general-purpose, data-structure-neutral, parallel genetic
-algorithm library being developed at Argonne National Laboratory.  
+algorithm library developed at Argonne National Laboratory.  
 Key features are:
 
 * Callable from Fortran or C.
@@ -29,8 +37,7 @@ PGAPack is freely available.  The complete distribution is available
 by anonymous ftp from from ftp.mcs.anl.gov in the file 
 pub/pgapack/pgapack.tar.Z.  The distribution contains all source code,
 installation instructions, users guide, and a collection of examples in C and
-Fortran. Additional information is available on the World Wide Web at
-http://www.mcs.anl.gov/pgapack.html.
+Fortran. 
 
 
 Computational Environment
@@ -194,25 +201,6 @@ lib:          The directory the library will be installed in.
 man:          The directory containing the PGAPack man pages.
 source:       The source code for the PGAPack system.
 test:         A directory containing programs to verify the installation.
-
-
-Email Addresses
-===============
-To join the PGAPack mailing list to receive announcements of new versions,
-enhancements, and bug fixes, send electronic mail to pgapack@mcs.anl.gov.  Bug
-reports should be sent to pgapack-bugs@mcs.anl.gov.  The World Wide Web page
-for PGAPack is http://www.mcs.anl.gov/pgapack.html and contains up-to-date
-news and a list of outstanding bug reports.
-
-
-When reporting a bug please include as much information and documentation as
-possible.  Helpful information would include PGAPack version number, MPI
-implementation and version used (if any), configuration options, type of
-computer system, problem description and error message output.  It is helpful
-if you put a PGAPrintContextVariable call before and after the PGASetUp call.
-Additionally, if possible, build a debug version of PGAPack and send
-``high-level'' output from running your program with the trace facility
-enabled.
 
 
 Contributions

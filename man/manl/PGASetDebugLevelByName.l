@@ -1,4 +1,4 @@
-.TH PGASetDebugLevelByName l "05/01/95" " " "PGAPack"
+.TH PGASetDebugLevelByName 3 "05/01/95" " " "PGAPack"
 .SH NAME
 PGASetDebugLevelByName \- Turn on debugging of the named function.
 .SH INPUT PARAMETERS

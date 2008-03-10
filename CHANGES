@@ -1,3 +1,29 @@
+Changes in Version 1.1
+======================
+
+        1)  New COPYRIGHT -- the Mathematics and Computer Science Division
+            at Argonne National Laboratory has agreed to relicense PGAPACK
+	    under the MPICH2 license.  The COPYRIGHT file as well as all
+	    source files in source/*.c have been updated accordingly.
+
+        2)  man/manl/*.l: Set Section to 3
+
+        3)  source/integer.c: The off-by-one error reported by Robin Farin
+	    in http://bugs.debian.org/333381 has been corrected.
+
+        4)  source/report.c: Made two print statements conditional on 
+            ctx->rep.PrintFreq > 0  to allow for complete suppression
+
+	5)  source/mpi_stub.c: A different set of #define statements for
+            Fortran name mangling was introduced.
+
+        6)  source/system.c: If PGAPACK was compiled with 'FAKE_MPI' defined
+            for a 'serial' debug version, print 'Sequential' instead of 
+	    'Parallel' in the version number statement.
+
+        7)  README: updated, removed two sections referring to now-defunct
+            websites and mailing lists.
+
 Changes in Version 1.0
 ======================
 

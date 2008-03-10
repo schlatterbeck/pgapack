@@ -1,4 +1,4 @@
-.TH PGADebugPrint l "05/01/95" " " "PGAPack"
+.TH PGADebugPrint 3 "05/01/95" " " "PGAPack"
 .SH NAME
 PGADebugPrint \- Write debugging information
 .SH INPUT PARAMETERS

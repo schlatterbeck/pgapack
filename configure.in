@@ -509,13 +509,6 @@ if test ! -f ".pgapack" ; then
   echo "PGAPack has been configured for $OPERATION operation on"
   echo "the $ARCH architecture, using $ECHO_LIBS."
   echo " "
-  echo "**********************************************************************"
-  echo "*  Please register your copy of PGAPack by sending a mail message    *"
-  echo "*  to pgapack@mcs.anl.gov.  This will allow us to notify you of bug  *"
-  echo "*  fixes, enhancements, and new releases. The PGAPack homepage is at *"
-  echo "*  http://www.mcs.anl.gov/pgapack.html.                              *"
-  echo "**********************************************************************"
-  echo " "
   echo "Type \"make install\" to install PGAPack."
   echo " "
 fi
