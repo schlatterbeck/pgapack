@@ -1,6 +1,8 @@
 .TH PGASetDebugLevel 3 "05/01/95" " " "PGAPack"
 .SH NAME
-PGASetDebugLevel \- Turn on a debug level.  Only valid if PGAPack
+PGASetDebugLevel \- Turn on a debug level.  
+.SH DESCRIPTION
+Only valid if PGAPack
 was compiled to include debugging calls.  See the user guide for details.
 .SH INPUT PARAMETERS
 .PD 0

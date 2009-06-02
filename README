@@ -1,7 +1,7 @@
 
 [ Updated March 2008:  
-  -- the original README, minus two references to now obsolete
-     website and mailing lists, follows below
+  -- the original README, minus two references to the now 
+     obsolete website and mailing lists, follows below
   -- PGAPack has also been built successfully against LAM/MPI 
      and Open MPI. ]
 

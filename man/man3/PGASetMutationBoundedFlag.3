@@ -3,6 +3,7 @@
 PGASetMutationBoundedFlag \- If this flag is set to PGA_TRUE, then for
 Integer and Real strings whenever a gene is mutated, if it underflows
 (overflows) the lower (upper)bound it is reset to the lower (upper) bound.
+.SH DESCRIPTION
 In this way all allele values remain within the range the integer strings
 were initialized on.  If this flag is PGA_FALSE (the default), the alleles
 may take any values.
