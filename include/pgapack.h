@@ -15,6 +15,10 @@
 #include <ctype.h>
 #include <mpi.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 /*  If OPTIMIZED, remove various sanity checks, and debug output.
  *
@@ -829,3 +833,8 @@ void PGAUpdateAverage(PGAContext *ctx, int pop);
 void PGAUpdateOnline(PGAContext *ctx, int pop);
 void PGAUpdateOffline(PGAContext *ctx, int pop);
 int PGAComputeSimilarity(PGAContext *ctx, PGAIndividual *pop);
+
+#ifdef __cplusplus
+}
+#endif
+
