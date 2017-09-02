@@ -353,11 +353,6 @@ if test "$MPI_LIB" -a "$MPI_INC_DIR" ; then
         exit 1
     fi
 
-    if test ! -f "$MPI_LIB" ; then
-        print_error "MPI_LIB == $MPI_LIB is not a file!"
-        exit 1
-    fi
-
     PARALLEL=1
 else
     PARALLEL=0
@@ -439,12 +434,18 @@ case $ARCH in
 	SHELL=/bin/sh
         ;;
     linux)
+        FINCL=''
+        if [ -n "$MPI_INC_DIR" ] ; then
+            FINCL="-I$MPI_INC_DIR"
+        fi
 	SHELL="/bin/sh"
         CC=cc
         FC=f77
-	FFLAGS="-w"
+	FFLAGS="-w $FINCL $FFLAGS"
 	LDFLAGS="-s $LDFLAGS"
-        CPPFLAGS="-DWL=32 -DFORTRANUNDERSCORE $CPPFLAGS"
+        CFLAGS="-O3 -fPIC -Wall $CFLAGS"
+        #CPPFLAGS="-DWL=32 -DFORTRANUNDERSCORE -D_REENTRANT $CPPFLAGS"
+        CPPFLAGS="-DWL=64 -DFORTRANUNDERSCORE -D_REENTRANT $CPPFLAGS"
         ;;
     t3d)
         CC=/mpp/bin/cc
@@ -647,9 +648,9 @@ if test $PARALLEL -eq 0
 #  The tab above is IMPORTANT!  Needed for make!
 else
     rm -f ./include/mpi.h ./include/mpif.h ./examples/fortran/mpif.h ./examples/mgh/mpif.h ./test/mpif.h
-    ln -s $MPI_INC_DIR/mpif.h ./examples/fortran/mpif.h
-    ln -s $MPI_INC_DIR/mpif.h ./examples/mgh/mpif.h
-    ln -s $MPI_INC_DIR/mpif.h ./test/mpif.h
+    #ln -s $MPI_INC_DIR/mpif.h ./examples/fortran/mpif.h
+    #ln -s $MPI_INC_DIR/mpif.h ./examples/mgh/mpif.h
+    #ln -s $MPI_INC_DIR/mpif.h ./test/mpif.h
     LIBS="$LIBS $MPI_LIB"
     INCLUDES="$INCLUDES -I$MPI_INC_DIR"
 fi

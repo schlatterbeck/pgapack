@@ -15,8 +15,7 @@ install:
 	@echo "Installing Test program . . ."
 	@cd test ; make
 	@echo "Install successful."
-	@echo "	Please \"cd test\" and run the \"instverf\" program"
-	@echo "        to verify the correctness of your installation."
+	@echo "	You may want to run some test in the tests directory"
 
 clean:
 	@echo "Removing superfluous files . . ."

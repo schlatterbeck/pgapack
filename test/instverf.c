@@ -46,7 +46,7 @@ int       ResultsIndex;
 #define   PRINTFREQ  100
 #define   RBS        24
 
-void main(int argc, char **argv) {
+int main(int argc, char **argv) {
     PGAContext     *ctx;
     int             i, rank;
     FILE           *ResultsFile;
@@ -184,6 +184,7 @@ void main(int argc, char **argv) {
     }
 
     MPI_Finalize();
+    return 0;
 }
 
 
@@ -220,7 +221,7 @@ double ordering(PGAContext *ctx, int p, int pop) {
 	n = PGAGetIntegerAllele(ctx, p, pop, i);
 	if (o == n-1)
 	    result = result + 1;
-	if (n = i)
+	if (n == i)
 	    result = result + 2;
 	o = n;
     }

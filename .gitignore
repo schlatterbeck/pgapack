@@ -1,4 +1,5 @@
 Makefile
 *.o
+*.a
 config.status
 lib
