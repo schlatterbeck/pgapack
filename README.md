@@ -24,3 +24,15 @@ David Levine is the principal author of pgagpack and wrote most of the code
 during the mid-1990s. Dirk Eddelbuettel became its Debian maintainer in 2008,
 organised a relicensing by Argonne National Laboratories under the MPICH2
 license and is currently also the effective upstream maintainer.
+
+This repository contains the original 1996, 2008, and 2009 releases as
+distributed by Argonne National Laboratories as the first commits. It
+then has changes from the google code project (now archived by google at
+https://code.google.com/archive/p/pgapack/source) which later became the
+git repo of Dirk Eddelbuettel at https://github.com/eddelbuettel/pgapack
+Note that the changes by Allan Clark in that repository that introduced
+a new automake/autoconf configuration is currently on the autoconf
+branch -- it did not work to build against different variants of MPI
+implementations (or against the serial version without MPI). It is
+intended to eventually merge this and implement configuration options
+that can easily configure for different MPI implementations.
