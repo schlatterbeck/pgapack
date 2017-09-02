@@ -25,7 +25,7 @@ double Upper[3]      = { 511.0, 5.11, 511.0 };
 /*******************************************************************
  *                   user main program                              *
  *******************************************************************/
-void main( int argc, char **argv ) {
+int main( int argc, char **argv ) {
     PGAContext *ctx;     /* the context variable */
     int testnum;         /* the DeJong test to run */
     int maxiter;         /* the maximum number of iterations */
@@ -60,6 +60,7 @@ void main( int argc, char **argv ) {
     PGADestroy(ctx);
     
     MPI_Finalize();
+    return 0;
 }
 
 

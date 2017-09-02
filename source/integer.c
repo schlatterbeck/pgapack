@@ -861,23 +861,23 @@ MPI_Datatype PGAIntegerBuildDatatype(PGAContext *ctx, int p, int pop)
     PGADebugEntered("PGAIntegerBuildDatatype");
 
      traveller = PGAGetIndividual(ctx, p, pop);
-     MPI_Address(&traveller->evalfunc, &displs[0]);
+     MPI_Get_address(&traveller->evalfunc, &displs[0]);
      counts[0] = 1;
      types[0]  = MPI_DOUBLE;
 
-     MPI_Address(&traveller->fitness, &displs[1]);
+     MPI_Get_address(&traveller->fitness, &displs[1]);
      counts[1] = 1;
      types[1]  = MPI_DOUBLE;
 
-     MPI_Address(&traveller->evaluptodate, &displs[2]);
+     MPI_Get_address(&traveller->evaluptodate, &displs[2]);
      counts[2] = 1;
      types[2]  = MPI_INT;
 
-     MPI_Address(traveller->chrom, &displs[3]);
+     MPI_Get_address(traveller->chrom, &displs[3]);
      counts[3] = ctx->ga.StringLen;
      types[3]  = MPI_LONG;
 
-     MPI_Type_struct(4, counts, displs, types, &individualtype);
+     MPI_Type_create_struct(4, counts, displs, types, &individualtype);
      MPI_Type_commit(&individualtype);
 
     PGADebugExited("PGAIntegerBuildDatatype");

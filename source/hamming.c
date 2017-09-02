@@ -71,7 +71,7 @@ double PGAHammingDistance( PGAContext *ctx, int popindex)
 {
     int i, j, hd, count=0;
     double avg_hd = 0.;
-    PGAIndividual *pop;      /* pointer to appropriate population          */
+    PGAIndividual *pop = NULL; /* pointer to appropriate population          */
 
     PGADebugEntered("PGAHammingDistance");
 

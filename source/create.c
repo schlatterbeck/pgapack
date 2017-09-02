@@ -385,14 +385,14 @@ void PGASetUp ( PGAContext *ctx )
      *  They allow some (understatement of the yesr!!) cleaning of the
      *  code below.
      */
-    void         (*CreateString)(PGAContext *, int, int, int);
-    int          (*Mutation)(PGAContext *, int, int, double);
-    void         (*Crossover)(PGAContext *, int, int, int, int, int, int);
-    void         (*PrintString)(PGAContext *, FILE *, int, int);
-    void         (*CopyString)(PGAContext *, int, int, int, int);
-    int          (*Duplicate)(PGAContext *, int, int, int, int);
-    void         (*InitString)(PGAContext *, int, int);
-    MPI_Datatype (*BuildDatatype)(PGAContext *, int, int);
+    void  (*CreateString)(PGAContext *, int, int, int) = NULL;
+    int   (*Mutation)(PGAContext *, int, int, double) = NULL;
+    void  (*Crossover)(PGAContext *, int, int, int, int, int, int) = NULL;
+    void  (*PrintString)(PGAContext *, FILE *, int, int) = NULL;
+    void  (*CopyString)(PGAContext *, int, int, int, int) = NULL;
+    int   (*Duplicate)(PGAContext *, int, int, int, int) = NULL;
+    void  (*InitString)(PGAContext *, int, int) = NULL;
+    MPI_Datatype (*BuildDatatype)(PGAContext *, int, int) = NULL;
     int err=0, i;
 
     PGADebugEntered("PGASetUp");
@@ -877,7 +877,7 @@ int PGAGetRandomInitFlag (PGAContext *ctx)
 ****************************************************************************I*/
 void PGACreatePop (PGAContext *ctx, int pop)
 {
-     int p, flag;
+     int p, flag = 0;
 
     PGADebugEntered("PGACreatePop");
 

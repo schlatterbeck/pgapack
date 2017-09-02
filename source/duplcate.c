@@ -107,6 +107,7 @@ int PGADuplicate(PGAContext *ctx, int p, int pop1, int pop2, int n)
     PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGADuplicate", "n  = ",
 		  PGA_INT, (void *) &n );
     
+#pragma GCC diagnostic ignored "-Wstrict-overflow"
     if (ctx->ga.NoDuplicates == PGA_TRUE) {
 	if (ctx->fops.Duplicate) {
 	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
@@ -123,6 +124,7 @@ int PGADuplicate(PGAContext *ctx, int p, int pop1, int pop2, int n)
 		}
 	}
     }
+#pragma GCC diagnostic pop
     
     PGADebugExited("PGADuplicate");
     

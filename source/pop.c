@@ -283,7 +283,7 @@ int PGAGetPopReplaceType (PGAContext *ctx)
 ****************************************************************************U*/
 int PGAGetSortedPopIndex ( PGAContext *ctx, int n )
 {
-     int temp;
+     int temp = 0;
 
     PGADebugEntered("PGAGetSortedPopIndex");
      if (n >= 0 && n < ctx->ga.PopSize )

@@ -63,7 +63,7 @@ privately owned rights.
  *
  */
 
-#define mpi_address_      mpi_address__
+#define mpi_address_      mpi_get_address__
 #define mpi_bcast_        mpi_bcast__
 #define mpi_comm_dup_     mpi_comm_dup__
 #define mpi_comm_free_    mpi_comm_free__
@@ -82,7 +82,7 @@ privately owned rights.
 
 /*
 #if defined(FORTRANCAP)
-#define mpi_address_      MPI_ADDRESS
+#define mpi_address_      MPI_GET_ADDRESS
 #define mpi_bcast_        MPI_BCAST
 #define mpi_comm_dup_     MPI_COMM_DUP
 #define mpi_comm_free_    MPI_COMM_FREE
@@ -99,7 +99,7 @@ privately owned rights.
 #define mpi_type_free_    MPI_TYPE_FREE
 #define mpi_type_struct_  MPI_TYPE_STRUCT
 #elif !defined(FORTRANUNDERSCORE)
-#define mpi_address_      mpi_address
+#define mpi_address_      mpi_get_address
 #define mpi_bcast_        mpi_bcast
 #define mpi_comm_dup_     mpi_comm_dup
 #define mpi_comm_free_    mpi_comm_free
@@ -122,7 +122,7 @@ privately owned rights.
 /*  Places the address of "location" into "address"
  *  In FORTRAN, does not return anything.
  */
-int MPI_Address(void *location, MPI_Aint *address) {
+int MPI_Get_address(void *location, MPI_Aint *address) {
     *address = (MPI_Aint)NULL;
     return(0);
 }
@@ -236,9 +236,10 @@ int MPI_Type_free(MPI_Datatype *datatype) {
 }
 
 
-int MPI_Type_struct(int count, int *array_of_blocklengths,
-                    MPI_Aint *array_of_displacements,
-                    MPI_Datatype *array_of_types, MPI_Datatype *newtype) {
+int MPI_Type_create_struct(int count, int *array_of_blocklengths,
+                           MPI_Aint *array_of_displacements,
+                           MPI_Datatype *array_of_types,
+                           MPI_Datatype *newtype) {
     return(0);
 }
 
@@ -247,7 +248,7 @@ int MPI_Type_struct(int count, int *array_of_blocklengths,
  *  Most of these operate the same as above, we just need to make sure that 
  *  they are linked in properly, see f2c.c for details.
  */
-void mpi_address_(void **location, MPI_Aint *address) {
+void mpi_get_address_(void **location, MPI_Aint *address) {
     *address = (MPI_Aint)NULL;
 }
 

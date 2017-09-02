@@ -158,10 +158,10 @@ void WriteString(PGAContext *ctx, FILE *fp, int p, int pop) {
     for (i=0; i<40; i+=8) {
 	fprintf(fp,"%2d: [%4ld] [%4ld] [%4ld] [%4ld]"
 		       " [%4ld] [%4ld] [%4ld] [%4ld]\n", i, 
-		ligand_ptr->sc[i+0], ligand_ptr->sc[i+2], 
-		ligand_ptr->sc[i+2], ligand_ptr->sc[i+3], 
-		ligand_ptr->sc[i+4], ligand_ptr->sc[i+5], 
-		ligand_ptr->sc[i+6], ligand_ptr->sc[i+7]);
+		(long)ligand_ptr->sc[i+0], (long)ligand_ptr->sc[i+2], 
+		(long)ligand_ptr->sc[i+2], (long)ligand_ptr->sc[i+3], 
+		(long)ligand_ptr->sc[i+4], (long)ligand_ptr->sc[i+5], 
+		(long)ligand_ptr->sc[i+6], (long)ligand_ptr->sc[i+7]);
     }
 
     fprintf ( fp, "\n" );
@@ -214,25 +214,25 @@ MPI_Datatype BuildDT(PGAContext *ctx, int p, int pop) {
    *  the user still must include it.  See pgapack.h for details one the
    *  fields (under PGAIndividual)
    */
-  MPI_Address(&P->evalfunc, &displs[0]);
+  MPI_Get_address(&P->evalfunc, &displs[0]);
   counts[0] = 2;
   types[0]  = MPI_DOUBLE;
 
   /*  Next, we have an integer, evaluptodate.  */  
-  MPI_Address(&P->evaluptodate, &displs[1]);
+  MPI_Get_address(&P->evaluptodate, &displs[1]);
   counts[1] = 1;
   types[1]  = MPI_INT;
 
   /*  Finally, we have the actual user-defined string.  */
-  MPI_Address(S->t, &displs[2]);
+  MPI_Get_address(S->t, &displs[2]);
   counts[2] = 6;
   types[2]  = MPI_DOUBLE;
 
-  MPI_Address(S->sc, &displs[3]);
+  MPI_Get_address(S->sc, &displs[3]);
   counts[3] = 40;
   types[3]  = MPI_INT;
 
-  MPI_Type_struct(4, counts, displs, types, &DT_PGAIndividual);
+  MPI_Type_create_struct(4, counts, displs, types, &DT_PGAIndividual);
   MPI_Type_commit(&DT_PGAIndividual);
   return(DT_PGAIndividual);
 }

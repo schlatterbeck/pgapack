@@ -80,7 +80,7 @@ void PGAFitness ( PGAContext *ctx, int popindex )
 {
     int i;
     double mineval;
-    PGAIndividual *pop;
+    PGAIndividual *pop = NULL;
 
     PGADebugEntered("PGAFitness");
 

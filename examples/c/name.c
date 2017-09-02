@@ -28,7 +28,7 @@ void   GetStringParameter(char *query, char *string);
 /*  Global, because we use it in EvalName.  */
 char   Name[42];
 
-void main(int argc, char **argv) {
+int main(int argc, char **argv) {
     PGAContext *ctx;
 
     MPI_Init(&argc, &argv);
@@ -60,6 +60,7 @@ void main(int argc, char **argv) {
     PGADestroy(ctx);
 
     MPI_Finalize();
+    return 0;
 }
 
 
