@@ -399,11 +399,13 @@ where {\tt ARCH\_TYPE} is one of
 or
 {\tt exemplar} for the Convex  Exemplar.
 
+\begin{sloppypar}
 The full {\tt configure} options are {\tt configure -arch ARCH\_TYPE [-cc CC] 
 [-cflags CFLAGS] [-f77 FC] [-fflags FFLAGS] [-debug]
 [-mpiinc MPI\_INCLUDE\_DIRECTORY] [-mpilib MPI\_LIBRARY]  [-help]}
 where all parameters except {\tt -arch} are
 optional and do the following:
+\end{sloppypar}
 \begin{itemize}
 \item {\tt -cc}: The name of the ANSI C compiler, {\tt cc} by
 default.
@@ -424,7 +426,7 @@ If {\tt -mpiinc} and  {\tt -mpilib} are specified, {\em a parallel version} of
 version} of \pga\ will be built.
 \item Execute the makefile ({\tt make install}).
 \item Add \pga's man pages to your man page path.
-({\tt setenv MANPATH "\$MANPATH"":/home/pgapack/man"})
+({\tt\small setenv MANPATH "\$MANPATH:/home/pgapack/man"})
 \item Execute a test problem
 \begin{itemize}
 \item {\tt /usr/local/pga/examples/c/maxbit} in C
@@ -731,6 +733,7 @@ version of \pga\ is used, and parameter values are read from standard input.
 The purpose is to be sure that each process receives a copy of the input
 values.  See Appendix~\ref{app:par-background} for further details.
 
+\begin{sloppypar}
 {\tt MPI\_Init(\&argc, \&argv)} is always the first function called in any MPI
 program.  Each process executes {\tt MPI\_Comm\_rank(MPI\_COMM\_WORLD,
 \&myid)} to determine its unique rank in the communicator\footnote{See
@@ -740,6 +743,7 @@ input/output and broadcast (using {\tt MPI\_Bcast}) the parameters to the
 other processes.  The \pga\ function calls are similar to those in the
 previous examples.  If the user called {\tt MPI\_Init}, the user must also
 call {\tt MPI\_Finalize} before exiting.
+\end{sloppypar}
 
 We elaborate here on the {\tt MPI\_Bcast} function because of its practical
 value in the model of parallel I/O shown. For more detailed discussion of MPI
@@ -951,12 +955,14 @@ random number generation, output control, and error reporting.
 \section{Header File and Symbolic Constants}\label{sec:header}
 %*****************************************************************************
 
+\begin{sloppypar}
 The \pga\ header file contains symbolic constants and type definitions for all
 functions and should be included in any file (or function or subroutine in
 Fortran) that calls a \pga\ function.  For example, {\tt
 PGA\_CROSSOVER\_UNIFORM} is a symbolic constant that is used as an argument
 to the function {\tt PGASetCrossoverType} to specify uniform crossover.  In C
 the header file is {\tt pgapack.h}.  In Fortran it is {\tt pgapackf.h}
+\end{sloppypar}
 
 %*****************************************************************************
 \section{Evaluation Function}\label{sec:evalfunc}
@@ -1121,6 +1127,7 @@ one less than the population size will result in an elitist GRGA, where the
 most fit string is always copied to the new population (since {\tt
 PGA\_POPREPL\_BEST} is the default population replacement strategy).
 
+\begin{sloppypar}
 Traditionally, strings created through recombination first undergo crossover
 and then mutation.  Some practitioners \cite{Da91} have argued that these two
 operators should be separate.  By default, \pga\ applies mutation only to
@@ -1128,6 +1135,7 @@ strings that did {\em not} undergo crossover.  This is equivalent to setting
 {\tt PGASetMutationOrCrossoverFlag} {\tt (ctx,PGA\_TRUE)}.  To have strings
 undergo {\em both} crossover and mutation, on should use {\tt
 PGASetMutationAndCrossoverFlag} {\tt (ctx,PGA\_TRUE)}.
+\end{sloppypar}
 
 By default, \pga\ allows duplicate strings in the population.  Some
 practitioners advocate not allowing duplicate strings in the population in
@@ -1170,17 +1178,15 @@ PGA\_STOP\_NOCHANGE} for population too similar and no change in the best
 solution found, respectively.  {\tt PGASetStoppingRuleType} may be called more
 than once. The different stopping rules specified are {\em or}ed together.
 
-
 If {\tt PGA\_STOP\_MAXITER} is one of the stopping rules, {\tt
 PGASetMaxGAIterValue(ctx,500)} will change the maximum iteration limit to 500.
 If {\tt PGA\_STOP\_NOCHANGE} is one of the stopping rules, {\tt
-PGASetMaxNoChangeValue(ctx,50)} will change from 100 (the default) to 50 the
+PGASetMaxNoChangeValue (ctx,50)} will change from 100 (the default) to 50 the
 maximum number of iterations in which no change in the best evaluation is
 allowed before the GA stops.  If {\tt PGA\_STOP\_TOOSIMILAR} is one of the
 stopping rules, {\tt PGASetMaxSimilarityValue(ctx,99)} will change from 95 to
 99 the percentage of the population allowed to have the same evaluation
 function value before the GA stops.
-
 
 
 %*****************************************************************************
@@ -1295,6 +1301,7 @@ PGASetPTournamentProb(ctx, 0.8)}.
 \section{Crossover}\label{sec:crossover}
 %*****************************************************************************
 
+\begin{sloppypar}
 The crossover operator takes bits from each parent string and
 combines them to create child strings.  
 %Figure~\ref{fig:one-point-crossover} illustrates one-point
@@ -1364,6 +1371,7 @@ PGA\_CROSSOVER\_UNIFORM} for one-point, two-point, or uniform crossover,
 respectively.  The default is two-point crossover.  By default the crossover
 rate is 0.85.  It may be set to 0.6 by {\tt PGASetCrossoverProb(ctx, 0.6)},
 for example.
+\end{sloppypar}
 
 Uniform crossover is parameterized by $p_u$, the probability of swapping two
 parent bit values \cite{SpDe91}.  By default, $p_u = 0.5$.  The function call
@@ -1402,7 +1410,7 @@ PGA\_MUTATION\_PERMUTE}, gene $i$ will be swapped with a randomly selected
 gene.  If {\tt PGASetMutationType} is set to {\tt PGA\_MUTATION\_CONSTANT}, a
 constant integer value (by default one) will be added (subtracted) to (from)
 the existing allele value.  The constant value may be set to 34, for example,
-with {\tt PGASetMutationIntegerValue(ctx,34)}.
+with {\tt PGASetMutationIntegerValue (ctx,34)}.
 
 Three of the four real-valued mutation operators are of the form $v \leftarrow
 v \pm p \times v$, where $v$ is the existing allele value.  They vary by how
@@ -1438,6 +1446,7 @@ The restart operator reseeds a population from the best string.  It does so by
 seeding the new population with the best string and generating the remainder
 of the population as mutated variants of the best string.
 
+\begin{sloppypar}
 By default the restart operator is not invoked.  Setting {\tt
 PGASetRestartFlag(ctx,PGA\_TRUE)} will cause the restart operator to be
 invoked.  By default \pga\ will restart every 50 iterations.  {\tt
@@ -1445,6 +1454,7 @@ PGASetRestartFrequencyValue} {\tt (ctx,100)} will restart every 100 iterations
 instead.  When creating the new strings from the best string an individual
 allele undergoes mutation with probability 0.5.  This can be changed to 0.9
 with the function call {\tt PGASetRestartAlleleChangeProb(ctx,0.9)}.
+\end{sloppypar}
 
 For binary-valued strings the bits are complemented.  For integer- and
 real-valued strings the amount to change is set with {\tt
@@ -1528,7 +1538,7 @@ PGASetFitnessMinType(ctx,PGA\_FITNESSMIN\_CMAX)} will remap by subtracting the
 worst evaluation value from each evaluation value (this is the default).  The
 worst evaluation value is multiplied by 1.01 before the subtraction so that
 the worst string has a nonzero fitness.  The function call {\tt
-PGASetFitnessCmaxValue(ctx, 1.2)} will change the multiplier to 1.2
+PGASetFitnessCmaxValue (ctx, 1.2)} will change the multiplier to 1.2
 Alternatively, if {\tt PGA\_FITNESSMIN\_RECIPROCAL} is specified the remapping
 is done by using the reciprocal of the evaluation function.
 
@@ -1740,6 +1750,7 @@ and return the value calculated by {\tt f}.
 \section{Report Options}\label{sec:report}
 %*****************************************************************************
 
+\begin{sloppypar}
 {\tt PGASetPrintFrequencyValue(ctx,40)} will print population statistics every
 40 iterations.  The default is every ten iterations.  The best evaluation is
 {\em always} printed.  To print additional statistics, set the second argument
@@ -1749,6 +1760,7 @@ PGA\_REPORT\_OFFLINE}, {\tt PGA\_REPORT\_WORST}, {\tt PGA\_REPORT\_AVERAGE},
 analysis, offline analysis, worst evaluation, average evaluation, Hamming
 distance, or string itself, respectively.  {\tt PGASetPrintOptions} may be
 called multiple times to specify multiple print options.
+\end{sloppypar}
 
 
 %*****************************************************************************
@@ -1765,6 +1777,7 @@ be done using the function {\tt PGASetRandomSeed} to initialize the random
 number generator with the same seed each time, for example, {\tt
 PGASetRandomSeed(ctx,1)}.
 
+\begin{sloppypar}
 {\tt PGARandom01(ctx,0)} will return a random number generated uniformly on
 $[0,1]$.  If the second argument is not {\tt 0}, it will be used to reseed the
 random number sequence. {\tt PGARandomFlip} flips a biased coin.  For example,
@@ -1775,6 +1788,7 @@ generated uniformly on $[-10,30]$.  {\tt PGARandomUniform} {\tt
 interval [-50,50].  {\tt PGARandomGaussian} {\tt (ctx,0.,1.)} will return a
 real value generated from a Gaussian distribution with mean zero and standard
 deviation one.
+\end{sloppypar}
 
 
 \subsection{Print Functions}\label{subsec:print-functions}
@@ -1793,9 +1807,11 @@ PGAPrintVersionNumber(ctx)} will print the \pga\ version number.
 
 \subsection{Miscellaneous}\label{subsec:other}
 
-{\tt PGAGetGAIterValue(ctx)} will return the current iteration of the GA.  {\tt
-PGAGetBestIndex(ctx,pop)} ({\tt PGAGetWorstIndex}) will return the index of the most
-(least) fit member of population {\tt pop}.
+\begin{sloppypar}
+{\tt PGAGetGAIterValue(ctx)} will return the current iteration of the
+GA.  {\tt PGAGetBestIndex(ctx,pop)} ({\tt PGAGetWorstIndex}) will return
+the index of the most (least) fit member of population {\tt pop}.
+\end{sloppypar}
 
 {\tt PGAUpdateOffline(ctx,pop)} ({\tt PGAUpdateOnline}) will update the offline
 (online) analysis based on the new generation's results.  {\tt
@@ -2050,11 +2066,13 @@ invoked explicitly with {\tt PGARestart(ctx, oldpop, newpop)}, where the best
 string from population {\tt oldpop} is used to initialize population {\tt
 newpop}.
 
+\begin{sloppypar}
 {\tt PGADuplicate(ctx,p,PGA\_OLDPOP,PGA\_NEWPOP,20)} returns {\tt PGA\_TRUE}
 if string {\tt p} in population {\tt PGA\_OLDPOP} is a duplicate of any of the
 first 20 strings in population {\tt PGA\_NEWPOP}.  {\tt PGAChange(ctx, p,
 PGA\_OLDPOP)} repeatedly applies the mutation operator to string {\tt p} in
 population {\tt PGA\_OLDPOP} until at least one mutation has occurred.
+\end{sloppypar}
 
 In \pga\ three  values are associated with each string: (1) the user's
 evaluation function value, (2) a Boolean flag to indicate whether the
@@ -2062,6 +2080,7 @@ evaluation function value is up to date with respect to the actual string, and
 (3) the fitness value.  If {\tt PGARun} is not used, the user must manage
 these values explicitly.
 
+\begin{sloppypar}
 {\tt PGAEvaluate(ctx, PGA\_NEWPOP, evaluate, comm)} will execute the user's
 evaluation function, {\tt evaluate}, on each string in population {\tt
 PGA\_NEWPOP} that has changed (for example, from crossover) since its last
@@ -2072,6 +2091,7 @@ example, or any valid MPI communicator.  Depending on the number of processes
 specified when the program was invoked, and the value of the {\tt comm}
 argument, {\tt PGAEvaluate} may be run with one or more processes.  See
 Chapter~\ref{chp:parallel} for further discussion.
+\end{sloppypar}
 
 {\tt PGAFitness} will calculate the population fitness values from the
 evaluation function values.  It is an error to call {\tt PGAFitness} if {\em
@@ -2085,6 +2105,7 @@ actual string or not, respectively.  If \pga\ was compiled for debugging,{\tt
 PGAGetEvaluation} will print a warning message if the evaluation is not up to
 date.  {\tt PGAGetFitness(ctx, p, PGA\_OLDPOP)} returns the fitness value.
 
+\begin{sloppypar}
 At times, (e.g., applying a hill-climbing function) the user may need to
 explicitly set the evaluation function value and associated Boolean flag
 (fitness values can be calculated {\em only} by calling {\tt PGAFitness}).
@@ -2094,6 +2115,7 @@ The Boolean flag may be set independently with {\tt
 PGASetEvaluationUpToDateFlag}.  For example, {\tt PGASetEvaluationUpToDateFlag
 (ctx, p, PGA\_OLDPOP, PGA\_FALSE)} sets the status of the Boolean flag of
 string {\tt p} in population {\tt PGA\_OLDPOP} to out of date.
+\end{sloppypar}
 
 {\tt PGAMean(ctx, a, n)} returns the mean of the {\tt n} values in array {\tt
 a}. {\tt PGAStddev(ctx, a, n, mean)} returns the standard deviation of the
@@ -2101,12 +2123,14 @@ a}. {\tt PGAStddev(ctx, a, n, mean)} returns the standard deviation of the
 p, order, n)} returns an index that is the rank of string p as given by the
 sorted array {\tt order} of length {\tt n}.
 
+\begin{sloppypar}
 {\tt PGAGetPrintFrequency(ctx)} returns the frequency with which GA statistics
 are reported. {\tt PGAGetWorstIndex} {\tt (ctx, PGA\_OLDPOP)} returns the
 index of the string in population {\tt PGA\_OLDPOP} with the worst evaluation
 function value.  {\tt PGAGetBestIndex(ctx, PGA\_OLDPOP)} returns the index of
 the string in population {\tt PGA\_OLDPOP} with the best evaluation function
 value.
+\end{sloppypar}
 
 
 %*****************************************************************************
@@ -2208,7 +2232,7 @@ each $x_j$ to $L$.  The files for this example, {\tt ./examples/maxint.c}
 and {\tt ./examples/maxint.f}, contain template routines for these functions.
 
 The example shows the use of a custom mutation function with an integer data
-type.  The {\tt PGASetUserFunction} function specifies that this function,
+type.  The function {\tt PGASetUserFunction} specifies that this function,
 {\tt MyMutation}, will be called when the mutation operator is applied, rather
 than the default mutation operator.  {\tt MyMutation} generates a random
 integer on the interval $[1,L]$.
@@ -2356,8 +2380,9 @@ PGAGetStringLength} but is not otherwise used in the data-structure-neutral
 functions of \pga.
 
 The calling sequences for the functions in Table~\ref{tab:new-functions} are
-given in Table~\ref{tab:new-functions1}.  The file {\tt
-./examples/templates/uf\_new.c} contains template routines for these functions.
+given in Table~\ref{tab:new-functions1}. Template routines for these functions
+are in the file {\tt ./examples/templates/uf\_new.c}.
+
 
 \begin{table}
 \centering
@@ -2724,6 +2749,7 @@ hill-climbing heuristic and how many strings in the population to apply it to.
 
 
 \pga\ supports hybrid schemes in the following ways:
+\begin{sloppypar}
 \begin{itemize}
 \item By passing, the context variable as a parameter to the user's
 hill-climbing function, the user has access to solution and parameter values,
@@ -2746,9 +2772,11 @@ user's hill-climbing function to encode integer or real numbers as binary or
 Gray code strings.
 \item The functions {\tt PGAGetEvaluation} and {\tt PGASetEvaluation} allow the
 user's hill-climbing function to get and set evaluation function values, and
-{\tt PGASetEvaluationUpToDateFlag} and {\tt PGAGetEvaluationUpToDateFlag} to get and set the flag
-that indicates whether an evaluation function value is up to date.
+{\tt PGASetEvaluationUpToDateFlag} and {\tt
+PGAGetEvaluationUpToDateFlag} to get and set the flag that indicates
+whether an evaluation function value is up to date.
 \end{itemize}
+\end{sloppypar}
 
 One way to run a hybrid GA and use {\tt PGARun} is to use the {\tt
 PGASetUserFunction} discussed in Chapter~\ref{chp:custom1} to specify a user
@@ -2886,14 +2914,13 @@ calls {\tt MPI\_Send} to perform the actual message passing.  In addition to
 string {\tt p} itself, the evaluation function value, fitness function value,
 and evaluation status flag are also sent.
  
-
+\begin{sloppypar}
 {\tt PGAReceiveIndividual} is the complementary function to {\tt
 PGASendIndividual}.  For example, {\tt PGAReceiveIndividual} {\tt
 (ctx,p,pop,source,tag,comm,status)} will store in location {\tt p} in
 population {\tt pop} the string and fields of the individual sent from process
 {\tt source} with the MPI tag {\tt tag} and MPI communicator {\tt comm}.  {\tt
 status} is an MPI status vector.
-
 
 {\tt PGASendReceiveIndividual} combines the functionality of {\tt
 PGASendIndividual} and {\tt PGAReceiveIndividual}.  This may be useful in
@@ -2905,10 +2932,11 @@ received from process {\tt source} with tag {\tt rtag} is stored in location
 {\tt rp} in population {\tt rpop}.  {\tt comm} and {\tt status} are the same
 as defined earlier.
 
-{\tt PGABuildDatatype(ctx,p,pop)} packs together the string and fields that
+{\tt PGABuildDatatype (ctx,p,pop)} packs together the string and fields that
 {\tt PGASendIndividual}, {\tt PGAReceiveIndividual}, and {\tt
 PGASendReceiveIndividual} send and receive.  The result is of type {\tt
 MPI\_Datatype}.
+\end{sloppypar}
  
 
 \section{Example}\label{sec:par-example}
@@ -3063,6 +3091,7 @@ these issues arise whenever the size of a Fortran integer is less than the
 size of a pointer.}.  These arise because a Fortran integer is too small to
 hold the address returned by the C interface routine.
 
+\begin{sloppypar}
 \begin{itemize}
 
 \item The context variable should be declared {\tt integer*8}. 
@@ -3088,6 +3117,7 @@ fail.
 
 
 \end{itemize}
+\end{sloppypar}
 
 \end{itemize}
 
@@ -3201,12 +3231,14 @@ entering all high-level functions as shown in Figure~\ref{fig:trace}.  {\tt
 all high-level functions.  The command line option {\tt -pgahelp debug} will
 list the debug level options and then exit.
 
+\begin{sloppypar}
 Fortran (and C) programmers may access the trace facility via function calls.
 The function {\tt PGASetDebugLevel} may be called to set a debug level.  For
 example, {\tt call PGASetDebugLevel(ctx,12)} would produce the same output
 shown in Figure~\ref{fig:trace}.  {\tt PGAClearDebugLevel(ctx,12)} will clear
 prints associated with debug level 12.  {\tt PGAPrintDebugOptions(ctx)} will
 print the list of available debug options.
+\end{sloppypar}
 
 The function {\tt PGASetDebugLevelByName} will turn on debugging of the named
 function.  For example, {\tt PGASetDebugLevelByName(ctx,''PGACrossover'')}
@@ -3223,12 +3255,16 @@ PGA\_DEBUG\_SEND}, and {\tt PGA\_DEBUG\_RECV} for entering a function, exiting
 a function, allocating memory, print a variable's value, and sending or
 receiving a string, respectively.
 
+\begin{sloppypar}
 For example, {\tt PGADebugPrint(ctx,
 PGA\_DEBUG\_ENTERED, "MyFunc", "Entered", PGA\_VOID, NULL)} will print the
 line
+\end{sloppypar}
+
 \begin{verbatim}
    0: MyFunc                          : Entered
 \end{verbatim}
+
 when the debug level of 12 is specified.  {\tt PGADebugPrint(ctx,
 PGA\_DEBUG\_PRINTVAR, "MyFunc", "i = ", PGA\_INT, (void *) \&i)} will print the
 line
@@ -3776,7 +3812,7 @@ multiple processes timeshare the single processor.
 \section*{Message-Passing Programming Model}
 
 In the message-passing programming model multiple processes communicate by
-passing messages---transferring data from the address space of one process
+passing messages---trans\-ferring data from the address space of one process
 into the address space of another process.  When a process needs data stored
 in the memory of another process, the data must be sent from the process that
 ``owns'' it, to the memory of the process that needs it.
@@ -4241,12 +4277,14 @@ executable.
 
 \item When compiling the {\tt examples} directory we have seen ``multiply
 defined'' error messages. For example:
+{\small
 \begin{verbatim}
 Making C examples
   Compiling classic
 ld: /usr/local/mpi/lib/sun4/ch_p4/libmpi.a(initialize.o): _MPI_Initialized: multiply defined
 collect2: ld returned 2 exit status
 \end{verbatim}
+}
 We have seen this error occur when a sequential version of \pga\ was built and
 the library ({\tt ./lib/arch/libpgag.a} or {\tt ./lib/arch/libpgaO.a}) was not
 deleted before attempting to build a new, parallel version of \pga.  The
