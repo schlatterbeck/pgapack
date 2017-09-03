@@ -1,4 +1,4 @@
-SOURCE=user_guide.tex user_guide.bib
+SOURCE=user_guide.tex user_guide.bib tpage.sty
 
 all: user_guide.pdf
 

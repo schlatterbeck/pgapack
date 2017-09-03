@@ -1102,15 +1102,15 @@ development
 \pga\ supports both GRGA and SSGA and variants in between via {\em
 parameterized} population replacement.  For example, the {\tt PGASet} calls
 \begin{verbatim}
-PGASetPopSize           (ctx,200);
-PGASetNumReplaceValue   (ctx,10);
-PGASetPopReplacementType(ctx, PGA_POPREPL_BEST);
+PGASetPopSize         (ctx,200);
+PGASetNumReplaceValue (ctx,10);
+PGASetPopReplaceType  (ctx, PGA_POPREPL_BEST);
 \end{verbatim}
 specify that each generation a new population is created consisting of ten
 strings created via recombination, and the 190 most fit strings from the old
 population.  The 190 strings can also be selected
 randomly, with or without replacement, by setting the second argument of {\tt
-PGASetPopReplacementType} to {\tt PGA\_POPREPL\_RANDOM\_REP} or {\tt
+PGASetPopReplaceType} to {\tt PGA\_POPREPL\_RANDOM\_REP} or {\tt
 PGA\_POPREPL\_RANDOM\_NOREP}, respectively.
 
 By default, the number of new strings created each generation is 10 percent
@@ -1143,7 +1143,7 @@ Figure~\ref{fig:popreplace} shows the generic population replacement scheme in
 {\tt PGAGetPopSize}).  First, {\tt PGAGetPopSize} - {\tt
 PGAGetNumReplaceValue} strings are copied over directly from generation $k$.
 The way the strings are chosen, the most fit, or randomly with or without
-replacement, depends on the value set by {\tt PGASetPopReplacementType}.  The
+replacement, depends on the value set by {\tt PGASetPopReplaceType}.  The
 remaining {\tt PGAGetNumReplaceValue} strings are created by crossover and
 mutation.
 
@@ -1422,10 +1422,11 @@ uniformly random from the initialization range of that gene.
 
 
 Some of the integer- and real-valued mutation operators may generate allele
-values outside the initialization range of that gene.  If this happens, by
-default, the allele value will be reset to the lower (upper) value of the
+values outside the initialization range of that gene.  By
+default, the allele value will \textit{not} be reset to the lower
+(upper) value of the
 initialization range for that gene.  By setting {\tt
-PGASetMutationBoundedFlag(ctx, PGA\_FALSE)} the allele values will {\em not}
+PGASetMutationBoundedFlag(ctx, PGA\_TRUE)} the allele values will
 be reset if they fall outside of the initialization range.
 
 
@@ -2007,7 +2008,7 @@ Figure~\ref{complex-example} and the ``simple'' example in
 Figure~\ref{simple-example} is that the steps encapsulated by {\tt
 PGARunMutationAndCrossover} have been written out explicitly.  The function
 {\tt PGASortPop} sorts a population according to the criteria specified by
-{\tt PGASetPopReplacementType} (Section~\ref{sec:population-replacement}).
+{\tt PGASetPopReplaceType} (Section~\ref{sec:population-replacement}).
 The sorted indices are accessed via {\tt PGAGetSortedPopIndex}.  In the
 example, the five lines that follow {\tt PGASortPop} copy the strings that are
 not created by recombination from the old population to the new population.
@@ -3268,7 +3269,7 @@ for {\tt PGADebugPrint} calls.
 \multicolumn{1}{c|}{DEFAULT} &
 \multicolumn{1}{c|}{SET WITH}  \\  \hline
 Population size                   & 100 &  {\tt PGASetPopSize} \\ \hline
-Copied for population replacement & {\tt PGA\_POPREPL\_BEST} & {\tt PGASetPopReplacementType} \\ \hline
+Copied for population replacement & {\tt PGA\_POPREPL\_BEST} & {\tt PGASetPopReplaceType} \\ \hline
 Stopping rule                     & {\tt PGA\_STOP\_MAXITER} & {\tt PGASetStoppingRuleType} \\ \hline
 Maximum iterations             & 1000 &  {\tt PGASetMaxGAIterValue} \\ \hline
 Maximum no change iters        &  100  & {\tt PGASetMaxNoChangeValue} \\ \hline
