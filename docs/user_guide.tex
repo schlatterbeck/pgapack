@@ -1,6 +1,7 @@
-%\documentstyle[11pt,titlepage]{article}
-%\documentstyle[psfig,verbatim,sty/tpage,sty/here]{report} 
-\documentstyle[psfig,epsf,verbatim,/home/bsmith/petsc/docs/tex/sty/tpage]{report} 
+\documentclass{report} 
+\usepackage{verbatim}
+\usepackage{tpage}
+\usepackage[dvips]{graphicx}
 \setlength{\textwidth}{6.5in}
 \setlength{\oddsidemargin}{0.0in}
 \setlength{\evensidemargin}{0.0in}
@@ -1147,7 +1148,7 @@ remaining {\tt PGAGetNumReplaceValue} strings are created by crossover and
 mutation.
 
 \begin{figure}
-\centerline{\epsfbox{generation.eps}}
+\centerline{\includegraphics{generation.eps}}
 \caption{Population Replacement}\label{fig:popreplace}
 \end{figure}
 
