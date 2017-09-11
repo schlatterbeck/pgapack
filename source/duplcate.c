@@ -193,6 +193,8 @@ void PGAChange( PGAContext *ctx, int p, int pop )
 	PGAError(ctx, "Could not change string:", PGA_WARNING, PGA_VOID, NULL);
 	PGAPrintString(ctx, stderr, p, pop);
     }
+    if (changed == PGA_TRUE)
+	PGASetEvaluationUpToDateFlag(ctx, p, pop, PGA_FALSE);
 
     PGADebugExited("PGAChange");
 }
