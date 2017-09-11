@@ -95,7 +95,7 @@ void PGARestart(PGAContext *ctx, int source_pop, int dest_pop)
 	PGACopyIndividual(ctx, source_p, source_pop, 0, dest_pop);
     PGASetEvaluationUpToDateFlag(ctx, 0, dest_pop, PGA_FALSE);
     old_mut_type = PGAGetMutationType(ctx);
-    ctx->ga.MutationType = PGA_MUTATION_UNIFORM;
+    ctx->ga.MutationType = PGA_MUTATION_CONSTANT;
     val = ctx->ga.restartAlleleProb;
     
     if (ctx->fops.Mutation) {
