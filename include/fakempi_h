@@ -40,7 +40,7 @@ typedef struct {
 #define MPI_ANY_TAG         (-1)
 
 /*  Declare prototypes for the MPI functions.  */
-int MPI_Address(void *, MPI_Aint *);
+int MPI_Get_address(void *, MPI_Aint *);
 int MPI_Bcast(void *, int, MPI_Datatype, int, MPI_Comm);
 int MPI_Comm_dup(MPI_Comm, MPI_Comm *);
 int MPI_Comm_free(MPI_Comm *);
@@ -56,4 +56,4 @@ int MPI_Sendrecv(void *, int, MPI_Datatype, int, int, void *, int,
 	         MPI_Datatype, int, int, MPI_Comm, MPI_Status *);
 int MPI_Type_commit(MPI_Datatype *);
 int MPI_Type_free(MPI_Datatype *);
-int MPI_Type_struct(int, int *, MPI_Aint *, MPI_Datatype *, MPI_Datatype *);
+int MPI_Type_create_struct(int, int *, MPI_Aint *, MPI_Datatype *, MPI_Datatype *);
