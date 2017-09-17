@@ -263,7 +263,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     /* Parallel */
     ctx->par.NumIslands        = PGA_UNINITIALIZED_INT;
     ctx->par.NumDemes          = PGA_UNINITIALIZED_INT;
-    ctx->par.DefaultComm       = NULL;
+    ctx->par.DefaultComm       = MPI_COMM_NULL;
 #ifdef FAKE_MPI
     ctx->par.MPIStubLibrary    = PGA_TRUE;
 #else
@@ -692,7 +692,7 @@ void PGASetUp ( PGAContext *ctx )
          ctx->par.NumIslands        = 1;
     if ( ctx->par.NumDemes         == PGA_UNINITIALIZED_INT)
          ctx->par.NumDemes          = 1;
-    if ( ctx->par.DefaultComm      == NULL )
+    if ( ctx->par.DefaultComm      == MPI_COMM_NULL )
          ctx->par.DefaultComm       = MPI_COMM_WORLD;
 
     

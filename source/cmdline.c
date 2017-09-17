@@ -173,11 +173,12 @@ void PGAParseDebugArg(PGAContext *ctx, char *st)
           }
           else
           {
-               if (isdigit(st[index]))
+               if (isdigit(st[index])) {
                     if (range)
                          num2ch[num2index++] = st[index];
                     else
                          num1ch[num1index++] = st[index];
+               }
                if (st[index] == ',' || index == length)
                {
                     if (range)

@@ -30,6 +30,7 @@ typedef struct {
 #define MPI_UNSIGNED_LONG   (void *)NULL
 #define MPI_UNSIGNED_SHORT  (void *)NULL
 
+#define MPI_COMM_NULL       (void *)NULL
 #define MPI_COMM_WORLD      (void *)NULL
 #define MPI_COMM_SELF       (void *)NULL
 

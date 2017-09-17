@@ -740,7 +740,7 @@ int PGAGetRank (PGAContext *ctx, MPI_Comm comm)
     
     PGADebugEntered("PGAGetRank");
 
-    if (comm == NULL)
+    if (comm == MPI_COMM_NULL)
 	rank = 0;
     else
 	MPI_Comm_rank(comm, &rank);
@@ -780,7 +780,7 @@ int PGAGetNumProcs (PGAContext *ctx, MPI_Comm comm)
 
     PGADebugEntered("PGAGetNumProcs");
 
-    if (comm == NULL)
+    if (comm == MPI_COMM_NULL)
 	size = 1;
     else
 	MPI_Comm_size(comm, &size);

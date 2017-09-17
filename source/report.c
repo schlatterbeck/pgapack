@@ -1048,7 +1048,7 @@ void PGAPrintContextVariable ( PGAContext *ctx, FILE *fp )
      }*/
 
      fprintf(fp, "    Default Communicator           : ");
-     if (ctx->par.DefaultComm == NULL) 
+     if (ctx->par.DefaultComm == MPI_COMM_NULL) 
 	 fprintf(fp, "NULL\n");
      else if (ctx->par.DefaultComm == MPI_COMM_WORLD)
          fprintf(fp, "MPI_COMM_WORLD\n");

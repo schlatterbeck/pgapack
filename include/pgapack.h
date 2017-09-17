@@ -59,8 +59,12 @@ extern "C" {
 /*****************************************
 *           BINARY   MACROS              *
 *****************************************/
+/* Note: WL used to be a macro defined on the command-line.
+ *       Since it is used only to represent the size of the PGABinary
+ *       data type (an unsigned long) we can safely use sizeof here.
+ */
 #ifndef WL
-#error WL must be defined on the command line!
+#define WL (sizeof(PGABinary) * 8)
 #endif
 
 #define ONEL        ((PGABinary)1)
