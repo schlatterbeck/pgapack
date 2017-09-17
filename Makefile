@@ -11,6 +11,9 @@ LIBS = -lm
 INCLUDES =
 RANLIB = ranlib
 OPT = -O3
+# Set this to no (or something different from yes) if you don't want
+# shared libraries
+SHAREDLIBS=yes
 
 # A note on word-size: The old "WL" macro is the number of bits in an
 # unsigned long (used for bit-arrays). You only need to specify this if
@@ -22,14 +25,14 @@ OPT = -O3
 
 ifeq (,${MPI})
     # Debian sets up all symlinks for the default mpi installed
-    ifeq (,$(wildcard /etc/alternatives/libmpi.so))
+    ifeq (,$(shell pkg-config --cflags mpi-c || true))
         MPI = serial
     else
         MPI = default
         CC = mpicc
         FC = mpif77
-        MPI_INC = -I /usr/include/mpi
-        MPI_LIB = -l mpi
+        MPI_INC = $(shell pkg-config --cflags mpi-c)
+        MPI_LIB = $(shell pkg-config --libs mpi-c)
     endif
 endif
 
@@ -42,7 +45,7 @@ ifeq (${MPI},openmpi)
     # to really find out the architecture used. So you may end up
     # specifying MPI_INC and MPI_LIB by hand.
     MPI_INC = -I /usr/include/mpi
-    MPI_LIB = -lmpi
+    MPI_LIB = -lmpi_mpifh -lmpi
 else ifeq (${MPI},mpich)
     CC = mpicc.mpich
     FC = mpif77.mpich
@@ -161,21 +164,22 @@ export MPI_STUB
 export PGA_LIB_DIR
 export RANLIB
 export MPI
+export SHAREDLIBS
 
 all:
 	mkdir -p $(PGA_LIB_DIR)
-	cd source   && $(MAKE) $(MFLAGS)
-	cd examples && $(MAKE) $(MFLAGS)
-	cd test     && $(MAKE) $(MFLAGS)
-	cd docs     && $(MAKE) $(MFLAGS)
+	$(MAKE) -C source
+	$(MAKE) -C examples
+	$(MAKE) -C test
+	$(MAKE) -C docs
 
 clean:
-	cd source   && $(MAKE) clean $(MFLAGS)
-	cd examples && $(MAKE) clean $(MFLAGS)
-	cd test     && $(MAKE) clean $(MFLAGS)
-	cd docs     && $(MAKE) clean $(MFLAGS)
+	$(MAKE) -C source   clean
+	$(MAKE) -C examples clean
+	$(MAKE) -C test     clean
+	$(MAKE) -C docs     clean
 
 clobber: clean
-	rm -rf $(PGA_LIB_DIR)
+	rm -rf ${PGA_DIR}/lib
 
 .PHONY: all clean clobber

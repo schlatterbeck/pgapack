@@ -30,20 +30,26 @@ OBJS = $(PGA_LIB_DIR)/binary.o        \
 
 MAJOR = 1
 MINOR = 0
+ifeq (${SHAREDLIBS},yes)
 SHLIB = $(PGA_LIB_DIR)/lib$(PGA_LIB)-$(MPI).so.$(MAJOR).$(MINOR)
 SHARED = -shared -Wl,-soname,$(PGA_LIB)-$(MPI).so.$(MAJOR)
+endif
+
 all: $(PGA_LIB_DIR)/lib$(PGA_LIB).a $(SHLIB)
 
 $(PGA_LIB_DIR)/lib$(PGA_LIB).a: $(OBJS)
 	ar rv $(PGA_LIB_DIR)/lib$(PGA_LIB).a $(OBJS)
 	$(RANLIB) $(PGA_LIB_DIR)/lib$(PGA_LIB).a
 
+ifeq (${SHAREDLIBS},yes)
 $(SHLIB): $(OBJS)
 	$(CC) $(SHARED) $(OBJS) -o $(SHLIB)
+endif
 
 $(PGA_LIB_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
+	rm -f $(OBJS)
 
 .PHONY: clean

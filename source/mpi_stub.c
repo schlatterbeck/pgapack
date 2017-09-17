@@ -63,26 +63,9 @@ privately owned rights.
  *
  */
 
-#define mpi_address_      mpi_get_address__
-#define mpi_bcast_        mpi_bcast__
-#define mpi_comm_dup_     mpi_comm_dup__
-#define mpi_comm_free_    mpi_comm_free__
-#define mpi_comm_rank_    mpi_comm_rank__
-#define mpi_comm_size_    mpi_comm_size__
-#define mpi_finalize_     mpi_finalize__
-#define mpi_init_         mpi_init__
-#define mpi_initialized_  mpi_initialized__
-#define mpi_probe_        mpi_probe__
-#define mpi_send_         mpi_send__
-#define mpi_recv_         mpi_recv__
-#define mpi_sendrecv_     mpi_sendrecv__
-#define mpi_type_commit_  mpi_type_commit__
-#define mpi_type_free_    mpi_type_free__
-#define mpi_type_struct_  mpi_type_struct__
 
-/*
 #if defined(FORTRANCAP)
-#define mpi_address_      MPI_GET_ADDRESS
+#define mpi_get_address_  MPI_GET_ADDRESS
 #define mpi_bcast_        MPI_BCAST
 #define mpi_comm_dup_     MPI_COMM_DUP
 #define mpi_comm_free_    MPI_COMM_FREE
@@ -97,9 +80,28 @@ privately owned rights.
 #define mpi_sendrecv_     MPI_SENDRECV
 #define mpi_type_commit_  MPI_TYPE_COMMIT
 #define mpi_type_free_    MPI_TYPE_FREE
-#define mpi_type_struct_  MPI_TYPE_STRUCT
+#define mpi_type_create_struct_  MPI_TYPE_CREATE_STRUCT
+
+#elif defined(FORTRANTWOUNDERSCORE)
+#define mpi_get_address_  _mpi_get_address_
+#define mpi_bcast_        _mpi_bcast_
+#define mpi_comm_dup_     _mpi_comm_dup_
+#define mpi_comm_free_    _mpi_comm_free_
+#define mpi_comm_rank_    _mpi_comm_rank_
+#define mpi_comm_size_    _mpi_comm_size_
+#define mpi_finalize_     _mpi_finalize_
+#define mpi_init_         _mpi_init_
+#define mpi_initialized_  _mpi_initialized_
+#define mpi_probe_        _mpi_probe_
+#define mpi_send_         _mpi_send_
+#define mpi_recv_         _mpi_recv_
+#define mpi_sendrecv_     _mpi_sendrecv_
+#define mpi_type_commit_  _mpi_type_commit_
+#define mpi_type_free_    _mpi_type_free_
+#define mpi_type_create_struct_  _mpi_type_create_struct_
+
 #elif !defined(FORTRANUNDERSCORE)
-#define mpi_address_      mpi_get_address
+#define mpi_get_address_  mpi_get_address
 #define mpi_bcast_        mpi_bcast
 #define mpi_comm_dup_     mpi_comm_dup
 #define mpi_comm_free_    mpi_comm_free
@@ -114,9 +116,8 @@ privately owned rights.
 #define mpi_sendrecv_     mpi_sendrecv
 #define mpi_type_commit_  mpi_type_commit
 #define mpi_type_free_    mpi_type_free
-#define mpi_type_struct_  mpi_type_struct
+#define mpi_type_create_struct_ mpi_type_create_struct
 #endif
-*/
 
 
 /*  Places the address of "location" into "address"
@@ -329,7 +330,7 @@ void mpi_type_free_(MPI_Datatype **datatype, int *ie) {
 }
 
 
-void mpi_type_struct_(int *count, int **array_of_blocklengths,
+void mpi_type_create_struct_(int *count, int **array_of_blocklengths,
                     MPI_Aint **array_of_displacements,
                     MPI_Datatype **array_of_types, MPI_Datatype **newtype, int *ie) {
     *ie = 0;

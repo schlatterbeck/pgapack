@@ -1,22 +1,24 @@
-all:
-	@echo "Making C examples"
-	@make C
-	@echo "Making fortran examples"
-	@make Fortran
+all: C Fortran
 
 C:
-	@cd c; $(MAKE)
+	$(MAKE) -C c
+
+ifeq (,${FC})
 
 Fortran:
-	@if test -n "$(FC)" ; then \
-		cd fortran && $(MAKE); cd ..; \
-		cd mgh && $(MAKE); \
-	else \
-		echo "Fortran compiler unavailable"; \
-	fi
+	@echo Fortran compiler unavailable
+
+else
+
+Fortran:
+	$(MAKE) -C fortran
+	$(MAKE) -C mgh
+
+endif
 
 clean:
-	@cd c; $(MAKE) clean
-	@cd fortran; $(MAKE) clean
-	@cd mgh; $(MAKE) clean
+	$(MAKE) -C c       clean
+	$(MAKE) -C fortran clean
+	$(MAKE) -C mgh     clean
 
+.PHONY: all C Fortran clean
