@@ -1,4 +1,5 @@
 
+[ Updated Sept 2017: new installation instructions, availability ]
 [ Updated March 2008:  
   -- the original README, minus two references to the now 
      obsolete website and mailing lists, follows below
@@ -6,11 +7,11 @@
      and Open MPI. ]
 
 
-This is the top-level README for PGAPack V1.0
+This is the top-level README for PGAPack V1.1.2
 
 Copyright
 =========
-See the file COPYRIGHT for Copyright and disclaimer information.
+See the file COPYING for Copyright and disclaimer information.
 
 Introduction
 ============
@@ -33,11 +34,13 @@ Key features are:
 
 Availability
 ============
-PGAPack is freely available.  The complete distribution is available
-by anonymous ftp from from ftp.mcs.anl.gov in the file 
-pub/pgapack/pgapack.tar.Z.  The distribution contains all source code,
-installation instructions, users guide, and a collection of examples in C and
+PGAPack is freely available.  Older versions of the distribution are
+available by anonymous ftp from from ftp.mcs.anl.gov in the directory
+pub/pgapack. The distribution contains all source code, installation
+instructions, users guide, and a collection of examples in C and
 Fortran. 
+The latest version can be obtained from github at
+https://github.com/schlatterbeck/pgapack
 
 
 Computational Environment
@@ -50,9 +53,14 @@ specified by the ARCH_TYPE variable below.
 
 Documentation
 =============
-* The PGAPack users guide is in ./docs/user_guide.ps.
+* The PGAPack users guide is in ./docs/user_guide.ps after building the
+  guide from sources (see Makefile). The old original version was
+  preserved as docs/user_guide-orig.ps -- it is recommended to use the
+  latest version that had some fixes.
 * Man pages for PGAPack functions are in the ./man directory.
 * Installation instructions are in this README file and the users guide.
+  Note that the installation instructions in the user guide are
+  obsolete.
 * Example problems are in the ./examples directory.
 
 
@@ -71,6 +79,9 @@ distribution is available by anonymous ftp from ftp.mcs.anl.gov.  Take the
 file mpich.tar.Z from the directory pub/mpi.  Additional information about
 MPICH is avaliable on the World Wide Web at http://www.mcs.anl.gov/mpi.
 
+In addition to MPICH, the current installation was compiled successfully
+with openmpi and lam.
+
 Installation Instructions
 =========================
 When installing PGAPack you make two choices: whether to build a sequential
@@ -78,15 +89,20 @@ When installing PGAPack you make two choices: whether to build a sequential
 (the default) version.  In broad outline, the
 installation steps are as follows.
 
-1.  Make a directory to install PGAPack in (mkdir /usr/local/pga).
-2.  Change directories to the directory created in the last step
-    (cd /usr/local/pga).
-3.  Obtain the compressed tar file pgapack.tar.Z by anonymous ftp in
-    ftp.mcs.anl.gov from the directory pub/pgapack.
-4.  Uncompress the tar file (uncompress pgapack.tar.Z).
-5.  Untar the uncompressed tar file (tar xvf ./pgapack.tar).
-6.  Run configure to configure the makefiles (configure -arch ARCH_TYPE)
-    where ARCH_TYPE is one of
+1.  Check out from github
+2.  Run
+
+    make MPI=$MPIVERSION
+
+    replacing $MPIVERSION with either serial, openmpi, mpich, or lam
+    If this doesn't work, you can specify MPI_LIB and/or MPI_INCLUDE in
+    addition.
+    The original targets of the old configure were preserved for
+    historical reasons, so you may want to build with:
+
+    make ARCH_TYPE=$ARCHITECTURE
+
+    replacing ARCHITECTURE with one of the following:
 
     sun4           for Sun SparcStations workstations,
     next           for NeXT workstations,
@@ -104,31 +120,52 @@ installation steps are as follows.
     paragon        for the Intel Paragon, or
     exemplar       for the Convex  Exemplar.
 
-    The full configure options are configure -arch ARCH_TYPE [-cc CC] 
-    [-cflags CFLAGS] [-f77 FC] [-fflags FFLAGS] [-debug]
-    [-mpiinc MPI_INCLUDE_DIRECTORY] [-mpilib MPI_LIBRARY]  [-help]
+    The full make options are ARCH_TYPE, CC,
+    CFLAGS, FC, FFLAGS, DEBUG, MPI_INC, MPI_LIB
 
-    where all parameters except -arch are optional and do the following:
+    where all parameters are optional and do the following:
 
-    [-cc]:       The name of the ANSI C compiler, cc by default.
-    [-cflags]:   Options passed to the C compiler.
-    [-f77]:      The name of the Fortran 77 compiler, f77 by default.
-                 (The Fortran compiler is used only to compile the Fortran
-                 examples in the [./examples/] directory.)
-    [-fflags]:   Options passed to the Fortran compiler.
-    [-debug]:    If specified, enables the debugging features
-                 and compiles the source code with the -g flag.
-    [-mpiinc]:   The *directory* where MPI include files are located.
-    [-mpilib]:   The *full path* to the MPI library.  
+    CC:       The name of the ANSI C compiler, cc by default.
+    CPPFLAGS: C Preprocessor flags (later appended to CFLAGS)
+    CFLAGS:   Options passed to the C compiler.
+    DEBUG:    If specified, enables the debugging features
+              and compiles the source code with the -g flag.
+    FC:       The name of the Fortran 77 compiler, f77 by default.
+              (The Fortran compiler is used only to compile the Fortran
+              examples in the [./examples/] directory.)
+    FFLAGS:   Options passed to the Fortran compiler.
+    INCLUDES  Include options (usually -I directory) but see the MPI_INC
+              below
+    LDFLAGS:  Linker options
+    LIBS:     Additional libraries, note that you probably have to
+              include the math library with -lm
+    MPI       Specify one of the known MPI types, one of openmpi, mpich,
+              lam, or serial (for a non-MPI implementation)
+    MPI_INC:  The Include-Option where MPI include files are located.
+    MPI_LIB:  The Linker options for the MPI library, can also be the
+              library file to link.
+    OPT:      The optimization option your compiler understands
+    SHAREDLIBS: If set to something different from "yes" will not build
+              shared libraries
 
-    If the [-mpilib] and [-mpiinc] options are specified, a parallel version 
-    of PGAPack will be built.  If these flags are not specified a sequential
+    If the MPI or MPI_INC, MPI_LIB options are specified, a parallel version 
+    of PGAPack will be built, unless you explicitly specify MPI=serial.
+    If these flags are not specified, a rudimentary check for a default
+    MPI installation is done. If no MPI installation is found, a sequential
     version of PGAPack will be built.
 
-7.  Execute the makefile (make install).
-8.  Add PGAPack's man pages to your man page path.
+    Note that older versions required to set the WL (word length)
+    preprocessor define. This is no longer required, unless you have a
+    very unusual machine where the C-expression
+
+    sizeof(unsigned long) * 8
+
+    is not the number of bits in an unsigned long (e.g. if you have a
+    different size of character).
+
+3.  Add PGAPack's man pages to your man page path.
     (setenv MANPATH "$MANPATH"":/home/pgapack/man")
-9.  Execute a simple test problem
+4.  Execute a simple test problem
     
     Sequential version
     ------------------
@@ -146,34 +183,6 @@ installation steps are as follows.
     command can be used to execute a parallel program on most systems.
 
 
-Example Installation
-====================
-Assuming you have the compressed tar file, pgapack.tar.Z, containing the
-distribution in /home/username.  To build a sequential version of PGAPack
-containing debug features for a Sun SparcStation in /usr/local/pga and run a
-test example, type:
-
-    uncompress /home/username/pgapack.tar.Z
-    mkdir /usr/local/pga
-    cd /usr/local/pga
-    tar xvf /home/username/pgapack.tar
-    configure -arch sun4 -debug
-    make install
-    /usr/local/pga/examples/c/maxbit
-
-To build a parallel version of PGAPack for an IBM SP parallel computer using
-an MPI implementation with include files in /usr/local/mpi/include and library
-in /usr/local/mpi/lib, and run a test example, type:
-
-   uncompress /home/username/pgapack.tar.Z
-   mkdir /usr/local/pga
-   cd /usr/local/pga
-   tar xvf /home/username/pgapack.tar
-   configure -arch rs6000 -mpiinc /usr/local/mpi/include \
-             -mpilib /usr/local/mpi/lib/libmpi.a
-   make install
-   mpirun -np 4 /usr/local/pga/examples/c/maxbit
-
 
 PGAPack on PCs 
 ===================
@@ -188,19 +197,18 @@ support, resulting in erroneous values.
 Structure of the Distribution Directory
 =======================================
 CHANGES:      Changes new to this release of PGAPack.
-COPYRIGHT:    Copyright and disclaimer information.
+COPYING:      Copyright and disclaimer information.
 README:       This file.
-configure.in: The ``source code'' for the configure script.
-configure:    Unix shell script to configure Makefile.in for a specific
-              architecture.
-Makefile.in:  Prototype that is configured into ``Makefile'' by configure.
-docs:         Directory containing documentation.
+Makefile:     Makefile to build everything
+docs:         Directory containing documentation. This builds the manual
+              from LaTeX sources
 examples:     A directory containing C and Fortran examples.
 include:      The PGAPack include directory.
 lib:          The directory the library will be installed in.
 man:          The directory containing the PGAPack man pages.
 source:       The source code for the PGAPack system.
 test:         A directory containing programs to verify the installation.
+              Note that the verification is known to fail.
 
 
 Contributions
