@@ -495,7 +495,8 @@ int PGASelectTournament( PGAContext *ctx, PGAIndividual *pop )
     for (i=1; i<ctx->ga.TournamentSize; i++) {
         int mn = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
         double fit = (pop+mn)->fitness;
-        if (fit > maxfit) {
+        /* use '>=' for backwards-compat with prev. binary tournament */
+        if (fit >= maxfit) {
             m = mn;
             maxfit = fit;
         }
