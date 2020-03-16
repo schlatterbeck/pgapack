@@ -277,6 +277,7 @@ typedef struct {
     int MutationType;        /* Type of mutation used                     */
     int MutateIntegerValue;  /* Multiplier to mutate Integer strings with */
     int MutateBoundedFlag;   /* Confine integer alleles to given range    */
+    int TournamentSize;      /* Number of participants in tournament      */
     double MutateRealValue;  /* Multiplier to mutate Real strings with    */
     double MutationProb;     /* Starting mutation probability             */
     double CrossoverProb;    /* Crossover probability                     */
@@ -787,6 +788,8 @@ int PGASelectProportional(PGAContext *ctx, PGAIndividual *pop);
 void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop );
 int PGASelectTournament( PGAContext *ctx, PGAIndividual *pop );
 int PGASelectPTournament( PGAContext *ctx, PGAIndividual *pop );
+void PGASetTournamentSize(PGAContext *ctx, int tournament_size);
+int PGAGetTournamentSize(PGAContext *ctx);
 
 /*****************************************
 *          stop.c

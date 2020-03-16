@@ -215,6 +215,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->ga.NumReplace         = PGA_UNINITIALIZED_INT;
     ctx->ga.CrossoverType      = PGA_UNINITIALIZED_INT;
     ctx->ga.SelectType         = PGA_UNINITIALIZED_INT;
+    ctx->ga.TournamentSize     = PGA_UNINITIALIZED_INT;
     ctx->ga.FitnessType        = PGA_UNINITIALIZED_INT;
     ctx->ga.FitnessMinType     = PGA_UNINITIALIZED_INT;
     ctx->ga.MutationType       = PGA_UNINITIALIZED_INT;
@@ -447,6 +448,9 @@ void PGASetUp ( PGAContext *ctx )
 
     if ( ctx->ga.SelectType        == PGA_UNINITIALIZED_INT)
          ctx->ga.SelectType         = PGA_SELECT_TOURNAMENT;
+
+    if ( ctx->ga.TournamentSize    == PGA_UNINITIALIZED_INT)
+         ctx->ga.TournamentSize     = 2;
 
     if ( ctx->ga.FitnessType       == PGA_UNINITIALIZED_INT)
          ctx->ga.FitnessType        = PGA_FITNESS_RAW;

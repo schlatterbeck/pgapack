@@ -262,6 +262,7 @@ c *** TAGS
       double precision PGAGetRestartAlleleChangeProb
       integer PGASelectNextIndex
       integer PGAGetSelectType
+      integer PGAGetTournamentSize
       double precision PGAGetPTournamentProb
       integer PGADone
       integer PGACheckStoppingConditions
@@ -342,6 +343,7 @@ c *** TAGS
       external PGASelectNextIndex
       external PGAGetSelectType
       external PGAGetPTournamentProb
+      external PGAGetTournamentSize
       external PGADone
       external PGACheckStoppingConditions
       external PGAGetStoppingRuleType

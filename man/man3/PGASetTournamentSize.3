@@ -1,0 +1,39 @@
+.TH PGASetTournamentSize 3 "2020-03-16" " " "PGAPack"
+.SH NAME
+PGASetTournamentSize \- Specifies the number of participants in a
+tournament. The default is binary tournament (size=2).
+.SH DESCRIPTION
+This function will have no effect
+unless PGA_SELECT_TOURNAMENT was specified as the type of selection to
+use with PGASetSelectType.  The default value is 2.
+.SH INPUT PARAMETERS
+.PD 0
+.TP
+ctx
+- context variable
+.PD 0
+.TP
+size
+- the size of tournament
+.PD 1
+.SH OUTPUT PARAMETERS
+.PD 0
+.TP
+none
+
+.PD 1
+.SH SYNOPSIS
+.nf
+#include "pgapack.h"
+void  PGASetTournamentSize(PGAContext *ctx, int tournament_size)
+.fi
+.SH LOCATION
+select.c
+.SH EXAMPLE
+.nf
+Example:
+PGAContext *ctx;
+:
+PGASetTournamentSize(ctx, 3);
+
+.fi

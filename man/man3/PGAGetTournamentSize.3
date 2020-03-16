@@ -1,0 +1,32 @@
+.TH PGAGetTournamentSize 3 "2020-03-16" " " "PGAPack"
+.SH NAME
+PGAGetTournamentSize \- returns the number of participants in a
+tournament.
+.SH INPUT PARAMETERS
+.PD 0
+.TP
+ctx
+- context variable
+.PD 1
+.SH OUTPUT PARAMETERS
+.PD 0
+.TP
+none
+
+.PD 1
+.SH SYNOPSIS
+.nf
+#include "pgapack.h"
+int PGAGetTournamentSize(PGAContext *ctx)
+.fi
+.SH LOCATION
+select.c
+.SH EXAMPLE
+.nf
+Example:
+PGAContext *ctx;
+int size;
+:
+size = PGAGetTournamentSize(ctx);
+
+.fi

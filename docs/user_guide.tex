@@ -1266,13 +1266,17 @@ Other options are
 
 The selection phase allocates reproductive trials to strings on the basis of
 their fitness.  \pga\ supports four selection schemes: proportional selection,
-stochastic universal selection, binary tournament selection, and probabilistic
+stochastic universal selection, tournament selection (default is binary
+tournament selection), and probabilistic
 binary tournament selection.  The choice may be specified by setting the
 second argument of {\tt PGASetSelectType} to one of {\tt
 PGA\_SELECT\_PROPORTIONAL}, {\tt PGA\_SELECT\_SUS}, {\tt
 PGA\_SELECT\_TOURNAMENT}, and {\tt PGA\_SELECT\_PTOURNAMENT} for proportional,
 stochastic universal, tournament, and probabilistic tournament selection,
-respectively.  The default is tournament selection.  For probabilistic
+respectively.  The default is tournament selection. For tournament
+selection, the size of the tournament (number of participants) can be
+set e.g., with \verb+PGASetTournamentSize(ctx, 3)+ the default is binary
+tournament (size = 2).  For probabilistic
 tournament selection, the default probability that the string that wins the
 tournament is selected is 0.6.  It may be set to 0.8, for example, with {\tt
 PGASetPTournamentProb(ctx, 0.8)}.

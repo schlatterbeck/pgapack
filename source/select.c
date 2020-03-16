@@ -303,6 +303,66 @@ double PGAGetPTournamentProb(PGAContext *ctx)
      return ctx->ga.PTournamentProb;
 }
 
+/*U****************************************************************************
+   PGASetTournamentSize - Specifies the number of participants in a
+   non-probabilistic Tournament
+   This function will have no effect unless PGA_SELECT_TOURNAMENT was
+   specified as the type of selection to use with PGASetSelectType.  The
+   default value is 2.
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      sz  - the size of the tournament
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetTournamentSize(ctx,3);
+
+****************************************************************************U*/
+void PGASetTournamentSize(PGAContext *ctx, int tournament_size)
+{
+    PGADebugEntered("PGASetTournamentSize");
+
+    ctx->ga.TournamentSize = tournament_size;
+
+    PGADebugExited("PGASetTournamentSize");
+}
+
+/*U***************************************************************************
+   PGAGetTournamentSize - returns the number of participants in a
+   tournament
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The number of participants in a non probabilistic tournament
+
+   Example:
+      PGAContext *ctx;
+      int sz;
+      :
+      sz = PGAGetTournamentSize(ctx);
+
+***************************************************************************U*/
+int PGAGetTournamentSize(PGAContext *ctx)
+{
+    PGADebugEntered("PGAGetTournamentSize");
+    PGAFailIfNotSetUp("PGAGetTournamentSize");
+
+    PGADebugExited("PGAGetTournamentSize");
+
+     return ctx->ga.TournamentSize;
+}
+
 
 /*I****************************************************************************
   PGASelectProportional - selects a parent for the next generation using a
@@ -399,9 +459,14 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop )
 
 
 /*I****************************************************************************
-  PGASelectTournament - chooses two strings randomly and returns the one with
-  higher fitness
-  Ref:    D. Goldberg, Genetic Algorithms, pg. 121
+  PGASelectTournament - chooses N strings randomly and returns the one with
+  highest fitness, N is the value set with PGASetTournamentSize, the
+  default is 2.
+  Ref:    Generalization of D. Goldberg, Genetic Algorithms, pg. 121
+          For the generalization see, e.g., D. E. Goldberg and K. Deb
+          A Comparative Analysis of Selection Schemes Used in Genetic
+          Algorithms, in Gregory J. E. Rawlins (Ed.) Foundation of
+          Genetic Algorithms (FOGA) 1, pp. 69-93, 1991.
 
   Inputs:
     ctx   - context variable
@@ -419,16 +484,26 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop )
 ****************************************************************************I*/
 int PGASelectTournament( PGAContext *ctx, PGAIndividual *pop )
 {
-    int m1, m2;
+    int m;
+    double maxfit;
+    int i;
 
     PGADebugEntered("PGASelectTournament");
 
-    m1 = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
-    m2 = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
+    m = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
+    maxfit = (pop+m)->fitness;
+    for (i=1; i<ctx->ga.TournamentSize; i++) {
+        int mn = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
+        double fit = (pop+mn)->fitness;
+        if (fit > maxfit) {
+            m = mn;
+            maxfit = fit;
+        }
+    }
 
     PGADebugExited("PGASelectTournament");
 
-    return( ((pop+m1)->fitness > (pop+m2)->fitness) ? m1 : m2);
+    return m;
 }
 
 /*I****************************************************************************
