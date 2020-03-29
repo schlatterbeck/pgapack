@@ -216,6 +216,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->ga.CrossoverType      = PGA_UNINITIALIZED_INT;
     ctx->ga.SelectType         = PGA_UNINITIALIZED_INT;
     ctx->ga.TournamentSize     = PGA_UNINITIALIZED_INT;
+    ctx->ga.RTRWindowSize      = PGA_UNINITIALIZED_INT;
     ctx->ga.FitnessType        = PGA_UNINITIALIZED_INT;
     ctx->ga.FitnessMinType     = PGA_UNINITIALIZED_INT;
     ctx->ga.MutationType       = PGA_UNINITIALIZED_INT;
@@ -249,8 +250,9 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->cops.Duplicate         = NULL;
     ctx->cops.InitString        = NULL;
     ctx->cops.BuildDatatype     = NULL;
-    ctx->cops.StopCond           = NULL;
+    ctx->cops.StopCond          = NULL;
     ctx->cops.EndOfGen          = NULL;
+    ctx->cops.GeneDistance      = NULL;
 
     ctx->fops.Mutation          = NULL;
     ctx->fops.Crossover         = NULL;
@@ -260,6 +262,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->fops.InitString        = NULL;
     ctx->fops.StopCond          = NULL;
     ctx->fops.EndOfGen          = NULL;
+    ctx->fops.GeneDistance      = NULL;
 
     /* Parallel */
     ctx->par.NumIslands        = PGA_UNINITIALIZED_INT;
@@ -386,13 +389,14 @@ void PGASetUp ( PGAContext *ctx )
      *  They allow some (understatement of the yesr!!) cleaning of the
      *  code below.
      */
-    void  (*CreateString)(PGAContext *, int, int, int) = NULL;
-    int   (*Mutation)(PGAContext *, int, int, double) = NULL;
-    void  (*Crossover)(PGAContext *, int, int, int, int, int, int) = NULL;
-    void  (*PrintString)(PGAContext *, FILE *, int, int) = NULL;
-    void  (*CopyString)(PGAContext *, int, int, int, int) = NULL;
-    int   (*Duplicate)(PGAContext *, int, int, int, int) = NULL;
-    void  (*InitString)(PGAContext *, int, int) = NULL;
+    void   (*CreateString)(PGAContext *, int, int, int) = NULL;
+    int    (*Mutation)(PGAContext *, int, int, double) = NULL;
+    void   (*Crossover)(PGAContext *, int, int, int, int, int, int) = NULL;
+    void   (*PrintString)(PGAContext *, FILE *, int, int) = NULL;
+    void   (*CopyString)(PGAContext *, int, int, int, int) = NULL;
+    int    (*Duplicate)(PGAContext *, int, int, int, int) = NULL;
+    void   (*InitString)(PGAContext *, int, int) = NULL;
+    double (*GeneDist)(PGAContext *, int, int, int, int) = NULL;
     MPI_Datatype (*BuildDatatype)(PGAContext *, int, int) = NULL;
     int err=0, i;
 
@@ -451,6 +455,17 @@ void PGASetUp ( PGAContext *ctx )
 
     if ( ctx->ga.TournamentSize    == PGA_UNINITIALIZED_INT)
          ctx->ga.TournamentSize     = 2;
+
+    if ( ctx->ga.RTRWindowSize     == PGA_UNINITIALIZED_INT) {
+        int v = ctx->ga.PopSize / 20;
+        if (ctx->ga.StringLen < ctx->ga.PopSize / 20) {
+            v = ctx->ga.StringLen;
+        }
+        if (v < 1) {
+            v = 1;
+        }
+        ctx->ga.RTRWindowSize = v;
+    }
 
     if ( ctx->ga.FitnessType       == PGA_UNINITIALIZED_INT)
          ctx->ga.FitnessType        = PGA_FITNESS_RAW;
@@ -582,7 +597,8 @@ void PGASetUp ( PGAContext *ctx )
 	CopyString     = PGABinaryCopyString;
 	Duplicate      = PGABinaryDuplicate;
 	InitString     = PGABinaryInitString;
-        break;
+	GeneDist       = PGABinaryGeneDistance;
+	break;
       case PGA_DATATYPE_INTEGER:
         CreateString   = PGAIntegerCreateString;
         BuildDatatype  = PGAIntegerBuildDatatype;
@@ -602,7 +618,8 @@ void PGASetUp ( PGAContext *ctx )
 	CopyString     = PGAIntegerCopyString;
 	Duplicate      = PGAIntegerDuplicate;
 	InitString     = PGAIntegerInitString;
-        break;
+	GeneDist       = PGAIntegerGeneDistance;
+	break;
       case PGA_DATATYPE_REAL:
 	CreateString   = PGARealCreateString;
 	BuildDatatype  = PGARealBuildDatatype;
@@ -622,7 +639,8 @@ void PGASetUp ( PGAContext *ctx )
 	CopyString     = PGARealCopyString;
 	Duplicate      = PGARealDuplicate;
 	InitString     = PGARealInitString;
-        break;
+	GeneDist       = PGARealGeneDistance;
+	break;
       case PGA_DATATYPE_CHARACTER:
 	CreateString   = PGACharacterCreateString;
 	BuildDatatype  = PGACharacterBuildDatatype;
@@ -642,7 +660,8 @@ void PGASetUp ( PGAContext *ctx )
 	CopyString     = PGACharacterCopyString;
 	Duplicate      = PGACharacterDuplicate;
 	InitString     = PGACharacterInitString;
-        break;
+	GeneDist       = PGACharacterGeneDistance;
+	break;
       case PGA_DATATYPE_USER:
         if (ctx->cops.CreateString == NULL)
             PGAError( ctx,
@@ -672,6 +691,12 @@ void PGASetUp ( PGAContext *ctx )
              PGAError(ctx,
                       "PGASetUp: User datatype needs BuildDatatype "
                       "function:", PGA_FATAL, PGA_INT, (void *) &err );
+        if (  ctx->cops.GeneDistance == NULL
+           && ctx->ga.PopReplace == PGA_POPREPL_BEST
+           )
+             PGAError(ctx,
+                      "PGASetUp: User datatype needs GeneDistance "
+                      "function:", PGA_FATAL, PGA_INT, (void *) &err );
         break;
     }
     if ((ctx->cops.Mutation     == NULL) && (ctx->fops.Mutation    == NULL))
@@ -684,6 +709,8 @@ void PGASetUp ( PGAContext *ctx )
 	ctx->cops.Duplicate     = Duplicate;
     if ((ctx->cops.InitString   == NULL) && (ctx->fops.InitString  == NULL))
 	ctx->cops.InitString    = InitString;
+    if ((ctx->cops.GeneDistance == NULL) && (ctx->fops.GeneDistance == NULL))
+	ctx->cops.GeneDistance  = GeneDist;
     if (ctx->cops.CreateString  == NULL) 
 	ctx->cops.CreateString  = CreateString;
     if (ctx->cops.CopyString    == NULL)

@@ -39,8 +39,11 @@
 
 \ANLTitle{Users Guide to the PGAPack Parallel \\Genetic Algorithm
 Library}
-{\em David Levine\vspace{.1in}
-\\Mathematics and Computer Science Division}{-95/18}{January 31, 1996}
+{\em David Levine\\[.1in]
+Mathematics and Computer Science Division\\[.1in]
+and contributors
+}{-95/18}{January 31, 1996}
+
 
 
 \date{\today}
@@ -1105,6 +1108,17 @@ entire population each generation and is the traditional genetic algorithm
 typically replaces only a few strings each generation and is a more recent
 development
 \cite{Sy89,Wh89,WhKa88}.
+A third scheme, originally called \textit{restricted tournament
+selection} by Harik \cite{Har94,Har95} and later adopted under the name of
+\textit{restricted tournament replacement} by Pelikan \cite{Pel05}
+replaces offspring candidates into the original population by selecting
+a number of members from the original population and selecting the
+member most similar to the candidate. The similarity metric is
+implemented by a genetic difference function, see
+section~\ref{gendiff}, p.~\pageref{gendiff}.
+The candidate is then compared to the most similar member and only if
+the new solution candidate is better than the member it replaces it.
+This approach is repeated for each new solution.
 \pga\ supports both GRGA and SSGA and variants in between via {\em
 parameterized} population replacement.  For example, the {\tt PGASet} calls
 \begin{verbatim}
@@ -1117,7 +1131,20 @@ strings created via recombination, and the 190 most fit strings from the old
 population.  The 190 strings can also be selected
 randomly, with or without replacement, by setting the second argument of {\tt
 PGASetPopReplaceType} to {\tt PGA\_POPREPL\_RANDOM\_REP} or {\tt
-PGA\_POPREPL\_RANDOM\_NOREP}, respectively.
+PGA\_POPREPL\_RANDOM\_NOREP}, respectively. For selecting restricted
+tournament replacement \verb+PGA_POPREPL_RTR+ is used. The default for
+the window size (number of members of the old population that are chosen
+for comparison with a new candidate) is \hbox{min $(n, N/20)$} where $n$
+is the string length and $N$ is the population size \cite{Pel05}.
+The window size can be set or queried
+with \verb+PGASetRTRWindowSize+ and \verb+PGAGetRTRWindowSize+,
+respectively. Note that when restricted tournament replacement is in
+use, the maximum number of new candidates is limited with the number set
+with \verb+PGASetNumReplaceValue+ but fewer -- depending on fitness --
+may be replaced into the new population. Note that it depends on the
+selection which individuals in the old population are replaced. Since
+restricted tournament replacement is an elitist strategy the overall
+fitness never dimishes with this replacement strategy.
 
 By default, the number of new strings created each generation is 10 percent
 of the population size (an SSGA population replacement strategy).  A GRGA can
@@ -2155,13 +2182,15 @@ Fortran.
 \begin{tabular}{|l|l|} \hline\hline
 \multicolumn{1}{|c|}{Functionality} &
 \multicolumn{1}{c|}{Symbolic Constant} \\ \hline
-Initialization & {\tt PGA\_USERFUNCTION\_INITSTRING} \\
-Crossover & {\tt PGA\_USERFUNCTION\_CROSSOVER} \\
-Mutation & {\tt PGA\_USERFUNCTION\_MUTATION} \\
-Duplicate Checking & {\tt PGA\_USERFUNCTION\_DUPLICATE} \\
-String Printing & {\tt PGA\_USERFUNCTION\_PRINTSTRING} \\
-Termination Criteria & {\tt PGA\_USERFUNCTION\_STOPCOND} \\
-End of generation & {\tt PGA\_USERFUNCTION\_ENDOFGEN} \\ \hline
+Initialization       & \verb+PGA_USERFUNCTION_INITSTRING+ \\
+Crossover            & \verb+PGA_USERFUNCTION_CROSSOVER+ \\
+Mutation             & \verb+PGA_USERFUNCTION_MUTATION+ \\
+Duplicate Checking   & \verb+PGA_USERFUNCTION_DUPLICATE+ \\
+String Printing      & \verb+PGA_USERFUNCTION_PRINTSTRING+ \\
+Termination Criteria & \verb+PGA_USERFUNCTION_STOPCOND+ \\
+End of generation    & \verb+PGA_USERFUNCTION_ENDOFGEN+ \\
+Genetic difference   & \verb+PGA_USERFUNCTION_GEN_DIFFERENCE+ \\
+\hline
 \end{tabular}
 \end{table}
 
@@ -2204,6 +2233,15 @@ switched and the standard \pga\ output printed.  Therefore, be sure to use
 {\tt PGA\_NEWPOP} as the population pointer.  There is no mechanism for
 suppressing the standard \pga\ generational output.
 
+The genetic difference funtion\label{gendiff} computes the genetic
+difference of two individuals. It is only used when restricted
+tournament selection is in use. There are implementations for the
+standard data types: For binary alleles it uses the hamming distance.
+For real- and integer valued genes it uses an allele-by-allele absolute
+value of the difference. For character alleles it counts the number of
+differences. When using user-defined data types together with restricted
+tournament selection, an implementation has to be provided.
+
 
 \begin{table}
 \centering
@@ -2215,13 +2253,22 @@ Calling Sequences for Customizable Functions\label{tab:custom-functions}
 \multicolumn{1}{|c|}{Symbolic Constant} &
 \multicolumn{1}{|c|}{Return} &
 \multicolumn{1}{c|}{Function Prototype} \\ \hline
-{\tt PGA\_USERFUNCTION\_INITSTRING}&{\tt void}&{\tt (PGAContext*, int, int)}\\
-{\tt PGA\_USERFUNCTION\_CROSSOVER}&{\tt void}&{\tt (PGAContext*, int, int, int, int, int, int)}\\
-{\tt PGA\_USERFUNCTION\_MUTATION}&{\tt int}&{\tt (PGAContext*, int, int, double)}\\
-{\tt PGA\_USERFUNCTION\_DUPLICATE}&{\tt int}&{\tt (PGAContext*, int, int, int, int)}\\
-{\tt PGA\_USERFUNCTION\_PRINTSTRING}&{\tt void}&{\tt (PGAContext*, FILE *, int, int)}\\
-{\tt PGA\_USERFUNCTION\_STOPCOND}&{\tt int}&{\tt (PGAContext*)}\\
-{\tt PGA\_USERFUNCTION\_ENDOFGEN}&{\tt void}&{\tt (PGAContext*)}\\
+\verb+PGA_USERFUNCTION_INITSTRING+     &\verb+void+   &
+    \verb+(PGAContext*, int, int)+ \\
+\verb+PGA_USERFUNCTION_CROSSOVER+      &\verb+void+   &
+    \verb+(PGAContext*, int, int, int, int, int, int)+ \\
+\verb+PGA_USERFUNCTION_MUTATION+       &\verb+int+    &
+    \verb+(PGAContext*, int, int, double)+ \\
+\verb+PGA_USERFUNCTION_DUPLICATE+      &\verb+int+    &
+    \verb+(PGAContext*, int, int, int, int)+ \\
+\verb+PGA_USERFUNCTION_PRINTSTRING+    &\verb+void+   &
+    \verb+(PGAContext*, FILE *, int, int)+ \\
+\verb+PGA_USERFUNCTION_STOPCOND+       &\verb+int+    &
+    \verb+(PGAContext*)+ \\
+\verb+PGA_USERFUNCTION_ENDOFGEN+       &\verb+void+   &
+    \verb+(PGAContext*)+ \\
+\verb+PGA_USERFUNCTION_GEN_DIFFERENCE+ &\verb+double+ &
+    \verb+(PGAContext*, int, int, int, int)+ \\
 \hline
 \end{tabular}
 \end{table}
@@ -3511,16 +3558,17 @@ Fortran and C.
 
 \item User Functions
 \begin{itemize}
-\item {\tt PGA\_USERFUNCTION\_CREATESTRING}
-\item {\tt PGA\_USERFUNCTION\_MUTATION}
-\item {\tt PGA\_USERFUNCTION\_CROSSOVER}
-\item {\tt PGA\_USERFUNCTION\_PRINTSTRING}
-\item {\tt PGA\_USERFUNCTION\_COPYSTRING}
-\item {\tt PGA\_USERFUNCTION\_DUPLICATE}
-\item {\tt PGA\_USERFUNCTION\_INITSTRING}
-\item {\tt PGA\_USERFUNCTION\_BUILDDATATYPE}
-\item {\tt PGA\_USERFUNCTION\_STOPCOND}
-\item {\tt PGA\_USERFUNCTION\_ENDOFGEN}
+\item \verb+PGA_USERFUNCTION_CREATESTRING+
+\item \verb+PGA_USERFUNCTION_MUTATION+
+\item \verb+PGA_USERFUNCTION_CROSSOVER+
+\item \verb+PGA_USERFUNCTION_PRINTSTRING+
+\item \verb+PGA_USERFUNCTION_COPYSTRING+
+\item \verb+PGA_USERFUNCTION_DUPLICATE+
+\item \verb+PGA_USERFUNCTION_INITSTRING+
+\item \verb+PGA_USERFUNCTION_BUILDDATATYPE+
+\item \verb+PGA_USERFUNCTION_STOPCOND+
+\item \verb+PGA_USERFUNCTION_ENDOFGEN+
+\item \verb+PGA_USERFUNCTION_GEN_DIFFERENCE+
 \end{itemize}
 
 \end{itemize}

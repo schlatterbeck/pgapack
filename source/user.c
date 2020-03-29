@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -57,6 +57,7 @@ privately owned rights.
        PGA_USERFUNCTION_PRINTSTRING      -- String Output
        PGA_USERFUNCTION_COPYSTRING       -- Duplication
        PGA_USERFUNCTION_DUPLICATE        -- Duplicate Checking
+       PGA_USERFUNCTION_GEN_DIFFERENCE   -- Genetic Difference
        PGA_USERFUNCTION_INITSTRING       -- Initialization
        PGA_USERFUNCTION_BUILDDATATYPE    -- MPI Datatype creation
        PGA_USERFUNCTION_STOPCOND         -- Stopping conditions
@@ -95,7 +96,7 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 
     switch (constant) {
       case PGA_USERFUNCTION_CREATESTRING:
-	if (ctx->sys.UserFortran) 
+	if (ctx->sys.UserFortran)
 	    PGAError(ctx, "PGASetUserFunction: Cannot call "
 		     "PGA_USERFUNCTION_CREATESTRING from Fortran.",
 		     PGA_FATAL, PGA_VOID, NULL);
@@ -103,25 +104,25 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 	    ctx->cops.CreateString = (void(*)(PGAContext *, int, int, int))f;
 	break;
       case PGA_USERFUNCTION_MUTATION:
-	if (ctx->sys.UserFortran) 
+	if (ctx->sys.UserFortran)
 	    ctx->fops.Mutation = (int(*)(void *, void *, void *, void *))f;
 	else
 	    ctx->cops.Mutation = (int(*)(PGAContext *, int, int, double))f;
 	break;
       case PGA_USERFUNCTION_CROSSOVER:
-	if (ctx->sys.UserFortran) 
+	if (ctx->sys.UserFortran)
 	    ctx->fops.Crossover = (void(*)(void *, void *, void *, void *, void *, void *, void *))f;
 	else
 	    ctx->cops.Crossover =  (void(*)(PGAContext *, int, int, int, int, int, int))f;
 	break;
       case PGA_USERFUNCTION_PRINTSTRING:
-	if (ctx->sys.UserFortran) 
+	if (ctx->sys.UserFortran)
 	    ctx->fops.PrintString = (void(*)(void *, void *, void *, void *))f;
 	else
 	    ctx->cops.PrintString =  (void(*)(PGAContext *, FILE *, int, int))f;
 	break;
       case PGA_USERFUNCTION_COPYSTRING:
-	if (ctx->sys.UserFortran) 
+	if (ctx->sys.UserFortran)
 	    PGAError(ctx, "PGASetUserFunction: Cannot call "
 		     "PGA_USERFUNCTION_COPYSTRING from Fortran.",
 		     PGA_FATAL, PGA_VOID, NULL);
@@ -129,19 +130,19 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 	    ctx->cops.CopyString = (void(*)(PGAContext *, int, int, int, int))f;
 	break;
       case PGA_USERFUNCTION_DUPLICATE:
-	if (ctx->sys.UserFortran) 
+	if (ctx->sys.UserFortran)
 	    ctx->fops.Duplicate = (int(*)(void *, void *, void *, void *, void *))f;
 	else
 	    ctx->cops.Duplicate = (int(*)(PGAContext *, int, int, int, int))f;
 	break;
       case PGA_USERFUNCTION_INITSTRING:
-	if (ctx->sys.UserFortran) 
+	if (ctx->sys.UserFortran)
 	    ctx->fops.InitString = (void(*)(void *, void *, void *))f;
 	else
 	    ctx->cops.InitString = (void(*)(PGAContext *, int, int))f;
 	break;
       case PGA_USERFUNCTION_BUILDDATATYPE:
-	if (ctx->sys.UserFortran) 
+	if (ctx->sys.UserFortran)
 	    PGAError(ctx, "PGASetUserFunction: Cannot call "
 		     "PGA_USERFUNCTION_BUILDDATATYPE from Fortran.",
 		     PGA_FATAL, PGA_VOID, NULL);
@@ -149,16 +150,22 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 	    ctx->cops.BuildDatatype = (MPI_Datatype(*)(PGAContext *, int, int))f;
 	break;
       case PGA_USERFUNCTION_STOPCOND:
-	if (ctx->sys.UserFortran) 
+	if (ctx->sys.UserFortran)
 	    ctx->fops.StopCond = (int(*)(void *))f;
 	else
 	    ctx->cops.StopCond = (int(*)(PGAContext *))f;
 	break;
       case PGA_USERFUNCTION_ENDOFGEN:
-	if (ctx->sys.UserFortran) 
+	if (ctx->sys.UserFortran)
 	    ctx->fops.EndOfGen = (void(*)(void *))f;
 	else
 	    ctx->cops.EndOfGen = (void(*)(PGAContext *))f;
+	break;
+      case PGA_USERFUNCTION_GEN_DIFFERENCE:
+	if (ctx->sys.UserFortran)
+	    ctx->fops.GeneDistance = (double(*)(void *, void *, void *, void *, void *))f;
+	else
+	    ctx->cops.GeneDistance = (double(*)(PGAContext *, int, int, int, int))f;
 	break;
       default:
 	PGAError(ctx, "PGASetUserFunction: Invalid constant:",

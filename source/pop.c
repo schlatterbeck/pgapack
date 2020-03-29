@@ -251,6 +251,70 @@ int PGAGetPopReplaceType (PGAContext *ctx)
     return(ctx->ga.PopReplace);
 }
 
+/*U****************************************************************************
+   PGASetRTRWindowSize - Set window size used for restricted tournament
+   selection. The window size must be smaller than the population size.
+   The default is min (n, N/20) where n is the string length and N is
+   the population size.
+
+   Category: Generation
+
+   Inputs:
+      ctx         - context variable
+      windowsize  - size of the window for restricted tournament
+                    selection
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetRTRWindowSize(ctx, windowsize);
+
+****************************************************************************U*/
+void PGASetRTRWindowSize( PGAContext *ctx, int windowsize)
+{
+    PGADebugEntered("PGASetRTRWindowSize");
+
+    if (windowsize > ctx->ga.PopSize) {
+        PGAError ( ctx,
+                  "PGASetRTRWindowSize: Invalid value of windowsize:",
+                   PGA_FATAL, PGA_INT, (void *) &windowsize);
+    }
+
+    ctx->ga.RTRWindowSize = windowsize;
+
+    PGADebugExited("PGASetRTRWindowSize");
+}
+
+/*U***************************************************************************
+   PGAGetRTRWindowSize - Returns the window size for restricted
+   tournamen replacement.
+
+   Category: Generation
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The size of the window for restricted tournament selection
+
+   Example:
+      PGAContext *ctx;
+      int windowsize;
+      :
+      windowsize = PGAGetRTRWindowSize(ctx);
+
+***************************************************************************U*/
+int PGAGetRTRWindowSize (PGAContext *ctx)
+{
+    PGADebugEntered("PGAGetRTRWindowSize");
+
+    PGADebugExited("PGAGetRTRWindowSize");
+
+    return(ctx->ga.RTRWindowSize);
+}
 
 /*U****************************************************************************
    PGAGetSortedPopIndex - returns a population string index from the array
@@ -401,6 +465,7 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
     case PGA_POPREPL_BEST:
     case PGA_POPREPL_RANDOM_NOREP:
     case PGA_POPREPL_RANDOM_REP:
+    case PGA_POPREPL_RTR:
         ctx->ga.PopReplace = pop_replace;
         break;
     default:
@@ -411,4 +476,73 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
     }
 
     PGADebugExited("PGASetPopReplaceType");
+}
+
+/*U****************************************************************************
+   PGARestrictedTournamentReplacement - Perform restricted tournament
+   replacement: for each individual in PGA_NEWPOP we select a window of
+   individuals from PGA_OLDPOP, find the one genetically most like the
+   new candidate and replace the individual if the new candidate has
+   higher fitness.
+   After this populations are swapped (echange of PGA_NEWPOP and
+   PGA_OLDPOP) for further processing.
+
+   Category: Generation
+
+   Inputs:
+      ctx         - context variable
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGARestrictedTournamentReplacement(ctx);
+
+****************************************************************************U*/
+void PGARestrictedTournamentReplacement (PGAContext *ctx)
+{
+    int i, j;
+    int popsize = PGAGetPopSize(ctx);
+    int numreplace = PGAGetNumReplaceValue(ctx);
+    PGASampleState state;
+    PGAIndividual *temp;
+    int oldpop = PGA_OLDPOP;
+    int newpop = PGA_NEWPOP;
+
+    PGADebugEntered("PGARestrictedTournamentReplacement");
+    for (i=popsize - numreplace; i<popsize; i++) {
+        double dist = -1.0;
+        int closest = 0;
+        PGARandomSampleInit
+            (ctx, &state, ctx->ga.RTRWindowSize, ctx->ga.PopSize);
+        for (j=0; j<ctx->ga.RTRWindowSize; j++) {
+            double d;
+            int idx = PGARandomNextSample (&state);
+            if (ctx->fops.GeneDistance) {
+                d = (*ctx->fops.GeneDistance)
+                    (&ctx, &idx, &oldpop, &i, &newpop);
+            } else {
+                d = (*ctx->cops.GeneDistance)
+                    (ctx, idx, PGA_OLDPOP, i, PGA_NEWPOP);
+            }
+            if (dist < 0 || d < dist) {
+                dist = d;
+                closest = idx;
+            }
+        }
+        if (ctx->ga.newpop[i].fitness > ctx->ga.oldpop[closest].fitness) {
+            /* Copy i in PGA_NEWPOP to closest in PGA_OLDPOP */
+            PGACopyIndividual (ctx, i, PGA_NEWPOP, closest, PGA_OLDPOP);
+        }
+    }
+    /* Exchange old/newpop, will be done again by PGAUpdateGeneration,
+     * we just make sure that the result of above replacements is now
+     * newpop.
+     */
+    temp           = ctx->ga.oldpop;
+    ctx->ga.oldpop = ctx->ga.newpop;
+    ctx->ga.newpop = temp;
+    PGADebugExited("PGARestrictedTournamentReplacement");
 }

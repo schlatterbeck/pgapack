@@ -11,7 +11,7 @@
 #include <time.h>
 #include <limits.h>
 #include <float.h>
-#include <string.h> 
+#include <string.h>
 #include <ctype.h>
 #include <mpi.h>
 
@@ -84,7 +84,7 @@ extern "C" {
 #define PGA_DATATYPE_REAL        3    /* Array of doubles    : real.c      */
 #define PGA_DATATYPE_CHARACTER   4    /* Array of characters : character.c */
 #define PGA_DATATYPE_USER        5    /*  --user defined--                 */
-    
+
 #define PGABinary                unsigned long
 #define PGAInteger               signed long int
 #define PGAReal                  double
@@ -95,7 +95,7 @@ extern "C" {
 #define PGA_CHAR                  3
 #define PGA_VOID                  4
 
-    
+
 /*****************************************
 *              BOOLEANS                  *
 *****************************************/
@@ -137,7 +137,7 @@ extern "C" {
 *****************************************/
 #define PGA_MAXIMIZE            1    /* specify direction for fitness calc  */
 #define PGA_MINIMIZE            2    /* specify direction for fitness calc  */
-    
+
 /*****************************************
 *         STOPPING CRITERIA              *
 *****************************************/
@@ -181,13 +181,14 @@ extern "C" {
 #define PGA_MUTATION_UNIFORM    3    /* Real: +- Uniform random no.         */
 #define PGA_MUTATION_GAUSSIAN   4    /* Real: +- Gaussian random no.        */
 #define PGA_MUTATION_PERMUTE    5    /* Integer: Permutation (swap)         */
-    
+
 /*****************************************
 *        POPULATION REPLACEMENT          *
 *****************************************/
 #define PGA_POPREPL_BEST         1   /* Select best   string                */
 #define PGA_POPREPL_RANDOM_NOREP 2   /* Select random string w/o replacement*/
 #define PGA_POPREPL_RANDOM_REP   3   /* Select random string w/  replacement*/
+#define PGA_POPREPL_RTR          4   /* Restricted tournament replacement   */
 
 /****************************************
  *       REPORT OPTIONS                 *
@@ -223,7 +224,8 @@ extern "C" {
 #define PGA_USERFUNCTION_BUILDDATATYPE           8
 #define PGA_USERFUNCTION_STOPCOND                9
 #define PGA_USERFUNCTION_ENDOFGEN                10
-#define PGA_NUM_USERFUNCTIONS                    10
+#define PGA_USERFUNCTION_GEN_DIFFERENCE          11
+#define PGA_NUM_USERFUNCTIONS                    11
 
 /*****************************************
 *           MPI SEND/RECV TAGS           *
@@ -278,6 +280,7 @@ typedef struct {
     int MutateIntegerValue;  /* Multiplier to mutate Integer strings with */
     int MutateBoundedFlag;   /* Confine integer alleles to given range    */
     int TournamentSize;      /* Number of participants in tournament      */
+    int RTRWindowSize;       /* Window for restricted tournament select   */
     double MutateRealValue;  /* Multiplier to mutate Real strings with    */
     double MutationProb;     /* Starting mutation probability             */
     double CrossoverProb;    /* Crossover probability                     */
@@ -311,6 +314,7 @@ typedef struct {
     MPI_Datatype (*BuildDatatype)(PGAContext *, int, int);
     int          (*StopCond)(PGAContext *);
     void         (*EndOfGen)(PGAContext *);
+    double       (*GeneDistance)(PGAContext *, int, int, int, int);
 } PGACOperations;
 
 typedef struct {
@@ -322,7 +326,16 @@ typedef struct {
     void         (*InitString)(void *, void *, void *);
     int          (*StopCond)(void *);
     void         (*EndOfGen)(void *);
+    double       (*GeneDistance)(void *, void *, void *, void *, void *);
 } PGAFortranOperations;
+
+typedef struct sample_state_s {
+    int         n;
+    int         k;
+    int         idx;
+    PGAContext *ctx;
+} PGASampleState;
+
 
 /*****************************************
 *          PARALLEL STRUCTURE            *
@@ -431,6 +444,8 @@ void PGABinaryInitString(PGAContext *ctx, int p, int pop);
 MPI_Datatype PGABinaryBuildDatatype(PGAContext *ctx, int p, int pop);
 int PGABinaryHammingDistance ( PGAContext *ctx, PGABinary *s1, PGABinary *s2 );
 void PGABinaryPrint( PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb );
+double PGABinaryGeneDistance (PGAContext *ctx, int p1, int pop1, int p2,
+                              int pop2);
 
 /*****************************************
 *          char.c
@@ -453,6 +468,8 @@ void PGACharacterCopyString (PGAContext *ctx, int p1, int pop1, int p2,
 int PGACharacterDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 void PGACharacterInitString(PGAContext *ctx, int p, int pop);
 MPI_Datatype PGACharacterBuildDatatype(PGAContext *ctx, int p, int pop);
+double PGACharacterGeneDistance (PGAContext *ctx, int p1, int pop1, int p2,
+                                 int pop2);
 
 /*****************************************
 *          cmdline.c
@@ -621,6 +638,8 @@ void PGAIntegerCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 int PGAIntegerDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 void PGAIntegerInitString(PGAContext *ctx, int p, int pop);
 MPI_Datatype PGAIntegerBuildDatatype(PGAContext *ctx, int p, int pop);
+double PGAIntegerGeneDistance (PGAContext *ctx, int p1, int pop1, int p2,
+                               int pop2);
 
 /*****************************************
 *          mpi_stub.c
@@ -698,6 +717,7 @@ void PGASetMutationOrCrossoverFlag( PGAContext *ctx, int flag);
 void PGASetMutationAndCrossoverFlag( PGAContext *ctx, int flag);
 int PGAGetMutationOrCrossoverFlag (PGAContext *ctx);
 int PGAGetMutationAndCrossoverFlag (PGAContext *ctx);
+void PGARestrictedTournamentReplacement (PGAContext *ctx);
 
 /*****************************************
 *          pop.c
@@ -707,10 +727,12 @@ void PGASortPop ( PGAContext *ctx, int pop );
 int PGAGetPopSize (PGAContext *ctx);
 int PGAGetNumReplaceValue (PGAContext *ctx);
 int PGAGetPopReplaceType (PGAContext *ctx);
+int PGAGetRTRWindowSize (PGAContext *ctx);
 int PGAGetSortedPopIndex ( PGAContext *ctx, int n );
 void PGASetPopSize (PGAContext *ctx, int popsize);
 void PGASetNumReplaceValue( PGAContext *ctx, int pop_replace);
 void PGASetPopReplaceType( PGAContext *ctx, int pop_replace);
+void PGASetRTRWindowSize (PGAContext *ctx, int window);
 
 /*****************************************
 *          random.c
@@ -723,6 +745,8 @@ double PGARandomUniform( PGAContext *ctx, double start, double end);
 double PGARandomGaussian( PGAContext *ctx, double mean, double sigma);
 int PGAGetRandomSeed(PGAContext *ctx);
 void PGASetRandomSeed(PGAContext *ctx, int seed);
+void PGARandomSampleInit(PGAContext *ctx, PGASampleState *state, int k, int n);
+int PGARandomNextSample(PGASampleState *state);
 
 /*****************************************
 *          real.c
@@ -748,6 +772,8 @@ void PGARealCopyString ( PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 int PGARealDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 void PGARealInitString ( PGAContext *ctx, int p, int pop);
 MPI_Datatype PGARealBuildDatatype(PGAContext *ctx, int p, int pop);
+double PGARealGeneDistance (PGAContext *ctx, int p1, int pop1, int p2,
+                            int pop2);
 
 /*****************************************
 *          report.c

@@ -178,11 +178,14 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
     popsize = PGAGetPopSize(ctx);
     numreplace = PGAGetNumReplaceValue(ctx);
     /*** first, copy n best strings (sorted by fitness) to new pop ***/
-    PGASortPop( ctx, oldpop );
+    /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     n = popsize - numreplace;
-    for ( i=0; i < n; i++ ) {
-        j = PGAGetSortedPopIndex( ctx, i );
-        PGACopyIndividual ( ctx, j, oldpop, i, newpop );
+    if (ctx->ga.PopReplace != PGA_POPREPL_RTR) {
+        PGASortPop( ctx, oldpop );
+        for ( i=0; i < n; i++ ) {
+            j = PGAGetSortedPopIndex( ctx, i );
+            PGACopyIndividual ( ctx, j, oldpop, i, newpop );
+        }
     }
     pc = PGAGetCrossoverProb(ctx);
     /*** reproduce to create the rest of the new population ***/
@@ -254,11 +257,14 @@ void PGARunMutationOrCrossover ( PGAContext *ctx, int oldpop, int newpop )
     popsize = PGAGetPopSize(ctx);
     numreplace = PGAGetNumReplaceValue(ctx);
     /*** first, copy n best strings (sorted by fitness) to new pop ***/
-    PGASortPop( ctx, oldpop );
+    /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     n = popsize - numreplace;
-    for ( i=0; i < n; i++ ) {
-        j = PGAGetSortedPopIndex( ctx, i );
-        PGACopyIndividual ( ctx, j, oldpop, i, newpop );
+    if (ctx->ga.PopReplace != PGA_POPREPL_RTR) {
+        PGASortPop( ctx, oldpop );
+        for ( i=0; i < n; i++ ) {
+            j = PGAGetSortedPopIndex( ctx, i );
+            PGACopyIndividual ( ctx, j, oldpop, i, newpop );
+        }
     }
     pc = PGAGetCrossoverProb(ctx);
     /*** reproduce to create the rest of the new population ***/
@@ -343,6 +349,13 @@ void PGAUpdateGeneration(PGAContext *ctx, MPI_Comm comm)
     ctx->ga.iter++;
 
     if (rank == 0) {
+        if (ctx->ga.PopReplace == PGA_POPREPL_RTR) {
+            /* This replaces the selected individuals into OLDPOP and
+             * then switches OLDPOP/NEWPOP
+             */
+            PGARestrictedTournamentReplacement(ctx);
+        }
+
 	if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE)
 	    PGAUpdateAverage(ctx, PGA_NEWPOP);
 

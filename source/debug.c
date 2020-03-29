@@ -127,6 +127,7 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
         { "PGABinaryPrint",                 121 },
         { "PGAGetBinaryInitProb",           122 },
         { "PGASetBinaryInitProb",           123 },
+        { "PGABinaryGeneDistance",          124 },
 
 /* Integer Routines 150 - 199 */
         { "PGAIntegerCreateString",         150 },
@@ -146,6 +147,7 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
         { "PGAGetIntegerInitType",          172 },
         { "PGAGetMinIntegerInitValue",      173 },
         { "PGAGetMaxIntegerInitValue",      174 },
+        { "PGAIntegerGeneDistance",         175 },
 
 /* Real Routines 200 - 249 */
         { "PGARealCreateString",            200 },
@@ -164,6 +166,7 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
         { "PGASetRealInitRange",            221 },
         { "PGAGetMinRealInitValue",         222 },
         { "PGAGetMaxRealInitValue",         223 },
+        { "PGARealGeneDistance",            224 },
 
 /* Character Routines 250 - 299 */
         { "PGACharacterCreateString",       250 },
@@ -179,6 +182,7 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
         { "PGASetCharacterAllele",          260 },
         { "PGAGetCharacterAllele",          261 },
         { "PGASetCharacterInitType",        270 },
+        { "PGACharacterGeneDistance",       271 },
 
 /* Operators Routines 300 - 499 */
         /* create.c */
@@ -199,14 +203,17 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
         { "PGASetUniformCrossoverProb",     316 },
 
         /* pop.c */
-        { "PGASortPop",                     320 },
-        { "PGAGetPopSize",                  321 },
-        { "PGAGetNumReplaceValue",          322 },
-        { "PGAGetPopReplaceType",           323 },
-        { "PGAGetSortedPopIndex",           324 },
-        { "PGASetPopSize",                  325 },
-        { "PGASetNumReplaceValue",          326 },
-        { "PGASetPopReplaceType",           327 },
+        { "PGARestrictedTournamentReplacement", 319 },
+        { "PGASortPop",                         320 },
+        { "PGAGetPopSize",                      321 },
+        { "PGAGetNumReplaceValue",              322 },
+        { "PGAGetPopReplaceType",               323 },
+        { "PGAGetSortedPopIndex",               324 },
+        { "PGASetPopSize",                      325 },
+        { "PGASetNumReplaceValue",              326 },
+        { "PGASetPopReplaceType",               327 },
+        { "PGASetRTRWindowSize",                328 },
+        { "PGAGetRTRWindowSize",                329 },
 
         /* mutation.c */
         { "PGAMutate",                      330 },
@@ -251,6 +258,8 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
         { "PGASetRestartAlleleChangeProb",  376 },
 
         /* select.c */
+        { "PGAGetTournamentSize",           378 },
+        { "PGASetTournamentSize",           379 },
         { "PGASelect",                      380 },
         { "PGASelectProportional",          381 },
         { "PGASelectSUS",                   382 },
@@ -372,6 +381,8 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
         { "PGARandomGaussian",              754 },
         { "PGAGetRandomSeed",               755 },
         { "PGASetRandomSeed",               756 },
+        { "PGARandomSampleInit",            757 },
+        { "PGARandomNextSample",            758 },
 
 /* Miscellaneous Routines 800 - 899 */
         /* hamming.c */
@@ -774,13 +785,16 @@ void PGASetDebugFlag11(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[315] = Flag; /*PGASetCrossoverProb*/
    ctx->debug.PGADebugFlags[316] = Flag; /*PGASetUniformCrossoverProb*/
 
-   ctx->debug.PGADebugFlags[320] = Flag; /*PGASort*/
+   ctx->debug.PGADebugFlags[319] = Flag; /*PGARestrictedTournamentReplacement*/
+   ctx->debug.PGADebugFlags[320] = Flag; /*PGASortPop*/
    ctx->debug.PGADebugFlags[321] = Flag; /*PGAGetPopSize*/
    ctx->debug.PGADebugFlags[322] = Flag; /*PGAGetNumReplaceValue*/
    ctx->debug.PGADebugFlags[323] = Flag; /*PGAGetPopReplaceType*/
    ctx->debug.PGADebugFlags[325] = Flag; /*PGASetPopSize*/
    ctx->debug.PGADebugFlags[326] = Flag; /*PGASetNumReplaceValue*/
    ctx->debug.PGADebugFlags[327] = Flag; /*PGASetPopReplaceType*/
+   ctx->debug.PGADebugFlags[328] = Flag; /*PGASetRTRWindowSize*/
+   ctx->debug.PGADebugFlags[329] = Flag; /*PGAGetRTRWindowSize*/
 
    ctx->debug.PGADebugFlags[330] = Flag; /*PGAMutate*/
    ctx->debug.PGADebugFlags[331] = Flag; /*PGAGetMutationType*/
@@ -820,6 +834,8 @@ void PGASetDebugFlag11(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[375] = Flag; /*PGASetRestartFrequencyValue*/
    ctx->debug.PGADebugFlags[376] = Flag; /*PGASetRestartAlleleChangeProb*/
 
+   ctx->debug.PGADebugFlags[378] = Flag; /*PGAGetTournamentSize*/
+   ctx->debug.PGADebugFlags[379] = Flag; /*PGASetTournamentSize*/
    ctx->debug.PGADebugFlags[380] = Flag; /*PGASelect*/
    ctx->debug.PGADebugFlags[386] = Flag; /*PGAGetSelectType*/
    ctx->debug.PGADebugFlags[387] = Flag; /*PGAGetPTournamentProb*/
@@ -980,6 +996,7 @@ void PGASetDebugFlag30(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[121] = Flag; /*PGABinaryPrint*/
    ctx->debug.PGADebugFlags[122] = Flag; /*PGAGetBinaryInitProb*/
    ctx->debug.PGADebugFlags[123] = Flag; /*PGASetBinaryInitProb*/
+   ctx->debug.PGADebugFlags[124] = Flag; /*PGABinaryGeneDistance*/
 }
 
 /*I****************************************************************************
@@ -1013,6 +1030,7 @@ void PGASetDebugFlag32(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[172] = Flag; /*PGAGetIntegerInitType*/
    ctx->debug.PGADebugFlags[173] = Flag; /*PGAGetMinIntegerInitValue*/
    ctx->debug.PGADebugFlags[174] = Flag; /*PGAGetMaxIntegerInitValue*/
+   ctx->debug.PGADebugFlags[175] = Flag; /*PGAIntegerGeneDistance*/
    ctx->debug.PGADebugFlags[400] = Flag; /*PGASetMutationBoundedFlag*/
    ctx->debug.PGADebugFlags[401] = Flag; /*PGAGetMutationBoundedFlag*/
 }
@@ -1047,6 +1065,7 @@ void PGASetDebugFlag34(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[221] = Flag; /*PGASetRealInitRange*/
    ctx->debug.PGADebugFlags[222] = Flag; /*PGAGetMinRealInitValue*/
    ctx->debug.PGADebugFlags[223] = Flag; /*PGAGetMaxRealInitValue*/
+   ctx->debug.PGADebugFlags[224] = Flag; /*PGARealGeneDistance*/
 }
 
 /*I****************************************************************************
@@ -1076,6 +1095,7 @@ void PGASetDebugFlag36(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[260] = Flag; /*PGASetCharacterAllele*/
    ctx->debug.PGADebugFlags[261] = Flag; /*PGAGetCharacterAllele*/
    ctx->debug.PGADebugFlags[270] = Flag; /*PGASetCharacterInitType*/
+   ctx->debug.PGADebugFlags[271] = Flag; /*PGACharacterGeneDistance*/
 }
 
 /*I****************************************************************************
@@ -1134,6 +1154,8 @@ void PGASetDebugFlag40(PGAContext *ctx, int Flag)
 ****************************************************************************I*/
 void PGASetDebugFlag42(PGAContext *ctx, int Flag)
 {
+   ctx->debug.PGADebugFlags[378] = Flag; /*PGAGetTournamentSize*/
+   ctx->debug.PGADebugFlags[379] = Flag; /*PGASetTournamentSize*/
    ctx->debug.PGADebugFlags[380] = Flag; /*PGASelect*/
    ctx->debug.PGADebugFlags[381] = Flag; /*PGASelectProportional*/
    ctx->debug.PGADebugFlags[382] = Flag; /*PGASelectSUS*/
@@ -1430,6 +1452,8 @@ void PGASetDebugFlag62(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[754] = Flag; /*PGARandomGaussian*/
    ctx->debug.PGADebugFlags[755] = Flag; /*PGAGetRandomSeed*/
    ctx->debug.PGADebugFlags[756] = Flag; /*PGASetRandomSeed*/
+   ctx->debug.PGADebugFlags[757] = Flag; /*PGARandomSampleInit*/
+   ctx->debug.PGADebugFlags[758] = Flag; /*PGARandomNextSample*/
 }
 
 /*I****************************************************************************

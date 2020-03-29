@@ -918,3 +918,37 @@ MPI_Datatype PGARealBuildDatatype(PGAContext *ctx, int p, int pop)
 
      return (individualtype);
 }
+
+/*I****************************************************************************
+   PGARealGeneDistance - Compute genetic difference of two strings.
+   Sum of the absolute values of the differences of each allele.
+
+   Inputs:
+      ctx   - context variable
+      p1    - first string index
+      pop1  - symbolic constant of the population the first string is in
+      p2    - second string index
+      pop2  - symbolic constant of the population the second string is in
+
+   Outputs:
+      genetic distance of the two strings
+
+   Example:
+      Internal function.  Use PGAGeneDistance.
+
+****************************************************************************I*/
+double PGARealGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+{
+    PGAReal *c1 = (PGAReal *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    PGAReal *c2 = (PGAReal *)PGAGetIndividual (ctx, p2, pop2)->chrom;
+    double ret = 0.0;
+    int i;
+
+    PGADebugEntered("PGARealGeneDistance");
+    for (i=0; i<ctx->ga.StringLen; i++) {
+        ret += abs (c1 [i] - c2 [i]);
+    }
+    PGADebugExited("PGARealGeneDistance");
+    return ret;
+}
+

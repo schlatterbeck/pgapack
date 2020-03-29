@@ -378,3 +378,146 @@ void PGASetRandomSeed(PGAContext *ctx, int seed)
     
     PGADebugExited("PGASetRandomSeed");
 }
+
+/*
+ * Random Sampling of k out of n without replacement
+ * Algorithm from: Jeffrey Scott Vitter. An efficient algorithm for
+ * sequential random sampling. ACM Transactions on Mathematical
+ * Software, 13(1):58-67, March 1987.
+ * This is implemented as an iterator, i.e., an init method
+ * PGARandomSampleInit that initializes n, k and PGARandomNextSample
+ * that returns the next sample index. The algorithm guarantees that
+ * sample indexes are returned sorted in index order.
+ * Note that the CUTOFF is arbitrary and no measurements were performed
+ * -- modern CPUs can probably iterate a lot when not accessing memory,
+ * so this can probably be set a lot higher.
+ */
+
+#define CUTOFF 13
+
+static int sample_a1 (PGASampleState *state);
+static int sample_a2 (PGASampleState *state);
+
+void PGARandomSampleInit (PGAContext *ctx, PGASampleState *state, int k, int n)
+{
+    PGADebugEntered("PGARandomSampleInit");
+    if (k <= 0) {
+	PGAError ( ctx, "PGARandomSampleInit: Invalid value of k:",
+		  PGA_FATAL, PGA_INT, (void *) &k);
+    }
+    if (n <= 0) {
+	PGAError ( ctx, "PGARandomSampleInit: Invalid value of n:",
+		  PGA_FATAL, PGA_INT, (void *) &n);
+    }
+    if (k > n) {
+	PGAError ( ctx, "PGARandomSampleInit: Invalid value of k:",
+		  PGA_FATAL, PGA_INT, (void *) &k);
+    }
+    memset (state, 0, sizeof (*state));
+    state->n   = n;
+    state->k   = k;
+    state->idx = 0;
+    state->ctx = ctx;
+    PGADebugExited("PGARandomSampleInit");
+}
+
+int PGARandomNextSample (PGASampleState *state)
+{
+    int ret = 0;
+    PGAContext *ctx = state->ctx; /* Needed for debug below */
+    PGADebugEntered("PGARandomNextSample");
+    if (state->k <= 0) {
+	PGAError ( state->ctx, "PGARandomNextSample: Invalid value of k:",
+		  PGA_FATAL, PGA_INT, (void *) &(state->k));
+    }
+    if (state->k > 1 && state->n - state->k > CUTOFF) {
+        ret = sample_a2 (state);
+    } else {
+        ret = sample_a1 (state);
+    }
+    PGADebugExited("PGARandomNextSample");
+    return ret;
+}
+
+/* This is algorithm A1 from paper above */
+static int sample_a1 (PGASampleState *state)
+{
+    int n = state->n;
+    int k = state->k;
+    double v = PGARandom01 (state->ctx, 0);
+    double top;
+    double quot;
+    int s = 0;
+
+    if (k == 1) {
+        s = (int)(n * v);
+    } else {
+        top  = n - k;
+        quot = top / n;
+        while (quot > v) {
+            s++;
+            top--;
+            n--;
+            quot = quot * top / n;
+        }
+    }
+    state->idx += s + 1;
+    n--;
+    k--;
+    state->k = k;
+    state->n = n;
+    return state->idx - 1;
+}
+
+/* This is algorithm A2 from paper above but the case check is done in
+ * function PGARandomNextSample above
+ */
+static int sample_a2 (PGASampleState *state)
+{
+    int n = state->n;
+    int k = state->k;
+    int qu1 = n - k + 1;
+    double vprime;
+    double x = 0.0;
+    double u;
+    double y1, y2;
+    int t, top, bottom, limit;
+    int s = qu1;
+
+    while (1) {
+        while (s >= qu1) {
+            vprime = exp (log (PGARandom01 (state->ctx, 0)) / k);
+            x = n * (1.0 - vprime);
+            s = (int)x;
+        }
+        u = PGARandom01 (state->ctx, 0);
+        y1 = exp (log ((u * n) / qu1) / (k - 1.0));
+        vprime = y1 * (-x / (n + 1.0)) * ((double)qu1 / (qu1 - s));
+        if (vprime <= 1.0) {
+            break;
+        }
+        y2 = 1.0;
+        top = n - 1;
+        if (k - 1 > s) {
+            bottom = n - k;
+            limit  = n - s;
+        } else {
+            bottom = n - s - 1;
+            limit  = qu1;
+        }
+        for (t = n - 1; t >= limit; t--) {
+            y2 = y2 * top / bottom;
+            top--;
+            bottom--;
+        }
+        if (n / (n - x) >= y1 * exp (log (y2) / (k - 1))) {
+            break;
+        }
+    }
+    state->idx += s + 1;
+    n -= s + 1;
+    k--;
+    state->k = k;
+    state->n = n;
+    return state->idx - 1;
+}

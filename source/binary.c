@@ -871,3 +871,32 @@ void PGABinaryPrint( PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb )
 }
 
 
+/*I****************************************************************************
+   PGABinaryGeneDistance - Compute genetic difference of two strings.
+   For binary genes this is the Hamming distance.
+
+   Inputs:
+      ctx   - context variable
+      p1    - first string index
+      pop1  - symbolic constant of the population the first string is in
+      p2    - second string index
+      pop2  - symbolic constant of the population the second string is in
+
+   Outputs:
+      genetic distance of the two strings
+
+   Example:
+      Internal function.  Use PGAGeneDistance.
+
+****************************************************************************I*/
+double PGABinaryGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+{
+     PGABinary *c1 = (PGABinary *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+     PGABinary *c2 = (PGABinary *)PGAGetIndividual (ctx, p2, pop2)->chrom;
+
+     PGADebugEntered("PGABinaryGeneDistance");
+     PGADebugExited("PGABinaryGeneDistance");
+     return PGABinaryHammingDistance (ctx, c1, c2);
+}
+
+
