@@ -4,10 +4,13 @@ PGASetPopReplaceType \- Choose method of sorting strings to copy from old
 population to new population.  
 .SH DESCRIPTION
 Valid choices are PGA_POPREPL_BEST,
-PGA_POPREPL_RANDOM_NOREP, or PGA_POPREPL_RANDOM_REP for copying the best
+PGA_POPREPL_RANDOM_NOREP, PGA_POPREPL_RANDOM_REP, or PGA_POPREPL_RTR
+for copying the best
 strings, or  random string, with or without replacement, respectively,
-from the old population into the new population. The default is
-PGA_POPREPL_BEST.
+from the old population into the new population.
+The option PGA_POPREPL_RTR specifies the use of the restricted
+tournament replacement.
+The default is PGA_POPREPL_BEST.
 .SH INPUT PARAMETERS
 .PD 0
 .TP

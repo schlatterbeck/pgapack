@@ -17,6 +17,7 @@ datatype and must be called once for each of:
   PGA_USERFUNCTION_BUILDDATATYPE    -- MPI Datatype creation
   PGA_USERFUNCTION_STOPCOND         -- Stopping conditions
   PGA_USERFUNCTION_ENDOFGEN         -- Auxiliary functions at the end of each generation
+  PGA_USERFUNCTION_GEN_DIFFERENCE   -- Compute genetic difference between two genes.
 
 It MAY be called when using a native datatype to replace the built-in
 functions PGAPack has for that datatype (For example, if the Integer data

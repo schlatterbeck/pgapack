@@ -1,0 +1,41 @@
+.TH PGASetRTRWindowSize 3 "2020-03-16" " " "PGAPack"
+.SH NAME
+PGASetRTRWindowSize \- Specifies the size of the window for restricted
+tournament replacement.
+.SH DESCRIPTION
+This function will have no effect
+unless PGA_POPREPL_RTR was specified as the population replacement
+strategy
+with PGASetPopReplaceType.
+The default is min (Popsize / 20, StringSize).
+.SH INPUT PARAMETERS
+.PD 0
+.TP
+ctx
+- context variable
+.PD 0
+.TP
+size
+- the size of the RTR window
+.PD 1
+.SH OUTPUT PARAMETERS
+.PD 0
+.TP
+none
+
+.PD 1
+.SH SYNOPSIS
+.nf
+#include "pgapack.h"
+void  PGASetRTRWindowSize(PGAContext *ctx, int size)
+.fi
+.SH LOCATION
+select.c
+.SH EXAMPLE
+.nf
+Example:
+PGAContext *ctx;
+:
+PGASetRTRWindowSize(ctx, 10);
+
+.fi
