@@ -129,7 +129,7 @@ c
       integer function GetIntegerParameter(query)
       include 'pgapackf.h'
       include 'mpif.h'
-      character*52 query
+      character*50 query
       integer  rank, tmp, ierror
 
       call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierror)
