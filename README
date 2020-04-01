@@ -1,5 +1,26 @@
+Updated March 2020:
+- Add restricted tournament replacement, see updated user guide for
+  details and references
+- Fix some compiler warnings
+- Implement Tournament Selection with more than 2 individuals, new
+  parameter settable with PGASetTournamentSize, the default is the old
+  default of 2.
 
-[ Updated Sept 2017: new installation instructions, availability ]
+Updated Sept 2017: new installation instructions, availability:
+- Bug fixes in MPI code: Now compiles against all MPI implementations
+  shipped with Debian Linux (openmpi, mpich, lam).
+- Bug fix in PGAChange that did not call PGASetEvaluationUpToDateFlag:
+  This would result in occasional wrong evaluation of individuals,
+  noteably the evaluation went *down* with a elitist strategy.
+- Bug fix for restart with an integer gene: According to the user guide
+  this should use PGA_MUTATION_CONSTANT but tried to use
+  PGA_MUTATION_UNIFORM which is undefined for integer genes
+- Start fixing the user guide with new documentation, the old original
+  postscript is still available. Notably documentation bugs reported via
+  the debian project were fixed. The user guide can be built from source
+  again (after probably a *very* long time).
+- Make fortran compile again
+
 [ Updated March 2008:  
   -- the original README, minus two references to the now 
      obsolete website and mailing lists, follows below
