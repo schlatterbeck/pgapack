@@ -31,8 +31,8 @@ ifeq (,${MPI})
         MPI = default
         CC = mpicc
         FC = mpif77
-        MPI_INC = $(shell pkg-config --cflags mpi-c)
-        MPI_LIB = $(shell pkg-config --libs mpi-c)
+        MPI_INC := $(shell pkg-config --cflags mpi-c)
+        MPI_LIB := $(shell pkg-config --libs mpi-c)
     endif
 endif
 
@@ -44,26 +44,27 @@ ifeq (${MPI},openmpi)
     # architecture-specific and there is no distribution-independent way
     # to really find out the architecture used. So you may end up
     # specifying MPI_INC and MPI_LIB by hand.
-    MPI_INC = -I /usr/include/mpi
-    MPI_LIB = -lmpi_mpifh -lmpi
+    MPI_INC := -I /usr/include/mpi
+    MPI_LIB := -lmpi_mpifh -lmpi
 else ifeq (${MPI},mpich)
+    MPI_INCLUDE:=$(shell ls -1d /usr/include/mpich /usr/include/*/mpich 2> /dev/null)
     CC = mpicc.mpich
     FC = mpif77.mpich
-    MPI_INC = -I /usr/include/mpich
-    MPI_LIB = -lmpich
+    MPI_INC := -I $(MPI_INCLUDE)
+    MPI_LIB := -lmpich
 else ifeq (${MPI},mpich2)
     CC = mpicc.mpich
     FC = mpif77.mpich
-    MPI_INC = -I /usr/include/mpich
-    MPI_LIB = -lmpich
+    MPI_INC := -I /usr/include/mpich
+    MPI_LIB := -lmpich
 else ifeq (${MPI},lam)
     CC = mpicc.lam
     FC = mpif77.lam
-    MPI_INC = -I /usr/include/lam
-    MPI_LIB = -llam
+    MPI_INC := -I /usr/include/lam
+    MPI_LIB := -llam
 else ifeq (${MPI},serial)
-    MPI_INC = -I ${PGA_DIR}/fakempi
-    MPI_LIB =
+    MPI_INC := -I ${PGA_DIR}/fakempi
+    MPI_LIB :=
     CPPFLAGS += -DFAKE_MPI
     MPI_STUB = $(PGA_LIB_DIR)/mpi_stub.o
 endif
