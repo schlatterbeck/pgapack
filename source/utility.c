@@ -255,7 +255,7 @@ int PGACheckSum(PGAContext *ctx, int p, int pop)
     for (i = 0; i < totalchars; i++) {
       specimen = *(message + i);
       for (j = 0; j < charbits; j++) {
-        out_bit = (checksum & 0x80000000) == 1;
+        out_bit = (checksum & 0x80000000);
         checksum = (checksum << 1) + ((specimen & 0x80) == 0x80);
         if (out_bit)
           checksum ^= 0x04c11db7;

@@ -33,7 +33,7 @@ double EvalName     (PGAContext *, int, int);
 void   GetStringParameter(char *, char *);
 
 /*  Global, because we use it in EvalName.  */
-char   Name[70];
+char   Name[71];
 
 int main(int argc, char **argv) {
     PGAContext *ctx;
