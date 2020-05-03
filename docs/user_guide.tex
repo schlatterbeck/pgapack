@@ -1303,10 +1303,21 @@ stochastic universal, tournament, and probabilistic tournament selection,
 respectively.  The default is tournament selection. For tournament
 selection, the size of the tournament (number of participants) can be
 set e.g., with \verb+PGASetTournamentSize(ctx, 3)+ the default is binary
-tournament (size = 2).  For probabilistic
-tournament selection, the default probability that the string that wins the
+tournament (size = 2). In addition, for tournament selection it can be
+specified if the selection is \textit{with} or \textit{without}
+replacement using the function \verb+PGASetTournamentWithReplacement+ with
+a parameter of \verb+PGA_FALSE+ or \verb+PGA_TRUE+. Sampling without
+replacement guarantees that for $n$ tournaments, each individual
+participates in the same number of tournaments (as long as $n$
+multiplied by the tournament size is a multiple of the population size)
+\cite{GKD89}.  The default sampling is
+\texttt{with} replacement as if \verb+PGASetTournamentWithReplacement+
+had been called with the parameter \verb+PGA_TRUE+.  The probabilistic
+tournament selection is always binary (two participants in the
+tournament), the default probability that the string that wins the
 tournament is selected is 0.6.  It may be set to 0.8, for example, with {\tt
-PGASetPTournamentProb(ctx, 0.8)}.
+PGASetPTournamentProb(ctx, 0.8)}. The tournament for probabilistic
+tournament selection is always with replacement.
 
 
 % Baker's stochastic universal selection (SUS) is an optimal sampling algorithm

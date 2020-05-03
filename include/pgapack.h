@@ -281,6 +281,7 @@ typedef struct {
     int MutateBoundedFlag;   /* Confine integer alleles to given range    */
     int TournamentSize;      /* Number of participants in tournament      */
     int RTRWindowSize;       /* Window for restricted tournament select   */
+    int TournamentWithRepl;  /* Tournament with / without replacement     */
     double MutateRealValue;  /* Multiplier to mutate Real strings with    */
     double MutationProb;     /* Starting mutation probability             */
     double CrossoverProb;    /* Crossover probability                     */
@@ -815,6 +816,7 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop );
 int PGASelectTournament( PGAContext *ctx, PGAIndividual *pop );
 int PGASelectPTournament( PGAContext *ctx, PGAIndividual *pop );
 void PGASetTournamentSize(PGAContext *ctx, int tournament_size);
+void PGASetTournamentWithReplacement(PGAContext *ctx, int value);
 int PGAGetTournamentSize(PGAContext *ctx);
 
 /*****************************************

@@ -42,7 +42,7 @@ privately owned rights.
 *                     selection
 *
 *     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+*              Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
@@ -95,7 +95,7 @@ void PGASelect( PGAContext *ctx, int popix )
         break;
     case PGA_SELECT_TOURNAMENT:    /* tournament selection               */
         for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectTournament( ctx, pop );
+            ctx->ga.selected[i] = PGASelectTournament (ctx, pop);
         break;
     case PGA_SELECT_PTOURNAMENT:   /* probabilistic tournament selection */
         for (i=0; i<ctx->ga.PopSize; i++)
@@ -362,6 +362,58 @@ int PGAGetTournamentSize(PGAContext *ctx)
 
      return ctx->ga.TournamentSize;
 }
+/*U****************************************************************************
+   PGASetTournamentWithReplacement - Specifies if tournament is with or
+   without replacement. This function will have no effect unless
+   PGA_SELECT_TOURNAMENT was specified as the type of selection to use
+   with PGASetSelectType. The default value is PGA_TRUE.
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      v   - The value, PGA_TRUE or PGA_FALSE
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetTournamentWithReplacement(ctx,PGA_FALSE);
+
+****************************************************************************U*/
+void PGASetTournamentWithReplacement(PGAContext *ctx, int v)
+{
+    ctx->ga.TournamentWithRepl = v;
+}
+
+/*U***************************************************************************
+   PGAGetTournamentWithReplacement - returns the setting for tournament
+   sampling: with replacement returns PGA_TRUE, without replacement
+   returns PGA_FALSE.
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The setting of sampling type
+
+   Example:
+      PGAContext *ctx;
+      int v;
+      :
+      v = PGAGetTournamentWithReplacement(ctx);
+
+***************************************************************************U*/
+int PGAGetTournamentWithReplacement(PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetTournamentWithReplacement");
+    return ctx->ga.TournamentWithRepl;
+}
+
 
 
 /*I****************************************************************************
@@ -459,9 +511,11 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop )
 
 
 /*I****************************************************************************
-  PGASelectTournament - chooses N strings randomly and returns the one with
-  highest fitness, N is the value set with PGASetTournamentSize, the
-  default is 2.
+  PGASelectTournamentWithReplacement - chooses N strings randomly and
+  returns the one with highest fitness, N is the value set with
+  PGASetTournamentSize, the default is 2. The selection happens *with*
+  replacement. See decription of PGASelectTournamentWithoutReplacement
+  for details of sampling without replacement.
   Ref:    Generalization of D. Goldberg, Genetic Algorithms, pg. 121
           For the generalization see, e.g., D. E. Goldberg and K. Deb
           A Comparative Analysis of Selection Schemes Used in Genetic
@@ -479,16 +533,15 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop )
     PGAContext *ctx,
     int l;
     :
-    l = PGASelectTournament(ctx, PGA_OLDPOP);
+    l = PGASelectTournamentWithReplacement(ctx, PGA_OLDPOP);
 
 ****************************************************************************I*/
-int PGASelectTournament( PGAContext *ctx, PGAIndividual *pop )
+static
+int PGASelectTournamentWithReplacement( PGAContext *ctx, PGAIndividual *pop )
 {
     int m;
     double maxfit;
     int i;
-
-    PGADebugEntered("PGASelectTournament");
 
     m = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
     maxfit = (pop+m)->fitness;
@@ -501,10 +554,120 @@ int PGASelectTournament( PGAContext *ctx, PGAIndividual *pop )
             maxfit = fit;
         }
     }
-
-    PGADebugExited("PGASelectTournament");
-
     return m;
+}
+
+/*I****************************************************************************
+  PGASelectTournamentWithoutReplacement - chooses N strings randomly and
+  returns the one with highest fitness, N is the value set with
+  PGASetTournamentSize, the default is 2. The selection happens *without*
+  replacement. This means if we select N individuals with a tournament
+  size of 2, each individual is participating in exactly two
+  tournaments. This does *not* mean that a single individual cannot be
+  returned more than once.
+  Ref:    For implementation notes on the algorithm see p.504 in
+          David E. Goldberg, Bradley Korb, and Kalyanmoy Deb. Messy
+          genetic algorithms: Motivation, analysis, and first results.
+          Complex Systems, 3(5):493–530, 1989.
+
+  Inputs:
+    ctx   - context variable
+    popix - symbolic constant of population to select from
+
+  Outputs:
+    index of the selected string
+
+  Example:
+    PGAContext *ctx,
+    int l;
+    :
+    l = PGASelectTournamentWithoutReplacement(ctx, PGA_OLDPOP);
+
+****************************************************************************I*/
+
+
+/* Helper function to compute permuted list */
+/* We're using Durstenfeld's verion of the Fisher-Yates shuffle */
+
+static void _shuffle (PGAContext *ctx, int *list, int n)
+{
+    int i = 0, j = 0, tmp = 0;
+    for (i = 0; i < n; i++)
+	list[i] = i;
+    for (i = 0; i < n-2; i++) {
+	j = PGARandomInterval (ctx, i, n - 1);
+        tmp = list[j];
+        list [j] = list [i];
+        list [i] = tmp;
+    }
+}
+#define NEXT_IDX(ctx, perm, idx, n)                           \
+    ((idx) >= (n))                                            \
+      ? (_shuffle((ctx), (perm), (n)), (idx) = 1, (perm) [0]) \
+      : (perm) [(idx)++]
+
+static
+int PGASelectTournamentWithoutReplacement (PGAContext *ctx, PGAIndividual *pop)
+{
+    int m;
+    double maxfit;
+    int i;
+    static int *permutation = NULL;
+    static int perm_idx = 0;
+
+    if (permutation == NULL) {
+        permutation  = (int *) malloc(sizeof (int) * ctx->ga.PopSize);
+        if (permutation == NULL) {
+            PGAError (ctx, "PGASelectTournamentWithoutReplacement: malloc:",
+                     PGA_FATAL, PGA_INT, (void *) &ctx->ga.PopSize );
+            return 0;
+        }
+        perm_idx = ctx->ga.PopSize;
+    }
+
+    m = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
+    maxfit = (pop+m)->fitness;
+    for (i=1; i<ctx->ga.TournamentSize; i++) {
+        int mn = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
+        double fit = (pop+mn)->fitness;
+        if (fit >= maxfit) {
+            m = mn;
+            maxfit = fit;
+        }
+    }
+    return m;
+}
+
+/*I****************************************************************************
+  PGASelectTournament - chooses N strings randomly and
+  returns the one with highest fitness, N is the value set with
+  PGASetTournamentSize, the default is 2. Depending on the setting of
+  PGASetTournamentWithReplacement calls one of two local functions to
+  use the right sampling.
+
+  Inputs:
+    ctx   - context variable
+    popix - symbolic constant of population to select from
+
+  Outputs:
+    index of the selected string
+
+  Example:
+    PGAContext *ctx,
+    int l;
+    :
+    l = PGASelectTournament(ctx, PGA_OLDPOP);
+
+****************************************************************************I*/
+int PGASelectTournament (PGAContext *ctx, PGAIndividual *pop)
+{
+    PGADebugEntered("PGASelectTournament");
+    if (ctx->ga.TournamentWithRepl) {
+        return PGASelectTournamentWithReplacement (ctx, pop);
+    } else {
+        return PGASelectTournamentWithoutReplacement (ctx, pop);
+    }
+    PGADebugExited("PGASelectTournament");
 }
 
 /*I****************************************************************************
