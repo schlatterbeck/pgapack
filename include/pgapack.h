@@ -159,6 +159,7 @@ extern "C" {
 #define PGA_SELECT_SUS          2    /* stochastic universal selection      */
 #define PGA_SELECT_TOURNAMENT   3    /* tournament selection                */
 #define PGA_SELECT_PTOURNAMENT  4    /* probabilistic tournament selection  */
+#define PGA_SELECT_TRUNCATION   5    /* truncation selection                */
 
 /*****************************************
 *            FITNESS                     *
@@ -290,6 +291,7 @@ typedef struct {
     double FitnessRankMax;   /* MAX value for use in ranking              */
     double FitnessCmaxValue; /* Cmax value used to convert minimizations  */
     double restartAlleleProb;/* prob of changing an allele in a restart   */
+    double TruncProportion;  /* proportion for truncation selection       */
     int restart;             /* whether to use the restart operator       */
     int restartFreq;         /* frequency with which to restart           */
     int *selected;           /* array of indices for selection            */
@@ -815,9 +817,12 @@ int PGASelectProportional(PGAContext *ctx, PGAIndividual *pop);
 void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop );
 int PGASelectTournament( PGAContext *ctx, PGAIndividual *pop );
 int PGASelectPTournament( PGAContext *ctx, PGAIndividual *pop );
+int PGASelectTruncation( PGAContext *ctx, PGAIndividual *pop );
 void PGASetTournamentSize(PGAContext *ctx, int tournament_size);
 void PGASetTournamentWithReplacement(PGAContext *ctx, int value);
 int PGAGetTournamentSize(PGAContext *ctx);
+void PGASetTruncationProportion(PGAContext *ctx, double proportion);
+double PGAGetTruncationProportion(PGAContext *ctx);
 
 /*****************************************
 *          stop.c

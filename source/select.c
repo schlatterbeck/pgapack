@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -50,11 +50,12 @@ privately owned rights.
 /*U****************************************************************************
   PGASelect - performs genetic algorithm selection using either the default
   selection scheme or that specified with PGASetSelectType().  Valid selection
-  methods are proportional, stochastic universal, tournament, or probabilistic
-  tournament selection, PGA_SELECT_PROPORTIONAL, PGA_SELECT_SUS, 
-  PGA_SELECT_TOURNAMENT, and PGA_SELECT_PTOURNAMENT, respectively.  This 
-  function updates an internal array with the indices of members of popix 
-  selected for recombination.  These indices may be accessed with 
+  methods are proportional, stochastic universal, tournament, probabilistic
+  tournament selection, or truncation selection,
+  PGA_SELECT_PROPORTIONAL, PGA_SELECT_SUS, PGA_SELECT_TOURNAMENT,
+  PGA_SELECT_PTOURNAMENT, PGA_SELECT_TRUNCATION, respectively.  This
+  function updates an internal array with the indices of members of popix
+  selected for recombination.  These indices may be accessed with
   PGASelectNextIndex()
 
   Category: Operators
@@ -73,7 +74,7 @@ privately owned rights.
     PGASelect(ctx, PGA_OLDPOP);
 
 ****************************************************************************U*/
-void PGASelect( PGAContext *ctx, int popix )
+void PGASelect (PGAContext *ctx, int popix)
 {
     int i;                   /* not to intefere with dummy argument        */
     int j;                   /* random number                              */
@@ -88,7 +89,7 @@ void PGASelect( PGAContext *ctx, int popix )
 
     case PGA_SELECT_PROPORTIONAL:  /* proportional selection             */
         for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectProportional( ctx, pop );
+            ctx->ga.selected[i] = PGASelectProportional (ctx, pop);
         break;
     case PGA_SELECT_SUS:           /* stochastic universal selection     */
         PGASelectSUS( ctx, pop );
@@ -99,7 +100,11 @@ void PGASelect( PGAContext *ctx, int popix )
         break;
     case PGA_SELECT_PTOURNAMENT:   /* probabilistic tournament selection */
         for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectPTournament( ctx, pop );
+            ctx->ga.selected[i] = PGASelectPTournament (ctx, pop);
+        break;
+    case PGA_SELECT_TRUNCATION:   /* truncation selection */
+        for (i=0; i<ctx->ga.PopSize; i++)
+            ctx->ga.selected[i] = PGASelectTruncation (ctx, pop);
         break;
     default:
         PGAError( ctx,
@@ -189,6 +194,7 @@ void PGASetSelectType( PGAContext *ctx, int select_type)
         case PGA_SELECT_SUS:
         case PGA_SELECT_TOURNAMENT:
         case PGA_SELECT_PTOURNAMENT:
+        case PGA_SELECT_TRUNCATION:
             ctx->ga.SelectType = select_type;
             break;
         default:
@@ -229,6 +235,9 @@ void PGASetSelectType( PGAContext *ctx, int select_type)
           break;
       case PGA_SELECT_PTOURNAMENT:
           printf("Selection Type = PGA_SELECT_PTOURNAMENT\n");
+          break;
+      case PGA_SELECT_TRUNCATION:
+          printf("Selection Type = PGA_SELECT_TRUNCATION\n");
           break;
       }
 
@@ -399,7 +408,8 @@ void PGASetTournamentWithReplacement(PGAContext *ctx, int v)
       ctx - context variable
 
    Outputs:
-      The setting of sampling type
+      The setting of tournament with/without replacement, PGA_TRUE if
+      with replacement
 
    Example:
       PGAContext *ctx;
@@ -412,6 +422,57 @@ int PGAGetTournamentWithReplacement(PGAContext *ctx)
 {
     PGAFailIfNotSetUp("PGAGetTournamentWithReplacement");
     return ctx->ga.TournamentWithRepl;
+}
+/*U****************************************************************************
+   PGASetTruncationProportion - Specifies the proportion of selected
+   individuals for truncation selection. This function will have no
+   effect unless PGA_SELECT_TRUNCATION was specified as the type of
+   selection to use with PGASetSelectType. The default value is 0.5.
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      proportion - The value, 0 < proportion <= 1
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetTruncationProportion(ctx, 0.7);
+
+****************************************************************************U*/
+void PGASetTruncationProportion(PGAContext *ctx, double proportion)
+{
+    PGAFailIfSetUp("PGASetTruncationProportion");
+    ctx->ga.TruncProportion = proportion;
+}
+
+/*U***************************************************************************
+   PGAGetTruncationProportion - returns the setting for truncation
+   proportion.
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The truncation proportion
+
+   Example:
+      PGAContext *ctx;
+      double v;
+      :
+      v = PGAGetTruncationProportion(ctx);
+
+***************************************************************************U*/
+double PGAGetTruncationProportion(PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetTruncationProportion");
+    return ctx->ga.TruncProportion;
 }
 
 
@@ -587,7 +648,7 @@ int PGASelectTournamentWithReplacement( PGAContext *ctx, PGAIndividual *pop )
 
 
 /* Helper function to compute permuted list */
-/* We're using Durstenfeld's verion of the Fisher-Yates shuffle */
+/* We're using Durstenfeld's version of the Fisher-Yates shuffle */
 
 static void _shuffle (PGAContext *ctx, int *list, int n)
 {
@@ -635,6 +696,67 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, PGAIndividual *pop)
             maxfit = fit;
         }
     }
+    return m;
+}
+
+/*I****************************************************************************
+  PGASelectTruncation - chooses the best k strings and returns them in
+  random order. The value k is (N * TruncationProportion) rounded to the
+  next integer.
+
+  Inputs:
+    ctx   - context variable
+    popix - symbolic constant of population to select from
+
+  Outputs:
+    index of the selected string
+
+  Example:
+    PGAContext *ctx,
+    int l;
+    :
+    l = PGASelectTruncation (ctx, PGA_OLDPOP);
+
+****************************************************************************I*/
+int PGASelectTruncation (PGAContext *ctx, PGAIndividual *pop)
+{
+    int m = -1;
+    int k = (int)(ctx->ga.PopSize * ctx->ga.TruncProportion + 0.5);
+    static int *kbest = NULL;
+    static int perm_idx = 0;
+    static int last_generation = -1;
+
+    if (k < 1) {
+        k = 1;
+    }
+    if (k > ctx->ga.PopSize) {
+        k = ctx->ga.PopSize;
+    }
+
+    if (kbest == NULL) {
+        kbest  = (int *) malloc(sizeof (int) * k);
+        if (kbest == NULL) {
+            PGAError (ctx, "PGASelectTruncation: malloc:",
+                     PGA_FATAL, PGA_INT, (void *) &k);
+            return 0;
+        }
+        perm_idx = k;
+    }
+    if (last_generation != ctx->ga.iter) {
+        int bestidx [ctx->ga.PopSize];
+        int i;
+        for (i=0; i<ctx->ga.PopSize; i++) {
+            bestidx [i] = i;
+            ctx->scratch.dblscratch [i] = pop [i].fitness;
+        }
+        PGADblHeapSort (ctx, ctx->scratch.dblscratch, bestidx, ctx->ga.PopSize);
+        for (i=0; i<k; i++) {
+            kbest [i] = bestidx [i];
+        }
+        perm_idx = k;
+    }
+
+    m = NEXT_IDX(ctx, kbest, perm_idx, k);
     return m;
 }
 

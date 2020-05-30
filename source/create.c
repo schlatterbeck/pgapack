@@ -217,6 +217,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->ga.SelectType         = PGA_UNINITIALIZED_INT;
     ctx->ga.TournamentSize     = PGA_UNINITIALIZED_INT;
     ctx->ga.TournamentWithRepl = PGA_UNINITIALIZED_INT;
+    ctx->ga.TruncProportion    = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.RTRWindowSize      = PGA_UNINITIALIZED_INT;
     ctx->ga.FitnessType        = PGA_UNINITIALIZED_INT;
     ctx->ga.FitnessMinType     = PGA_UNINITIALIZED_INT;
@@ -459,6 +460,9 @@ void PGASetUp ( PGAContext *ctx )
 
     if ( ctx->ga.TournamentWithRepl == PGA_UNINITIALIZED_INT)
          ctx->ga.TournamentWithRepl  = PGA_TRUE;
+
+    if ( ctx->ga.TruncProportion == PGA_UNINITIALIZED_DOUBLE)
+         ctx->ga.TruncProportion  = 0.5;
 
     if ( ctx->ga.RTRWindowSize     == PGA_UNINITIALIZED_INT) {
         int v = ctx->ga.PopSize / 20;

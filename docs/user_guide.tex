@@ -1292,17 +1292,18 @@ Other options are
 %*****************************************************************************
 
 The selection phase allocates reproductive trials to strings on the basis of
-their fitness.  \pga\ supports four selection schemes: proportional selection,
-stochastic universal selection, tournament selection (default is binary
-tournament selection), and probabilistic
+their fitness.  \pga\ supports five selection schemes: proportional selection,
+stochastic universal selection, truncation selection, tournament
+selection (default is binary tournament selection), and probabilistic
 binary tournament selection.  The choice may be specified by setting the
-second argument of {\tt PGASetSelectType} to one of {\tt
-PGA\_SELECT\_PROPORTIONAL}, {\tt PGA\_SELECT\_SUS}, {\tt
-PGA\_SELECT\_TOURNAMENT}, and {\tt PGA\_SELECT\_PTOURNAMENT} for proportional,
-stochastic universal, tournament, and probabilistic tournament selection,
+second argument of {\tt PGASetSelectType} to one of
+\verb+PGA_SELECT_PROPORTIONAL+, \verb+PGA_SELECT_SUS+,
+\verb+PGA_SELECT_TRUNCATION+, \verb+PGA_SELECT_TOURNAMENT+, and
+\verb+PGA_SELECT_PTOURNAMENT+ for proportional, stochastic universal,
+truncation, tournament, and probabilistic tournament selection,
 respectively.  The default is tournament selection. For tournament
 selection, the size of the tournament (number of participants) can be
-set e.g., with \verb+PGASetTournamentSize(ctx, 3)+ the default is binary
+set e.g., with \verb+PGASetTournamentSize(ctx, 3)+. The default is binary
 tournament (size = 2). In addition, for tournament selection it can be
 specified if the selection is \textit{with} or \textit{without}
 replacement using the function \verb+PGASetTournamentWithReplacement+ with
@@ -1317,7 +1318,10 @@ tournament selection is always binary (two participants in the
 tournament), the default probability that the string that wins the
 tournament is selected is 0.6.  It may be set to 0.8, for example, with {\tt
 PGASetPTournamentProb(ctx, 0.8)}. The tournament for probabilistic
-tournament selection is always with replacement.
+tournament selection is always with replacement. The truncation selection
+by default selects half of the population. This proportion of selected
+individuals can be set with \verb+PGASetTruncationProportion+ for which
+the default value is 0.5.
 
 
 % Baker's stochastic universal selection (SUS) is an optimal sampling algorithm
