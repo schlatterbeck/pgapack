@@ -1,0 +1,43 @@
+.TH PGASetRandomizeSelect 3 "2020-05-31" " " "PGAPack"
+.SH NAME
+PGASetRandomizeSelect \- Specifies if during PGASelect the chosen
+individuals should be randomized again. All selection schemes except
+PGA_SELECT_SUS already return the individuals in randomized order,
+previously this was randomized again. With this method you can re-enable
+the randomization for selection schemes other than PGA_SELECT_SUS (for
+which a randomization step is always performed).
+.SH DESCRIPTION
+This function will have no effect if
+PGA_SELECT_SUS was specified as the type of selection to use
+with PGASetSelectType. The default value is PGA_FALSE.
+.SH INPUT PARAMETERS
+.PD 0
+.TP
+ctx
+- context variable
+.PD 0
+.TP
+v
+- the value, PGA_TRUE or PGA_FALSE
+.PD 1
+.SH OUTPUT PARAMETERS
+.PD 0
+.TP
+none
+
+.PD 1
+.SH SYNOPSIS
+.nf
+#include "pgapack.h"
+void  PGASetRandomizeSelect(PGAContext *ctx, int value)
+.fi
+.SH LOCATION
+select.c
+.SH EXAMPLE
+.nf
+Example:
+PGAContext *ctx;
+:
+PGASetRandomizeSelect(ctx, PGA_TRUE);
+
+.fi

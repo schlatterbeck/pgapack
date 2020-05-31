@@ -173,56 +173,55 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
     int popsize, numreplace;
     double pc;
 
-    PGADebugEntered("PGARunMutationAndCrossover");
+    PGADebugEntered ("PGARunMutationAndCrossover");
 
-    popsize = PGAGetPopSize(ctx);
-    numreplace = PGAGetNumReplaceValue(ctx);
+    popsize = PGAGetPopSize (ctx);
+    numreplace = PGAGetNumReplaceValue (ctx);
     /*** first, copy n best strings (sorted by fitness) to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     n = popsize - numreplace;
     if (ctx->ga.PopReplace != PGA_POPREPL_RTR) {
-        PGASortPop( ctx, oldpop );
-        for ( i=0; i < n; i++ ) {
-            j = PGAGetSortedPopIndex( ctx, i );
-            PGACopyIndividual ( ctx, j, oldpop, i, newpop );
+        PGASortPop (ctx, oldpop);
+        for (i=0; i < n; i++) {
+            j = PGAGetSortedPopIndex (ctx, i);
+            PGACopyIndividual (ctx, j, oldpop, i, newpop);
         }
     }
-    pc = PGAGetCrossoverProb(ctx);
+    pc = PGAGetCrossoverProb (ctx);
     /*** reproduce to create the rest of the new population ***/
-    while ( n < popsize) {
-        m1 = PGASelectNextIndex( ctx );
-        m2 = PGASelectNextIndex( ctx );
-        if ( PGARandomFlip(ctx, pc) ) {
-             PGACrossover ( ctx, m1, m2, oldpop, PGA_TEMP1,
-                            PGA_TEMP2, newpop);
+    while (n < popsize) {
+        m1 = PGASelectNextIndex (ctx, oldpop);
+        m2 = PGASelectNextIndex (ctx, oldpop);
+        if (PGARandomFlip (ctx, pc)) {
+            PGACrossover (ctx, m1, m2, oldpop, PGA_TEMP1, PGA_TEMP2, newpop);
 
-              /*** mutate and copy first string to new population ***/
-              PGAMutate ( ctx, PGA_TEMP1, newpop);
-              while (PGADuplicate( ctx, PGA_TEMP1, newpop, newpop, n))
-                   PGAChange ( ctx, PGA_TEMP1, newpop );
-              PGACopyIndividual ( ctx, PGA_TEMP1, newpop, n, newpop);
-              n++;
-
-              if ( n < popsize ) {
-              /*** mutate and copy second string to new population ***/
-              PGAMutate ( ctx, PGA_TEMP2, newpop);
-              while ( PGADuplicate( ctx, PGA_TEMP2, newpop, newpop, n))
-                   PGAChange ( ctx, PGA_TEMP2, newpop );
-              PGACopyIndividual ( ctx, PGA_TEMP2, newpop, n, newpop);
-              n++;
-              }
-         }
-         else {
-            PGACopyIndividual ( ctx, m1, oldpop, n, newpop );
+            /*** mutate and copy first string to new population ***/
+            PGAMutate ( ctx, PGA_TEMP1, newpop);
+            while (PGADuplicate( ctx, PGA_TEMP1, newpop, newpop, n))
+                 PGAChange ( ctx, PGA_TEMP1, newpop );
+            PGACopyIndividual ( ctx, PGA_TEMP1, newpop, n, newpop);
             n++;
-            if ( n < ctx->ga.PopSize ) {
-                PGACopyIndividual ( ctx, m2, oldpop, n, newpop );
+
+            if ( n < popsize ) {
+                /*** mutate and copy second string to new population ***/
+                PGAMutate (ctx, PGA_TEMP2, newpop);
+                while (PGADuplicate (ctx, PGA_TEMP2, newpop, newpop, n))
+                     PGAChange (ctx, PGA_TEMP2, newpop);
+                PGACopyIndividual (ctx, PGA_TEMP2, newpop, n, newpop);
                 n++;
             }
-       }
+        }
+        else {
+            PGACopyIndividual (ctx, m1, oldpop, n, newpop);
+            n++;
+            if (n < ctx->ga.PopSize) {
+                PGACopyIndividual (ctx, m2, oldpop, n, newpop);
+                n++;
+            }
+        }
     }
 
-    PGADebugExited("PGARunMutationAndCrossover");
+    PGADebugExited ("PGARunMutationAndCrossover");
 }
 
 
@@ -246,71 +245,67 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
     PGARunMutationOrCrossover(ctx, PGA_OLDPOP, PGA_NEWPOP);
 
 ****************************************************************************U*/
-void PGARunMutationOrCrossover ( PGAContext *ctx, int oldpop, int newpop )
+void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
 {
     int i, j, n, m1, m2;
     int popsize, numreplace;
     double pc;
 
-    PGADebugEntered("PGARunMutationOrCrossover");
+    PGADebugEntered ("PGARunMutationOrCrossover");
 
-    popsize = PGAGetPopSize(ctx);
-    numreplace = PGAGetNumReplaceValue(ctx);
+    popsize = PGAGetPopSize (ctx);
+    numreplace = PGAGetNumReplaceValue (ctx);
     /*** first, copy n best strings (sorted by fitness) to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     n = popsize - numreplace;
     if (ctx->ga.PopReplace != PGA_POPREPL_RTR) {
-        PGASortPop( ctx, oldpop );
-        for ( i=0; i < n; i++ ) {
-            j = PGAGetSortedPopIndex( ctx, i );
-            PGACopyIndividual ( ctx, j, oldpop, i, newpop );
+        PGASortPop (ctx, oldpop);
+        for (i=0; i < n; i++) {
+            j = PGAGetSortedPopIndex (ctx, i);
+            PGACopyIndividual (ctx, j, oldpop, i, newpop);
         }
     }
-    pc = PGAGetCrossoverProb(ctx);
+    pc = PGAGetCrossoverProb (ctx);
     /*** reproduce to create the rest of the new population ***/
-    while ( n < popsize ) {
-        m1 = PGASelectNextIndex( ctx );
-        m2 = PGASelectNextIndex( ctx );
-        if ( PGARandomFlip(ctx, pc) ) {
-            PGACrossover ( ctx, m1, m2, oldpop, PGA_TEMP1,
-                                        PGA_TEMP2, newpop);
+    while (n < popsize) {
+        m1 = PGASelectNextIndex (ctx, oldpop);
+        m2 = PGASelectNextIndex (ctx, oldpop);
+        if (PGARandomFlip (ctx, pc)) {
+            PGACrossover (ctx, m1, m2, oldpop, PGA_TEMP1, PGA_TEMP2, newpop);
 
             /*** copy first string to new population ***/
             while (PGADuplicate(ctx, PGA_TEMP1, newpop,  newpop, n))
-                PGAChange ( ctx, PGA_TEMP1, newpop );
-            PGACopyIndividual ( ctx, PGA_TEMP1, newpop, n, newpop);
+                PGAChange (ctx, PGA_TEMP1, newpop);
+            PGACopyIndividual (ctx, PGA_TEMP1, newpop, n, newpop);
             n++;
 
-            if ( n < popsize )
-            {
+            if (n < popsize) {
                  /*** copy second string to new population ***/
                  while (PGADuplicate(ctx, PGA_TEMP2, newpop,  newpop, n))
-                      PGAChange ( ctx, PGA_TEMP2, newpop );
-                 PGACopyIndividual ( ctx, PGA_TEMP2, newpop, n, newpop);
+                      PGAChange (ctx, PGA_TEMP2, newpop);
+                 PGACopyIndividual (ctx, PGA_TEMP2, newpop, n, newpop);
                  n++;
             }
-        }
-        else
-        {
-             PGACopyIndividual(ctx, m1, oldpop, PGA_TEMP1, newpop);
-             PGAMutate ( ctx, PGA_TEMP1, newpop );
-             while (PGADuplicate(ctx, PGA_TEMP1, newpop, newpop, n ))
-                  PGAChange ( ctx, PGA_TEMP1, newpop );
-             PGACopyIndividual ( ctx, PGA_TEMP1, newpop, n, newpop);
+        } else {
+             PGACopyIndividual (ctx, m1, oldpop, PGA_TEMP1, newpop);
+             PGAMutate (ctx, PGA_TEMP1, newpop);
+             while (PGADuplicate (ctx, PGA_TEMP1, newpop, newpop, n))
+                  PGAChange (ctx, PGA_TEMP1, newpop);
+             PGACopyIndividual (ctx, PGA_TEMP1, newpop, n, newpop);
              n++;
 
-             if ( n < popsize ) {
-                  PGACopyIndividual(ctx, m2, oldpop, PGA_TEMP2, newpop);
-                  PGAMutate ( ctx, PGA_TEMP2, newpop );
-                  while (PGADuplicate(ctx, PGA_TEMP2, newpop, newpop, n ))
-                       PGAChange ( ctx, PGA_TEMP2, newpop );
-                  PGACopyIndividual ( ctx, PGA_TEMP2, newpop, n, newpop);
-                  n++;
+             if (n < popsize) {
+                 PGACopyIndividual(ctx, m2, oldpop, PGA_TEMP2, newpop);
+                 PGAMutate (ctx, PGA_TEMP2, newpop);
+                 while (PGADuplicate(ctx, PGA_TEMP2, newpop, newpop, n))
+                     PGAChange (ctx, PGA_TEMP2, newpop);
+                 PGACopyIndividual (ctx, PGA_TEMP2, newpop, n, newpop);
+                 n++;
              }
         }
     }
 
-    PGADebugExited("PGARunMutationOrCrossover");
+    PGADebugExited ("PGARunMutationOrCrossover");
 }
 
 

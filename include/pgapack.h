@@ -283,6 +283,7 @@ typedef struct {
     int TournamentSize;      /* Number of participants in tournament      */
     int RTRWindowSize;       /* Window for restricted tournament select   */
     int TournamentWithRepl;  /* Tournament with / without replacement     */
+    int RandomizeSelect;     /* Additional randomisation during select    */
     double MutateRealValue;  /* Multiplier to mutate Real strings with    */
     double MutationProb;     /* Starting mutation probability             */
     double CrossoverProb;    /* Crossover probability                     */
@@ -808,7 +809,7 @@ double PGAGetRestartAlleleChangeProb(PGAContext *ctx);
 *****************************************/
 
 void PGASelect( PGAContext *ctx, int popix );
-int PGASelectNextIndex ( PGAContext *ctx );
+int PGASelectNextIndex ( PGAContext *ctx, int popix );
 void PGASetSelectType( PGAContext *ctx, int select_type);
 int PGAGetSelectType (PGAContext *ctx);
 void PGASetPTournamentProb(PGAContext *ctx, double ptournament_prob);
@@ -823,6 +824,8 @@ void PGASetTournamentWithReplacement(PGAContext *ctx, int value);
 int PGAGetTournamentSize(PGAContext *ctx);
 void PGASetTruncationProportion(PGAContext *ctx, double proportion);
 double PGAGetTruncationProportion(PGAContext *ctx);
+void PGASetRandomizeSelect(PGAContext *ctx, int value);
+int PGAGetRandomizeSelect(PGAContext *ctx);
 
 /*****************************************
 *          stop.c

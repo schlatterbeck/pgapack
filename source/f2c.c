@@ -698,7 +698,7 @@ int pgagetrestartfrequencyvalue_(PGAContext **ftx);
 void pgasetrestartallelechangeprob_(PGAContext **ftx, double *prob);
 double pgagetrestartallelechangeprob_(PGAContext **ftx);
 void pgaselect_(PGAContext **ftx, int *popix);
-int pgaselectnextindex_(PGAContext **ftx);
+int pgaselectnextindex_(PGAContext **ftx, int *pop);
 void pgasetselecttype_(PGAContext **ftx, int *select_type);
 int pgagetselecttype_(PGAContext **ftx);
 void pgasetptournamentprob_(PGAContext **ftx, double *ptournament_prob);
@@ -1638,9 +1638,9 @@ void pgaselect_(PGAContext **ftx, int *popix)
      PGASelect  (*ftx, *popix);
 }
 
-int pgaselectnextindex_(PGAContext **ftx)
+int pgaselectnextindex_(PGAContext **ftx, int *popix)
 {
-     return PGASelectNextIndex  (*ftx);
+     return PGASelectNextIndex  (*ftx, *popix);
 }
 
 void pgasetselecttype_(PGAContext **ftx, int *select_type)

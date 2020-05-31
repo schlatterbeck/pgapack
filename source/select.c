@@ -115,12 +115,19 @@ void PGASelect (PGAContext *ctx, int popix)
         break;
     }
 
-    /* randomize selected string locations */
-    for (i=0; i<ctx->ga.PopSize; i++) {
-        j          = PGARandomInterval(ctx, 0,ctx->ga.PopSize-1);
-        temp       = ctx->ga.selected[j];
-        ctx->ga.selected[j] = ctx->ga.selected[i];
-        ctx->ga.selected[i] = temp;
+    /* randomize selected string locations
+     * Note that for all selection schemes above *except* SUS the items
+     * are already randomized. So we randomize only if the selection
+     * scheme is SUS *or* we have the backward-compatibility flag
+     * ctx->ga.RandomizeSelect set.
+     */
+    if (ctx->ga.SelectType == PGA_SELECT_SUS || ctx->ga.RandomizeSelect) {
+        for (i=0; i<ctx->ga.PopSize; i++) {
+            j          = PGARandomInterval(ctx, 0,ctx->ga.PopSize-1);
+            temp       = ctx->ga.selected[j];
+            ctx->ga.selected[j] = ctx->ga.selected[i];
+            ctx->ga.selected[i] = temp;
+        }
     }
 
     PGADebugExited("PGASelect");
@@ -134,6 +141,7 @@ void PGASelect (PGAContext *ctx, int popix)
 
   Inputs:
     ctx   - context variable
+    popidx - the population index, typically PGA_OLDPOP
 
   Outputs:
     A population index for the next selected creature.
@@ -145,21 +153,20 @@ void PGASelect (PGAContext *ctx, int popix)
     l = PGASelectNextIndex(ctx, PGA_OLDPOP);
 
 ****************************************************************************U*/
-int PGASelectNextIndex ( PGAContext *ctx )
+int PGASelectNextIndex (PGAContext *ctx, int popix)
 {
     PGADebugEntered("PGASelectNextIndex");
 
-    if (ctx->ga.SelectIndex < ctx->ga.PopSize) {
-	PGADebugExited("PGASelectNextIndex");
-        return(ctx->ga.selected[ctx->ga.SelectIndex++]);
+    /* We allow the select to consume more than ga.PopSize items
+     * If more are consumed we need to prepare the next batch.
+     */
+    if (ctx->ga.SelectIndex >= ctx->ga.PopSize) {
+        PGASelect (ctx, popix);
+        ctx->ga.SelectIndex = 0;
     }
 
-    /*  Oops.  We never found the index.  Fatal error.  (return is here
-     *  so that compilers will be quiet.)
-     */
-    PGAError( ctx, "PGASelectNextIndex: SelectIndex >= ctx->ga.PopSize",
-             PGA_FATAL, PGA_INT, (void *) &ctx->ga.SelectIndex );
-    return(0);
+    PGADebugExited("PGASelectNextIndex");
+    return(ctx->ga.selected[ctx->ga.SelectIndex++]);
 }
 
 /*U****************************************************************************
@@ -473,6 +480,58 @@ double PGAGetTruncationProportion(PGAContext *ctx)
 {
     PGAFailIfNotSetUp("PGAGetTruncationProportion");
     return ctx->ga.TruncProportion;
+}
+/*U****************************************************************************
+   PGASetRandomizeSelect - Specifies if during PGASelect the chosen
+   individuals should be randomized again. All selection schemes except
+   PGA_SELECT_SUS already return the individuals in randomized order,
+   previously this was randomized again. With this method you can
+   re-enable the randomization for selection schemes other than
+   PGA_SELECT_SUS (for which a randomization step is always performed).
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      v - The value, PGA_FALSE or PGA_TRUE
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetRandomizeSelect(ctx, PGA_TRUE);
+
+****************************************************************************U*/
+void PGASetRandomizeSelect(PGAContext *ctx, int v)
+{
+    ctx->ga.RandomizeSelect = v;
+}
+
+/*U***************************************************************************
+   PGAGetRandomizeSelect - returns the setting for additional select
+   randomization.
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The setting of select randomization
+
+   Example:
+      PGAContext *ctx;
+      int v;
+      :
+      v = PGAGetRandomizeSelect(ctx);
+
+***************************************************************************U*/
+int PGAGetRandomizeSelect(PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetTruncationProportion");
+    return ctx->ga.RandomizeSelect;
 }
 
 

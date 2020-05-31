@@ -1,0 +1,39 @@
+.TH PGAGetRandomizeSelect 3 "2020-05-31" " " "PGAPack"
+.SH NAME
+PGAGetRandomizeSelect \- returns the setting for additional select
+randomization.
+.SH DESCRIPTION
+This function will return PGA_TRUE if a second randomization step after
+selection is performed. All selection schemes except PGA_SELECT_SUS
+already return the individuals in randomized order, previously this was
+randomized again. With this method you can find out if the randomization
+for selection schemes other than PGA_SELECT_SUS (for which a
+randomization step is always performed) is turned on.
+.SH INPUT PARAMETERS
+.PD 0
+.TP
+ctx
+- context variable
+.PD 1
+.SH OUTPUT PARAMETERS
+.PD 0
+.TP
+none
+
+.PD 1
+.SH SYNOPSIS
+.nf
+#include "pgapack.h"
+int PGAGetRandomizeSelect(PGAContext *ctx)
+.fi
+.SH LOCATION
+select.c
+.SH EXAMPLE
+.nf
+Example:
+PGAContext *ctx;
+int v;
+:
+v = PGAGetRandomizeSelect(ctx);
+
+.fi

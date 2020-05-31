@@ -1078,6 +1078,13 @@ by default selects half of the population. This proportion of selected
 individuals can be set with \verb+PGASetTruncationProportion+ for which
 the default value is 0.5.
 
+Most selection schemes (except stochastic universal selection) already
+return a randomized sequence. In previous implementations \textit{all}
+sequences got an additional randomization step. By default this is no
+longer the case (exect for \verb+PGA_SELECT_SUS+). You can enable the
+previous behavior by setting it to \verb+PGA_TRUE+ with
+\verb+PGASetRandomizeSelect+.
+
 
 % Baker's stochastic universal selection (SUS) is an optimal sampling algorithm
 % \cite{Ba87}.  SUS may be thought of as constructing a roulette wheel using
@@ -1791,8 +1798,8 @@ int main(int argc, char **argv)
             PGACopyIndividual(ctx, j, PGA_OLDPOP, i, PGA_NEWPOP);
         }
         while (n < popsize) { 
-            m1 = PGASelectNextIndex(ctx);
-            m2 = PGASelectNextIndex(ctx);        
+            m1 = PGASelectNextIndex(ctx, PGA_OLDPOP);
+            m2 = PGASelectNextIndex(ctx, PGA_OLDPOP);        
             if(PGARandomFlip(ctx, probcross)) {
                 PGACrossover(ctx, m1, m2, PGA_OLDPOP, PGA_TEMP1, PGA_TEMP2, PGA_NEWPOP);
                 PGAMutate (ctx,PGA_TEMP1,PGA_NEWPOP);
@@ -3439,6 +3446,7 @@ int &  PGAGetPopReplaceType(PGAContext *ctx) \\ \hline
 int &  PGAGetPopSize(PGAContext *ctx) \\ \hline
 int &  PGAGetPrintFrequencyValue(PGAContext *ctx) \\ \hline
 int &  PGAGetRandomInitFlag(PGAContext *ctx) \\ \hline
+int &  PGAGetRandomizeSelect(PGAContext *ctx) \\ \hline
 int &  PGAGetRandomSeed(PGAContext *ctx) \\ \hline
 int &  PGAGetRank(PGAContext *ctx, MPI\_Comm comm) \\ \hline
 double &  PGAGetRealAllele(PGAContext *ctx, int p, int pop, int i) \\ \hline
@@ -3493,7 +3501,7 @@ void &  PGARunMutationAndCrossover(PGAContext *ctx, int oldpop, int newpop) \\
 \hline
 void &  PGARunMutationOrCrossover(PGAContext *ctx, int oldpop, int newpop) \\ \hline
 void &  PGASelect(PGAContext *ctx, int popix) \\ \hline
-int &  PGASelectNextIndex(PGAContext *ctx) \\ \hline
+int &  PGASelectNextIndex(PGAContext *ctx, int pop) \\ \hline
 void &  PGASendIndividual(PGAContext *ctx, int p, int pop, int dest, int tag,
 MPI\_Comm comm) \\ \hline
 void &  PGASendReceiveIndividual(PGAContext *ctx, int send\_p, \\
@@ -3546,6 +3554,7 @@ void &  PGASetPopSize(PGAContext *ctx, int popsize) \\ \hline
 void &  PGASetPrintFrequencyValue(PGAContext *ctx, int print\_freq) \\ \hline
 void &  PGASetPrintOptions(PGAContext *ctx, int option) \\ \hline
 void &  PGASetRandomInitFlag(PGAContext *ctx, int RandomBoolean) \\ \hline
+void &  PGASetRandomizeSelect(PGAContext *ctx, int value) \\ \hline
 void &  PGASetRandomSeed(PGAContext *ctx, int seed) \\ \hline
 void &  PGASetRealAllele(PGAContext *ctx, int p, int pop, int i, double value)
 \\ \hline
