@@ -753,6 +753,7 @@ int PGASelectTruncation (PGAContext *ctx, PGAIndividual *pop)
         for (i=0; i<k; i++) {
             kbest [i] = bestidx [i];
         }
+        last_generation = ctx->ga.iter;
         perm_idx = k;
     }
 
