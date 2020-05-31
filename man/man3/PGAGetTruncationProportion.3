@@ -1,0 +1,32 @@
+.TH PGAGetTournamentSize 3 "2020-05-31" " " "PGAPack"
+.SH NAME
+PGAGetTruncationProportion \- returns the proportion of best individuals
+selected in truncation selection.
+.SH INPUT PARAMETERS
+.PD 0
+.TP
+ctx
+- context variable
+.PD 1
+.SH OUTPUT PARAMETERS
+.PD 0
+.TP
+none
+
+.PD 1
+.SH SYNOPSIS
+.nf
+#include "pgapack.h"
+double PGAGetTruncationProportion(PGAContext *ctx)
+.fi
+.SH LOCATION
+select.c
+.SH EXAMPLE
+.nf
+Example:
+PGAContext *ctx;
+double proportion;
+:
+proportion = PGAGetTruncationProportion(ctx);
+
+.fi

@@ -1,0 +1,39 @@
+.TH PGASetTournamentSize 3 "2020-05-31" " " "PGAPack"
+.SH NAME
+PGASetTruncationProportion \- Specifies the proportion of selected
+individuals for truncation selection.
+.SH DESCRIPTION
+This function will have no effect unless PGA_SELECT_TRUNCATION was
+specified as the type of selection to use with PGASetSelectType. The
+default value is 0.5.
+.SH INPUT PARAMETERS
+.PD 0
+.TP
+ctx
+- context variable
+.PD 0
+.TP
+proportion
+- the proportion of selected indivduals betweeen 0 and 1
+.PD 1
+.SH OUTPUT PARAMETERS
+.PD 0
+.TP
+none
+
+.PD 1
+.SH SYNOPSIS
+.nf
+#include "pgapack.h"
+void  PGASetTruncationProportion(PGAContext *ctx, double proportion)
+.fi
+.SH LOCATION
+select.c
+.SH EXAMPLE
+.nf
+Example:
+PGAContext *ctx;
+:
+PGASetTruncationProportion(ctx, 0.7);
+
+.fi

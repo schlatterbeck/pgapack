@@ -42,7 +42,7 @@ Library}
 {\em David Levine\\[.1in]
 Mathematics and Computer Science Division\\[.1in]
 and contributors
-}{-95/18}{January 31, 1996}
+}{-95/18}{January 31, 1996, last updated May 31, 2020}
 
 
 
@@ -198,44 +198,22 @@ developed by Ralph Butler and  Rusty Lusk.
 %*****************************************************************************
 
 If you wish to get started by just typing a few lines and running an example,
-this section is for you.  We assume you have {\tt ftp}ed the compressed tar
-file {\tt pgapack.tar.Z} containing the distribution into {\tt
-/home/username}.  To build a sequential version of \pga\ for a Sun
-SparcStation in {\tt /usr/local/pga} and run a test example, type
+this section is for you. We trust you know how to check out the latest
+version from github. Once you have a directory with the checked-out
+version you can build with:
+
 \begin{enumerate}
-\item {\tt uncompress /home/username/pgapack.tar.Z}
-\item {\tt mkdir /usr/local/pga}
-\item {\tt cd /usr/local/pga}
-\item {\tt tar xvf /home/username/pgapack.tar}
-\item {\tt configure -arch sun4}
-\item {\tt make install}
-\item {\tt /usr/local/pga/examples/c/maxbit}
+\item \verb+cd pgapack+
+\item \verb+make+
 \end{enumerate}
 
-To build an optimized (no built-in debugging capabilities), parallel
-version of \pga\ for an IBM SP parallel computer, using an MPI implementation
-with include files in {\tt /usr/local/mpi/include} and library in {\tt
-/usr/local/mpi/lib}, and run a test example using four processes, type
-\begin{enumerate}
-\item {\tt uncompress /home/username/pgapack.tar.Z}
-\item {\tt mkdir /usr/local/pga}
-\item {\tt cd /usr/local/pga}
-\item {\tt tar xvf /home/username/pgapack.tar}
-\item {\tt configure -arch rs6000 \verb+\+ } \\
-\hspace{.5in}
-{\tt -mpiinc /usr/local/mpi/include -mpilib /usr/local/mpi/lib/libmpi.a}
-\item {\tt make install}
-\item {\tt mpirun -np 4 /usr/local/pga/examples/c/maxbit}
-\end{enumerate}
+The Makefile will auto-detect if you have an MPI-Implementation
+installed and will build a parallel version. If no MPI is detected, the
+serial version will be built. If the version is not correctly
+auto-detected or you want to force a certain MPI backend, refer to
+the build documentation in \verb+README.rst+.
 
-Step 7, the execution step, is completely dependent on the MPI
-implementation.  This  example uses the {\tt mpirun} script that is
-distributed with the {\tt MPICH} implementation \cite{mpich-web-page}.
-Other MPI implementations may have other ways to specify the number of
-processes to use.  
-
-More details on the installation process and various options are given in
-Chapter~\ref{chp:install}.  Chapter~\ref{chp:examples} (example problems) and
+Chapter~\ref{chp:examples} (example problems) and
 Sections~\ref{sec:big-picture} (required functions) and~\ref{sec:evaluation}
 (string evaluation and fitness) should be read next.
 
@@ -290,229 +268,6 @@ networks.
 % % \pga\ on specific machines.
 % Chapter~\ref{chp:debug} discusses debugging tools in \pga.
 % Chapter~\ref{chp:problems} discusses some common problems.
-
-%*****************************************************************************
-\chapter{Installation}\label{chp:install}
-%*****************************************************************************
-
-%*****************************************************************************
-\section{Obtaining \pga}\label{sec:obtain}
-%*****************************************************************************
-
-The complete distribution of \pga\ is available by anonymous ftp from {\tt
-ftp.mcs.anl.gov} in the file {\tt pub/pgapack/pgapack.tar.Z}. The distribution
-contains all source code, installation instructions, this users guide, and a
-collection of examples in C and Fortran.  The current release of \pga\ is 1.0.
-You can check which version of \pga\ you have by running any C language \pga\
-program with the command-line option {\tt -pgaversion}.
-
-
-%*****************************************************************************
-\section{Requirements}\label{sec:require}
-%*****************************************************************************
-
-To compile \pga, you {\em must} have an ANSI C compiler that includes a full
-implementation of the Standard C library and related header files.  
-If you wish only to build a {\em sequential} version of \pga\ this is all that
-is required.
-
-To build a {\em parallel} version, you {\em must} have an implementation of the
-Message Passing Interface (MPI) \cite{MPI-final,GrLuSk94} for the parallel
-computer or workstation network you are running on.  If you do not have a
-native version of MPI for your computer, several machine-independent
-implementations are available.  Most of the testing and development of \pga\ was
-done by using the {\tt MPICH} implementation of MPI which is freely available
-\cite{mpich-web-page}.
-
-
-%%*****************************************************************************
-%\section{Computers Supported}\label{sec:computers-supported}
-%%*****************************************************************************
-%
-%This version of \pga\ (1.0) has been tested on Sun Sparc, Next, IBM RS6000,
-%and SGI workstations, PC`s running freebsd, and the SGI Powerchallenge, IBM
-%SP, and Intel Paragon parallel computers
-%Since  \pga\ is written in ANSI C, it should be possible to compile it on
-%other systems as well.
-
-%*****************************************************************************
-\section{Structure of the Distribution Directory}\label{sec:dirstruc}
-%*****************************************************************************
-
-The \pga\ distribution contains the following files and
-subdirectories:
-\begin{itemize}
-\item {\bf CHANGES:} Changes new to this release of \pga.
-\item {\bf COPYRIGHT:} The usage terms.
-\item {\bf README:} General instructions, including how to build and install
-\pga.
-\item {\bf configure.in:} The ``source code'' for the {\tt configure}
-script.
-\item {\bf configure:} A Unix shell script that 
-configures {\tt Makefile.in} for a specific architecture.
-\item {\bf Makefile.in:} Prototype makefile that is configured into the
-file {\tt Makefile} for a specific architecture by {\bf configure}.
-\item {\bf docs:}  The users guide and any other supporting files.
-\item {\bf examples:}  A directory containing C and Fortran examples.
-\item {\bf include:} The \pga\ include directory.
-\item {\bf lib:} The top-level directory where \pga\ will be installed.
-\item {\bf man:} The directory containing the \pga\ man pages.
-\item {\bf source:} The source code for \pga.
-\end{itemize}
-In the rest of this guide we use ``{\tt .}'' as the top-level directory, 
-e.g., {\tt ./source}, {\tt ./examples/c/maxbit.c}.
-
-
-%*****************************************************************************
-\section{Installation Instructions}\label{sec:install}
-%*****************************************************************************
-
-When installing \pga\ you make two choices: whether to build a sequential (the
-default) or parallel version (see the flags {\tt-mpiinc} and {\tt
--mpilib} below) and whether to build an optimized (the default) or debug
-version (the {\tt -debug} flag).  In broad outline, the installation steps
-are as follows.
-\begin{enumerate}
-\item Make a directory to install \pga\ in ({\tt mkdir /usr/local/pga}).
-\item Change directories to the directory created in the last step
-({\tt cd /usr/local/pga}).
-\item Obtain the compressed tar file {\tt pgapack.tar.Z} by anonymous ftp from
-{\tt ftp.mcs.anl.gov} in the directory {\tt pub/pgapack}.
-\item Uncompress the tar file ({\tt uncompress pgapack.tar.Z}).
-\item Untar the uncompressed \pga\ tar file
-({\tt tar xvf pgapack.tar}).
-\item Use {\tt configure} to configure the makefiles
-({\tt configure -arch ARCH\_TYPE})
-
-where {\tt ARCH\_TYPE} is one of
-{\tt sun4} for Sun SparcStations workstations,
-{\tt next} for NeXT workstations,
-{\tt rs6000} for IBM RS/6000 workstations,
-{\tt irix} for Silicon Graphics workstations,
-{\tt hpux} for Hewlett Packard workstations,
-{\tt alpha} for DEC Alpha workstations,
-{\tt linux} for machines running Linux,
-{\tt freebsd} for machines running FreeBSD,
-{\tt generic} for generic 32-bit machines, 
-{\tt powerchallenge} for the Silicon Graphics Power Challenge Array,
-{\tt challenge} for the Silicon Graphics Challenge,
-{\tt t3d} for the Cray T3D,
-{\tt sp2} for the IBM SP2,
-{\tt paragon} for the Intel Paragon,
-or
-{\tt exemplar} for the Convex  Exemplar.
-
-\begin{sloppypar}
-The full {\tt configure} options are {\tt configure -arch ARCH\_TYPE [-cc CC] 
-[-cflags CFLAGS] [-f77 FC] [-fflags FFLAGS] [-debug]
-[-mpiinc MPI\_INCLUDE\_DIRECTORY] [-mpilib MPI\_LIBRARY]  [-help]}
-where all parameters except {\tt -arch} are
-optional and do the following:
-\end{sloppypar}
-\begin{itemize}
-\item {\tt -cc}: The name of the ANSI C compiler, {\tt cc} by
-default.
-\item {\tt -cflags}: Options passed to the C compiler.
-\item {\tt -f77}:  The name of the Fortran 77 compiler, {\tt f77} by
-default. (The Fortran compiler is used only to compile the Fortran
-examples in the {\tt ./examples/fortran} directory.)
-\item {\tt -fflags}: Options passed to the Fortran compiler.
-\item {\tt -debug}: If specified, enables the debugging features (see
-Chapter~\ref{chp:debug}) and compiles the source code with the {\tt -g} flag.
-If this flag is not specified the debugging features are disabled, and
-the library is compiled with the {\tt -O} flag
-\item {\tt -mpiinc}: The {\em directory} where MPI include files are located.
-\item {\tt -mpilib}: The {\em full path} to the MPI library.
-\end{itemize}
-If {\tt -mpiinc} and  {\tt -mpilib} are specified, {\em a parallel version} of
-\pga\ will be built.  If these flags are not specified, a {\em sequential
-version} of \pga\ will be built.
-\item Execute the makefile ({\tt make install}).
-\item Add \pga's man pages to your man page path.
-({\tt\small setenv MANPATH "\$MANPATH:/home/pgapack/man"})
-\item Execute a test problem
-\begin{itemize}
-\item {\tt /usr/local/pga/examples/c/maxbit} in C
-\item {\tt /usr/local/pga/examples/fortran/maxbit} in Fortran.
-\end{itemize}
-\end{enumerate}
-
-If a parallel version of \pga\ was used, the actual commands to execute a
-parallel program in Step 9 will depend on the particular MPI implementation
-and parallel computer used.  See Appendix~\ref{chp:start-up} for some
-examples.
-
-%*****************************************************************************
-\section{Installation Examples}\label{sec:install-examples}
-%*****************************************************************************
-
-These installation examples assume you have {\tt ftp}ed the compressed tar
-file {\tt pgapack.tar.Z} containing the distribution into {\tt
-/home/username}.
-
-%*****************************************************************************
-\subsection{Sequential Installation}\label{subsec:seq-install}
-%*****************************************************************************
-
-To build a sequential version of \pga\ for a Sun SparcStation in {\tt
-/usr/local/pga} and run a test example, type:
-\begin{enumerate}
-\item {\tt uncompress /home/username/pgapack.tar.Z}
-\item {\tt mkdir /usr/local/pga}
-\item {\tt cd /usr/local/pga}
-\item {\tt tar xvf /home/username/pgapack.tar}
-\item {\tt configure -arch sun4}
-\item {\tt make install}
-\item {\tt /usr/local/pga/examples/c/maxbit}
-\end{enumerate}
-
-%*****************************************************************************
-\subsection{Parallel Installation}\label{subsec:par-install}
-%*****************************************************************************
-
-To build an optimized (no built-in debugging capabilities), parallel
-version of \pga\ for an IBM SP parallel computer using an MPI implementation
-with include files in {\tt /usr/local/mpi/include} and library in {\tt
-/usr/local/mpi/lib}, and run a test example using four processes, type:
-\begin{enumerate}
-\item {\tt uncompress /home/username/pgapack.tar.Z}
-\item {\tt mkdir /usr/local/pga}
-\item {\tt cd /usr/local/pga}
-\item {\tt tar xvf /home/username/pgapack.tar}
-\item {\tt configure -arch rs6000  \verb+\+} \\
-\hspace{.5in}
-{\tt -mpiinc /usr/local/mpi/include -mpilib /usr/local/mpi/lib/libmpi.a}
-\item {\tt make install}
-\item {\tt mpirun -np 4 /usr/local/pga/examples/c/maxbit}
-\end{enumerate}
-
-Step 7, the execution step, is completely dependent on the MPI implementation.
-This example uses the {\tt mpirun} script that is distributed with the {\tt
-MPICH} implementation \cite{mpich-web-page}.  Other MPI implementations may
-have other ways to specify the number of processes to use.
-
-
-
-%*****************************************************************************
-\section{Mailing Lists, Web Page, and Bug Reporting}\label{sec:support}
-%*****************************************************************************
-
-To join the \pga\ mailing list to receive announcements of new versions,
-enhancements, and bug fixes, send electronic mail to {\tt
-pgapack@mcs.anl.gov}.  Bug reports should be sent to {\tt
-pgapack-bugs@mcs.anl.gov}.  The World Wide Web page for \pga\ is {\tt
-http://www.mcs.anl.gov/pgapack.html} and contains 
-up-to-date news and a list of bug reports.
-
-
-When reporting a bug, please include as much information and documentation as
-possible.  Helpful information would include \pga\ version number ({\tt
--pgaversion}), MPI implementation and version used, configuration options,
-type of computer system, problem description, and error message output.  It is
-helpful if you put a {\tt PGAPrintContextVariable} call before and after the
-{\tt PGASetUp} call.  Additionally, if possible, build a debug version of
-\pga\ and send ``high-level'' output from running your program with the trace
-facility enabled (Chapter~\ref{chp:debug}).
 
 %*****************************************************************************
 \chapter{Examples}\label{chp:examples}
@@ -3537,9 +3292,10 @@ Fortran and C.
     
 \item Population Replacement
 \begin{itemize}
-\item {\tt PGA\_POPREPL\_BEST}
-\item {\tt PGA\_POPREPL\_RANDOM\_NOREP}
-\item {\tt PGA\_POPREPL\_RANDOM\_REP}
+\item \verb+PGA_POPREPL_BEST+
+\item \verb+PGA_POPREPL_RANDOM_NOREP+
+\item \verb+PGA_POPREPL_RANDOM_REP+
+\item \verb+PGA_POPREPL_RTR+
 \end{itemize}
 
 \item Initialization Options
@@ -3565,10 +3321,11 @@ Fortran and C.
 
 \item Selection
 \begin{itemize}
-\item {\tt PGA\_SELECT\_PROPORTIONAL}
-\item {\tt PGA\_SELECT\_SUS}
-\item {\tt PGA\_SELECT\_TOURNAMENT}
-\item {\tt PGA\_SELECT\_PTOURNAMENT}
+\item \verb+PGA_SELECT_PROPORTIONAL+
+\item \verb+PGA_SELECT_SUS+
+\item \verb+PGA_SELECT_TOURNAMENT+
+\item \verb+PGA_SELECT_PTOURNAMENT+
+\item \verb+PGA_SELECT_TRUNCATION+
 \end{itemize}
 
 \item User Functions
@@ -3693,27 +3450,31 @@ int &  PGAGetRealInitType(PGAContext *ctx) \\ \hline
 double &  PGAGetRestartAlleleChangeProb(PGAContext *ctx) \\ \hline
 int &  PGAGetRestartFlag(PGAContext *ctx) \\ \hline
 int &  PGAGetRestartFrequencyValue(PGAContext *ctx) \\ \hline
+int &  PGAGetRTRWindowSize(PGAContext *ctx) \\ \hline
 int &  PGAGetSelectType(PGAContext *ctx) \\ \hline
 int &  PGAGetSortedPopIndex(PGAContext *ctx, int n) \\ \hline
 int &  PGAGetStoppingRuleType(PGAContext *ctx) \\ \hline
 int &  PGAGetStringLength(PGAContext *ctx) \\ \hline
+int &  PGAGetTournamentSize(PGAContext *ctx) \\ \hline
+int &  PGAGetTournamentWithReplacement(PGAContext *ctx) \\ \hline
+double &  PGAGetTruncationProportion(PGAContext *ctx) \\ \hline
 double &  PGAGetUniformCrossoverProb(PGAContext *ctx) \\ \hline
 int &  PGAGetWorstIndex(PGAContext *ctx, int pop) \\ \hline
 double &  PGAHammingDistance(PGAContext *ctx, int popindex) \\ \hline
 double &  PGAMean(PGAContext *ctx, double *a, int n) \\ \hline
 int &  PGAMutate(PGAContext *ctx, int p, int pop) \\ \hline
-void &  PGAPrintContextVariable(PGAContext *ctx, FILE *fp) \\ \hline
-void &  PGAPrintIndividual(PGAContext *ctx, FILE *fp, int p, int pop) \\ \hline
-void &  PGAPrintPopulation(PGAContext *ctx, FILE *fp, int pop) \\ \hline
-void &  PGAPrintReport(PGAContext *ctx, FILE *fp, int pop) \\ \hline
-void &  PGAPrintString(PGAContext *ctx, FILE *file, int p, int pop) \\ \hline
-void &  PGAPrintVersionNumber(PGAContext *ctx) \\ \hline
 \end{tabular}
 
 
 \begin{tabular}{|l|l|} \hline\hline
 \multicolumn{1}{|c|}{Type} &
 \multicolumn{1}{c|}{Function}  \\  \hline\hline
+void &  PGAPrintContextVariable(PGAContext *ctx, FILE *fp) \\ \hline
+void &  PGAPrintIndividual(PGAContext *ctx, FILE *fp, int p, int pop) \\ \hline
+void &  PGAPrintPopulation(PGAContext *ctx, FILE *fp, int pop) \\ \hline
+void &  PGAPrintReport(PGAContext *ctx, FILE *fp, int pop) \\ \hline
+void &  PGAPrintString(PGAContext *ctx, FILE *file, int p, int pop) \\ \hline
+void &  PGAPrintVersionNumber(PGAContext *ctx) \\ \hline
 double &  PGARandom01(PGAContext *ctx, int newseed) \\ \hline
 int &  PGARandomFlip(PGAContext *ctx, double p) \\ \hline
 double &  PGARandomGaussian(PGAContext *ctx, double mean, double sigma) \\ \hline
@@ -3763,13 +3524,6 @@ void &  PGASetMaxFitnessRank(PGAContext *ctx, double fitness\_rank\_max) \\ \hli
 void &  PGASetMaxGAIterValue(PGAContext *ctx, int maxiter) \\ \hline
 void &  PGASetMaxNoChangeValue(PGAContext *ctx, int max\_no\_change) \\ \hline
 void &  PGASetMaxSimilarityValue(PGAContext *ctx, int max\_similarity) \\ \hline
-void &  PGASetMutationAndCrossoverFlag(PGAContext *ctx, int flag) \\ \hline
-void &  PGASetMutationBoundedFlag(PGAContext *ctx, int val) \\ \hline
-void &  PGASetMutationIntegerValue(PGAContext *ctx, int val) \\ \hline
-void &  PGASetMutationOrCrossoverFlag(PGAContext *ctx, int flag) \\ \hline
-void &  PGASetMutationProb(PGAContext *ctx, double mutation\_prob) \\ \hline
-void &  PGASetMutationRealValue(PGAContext *ctx, double val) \\ \hline
-void &  PGASetMutationType(PGAContext *ctx, int mutation\_type) \\ \hline
 \end{tabular}
 
 
@@ -3777,6 +3531,13 @@ void &  PGASetMutationType(PGAContext *ctx, int mutation\_type) \\ \hline
 \begin{tabular}{|l|l|} \hline\hline
 \multicolumn{1}{|c|}{Type} &
 \multicolumn{1}{c|}{Function}  \\  \hline\hline
+void &  PGASetMutationAndCrossoverFlag(PGAContext *ctx, int flag) \\ \hline
+void &  PGASetMutationBoundedFlag(PGAContext *ctx, int val) \\ \hline
+void &  PGASetMutationIntegerValue(PGAContext *ctx, int val) \\ \hline
+void &  PGASetMutationOrCrossoverFlag(PGAContext *ctx, int flag) \\ \hline
+void &  PGASetMutationProb(PGAContext *ctx, double mutation\_prob) \\ \hline
+void &  PGASetMutationRealValue(PGAContext *ctx, double val) \\ \hline
+void &  PGASetMutationType(PGAContext *ctx, int mutation\_type) \\ \hline
 void &  PGASetNoDuplicatesFlag(PGAContext *ctx, int no\_dup) \\ \hline
 void &  PGASetNumReplaceValue(PGAContext *ctx, int pop\_replace) \\ \hline
 void &  PGASetPTournamentProb(PGAContext *ctx, double ptournament\_prob) \\ \hline
@@ -3794,8 +3555,12 @@ void &  PGASetRealInitRange(PGAContext *ctx, double *min, double *max) \\ \hline
 void &  PGASetRestartAlleleChangeProb(PGAContext *ctx, double prob) \\ \hline
 void &  PGASetRestartFlag(PGAContext *ctx, int val) \\ \hline
 void &  PGASetRestartFrequencyValue(PGAContext *ctx, int numiter) \\ \hline
+void &  PGASetRTRWindowSize(PGAContext *ctx, int size) \\ \hline
 void &  PGASetSelectType(PGAContext *ctx, int select\_type) \\ \hline
 void &  PGASetStoppingRuleType(PGAContext *ctx, int stoprule) \\ \hline
+void &  PGASetTournamentSize(PGAContext *ctx, int size) \\ \hline
+void &  PGASetTournamentWithReplacement(PGAContext *ctx, int v) \\ \hline
+void &  PGASetTruncationProportion(PGAContext *ctx, double prop) \\ \hline
 void &  PGASetUniformCrossoverProb(PGAContext *ctx, double uniform\_cross\_prob)
 \\ \hline
 void &  PGASetUp(PGAContext *ctx) \\ \hline

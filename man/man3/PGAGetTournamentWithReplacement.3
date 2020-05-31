@@ -1,0 +1,35 @@
+.TH PGAGetTournamentSize 3 "2020-05-31" " " "PGAPack"
+.SH NAME
+PGAGetTournamentWithReplacement \- returns the setting for tournament
+sampling (with or without replacement).
+.SH DESCRIPTION
+This function will return PGA_TRUE if sampling is with replacement,
+PGA_FALSE otherwise.
+.SH INPUT PARAMETERS
+.PD 0
+.TP
+ctx
+- context variable
+.PD 1
+.SH OUTPUT PARAMETERS
+.PD 0
+.TP
+none
+
+.PD 1
+.SH SYNOPSIS
+.nf
+#include "pgapack.h"
+int PGAGetTournamentWithReplacement(PGAContext *ctx)
+.fi
+.SH LOCATION
+select.c
+.SH EXAMPLE
+.nf
+Example:
+PGAContext *ctx;
+int v;
+:
+v = PGAGetTournamentSize(ctx);
+
+.fi
