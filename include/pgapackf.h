@@ -278,6 +278,10 @@ c *** TAGS
       integer PGACheckSum
       integer PGAGetWorstIndex
       integer PGAGetBestIndex
+      integer PGAGetRTRWindowSize
+      double precision PGAGetTruncationProportion
+      integer PGAGetTournamentWithReplacement
+      integer PGAGetRandomizeSelect
 
       external PGAGetBinaryAllele
       external PGAGetBinaryInitProb
@@ -358,4 +362,13 @@ c *** TAGS
       external PGACheckSum
       external PGAGetWorstIndex
       external PGAGetBestIndex
+      external PGASetTournamentSize
+      external PGASetRTRWindowSize
+      external PGAGetRTRWindowSize
+      external PGASetTruncationProportion
+      external PGAGetTruncationProportion
+      external PGASetTournamentWithReplacement
+      external PGAGetTournamentWithReplacement
+      external PGASetRandomizeSelect
+      external PGAGetRandomizeSelect
 

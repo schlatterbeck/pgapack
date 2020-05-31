@@ -223,6 +223,16 @@ privately owned rights.
 #define pgachecksum_                     PGACHECKSUM
 #define pgagetworstindex_                PGAGETWORSTINDEX
 #define pgagetbestindex_                 PGAGETBESTINDEX
+#define pgasettournamentsize_            PGASETTOURNAMENTSIZE
+#define pgagettournamentsize_            PGAGETTOURNAMENTSIZE
+#define pgasetrtrwindowsize_             PGASETRTRWINDOWSIZE
+#define pgagetrtrwindowsize_             PGAGETRTRWINDOWSIZE
+#define pgasettruncationproportion_      PGASETTRUNCATIONPROPORTION
+#define pgagettruncationproportion_      PGAGETTRUNCATIONPROPORTION
+#define pgasettournamentwithreplacement_ PGASETTOURNAMENTWITHREPLACEMENT
+#define pgagettournamentwithreplacement_ PGAGETTOURNAMENTWITHREPLACEMENT
+#define pgasetrandomizeselect_           PGASETRANDOMIZESELECT
+#define pgagetrandomizeselect_           PGAGETRANDOMIZESELECT
 
 #elif defined(FORTRANTWOUNDERSCORE)
 #define pgasetbinaryallele_              _pgasetbinaryallele_
@@ -383,6 +393,16 @@ privately owned rights.
 #define pgachecksum_                     _pgachecksum_
 #define pgagetworstindex_                _pgagetworstindex_
 #define pgagetbestindex_                 _pgagetbestindex_
+#define pgasettournamentsize_            _pgasettournamentsize_
+#define pgagettournamentsize_            _pgagettournamentsize_
+#define pgasetrtrwindowsize_             _pgasetrtrwindowsize_
+#define pgagetrtrwindowsize_             _pgagetrtrwindowsize_
+#define pgasettruncationproportion_      _pgasettruncationproportion_
+#define pgagettruncationproportion_      _pgagettruncationproportion_
+#define pgasettournamentwithreplacement_ _pgasettournamentwithreplacement_
+#define pgagettournamentwithreplacement_ _pgagettournamentwithreplacement_
+#define pgasetrandomizeselect_           _pgasetrandomizeselect_
+#define pgagetrandomizeselect_           _pgagetrandomizeselect_
 
 #elif !defined(FORTRANUNDERSCORE)
 #define pgasetbinaryallele_              pgasetbinaryallele
@@ -543,6 +563,16 @@ privately owned rights.
 #define pgachecksum_                     pgachecksum
 #define pgagetworstindex_                pgagetworstindex
 #define pgagetbestindex_                 pgagetbestindex
+#define pgasettournamentsize_            pgasettournamentsize
+#define pgagettournamentsize_            pgagettournamentsize
+#define pgasetrtrwindowsize_             pgasetrtrwindowsize
+#define pgagetrtrwindowsize_             pgagetrtrwindowsize
+#define pgasettruncationproportion_      pgasettruncationproportion
+#define pgagettruncationproportion_      pgagettruncationproportion
+#define pgasettournamentwithreplacement_ pgasettournamentwithreplacement
+#define pgagettournamentwithreplacement_ pgagettournamentwithreplacement
+#define pgasetrandomizeselect_           pgasetrandomizeselect
+#define pgagetrandomizeselect_           pgagetrandomizeselect
 #endif
 
 void pgasetbinaryallele_(PGAContext **ftx, int *p, int *pop, int *i,
@@ -728,6 +758,16 @@ void pgacopyindividual_(PGAContext **ftx, int *i, int *p1, int *j, int *p2);
 int pgachecksum_(PGAContext **ftx, int *p, int *pop);
 int pgagetworstindex_(PGAContext **ftx, int *pop);
 int pgagetbestindex_(PGAContext **ftx, int *pop);
+void pgasettournamentsize_(PGAContext **ftx, int *size);
+int  pgagettournamentsize_(PGAContext **ftx);
+void pgasetrtrwindowsize_(PGAContext **ftx, int *size);
+int  pgagetrtrwindowsize_(PGAContext **ftx);
+void   pgasettruncationproportion_(PGAContext **ftx, double *prop);
+double pgagettruncationproportion_(PGAContext **ftx);
+void pgasettournamentwithreplacement_(PGAContext **ftx, int *v);
+int  pgagettournamentwithreplacement_(PGAContext **ftx);
+void pgasetrandomizeselect_(PGAContext **ftx, int *v);
+int  pgagetrandomizeselect_(PGAContext **ftx);
 
 void pgasetbinaryallele_(PGAContext **ftx, int *p, int *pop, int *i,
      int *val)
@@ -1791,3 +1831,52 @@ int pgagetbestindex_(PGAContext **ftx, int *pop)
      return PGAGetBestIndex(*ftx, *pop) + 1;
 }
 
+void pgasettournamentsize_(PGAContext **ftx, int *size)
+{
+    PGASetTournamentSize(*ftx, *size);
+}
+
+int  pgagettournamentsize_(PGAContext **ftx)
+{
+    return PGAGetTournamentSize(*ftx);
+}
+
+void pgasetrtrwindowsize_(PGAContext **ftx, int *size)
+{
+    PGASetRTRWindowSize(*ftx, *size);
+}
+
+int  pgagetrtrwindowsize_(PGAContext **ftx)
+{
+    return PGAGetRTRWindowSize(*ftx);
+}
+
+void   pgasettruncationproportion_(PGAContext **ftx, double *prop)
+{
+    PGASetTruncationProportion(*ftx, *prop);
+}
+
+double pgagettruncationproportion_(PGAContext **ftx)
+{
+    return PGAGetTruncationProportion(*ftx);
+}
+
+void pgasettournamentwithreplacement_(PGAContext **ftx, int *v)
+{
+    PGASetTournamentWithReplacement(*ftx, *v);
+}
+
+int  pgagettournamentwithreplacement_(PGAContext **ftx)
+{
+    return PGAGetTournamentWithReplacement(*ftx);
+}
+
+void pgasetrandomizeselect_(PGAContext **ftx, int *v)
+{
+    PGASetRandomizeSelect(*ftx, *v);
+}
+
+int  pgagetrandomizeselect_(PGAContext **ftx)
+{
+    return PGAGetRandomizeSelect(*ftx);
+}
