@@ -816,7 +816,11 @@ double PGAMapIntegerToReal (PGAContext *ctx, int v, int a, int b, double l,
 
     PGADebugExited("PGAMapIntegerToReal");
 
-     return((v-a) * (u-l) / (b-a) + l);
+    double retval = ((v-a) * (u-l) / (b-a) + l);
+    /* This may exceed the upper bound due to imprecision */
+    if (retval > u)
+        return u;
+    return retval;
 }
 
 /*I****************************************************************************
