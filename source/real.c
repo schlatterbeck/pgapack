@@ -952,3 +952,37 @@ double PGARealGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     return ret;
 }
 
+/*I****************************************************************************
+   PGARealEuclidianDistance - Compute genetic difference of two strings.
+   This uses the Euclidian distance metric, the square-root of the sum
+   of all squared differences of each allele.
+
+   Inputs:
+      ctx   - context variable
+      p1    - first string index
+      pop1  - symbolic constant of the population the first string is in
+      p2    - second string index
+      pop2  - symbolic constant of the population the second string is in
+
+   Outputs:
+      genetic euclidian distance of the two strings
+
+   Example:
+      Use in PGASetUserFunction.
+
+****************************************************************************I*/
+double PGARealEuclidianDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+{
+    PGAReal *c1 = (PGAReal *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    PGAReal *c2 = (PGAReal *)PGAGetIndividual (ctx, p2, pop2)->chrom;
+    double ret = 0.0;
+    int i;
+
+    PGADebugEntered("PGARealGeneDistance");
+    for (i=0; i<ctx->ga.StringLen; i++) {
+        ret += pow (c1 [i] - c2 [i], 2);
+    }
+    PGADebugExited("PGARealGeneDistance");
+    return sqrt (ret);
+}
+

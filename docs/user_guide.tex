@@ -2010,14 +2010,30 @@ switched and the standard \pga\ output printed.  Therefore, be sure to use
 {\tt PGA\_NEWPOP} as the population pointer.  There is no mechanism for
 suppressing the standard \pga\ generational output.
 
-The genetic difference funtion\label{gendiff} computes the genetic
+The genetic difference function\label{gendiff} computes the genetic
 difference of two individuals. It is only used when restricted
 tournament selection is in use. There are implementations for the
 standard data types: For binary alleles it uses the hamming distance.
 For real- and integer valued genes it uses an allele-by-allele absolute
-value of the difference. For character alleles it counts the number of
-differences. When using user-defined data types together with restricted
-tournament selection, an implementation has to be provided.
+value of the difference by default (also know as Manhattan distance),
+i.e. $$\sum_{i=0}^{s-1}|a_{ij} - a_{ik}|$$
+where $s$ is the string length, $a_{ij}$ and $a_{ik}$ are the alleles to be
+compared. For character alleles it counts the number of
+differences. You can set the difference function for integer and real
+data types to an Euclidian distance by calling, e.g., for the real data
+type:
+
+\verb+PGASetUserFunction(ctx, PGARealEuclidianDistance);+
+
+\noindent or for the integer data type:
+
+\verb+PGASetUserFunction(ctx, PGAIntegerEuclidianDistance);+
+
+\noindent This will use the Euclidian distance:
+$$\sqrt{\sum_{i=0}^{s-1}(a_{ij} - a_{ik})^2}$$
+When using user-defined data types together with restricted
+tournament selection, an implementation of the distance function for the
+user-defined data type has to be provided.
 
 
 \begin{table}

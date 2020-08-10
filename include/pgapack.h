@@ -644,6 +644,8 @@ void PGAIntegerInitString(PGAContext *ctx, int p, int pop);
 MPI_Datatype PGAIntegerBuildDatatype(PGAContext *ctx, int p, int pop);
 double PGAIntegerGeneDistance (PGAContext *ctx, int p1, int pop1, int p2,
                                int pop2);
+double PGAIntegerEuclidianDistance (PGAContext *ctx, int p1, int pop1, int p2,
+                              int pop2);
 
 /*****************************************
 *          mpi_stub.c
@@ -778,6 +780,8 @@ void PGARealInitString ( PGAContext *ctx, int p, int pop);
 MPI_Datatype PGARealBuildDatatype(PGAContext *ctx, int p, int pop);
 double PGARealGeneDistance (PGAContext *ctx, int p1, int pop1, int p2,
                             int pop2);
+double PGARealEuclidianDistance (PGAContext *ctx, int p1, int pop1, int p2,
+                              int pop2);
 
 /*****************************************
 *          report.c
