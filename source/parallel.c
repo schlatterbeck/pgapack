@@ -105,6 +105,12 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int),
 	    } else {
 		PGASelect(ctx, PGA_OLDPOP);
 		CreateNewGeneration(ctx, PGA_OLDPOP, PGA_NEWPOP);
+                if (ctx->fops.PreEval) {
+                    (*ctx->fops.PreEval)(&ctx);
+                }
+                if (ctx->cops.PreEval) {
+                    (*ctx->cops.PreEval)(ctx);
+                }
 	    }
 	}
 	MPI_Bcast(&Restarted, 1, MPI_INT, 0, comm);

@@ -1282,7 +1282,7 @@ void PGAPrintContextVariable ( PGAContext *ctx, FILE *fp )
 	else
 	    fprintf( fp,"C User Defined: %p\n",ctx->cops.CopyString);
     } else {
-	if (ctx->cops.CopyString)
+	if (ctx->fops.CopyString)
 	    fprintf( fp,"Fortran User Defined: %p\n",ctx->fops.CopyString);
 	else
 	    fprintf( fp,"NULL\n");
@@ -1323,8 +1323,26 @@ void PGAPrintContextVariable ( PGAContext *ctx, FILE *fp )
     if (ctx->cops.EndOfGen)
 	fprintf( fp,"C User Defined: %p\n",ctx->cops.EndOfGen);
     else
-	if (ctx->cops.EndOfGen)
+	if (ctx->fops.EndOfGen)
 	    fprintf( fp,"Fortran User Defined: %p\n",ctx->fops.EndOfGen);
+	else
+	    fprintf( fp,"NULL\n");
+
+    fprintf( fp,"    Gene distance function         : ");
+    if (ctx->cops.GeneDistance)
+	fprintf( fp,"C User Defined: %p\n",ctx->cops.GeneDistance);
+    else
+	if (ctx->fops.GeneDistance)
+	    fprintf( fp,"Fortran User Defined: %p\n",ctx->fops.GeneDistance);
+	else
+	    fprintf( fp,"NULL\n");
+
+    fprintf( fp,"    Pre-Evaluation function        : ");
+    if (ctx->cops.PreEval)
+	fprintf( fp,"C User Defined: %p\n",ctx->cops.PreEval);
+    else
+	if (ctx->fops.PreEval)
+	    fprintf( fp,"Fortran User Defined: %p\n",ctx->fops.PreEval);
 	else
 	    fprintf( fp,"NULL\n");
     

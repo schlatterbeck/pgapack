@@ -1967,6 +1967,7 @@ String Printing      & \verb+PGA_USERFUNCTION_PRINTSTRING+ \\
 Termination Criteria & \verb+PGA_USERFUNCTION_STOPCOND+ \\
 End of generation    & \verb+PGA_USERFUNCTION_ENDOFGEN+ \\
 Genetic difference   & \verb+PGA_USERFUNCTION_GEN_DIFFERENCE+ \\
+Pre-Evaluate Hook    & \verb+PGA_USERFUNCTION_PRE_EVAL+ \\
 \hline
 \end{tabular}
 \end{table}
@@ -1977,8 +1978,10 @@ implementation uses function pointers that, by default, are set to the correct
 values for the datatype used.  The user may change these defaults and set the
 function pointers to execute their functions instead.  The functions the user
 can substitute for are initialization, crossover, mutation, checking for
-duplicate strings, string printing, termination criteria, and a generic
-function called at the end of each GA iteration.
+duplicate strings, string printing, termination criteria, a generic
+function called at the end of each GA iteration, and another generic
+function called \textit{before} evaluation but after mutation and
+crossover.
 
 The function call {\tt PGASetUserFunction(ctx, PGA\_USERFUNCTION\_MUTATION,
 mymute)} will cause
@@ -2035,6 +2038,24 @@ When using user-defined data types together with restricted
 tournament selection, an implementation of the distance function for the
 user-defined data type has to be provided.
 
+The Pre-Evaluate Hook function can be used for performing actions that
+need to be done before evaluating the generated individuals after
+crossover and mutation. It can be used, e.g., for repairing genes after
+crossover and mutation before evaluating them.
+It can also be used in concert with the end of generation function to
+perform caching of evaluations: The end of generation function would
+cache genes and their evaluation while the pre evaluate hook would look
+up newly-generated individuals in the cache: If a newly-generated
+individual is found in the cache, an evaluation can be saved which may
+have an impact on the runtime if evaluation is costly. Note that the
+probability of cache hits may be higher for binary and integer alleles than
+for real alleles. Note that for non-parallel implementations, caching
+could also be implemented in the evaluate function but for parallel
+implementations this would not work because each parallel instance would
+use a separate cache.
+The pre evaluation user function is called only in the master instance
+for a parallel implementation.
+
 
 \begin{table}
 \centering
@@ -2062,6 +2083,8 @@ Calling Sequences for Customizable Functions\label{tab:custom-functions}
     \verb+(PGAContext*)+ \\
 \verb+PGA_USERFUNCTION_GEN_DIFFERENCE+ &\verb+double+ &
     \verb+(PGAContext*, int, int, int, int)+ \\
+\verb+PGA_USERFUNCTION_PRE_EVAL+       &\verb+void+ &
+    \verb+(PGAContext*)+ \\
 \hline
 \end{tabular}
 \end{table}
@@ -3364,6 +3387,7 @@ Fortran and C.
 \item \verb+PGA_USERFUNCTION_STOPCOND+
 \item \verb+PGA_USERFUNCTION_ENDOFGEN+
 \item \verb+PGA_USERFUNCTION_GEN_DIFFERENCE+
+\item \verb+PGA_USERFUNCTION_PRE_EVAL+
 \end{itemize}
 
 \end{itemize}

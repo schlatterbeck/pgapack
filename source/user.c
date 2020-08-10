@@ -63,6 +63,9 @@ privately owned rights.
        PGA_USERFUNCTION_STOPCOND         -- Stopping conditions
        PGA_USERFUNCTION_ENDOFGEN         -- Auxiliary functions at the end
                                             of each generation
+       PGA_USERFUNCTION_PRE_EVAL         -- Auxiliary functions before
+                                            evaluation but after
+                                            crossover and mutation
    It MAY be called when using a native datatype to replace the built-in
    functions PGAPack has for that datatype (For example, if the Integer data
    type is used for a traveling salesperson problem, the user may want to
@@ -160,6 +163,12 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 	    ctx->fops.EndOfGen = (void(*)(void *))f;
 	else
 	    ctx->cops.EndOfGen = (void(*)(PGAContext *))f;
+	break;
+      case PGA_USERFUNCTION_PRE_EVAL:
+	if (ctx->sys.UserFortran)
+	    ctx->fops.PreEval = (void(*)(void *))f;
+	else
+	    ctx->cops.PreEval = (void(*)(PGAContext *))f;
 	break;
       case PGA_USERFUNCTION_GEN_DIFFERENCE:
 	if (ctx->sys.UserFortran)

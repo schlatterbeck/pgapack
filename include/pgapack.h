@@ -226,7 +226,8 @@ extern "C" {
 #define PGA_USERFUNCTION_STOPCOND                9
 #define PGA_USERFUNCTION_ENDOFGEN                10
 #define PGA_USERFUNCTION_GEN_DIFFERENCE          11
-#define PGA_NUM_USERFUNCTIONS                    11
+#define PGA_USERFUNCTION_PRE_EVAL                12
+#define PGA_NUM_USERFUNCTIONS                    12
 
 /*****************************************
 *           MPI SEND/RECV TAGS           *
@@ -319,6 +320,7 @@ typedef struct {
     int          (*StopCond)(PGAContext *);
     void         (*EndOfGen)(PGAContext *);
     double       (*GeneDistance)(PGAContext *, int, int, int, int);
+    void         (*PreEval)(PGAContext *);
 } PGACOperations;
 
 typedef struct {
@@ -331,6 +333,7 @@ typedef struct {
     int          (*StopCond)(void *);
     void         (*EndOfGen)(void *);
     double       (*GeneDistance)(void *, void *, void *, void *, void *);
+    void         (*PreEval)(void *);
 } PGAFortranOperations;
 
 typedef struct sample_state_s {

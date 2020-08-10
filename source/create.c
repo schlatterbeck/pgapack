@@ -256,6 +256,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->cops.StopCond          = NULL;
     ctx->cops.EndOfGen          = NULL;
     ctx->cops.GeneDistance      = NULL;
+    ctx->cops.PreEval           = NULL;
 
     ctx->fops.Mutation          = NULL;
     ctx->fops.Crossover         = NULL;
@@ -266,6 +267,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->fops.StopCond          = NULL;
     ctx->fops.EndOfGen          = NULL;
     ctx->fops.GeneDistance      = NULL;
+    ctx->fops.PreEval           = NULL;
 
     /* Parallel */
     ctx->par.NumIslands        = PGA_UNINITIALIZED_INT;
