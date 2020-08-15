@@ -438,8 +438,11 @@ void PGASetNumReplaceValue( PGAContext *ctx, int pop_replace)
    population to new population.  Valid choices are PGA_POPREPL_BEST,
    PGA_POPREPL_RANDOM_NOREP, or PGA_POPREPL_RANDOM_REP for copying the best
    strings, or  random string, with or without replacement, respectively,
-   from the old population into the new population. The default is
-   PGA_POPREPL_BEST.
+   from the old population into the new population. Additional
+   replacement types are PGA_POPREPL_RTR for restricted tournament
+   replacement and PGA_POPREPL_PAIRWISE_BEST for pairwise comparison of
+   each individual in the old/new population.
+   The default is PGA_POPREPL_BEST.
 
    Category: Generation
 
@@ -466,6 +469,7 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
     case PGA_POPREPL_RANDOM_NOREP:
     case PGA_POPREPL_RANDOM_REP:
     case PGA_POPREPL_RTR:
+    case PGA_POPREPL_PAIRWISE_BEST:
         ctx->ga.PopReplace = pop_replace;
         break;
     default:
@@ -545,4 +549,51 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
     ctx->ga.oldpop = ctx->ga.newpop;
     ctx->ga.newpop = temp;
     PGADebugExited("PGARestrictedTournamentReplacement");
+}
+/*U****************************************************************************
+   PGAPairwiseBestReplacement - Perform pairwise best replacement:
+   Compare individuals with same index in PGA_OLDPOP and PGA_NEWPOP and
+   select the one with higher fitness. This replacement strategy is used
+   in evolutionary algorithms that modify a single individual and
+   replace the parent if the offspring is better. A popular example is
+   Differential Evolution (DE).
+   After this populations are swapped (echange of PGA_NEWPOP and
+   PGA_OLDPOP) for further processing.
+
+   Category: Generation
+
+   Inputs:
+      ctx         - context variable
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGAPairwiseBestReplacement(ctx);
+
+****************************************************************************U*/
+void PGAPairwiseBestReplacement (PGAContext *ctx)
+{
+    int i;
+    int popsize = PGAGetPopSize(ctx);
+    int numreplace = PGAGetNumReplaceValue(ctx);
+    PGAIndividual *temp;
+
+    PGADebugEntered("PGAPairwiseBestReplacement");
+    for (i=popsize - numreplace; i<popsize; i++) {
+        if (ctx->ga.newpop[i].fitness > ctx->ga.oldpop[i].fitness) {
+            /* Copy i in PGA_NEWPOP to i in PGA_OLDPOP */
+            PGACopyIndividual (ctx, i, PGA_NEWPOP, i, PGA_OLDPOP);
+        }
+    }
+    /* Exchange old/newpop, will be done again by PGAUpdateGeneration,
+     * we just make sure that the result of above replacements is now
+     * newpop.
+     */
+    temp           = ctx->ga.oldpop;
+    ctx->ga.oldpop = ctx->ga.newpop;
+    ctx->ga.newpop = temp;
+    PGADebugExited("PGAPairwiseBestReplacement");
 }

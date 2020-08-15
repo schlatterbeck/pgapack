@@ -186,10 +186,11 @@ extern "C" {
 /*****************************************
 *        POPULATION REPLACEMENT          *
 *****************************************/
-#define PGA_POPREPL_BEST         1   /* Select best   string                */
-#define PGA_POPREPL_RANDOM_NOREP 2   /* Select random string w/o replacement*/
-#define PGA_POPREPL_RANDOM_REP   3   /* Select random string w/  replacement*/
-#define PGA_POPREPL_RTR          4   /* Restricted tournament replacement   */
+#define PGA_POPREPL_BEST          1  /* Select best   string                */
+#define PGA_POPREPL_RANDOM_NOREP  2  /* Select random string w/o replacement*/
+#define PGA_POPREPL_RANDOM_REP    3  /* Select random string w/  replacement*/
+#define PGA_POPREPL_RTR           4  /* Restricted tournament replacement   */
+#define PGA_POPREPL_PAIRWISE_BEST 5  /* Pairwise compare old/newpop         */
 
 /****************************************
  *       REPORT OPTIONS                 *
@@ -727,6 +728,7 @@ void PGASetMutationAndCrossoverFlag( PGAContext *ctx, int flag);
 int PGAGetMutationOrCrossoverFlag (PGAContext *ctx);
 int PGAGetMutationAndCrossoverFlag (PGAContext *ctx);
 void PGARestrictedTournamentReplacement (PGAContext *ctx);
+void PGAPairwiseBestReplacement (PGAContext *ctx);
 
 /*****************************************
 *          pop.c

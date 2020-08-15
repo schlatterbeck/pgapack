@@ -203,6 +203,7 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
         { "PGASetUniformCrossoverProb",     316 },
 
         /* pop.c */
+        { "PGAPairwiseBestReplacement",         318 },
         { "PGARestrictedTournamentReplacement", 319 },
         { "PGASortPop",                         320 },
         { "PGAGetPopSize",                      321 },
