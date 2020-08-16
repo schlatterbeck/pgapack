@@ -1073,22 +1073,32 @@ The selection phase allocates reproductive trials to strings on the basis of
 their fitness.  \pga\ supports five selection schemes: proportional selection,
 stochastic universal selection, truncation selection, tournament
 selection (default is binary tournament selection), and probabilistic
-binary tournament selection.  The choice may be specified by setting the
+binary tournament selection. A sixth scheme which is called
+\textit{linear selection} that is not a selection scheme in
+the genetic sense (it has no selection pressure) is used for
+evolutionary algorithms that rely on modification of individuals that
+later replace their parent if the offspring has higher fitness, so the
+selection pressure is applied in the replacement strategy. The linear
+scheme is guaranteed to return individuals in population order.
+
+The choice may be specified by setting the
 second argument of {\tt PGASetSelectType} to one of
 \verb+PGA_SELECT_PROPORTIONAL+, \verb+PGA_SELECT_SUS+,
-\verb+PGA_SELECT_TRUNCATION+, \verb+PGA_SELECT_TOURNAMENT+, and
-\verb+PGA_SELECT_PTOURNAMENT+ for proportional, stochastic universal,
-truncation, tournament, and probabilistic tournament selection,
-respectively.  The default is tournament selection. For tournament
+\verb+PGA_SELECT_TRUNCATION+, \verb+PGA_SELECT_TOURNAMENT+,
+\verb+PGA_SELECT_PTOURNAMENT+, and \verb+PGA_SELECT_LINEAR+
+for proportional, stochastic universal, truncation, tournament,
+probabilistic tournament selection, and linear selection, respectively.
+The default is tournament selection. For tournament
 selection, the size of the tournament (number of participants) can be
 set e.g., with \verb+PGASetTournamentSize(ctx, 3)+. The default is binary
-tournament (size = 2). Note that with a tournament size of 1 there is no
+tournament (size = 2). Note that with a tournament size of 1 (or with
+the linear selection scheme) there is no
 selection pressure. Having no selection pressure in this step can be
 compensated by using a replacement scheme with selection pressure, i.e.,
 one of restricted tournament replacement or pairwise best replacement,
 see section~\ref{sec:population-replacement} for details on population
 replacement. If no selection pressure is used in the selection scheme
-and in the population replacement strategy, the genetic search
+\textit{and} in the population replacement strategy, the genetic search
 degenerates to a random walk.
 
 In addition, for tournament selection it can be
@@ -1115,7 +1125,10 @@ return a randomized sequence. In previous implementations \textit{all}
 sequences got an additional randomization step. By default this is no
 longer the case (exect for \verb+PGA_SELECT_SUS+). You can enable the
 previous behavior by setting it to \verb+PGA_TRUE+ with
-\verb+PGASetRandomizeSelect+.
+\verb+PGASetRandomizeSelect+. Note that even with this flag set, the
+sequence returned by the linear selection scheme is never randomized.
+If you need a randomized sequence without selection pressure, use
+tournament selection without replacement with a tournament size of one.
 
 
 % Baker's stochastic universal selection (SUS) is an optimal sampling algorithm

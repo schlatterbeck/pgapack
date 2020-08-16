@@ -51,12 +51,12 @@ privately owned rights.
   PGASelect - performs genetic algorithm selection using either the default
   selection scheme or that specified with PGASetSelectType().  Valid selection
   methods are proportional, stochastic universal, tournament, probabilistic
-  tournament selection, or truncation selection,
+  tournament selection, truncation selection, or linear selection,
   PGA_SELECT_PROPORTIONAL, PGA_SELECT_SUS, PGA_SELECT_TOURNAMENT,
-  PGA_SELECT_PTOURNAMENT, PGA_SELECT_TRUNCATION, respectively.  This
-  function updates an internal array with the indices of members of popix
-  selected for recombination.  These indices may be accessed with
-  PGASelectNextIndex()
+  PGA_SELECT_PTOURNAMENT, PGA_SELECT_TRUNCATION, PGA_SELECT_LINEAR
+  respectively. This function updates an internal array with the
+  indices of members of popix selected for recombination.  These indices
+  may be accessed with PGASelectNextIndex()
 
   Category: Operators
 
@@ -106,6 +106,10 @@ void PGASelect (PGAContext *ctx, int popix)
         for (i=0; i<ctx->ga.PopSize; i++)
             ctx->ga.selected[i] = PGASelectTruncation (ctx, pop);
         break;
+    case PGA_SELECT_LINEAR:      /* linear selection */
+        for (i=0; i<ctx->ga.PopSize; i++)
+            ctx->ga.selected[i] = PGASelectLinear (ctx, pop);
+        break;
     default:
         PGAError( ctx,
                  "PGASelect: Invalid value of SelectType:",
@@ -119,9 +123,16 @@ void PGASelect (PGAContext *ctx, int popix)
      * Note that for all selection schemes above *except* SUS the items
      * are already randomized. So we randomize only if the selection
      * scheme is SUS *or* we have the backward-compatibility flag
-     * ctx->ga.RandomizeSelect set.
+     * ctx->ga.RandomizeSelect set. Note that the point of linear
+     * selection is that the sequence is *not* randomized. So in this
+     * case we never randomize the sequence.
      */
-    if (ctx->ga.SelectType == PGA_SELECT_SUS || ctx->ga.RandomizeSelect) {
+    if  (  ctx->ga.SelectType == PGA_SELECT_SUS
+        || (  ctx->ga.RandomizeSelect
+           && ctx->ga.SelectType != PGA_SELECT_LINEAR
+           )
+        )
+    {
         for (i=0; i<ctx->ga.PopSize; i++) {
             j          = PGARandomInterval(ctx, 0,ctx->ga.PopSize-1);
             temp       = ctx->ga.selected[j];
@@ -202,6 +213,7 @@ void PGASetSelectType( PGAContext *ctx, int select_type)
         case PGA_SELECT_TOURNAMENT:
         case PGA_SELECT_PTOURNAMENT:
         case PGA_SELECT_TRUNCATION:
+        case PGA_SELECT_LINEAR:
             ctx->ga.SelectType = select_type;
             break;
         default:
@@ -756,6 +768,40 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, PGAIndividual *pop)
         }
     }
     return m;
+}
+
+/*I****************************************************************************
+  PGASelectLinear - chooses all strings that are not already copied to
+  the next generation due to elitist strategies. Note that this
+  'selection' scheme isn't a selection scheme in the genetic sense, it
+  has no selection pressure. Note that the indeces are *not randomized.
+
+  Inputs:
+    ctx   - context variable
+    popix - symbolic constant of population to select from
+
+  Outputs:
+    index of the selected string
+
+  Example:
+    PGAContext *ctx,
+    int l;
+    :
+    l = PGASelectLinear (ctx, PGA_OLDPOP);
+
+****************************************************************************I*/
+int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
+{
+    static int perm_idx = 0;
+    static int last_generation = -1;
+    int numreplace = PGAGetNumReplaceValue (ctx);
+    int popsize = PGAGetPopSize (ctx);
+
+    if (last_generation != ctx->ga.iter || perm_idx >= popsize) {
+        perm_idx = popsize - numreplace;
+        last_generation = ctx->ga.iter;
+    }
+    return perm_idx++;
 }
 
 /*I****************************************************************************

@@ -160,6 +160,7 @@ extern "C" {
 #define PGA_SELECT_TOURNAMENT   3    /* tournament selection                */
 #define PGA_SELECT_PTOURNAMENT  4    /* probabilistic tournament selection  */
 #define PGA_SELECT_TRUNCATION   5    /* truncation selection                */
+#define PGA_SELECT_LINEAR       6    /* linear selection                    */
 
 /*****************************************
 *            FITNESS                     *
@@ -828,6 +829,7 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop );
 int PGASelectTournament( PGAContext *ctx, PGAIndividual *pop );
 int PGASelectPTournament( PGAContext *ctx, PGAIndividual *pop );
 int PGASelectTruncation( PGAContext *ctx, PGAIndividual *pop );
+int PGASelectLinear( PGAContext *ctx, PGAIndividual *pop );
 void PGASetTournamentSize(PGAContext *ctx, int tournament_size);
 int PGAGetTournamentSize(PGAContext *ctx);
 void PGASetTournamentWithReplacement(PGAContext *ctx, int value);
