@@ -223,6 +223,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->ga.FitnessType        = PGA_UNINITIALIZED_INT;
     ctx->ga.FitnessMinType     = PGA_UNINITIALIZED_INT;
     ctx->ga.MutationType       = PGA_UNINITIALIZED_INT;
+    ctx->ga.MutateOnly         = PGA_UNINITIALIZED_INT;
     ctx->ga.MutateOnlyNoCross  = PGA_UNINITIALIZED_INT;
     ctx->ga.MutateRealValue    = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.MutateIntegerValue = PGA_UNINITIALIZED_INT;
@@ -486,6 +487,9 @@ void PGASetUp ( PGAContext *ctx )
 
     if ( ctx->ga.FitnessMinType    == PGA_UNINITIALIZED_INT)
          ctx->ga.FitnessMinType     = PGA_FITNESSMIN_CMAX;
+
+    if ( ctx->ga.MutateOnly        == PGA_UNINITIALIZED_INT)
+         ctx->ga.MutateOnly         = PGA_FALSE;
 
     if ( ctx->ga.MutateOnlyNoCross == PGA_UNINITIALIZED_INT)
          ctx->ga.MutateOnlyNoCross  = PGA_TRUE;

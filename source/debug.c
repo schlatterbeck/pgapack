@@ -236,6 +236,7 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
         { "PGAGetNoDuplicatesFlag",         343 },
 
         /* pga.c */
+        { "PGARunMutationOnly",             349 },
         { "PGARunMutationAndCrossover",     350 },
         { "PGARunMutationOrCrossover",      351 },
         { "PGAUpdateGeneration",            352 },

@@ -279,6 +279,7 @@ typedef struct {
     int SelectIndex;         /* index of Select for next two individuals  */
     int FitnessType;         /* Type of fitness transformation used       */
     int FitnessMinType;      /* Transformation for minimization problems  */
+    int MutateOnly;          /* Mutate only, no crossover at all          */
     int MutateOnlyNoCross;   /* Mutate only strings not from crossover    */
     int MutationType;        /* Type of mutation used                     */
     int MutateIntegerValue;  /* Multiplier to mutate Integer strings with */
@@ -718,6 +719,7 @@ MPI_Comm PGAGetCommunicator( PGAContext *ctx);
 void PGARun(PGAContext *ctx, double (*evaluate)(PGAContext *c, int p, int pop));
 void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop);
 void PGARunMutationOrCrossover ( PGAContext *ctx, int oldpop, int newpop );
+void PGARunMutationOnly ( PGAContext *ctx, int oldpop, int newpop );
 void PGAUpdateGeneration(PGAContext *ctx, MPI_Comm comm);
 int PGAGetDataType (PGAContext *ctx);
 int PGAGetOptDirFlag (PGAContext *ctx);
@@ -726,8 +728,10 @@ int PGAGetVariableStringLength (PGAContext *ctx, int p, int pop);
 int PGAGetGAIterValue (PGAContext *ctx);
 void PGASetMutationOrCrossoverFlag( PGAContext *ctx, int flag);
 void PGASetMutationAndCrossoverFlag( PGAContext *ctx, int flag);
+void PGASetMutationOnlyFlag( PGAContext *ctx, int flag);
 int PGAGetMutationOrCrossoverFlag (PGAContext *ctx);
 int PGAGetMutationAndCrossoverFlag (PGAContext *ctx);
+int PGAGetMutationOnlyFlag (PGAContext *ctx);
 void PGARestrictedTournamentReplacement (PGAContext *ctx);
 void PGAPairwiseBestReplacement (PGAContext *ctx);
 

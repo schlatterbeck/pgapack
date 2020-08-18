@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -89,7 +89,9 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int),
     if (rank == 0)
 	PGAFitness(ctx, PGA_OLDPOP);
 
-    if (PGAGetMutationOrCrossoverFlag(ctx)) 
+    if (PGAGetMutationOnlyFlag(ctx)) {
+	CreateNewGeneration = PGARunMutationOnly;
+    } else if (PGAGetMutationOrCrossoverFlag(ctx))
 	CreateNewGeneration = PGARunMutationOrCrossover;
     else
 	CreateNewGeneration = PGARunMutationAndCrossover;
@@ -120,7 +122,7 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int),
 	    PGAFitness(ctx, PGA_NEWPOP);
 
 	/*  If the GA wasn't restarted, update the generation and print
-         *  stuff.  We do this because a restart is NOT counted as a 
+         *  stuff.  We do this because a restart is NOT counted as a
          *  complete generation.
 	 */
 	if (!Restarted) {
@@ -174,7 +176,7 @@ void PGAEvaluateSeq(PGAContext *ctx, int pop,
 		PGASetEvaluation (ctx, p-1, pop, e);
 	    }
     } else {
-	for (p=0; p<ctx->ga.PopSize; p++) 
+	for (p=0; p<ctx->ga.PopSize; p++)
 	    if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop)) {
 		e = (*f)(ctx, p, pop);
 		PGASetEvaluation(ctx, p, pop, e);
@@ -216,7 +218,7 @@ void PGAEvaluateCoop(PGAContext *ctx, int pop,
     q = -1;
 
     ind = PGAGetIndividual(ctx, 0, pop);
-    
+
     for (p=0; p<ctx->ga.PopSize;) {
 	while ((p<ctx->ga.PopSize) && (ind+p)->evaluptodate)  p++;
 	if (p<ctx->ga.PopSize) {
@@ -247,8 +249,8 @@ void PGAEvaluateCoop(PGAContext *ctx, int pop,
 #endif
 	    q = -1;
 	}
-    }   
-    
+    }
+
     /*  Release the slave  */
     MPI_Send(&q, 1, MPI_INT, 1, PGA_COMM_DONEWITHEVALS, comm);
 
@@ -259,7 +261,7 @@ void PGAEvaluateCoop(PGAContext *ctx, int pop,
 
 /*I****************************************************************************
    PGAEvaluateMS - Internal evaluation function.  Evaluates all strings
-   that need evaluating using three or more processors.  Operates in a 
+   that need evaluating using three or more processors.  Operates in a
    standard master-slave execution method.
 
    Category: Fitness & Evaluation
@@ -293,11 +295,11 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
 	PGAError(ctx, "PGAEvaluateMS:  Couldn't allocate work array",
 		 PGA_FATAL, PGA_VOID, NULL);
     }
-    
+
     sentout = 0;
     s = 1;
     ind = PGAGetIndividual(ctx, 0, pop);
-    
+
     /*  Send strings to all processes, since they are all unused.  */
     for (k=0; ((k<ctx->ga.PopSize) && (s<size)); k++) {
 	if ((ind+k)->evaluptodate == PGA_FALSE) {
@@ -310,16 +312,16 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
 	    s++;
 	}
     }
-    
+
     /*  Move to the next string to be evaluated.  Notice that all we need
-     *  to do is skip any strings that are already evaluated, unlike 
+     *  to do is skip any strings that are already evaluated, unlike
      *  below, where we need to _first_ go to the next string, then
      *  skip any that are up to date.
      */
     while ((k<ctx->ga.PopSize) && (ind+k)->evaluptodate)  k++;
-    
+
     /*  While there are still unevaluated individuals, receive whatever
-     *  is waiting, then immediately send a new string to it.  This 
+     *  is waiting, then immediately send a new string to it.  This
      *  implicitly will balance the load across the machines, as we
      *  initially sent a string to _each_ process, so _each_ process
      *  will return an evaluation and get a new one immediately.
@@ -345,7 +347,7 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
 	k++;
 	while ((k<ctx->ga.PopSize) && (ind+k)->evaluptodate)  k++;
     }
-    
+
     /*  All strings have been sent out.  Wait for them to be done.  */
     while(sentout > 0) {
 	MPI_Recv(&e, 1, MPI_DOUBLE, MPI_ANY_SOURCE, PGA_COMM_EVALOFSTRING,
@@ -354,12 +356,12 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
 	PGASetEvaluation(ctx, p, pop, e);
 	sentout--;
 #if DEBUG_EVAL
-	printf("%4d: %10.8e Slave %d\n", 
+	printf("%4d: %10.8e Slave %d\n",
 	       work[stat.MPI_SOURCE], e, stat.MPI_SOURCE); fflush(stdout);
 #endif
     }
     free(work);
-    
+
     /*  Release the slaves.  */
     for (i=1; i<size; i++)
 	MPI_Send(&i, 1, MPI_INT, i, PGA_COMM_DONEWITHEVALS, comm);
@@ -399,7 +401,7 @@ void PGAEvaluateSlave(PGAContext *ctx, int pop,
 
 	if (ctx->sys.UserFortran == PGA_TRUE)
 	    e = (*((double(*)(void *, void *, void *))f))(&ctx, &k, &pop);
-	else 
+	else
 	    e = (*f)(ctx, PGA_TEMP1, pop);
 
 	MPI_Send(&e, 1, MPI_DOUBLE, 0, PGA_COMM_EVALOFSTRING, comm);
@@ -461,7 +463,7 @@ void PGAEvaluate(PGAContext *ctx, int pop,
 	    PGAEvaluateSeq(ctx, pop, f);
 	if (size == 2)
 	    PGAEvaluateCoop(ctx, pop, f, comm);
-	if (size > 2) 
+	if (size > 2)
 	    PGAEvaluateMS(ctx, pop, f, comm);
     } else {
 	PGAEvaluateSlave(ctx, pop, f, comm);
@@ -495,7 +497,7 @@ void PGAEvaluate(PGAContext *ctx, int pop,
 MPI_Datatype PGABuildDatatype(PGAContext *ctx, int p, int pop)
 {
     PGADebugEntered("PGABuildDatatype");
-    
+
     PGADebugExited("PGABuildDatatype");
 
     return((*ctx->cops.BuildDatatype)(ctx, p, pop));
@@ -535,7 +537,7 @@ void PGASendIndividual(PGAContext *ctx, int p, int pop, int dest, int tag,
     individualtype = PGABuildDatatype(ctx, p, pop);
     MPI_Send(MPI_BOTTOM, 1, individualtype, dest, tag, comm);
     MPI_Type_free(&individualtype);
-    
+
     PGADebugExited("PGASendIndividual");
 }
 
@@ -672,7 +674,7 @@ void PGARunIM(PGAContext *ctx, double (*f)(PGAContext *c, int p, int pop),
     /* Based on ctx->par.topology this routine will need to create the
        appropriate communicator out of tcomm
     */
-    
+
      PGADebugEntered("PGARunIM");
      PGAError (ctx, "PGARunIM: Island model not implemented",
                PGA_FATAL, PGA_VOID, NULL);
@@ -743,16 +745,16 @@ void PGARunNM(PGAContext *ctx, double (*f)(PGAContext *c, int p, int pop),
 int PGAGetRank (PGAContext *ctx, MPI_Comm comm)
 {
     int rank;
-    
+
     PGADebugEntered("PGAGetRank");
 
     if (comm == MPI_COMM_NULL)
 	rank = 0;
     else
 	MPI_Comm_rank(comm, &rank);
-    
+
     PGADebugExited("PGAGetRank");
-    
+
     return(rank);
 }
 
@@ -800,7 +802,7 @@ int PGAGetNumProcs (PGAContext *ctx, MPI_Comm comm)
 /*I****************************************************************************
    PGASetNumIslands - Set the number of islands to use in an island model
    GA. The default is one.  Currently must be the same as the number of
-   processes in the default communicator.  
+   processes in the default communicator.
 
    Category: Parallel
 
@@ -973,7 +975,7 @@ void PGASetCommunicator( PGAContext *ctx, MPI_Comm comm)
 /*U****************************************************************************
    PGAGetCommunicator - Returns the default communicator used when PGARun is
    called.
-   
+
    Category: Parallel
 
    Inputs:

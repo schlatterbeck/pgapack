@@ -314,6 +314,61 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
 
 
 /*U****************************************************************************
+  PGARunMutationOnly - Performs only mutation
+  Assumes PGASelect has been called.
+
+  Category: Generation
+
+  Inputs:
+    ctx - context variable
+    oldpop - symbolic constant of old population
+    newpop - symbolic constant of new population
+
+  Outputs:
+    newpop is modified by side-effect.
+
+  Example:
+    PGAContext *ctx,
+    :
+    PGARunMutationOnly(ctx, PGA_OLDPOP, PGA_NEWPOP);
+
+****************************************************************************U*/
+void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
+{
+    int i, j, n, m;
+    int popsize, numreplace;
+
+    PGADebugEntered ("PGARunMutationOnly");
+
+    popsize = PGAGetPopSize (ctx);
+    numreplace = PGAGetNumReplaceValue (ctx);
+    /*** first, copy n best strings (sorted by fitness) to new pop ***/
+    /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
+    /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
+    n = popsize - numreplace;
+    if (  ctx->ga.PopReplace != PGA_POPREPL_RTR
+       && ctx->ga.PopReplace != PGA_POPREPL_PAIRWISE_BEST) {
+        PGASortPop (ctx, oldpop);
+        for (i=0; i < n; i++) {
+            j = PGAGetSortedPopIndex (ctx, i);
+            PGACopyIndividual (ctx, j, oldpop, i, newpop);
+        }
+    }
+    /*** reproduce with mutation only to create rest of the new population ***/
+    while (n < popsize) {
+        m = PGASelectNextIndex (ctx, oldpop);
+        PGACopyIndividual (ctx, m, oldpop, n, newpop);
+        PGAMutate (ctx, n, newpop);
+        while (PGADuplicate (ctx, n, newpop, newpop, n))
+             PGAChange (ctx, n, newpop);
+        n++;
+    }
+
+    PGADebugExited ("PGARunMutationOnly");
+}
+
+
+/*U****************************************************************************
   PGAUpdateGeneration - updates internal data structures for the next
   genetic algorithm iteration, and checks if the termination conditions, both
   user and PGAPack, have been met.  This routine must be called by both
@@ -731,5 +786,74 @@ int PGAGetMutationAndCrossoverFlag (PGAContext *ctx)
     PGADebugExited("PGAGetMutationAndCrossoverFlag");
 
     return(!ctx->ga.MutateOnlyNoCross);
+}
+
+/*U****************************************************************************
+  PGASetMutationOnlyFlag - A boolean flag to indicate that recombination
+  uses mutation only.
+
+   Category: Generation
+
+   Inputs:
+      ctx  - context variable
+      flag - PGA_TRUE (default) or PGA_FALSE
+
+   Outputs:
+      None
+
+   Example:
+      Set the genetic algorithm to use mutation only.
+
+      PGAContext *ctx;
+      :
+      PGASetMutationOnlyFlag(ctx,PGA_TRUE);
+
+****************************************************************************U*/
+void PGASetMutationOnlyFlag (PGAContext *ctx, int flag)
+{
+     switch (flag)
+     {
+     case PGA_TRUE:
+     case PGA_FALSE:
+          ctx->ga.MutateOnly = flag;
+          break;
+     default:
+          PGAError (ctx, "PGASetMutationOrCrossoverFlag: Invalid value of "
+                    "flag:", PGA_FATAL, PGA_INT, (void *) &flag);
+          break;
+     }
+}
+
+/*U***************************************************************************
+   PGAGetMutationOnlyFlag - Returns true if only mutation is used
+
+   Category: Generation
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      Returns PGA_TRUE if only mutation is applied.
+      Otherwise, returns PGA_FALSE
+
+   Example:
+      PGAContext *ctx;
+      int mutateonly;
+      :
+      mutateonly = PGAGetMutationOnlyFlag(ctx);
+      switch (mutatetype) {
+      case PGA_TRUE:
+          printf("Mutating only\n");
+          break;
+      case PGA_FALSE:
+          printf("Mutating and/or crossover\n");
+          break;
+      }
+
+***************************************************************************U*/
+int PGAGetMutationOnlyFlag (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetMutationOnlyFlag");
+    return(ctx->ga.MutateOnly);
 }
 

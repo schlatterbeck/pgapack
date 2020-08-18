@@ -938,8 +938,14 @@ and then mutation.  Some practitioners \cite{Da91} have argued that these two
 operators should be separate.  By default, \pga\ applies mutation only to
 strings that did {\em not} undergo crossover.  This is equivalent to setting
 {\tt PGASetMutationOrCrossoverFlag} {\tt (ctx,PGA\_TRUE)}.  To have strings
-undergo {\em both} crossover and mutation, on should use {\tt
-PGASetMutationAndCrossoverFlag} {\tt (ctx,PGA\_TRUE)}.
+undergo {\em both} crossover and mutation, one should use {\tt
+PGASetMutationAndCrossoverFlag} {\tt (ctx,PGA\_TRUE)}. Note that with
+this flag set, strings that are not crossed over are also not mutated.
+If an evolutionary algorithm variant without crossover is used or if
+special crossover techniques with more that two parents should be
+applied, all the logic can be implemented in a custom crossover operator
+and the \verb+PGASetMutationOnlyFlag+ can be set to \verb+PGA_TRUE+.
+With this flag set no crossover is performed at all.
 \end{sloppypar}
 
 By default, \pga\ allows duplicate strings in the population.  Some
@@ -1127,6 +1133,11 @@ longer the case (exect for \verb+PGA_SELECT_SUS+). You can enable the
 previous behavior by setting it to \verb+PGA_TRUE+ with
 \verb+PGASetRandomizeSelect+. Note that even with this flag set, the
 sequence returned by the linear selection scheme is never randomized.
+This has adverse effects on crossover with linear selection:
+With this scheme the same two adjacent population members are always
+crossed over which makes crossover almost ineffective.
+Linear selection is typically only useful when using special
+mutation operators most often with \verb+PGASetMutationOnlyFlag+ set.
 If you need a randomized sequence without selection pressure, use
 tournament selection without replacement with a tournament size of one.
 
@@ -1909,10 +1920,15 @@ information about these and other \pga\ functions is contained in
 Appendix~\ref{chp:function-bindings} (function bindings) and the {\tt
 ./examples} directory.
 
-{\tt PGARunMutationAndCrossover} and {\tt PGARunMutationOrCrossover} perform
+\verb+PGARunMutationAndCrossover+ and \verb+PGARunMutationOrCrossover+ perform
 the recombination step.  The former applies mutation to strings that undergo
 crossover.  The latter applies only mutation to strings that did not undergo
-crossover.
+crossover. Note that this means that when
+\verb+PGARunMutationAndCrossover+ is selected, strings that are not crossed over
+(because the random process did not select the individuals for crossover
+with the given crossover probability) will also \textit{not} be mutated!
+If no crossover is wanted, \verb+PGARunMutationOnly+ can be used for
+mutation only without crossover.
 
 The restart operator described earlier in Section~\ref{sec:restart} can be
 invoked explicitly with {\tt PGARestart(ctx, oldpop, newpop)}, where the best
@@ -3216,52 +3232,99 @@ for {\tt PGADebugPrint} calls.
 \multicolumn{1}{|c|}{CONCEPT} &
 \multicolumn{1}{c|}{DEFAULT} &
 \multicolumn{1}{c|}{SET WITH}  \\  \hline
-Population size                   & 100 &  {\tt PGASetPopSize} \\ \hline
-Copied for population replacement & {\tt PGA\_POPREPL\_BEST} & {\tt PGASetPopReplaceType} \\ \hline
-Stopping rule                     & {\tt PGA\_STOP\_MAXITER} & {\tt PGASetStoppingRuleType} \\ \hline
-Maximum iterations             & 1000 &  {\tt PGASetMaxGAIterValue} \\ \hline
-Maximum no change iters        &  100  & {\tt PGASetMaxNoChangeValue} \\ \hline
-Max. population homogeneity before stopping  & 95 & {\tt PGASetMaxSimilarityValue} \\ \hline
-Number of new strings to generate & 10 & {\tt PGASetNumReplaceValue} \\ \hline
-Apply mutation and crossover     & {\tt PGA\_FALSE}  & {\tt PGASetMutationAndCrossoverFlag } \\ \hline
-Apply mutation or crossover     & {\tt PGA\_TRUE}  & {\tt PGASetMutationOrCrossoverFlag} \\ \hline
-Crossover type            & {\tt PGA\_CROSSOVER\_TWOPT} & {\tt PGASetCrossoverType} \\ \hline
-Probability of crossover &  0.85 & {\tt PGASetCrossoverProb} \\ \hline
-Uniform crossover bias &  0.6  & {\tt PGASetUniformCrossoverProb} \\ \hline
-Mutation type (Real strings)      &  {\tt PGA\_MUTATION\_GAUSSIAN}  & {\tt PGASetMutationType} \\ \hline
-Mutation type (Integer strings)      &  {\tt PGA\_MUTATION\_PERMUTE}  & {\tt PGASetMutationType} \\ \hline
-Mutation type (Character strings)      &  Same as initialization  & {\tt PGASetCharacterInitType} \\ \hline
-Mutation probability      &  1/L  & {\tt PGASetMutationProb} \\ \hline
-Real mutation constant  &  0.1  & {\tt PGASetMutationRealValue} \\ \hline
-Integer mutation constant  & 1  & {\tt PGASetMutationIntegerValue} \\ \hline
-Mutation range bounded  & {\tt PGA\_TRUE}  & {\tt PGASetMutationBoundedFlag} \\ \hline
-Select type               & {\tt PGA\_SELECT\_TOURNAMENT} &  {\tt PGASetSelectType} \\ \hline
-Probabilistic binary tournament parameter &   0.6  & {\tt PGASetPTournamentProb} \\ \hline
-Use restart operator & {\tt PGA\_FALSE} & {\tt PGASetRestartFlag} \\ \hline
-Restart frequency    & 50               & {\tt PGASetRestartFrequencyValue} \\ \hline
-Restart allele mutation rate & 0.5 & {\tt PGASetRestartAlleleChangeProb} \\ \hline
-Allow duplicate strings &  {\tt PGA\_FALSE}  & {\tt PGASetNoDuplicatesFlag} \\ \hline
-Fitness type              & {\tt PGA\_FITNESS\_RAW}  & {\tt PGASetFitnessType} \\ \hline
-Fitness type for minimization & {\tt PGA\_FITNESSMIN\_CMAX}  & {\tt PGASetFitnessMinType} \\ \hline
-Multiplier for minimization problems &  1.01  & {\tt PGASetCMaxValue} \\ \hline
-Parameter MAX in fitness by ranking &  1.2  & {\tt PGASetMaxFitnessRank} \\ \hline
-Frequency of statistics printing & 10  & {\tt PGASetPrintFrequencyValue} \\ \hline
-Print strings            &  {\tt PGA\_FALSE}  & {\tt PGASetPrintOptions} \\ \hline
-Print offline statistics &  {\tt PGA\_FALSE}  & {\tt PGASetPrintOptions} \\ \hline
-Print online statistics   &  {\tt PGA\_FALSE}  & {\tt PGASetPrintOptions} \\ \hline
-Print best string        &  {\tt PGA\_FALSE}  & {\tt PGASetPrintOptions} \\ \hline
-Print worst string       &  {\tt PGA\_FALSE}  & {\tt PGASetPrintOptions} \\ \hline
-Print Hamming distance   &  {\tt PGA\_FALSE}  & {\tt PGASetPrintOptions} \\ \hline
-Randomly initialize population  &  {\tt PGA\_TRUE}   & {\tt PGASetRandomInitFlag} \\ \hline
-Probability of initializing a bit to one & 0.5  & {\tt PGASetBinaryInitProb} \\ \hline
-How to initialize real strings & Range & {\tt PGASetrealInitRange} \\ \hline
-Real initialization range & $[0,1]$ & {\tt PGASetRealInitRange} \\ \hline
-How to initialize integer strings & Permutation  & {\tt PGASetIntegerInitPermute} \\ \hline
-Integer initialization range & $[0,L-1]$ & {\tt PGASetIntegerInitPermute} \\ \hline
-How to initialize character strings & {\tt PGA\_CINIT\_LOWER}  & {\tt PGASetCharacterInitFlag} \\ \hline
-Seed random number with clock & {\tt PGA\_TRUE}  & {\tt PGASetRandomSeed} \\ \hline
-Default MPI communicator & {\tt MPI\_COMM\_WORLD} & {\tt PGASetCommunicator} \\ \hline
-\multicolumn{1}{l}{$L$ is the string length} & & 
+Population size
+ & 100                          &  \verb+PGASetPopSize+                 \\ \hline
+Copied for population replacement
+ & \verb+PGA_POPREPL_BEST+      & \verb+PGASetPopReplaceType+           \\ \hline
+Stopping rule
+ & \verb+PGA_STOP_MAXITER+      & \verb+PGASetStoppingRuleType+         \\ \hline
+Maximum iterations
+ & 1000                         & \verb+PGASetMaxGAIterValue+           \\ \hline
+Maximum no change iters
+ &  100                         & \verb+PGASetMaxNoChangeValue+         \\ \hline
+Max. population homogeneity before stopping
+ &   95                         & \verb+PGASetMaxSimilarityValue+       \\ \hline
+Number of new strings to generate
+ &   10                         & \verb+PGASetNumReplaceValue+          \\ \hline
+Apply mutation and crossover
+ & \verb+PGA_FALSE+             & \verb+PGASetMutationAndCrossoverFlag+ \\ \hline
+Apply mutation or crossover
+ & \verb+PGA_TRUE+              & \verb+PGASetMutationOrCrossoverFlag+  \\ \hline
+Apply mutation only
+ & \verb+PGA_FALSE+             & \verb+PGASetMutationOnlyFlag+         \\ \hline
+Crossover type
+ & \verb+PGA_CROSSOVER_TWOPT+   & \verb+PGASetCrossoverType+            \\ \hline
+Probability of crossover
+ &  0.85                        & \verb+PGASetCrossoverProb+            \\ \hline
+Uniform crossover bias
+ &  0.6                         & \verb+PGASetUniformCrossoverProb+     \\ \hline
+Mutation type (Real strings)
+ & \verb+PGA_MUTATION_GAUSSIAN+ & \verb+PGASetMutationType+             \\ \hline
+Mutation type (Integer strings)
+ & \verb+PGA_MUTATION_PERMUTE+  & \verb+PGASetMutationType+             \\ \hline
+Mutation type (Character strings)
+ &  Same as initialization      & \verb+PGASetCharacterInitType+        \\ \hline
+Mutation probability
+ &  1/L                         & \verb+PGASetMutationProb+             \\ \hline
+Real mutation constant
+ &  0.1                         & \verb+PGASetMutationRealValue+        \\ \hline
+Integer mutation constant
+ & 1                            & \verb+PGASetMutationIntegerValue+     \\ \hline
+Mutation range bounded
+ & \verb+PGA_TRUE+              & \verb+PGASetMutationBoundedFlag+      \\ \hline
+Select type
+ & \verb+PGA_SELECT_TOURNAMENT+ &  \verb+PGASetSelectType+              \\ \hline
+Probabilistic binary tournament parameter
+ &   0.6                        & \verb+PGASetPTournamentProb+          \\ \hline
+Use restart operator
+ & \verb+PGA_FALSE+             & \verb+PGASetRestartFlag+              \\ \hline
+Restart frequency
+ & 50                           & \verb+PGASetRestartFrequencyValue+    \\ \hline
+Restart allele mutation rate
+ & 0.5                          & \verb+PGASetRestartAlleleChangeProb+  \\ \hline
+Allow duplicate strings
+ &  \verb+PGA_FALSE+            & \verb+PGASetNoDuplicatesFlag+         \\ \hline
+Fitness type
+ & \verb+PGA_FITNESS_RAW+       & \verb+PGASetFitnessType+              \\ \hline
+Fitness type for minimization
+ & \verb+PGA_FITNESSMIN_CMAX+   & \verb+PGASetFitnessMinType+           \\ \hline
+Multiplier for minimization problems
+ &  1.01                        & \verb+PGASetCMaxValue+                \\ \hline
+Parameter MAX in fitness by ranking
+ &  1.2                         & \verb+PGASetMaxFitnessRank+           \\ \hline
+Frequency of statistics printing
+ & 10                           & \verb+PGASetPrintFrequencyValue+      \\ \hline
+Print strings
+ &  \verb+PGA_FALSE+            & \verb+PGASetPrintOptions+             \\ \hline
+Print offline statistics
+ &  \verb+PGA_FALSE+            & \verb+PGASetPrintOptions+             \\ \hline
+Print online statistics
+ &  \verb+PGA_FALSE+            & \verb+PGASetPrintOptions+             \\ \hline
+Print best string
+ &  \verb+PGA_FALSE+            & \verb+PGASetPrintOptions+             \\ \hline
+Print worst string
+ &  \verb+PGA_FALSE+            & \verb+PGASetPrintOptions+             \\ \hline
+Print Hamming distance
+ &  \verb+PGA_FALSE+            & \verb+PGASetPrintOptions+             \\ \hline
+Randomly initialize population
+ &  \verb+PGA_TRUE+             & \verb+PGASetRandomInitFlag+           \\ \hline
+Probability of initializing a bit to one
+ & 0.5                          & \verb+PGASetBinaryInitProb+           \\ \hline
+How to initialize real strings
+ & Range                        & \verb+PGASetrealInitRange+            \\ \hline
+Real initialization range
+ & $[0,1]$                      & \verb+PGASetRealInitRange+            \\ \hline
+How to initialize integer strings
+ & Permutation                  & \verb+PGASetIntegerInitPermute+       \\ \hline
+Integer initialization range
+ & $[0,L-1]$                    & \verb+PGASetIntegerInitPermute+       \\ \hline
+How to initialize character strings
+ & \verb+PGA_CINIT_LOWER+       & \verb+PGASetCharacterInitFlag+        \\ \hline
+Seed random number with clock
+ & \verb+PGA_TRUE+              & \verb+PGASetRandomSeed+               \\ \hline
+Default MPI communicator
+ & \verb+MPI_COMM_WORLD+        & \verb+PGASetCommunicator+             \\ \hline
+\multicolumn{1}{l}{$L$ is the string length} & &
 \end{tabular}
 \end{table}
 
@@ -3518,6 +3581,7 @@ double &  PGAGetMinRealInitValue(PGAContext *ctx, int i) \\ \hline
 int &  PGAGetMutationAndCrossoverFlag(PGAContext *ctx) \\ \hline
 int &  PGAGetMutationBoundedFlag(PGAContext *ctx) \\ \hline
 int &  PGAGetMutationIntegerValue(PGAContext *ctx) \\ \hline
+int &  PGAGetMutationOnlyFlag(PGAContext *ctx) \\ \hline
 int &  PGAGetMutationOrCrossoverFlag(PGAContext *ctx) \\ \hline
 double &  PGAGetMutationProb(PGAContext *ctx) \\ \hline
 double &  PGAGetMutationRealValue(PGAContext *ctx) \\ \hline
@@ -3584,6 +3648,7 @@ void &  PGARunGM(PGAContext *ctx, double(*f)(PGAContext *, int, int), MPI\_Comm
 comm) \\ \hline
 void &  PGARunMutationAndCrossover(PGAContext *ctx, int oldpop, int newpop) \\
 \hline
+void &  PGARunMutationOnly(PGAContext *ctx, int oldpop, int newpop) \\ \hline
 void &  PGARunMutationOrCrossover(PGAContext *ctx, int oldpop, int newpop) \\ \hline
 void &  PGASelect(PGAContext *ctx, int popix) \\ \hline
 int &  PGASelectNextIndex(PGAContext *ctx, int pop) \\ \hline
@@ -3627,6 +3692,7 @@ void &  PGASetMaxSimilarityValue(PGAContext *ctx, int max\_similarity) \\ \hline
 void &  PGASetMutationAndCrossoverFlag(PGAContext *ctx, int flag) \\ \hline
 void &  PGASetMutationBoundedFlag(PGAContext *ctx, int val) \\ \hline
 void &  PGASetMutationIntegerValue(PGAContext *ctx, int val) \\ \hline
+void &  PGASetMutationOnlyFlag(PGAContext *ctx, int flag) \\ \hline
 void &  PGASetMutationOrCrossoverFlag(PGAContext *ctx, int flag) \\ \hline
 void &  PGASetMutationProb(PGAContext *ctx, double mutation\_prob) \\ \hline
 void &  PGASetMutationRealValue(PGAContext *ctx, double val) \\ \hline
