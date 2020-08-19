@@ -726,7 +726,7 @@ static void _shuffle (PGAContext *ctx, int *list, int n)
     int i = 0, j = 0, tmp = 0;
     for (i = 0; i < n; i++)
 	list[i] = i;
-    for (i = 0; i < n-2; i++) {
+    for (i = 0; i < n-1; i++) {
 	j = PGARandomInterval (ctx, i, n - 1);
         tmp = list[j];
         list [j] = list [i];
