@@ -442,69 +442,82 @@ void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
 ****************************************************************************I*/
 int PGARealMutation( PGAContext *ctx, int p, int pop, double mr )
 {
-     PGAReal *c;
-     int i;
-     int count = 0;
-     double val = 0.0;
+    PGAReal *c;
+    int i;
+    int count = 0;
+    double val = 0.0;
 
-     PGADebugEntered("PGARealMutation");
+    PGADebugEntered("PGARealMutation");
 
-     c = (PGAReal *)PGAGetIndividual(ctx, p, pop)->chrom;
-     for(i=0; i<ctx->ga.StringLen; i++) {
+    c = (PGAReal *)PGAGetIndividual(ctx, p, pop)->chrom;
+    for(i=0; i<ctx->ga.StringLen; i++) {
+        double old_value = c [i];
 
-         /* randomly choose an allele   */
-         if ( PGARandomFlip(ctx, mr) ) {
+        /* randomly choose an allele   */
+        if ( PGARandomFlip(ctx, mr) ) {
+            /* generate on range, or calculate multplier */
+            switch (ctx->ga.MutationType) {
+            case PGA_MUTATION_RANGE:
+                c [i] = PGARandomUniform(ctx, ctx->init.RealMin [i],
+                                              ctx->init.RealMax [i]);
+                break;
+            case PGA_MUTATION_CONSTANT:
+                val = ctx->ga.MutateRealValue;
+                break;
+            case PGA_MUTATION_UNIFORM:
+                val = PGARandomUniform  (ctx, 0.0, ctx->ga.MutateRealValue);
+                break;
+            case PGA_MUTATION_GAUSSIAN:
+                val = PGARandomGaussian (ctx, 0.0, ctx->ga.MutateRealValue);
+                break;
+            default:
+                PGAError(ctx, "PGARealMutation: Invalid value of "
+                         "ga.MutationType:", PGA_FATAL, PGA_INT,
+                         (void *) &(ctx->ga.MutationType));
+                break;
+            }
 
-             /* generate on range, or calculate multplier */
-             switch (ctx->ga.MutationType) {
-             case PGA_MUTATION_RANGE:
-                 c[i] = PGARandomUniform(ctx, ctx->init.RealMin[i],
-                                              ctx->init.RealMax[i]);
-                 break;
-             case PGA_MUTATION_CONSTANT:
-                 val = ctx->ga.MutateRealValue;
-                 break;
-             case PGA_MUTATION_UNIFORM:
-                 val = PGARandomUniform (ctx, 0.0, ctx->ga.MutateRealValue);
-                 break;
-             case PGA_MUTATION_GAUSSIAN:
-                 val = PGARandomGaussian(ctx, 0.0, ctx->ga.MutateRealValue);
-                 break;
-             default:
-                  PGAError(ctx, "PGARealMutation: Invalid value of "
-                           "ga.MutationType:", PGA_FATAL, PGA_INT,
-                           (void *) &(ctx->ga.MutationType));
-                  break;
-             }
-
-             /* apply multiplier calculated in switch above */
-             if ( (ctx->ga.MutationType == PGA_MUTATION_CONSTANT) ||
-                  (ctx->ga.MutationType == PGA_MUTATION_UNIFORM)  ||
-                  (ctx->ga.MutationType == PGA_MUTATION_GAUSSIAN)
-                ) {
+            /* apply multiplier calculated in switch above */
+            if ( (ctx->ga.MutationType == PGA_MUTATION_CONSTANT) ||
+                 (ctx->ga.MutationType == PGA_MUTATION_UNIFORM)  ||
+                 (ctx->ga.MutationType == PGA_MUTATION_GAUSSIAN)
+               )
+            {
                  /* add/subtract from allele */
-                 if ( PGARandomFlip(ctx, .5) )
-                     c[i] += val*c[i];
-                 else
-                     c[i] -= val*c[i];
-             }
+                if ( PGARandomFlip(ctx, .5) )
+                    c [i] += val * c [i];
+                else
+                    c [i] -= val * c [i];
+            }
 
-             /* reset to min/max if bounded flag true and outside range */
-             if( ctx->ga.MutateBoundedFlag == PGA_TRUE ) {
-                if( c[i] < ctx->init.RealMin[i])
-                    c[i] = ctx->init.RealMin[i];
-                if( c[i] > ctx->init.RealMax[i])
-                    c[i] = ctx->init.RealMax[i];
-             }
+            /* reset to min/max or bounce if outside range */
+            if (ctx->ga.MutateBoundedFlag || ctx->ga.MutateBounceFlag) {
+                if( c [i] < ctx->init.RealMin [i]) {
+                    if (ctx->ga.MutateBounceFlag) {
+                        c [i] = PGARandomUniform
+                            (ctx, ctx->init.RealMin [i], old_value);
+                    } else {
+                        c [i] = ctx->init.RealMin [i];
+                    }
+                }
+                if( c [i] > ctx->init.RealMax [i]) {
+                    if (ctx->ga.MutateBounceFlag) {
+                        c [i] = PGARandomUniform
+                            (ctx, old_value, ctx->init.RealMax [i]);
+                    } else {
+                        c [i] = ctx->init.RealMax [i];
+                    }
+                }
+            }
 
-             /* increment mutation count */
-             count++;
-         }
-     }
+            /* increment mutation count */
+            count++;
+        }
+    }
 
-     PGADebugExited("PGARealMutation");
+    PGADebugExited("PGARealMutation");
 
-     return(count);
+    return(count);
 }
 
 /*I****************************************************************************

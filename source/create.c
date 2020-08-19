@@ -228,6 +228,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->ga.MutateRealValue    = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.MutateIntegerValue = PGA_UNINITIALIZED_INT;
     ctx->ga.MutateBoundedFlag  = PGA_UNINITIALIZED_INT;
+    ctx->ga.MutateBounceFlag   = PGA_UNINITIALIZED_INT;
     ctx->ga.NoDuplicates       = PGA_UNINITIALIZED_INT;
     ctx->ga.MutationProb       = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.CrossoverProb      = PGA_UNINITIALIZED_DOUBLE;
@@ -546,6 +547,9 @@ void PGASetUp ( PGAContext *ctx )
 
     if ( ctx->ga.MutateBoundedFlag == PGA_UNINITIALIZED_INT)
          ctx->ga.MutateBoundedFlag  = PGA_FALSE;
+
+    if ( ctx->ga.MutateBounceFlag  == PGA_UNINITIALIZED_INT)
+         ctx->ga.MutateBounceFlag   = PGA_FALSE;
 
     if ( ctx->ga.NoDuplicates      == PGA_UNINITIALIZED_INT)
          ctx->ga.NoDuplicates       = PGA_FALSE;

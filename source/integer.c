@@ -423,61 +423,73 @@ void PGAIntegerCreateString (PGAContext *ctx, int p, int pop, int InitFlag)
 ****************************************************************************I*/
 int PGAIntegerMutation( PGAContext *ctx, int p, int pop, double mr )
 {
-     PGAInteger *c;
-     int i, j, temp;
-     int count = 0;
+    PGAInteger *c;
+    int i, j, temp;
+    int count = 0;
 
-     PGADebugEntered("PGAIntegerMutation");
+    PGADebugEntered("PGAIntegerMutation");
 
-     c = (PGAInteger *)PGAGetIndividual(ctx, p, pop)->chrom;
-     for(i=0; i<ctx->ga.StringLen; i++) {
+    c = (PGAInteger *)PGAGetIndividual(ctx, p, pop)->chrom;
+    for(i=0; i<ctx->ga.StringLen; i++) {
+        int old_value = c [i];
 
-         /* randomly choose an allele   */
-         if ( PGARandomFlip(ctx, mr) ) {
+        /* randomly choose an allele   */
+        if ( PGARandomFlip(ctx, mr) ) {
+            /* apply appropriate mutation operator */
+            switch (ctx->ga.MutationType) {
+            case PGA_MUTATION_CONSTANT:
+                /* add or subtract from allele */
+                if ( PGARandomFlip(ctx, .5) )
+                    c[i] += ctx->ga.MutateIntegerValue;
+                else
+                    c[i] -= ctx->ga.MutateIntegerValue;
+                break;
+            case PGA_MUTATION_PERMUTE:
+                /* could check for j == i if we were noble */
+	        /* edd: 16 Jun 2007  applying patch from Debian bug
+                 * report #333381 correcting an 'off-by-one' here
+		 * bu reducing StringLen by 1
+                 */
+                j = PGARandomInterval(ctx, 0, ctx->ga.StringLen - 1);
+                temp = c[i];
+                c[i] = c[j];
+                c[j] = temp;
+                break;
+            case PGA_MUTATION_RANGE:
+                c[i] = PGARandomInterval(ctx, ctx->init.IntegerMin[i],
+                                              ctx->init.IntegerMax[i]);
+                break;
+            default:
+                PGAError(ctx, "PGAIntegerMutation: Invalid value of "
+                         "ga.MutationType:", PGA_FATAL, PGA_INT,
+                         (void *) &(ctx->ga.MutationType));
+                break;
+            }
 
-             /* apply appropriate mutation operator */
-             switch (ctx->ga.MutationType) {
-             case PGA_MUTATION_CONSTANT:
-                 /* add or subtract from allele */             
-                 if ( PGARandomFlip(ctx, .5) )
-                      c[i] += ctx->ga.MutateIntegerValue;
-                 else
-                      c[i] -= ctx->ga.MutateIntegerValue;
-                 break;
-             case PGA_MUTATION_PERMUTE:
-                 /* could check for j == i if we were noble */
-	         /* edd: 16 Jun 2007  applying patch from Debian bug
-                    report #333381 correcting an 'off-by-one' here
-		    bu reducing StringLen by 1 */
-                 j = PGARandomInterval(ctx, 0, ctx->ga.StringLen - 1);
-                 temp = c[i];                 
-                 c[i] = c[j];
-                 c[j] = temp;                 
-                 break;
-             case PGA_MUTATION_RANGE:
-                 c[i] = PGARandomInterval(ctx, ctx->init.IntegerMin[i],
-                                               ctx->init.IntegerMax[i]);
-                 break;
-             default:
-                  PGAError(ctx, "PGAIntegerMutation: Invalid value of "
-                           "ga.MutationType:", PGA_FATAL, PGA_INT,
-                           (void *) &(ctx->ga.MutationType));
-                  break;
-             }
-
-             /* reset to min/max if bounded flag true and outside range */
-             if( ctx->ga.MutateBoundedFlag == PGA_TRUE ) {
-                 if( c[i] < ctx->init.IntegerMin[i])
-                     c[i] = ctx->init.IntegerMin[i];
-                 if( c[i] > ctx->init.IntegerMax[i])
-                     c[i] = ctx->init.IntegerMax[i];
-             }
-
-             count++;
-         }
-     }
-     PGADebugExited("PGAIntegerMutation");
-     return(count);
+            /* reset to min/max or bounce if outside range */
+            if (ctx->ga.MutateBoundedFlag || ctx->ga.MutateBounceFlag) {
+                if (c [i] < ctx->init.IntegerMin [i]) {
+                    if (ctx->ga.MutateBounceFlag) {
+                        c [i] = PGARandomInterval
+                            (ctx, ctx->init.IntegerMin [i], old_value);
+                    } else {
+                        c [i] = ctx->init.IntegerMin [i];
+                    }
+                }
+                if (c [i] > ctx->init.IntegerMax [i]) {
+                    if (ctx->ga.MutateBounceFlag) {
+                        c [i] = PGARandomInterval
+                            (ctx, old_value, ctx->init.IntegerMax [i]);
+                    } else {
+                        c [i] = ctx->init.IntegerMax [i];
+                    }
+                }
+            }
+            count++;
+        }
+    }
+    PGADebugExited("PGAIntegerMutation");
+    return(count);
 }
 
 /*I****************************************************************************

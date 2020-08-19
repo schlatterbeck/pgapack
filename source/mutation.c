@@ -393,6 +393,77 @@ int PGAGetMutationBoundedFlag(PGAContext *ctx)
     return (ctx->ga.MutateBoundedFlag);
 }
 
+/*U****************************************************************************
+   PGASetMutationBounceBackFlag - If this flag is set to PGA_TRUE, then for
+   Integer and Real strings whenever a gene is mutated, if it underflows
+   (overflows) the lower (upper)bound it is reset to a random value between
+   the old value and the violated bound.
+   In this way all allele values remain within the range the strings
+   were initialized on.  If this flag is PGA_FALSE (the default), the alleles
+   may take any values. See also PGASetMutationBoundedFlag.
+
+   Category: Operators
+
+   Inputs:
+      ctx  - context variable
+      flag - either PGA_TRUE or PGA_FALSE
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetMutationBounceBackFlag(ctx, PGA_TRUE);
+
+****************************************************************************U*/
+void PGASetMutationBounceBackFlag(PGAContext *ctx, int val)
+{
+    PGADebugEntered("PGASetMutationBounceBackFlag");
+
+    switch (val)
+    {
+    case PGA_TRUE:
+    case PGA_FALSE:
+         ctx->ga.MutateBounceFlag = val;
+         break;
+    default:
+         PGAError(ctx, "PGASetMutationBounceBackFlag: Invalid value:",
+                  PGA_FATAL, PGA_INT, (void *) &val);
+         break;
+    }
+
+    PGADebugExited("PGASetMutationBounceBackFlag");
+}
+
+
+/*U****************************************************************************
+   PGAGetMutationBounceBackFlag - returns PGA_TRUE or PGA_FALSE to indicate
+   whether mutated strings remain within the initialization range
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+
+   Example:
+      PGAContext *ctx;
+      int val;
+      :
+      val = PGAGetMutationBounceBackFlag(ctx);
+
+****************************************************************************U*/
+int PGAGetMutationBounceBackFlag(PGAContext *ctx)
+{
+    PGADebugEntered  ("PGAGetMutationBounceBackFlag");
+    PGAFailIfNotSetUp("PGAGetMutationBounceBackFlag");
+    PGADebugExited   ("PGAGetMutationBounceBackFlag");
+    return (ctx->ga.MutateBounceFlag);
+}
+
 
 
 /*U****************************************************************************

@@ -216,7 +216,7 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
         { "PGASetRTRWindowSize",                328 },
         { "PGAGetRTRWindowSize",                329 },
 
-        /* mutation.c */
+        /* mutation.c */  /* 330-338, 400--499 */
         { "PGAMutate",                      330 },
         { "PGAGetMutationType",             331 },
         { "PGAGetMutationRealValue",        332 },
@@ -226,8 +226,10 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
         { "PGASetMutationRealValue",        336 },
         { "PGASetMutationIntegerValue",     337 },
         { "PGASetMutationProb",             338 },
-        { "PGASetMutationBoundedFlag",      400 },  /* 400--499 */
-        { "PGAGetMutationBoundedFlag",      401 },  /* 400--499 */
+        { "PGASetMutationBoundedFlag",      400 },
+        { "PGAGetMutationBoundedFlag",      401 },
+        { "PGASetMutationBounceBackFlag",   402 },
+        { "PGAGetMutationBounceBackFlag",   403 },
 
         /* duplcate.c */
         { "PGADuplicate",                   340 },
@@ -787,6 +789,7 @@ void PGASetDebugFlag11(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[315] = Flag; /*PGASetCrossoverProb*/
    ctx->debug.PGADebugFlags[316] = Flag; /*PGASetUniformCrossoverProb*/
 
+   ctx->debug.PGADebugFlags[318] = Flag; /*PGAPairwiseBestReplacement*/
    ctx->debug.PGADebugFlags[319] = Flag; /*PGARestrictedTournamentReplacement*/
    ctx->debug.PGADebugFlags[320] = Flag; /*PGASortPop*/
    ctx->debug.PGADebugFlags[321] = Flag; /*PGAGetPopSize*/
@@ -809,12 +812,15 @@ void PGASetDebugFlag11(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[338] = Flag; /*PGASetMutationProb*/
    ctx->debug.PGADebugFlags[400] = Flag; /*PGASetMutationBoundedFlag*/
    ctx->debug.PGADebugFlags[401] = Flag; /*PGAGetMutationBoundedFlag*/
+   ctx->debug.PGADebugFlags[402] = Flag; /*PGASetMutationBounceBackFlag*/
+   ctx->debug.PGADebugFlags[403] = Flag; /*PGAGetMutationBounceBackFlag*/
 
    ctx->debug.PGADebugFlags[340] = Flag; /*PGADuplicate*/
    ctx->debug.PGADebugFlags[341] = Flag; /*PGAChange*/
    ctx->debug.PGADebugFlags[342] = Flag; /*PGASetNoDuplicatesFlag*/
    ctx->debug.PGADebugFlags[343] = Flag; /*PGAGetNoDuplicatesFlag*/
 
+   ctx->debug.PGADebugFlags[349] = Flag; /*PGARunMutationOnly*/
    ctx->debug.PGADebugFlags[350] = Flag; /*PGARunMutationAndCrossover*/
    ctx->debug.PGADebugFlags[351] = Flag; /*PGARunMutationOrCrossover*/
    ctx->debug.PGADebugFlags[352] = Flag; /*PGAUpdateGeneration*/
@@ -889,9 +895,11 @@ void PGASetDebugFlag11(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[707] = Flag; /*PGAGetMinMachineRealValue*/
    ctx->debug.PGADebugFlags[708] = Flag; /*PGADestroy*/
 
+   ctx->debug.PGADebugFlags[740] = Flag; /*PGADebugPrint*/
    ctx->debug.PGADebugFlags[741] = Flag; /*PGAGetDebugFlag*/
    ctx->debug.PGADebugFlags[742] = Flag; /*PGASetDebugFlag*/
    ctx->debug.PGADebugFlags[743] = Flag; /*PGAPrintDebugOptions*/
+   ctx->debug.PGADebugFlags[744] = Flag; /*PGASetDebugLevel*/
 
    ctx->debug.PGADebugFlags[800] = Flag; /*PGAHammingDistance*/
 
@@ -1035,6 +1043,8 @@ void PGASetDebugFlag32(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[175] = Flag; /*PGAIntegerGeneDistance*/
    ctx->debug.PGADebugFlags[400] = Flag; /*PGASetMutationBoundedFlag*/
    ctx->debug.PGADebugFlags[401] = Flag; /*PGAGetMutationBoundedFlag*/
+   ctx->debug.PGADebugFlags[402] = Flag; /*PGASetMutationBounceBackFlag*/
+   ctx->debug.PGADebugFlags[403] = Flag; /*PGAGetMutationBounceBackFlag*/
 }
 
 /*I****************************************************************************

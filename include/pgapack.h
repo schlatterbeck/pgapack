@@ -283,7 +283,8 @@ typedef struct {
     int MutateOnlyNoCross;   /* Mutate only strings not from crossover    */
     int MutationType;        /* Type of mutation used                     */
     int MutateIntegerValue;  /* Multiplier to mutate Integer strings with */
-    int MutateBoundedFlag;   /* Confine integer alleles to given range    */
+    int MutateBoundedFlag;   /* Confine alleles to given range (bound)    */
+    int MutateBounceFlag;    /* Confine alleles to given range (random)   */
     int TournamentSize;      /* Number of participants in tournament      */
     int RTRWindowSize;       /* Window for restricted tournament select   */
     int TournamentWithRepl;  /* Tournament with / without replacement     */
@@ -671,6 +672,8 @@ void PGASetMutationIntegerValue( PGAContext *ctx, int val);
 int PGAGetMutationIntegerValue (PGAContext *ctx);
 void PGASetMutationBoundedFlag(PGAContext *ctx, int val);
 int PGAGetMutationBoundedFlag(PGAContext *ctx);
+void PGASetMutationBounceBackFlag(PGAContext *ctx, int val);
+int PGAGetMutationBounceBackFlag(PGAContext *ctx);
 void PGASetMutationProb(PGAContext *ctx, double mutation_prob);
 double PGAGetMutationProb (PGAContext *ctx);
 

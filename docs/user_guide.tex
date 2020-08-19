@@ -1252,7 +1252,7 @@ mutation rate is the reciprocal of the string length.  The function call {\tt
 PGASetMutationProb(ctx,.001)} will set the mutation rate to .001.
 
 The {\em type} of mutation depends on the data type.  For binary-valued
-strings, mutation is a bit complement operation For
+strings, mutation is a bit complement operation. For
 character-valued strings, mutation replaces one alphabetic character with
 another chosen uniformly randomly.  The alphabetic characters will be lower,
 upper, or mixed case depending on how the strings were initialized.
@@ -1297,9 +1297,15 @@ Some of the integer- and real-valued mutation operators may generate allele
 values outside the initialization range of that gene.  By
 default, the allele value will \textit{not} be reset to the lower
 (upper) value of the
-initialization range for that gene.  By setting {\tt
-PGASetMutationBoundedFlag(ctx, PGA\_TRUE)} the allele values will
-be reset if they fall outside of the initialization range.
+initialization range for that gene.  By setting
+\verb+PGASetMutationBoundedFlag(ctx, PGA_TRUE)+ the allele values will
+be set to the value of the bound if they fall outside of the
+initialization range. It was argued that setting the value to the bound
+would reduce the genetic variance and could lead to premature
+convergence if several individuals get the same value \cite[p.~204]{PSL05}.
+Therefore an alternative called ``Bounce-Back'' was proposed: If
+\verb+PGASetMutationBounceBackFlag(ctx, PGA_TRUE)+ is set, the new value
+is set to a random value between the old value and the bound.
 
 
 %*****************************************************************************
