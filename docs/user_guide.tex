@@ -2778,7 +2778,7 @@ void hillclimb(PGAContext *ctx, int pop)
 This chapter assumes familiarity with the background material in
 Appendix~\ref{app:par-background}.  It also assumes that a parallel version of
 \pga\ was built and that programs are linked with
-an MPI library (see Section~\ref{sec:install}).
+an MPI library.
 
 Version 1.0 of \pga\ supports parallel and sequential {\em implementations} of
 the single population global model (GM).  The parallel implementation uses a
@@ -3110,8 +3110,7 @@ debugging.  When the facility is invoked, print statements to {\tt stdout}
 allow the programmer to trace the sequence of functions \pga\ executes.  Due
 to the negative impact on performance this facility is {\em not} available by
 default.  Instead, you must explicitly enable tracing when configuring 
-\pga\  with the {\tt -debug} flag.  See 
-Section~\ref{sec:install}.
+\pga\  with the {\tt -debug} flag.
 
 The trace facility uses the concept  of a {\em debug
 level}.  For example, executing the Maxbit example
