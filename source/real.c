@@ -440,78 +440,193 @@ void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
       NumMutations = PGARealMutation( ctx, p, PGA_NEWPOP, .001 );
 
 ****************************************************************************I*/
-int PGARealMutation( PGAContext *ctx, int p, int pop, double mr )
+int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
 {
     PGAReal *c;
-    int i;
+    int i, j;
     int count = 0;
     double val = 0.0;
+    /* The following are used for DE variants */
+    int midx = 0;
+    int do_best = (ctx->ga.DEVariant == PGA_DE_VARIANT_BEST);
+    int nrand  = 2 * ctx->ga.DENumDiffs + (!do_best);
+    int maxidx = 2 * ctx->ga.DENumDiffs + 1;
+    PGAReal *indivs [maxidx];
 
     PGADebugEntered("PGARealMutation");
+    if (ctx->ga.MutationType == PGA_MUTATION_DE) {
+        int idx [maxidx];
+        PGASampleState sstate;
+        int best = PGAGetBestIndex (ctx, PGA_OLDPOP);
+        int avoid = 1;
+
+        /* We rely on the fact that we operate on an individual of
+         * PGA_NEWPOP and take data from PGA_OLDPOP. Assert this is the
+         * case.
+         */
+        if (pop != PGA_NEWPOP) {
+            PGAError
+                ( ctx, "PGARealMutation: Invalid value of pop:"
+                , PGA_FATAL, PGA_INT, (void *) &(pop)
+                );
+        }
+
+        /* for BEST strategy we have to avoid collision with running
+         * index p *and* the best individual
+         */
+        if (do_best && best != p) {
+            avoid = 2;
+        }
+        /* Use (PopSize - avoid) to avoid collision with running index
+         * and with the best index (unless this is the same)
+         */
+        PGARandomSampleInit (ctx, &sstate, nrand, ctx->ga.PopSize - avoid);
+        for (i=0; i<nrand; i++) {
+            int rawidx = PGARandomNextSample (&sstate);
+            /* Avoid collision with p and optionally best, samples are
+             * drawn with reduced upper bound, see PGARandomSampleInit above
+             */
+            if (rawidx >= p) {
+                rawidx += 1;
+            }
+            if (do_best && best != p && rawidx >= best) {
+                rawidx += 1;
+            }
+            idx [i] = rawidx;
+        }
+        /* Since indices from PGARandomNextSample are
+         * returned in order we need to shuffle
+         */
+        for (i=0; i<nrand-1; i++) {
+            int tmp;
+            j = PGARandomInterval (ctx, i, nrand-1);
+            tmp = idx [j];
+            idx [j] = idx [i];
+            idx [i] = tmp;
+        }
+        /* Now we have a list of shuffled indexes that do not
+         * collide with one-another or with p or best
+         * Add best index as last to the list if do_best
+         */
+        if (do_best) {
+            idx [maxidx - 1] = best;
+        }
+        for (i=0; i<nrand; i++) {
+            indivs [i] = (PGAReal *)
+                PGAGetIndividual (ctx, idx [i], PGA_OLDPOP)->chrom;
+        }
+        /* Index of allele that is mutated in any case */
+        midx = PGARandomInterval (ctx, 0, ctx->ga.StringLen - 1);
+    }
 
     c = (PGAReal *)PGAGetIndividual(ctx, p, pop)->chrom;
     for(i=0; i<ctx->ga.StringLen; i++) {
         double old_value = c [i];
 
-        /* randomly choose an allele   */
-        if ( PGARandomFlip(ctx, mr) ) {
-            /* generate on range, or calculate multplier */
-            switch (ctx->ga.MutationType) {
+        switch (ctx->ga.MutationType) {
             case PGA_MUTATION_RANGE:
-                c [i] = PGARandomUniform(ctx, ctx->init.RealMin [i],
-                                              ctx->init.RealMax [i]);
-                break;
             case PGA_MUTATION_CONSTANT:
-                val = ctx->ga.MutateRealValue;
-                break;
             case PGA_MUTATION_UNIFORM:
-                val = PGARandomUniform  (ctx, 0.0, ctx->ga.MutateRealValue);
-                break;
             case PGA_MUTATION_GAUSSIAN:
-                val = PGARandomGaussian (ctx, 0.0, ctx->ga.MutateRealValue);
+                /* randomly choose an allele   */
+                if ( PGARandomFlip(ctx, mr) ) {
+                    /* generate on range, or calculate multiplier */
+                    switch (ctx->ga.MutationType) {
+                    case PGA_MUTATION_RANGE:
+                        c [i] = PGARandomUniform(ctx, ctx->init.RealMin [i],
+                                                      ctx->init.RealMax [i]);
+                        break;
+                    case PGA_MUTATION_CONSTANT:
+                        val = ctx->ga.MutateRealValue;
+                        break;
+                    case PGA_MUTATION_UNIFORM:
+                        val = PGARandomUniform
+                            (ctx, 0.0, ctx->ga.MutateRealValue);
+                        break;
+                    case PGA_MUTATION_GAUSSIAN:
+                        val = PGARandomGaussian
+                            (ctx, 0.0, ctx->ga.MutateRealValue);
+                        break;
+                    }
+                    /* apply multiplier calculated in switch above */
+                    if ( (ctx->ga.MutationType == PGA_MUTATION_CONSTANT) ||
+                         (ctx->ga.MutationType == PGA_MUTATION_UNIFORM)  ||
+                         (ctx->ga.MutationType == PGA_MUTATION_GAUSSIAN)
+                       )
+                    {
+                         /* add/subtract from allele */
+                        if ( PGARandomFlip(ctx, .5) )
+                            c [i] += val * c [i];
+                        else
+                            c [i] -= val * c [i];
+                    }
+                    /* increment mutation count */
+                    count++;
+                }
+            case PGA_MUTATION_DE:
+                if (i == midx || PGARandomFlip (ctx, ctx->ga.DECrossoverProb)){
+                    double f = ctx->ga.DEScaleFactor;
+                    if (ctx->ga.DEJitter > 0) {
+                        f += ctx->ga.DEJitter * (PGARandom01 (ctx, 0) - 0.5);
+                    }
+                    switch (ctx->ga.DEVariant) {
+                    case PGA_DE_VARIANT_RAND:
+                    case PGA_DE_VARIANT_BEST:
+                        /* the last element is either a random individual
+                         * or the best depending on variant
+                         */
+                        c [i] = indivs [maxidx - 1][i];
+                        /* Add difference vectors */
+                        for (j=0; j < (maxidx - 1); j+=2) {
+                            c [i] += f * (indivs [j][i] - indivs [j+1][i]);
+                        }
+                        break;
+                    case PGA_DE_VARIANT_EITHER_OR:
+                        /* We use only 1 difference and ignore DENumDiffs */
+                        if (PGARandom01 (ctx, 0) < ctx->ga.DEProbabilityEO) {
+                            c [i] = indivs [0][i]
+                                  + f * (indivs [1][i] - indivs [2][i]);
+                        } else {
+                            double k = ctx->ga.DEAuxFactor;
+                            c [i] = indivs [0][i]
+                                  + k * ( indivs [1][i] + indivs [2][i]
+                                        - 2 * indivs [0][i]
+                                        );
+                        }
+                    default:
+                        PGAError(ctx, "PGARealMutation: Invalid value of "
+                                 "ga.DEVariant:", PGA_FATAL, PGA_INT,
+                                 (void *) &(ctx->ga.DEVariant));
+                        break;
+                    }
+                    count++;
+                }
                 break;
             default:
                 PGAError(ctx, "PGARealMutation: Invalid value of "
                          "ga.MutationType:", PGA_FATAL, PGA_INT,
                          (void *) &(ctx->ga.MutationType));
                 break;
-            }
+        }
 
-            /* apply multiplier calculated in switch above */
-            if ( (ctx->ga.MutationType == PGA_MUTATION_CONSTANT) ||
-                 (ctx->ga.MutationType == PGA_MUTATION_UNIFORM)  ||
-                 (ctx->ga.MutationType == PGA_MUTATION_GAUSSIAN)
-               )
-            {
-                 /* add/subtract from allele */
-                if ( PGARandomFlip(ctx, .5) )
-                    c [i] += val * c [i];
-                else
-                    c [i] -= val * c [i];
-            }
-
-            /* reset to min/max or bounce if outside range */
-            if (ctx->ga.MutateBoundedFlag || ctx->ga.MutateBounceFlag) {
-                if( c [i] < ctx->init.RealMin [i]) {
-                    if (ctx->ga.MutateBounceFlag) {
-                        c [i] = PGARandomUniform
-                            (ctx, ctx->init.RealMin [i], old_value);
-                    } else {
-                        c [i] = ctx->init.RealMin [i];
-                    }
-                }
-                if( c [i] > ctx->init.RealMax [i]) {
-                    if (ctx->ga.MutateBounceFlag) {
-                        c [i] = PGARandomUniform
-                            (ctx, old_value, ctx->init.RealMax [i]);
-                    } else {
-                        c [i] = ctx->init.RealMax [i];
-                    }
+        /* reset to min/max or bounce if outside range */
+        if (ctx->ga.MutateBoundedFlag || ctx->ga.MutateBounceFlag) {
+            if( c [i] < ctx->init.RealMin [i]) {
+                if (ctx->ga.MutateBounceFlag) {
+                    c [i] = PGARandomUniform
+                        (ctx, ctx->init.RealMin [i], old_value);
+                } else {
+                    c [i] = ctx->init.RealMin [i];
                 }
             }
-
-            /* increment mutation count */
-            count++;
+            if( c [i] > ctx->init.RealMax [i]) {
+                if (ctx->ga.MutateBounceFlag) {
+                    c [i] = PGARandomUniform
+                        (ctx, old_value, ctx->init.RealMax [i]);
+                } else {
+                    c [i] = ctx->init.RealMax [i];
+                }
+            }
         }
     }
 
@@ -998,4 +1113,3 @@ double PGARealEuclidianDistance (PGAContext *ctx, int p1, int pop1, int p2, int 
     PGADebugExited("PGARealGeneDistance");
     return sqrt (ret);
 }
-

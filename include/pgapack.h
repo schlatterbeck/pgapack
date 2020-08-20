@@ -183,6 +183,14 @@ extern "C" {
 #define PGA_MUTATION_UNIFORM    3    /* Real: +- Uniform random no.         */
 #define PGA_MUTATION_GAUSSIAN   4    /* Real: +- Gaussian random no.        */
 #define PGA_MUTATION_PERMUTE    5    /* Integer: Permutation (swap)         */
+#define PGA_MUTATION_DE         6    /* Differential Evolution (only real)  */
+
+/*****************************************
+* Differential Evolution Variant         *
+*****************************************/
+#define PGA_DE_VARIANT_RAND      1   /* Standard DE */
+#define PGA_DE_VARIANT_BEST      2   /* Derive from best string */
+#define PGA_DE_VARIANT_EITHER_OR 3   /* Either-or variant */
 
 /*****************************************
 *        POPULATION REPLACEMENT          *
@@ -289,6 +297,13 @@ typedef struct {
     int RTRWindowSize;       /* Window for restricted tournament select   */
     int TournamentWithRepl;  /* Tournament with / without replacement     */
     int RandomizeSelect;     /* Additional randomisation during select    */
+    int DEVariant;           /* Differential evolution (DE) variant       */
+    int DENumDiffs;          /* Number of differences for DE (1 or 2)     */
+    double DEScaleFactor;    /* Scale Factor F for DE                     */
+    double DEAuxFactor;      /* Auxiliary Factor K for DE                 */
+    double DECrossoverProb;  /* Crossover probability Cr for DE           */
+    double DEJitter;         /* Jitter interval DE (uniform dist)         */
+    double DEProbabilityEO;  /* Either-Or-Probability for DE              */
     double MutateRealValue;  /* Multiplier to mutate Real strings with    */
     double MutationProb;     /* Starting mutation probability             */
     double CrossoverProb;    /* Crossover probability                     */
@@ -676,6 +691,20 @@ void PGASetMutationBounceBackFlag(PGAContext *ctx, int val);
 int PGAGetMutationBounceBackFlag(PGAContext *ctx);
 void PGASetMutationProb(PGAContext *ctx, double mutation_prob);
 double PGAGetMutationProb (PGAContext *ctx);
+void PGASetDEVariant (PGAContext *ctx, int val);
+int PGAGetDEVariant (PGAContext *ctx);
+void PGASetDENumDiffs (PGAContext *ctx, int val);
+int PGAGetDENumDiffs (PGAContext *ctx);
+void PGASetDEScaleFactor (PGAContext *ctx, double val);
+double PGAGetDEScaleFactor (PGAContext *ctx);
+void PGASetDEAuxFactor (PGAContext *ctx, double val);
+double PGAGetDEAuxFactor (PGAContext *ctx);
+void PGASetDECrossoverProb (PGAContext *ctx, double val);
+double PGAGetDECrossoverProb (PGAContext *ctx);
+void PGASetDEJitter (PGAContext *ctx, double val);
+double PGAGetDEJitter (PGAContext *ctx);
+void PGASetDEProbabilityEO (PGAContext *ctx, double val);
+double PGAGetDEProbabilityEO (PGAContext *ctx);
 
 /*****************************************
 *          parallel.c

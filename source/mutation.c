@@ -138,6 +138,7 @@ void PGASetMutationType( PGAContext *ctx, int mutation_type)
      case PGA_MUTATION_UNIFORM:
      case PGA_MUTATION_GAUSSIAN:
      case PGA_MUTATION_PERMUTE:
+     case PGA_MUTATION_DE:
           ctx->ga.MutationType = mutation_type;
           break;
      default:
@@ -526,3 +527,389 @@ double PGAGetMutationProb (PGAContext *ctx)
     PGADebugExited("PGAGetMutationProb");
     return(ctx->ga.MutationProb);
 }
+
+
+/*U****************************************************************************
+  PGASetDEVariant - sets the variant used for Differential Evolution.
+  Only used if the mutation type is PGA_MUTATION_DE.
+
+  Category: Initialization
+
+  Inputs:
+     ctx - context variable
+     v   - symbolic constant, currently one of PGA_DE_VARIANT_RAND,
+           PGA_DE_VARIANT_BEST
+
+  Outputs:
+
+  Example:
+
+     PGAContext *ctx;
+     :
+     PGASetDEVariant(ctx, PGA_DE_VARIANT_BEST);
+
+****************************************************************************U*/
+void PGASetDEVariant (PGAContext *ctx, int variant)
+{
+    PGAFailIfSetUp("PGASetDEVariant");
+    switch (variant)
+    {
+    case PGA_DE_VARIANT_BEST:
+    case PGA_DE_VARIANT_RAND:
+        ctx->ga.DEVariant = variant;
+    default:
+        PGAError
+            ( ctx, "PGASetDEVariant: Invalid value of DE variant:"
+            , PGA_FATAL, PGA_INT, (void *) &variant
+            );
+
+    }
+}
+
+/*U***************************************************************************
+   PGAGetDEVariant - Returns the variant of Differential Evolution
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      Returns the integer corresponding to the symbolic constant
+      used to specify the variant of differential evolution
+
+   Example:
+      PGAContext *ctx;
+      int variant;
+      :
+      variant = PGAGetDEVariant(ctx);
+      switch (variant) {
+      case PGA_DE_VARIANT_RAND:
+          printf("DE Variant = PGA_DE_VARIANT_RAND\n");
+          break;
+      case PGA_DE_VARIANT_BEST:
+          printf("DE Variant = PGA_DE_VARIANT_BEST\n");
+          break;
+      }
+
+***************************************************************************U*/
+int PGAGetDEVariant (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetDEVariant");
+    return(ctx->ga.DEVariant);
+}
+
+/*U****************************************************************************
+   PGASetDEScaleFactor - Set the scale factor F for DE
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      val - the scale factor
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetDEScaleFactor (ctx, 0.75);
+
+****************************************************************************U*/
+void PGASetDEScaleFactor (PGAContext *ctx, double val)
+{
+    if (val < 0.0 || val > 2.0)
+        PGAError ( ctx,
+                  "PGASetDEScaleFactor: Invalid value of F:",
+                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
+    else
+        ctx->ga.DEScaleFactor = val;
+}
+
+/*U***************************************************************************
+   PGAGetDEScaleFactor - Returns the value of the scale factor F for DE
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The value of the scale factor
+
+   Example:
+      PGAContext *ctx;
+      double val;
+      :
+      val = PGAGetDEScaleFactor(ctx);
+
+***************************************************************************U*/
+double PGAGetDEScaleFactor (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetDEScaleFactor");
+    return(ctx->ga.DEScaleFactor);
+}
+
+/*U****************************************************************************
+   PGASetDEAuxFactor - Set the auxiliary factor K for DE
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      val - the auxiliary factor
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetDEAuxFactor (ctx, 0.75);
+
+****************************************************************************U*/
+void PGASetDEAuxFactor (PGAContext *ctx, double val)
+{
+    if (val < 0.0 || val > 2.0)
+        PGAError ( ctx,
+                  "PGASetDEAuxFactor: Invalid value of K:",
+                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
+    else
+        ctx->ga.DEAuxFactor = val;
+}
+
+/*U***************************************************************************
+   PGAGetDEAuxFactor - Returns the value of the auxiliary factor K for DE
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The value of the auxiliary factor
+
+   Example:
+      PGAContext *ctx;
+      double val;
+      :
+      val = PGAGetDEAuxFactor(ctx);
+
+***************************************************************************U*/
+double PGAGetDEAuxFactor (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetDEAuxFactor");
+    return(ctx->ga.DEAuxFactor);
+}
+
+/*U****************************************************************************
+   PGASetDECrossoverProb - Set the crossover probability for DE
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      val - the crossover probability
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetDECrossoverProb (ctx, 0.75);
+
+****************************************************************************U*/
+void PGASetDECrossoverProb (PGAContext *ctx, double val)
+{
+    if (val < 0.0 || val > 1.0)
+        PGAError ( ctx,
+                  "PGASetDECrossoverProb: Invalid value of crossover:",
+                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
+    else
+        ctx->ga.DECrossoverProb = val;
+}
+
+/*U***************************************************************************
+   PGAGetDECrossoverProb - Returns the crossover probability for DE
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The value of the DE crossover probability
+
+   Example:
+      PGAContext *ctx;
+      double val;
+      :
+      val = PGAGetDECrossoverProb(ctx);
+
+***************************************************************************U*/
+double PGAGetDECrossoverProb (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetDECrossoverProb");
+    return(ctx->ga.DECrossoverProb);
+}
+
+/*U****************************************************************************
+   PGASetDEJitter - Set the jitter for DE
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      val - the jitter for DE
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetDEJitter (ctx, 0.75);
+
+****************************************************************************U*/
+void PGASetDEJitter (PGAContext *ctx, double val)
+{
+    if (val < 0.0 || val > 2.0)
+        PGAError ( ctx,
+                  "PGASetDEJitter: Invalid value of jitter:",
+                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
+    else
+        ctx->ga.DEJitter = val;
+}
+
+/*U***************************************************************************
+   PGAGetDEJitter - Returns the jitter for DE
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The value of the DE jitter
+
+   Example:
+      PGAContext *ctx;
+      double val;
+      :
+      val = PGAGetDEJitter(ctx);
+
+***************************************************************************U*/
+double PGAGetDEJitter (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetDEJitter");
+    return(ctx->ga.DEJitter);
+}
+
+/*U****************************************************************************
+   PGASetDEProbabilityEO - Set the either-or probability for
+   PGA_DE_VARIANT_EITHER_OR of Differential Evolution
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      val - the either-or probability
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetDEProbabilityEO (ctx, 0.75);
+
+****************************************************************************U*/
+void PGASetDEProbabilityEO (PGAContext *ctx, double val)
+{
+    if (val < 0.0 || val > 1.0)
+        PGAError ( ctx,
+                  "PGASetDEProbabilityEO: Invalid value of EO probabilty:",
+                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
+    else
+        ctx->ga.DEProbabilityEO = val;
+}
+
+/*U***************************************************************************
+   PGAGetDEProbabilityEO - Returns the probability of the either-or
+   variant of Differential Evolution
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The value of the DE EO-Probability
+
+   Example:
+      PGAContext *ctx;
+      double val;
+      :
+      val = PGAGetDEProbabilityEO(ctx);
+
+***************************************************************************U*/
+double PGAGetDEProbabilityEO (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetDEProbabilityEO");
+    return(ctx->ga.DEProbabilityEO);
+}
+
+/*U****************************************************************************
+   PGASetDENumDiffs - Set the number of differences for DE
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      val - the number of differences
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetDENumDiffs (ctx, 2);
+
+****************************************************************************U*/
+void PGASetDENumDiffs (PGAContext *ctx, int val)
+{
+    if (val < 1 || val > 2)
+        PGAError ( ctx,
+                  "PGASetDENumDiffs: Invalid value of num diffs:",
+                   PGA_FATAL, PGA_INT, (void *) &val);
+    else
+        ctx->ga.DENumDiffs = val;
+}
+
+/*U***************************************************************************
+   PGAGetDENumDiffs - Returns the number of differences for DE
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The value of the DE number of differences
+
+   Example:
+      PGAContext *ctx;
+      int val;
+      :
+      val = PGAGetDENumDiffs(ctx);
+
+***************************************************************************U*/
+int PGAGetDENumDiffs (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetDENumDiffs");
+    return(ctx->ga.DENumDiffs);
+}
+

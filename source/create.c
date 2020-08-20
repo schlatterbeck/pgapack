@@ -229,6 +229,13 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->ga.MutateIntegerValue = PGA_UNINITIALIZED_INT;
     ctx->ga.MutateBoundedFlag  = PGA_UNINITIALIZED_INT;
     ctx->ga.MutateBounceFlag   = PGA_UNINITIALIZED_INT;
+    ctx->ga.DEVariant          = PGA_UNINITIALIZED_INT;
+    ctx->ga.DENumDiffs         = PGA_UNINITIALIZED_INT;
+    ctx->ga.DEScaleFactor      = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.DEAuxFactor        = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.DECrossoverProb    = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.DEJitter           = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.DEProbabilityEO    = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.NoDuplicates       = PGA_UNINITIALIZED_INT;
     ctx->ga.MutationProb       = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.CrossoverProb      = PGA_UNINITIALIZED_DOUBLE;
@@ -550,6 +557,27 @@ void PGASetUp ( PGAContext *ctx )
 
     if ( ctx->ga.MutateBounceFlag  == PGA_UNINITIALIZED_INT)
          ctx->ga.MutateBounceFlag   = PGA_FALSE;
+
+    if ( ctx->ga.DEVariant         == PGA_UNINITIALIZED_INT)
+         ctx->ga.DEVariant          = PGA_DE_VARIANT_RAND;
+
+    if ( ctx->ga.DENumDiffs        == PGA_UNINITIALIZED_INT)
+         ctx->ga.DENumDiffs         = 1;
+
+    if ( ctx->ga.DEScaleFactor     == PGA_UNINITIALIZED_DOUBLE)
+         ctx->ga.DEScaleFactor      = 0.9;
+
+    if ( ctx->ga.DEAuxFactor       == PGA_UNINITIALIZED_DOUBLE)
+         ctx->ga.DEAuxFactor        = 0.5 * (ctx->ga.DEScaleFactor + 1.0);
+
+    if ( ctx->ga.DECrossoverProb   == PGA_UNINITIALIZED_DOUBLE)
+         ctx->ga.DECrossoverProb    = 0.9;
+
+    if ( ctx->ga.DEJitter          == PGA_UNINITIALIZED_DOUBLE)
+         ctx->ga.DEJitter           = 0.0;
+
+    if ( ctx->ga.DEProbabilityEO   == PGA_UNINITIALIZED_DOUBLE)
+         ctx->ga.DEProbabilityEO    = 0.5;
 
     if ( ctx->ga.NoDuplicates      == PGA_UNINITIALIZED_INT)
          ctx->ga.NoDuplicates       = PGA_FALSE;
