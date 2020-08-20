@@ -85,9 +85,19 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int),
 
     rank = PGAGetRank(ctx, comm);
 
+    if (rank == 0) {
+        if (ctx->fops.PreEval) {
+            (*ctx->fops.PreEval)(&ctx);
+        }
+        if (ctx->cops.PreEval) {
+            (*ctx->cops.PreEval)(ctx);
+        }
+    }
+
     PGAEvaluate(ctx, PGA_OLDPOP, f, comm);
-    if (rank == 0)
+    if (rank == 0) {
 	PGAFitness(ctx, PGA_OLDPOP);
+    }
 
     if (PGAGetMutationOnlyFlag(ctx)) {
 	CreateNewGeneration = PGARunMutationOnly;
