@@ -442,6 +442,57 @@ of two-point crossover is to be used.  Most {\tt PGASet} calls are discussed
 in Chapter~\ref{chp:functionality}.
 
 %*****************************************************************************
+\section{Differential Evolution}\label{sec:differential-evolution}
+%*****************************************************************************
+
+Differential Evolution (DE) is an evolutionary algorithm (EA) invented by
+Price and Storn in the 1990's \cite{SP95,SP97,PSL05}. It is used with
+floating-point genes and uses differences of individuals (floating-point
+vectors) which are added to another vector to form a \textit{donor}
+vector which is then crossed-over with an existing individual.
+The algorithm is described in more detail in section~\ref{mutation-de},
+page~\pageref{mutation-de}. Since in \pga{} the DE algorithm is
+implemented in a mutation strategy, typically for DE a strategy with
+only mutation is selected, see \verb+PGASetMutationOnlyFlag+ in
+section~\ref{sec:population-replacement}. DE applies
+selection pressure during population replacement: A newly-mutated string
+replaces its parent if it has the same or a better fitness. There is no
+selection mechanism during the selection phase like in other EAs. To
+emulate this (non-) selection, \pga{} introduces a new selection type, linear
+selection, which just returns all individuals in sequence and is no
+selection operator in the genetic-algorithm sense because no selection
+pressure is applied. More details of the selection operator for DE are
+given in section~\ref{sec:selection}.
+
+\begin{figure}[bt]
+\begin{verbatim}
+    PGASetPopSize (ctx, 30);
+    PGASetNumReplaceValue (ctx, 30);
+
+    PGASetSelectType (ctx, PGA_SELECT_LINEAR);
+    PGASetPopReplaceType (ctx, PGA_POPREPL_PAIRWISE_BEST);
+    PGASetMutationOnlyFlag (ctx, PGA_TRUE);
+    PGASetMutationType (ctx, PGA_MUTATION_DE);
+    PGASetMutationBounceBackFlag (ctx, PGA_TRUE);
+\end{verbatim}
+\caption{Specifying Nondefault Values for Differential Evolution}
+\label{example:de-settings}
+\end{figure}
+
+
+For the population replacement strategy the
+pairwise-best replacement type is introduced for DE, which can also be
+used in other EA variants due to the mudular nature of \pga, more
+details are given in section~\ref{sec:population-replacement}. Typical
+settings for Differential Evolution are given in
+figure~\ref{example:de-settings}. In that example the population size
+and the number of individuals replaced in each generation are set to the
+same value: Since DE's replacement strategy replaces individuals only if
+they are better than an existing individual this strategy is elitist and
+it makes sense to apply DE to all individuals in each generation.
+
+
+%*****************************************************************************
 \section{Parallel I/O}\label{sec:parallel-simple-example}
 %*****************************************************************************
 
@@ -982,12 +1033,14 @@ limit exceeded, (2) population too similar, and (3) no change in the best
 solution found in a given number of iterations.  The default is to stop when
 the iteration limit (by default, 1000 iterations) is reached.
 
+\begin{sloppypar}
 The choice of stopping rule is set by {\tt PGASetStoppingRuleType}.  For
 example, {\tt PGASetStoppingRuleType} {\tt (ctx,PGA\_STOP\_MAXITER)} is the
 default.  Other choices are {\tt PGA\_STOP\_TOOSIMILAR} and {\tt
 PGA\_STOP\_NOCHANGE} for population too similar and no change in the best
 solution found, respectively.  {\tt PGASetStoppingRuleType} may be called more
 than once. The different stopping rules specified are {\em or}ed together.
+\end{sloppypar}
 
 If {\tt PGA\_STOP\_MAXITER} is one of the stopping rules, {\tt
 PGASetMaxGAIterValue(ctx,500)} will change the maximum iteration limit to 500.
@@ -1087,6 +1140,7 @@ later replace their parent if the offspring has higher fitness, so the
 selection pressure is applied in the replacement strategy. The linear
 scheme is guaranteed to return individuals in population order.
 
+\begin{sloppypar}
 The choice may be specified by setting the
 second argument of {\tt PGASetSelectType} to one of
 \verb+PGA_SELECT_PROPORTIONAL+, \verb+PGA_SELECT_SUS+,
@@ -1106,6 +1160,7 @@ see section~\ref{sec:population-replacement} for details on population
 replacement. If no selection pressure is used in the selection scheme
 \textit{and} in the population replacement strategy, the genetic search
 degenerates to a random walk.
+\end{sloppypar}
 
 In addition, for tournament selection it can be
 specified if the selection is \textit{with} or \textit{without}
@@ -1292,6 +1347,142 @@ PGASetMutationRealValue(ctx,.5)}.  Finally, if {\tt PGASetMutationType} is set
 to {\tt PGA\_MUTATION\_RANGE}, gene $i$ will be replaced with a value selected
 uniformly random from the initialization range of that gene.
 
+\def\DefaultDEScaleFactor{0.9}
+\def\DefaultDECrossoverProb{0.9}
+\def\DefaultDEJitter{0.0}
+\def\DefaultDEProbabilityEO{0.5}
+\def\DefaultDENumDiffs{1}
+
+For Differential Evolution (DE), the strategy is implemented as the
+mutation type \verb+PGA_MUTATION_DE+\label{mutation-de}. Note that for
+the full DE algorithm not just a special mutation type is needed, see
+section~\ref{sec:differential-evolution} for an introduction. You
+typically want to chose mutation only, linear selection, and
+pairwise-best replacement.
+For DE, real-valued genes are typically called \textit{vectors} (because
+a gene is a vector of real-valued alleles), we use that term in the
+following.
+
+The default strategy of DE is to compute the distance of a pair of
+random vectors in the population and add this difference to a
+randomly-chosen third vector:
+
+\begin{equation}\label{de/rand/1}
+V_{i,g} = X_{r_0,g} + F \cdot (X_{r_1,g} - X_{r_2,g})
+\end{equation}
+
+Where $g$ denotes the generation, $i$ is the running population
+index, and $r_0$, $r_1$, and $r_2$ are random population indeces
+different from each other and the running index $i$. The factor $F$,
+called the scale factor, is a parameter of the search and can be
+specified with \verb+PGASetDEScaleFactor+, the default is
+\DefaultDEScaleFactor. The range for this parameter is $[0,2]$ but
+typical values are in the range $[0.3,1)$, the exact
+value $1.0$ should not be chosen because it reduces the number of
+mutants and thus potentially the genetic variance \cite[p.~75]{PSL05}.
+
+The resulting
+mutant vector $V_i$, also called the \textit{donor} vector, is then
+combined via crossover with the $i^{\hbox{\footnotesize th}}$ member of
+the population $X_i$. Note that the crossover in this implementation of DE is
+\textit{not} the normal genetic algorithm crossover (from
+section~\ref{sec:crossover}), in fact when using DE, crossover is
+typically turned off by setting \verb+PGASetMutationOnlyFlag+ to
+\verb+PGA_TRUE+. Instead DE uses its own crossover implementation
+within the \verb+PGA_MUTATION_DE+ mutation implementation. For each
+vector element (allele), a random variable with a crossover probability
+specified by \verb+PGASetDECrossoverProb+ (default
+\DefaultDECrossoverProb) selects an
+element from either the donor vector $V_i$ or $X_i$. At least one random
+element from $V_i$ is always selected, so with a crossover probability
+of 0, exactly one element from the donor vector is selected. With a
+crossover probability of 1, \textit{all} elements from the donor vector
+are selected. The resulting individual after crossover is placed in the
+new population. If pairwise-best population replacement is selected (the
+default in the DE literature, see section~\ref{sec:population-replacement})
+it is later compared with the old individual $X_i$ in the old population
+which it replaces if it has better fitness.
+
+There are different variants of DE and a notation was
+established to distinguish these variants. The notation uses a 4-tuple
+where each element is delimited with a '/'. The first element in the
+tuple is always the string \textit{DE} for Differential Evolution. The second
+element describes the variant. The most common (often called the
+\textit{classic} variant) selects a random element from the population
+for modification and is therefore called \textit{rand}, see
+equation~\ref{de/rand/1}. The third tuple-element is the number of
+difference-pairs applied to the modified element, it is typically one or
+two. If we use two differences, the formula in equation~\ref{de/rand/1}
+would become:
+\begin{equation}\label{de/rand/2}
+V_{i,g} = X_{r_0,g} + F \cdot (X_{r_1,g} - X_{r_2,g})
+    + F \cdot (X_{r_3,g} - X_{r_4,g})
+\end{equation}
+The number of differences can be specified with \verb+PGASetDENumDiffs+
+and defaults to 1. Note that not all DE strategies use this parameter.
+
+The fourth final element specifies the crossover strategy. For the
+default DE-crossover strategy following a binomial distribution (in
+standard GA terms this type of crossover is often called
+\textit{uniform} crossover) this final element is termed \textit{bin}.
+So for the default DE strategy the name is \textit{DE/rand/1/bin}.
+Currently only this crossover variant is implemented.
+
+The DE variant (the second tuple element) can be selected with
+\verb+PGASetDEVariant+ and defaults to \verb+PGA_DE_VARIANT_RAND+.
+Another variant is the \textit{best} variant which uses the current best
+individual for modification according to equation~\ref{de/best/1}. This
+variant is selected with the contant \verb+PGA_DE_VARIANT_BEST+.
+
+\begin{equation}\label{de/best/1}
+V_{i,g} = X_{\hbox{\footnotesize best},g} + F \cdot (X_{r_1,g} - X_{r_2,g})
+\end{equation}
+
+A third variant called \textit{either-or} \cite[p.~117]{PSL05} is
+selected with the constant \verb+PGA_DE_VARIANT_EITHER_OR+. It randomly
+selects among a mutation operator and a recombination operator according
+to equation~\ref{de/either-or/1}.
+
+\begin{equation}\label{de/either-or/1}
+V_{i,g} = \left\{
+    \begin{array}{ll}
+    {X_{r_0,g} + F \cdot (X_{r_1,g} - X_{r_2,g})}
+        & \mbox{if rand$_i$(0, 1) $< p_F$} \\
+    {X_{r_0,g} + K \cdot (X_{r_1,g} + X_{r_2,g} - 1\cdot X_{r_0,g})}
+        & \mbox{otherwise} \\
+    \end{array} \right.
+\end{equation}
+
+The probability $p_F$ defaults to \DefaultDEProbabilityEO{} and can be
+set with \verb+PGASetDEProbabilityEO+. The parameter $K$ defaults to
+$0.5 * (F + 1)$ \cite[p.~118]{PSL05} where F is the scale factor, it can be
+set with \verb+PGASetDEAuxFactor+. Note that the either-or variant
+ignores the parameter specifying the number of difference vectors
+(specified with \verb+PGASetDENumDiffs+). The expression rand$_i$(0,~1)
+denotes a random number in the range $[0, 1)$ which is re-generated for
+each individual $i$.
+
+When computing the donor vector $V_i$, the scale factor $F$ can be
+perturbed. This can either be done anew for each individual or for each
+\textit{allele} of each individual. The first variant is called
+\textit{dither} (and is currently not implemented in \pga) while the
+second variant is called \textit{jitter}.  Note that jitter not only
+changes the length of the difference vector but also its orientation
+\cite[p.~80]{PSL05}.  With uniform jitter we get a new factor $F_j$, the
+index $j$ denoting the allele \cite[p.~80]{PSL05}:
+
+\begin{equation}\label{jitter}
+\begin{array}{ll}
+F_j = (F + d \cdot (\mbox{rand}_j(0, 1) - 0.5), & d < 2 \cdot F \\
+\end{array}
+\end{equation}
+
+The new $F_j$ replaces $F$ in
+equations~\ref{de/rand/1}--\ref{de/either-or/1} and defaults to
+\DefaultDEJitter. It can be set with \verb+PGASetDEJitter+.
+Very small amounts of uniformly distributed jitter (on the order of
+0.001) have been recommended for some problems \cite[p.~90]{PSL05} like
+digital filter design \cite[p.~440]{PSL05}.
 
 Some of the integer- and real-valued mutation operators may generate allele
 values outside the initialization range of that gene.  By
