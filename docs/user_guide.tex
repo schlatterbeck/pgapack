@@ -3425,12 +3425,8 @@ for {\tt PGADebugPrint} calls.
 \chapter{Default Values}\label{app:default-values}
 %*****************************************************************************
 
-\begin{table}
+\begin{table}[hbt]
 \centering
-\caption
-{
-\pga\ Default Values\label{tab:default-values}
-}
 \begin{tabular}{|l|r|l|} \hline
 \multicolumn{1}{|c|}{CONCEPT} &
 \multicolumn{1}{c|}{DEFAULT} &
@@ -3497,6 +3493,17 @@ Parameter MAX in fitness by ranking
  &  1.2                         & \verb+PGASetMaxFitnessRank+           \\ \hline
 Frequency of statistics printing
  & 10                           & \verb+PGASetPrintFrequencyValue+      \\ \hline
+\multicolumn{1}{l}{$L$ is the string length} & &
+\end{tabular}
+\caption{\pga\ Default Values\label{tab:default-values}}
+\end{table}
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{|l|r|l|} \hline
+\multicolumn{1}{|c|}{CONCEPT} &
+\multicolumn{1}{c|}{DEFAULT} &
+\multicolumn{1}{c|}{SET WITH}  \\  \hline
 Print strings
  &  \verb+PGA_FALSE+            & \verb+PGASetPrintOptions+             \\ \hline
 Print offline statistics
@@ -3527,8 +3534,23 @@ Seed random number with clock
  & \verb+PGA_TRUE+              & \verb+PGASetRandomSeed+               \\ \hline
 Default MPI communicator
  & \verb+MPI_COMM_WORLD+        & \verb+PGASetCommunicator+             \\ \hline
-\multicolumn{1}{l}{$L$ is the string length} & &
+Differential Evolution (DE) variant
+ & \verb+PGA_DE_VARIANT_RAND+   & \verb+PGASetDEVariant+                \\ \hline
+DE scale factor $F$
+ & \DefaultDEScaleFactor        & \verb+PGASetDEScaleFactor+            \\ \hline
+DE auxiliary factor $K$
+ & $0.5 \cdot (F + 1)$          & \verb+PGASetDEAuxFactor+              \\ \hline
+DE Crossover prob $Cr$
+ & \DefaultDECrossoverProb      & \verb+PGASetDECrossoverProb+          \\ \hline
+DE Jitter
+ & \DefaultDEJitter             & \verb+PGASetDEJitter+                 \\ \hline
+DE Either/Or Probability
+ & \DefaultDEProbabilityEO      & \verb+PGASetDEProbabilityEO+          \\ \hline
+DE Number of differences
+ & \DefaultDENumDiffs           & \verb+PGASetDENumDiffs+               \\ \hline
+\multicolumn{3}{l}{$L$ is the string length}
 \end{tabular}
+\caption{\pga\ Default Values (continued)\label{tab:default-values-continued}}
 \end{table}
 
 %*****************************************************************************
