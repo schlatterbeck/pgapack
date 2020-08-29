@@ -1391,13 +1391,19 @@ typically turned off by setting \verb+PGASetMutationOnlyFlag+ to
 \verb+PGA_TRUE+. Instead DE uses its own crossover implementation
 within the \verb+PGA_MUTATION_DE+ mutation implementation. For each
 vector element (allele), a random variable with a crossover probability
-specified by \verb+PGASetDECrossoverProb+ (default
-\DefaultDECrossoverProb) selects an
-element from either the donor vector $V_i$ or $X_i$. At least one random
-element from $V_i$ is always selected, so with a crossover probability
-of 0, exactly one element from the donor vector is selected. With a
-crossover probability of 1, \textit{all} elements from the donor vector
-are selected. The resulting individual after crossover is placed in the
+specified by \verb+PGASetDECrossoverProb+ (default \DefaultDECrossoverProb)
+selects an element from either the donor vector $V_i$ or $X_i$. In the
+DE literature this parameter is typically called \textit{Cr}. At least
+one random element from $V_i$ is always selected, so with a crossover
+probability of 0, exactly one element from the donor vector is selected.
+With a crossover probability of 1, \textit{all} elements from the donor
+vector are selected. Crossover plays a significat role in optimisation.
+For decomposable problems (where each dimension of the problem can be
+optimized separately) a low crossover rate $0 \le Cr \le 0.2$ is a good
+choice. For non-decomposable problem a high crossover rate should be
+chosen, i.e. $0.9 \le Cr \le 1$ \cite[p.~98]{PSL05}.
+
+The resulting individual after crossover is placed in the
 new population. If pairwise-best population replacement is selected (the
 default in the DE literature, see section~\ref{sec:population-replacement})
 it is later compared with the old individual $X_i$ in the old population
@@ -1455,12 +1461,12 @@ V_{i,g} = \left\{
 
 The probability $p_F$ defaults to \DefaultDEProbabilityEO{} and can be
 set with \verb+PGASetDEProbabilityEO+. The parameter $K$ defaults to
-$0.5 * (F + 1)$ \cite[p.~118]{PSL05} where F is the scale factor, it can be
-set with \verb+PGASetDEAuxFactor+. Note that the either-or variant
-ignores the parameter specifying the number of difference vectors
-(specified with \verb+PGASetDENumDiffs+). The expression rand$_i$(0,~1)
-denotes a random number in the range $[0, 1)$ which is re-generated for
-each individual $i$.
+$0.5 \cdot (F + 1)$ \cite[p.~118]{PSL05} where F is the scale factor, it
+can be set with \verb+PGASetDEAuxFactor+. Note that the either-or
+variant ignores the parameter specifying the number of difference
+vectors (specified with \verb+PGASetDENumDiffs+). The expression
+rand$_i$(0,~1) denotes a random number in the range $[0, 1)$ which is
+re-generated for each individual $i$.
 
 When computing the donor vector $V_i$, the scale factor $F$ can be
 perturbed. This can either be done anew for each individual or for each
@@ -1577,7 +1583,7 @@ normalization, respectively.
 
 A {\em linear rank} fitness function \cite{Ba87,Wh89} is given by
 \begin{equation}
-Min + (Max - Min)\frac{{\tt rank(p)}-1}{N-1},\label{eq:rank-select}
+Min + (Max - Min)\cdot\frac{{\tt rank(p)}-1}{N-1},\label{eq:rank-select}
 \end{equation}
 where {\tt rank(p)} is the index of string {\tt p} in a list sorted in order
 of decreasing evaluation function value, and $N$ is the population size.
@@ -1587,9 +1593,10 @@ PGASetMaxFitnessRank(ctx,1.1)}.
 
 In {\em linear normalization} the fitness function is given by
 \begin{equation}
-K - ({\tt rank(p)} * C),
+K - ({\tt rank(p)} \cdot C),
 \end{equation}
-where $K$ and $C$ are the constants $\sigma * N$ and $\sigma$, where $\sigma$
+where $K$ and $C$ are the constants $\sigma \cdot N$ and $\sigma$,
+where $\sigma$
 is the standard deviation of the user's evaluation function values after they
 have been transformed to positive values for a maximization problem.
 
