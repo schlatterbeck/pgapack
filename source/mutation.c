@@ -538,7 +538,7 @@ double PGAGetMutationProb (PGAContext *ctx)
   Inputs:
      ctx - context variable
      v   - symbolic constant, currently one of PGA_DE_VARIANT_RAND,
-           PGA_DE_VARIANT_BEST
+           PGA_DE_VARIANT_BEST, PGA_DE_VARIANT_EITHER_OR
 
   Outputs:
 
@@ -556,13 +556,15 @@ void PGASetDEVariant (PGAContext *ctx, int variant)
     {
     case PGA_DE_VARIANT_BEST:
     case PGA_DE_VARIANT_RAND:
+    case PGA_DE_VARIANT_EITHER_OR:
         ctx->ga.DEVariant = variant;
+        break;
     default:
         PGAError
             ( ctx, "PGASetDEVariant: Invalid value of DE variant:"
             , PGA_FATAL, PGA_INT, (void *) &variant
             );
-
+        break;
     }
 }
 

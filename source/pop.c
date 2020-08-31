@@ -482,12 +482,57 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
     PGADebugExited("PGASetPopReplaceType");
 }
 
+/*
+ * Compare two individuals from different populations. First index is
+ * the one from newpop, second from oldpop.
+ * Note that we cannot use the fitness since it is not comparable across
+ * populations.
+ * Note the '>='/'<=' comparison, differential evolution can walk across
+ * areas with equal evaluation this way
+ */
+static int PGANewpopIndividuumIsBetter (PGAContext *ctx, int p1, int p2)
+{
+    int dir = PGAGetOptDirFlag (ctx);
+    if (!ctx->ga.newpop[p1].evaluptodate) {
+        PGAError
+            ( ctx
+            , "PGANewpopIndividuumIsBetter: newpop indivicual not up to date:"
+            , PGA_FATAL, PGA_INT, (void *) &p1
+            );
+    }
+    if (!ctx->ga.oldpop[p2].evaluptodate) {
+        PGAError
+            ( ctx
+            , "PGANewpopIndividuumIsBetter: oldpop individual not up to date:"
+            , PGA_FATAL, PGA_INT, (void *) &p2
+            );
+    }
+    switch (dir) {
+    case PGA_MAXIMIZE:
+        return ctx->ga.newpop[p1].evalfunc >= ctx->ga.oldpop[p2].evalfunc;
+        break;
+    case PGA_MINIMIZE:
+        return ctx->ga.newpop[p1].evalfunc <= ctx->ga.oldpop[p2].evalfunc;
+        break;
+    default:
+        PGAError
+            (ctx
+            , "PGANewpopIndividuumIsBetter: Invalid value of PGAGetOptDirFlag:"
+            , PGA_FATAL, PGA_INT, (void *) &dir
+            );
+        break;
+    }
+    /* notreached */
+    return 0;
+}
+
 /*U****************************************************************************
    PGARestrictedTournamentReplacement - Perform restricted tournament
    replacement: for each individual in PGA_NEWPOP we select a window of
    individuals from PGA_OLDPOP, find the one genetically most like the
    new candidate and replace the individual if the new candidate has
-   higher fitness.
+   better evalutation. Note that we may not use the fitness here:
+   Fitness from two different populations are uncompareable!
    After this populations are swapped (echange of PGA_NEWPOP and
    PGA_OLDPOP) for further processing.
 
@@ -536,7 +581,8 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
                 closest = idx;
             }
         }
-        if (ctx->ga.newpop[i].fitness > ctx->ga.oldpop[closest].fitness) {
+
+        if (PGANewpopIndividuumIsBetter (ctx, i, closest)) {
             /* Copy i in PGA_NEWPOP to closest in PGA_OLDPOP */
             PGACopyIndividual (ctx, i, PGA_NEWPOP, closest, PGA_OLDPOP);
         }
@@ -551,12 +597,15 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
     PGADebugExited("PGARestrictedTournamentReplacement");
 }
 /*U****************************************************************************
+
    PGAPairwiseBestReplacement - Perform pairwise best replacement:
    Compare individuals with same index in PGA_OLDPOP and PGA_NEWPOP and
-   select the one with higher fitness. This replacement strategy is used
-   in evolutionary algorithms that modify a single individual and
-   replace the parent if the offspring is better. A popular example is
-   Differential Evolution (DE).
+   select the one with better evalutation. Note that we may not use the
+   fitness here: Fitness from two different populations are
+   uncompareable!
+   This replacement strategy is used in evolutionary algorithms that
+   modify a single individual and replace the parent if the offspring is
+   better. A popular example is Differential Evolution (DE).
    After this populations are swapped (echange of PGA_NEWPOP and
    PGA_OLDPOP) for further processing.
 
@@ -583,7 +632,7 @@ void PGAPairwiseBestReplacement (PGAContext *ctx)
 
     PGADebugEntered("PGAPairwiseBestReplacement");
     for (i=popsize - numreplace; i<popsize; i++) {
-        if (ctx->ga.newpop[i].fitness > ctx->ga.oldpop[i].fitness) {
+        if (PGANewpopIndividuumIsBetter (ctx, i, i)) {
             /* Copy i in PGA_NEWPOP to i in PGA_OLDPOP */
             PGACopyIndividual (ctx, i, PGA_NEWPOP, i, PGA_OLDPOP);
         }

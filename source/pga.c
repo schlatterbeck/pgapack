@@ -403,15 +403,26 @@ void PGAUpdateGeneration(PGAContext *ctx, MPI_Comm comm)
     ctx->ga.iter++;
 
     if (rank == 0) {
+        /* The two replacement schemes PGA_POPREPL_RTR and
+         * PGA_POPREPL_PAIRWISE_BEST both replace some new individuals
+         * from PGA_NEWPOP into PGA_OLDPOP. Then PGA_NEWPOP/PGA_OLDPOP
+         * are switched (resulting in the current population to be
+         * PGA_NEWPOP). They are switched *again* at the end of this
+         * function to be ready for the next generation.
+         * Note that these functions may not use the fitness because
+         * this is not comparable across populations.
+         */
         if (ctx->ga.PopReplace == PGA_POPREPL_RTR) {
-            /* This replaces the selected individuals into OLDPOP and
-             * then switches OLDPOP/NEWPOP
+            /* This replaces the selected individuals into OLDPOP.
+             * Then OLDPOP/NEWPOP are exchanged
              */
             PGARestrictedTournamentReplacement (ctx);
         }
         else if (ctx->ga.PopReplace == PGA_POPREPL_PAIRWISE_BEST) {
             /* This compares individual in OLDPOP with the individual
-             * with same index in NEWPOP and uses the better one.
+             * with same index in NEWPOP and puts the better one into
+             * OLDPOP.
+             * Then OLDPOP/NEWPOP are exchanged
              */
             PGAPairwiseBestReplacement (ctx);
         }

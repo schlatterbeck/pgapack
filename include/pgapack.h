@@ -250,7 +250,7 @@ extern "C" {
 
 
 /*****************************************
-*       INDIVIDUAL STRUTURE              *
+*       INDIVIDUAL STRUCTURE             *
 *****************************************/
 
 typedef struct {                    /* primary population data structure   */
