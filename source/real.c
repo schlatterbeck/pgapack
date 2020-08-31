@@ -511,7 +511,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
         if (do_best) {
             idx [maxidx - 1] = best;
         }
-        for (i=0; i<nrand; i++) {
+        for (i=0; i<maxidx; i++) {
             indivs [i] = (PGAReal *)
                 PGAGetIndividual (ctx, idx [i], PGA_OLDPOP)->chrom;
         }
