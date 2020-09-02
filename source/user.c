@@ -166,9 +166,9 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 	break;
       case PGA_USERFUNCTION_PRE_EVAL:
 	if (ctx->sys.UserFortran)
-	    ctx->fops.PreEval = (void(*)(void *))f;
+	    ctx->fops.PreEval = (void(*)(void *, void *))f;
 	else
-	    ctx->cops.PreEval = (void(*)(PGAContext *))f;
+	    ctx->cops.PreEval = (void(*)(PGAContext *, int))f;
 	break;
       case PGA_USERFUNCTION_GEN_DIFFERENCE:
 	if (ctx->sys.UserFortran)

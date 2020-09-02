@@ -346,7 +346,7 @@ typedef struct {
     int          (*StopCond)(PGAContext *);
     void         (*EndOfGen)(PGAContext *);
     double       (*GeneDistance)(PGAContext *, int, int, int, int);
-    void         (*PreEval)(PGAContext *);
+    void         (*PreEval)(PGAContext *, int);
 } PGACOperations;
 
 typedef struct {
@@ -359,7 +359,7 @@ typedef struct {
     int          (*StopCond)(void *);
     void         (*EndOfGen)(void *);
     double       (*GeneDistance)(void *, void *, void *, void *, void *);
-    void         (*PreEval)(void *);
+    void         (*PreEval)(void *, void *);
 } PGAFortranOperations;
 
 typedef struct sample_state_s {

@@ -87,10 +87,11 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int),
 
     if (rank == 0) {
         if (ctx->fops.PreEval) {
-            (*ctx->fops.PreEval)(&ctx);
+            int pop = PGA_OLDPOP;
+            (*ctx->fops.PreEval)(&ctx, &pop);
         }
         if (ctx->cops.PreEval) {
-            (*ctx->cops.PreEval)(ctx);
+            (*ctx->cops.PreEval)(ctx, PGA_OLDPOP);
         }
     }
 
@@ -118,10 +119,11 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int),
 		PGASelect(ctx, PGA_OLDPOP);
 		CreateNewGeneration(ctx, PGA_OLDPOP, PGA_NEWPOP);
                 if (ctx->fops.PreEval) {
-                    (*ctx->fops.PreEval)(&ctx);
+                    int pop = PGA_NEWPOP;
+                    (*ctx->fops.PreEval)(&ctx, &pop);
                 }
                 if (ctx->cops.PreEval) {
-                    (*ctx->cops.PreEval)(ctx);
+                    (*ctx->cops.PreEval)(ctx, PGA_NEWPOP);
                 }
 	    }
 	}
