@@ -1392,6 +1392,7 @@ typically turned off by setting \verb+PGASetMutationOnlyFlag+ to
 within the \verb+PGA_MUTATION_DE+ mutation implementation. For each
 vector element (allele), a random variable with a crossover probability
 specified by \verb+PGASetDECrossoverProb+ (default \DefaultDECrossoverProb)
+is chosen. In the default binomial crossover variant of DE this variable
 selects an element from either the donor vector $V_i$ or $X_i$. In the
 DE literature this parameter is typically called \textit{Cr}. At least
 one random element from $V_i$ is always selected, so with a crossover
@@ -1431,8 +1432,24 @@ The fourth final element specifies the crossover strategy. For the
 default DE-crossover strategy following a binomial distribution (in
 standard GA terms this type of crossover is often called
 \textit{uniform} crossover) this final element is termed \textit{bin}.
-So for the default DE strategy the name is \textit{DE/rand/1/bin}.
-Currently only this crossover variant is implemented.
+The crossover for DE can be set with \verb+PGASetDECrossoverProb+. The
+default is binomial crossover \verb+PGA_DE_CROSSOVER_BIN+, exponential
+crossover can be set with \verb+PGA_DE_CROSSOVER_EXP+.
+So for the default DE strategy the name is \textit{DE/rand/1/bin} with
+the exponential crossover selected, we would get \textit{DE/rand/1/exp}.
+Binomial crossover tosses a biased coin with probability $Cr$ for each
+allele. If the coin turns out '1', the allele is taken from the donor
+vector, otherwise the allele from the current individual is retained.
+For exponential crossover an index in the gene is randomly selected and
+taken from the donor vector. For all subsequent alleles (starting at the
+randomly selected index) a coin is tossed. As long as the coin is '1',
+the allele is taken from the donor vector. The first time the coin-toss
+doesn't yield a '1', all the remaining alleles are taken retained from
+the original individual. This is a form of two-point crossover like in
+other types of genetic algorithms but with a different distribution.
+The binomial crossover is beneficial if the allele positions in the
+problem are uncorrelated. If there is a corellation between allele
+positions, exponential crossover may be beneficial \cite{TF14}.
 
 The DE variant (the second tuple element) can be selected with
 \verb+PGASetDEVariant+ and defaults to \verb+PGA_DE_VARIANT_RAND+.

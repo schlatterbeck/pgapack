@@ -192,6 +192,12 @@ extern "C" {
 #define PGA_DE_VARIANT_BEST      2   /* Derive from best string */
 #define PGA_DE_VARIANT_EITHER_OR 3   /* Either-or variant */
 
+/*******************************************
+* Differential Evolution Crossover Variant *
+*******************************************/
+#define PGA_DE_CROSSOVER_BIN      1  /* Standard DE binomial crossover */
+#define PGA_DE_CROSSOVER_EXP      2  /* Exponential crossover */
+
 /*****************************************
 *        POPULATION REPLACEMENT          *
 *****************************************/
@@ -299,6 +305,7 @@ typedef struct {
     int RandomizeSelect;     /* Additional randomisation during select    */
     int DEVariant;           /* Differential evolution (DE) variant       */
     int DENumDiffs;          /* Number of differences for DE (1 or 2)     */
+    int DECrossoverType;     /* Crossover type DE                         */
     double DEScaleFactor;    /* Scale Factor F for DE                     */
     double DEAuxFactor;      /* Auxiliary Factor K for DE                 */
     double DECrossoverProb;  /* Crossover probability Cr for DE           */
@@ -705,6 +712,8 @@ void PGASetDEJitter (PGAContext *ctx, double val);
 double PGAGetDEJitter (PGAContext *ctx);
 void PGASetDEProbabilityEO (PGAContext *ctx, double val);
 double PGAGetDEProbabilityEO (PGAContext *ctx);
+void PGASetDECrossoverType (PGAContext *ctx, int val);
+int PGAGetDECrossoverType (PGAContext *ctx);
 
 /*****************************************
 *          parallel.c

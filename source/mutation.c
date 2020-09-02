@@ -915,3 +915,62 @@ int PGAGetDENumDiffs (PGAContext *ctx)
     return(ctx->ga.DENumDiffs);
 }
 
+/*U****************************************************************************
+   PGASetDECrossoverType - Set the crossover type for DE
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      val - the crossover type
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetDECrossoverType (ctx, PGA_DE_CROSSOVER_EXP);
+
+****************************************************************************U*/
+void PGASetDECrossoverType (PGAContext *ctx, int val)
+{
+    switch (val)
+    {
+    case PGA_DE_CROSSOVER_BIN:
+    case PGA_DE_CROSSOVER_EXP:
+        ctx->ga.DECrossoverType = val;
+        break;
+    default:
+        PGAError
+            ( ctx, "PGASetDECrossoverType: Invalid crossover type:"
+            , PGA_FATAL, PGA_INT, (void *) &val
+            );
+        break;
+    }
+}
+
+/*U***************************************************************************
+   PGAGetDECrossoverType - Returns the DE crossover type
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The value of the DE crossover type
+
+   Example:
+      PGAContext *ctx;
+      int val;
+      :
+      val = PGAGetDECrossoverType(ctx);
+
+***************************************************************************U*/
+int PGAGetDECrossoverType (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetDECrossoverType");
+    return(ctx->ga.DECrossoverType);
+}
+

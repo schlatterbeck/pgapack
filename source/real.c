@@ -452,6 +452,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
     int nrand  = 2 * ctx->ga.DENumDiffs + (!do_best);
     int maxidx = 2 * ctx->ga.DENumDiffs + 1;
     PGAReal *indivs [maxidx];
+    int do_crossover = 1;
 
     PGADebugEntered("PGARealMutation");
     if (ctx->ga.MutationType == PGA_MUTATION_DE) {
@@ -522,6 +523,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
     c = (PGAReal *)PGAGetIndividual(ctx, p, pop)->chrom;
     for(i=0; i<ctx->ga.StringLen; i++) {
         double old_value = c [i];
+        int idx = i;
 
         switch (ctx->ga.MutationType) {
             case PGA_MUTATION_RANGE:
@@ -564,7 +566,33 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                     count++;
                 }
             case PGA_MUTATION_DE:
-                if (i == midx || PGARandomFlip (ctx, ctx->ga.DECrossoverProb)){
+                switch (ctx->ga.DECrossoverType) {
+                case PGA_DE_CROSSOVER_BIN:
+                    do_crossover = 
+                        (  idx == midx
+                        || PGARandomFlip (ctx, ctx->ga.DECrossoverProb)
+                        );
+                    break;
+                case PGA_DE_CROSSOVER_EXP:
+                    /* The first index copied is midx, then all indices
+                     * are copied while the coin flip is valid
+                     */
+                    if (do_crossover) {
+                        idx = (midx + i) % ctx->ga.StringLen;
+                        if (i > 0) {
+                            do_crossover = 
+                                (PGARandomFlip (ctx, ctx->ga.DECrossoverProb));
+                        }
+                    }
+                    break;
+                default:
+                    PGAError
+                        ( ctx, "PGARealMutation: Invalid DE crossover type:"
+                        , PGA_FATAL, PGA_INT
+                        , (void *) &(ctx->ga.DECrossoverType)
+                        );
+                }
+                if (do_crossover){
                     double f = ctx->ga.DEScaleFactor;
                     if (ctx->ga.DEJitter > 0) {
                         f += ctx->ga.DEJitter * (PGARandom01 (ctx, 0) - 0.5);
@@ -575,22 +603,23 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                         /* the last element is either a random individual
                          * or the best depending on variant
                          */
-                        c [i] = indivs [maxidx - 1][i];
+                        c [idx] = indivs [maxidx - 1][idx];
                         /* Add difference vectors */
                         for (j=0; j < (maxidx - 1); j+=2) {
-                            c [i] += f * (indivs [j][i] - indivs [j+1][i]);
+                            c [idx] +=
+                                f * (indivs [j][idx] - indivs [j+1][idx]);
                         }
                         break;
                     case PGA_DE_VARIANT_EITHER_OR:
                         /* We use only 1 difference and ignore DENumDiffs */
                         if (PGARandom01 (ctx, 0) < ctx->ga.DEProbabilityEO) {
-                            c [i] = indivs [0][i]
-                                  + f * (indivs [1][i] - indivs [2][i]);
+                            c [idx] = indivs [0][idx]
+                                  + f * (indivs [1][idx] - indivs [2][idx]);
                         } else {
                             double k = ctx->ga.DEAuxFactor;
-                            c [i] = indivs [0][i]
-                                  + k * ( indivs [1][i] + indivs [2][i]
-                                        - 2 * indivs [0][i]
+                            c [idx] = indivs [0][idx]
+                                  + k * ( indivs [1][idx] + indivs [2][idx]
+                                        - 2 * indivs [0][idx]
                                         );
                         }
                     default:

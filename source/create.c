@@ -231,6 +231,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->ga.MutateBounceFlag   = PGA_UNINITIALIZED_INT;
     ctx->ga.DEVariant          = PGA_UNINITIALIZED_INT;
     ctx->ga.DENumDiffs         = PGA_UNINITIALIZED_INT;
+    ctx->ga.DECrossoverType    = PGA_UNINITIALIZED_INT;
     ctx->ga.DEScaleFactor      = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.DEAuxFactor        = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.DECrossoverProb    = PGA_UNINITIALIZED_DOUBLE;
@@ -563,6 +564,9 @@ void PGASetUp ( PGAContext *ctx )
 
     if ( ctx->ga.DENumDiffs        == PGA_UNINITIALIZED_INT)
          ctx->ga.DENumDiffs         = 1;
+
+    if ( ctx->ga.DECrossoverType   == PGA_UNINITIALIZED_INT)
+         ctx->ga.DECrossoverType    = PGA_DE_CROSSOVER_BIN;
 
     if ( ctx->ga.DEScaleFactor     == PGA_UNINITIALIZED_DOUBLE)
          ctx->ga.DEScaleFactor      = 0.9;
