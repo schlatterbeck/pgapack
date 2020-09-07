@@ -640,20 +640,20 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
 
         /* reset to min/max or bounce if outside range */
         if (ctx->ga.MutateBoundedFlag || ctx->ga.MutateBounceFlag) {
-            if( c [i] < ctx->init.RealMin [i]) {
+            if( c [idx] < ctx->init.RealMin [idx]) {
                 if (ctx->ga.MutateBounceFlag) {
-                    c [i] = PGARandomUniform
-                        (ctx, ctx->init.RealMin [i], old_value);
+                    c [idx] = PGARandomUniform
+                        (ctx, ctx->init.RealMin [idx], old_value);
                 } else {
-                    c [i] = ctx->init.RealMin [i];
+                    c [idx] = ctx->init.RealMin [idx];
                 }
             }
-            if( c [i] > ctx->init.RealMax [i]) {
+            if( c [idx] > ctx->init.RealMax [idx]) {
                 if (ctx->ga.MutateBounceFlag) {
-                    c [i] = PGARandomUniform
-                        (ctx, old_value, ctx->init.RealMax [i]);
+                    c [idx] = PGARandomUniform
+                        (ctx, old_value, ctx->init.RealMax [idx]);
                 } else {
-                    c [i] = ctx->init.RealMax [i];
+                    c [idx] = ctx->init.RealMax [idx];
                 }
             }
         }
