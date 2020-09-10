@@ -306,6 +306,8 @@ typedef struct {
     int DEVariant;           /* Differential evolution (DE) variant       */
     int DENumDiffs;          /* Number of differences for DE (1 or 2)     */
     int DECrossoverType;     /* Crossover type DE                         */
+    int DEDitherPerIndividual; /* Per indidivual or per generation        */
+    double DEDither;         /* Dither value centered around F            */
     double DEScaleFactor;    /* Scale Factor F for DE                     */
     double DEAuxFactor;      /* Auxiliary Factor K for DE                 */
     double DECrossoverProb;  /* Crossover probability Cr for DE           */
@@ -714,6 +716,10 @@ void PGASetDEProbabilityEO (PGAContext *ctx, double val);
 double PGAGetDEProbabilityEO (PGAContext *ctx);
 void PGASetDECrossoverType (PGAContext *ctx, int val);
 int PGAGetDECrossoverType (PGAContext *ctx);
+void PGASetDEDither (PGAContext *ctx, double val);
+double PGAGetDEDither (PGAContext *ctx);
+void PGASetDEDitherPerIndividual (PGAContext *ctx, int val);
+int PGAGetDEDitherPerIndividual (PGAContext *ctx);
 
 /*****************************************
 *          parallel.c

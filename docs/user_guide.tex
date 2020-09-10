@@ -1350,6 +1350,7 @@ uniformly random from the initialization range of that gene.
 \def\DefaultDEScaleFactor{0.9}
 \def\DefaultDECrossoverProb{0.9}
 \def\DefaultDEJitter{0.0}
+\def\DefaultDEDither{0.0}
 \def\DefaultDEProbabilityEO{0.5}
 \def\DefaultDENumDiffs{1}
 
@@ -1488,24 +1489,44 @@ re-generated for each individual $i$.
 When computing the donor vector $V_i$, the scale factor $F$ can be
 perturbed. This can either be done anew for each individual or for each
 \textit{allele} of each individual. The first variant is called
-\textit{dither} (and is currently not implemented in \pga) while the
+\textit{dither} while the
 second variant is called \textit{jitter}.  Note that jitter not only
 changes the length of the difference vector but also its orientation
 \cite[p.~80]{PSL05}.  With uniform jitter we get a new factor $F_j$, the
-index $j$ denoting the allele \cite[p.~80]{PSL05}:
+index $j$ denoting the allele while $i$ is the index of the current
+individual \cite[p.~80]{PSL05}:
 
+\def\jit{K_{\mbox{\footnotesize jit}}}
+\def\dit{K_{\mbox{\footnotesize dit}}}
 \begin{equation}\label{jitter}
 \begin{array}{ll}
-F_j = (F + d \cdot (\mbox{rand}_j(0, 1) - 0.5), & d < 2 \cdot F \\
+F_j = (F + \jit\cdot (\mbox{rand}_j(0, 1) - 0.5), & \jit < 2 \cdot F \\
 \end{array}
 \end{equation}
 
-The new $F_j$ replaces $F$ in
-equations~\ref{de/rand/1}--\ref{de/either-or/1} and defaults to
-\DefaultDEJitter. It can be set with \verb+PGASetDEJitter+.
+The same applies for dither, but in the case of dither the factor is
+either applied anew for each individual (when setting
+\verb+PGASetDEDitherPerIndividual+ to \verb+PGA_TRUE+) or only once per
+generation (the default being once per generation), note that for the
+case where the dither is applied once per generation the index $i$ of
+$\jit{}$ in equation~\ref{dither} would refer the the generation:
+
+\begin{equation}\label{dither}
+\begin{array}{ll}
+F_i = (F + \dit\cdot (\mbox{rand}_i(0, 1) - 0.5), & \dit < 2 \cdot F \\
+\end{array}
+\end{equation}
+
+The new $F_j$ and/or $F_i$ replaces $F$ in
+equations~\ref{de/rand/1}--\ref{de/either-or/1} and both, the default
+$\jit$ and the default $\dit$ are zero by default.
+If both are non-zero, both are applied. Defaults can
+can be set with \verb+PGASetDEJitter+ and \verb+PGASetDEDither+,
+respectively.
 Very small amounts of uniformly distributed jitter (on the order of
 0.001) have been recommended for some problems \cite[p.~90]{PSL05} like
-digital filter design \cite[p.~440]{PSL05}.
+digital filter design \cite[p.~440]{PSL05}. Likewise quite large amounts
+of dither (on the order of 0.5) are recommended for these problems.
 
 Some of the integer- and real-valued mutation operators may generate allele
 values outside the initialization range of that gene.  By

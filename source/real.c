@@ -453,6 +453,9 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
     int maxidx = 2 * ctx->ga.DENumDiffs + 1;
     PGAReal *indivs [maxidx];
     int do_crossover = 1;
+    static double de_dither = 0.0;
+    static int last_iter = -1;
+
 
     PGADebugEntered("PGARealMutation");
     if (ctx->ga.MutationType == PGA_MUTATION_DE) {
@@ -460,6 +463,13 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
         PGASampleState sstate;
         int best = PGAGetBestIndex (ctx, PGA_OLDPOP);
         int avoid = 1;
+
+        if (ctx->ga.DEDither > 0) {
+            if (ctx->ga.DEDitherPerIndividual || last_iter != ctx->ga.iter) {
+                de_dither = ctx->ga.DEDither * (PGARandom01 (ctx, 0) - 0.5);
+                last_iter = ctx->ga.iter;
+            }
+        }
 
         /* We rely on the fact that we operate on an individual of
          * PGA_NEWPOP and take data from PGA_OLDPOP. Assert this is the
@@ -593,7 +603,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                         );
                 }
                 if (do_crossover){
-                    double f = ctx->ga.DEScaleFactor;
+                    double f = ctx->ga.DEScaleFactor + de_dither;
                     if (ctx->ga.DEJitter > 0) {
                         f += ctx->ga.DEJitter * (PGARandom01 (ctx, 0) - 0.5);
                     }

@@ -974,3 +974,119 @@ int PGAGetDECrossoverType (PGAContext *ctx)
     return(ctx->ga.DECrossoverType);
 }
 
+/*U****************************************************************************
+   PGASetDEDither - Set the DE dither range (+/-)
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      val - the dither range
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetDEDither (ctx, 0.25);
+
+****************************************************************************U*/
+void PGASetDEDither (PGAContext *ctx, double val)
+{
+    if (val < 0.0 || val > 1.0)
+        PGAError ( ctx,
+                  "PGASetDEProbabilityEO: Invalid value of Dither:",
+                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
+    else
+        ctx->ga.DEDither = val;
+}
+
+/*U***************************************************************************
+   PGAGetDEDither - Returns the DE dither value
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The value of the DE dither
+
+   Example:
+      PGAContext *ctx;
+      double val;
+      :
+      val = PGAGetDEDither(ctx);
+
+***************************************************************************U*/
+double PGAGetDEDither (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetDEDither");
+    return(ctx->ga.DEDither);
+}
+
+/*U****************************************************************************
+   PGASetDEDitherPerIndividual - If this is set to PGA_TRUE, then for
+   Differential Evolution if the Dither value is non-zero we produce a
+   new random value to add to the scale factor F *for each individual*.
+   Otherwise if the flag is not set (PGA_FALSE), the we produce a new 
+   value in each generation, the same value for *all* individuals.
+
+   Category: Operators
+
+   Inputs:
+      ctx  - context variable
+      flag - either PGA_TRUE or PGA_FALSE
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetDEDitherPerIndividual(ctx, PGA_TRUE);
+
+****************************************************************************U*/
+void PGASetDEDitherPerIndividual(PGAContext *ctx, int val)
+{
+    switch (val)
+    {
+    case PGA_TRUE:
+    case PGA_FALSE:
+         ctx->ga.DEDitherPerIndividual = val;
+         break;
+    default:
+         PGAError(ctx, "PGASetDEDitherPerIndividual: Invalid value:",
+                  PGA_FATAL, PGA_INT, (void *) &val);
+         break;
+    }
+}
+
+
+/*U****************************************************************************
+   PGAGetDEDitherPerIndividual - returns PGA_TRUE or PGA_FALSE to indicate
+   whether the dither is applied anew for each individual or if the
+   value is re-used for all individuals in one generation.
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      PGA_TRUE if dither is applied for each individual.
+
+   Example:
+      PGAContext *ctx;
+      int val;
+      :
+      val = PGAGetDEDitherPerIndividual(ctx);
+
+****************************************************************************U*/
+int PGAGetDEDitherPerIndividual(PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetMutationBounceBackFlag");
+    return (ctx->ga.DEDitherPerIndividual);
+}
+
