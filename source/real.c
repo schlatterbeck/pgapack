@@ -632,6 +632,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                                         - 2 * indivs [0][idx]
                                         );
                         }
+                        break;
                     default:
                         PGAError(ctx, "PGARealMutation: Invalid value of "
                                  "ga.DEVariant:", PGA_FATAL, PGA_INT,
