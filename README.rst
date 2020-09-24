@@ -16,6 +16,12 @@ companion projects:
 Updates 
 =======
 
+Updated September 2020:
+
+- Add Differential Evolution (DE) as a new Mutation Strategy
+- Add more options to fully emulate Differential Evolution
+- Update Docs for DE
+
 Updated May 2020:
 
 - Add Tournament Selection *without* replacement as an option
