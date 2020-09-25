@@ -575,6 +575,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                     /* increment mutation count */
                     count++;
                 }
+                break;
             case PGA_MUTATION_DE:
                 switch (ctx->ga.DECrossoverType) {
                 case PGA_DE_CROSSOVER_BIN:
@@ -601,6 +602,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                         , PGA_FATAL, PGA_INT
                         , (void *) &(ctx->ga.DECrossoverType)
                         );
+                    break;
                 }
                 if (do_crossover){
                     double f = ctx->ga.DEScaleFactor + de_dither;
