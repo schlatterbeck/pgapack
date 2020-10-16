@@ -340,7 +340,9 @@ int PGAGetRandomSeed(PGAContext *ctx)
 
     PGADebugExited("PGAGetRandomSeed");
 
-    return(ctx->init.RandomSeed);
+    /* When initializing random number generator, seed is modulo 900000000 */
+    /* Larger numbers today happen when using time(0) to init seed */
+    return(ctx->init.RandomSeed % 900000000);
 }
 
 /*U****************************************************************************
