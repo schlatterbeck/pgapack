@@ -462,11 +462,6 @@ void PGASetUp ( PGAContext *ctx )
     if ( ctx->ga.CrossoverType      == PGA_UNINITIALIZED_INT)
          ctx->ga.CrossoverType       = PGA_CROSSOVER_TWOPT;
 
-    if (ctx->ga.CrossoverType       == PGA_CROSSOVER_TWOPT &&
-        ctx->ga.StringLen == 2)
-         PGAError(ctx, "PGASetUp: Invalid Crossover type for string of length "
-                  "2", PGA_FATAL, PGA_INT, (void *) &ctx->ga.CrossoverType);
-
     if ( ctx->ga.SelectType        == PGA_UNINITIALIZED_INT)
          ctx->ga.SelectType         = PGA_SELECT_TOURNAMENT;
 
@@ -504,6 +499,11 @@ void PGASetUp ( PGAContext *ctx )
 
     if ( ctx->ga.MutateOnlyNoCross == PGA_UNINITIALIZED_INT)
          ctx->ga.MutateOnlyNoCross  = PGA_TRUE;
+
+    if (ctx->ga.CrossoverType       == PGA_CROSSOVER_TWOPT &&
+        ctx->ga.StringLen == 2 && !ctx->ga.MutateOnlyNoCross)
+         PGAError(ctx, "PGASetUp: Invalid Crossover type for string of length "
+                  "2", PGA_FATAL, PGA_INT, (void *) &ctx->ga.CrossoverType);
 
     if ( ctx->ga.MutationProb      == PGA_UNINITIALIZED_DOUBLE)
          ctx->ga.MutationProb       = 1. / ctx->ga.StringLen;
