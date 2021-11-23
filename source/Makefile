@@ -28,10 +28,12 @@ OBJS = $(PGA_LIB_DIR)/binary.o        \
 #                    The Target                        #
 ########################################################
 
-MAJOR = 1
-MINOR = 0
+v_git           := $(shell git describe)
+MAJOR 		:= $(firstword $(subst ., ,$(v_git)))
+MINOR 		:= $(word 2,$(subst ., ,$(subst -, ,$(v_git))))
+PATCHLEVEL      := $(or $(word 2,$(subst -, ,$(v_git))),0)
 ifeq (${SHAREDLIBS},yes)
-SHLIB = $(PGA_LIB_DIR)/lib$(PGA_LIB)-$(MPI).so.$(MAJOR).$(MINOR)
+SHLIB = $(PGA_LIB_DIR)/lib$(PGA_LIB)-$(MPI).so.$(MAJOR).$(MINOR).$(PATCHLEVEL)
 SHARED = -shared -Wl,-soname,$(PGA_LIB)-$(MPI).so.$(MAJOR)
 endif
 
