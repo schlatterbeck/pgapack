@@ -1,0 +1,29 @@
+Iter #     Field      Value
+10         Best       -2.100000e+01
+Iter #     Field      Value
+20         Best       -2.300000e+01
+Iter #     Field      Value
+30         Best       -2.600000e+01
+Iter #     Field      Value
+40         Best       -2.600000e+01
+Iter #     Field      Value
+50         Best       -2.800000e+01
+Iter #     Field      Value
+60         Best       -2.900000e+01
+Iter #     Field      Value
+70         Best       -2.900000e+01
+Iter #     Field      Value
+80         Best       -2.900000e+01
+Iter #     Field      Value
+90         Best       -2.900000e+01
+Iter #     Field      Value
+100        Best       -2.900000e+01
+The Best Evaluation: -2.900000e+01.
+The Best String:
+[ 00000011000000001110000000111000010110100000000110 ]
+ The real interpretation:
+ #           1 :   -5.0399998854099248     
+ #           2 :   -5.0099998853539907     
+ #           3 :   -5.0099998853539907     
+ #           4 :   -4.0399998835454589     
+ #           5 :   -5.0799998854845034     

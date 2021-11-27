@@ -1,6 +1,28 @@
-This is the test directory README.
+TEST README
+===========
 
-instverf:
+This directory contains various tests. By default the ``test`` make target
+runs a test for each of the ``.data`` files and produces a ``.vrfy``
+file as a result. For all but the ``instverf.vrfy`` the ``.vrfy`` files
+should be empty if everything was ok. The ``instverf.vrfy`` file
+contains the output of the instverf run. It contains five lines
+indicating a successful test at the end if everything went ok. The
+program internally compares the data against the instverf.data file.
+
+Note that for unusual architectures, all tests may fail: The internal
+random number generator may produce different random numbers for other
+sizes of data types. For typical 32-bit or 64-bit architectures all
+tests should pass.
+
+Except for instverf, all ``.data`` files contain the calling sequence
+used to produce the test output: The name consists of several fields
+delimited by ``_``. The first field contains the name of the directory
+in the examples directory where we find the test. The second field has
+the name of the test-program. All other parameters are passed to
+standard-input of the test program: These all ask several questions on
+the command line.
+
+instverf
 --------
 
 A simple program to test the accuracy of an installation.  It runs five
@@ -16,26 +38,6 @@ The problems tested are
 	3:	Real datatype
 	4:	Binary datatype using PGAGetRealFrom*
 
-
-SanityChecks:
-------------
-
-Contains several programs designed to test the sanity of PGAPack.  Under
-normal circumstances, they should not be needed.  ST_* will call most
-every PGAPack function.  PT_* will test the parallel code -- it must
-be run with at least three processors!
-This directory contains several programs that exist only to test the
-sanity of PGAPack.  They are very useful for testing the fortran to C
-interface, and that sending and receiving strings work.
-
-ST_c.c and ST_f.f simply call (most) every function in PGAPack.  They
-also run several GA's which do nothing other than use every type of
-crossover and mutation for each native datatype.
-
-PT_c.c and PT_f.f test high-level stuff.  It tests (not in this order) if
-sending/receiving of strings works, PGARun, PGARunGM, PGARunIM and PGARunNM
-(the last two aren't implemented yet, though), and a user defined
-run routine.  A real version of MPI _MUST_ be used for PT_c and PT_f.
 
 instverf.c will run several GA's, one for each native datatype, and check
 the output computed versus that stored on disk.  If any differences are

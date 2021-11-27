@@ -1,0 +1,160 @@
+Iter #     Field      Value
+10         Best       1.210000e+03
+           Average    1.085310e+03
+Iter #     Field      Value
+20         Best       1.330000e+03
+           Average    1.267790e+03
+Iter #     Field      Value
+30         Best       1.409000e+03
+           Average    1.351580e+03
+Iter #     Field      Value
+40         Best       1.426000e+03
+           Average    1.398090e+03
+Iter #     Field      Value
+50         Best       1.447000e+03
+           Average    1.417160e+03
+Iter #     Field      Value
+60         Best       1.470000e+03
+           Average    1.439070e+03
+Iter #     Field      Value
+70         Best       1.487000e+03
+           Average    1.450830e+03
+Iter #     Field      Value
+80         Best       1.501000e+03
+           Average    1.471290e+03
+Iter #     Field      Value
+90         Best       1.521000e+03
+           Average    1.487150e+03
+Iter #     Field      Value
+100        Best       1.530000e+03
+           Average    1.503070e+03
+Iter #     Field      Value
+110        Best       1.538000e+03
+           Average    1.507580e+03
+Iter #     Field      Value
+120        Best       1.542000e+03
+           Average    1.516570e+03
+Iter #     Field      Value
+130        Best       1.551000e+03
+           Average    1.525580e+03
+Iter #     Field      Value
+140        Best       1.560000e+03
+           Average    1.532250e+03
+Iter #     Field      Value
+150        Best       1.563000e+03
+           Average    1.543050e+03
+Iter #     Field      Value
+160        Best       1.566000e+03
+           Average    1.541540e+03
+Iter #     Field      Value
+170        Best       1.571000e+03
+           Average    1.536670e+03
+Iter #     Field      Value
+180        Best       1.573000e+03
+           Average    1.549390e+03
+Iter #     Field      Value
+190        Best       1.577000e+03
+           Average    1.553970e+03
+Iter #     Field      Value
+200        Best       1.580000e+03
+           Average    1.555390e+03
+Iter #     Field      Value
+210        Best       1.581000e+03
+           Average    1.557020e+03
+Iter #     Field      Value
+220        Best       1.583000e+03
+           Average    1.559730e+03
+Iter #     Field      Value
+230        Best       1.584000e+03
+           Average    1.562510e+03
+Iter #     Field      Value
+240        Best       1.584000e+03
+           Average    1.567090e+03
+Iter #     Field      Value
+250        Best       1.584000e+03
+           Average    1.558430e+03
+Iter #     Field      Value
+260        Best       1.585000e+03
+           Average    1.565270e+03
+Iter #     Field      Value
+270        Best       1.590000e+03
+           Average    1.564020e+03
+Iter #     Field      Value
+280        Best       1.592000e+03
+           Average    1.568120e+03
+Iter #     Field      Value
+290        Best       1.593000e+03
+           Average    1.574840e+03
+Iter #     Field      Value
+300        Best       1.594000e+03
+           Average    1.571130e+03
+Iter #     Field      Value
+310        Best       1.595000e+03
+           Average    1.572960e+03
+Iter #     Field      Value
+320        Best       1.595000e+03
+           Average    1.571250e+03
+Iter #     Field      Value
+330        Best       1.596000e+03
+           Average    1.576350e+03
+Iter #     Field      Value
+340        Best       1.597000e+03
+           Average    1.570360e+03
+Iter #     Field      Value
+350        Best       1.597000e+03
+           Average    1.573160e+03
+Iter #     Field      Value
+360        Best       1.597000e+03
+           Average    1.573460e+03
+Iter #     Field      Value
+370        Best       1.597000e+03
+           Average    1.568080e+03
+Iter #     Field      Value
+380        Best       1.598000e+03
+           Average    1.570070e+03
+Iter #     Field      Value
+390        Best       1.599000e+03
+           Average    1.570250e+03
+Iter #     Field      Value
+400        Best       1.599000e+03
+           Average    1.568870e+03
+Iter #     Field      Value
+410        Best       1.600000e+03
+           Average    1.572360e+03
+Iter #     Field      Value
+420        Best       1.600000e+03
+           Average    1.577760e+03
+Iter #     Field      Value
+430        Best       1.600000e+03
+           Average    1.580450e+03
+Iter #     Field      Value
+440        Best       1.600000e+03
+           Average    1.579840e+03
+Iter #     Field      Value
+450        Best       1.600000e+03
+           Average    1.576670e+03
+Iter #     Field      Value
+460        Best       1.600000e+03
+           Average    1.574210e+03
+Iter #     Field      Value
+470        Best       1.600000e+03
+           Average    1.573210e+03
+Iter #     Field      Value
+480        Best       1.600000e+03
+           Average    1.576560e+03
+Iter #     Field      Value
+490        Best       1.600000e+03
+           Average    1.579180e+03
+Iter #     Field      Value
+500        Best       1.600000e+03
+           Average    1.575470e+03
+The Best Evaluation: 1.600000e+03.
+The Best String:
+#    0: [      40], [      40], [      40], [      40], [      40], [      40]
+#    6: [      40], [      40], [      40], [      40], [      40], [      40]
+#   12: [      40], [      40], [      40], [      40], [      40], [      40]
+#   18: [      40], [      40], [      40], [      40], [      40], [      40]
+#   24: [      40], [      40], [      40], [      40], [      40], [      40]
+#   30: [      40], [      40], [      40], [      40], [      40], [      40]
+#   36: [      40], [      40], [      40], [      40]
+

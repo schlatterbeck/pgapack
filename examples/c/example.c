@@ -13,6 +13,7 @@ int main( int argc, char **argv )
 	 upper[i] = 10;
      }
      ctx = PGACreate (&argc, argv, PGA_DATATYPE_INTEGER, 10, PGA_MAXIMIZE);
+     PGASetRandomSeed(ctx, 1);
      PGASetUserFunction (ctx, PGA_USERFUNCTION_MUTATION, (void *)myMutation);
      PGASetIntegerInitRange(ctx, lower, upper);
      PGASetUp              (ctx);

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Simple test-runner:
+# We run all the examples and compare against expected outcome.
+# Split name of data file into test-name and parameters. Parameters are
+# passed to stdin of the example. We remove as many lines from the input
+# as we have parameters: The C and fortran examples have different
+# questions (whitespace).
+
+fn=$(basename $1 .data)
+args=$(echo $fn | sed 's/_/ /g')
+set $args
+
+dir=$1
+shift
+cmd=$1
+shift
+for arg in $@; do
+    echo "$arg"
+done | ../examples/$dir/$cmd | grep -v '\?'

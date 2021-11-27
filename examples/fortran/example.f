@@ -16,6 +16,7 @@
       call MPI_Init(ierror)
 
       ctx = PGACreate         (PGA_DATATYPE_INTEGER, 10, PGA_MAXIMIZE)
+      call PGASetRandomSeed(ctx, 1)
       call PGASetUserFunction (ctx, PGA_USERFUNCTION_MUTATION,
      &                         myMutation)
       call PGASetIntegerInitRange(ctx, lower, upper)
