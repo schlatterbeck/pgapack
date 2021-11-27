@@ -752,7 +752,7 @@ void PGASetUp ( PGAContext *ctx )
                       "PGASetUp: User datatype needs BuildDatatype "
                       "function:", PGA_FATAL, PGA_INT, (void *) &err );
         if (  ctx->cops.GeneDistance == NULL
-           && ctx->ga.PopReplace == PGA_POPREPL_BEST
+           && ctx->ga.PopReplace == PGA_POPREPL_RTR
            )
              PGAError(ctx,
                       "PGASetUp: User datatype needs GeneDistance "
