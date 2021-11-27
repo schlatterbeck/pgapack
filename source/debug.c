@@ -106,9 +106,9 @@ typedef struct
         int     PGAFuncNum;
 } PGAFuncRec;
 
-int        PGANumFcns;
+int        PGANumFcns = 0;
 
-PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
+PGAFuncRec PGAFuncIndex[] =
 {
 /* Binary Routines 100 - 149 */
         { "PGABinaryCreateString",          100 },
@@ -411,7 +411,10 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
         { "PGASetPrintOptions",             827 },
 
         /* user.c */
-        { "PGASetUserFunction",             830 }
+        { "PGASetUserFunction",             830 },
+
+        /* END GUARD */
+        { }
 };
 
 
@@ -427,9 +430,7 @@ PGAFuncRec PGAFuncIndex[PGA_DEBUG_MAXPGAPACKFUNCTIONS] =
 ****************************************************************************I*/
 void PGASortFuncNameIndex(PGAContext *ctx)
 {
-
-    /*  See how many functions are in the index */
-    for (PGANumFcns=0; PGAFuncIndex[PGANumFcns].PGAFuncName[0]; PGANumFcns++) ;
+    PGANumFcns = sizeof (PGAFuncIndex) / sizeof (PGAFuncRec);
 
     qsort(PGAFuncIndex, PGANumFcns, sizeof(PGAFuncRec),
 	  (int (*) (const void *, const void *)) &strcmp);
@@ -810,6 +811,7 @@ void PGASetDebugFlag11(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[336] = Flag; /*PGASetMutationRealValue*/
    ctx->debug.PGADebugFlags[337] = Flag; /*PGASetMutationIntegerValue*/
    ctx->debug.PGADebugFlags[338] = Flag; /*PGASetMutationProb*/
+
    ctx->debug.PGADebugFlags[400] = Flag; /*PGASetMutationBoundedFlag*/
    ctx->debug.PGADebugFlags[401] = Flag; /*PGAGetMutationBoundedFlag*/
    ctx->debug.PGADebugFlags[402] = Flag; /*PGASetMutationBounceBackFlag*/

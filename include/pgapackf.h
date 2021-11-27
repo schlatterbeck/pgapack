@@ -73,8 +73,6 @@ c *** DEBUG LEVELS
       parameter ( PGA_DEBUG_SEND =             22)
       integer PGA_DEBUG_RECV
       parameter ( PGA_DEBUG_RECV =             23)
-      integer PGA_DEBUG_MAXPGAPACKFUNCTIONS
-      parameter ( PGA_DEBUG_MAXPGAPACKFUNCTIONS =        300)
       integer PGA_DEBUG_MAXFLAGS
       parameter ( PGA_DEBUG_MAXFLAGS =       1000)
 
@@ -202,7 +200,7 @@ c *** TAGS
       integer PGAGetBinaryAllele
       double precision PGAGetBinaryInitProb
       character PGAGetCharacterAllele
-      integer PGACreate
+      integer(8) PGACreate
       integer PGAGetRandomInitFlag
       integer PGAGetCrossoverType
       double precision PGAGetCrossoverProb

@@ -6,8 +6,8 @@
       external evaluate
 
       double precision evaluate
-      integer ctx
-      integer     len, nprob, maxiter, ierror, myid
+      integer(8)       ctx
+      integer          len, nprob, maxiter, ierror, myid
 
       common nprob
 
@@ -94,8 +94,8 @@
       include 'pgapackf.h'
 
       double precision x(100), f
-      integer ctx
-      integer    pop, p, i, stringlen, nprob
+      integer(8)       ctx
+      integer          pop, p, i, stringlen, nprob
 
       common nprob
 

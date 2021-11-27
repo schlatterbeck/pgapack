@@ -37,8 +37,8 @@ c     Also, this is common, sunce we need it in EvalName.
       character*33     Name
       common /global/  Name
 
-      integer ctx
-      integer    ierror
+      integer(8)      ctx
+      integer         ierror
 
 
       call MPI_Init(ierror)
@@ -81,8 +81,8 @@ c     using all printable ASCII characters for the range.
 c
       subroutine N_InitString(ctx, p, pop) 
       include    'pgapackf.h'
-      integer ctx
-      integer     p, pop, i
+      integer(8)      ctx
+      integer         p, pop, i
     
       do i=1, PGAGetStringLength(ctx)
          call PGASetCharacterAllele(ctx, p, pop, i,
@@ -99,7 +99,7 @@ c     printable ASCII characters.
 c
       integer function N_Mutation(ctx, p, pop, mr)
       include          'pgapackf.h'
-      integer ctx
+      integer(8)        ctx
       integer           p, pop, i, count
       double precision  mr
 
@@ -122,8 +122,8 @@ c
       integer function N_StopCond(ctx) 
       include   'pgapackf.h'
       include   'mpif.h'
-      integer ctx
-      integer    done, best
+      integer(8)      ctx
+      integer         done, best
 
 
       done = PGACheckStoppingConditions(ctx, MPI_COMM_WORLD)
@@ -144,7 +144,7 @@ c     the characters matching Name.
 c
       double precision function EvalName(ctx, p, pop)
       include          'pgapackf.h'
-      integer ctx
+      integer(8)        ctx
       integer           p, pop, i, count
       character         Name(33)
       common /global/   Name

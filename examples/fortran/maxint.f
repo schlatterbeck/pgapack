@@ -15,8 +15,8 @@ c
 c     
 c     user main program
 c     
-      integer ctx
-      integer    len, maxiter, ierror
+      integer(8)      ctx
+      integer         len, maxiter, ierror
 
 
       call MPI_Init(ierror)
@@ -51,7 +51,8 @@ c     then sets it.  Returns the number of bits that are changed.
 c     
       integer function myMutation(ctx, p, pop, mr)
       include          'pgapackf.h'
-      integer ctx, p, pop
+      integer(8)        ctx
+      integer           p, pop
       double precision  mr
       integer           stringlen, i, v, count
 
@@ -73,8 +74,9 @@ c
 
       double precision function evaluate(ctx, p, pop)
       include  'pgapackf.h'
-      integer ctx, p, pop
-      integer   stringlen, i, sum
+      integer(8)      ctx
+      integer         p, pop
+      integer         stringlen, i, sum
 
 
       stringlen = PGAGetStringLength(ctx)

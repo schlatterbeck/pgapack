@@ -129,7 +129,6 @@ extern "C" {
 #define PGA_DEBUG_PRINTVAR       82
 #define PGA_DEBUG_SEND           22
 #define PGA_DEBUG_RECV           23
-#define PGA_DEBUG_MAXPGAPACKFUNCTIONS	300
 #define PGA_DEBUG_MAXFLAGS       1000
 
 /*****************************************

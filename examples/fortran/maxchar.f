@@ -16,7 +16,7 @@ c
       external         myMutation
       external         GetIntegerParameter
       
-      integer ctx
+      integer(8)       ctx
       integer          len, maxiter, ierror
       
 c     
@@ -53,8 +53,8 @@ c     pop - which population to refer to
 c     
       double precision function NumberOfZs(ctx, p, pop)
       include     'pgapackf.h'
-      integer ctx
-      integer      p, pop, i, nzs, stringlen
+      integer(8)      ctx
+      integer         p, pop, i, nzs, stringlen
       
       stringlen = PGAGetStringLength(ctx)
       
@@ -76,7 +76,7 @@ c     then sets it.  Returns the number of bits that are changed.
 c     
       integer function myMutation(ctx, p, pop, mr)
       include          'pgapackf.h'
-      integer ctx
+      integer(8)        ctx
       integer           p, pop, i, count
       character         c
       double precision  mr

@@ -4,7 +4,7 @@
       integer          myMutation
       external         evaluate, myMutation
       
-      integer ctx
+      integer(8)       ctx
       integer          i, ierror
       integer          lower(10), upper(10)
 
@@ -31,7 +31,7 @@
 
       integer function myMutation(ctx, p, pop, pm)
       include          'pgapackf.h'
-      integer ctx
+      integer(8)        ctx
       integer           p, pop
       double precision  pm
       integer           stringlen, i, k, count
@@ -52,7 +52,7 @@
 
       double precision function evaluate(ctx, p, pop)
       include          'pgapackf.h'
-      integer ctx
+      integer(8)       ctx
       integer          p, pop
       integer          stringlen, i, sum
 

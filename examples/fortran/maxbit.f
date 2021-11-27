@@ -11,8 +11,8 @@ c
 c     
 c     user main program
 c     
-      integer ctx
-      integer       ierror
+      integer(8)      ctx
+      integer         ierror
 
       call MPI_Init(ierror)
 
@@ -37,7 +37,7 @@ c     pop - which population to refer to
 c     
       double precision function NumberOfSetBits(ctx, p, pop) 
       include    'pgapackf.h'
-      integer ctx
+      integer(8)      ctx
       integer     p, pop
       integer     i, nbits, stringlen
 
