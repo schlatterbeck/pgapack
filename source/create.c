@@ -420,8 +420,6 @@ void PGASetUp ( PGAContext *ctx )
     PGADebugEntered("PGASetUp");
     PGAFailIfSetUp("PGASetUp");
 
-    ctx->sys.SetUpCalled = PGA_TRUE;
-
     if ( ctx->ga.datatype           == PGA_DATATYPE_BINARY   &&
          ctx->ga.tw                 == PGA_UNINITIALIZED_INT )
       PGAError( ctx,
@@ -867,6 +865,9 @@ void PGASetUp ( PGAContext *ctx )
     PGACreatePop ( ctx , PGA_NEWPOP );
 
     ctx->rep.starttime = time(NULL);
+
+    /* This is done at the end to avoid trying to free unallocated memory */
+    ctx->sys.SetUpCalled = PGA_TRUE;
 
     PGADebugExited("PGASetUp");
 }
