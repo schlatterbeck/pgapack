@@ -120,8 +120,9 @@ int PGACheckStoppingConditions( PGAContext *ctx)
 
     PGADebugEntered("PGACheckStoppingConditions");
 
+    /* Since the check happens *after* the generation, test for >= not > */
     if (((ctx->ga.StoppingRule & PGA_STOP_MAXITER) == PGA_STOP_MAXITER) &&
-	(ctx->ga.iter > ctx->ga.MaxIter))
+	(ctx->ga.iter >= ctx->ga.MaxIter))
 	done |= PGA_TRUE;
     
     if (((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) == PGA_STOP_NOCHANGE) &&

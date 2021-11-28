@@ -18,11 +18,11 @@ Iter #     Field      Value
 90         Best       8.899983e-03
 Iter #     Field      Value
 100        Best       8.899983e-03
-The Best Evaluation: 4.999990e-03.
+The Best Evaluation: 8.899983e-03.
 The Best String:
-[ 110000011001000000110100000110 ]
+[ 110000011001000000110100000100 ]
 
  The real interpretation:
  #           1 :    4.0000124061561948E-002
  #           2 :   -2.9999876068950826E-002
- #           3 :   -4.9999876106239682E-002
+ #           3 :   -7.9999876162173855E-002

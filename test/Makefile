@@ -24,7 +24,7 @@ instverf.vrfy: instverf instverf.data
 	test $$(grep 'was successful' instverf.vrfy | wc -l) -eq 5
 
 %.vrfy: %.data
-	./runtest $< | diff - $< > $@
+	./runtest $< | diff $< - > $@
 
 testclean:
 	rm -f *.vrfy
