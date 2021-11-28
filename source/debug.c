@@ -298,13 +298,14 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGAGetIntegerFromBinary",        508 },
         { "PGAGetIntegerFromGrayCode",      509 },
         { "PGAEvaluate",                    510 },
-	{ "PGAEvaluateSeq",                 515 },
-	{ "PGAEvaluateCoop",                516 },
-	{ "PGAEvaluateSlave",               517 },
         { "PGASetEvaluation",               511 },
         { "PGASetEvaluationUpToDateFlag",   512 },
         { "PGAGetEvaluation",               513 },
         { "PGAGetEvaluationUpToDateFlag",   514 },
+	{ "PGAEvaluateSeq",                 515 },
+	{ "PGAEvaluateCoop",                516 },
+	{ "PGAEvaluateSlave",               517 },
+        { "PGAGetAuxEvaluation",            518 },
 
         /* fitness.c */
         { "PGAFitness",                     520 },

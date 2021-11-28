@@ -12,9 +12,9 @@
 #define M_PI 3.14159265354
 #endif
 
-double griewank(PGAContext *, int, int);
-double rastrigin(PGAContext *, int, int);
-double schwefel(PGAContext *, int, int);
+double griewank(PGAContext *, int, int, double *);
+double rastrigin(PGAContext *, int, int, double *);
+double schwefel(PGAContext *, int, int, double *);
 void   printResultInterpretation(PGAContext *, int);
 int    GetIntegerParameter(char *query);
 
@@ -64,7 +64,7 @@ int main( int argc, char **argv ) {
 }
 
 
-double griewank(PGAContext *ctx, int p, int pop) {
+double griewank(PGAContext *ctx, int p, int pop, double *dummy) {
     int i, len;
     double term, sum, product;
 
@@ -81,7 +81,7 @@ double griewank(PGAContext *ctx, int p, int pop) {
 }
 
 
-double rastrigin(PGAContext *ctx, int p, int pop)
+double rastrigin(PGAContext *ctx, int p, int pop, double *dummy)
 {
     int i, len;
     double term, sum;
@@ -96,7 +96,7 @@ double rastrigin(PGAContext *ctx, int p, int pop)
 }
 
 
-double schwefel(PGAContext *ctx, int p, int pop) {
+double schwefel(PGAContext *ctx, int p, int pop, double *dummy) {
     int i, len;
     double term, sum;
 

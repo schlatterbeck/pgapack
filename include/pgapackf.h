@@ -217,6 +217,8 @@ c *** SET USER FUNCTION
       parameter ( PGA_USERFUNCTION_GEN_DIFFERENCE =    11)
       integer PGA_USERFUNCTION_PRE_EVAL
       parameter ( PGA_USERFUNCTION_PRE_EVAL =          12)
+      integer PGA_USERFUNCTION_STRING_COMPARE
+      parameter ( PGA_USERFUNCTION_STRING_COMPARE =    13)
 
 c *** TAGS
       integer PGA_COMM_STRINGTOEVAL

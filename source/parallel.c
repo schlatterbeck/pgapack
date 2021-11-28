@@ -66,12 +66,12 @@ privately owned rights.
 
   Example:
     PGAContext *ctx;
-    double f(PGAContext *ctx, int p, int pop);
+    double f(PGAContext *ctx, int p, int pop, double *aux);
     :
     PGARunGM(ctx, f, MPI_COMM_WORLD);
 
 ****************************************************************************U*/
-void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int),
+void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
 	      MPI_Comm comm)
 {
     int       rank, Restarted, best_p;
@@ -173,26 +173,26 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int),
 
 ****************************************************************************I*/
 void PGAEvaluateSeq(PGAContext *ctx, int pop,
-		    double (*f)(PGAContext *, int, int))
+		    double (*f)(PGAContext *, int, int, double *))
 {
     int     p;
     double  e;
 
-    PGADebugEntered("PGAEvaluateSeq");
+    PGADebugEntered ("PGAEvaluateSeq");
 
     /*  Standard sequential evaluation.  */
-    if (ctx->sys.UserFortran == PGA_TRUE) {
-	for (p=1; p<=ctx->ga.PopSize; p++)
-	    if (!PGAGetEvaluationUpToDateFlag(ctx, p-1, pop)) {
-		e = (*((double(*)(void *, void *, void *))f))(&ctx, &p, &pop);
-		PGASetEvaluation (ctx, p-1, pop, e);
-	    }
-    } else {
-	for (p=0; p<ctx->ga.PopSize; p++)
-	    if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop)) {
-		e = (*f)(ctx, p, pop);
-		PGASetEvaluation(ctx, p, pop, e);
-	    }
+    for (p=0; p<ctx->ga.PopSize; p++) {
+        if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop)) {
+            double *aux = PGAGetAuxEvaluation (ctx, p-1, pop);
+            if (ctx->sys.UserFortran == PGA_TRUE) {
+                int fp = p + 1;
+		e = (*((double(*)(void *, void *, void *, void *))f))
+                    (&ctx, &fp, &pop, aux);
+            } else {
+		e = (*f)(ctx, p, pop, aux);
+            }
+            PGASetEvaluation(ctx, p, pop, e, aux);
+        }
     }
     PGADebugExited("PGAEvaluateSeq");
 }
@@ -218,7 +218,8 @@ void PGAEvaluateSeq(PGAContext *ctx, int pop,
 
 ****************************************************************************I*/
 void PGAEvaluateCoop(PGAContext *ctx, int pop,
-		     double (*f)(PGAContext *, int, int), MPI_Comm comm)
+		     double (*f)(PGAContext *, int, int, double *),
+                     MPI_Comm comm)
 {
     MPI_Status      stat;
     int             p, fp, q;
@@ -241,21 +242,24 @@ void PGAEvaluateCoop(PGAContext *ctx, int pop,
 	
 	while ((p<ctx->ga.PopSize) && (ind+p)->evaluptodate)  p++;
 	if (p<ctx->ga.PopSize) {
+            double *aux = PGAGetAuxEvaluation (ctx, p, pop);
 	    if (ctx->sys.UserFortran == PGA_TRUE) {
 		fp = p+1;
-		e = (*((double(*)(void *, void *, void *))f))(&ctx, &fp, &pop);
+		e = (*((double(*)(void *, void *, void *, void *))f))
+                    (&ctx, &fp, &pop, aux);
 	    } else {
-		e = (*f)(ctx, p, pop);
+		e = (*f)(ctx, p, pop, aux);
 	    }
-	    PGASetEvaluation(ctx, p, pop, e);
+	    PGASetEvaluation(ctx, p, pop, e, aux);
 #if DEBUG_EVAL
 	    printf("%4d: %10.8e Local\n", p, e); fflush(stdout);
 #endif
 	}
 	
 	if (q >= 0) {
+            /* FIXME: also receive aux */
 	    MPI_Recv(&e, 1, MPI_DOUBLE, 1, PGA_COMM_EVALOFSTRING, comm, &stat);
-	    PGASetEvaluation(ctx, q, pop, e);
+	    PGASetEvaluation(ctx, q, pop, e /*, aux */);
 #if DEBUG_EVAL
 	    printf("%4d: %10.8e Slave %d\n", p, e, 1); fflush(stdout);
 #endif
@@ -290,7 +294,8 @@ void PGAEvaluateCoop(PGAContext *ctx, int pop,
 
 ****************************************************************************I*/
 void PGAEvaluateMS(PGAContext *ctx, int pop,
-		   double (*f)(PGAContext *c, int p, int pop), MPI_Comm comm)
+		   double (*f)(PGAContext *c, int p, int pop, double *),
+                   MPI_Comm comm)
 {
     int    *work;
     int     i, k, s, p, size, sentout;
@@ -340,10 +345,11 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
      */
     while(k<ctx->ga.PopSize) {
 	/*  Receive the next evaluated string.  */
+        /* FIXME: also receive aux */
 	MPI_Recv(&e, 1, MPI_DOUBLE, MPI_ANY_SOURCE, PGA_COMM_EVALOFSTRING,
 		 comm, &stat);
 	p = work[stat.MPI_SOURCE];
-	PGASetEvaluation(ctx, p, pop, e);
+	PGASetEvaluation(ctx, p, pop, e /*, aux */);
 	
 #if DEBUG_EVAL
 	printf("%4d: %10.8e Slave %d  Sent %d\n", work[stat.MPI_SOURCE],
@@ -362,10 +368,11 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
 
     /*  All strings have been sent out.  Wait for them to be done.  */
     while(sentout > 0) {
+        /* FIXME: also receive aux */
 	MPI_Recv(&e, 1, MPI_DOUBLE, MPI_ANY_SOURCE, PGA_COMM_EVALOFSTRING,
 		 comm, &stat);
 	p = work[stat.MPI_SOURCE];
-	PGASetEvaluation(ctx, p, pop, e);
+	PGASetEvaluation(ctx, p, pop, e /*, aux */);
 	sentout--;
 #if DEBUG_EVAL
 	printf("%4d: %10.8e Slave %d\n",
@@ -397,7 +404,8 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
 
 ****************************************************************************I*/
 void PGAEvaluateSlave(PGAContext *ctx, int pop,
-		      double (*f)(PGAContext *, int, int), MPI_Comm comm)
+		      double (*f)(PGAContext *, int, int, double *),
+                      MPI_Comm comm)
 {
     MPI_Status  stat;
     int         k;
@@ -408,13 +416,16 @@ void PGAEvaluateSlave(PGAContext *ctx, int pop,
     k = PGA_TEMP1;
     MPI_Probe(0, MPI_ANY_TAG, comm, &stat);
     while (stat.MPI_TAG == PGA_COMM_STRINGTOEVAL) {
+        double *aux;
 	PGAReceiveIndividual(ctx, PGA_TEMP1, pop, 0, PGA_COMM_STRINGTOEVAL,
 			     comm, &stat);
 
+        aux = PGAGetAuxEvaluation (ctx, PGA_TEMP1, pop);
 	if (ctx->sys.UserFortran == PGA_TRUE)
-	    e = (*((double(*)(void *, void *, void *))f))(&ctx, &k, &pop);
+	    e = (*((double(*)(void *, void *, void *, void *))f))
+                (&ctx, &k, &pop, aux);
 	else
-	    e = (*f)(ctx, PGA_TEMP1, pop);
+	    e = (*f)(ctx, PGA_TEMP1, pop, aux);
 
 	MPI_Send(&e, 1, MPI_DOUBLE, 0, PGA_COMM_EVALOFSTRING, comm);
 	MPI_Probe(0, MPI_ANY_TAG, comm, &stat);
@@ -461,7 +472,7 @@ void PGAEvaluateSlave(PGAContext *ctx, int pop,
 
 ****************************************************************************U*/
 void PGAEvaluate(PGAContext *ctx, int pop,
-		 double (*f)(PGAContext *, int, int), MPI_Comm comm)
+		 double (*f)(PGAContext *, int, int, double *), MPI_Comm comm)
 {
     int  rank, size;
 
@@ -680,7 +691,8 @@ void PGASendReceiveIndividual(PGAContext *ctx, int send_p, int send_pop,
     PGARunIM(ctx, f, comm);
 
 ****************************************************************************I*/
-void PGARunIM(PGAContext *ctx, double (*f)(PGAContext *c, int p, int pop),
+void PGARunIM(PGAContext *ctx,
+              double (*f)(PGAContext *c, int p, int pop, double *aux),
               MPI_Comm tcomm)
 {
     /* Based on ctx->par.topology this routine will need to create the
@@ -716,7 +728,8 @@ void PGARunIM(PGAContext *ctx, double (*f)(PGAContext *c, int p, int pop),
     PGARunNM(ctx, f, comm);
 
 ****************************************************************************I*/
-void PGARunNM(PGAContext *ctx, double (*f)(PGAContext *c, int p, int pop),
+void PGARunNM(PGAContext *ctx,
+              double (*f)(PGAContext *c, int p, int pop, double *aux),
               MPI_Comm tcomm)
 {
     /* Based on ctx->par.topology this routine will need to create the

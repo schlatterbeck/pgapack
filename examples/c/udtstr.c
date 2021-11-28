@@ -8,7 +8,7 @@
 #include <pgapack.h>
 
 double       energy           (double *, int *);
-double       Evaluate         (PGAContext *, int, int);
+double       Evaluate         (PGAContext *, int, int, double *);
 void         CreateString     (PGAContext *, int, int, int);
 int          Mutation         (PGAContext *, int, int, double);
 void         Crossover        (PGAContext *, int, int, int, int, int, int);
@@ -239,7 +239,7 @@ MPI_Datatype BuildDT(PGAContext *ctx, int p, int pop) {
 
 
 
-double Evaluate(PGAContext *ctx, int p, int pop) {
+double Evaluate(PGAContext *ctx, int p, int pop, double *dummy) {
     int     i;
     double  x[6];
     int     sc[40];

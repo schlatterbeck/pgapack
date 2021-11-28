@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -50,6 +50,7 @@ privately owned rights.
 /*U****************************************************************************
    PGASetEvaluation - Set the evaluation function value for a string to a
    specified value.  Also sets the evaulation up to date flag to PGA_TRUE.
+   There is a macro that makes the last argument optional.
 
    Category: Fitness & Evaluation
 
@@ -58,6 +59,7 @@ privately owned rights.
       p    - string index
       pop  - symbolic constant of the population string p is in
       val  - the (user) evaluation value to assign to string p
+      aux  - Auxiliary evaluations
 
    Outputs:
       Sets the evaluation function value of string p and the EvalUpToDate
@@ -72,29 +74,97 @@ privately owned rights.
       :
       PGASetEvaluation(ctx, p, PGA_NEWPOP, 123.456);
 
+      or
+
+      PGASetEvaluation(ctx, p, PGA_NEWPOP, 123.456, aux);
+
 ****************************************************************************U*/
-void PGASetEvaluation ( PGAContext *ctx, int p, int pop, double val )
+void _PGASetEvaluation
+    (PGAContext *ctx, int p, int pop, double val, const double *aux)
 {
     PGAIndividual *ind;
 
-    PGADebugEntered("PGASetEvaluation");
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGASetEvaluation", "p = ",
+    PGADebugEntered ("PGASetEvaluation");
+    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGASetEvaluation", "p = ",
                    PGA_INT, (void *) &p );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGASetEvaluation", "pop = ",
+    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGASetEvaluation", "pop = ",
                    PGA_INT, (void *) &pop );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGASetEvaluation", "val = ",
+    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGASetEvaluation", "val = ",
                    PGA_DOUBLE, (void *) &val );
 
-    ind               = PGAGetIndividual ( ctx, p, pop );
+    ind               = PGAGetIndividual (ctx, p, pop);
     ind->evalfunc     = val;
     ind->evaluptodate = PGA_TRUE;
+    /* In serial evaluation it will occur that the aux array is modified
+     * in place, so we do not need to copy if it's the same pointer
+     */
+    if (ctx->ga.NumAuxEval && aux != ind->auxeval) {
+        memcpy (ind->auxeval, aux, sizeof (double) * ctx->ga.NumAuxEval);
+    }
 
-    PGADebugExited("PGASetEvaluation");
+    PGADebugExited ("PGASetEvaluation");
 }
 
 /*U***************************************************************************
    PGAGetEvaluation - returns the evaluation function value for
-   string p in population pop
+   string p in population pop and optionally a pointer to the auxiliary
+   evaluations.
+   There is a macro that makes the last argument optional.
+
+   Category: Fitness & Evaluation
+
+   Inputs:
+      ctx - context variable
+      p   - string index
+      pop - symbolic constant of the population the string is in
+      aux - Pointer to Auxiliary evaluations
+
+   Outputs:
+      The evaluation function value for string p in population pop
+
+   Example:
+      PGAContext *ctx;
+      int p;
+      double eval;
+      :
+      eval = PGAGetEvaluation(ctx, p, PGA_NEWPOP);
+
+      or
+
+      const double *p;
+      eval = PGAGetEvaluation(ctx, p, PGA_NEWPOP, &p);
+
+***************************************************************************U*/
+double _PGAGetEvaluation (PGAContext *ctx, int p, int pop, const double **aux)
+{
+    PGAIndividual *ind;
+
+    PGADebugEntered ("PGAGetEvaluation");
+    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGAGetEvaluation", "p = ",
+                   PGA_INT, (void *) &p );
+    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGAGetEvaluation", "pop = ",
+                   PGA_INT, (void *) &pop );
+
+    ind = PGAGetIndividual ( ctx, p, pop );
+
+#ifndef OPTIMIZE
+    if (ind->evaluptodate != PGA_TRUE)
+	PGAError (ctx, "Evaluation not up to date.  Returning old evaluation.",
+                  PGA_WARNING, PGA_VOID, NULL);
+#endif
+
+    if (aux) {
+        *aux = ind->auxeval;
+    }
+    PGADebugExited("PGAGetEvaluation");
+    return(ind->evalfunc);
+}
+
+/*U***************************************************************************
+   PGAGetAuxEvaluation - returns the auxiliary evaluation for string p in
+   population pop. This is mostly used internally: the evaluation
+   function will get a pointer to this anyway, this is the only point
+   where the aux evaluations should be modified.
 
    Category: Fitness & Evaluation
 
@@ -109,31 +179,31 @@ void PGASetEvaluation ( PGAContext *ctx, int p, int pop, double val )
    Example:
       PGAContext *ctx;
       int p;
-      double eval;
+      double *aux;
       :
-      eval = PGAGetEvaluation(ctx, p, PGA_NEWPOP);
+      aux = PGAGetAuxEvaluation(ctx, p, PGA_NEWPOP);
 
 ***************************************************************************U*/
-double PGAGetEvaluation ( PGAContext *ctx, int p, int pop )
+double *PGAGetAuxEvaluation (PGAContext *ctx, int p, int pop)
 {
     PGAIndividual *ind;
 
-    PGADebugEntered("PGAGetEvaluation");
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGAGetEvaluation", "p = ",
+    PGADebugEntered ("PGAGetAuxEvaluation");
+    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGAGetAuxEvaluation", "p = ",
                    PGA_INT, (void *) &p );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGAGetEvaluation", "pop = ",
+    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGAGetAuxEvaluation", "pop = ",
                    PGA_INT, (void *) &pop );
 
-    ind               = PGAGetIndividual ( ctx, p, pop );
+    ind = PGAGetIndividual (ctx, p, pop);
 
 #ifndef OPTIMIZE
     if (ind->evaluptodate != PGA_TRUE)
-	PGAError(ctx, "Evaluation not up to date.  Returning old evaluation.",
-                 PGA_WARNING, PGA_VOID, NULL);
+	PGAError (ctx, "Evaluation not up to date.  Returning old evaluation.",
+                  PGA_WARNING, PGA_VOID, NULL);
 #endif
 
-    PGADebugExited("PGAGetEvaluation");
-    return(ind->evalfunc);
+    PGADebugExited ("PGAGetAuxEvaluation");
+    return (ind->auxeval);
 }
 
 /*U****************************************************************************
@@ -182,6 +252,10 @@ void PGASetEvaluationUpToDateFlag ( PGAContext *ctx, int p, int pop,
     case PGA_TRUE:
     case PGA_FALSE:
       ind->evaluptodate = status;
+      /* Invalidate cached auxtotal */
+      if (!status) {
+        ind->auxtotaluptodate = PGA_FALSE;
+      }
       break;
     default:
       PGAError(ctx, "PGASetEvaluationUpToDateFlag: Invalid value of status:",

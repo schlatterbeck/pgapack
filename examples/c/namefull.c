@@ -29,7 +29,7 @@ void   N_Crossover  (PGAContext *ctx, int, int, int, int, int, int);
 int    N_Duplicate  (PGAContext *, int, int, int, int);
 void   N_PrintString(PGAContext *, FILE *, int, int);
 void   N_EndOfGen   (PGAContext *);
-double EvalName     (PGAContext *, int, int);
+double EvalName     (PGAContext *, int, int, double *);
 void   GetStringParameter(char *, char *);
 
 /*  Global, because we use it in EvalName.  */
@@ -229,7 +229,7 @@ void N_EndOfGen(PGAContext *ctx) {
 /*  Evaluate the string.  A highly fit string will have many of
  *  the characters matching Name.
  */
-double EvalName(PGAContext *ctx, int p, int pop) {
+double EvalName(PGAContext *ctx, int p, int pop, double *dummy) {
     int     i, count;
     
     count = 0;

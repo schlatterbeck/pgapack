@@ -66,6 +66,7 @@ privately owned rights.
        PGA_USERFUNCTION_PRE_EVAL         -- Auxiliary functions before
                                             evaluation but after
                                             crossover and mutation
+       PGA_USERFUNCTION_STRING_COMPARE   -- String Comparison
    It MAY be called when using a native datatype to replace the built-in
    functions PGAPack has for that datatype (For example, if the Integer data
    type is used for a traveling salesperson problem, the user may want to
@@ -175,6 +176,12 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 	    ctx->fops.GeneDistance = (double(*)(void *, void *, void *, void *, void *))f;
 	else
 	    ctx->cops.GeneDistance = (double(*)(PGAContext *, int, int, int, int))f;
+	break;
+      case PGA_USERFUNCTION_STRING_COMPARE:
+	if (ctx->sys.UserFortran)
+	    ctx->fops.StringCompare = (int(*)(void *, void *, void *, void *, void *))f;
+	else
+	    ctx->cops.StringCompare = (int(*)(PGAContext *, int, int, int, int))f;
 	break;
       default:
 	PGAError(ctx, "PGASetUserFunction: Invalid constant:",

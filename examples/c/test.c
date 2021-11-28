@@ -9,7 +9,7 @@ Status: R
 
 
 #include "pgapack.h"
-double evaluate (PGAContext *ctx, int p, int pop);
+double evaluate (PGAContext *ctx, int p, int pop, double *dummy);
 
 int main(int argc, char **argv)
 {

@@ -47,6 +47,138 @@ privately owned rights.
 
 #include "pgapack.h"
 
+static inline double CMP (double a, double b)
+{
+    return (a < b ? -1 : (a > b ? 1 : 0));
+}
+
+/*U****************************************************************************
+  PGAAuxTotal - Compute total value over all aux evaluations
+
+  Category: Operators
+
+  Inputs:
+    ctx   - context variable
+    p     - individual
+    pop   - population
+
+  Outputs:
+    Computed or cached total value over all aux evaluations
+    This is the sum of all *positive* individual aux evaluations.
+    The semantics is a total value of all constraint violations.
+
+  Example:
+    PGAContext *ctx;
+    double result;
+    :
+    result = PGAAuxTotal(ctx, p, PGA_OLDPOP);
+
+****************************************************************************U*/
+static double PGAAuxTotal (PGAContext *ctx, int p, int pop)
+{
+    PGAIndividual *ind = PGAGetIndividual(ctx, p, pop);
+    if (!ind->auxtotaluptodate) {
+        int i;
+        double s = 0;
+        for (i=0; i<ctx->ga.NumAuxEval; i++) {
+            if (ind->auxeval [i] > 0) {
+                s += ind->auxeval [i];
+            }
+        }
+        ind->auxtotal = s;
+        ind->auxtotaluptodate = PGA_TRUE;
+    }
+    return ind->auxtotal;
+}
+
+/*U****************************************************************************
+  PGAStringCompare - Compare two strings for selection.
+  This typically simply compares fitness.
+  But if auxiliary evaluations are defined, the auxiliary evaluations are
+  treated as constraints. This function is a user function and can be
+  redefined for other purposes: By redefining this function, e.g.,
+  instead of using the aux evaluations for constraint-handling, instead
+  (or in addition), multi objective evaluation can be implemented.
+  The default handling of auxiliary evaluations is incompatible with
+  certain selection schemes, see checks in create.c
+
+  Category: Operators
+
+  Inputs:
+    ctx   - context variable
+    p1    - first string to compare
+    pop1  - symbolic constant of population of first string
+    p2    - second string to compare
+    pop2  - symbolic constant of population of second string
+
+  Outputs:
+    <0 if p2 is "better" than p1
+    >0 if p1 is "better" than p2
+    0  if both compare equal
+    Thinks of this as sorting individuals by decreasing fitness or
+    increasing constraint violations.
+
+  Example:
+    PGAContext *ctx;
+    int result;
+    :
+    result = PGAStringCompare(ctx, p1, PGA_OLDPOP, p2, PGA_OLDPOP);
+
+****************************************************************************U*/
+int PGAStringCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+{
+    double auxt1 = 0, auxt2 = 0;
+    if (!PGAGetEvaluationUpToDateFlag (ctx, p1, pop1)) {
+        PGAError
+            ( ctx
+            , "PGAStringCompare: first individual not up to date:"
+            , PGA_FATAL, PGA_INT, (void *) &p1
+            );
+    }
+    if (!PGAGetEvaluationUpToDateFlag (ctx, p2, pop2)) {
+        PGAError
+            ( ctx
+            , "PGAStringCompare: second individual not up to date:"
+            , PGA_FATAL, PGA_INT, (void *) &p2
+            );
+    }
+    if (ctx->ga.NumAuxEval > 0) {
+        auxt1 = PGAAuxTotal (ctx, p1, pop1);
+        auxt2 = PGAAuxTotal (ctx, p2, pop2);
+    }
+    if (auxt1 || auxt2) {
+        return CMP (auxt2, auxt1);
+    }
+    /* We may use the fitness only if both populations are the same
+       otherwise fitness values are not comparable.
+     */
+    if (pop1 == pop2) {
+        return CMP
+            (PGAGetFitness (ctx, p1, pop1), PGAGetFitness (ctx, p2, pop2));
+    } else {
+        int dir = PGAGetOptDirFlag (ctx);
+        PGAIndividual *ind1 = PGAGetIndividual (ctx, p1, pop1);
+        PGAIndividual *ind2 = PGAGetIndividual (ctx, p2, pop2);
+	switch (dir) {
+	case PGA_MAXIMIZE:
+            return CMP (ind1->evalfunc, ind2->evalfunc);
+	    break;
+	case PGA_MINIMIZE:
+            return CMP (ind2->evalfunc, ind1->evalfunc);
+	    break;
+	default:
+	    PGAError
+		(ctx
+		, "PGAStringCompare: Invalid value of PGAGetOptDirFlag:"
+		, PGA_FATAL, PGA_INT, (void *) &dir
+		);
+	    break;
+	}
+    }
+    /* notreached */
+    return 0;
+}
+
 /*U****************************************************************************
   PGASelect - performs genetic algorithm selection using either the default
   selection scheme or that specified with PGASetSelectType().  Valid selection
@@ -96,15 +228,15 @@ void PGASelect (PGAContext *ctx, int popix)
         break;
     case PGA_SELECT_TOURNAMENT:    /* tournament selection               */
         for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectTournament (ctx, pop);
+            ctx->ga.selected[i] = PGASelectTournament (ctx, popix);
         break;
     case PGA_SELECT_PTOURNAMENT:   /* probabilistic tournament selection */
         for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectPTournament (ctx, pop);
+            ctx->ga.selected[i] = PGASelectPTournament (ctx, popix);
         break;
     case PGA_SELECT_TRUNCATION:   /* truncation selection */
         for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectTruncation (ctx, pop);
+            ctx->ga.selected[i] = PGASelectTruncation (ctx, popix);
         break;
     case PGA_SELECT_LINEAR:      /* linear selection */
         for (i=0; i<ctx->ga.PopSize; i++)
@@ -655,8 +787,8 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop )
           Genetic Algorithms (FOGA) 1, pp. 69-93, 1991.
 
   Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    ctx - context variable
+    pop - symbolic constant of population to select from
 
   Outputs:
     index of the selected string
@@ -669,21 +801,15 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop )
 
 ****************************************************************************I*/
 static
-int PGASelectTournamentWithReplacement( PGAContext *ctx, PGAIndividual *pop )
+int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
 {
-    int m;
-    double maxfit;
     int i;
-
-    m = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
-    maxfit = (pop+m)->fitness;
+    int m = PGARandomInterval (ctx, 0, ctx->ga.PopSize-1);
     for (i=1; i<ctx->ga.TournamentSize; i++) {
         int mn = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
-        double fit = (pop+mn)->fitness;
         /* use '>=' for backwards-compat with prev. binary tournament */
-        if (fit >= maxfit) {
+        if (PGAStringCompare (ctx, mn, pop, m, pop) >= 0) {
             m = mn;
-            maxfit = fit;
         }
     }
     return m;
@@ -703,8 +829,8 @@ int PGASelectTournamentWithReplacement( PGAContext *ctx, PGAIndividual *pop )
           Complex Systems, 3(5):493–530, 1989.
 
   Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    ctx - context variable
+    pop - symbolic constant of population to select from
 
   Outputs:
     index of the selected string
@@ -739,10 +865,9 @@ static void _shuffle (PGAContext *ctx, int *list, int n)
       : (perm) [(idx)++]
 
 static
-int PGASelectTournamentWithoutReplacement (PGAContext *ctx, PGAIndividual *pop)
+int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
 {
     int m;
-    double maxfit;
     int i;
     static int *permutation = NULL;
     static int perm_idx = 0;
@@ -758,13 +883,10 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, PGAIndividual *pop)
     }
 
     m = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
-    maxfit = (pop+m)->fitness;
     for (i=1; i<ctx->ga.TournamentSize; i++) {
         int mn = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
-        double fit = (pop+mn)->fitness;
-        if (fit >= maxfit) {
+        if (PGAStringCompare (ctx, mn, pop, m, pop) >= 0) {
             m = mn;
-            maxfit = fit;
         }
     }
     return m;
@@ -810,8 +932,8 @@ int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
   next integer.
 
   Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    ctx - context variable
+    pop - symbolic constant of population to select from
 
   Outputs:
     index of the selected string
@@ -823,7 +945,19 @@ int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
     l = PGASelectTruncation (ctx, PGA_OLDPOP);
 
 ****************************************************************************I*/
-int PGASelectTruncation (PGAContext *ctx, PGAIndividual *pop)
+/* Helper function making PGAStringCompare compatible with qsort
+ * This needs to set poptmp and ctxtmp before sorting
+ */
+
+static int poptmp = -1;
+static PGAContext *ctxtmp = NULL;
+static int string_compare_helper (const void *a, const void *b)
+{
+    const int *aa = a, *bb = b;
+    return PGAStringCompare (ctxtmp, *aa, poptmp, *bb, poptmp);
+}
+
+int PGASelectTruncation (PGAContext *ctx, int pop)
 {
     int m = -1;
     int k = (int)(ctx->ga.PopSize * ctx->ga.TruncProportion + 0.5);
@@ -852,9 +986,13 @@ int PGASelectTruncation (PGAContext *ctx, PGAIndividual *pop)
         int i;
         for (i=0; i<ctx->ga.PopSize; i++) {
             bestidx [i] = i;
-            ctx->scratch.dblscratch [i] = pop [i].fitness;
         }
-        PGADblHeapSort (ctx, ctx->scratch.dblscratch, bestidx, ctx->ga.PopSize);
+        poptmp = pop;
+        ctxtmp = ctx;
+        qsort (bestidx, ctx->ga.PopSize, sizeof (int), string_compare_helper);
+        poptmp = -1;
+        ctxtmp = NULL;
+
         for (i=0; i<k; i++) {
             kbest [i] = bestidx [i];
         }
@@ -874,8 +1012,8 @@ int PGASelectTruncation (PGAContext *ctx, PGAIndividual *pop)
   use the right sampling.
 
   Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    ctx - context variable
+    pop - symbolic constant of population to select from
 
   Outputs:
     index of the selected string
@@ -887,7 +1025,7 @@ int PGASelectTruncation (PGAContext *ctx, PGAIndividual *pop)
     l = PGASelectTournament(ctx, PGA_OLDPOP);
 
 ****************************************************************************I*/
-int PGASelectTournament (PGAContext *ctx, PGAIndividual *pop)
+int PGASelectTournament (PGAContext *ctx, int pop)
 {
     PGADebugEntered("PGASelectTournament");
     if (ctx->ga.TournamentWithRepl) {
@@ -904,8 +1042,8 @@ int PGASelectTournament (PGAContext *ctx, PGAIndividual *pop)
   Ref:    D. Goldberg, Genetic Algorithms, pg. 121
 
   Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    ctx - context variable
+    pop - symbolic constant of population to select from
 
   Outputs:
     index of the selected string
@@ -917,29 +1055,23 @@ int PGASelectTournament (PGAContext *ctx, PGAIndividual *pop)
     l = PGASelectPTournament(ctx, PGA_OLDPOP);
 
 ****************************************************************************I*/
-int PGASelectPTournament( PGAContext *ctx, PGAIndividual *pop )
+int PGASelectPTournament (PGAContext *ctx, int pop)
 {
     int m1, m2;
     int RetVal;
+    int drand = PGARandom01 (ctx, 0);
 
     PGADebugEntered("PGASelectPTournament");
 
     m1 = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
     m2 = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
 
-    if ( (pop+m1)->fitness > (pop+m2)->fitness )
-        if ( (double) PGARandom01(ctx, 0) < ctx->ga.PTournamentProb )
-            RetVal = m1;
-        else
-            RetVal = m2;
-    else
-        if ( (double) PGARandom01(ctx, 0) < ctx->ga.PTournamentProb )
-            RetVal = m2;
-        else
-            RetVal = m1;
+    if (PGAStringCompare (ctx, m1, pop, m2, pop) < 0) {
+        RetVal = drand < ctx->ga.PTournamentProb ? m1 : m2;
+    } else {
+        RetVal = drand < ctx->ga.PTournamentProb ? m2 : m1;
+    }
 
     PGADebugExited("PGASelectPTournament");
     return(RetVal);
 }
-
-

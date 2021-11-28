@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -117,7 +117,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
 	exit(-1);
     }
 
-    
+
     /*  We use this (indirectly) in PGAReadCmdLine -- in processing
      *  -pgahelp and -pgahelp debug.
      */
@@ -208,6 +208,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
      *  default value.
      */
     ctx->ga.PopSize            = PGA_UNINITIALIZED_INT;
+    ctx->ga.NumAuxEval         = PGA_UNINITIALIZED_INT;
     ctx->ga.StoppingRule       = PGA_STOP_MAXITER;
     ctx->ga.MaxIter            = PGA_UNINITIALIZED_INT;
     ctx->ga.MaxNoChange        = PGA_UNINITIALIZED_INT;
@@ -269,6 +270,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->cops.EndOfGen          = NULL;
     ctx->cops.GeneDistance      = NULL;
     ctx->cops.PreEval           = NULL;
+    ctx->cops.StringCompare     = NULL;
 
     ctx->fops.Mutation          = NULL;
     ctx->fops.Crossover         = NULL;
@@ -280,6 +282,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->fops.EndOfGen          = NULL;
     ctx->fops.GeneDistance      = NULL;
     ctx->fops.PreEval           = NULL;
+    ctx->fops.StringCompare     = NULL;
 
     /* Parallel */
     ctx->par.NumIslands        = PGA_UNINITIALIZED_INT;
@@ -304,7 +307,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
      *  If ctx->sys.UserFortran is not set to PGA_TRUE in pgacreate_ (the
      *  fortran stub to PGACreate), the user program is in C.
      */
-    if (ctx->sys.UserFortran != PGA_TRUE) 
+    if (ctx->sys.UserFortran != PGA_TRUE)
          ctx->sys.UserFortran  = PGA_FALSE;
     ctx->sys.SetUpCalled       = PGA_FALSE;
     ctx->sys.PGAMaxInt         = INT_MAX;
@@ -414,6 +417,7 @@ void PGASetUp ( PGAContext *ctx )
     int    (*Duplicate)(PGAContext *, int, int, int, int) = NULL;
     void   (*InitString)(PGAContext *, int, int) = NULL;
     double (*GeneDist)(PGAContext *, int, int, int, int) = NULL;
+    int    (*StringCompare)(PGAContext *, int, int, int, int) = NULL;
     MPI_Datatype (*BuildDatatype)(PGAContext *, int, int) = NULL;
     int err=0, i;
 
@@ -440,6 +444,9 @@ void PGASetUp ( PGAContext *ctx )
 
     if ( ctx->ga.PopSize            == PGA_UNINITIALIZED_INT)
       ctx->ga.PopSize                = 100;
+
+    if ( ctx->ga.NumAuxEval         == PGA_UNINITIALIZED_INT)
+      ctx->ga.NumAuxEval             = 0;
 
     if ( ctx->ga.MaxIter            == PGA_UNINITIALIZED_INT)
          ctx->ga.MaxIter             = 1000;
@@ -484,6 +491,28 @@ void PGASetUp ( PGAContext *ctx )
             v = 1;
         }
         ctx->ga.RTRWindowSize = v;
+    }
+
+    if ( ctx->ga.NumAuxEval > 0
+       && (  ctx->ga.SelectType == PGA_SELECT_PROPORTIONAL
+          || ctx->ga.SelectType == PGA_SELECT_SUS
+          )
+       && (ctx->fops.StringCompare || ctx->cops.StringCompare)
+       )
+    {
+        if (ctx->ga.SelectType == PGA_SELECT_SUS) {
+            PGAError(ctx,
+                     "PGASetUp: Auxiliary evaluation with default"
+                     " string compare is incompatible with "
+                     "Stochastic universal selection",
+                     PGA_FATAL, PGA_VOID, NULL);
+        } else {
+            PGAError(ctx,
+                     "PGASetUp: Auxiliary evaluation with default"
+                     " string compare is incompatible with "
+                     "Proportional selection",
+                     PGA_FATAL, PGA_VOID, NULL);
+        }
     }
 
     if ( ctx->ga.FitnessType       == PGA_UNINITIALIZED_INT)
@@ -636,6 +665,7 @@ void PGASetUp ( PGAContext *ctx )
 		 "PGASetUp: Using PGADone as the user stopping condition will"
 		 " result in an infinite loop!", PGA_FATAL, PGA_VOID, NULL);
 
+    StringCompare = PGAStringCompare;
     switch (ctx->ga.datatype) {
     case PGA_DATATYPE_BINARY:
 	CreateString  = PGABinaryCreateString;
@@ -771,13 +801,15 @@ void PGASetUp ( PGAContext *ctx )
 	ctx->cops.InitString    = InitString;
     if ((ctx->cops.GeneDistance == NULL) && (ctx->fops.GeneDistance == NULL))
 	ctx->cops.GeneDistance  = GeneDist;
-    if (ctx->cops.CreateString  == NULL) 
+    if (ctx->cops.CreateString  == NULL)
 	ctx->cops.CreateString  = CreateString;
     if (ctx->cops.CopyString    == NULL)
 	ctx->cops.CopyString    = CopyString;
     if (ctx->cops.BuildDatatype == NULL)
 	ctx->cops.BuildDatatype = BuildDatatype;
-    
+    if (ctx->cops.StringCompare == NULL)
+	ctx->cops.StringCompare = StringCompare;
+
 /* par */
     if ( ctx->par.NumIslands       == PGA_UNINITIALIZED_INT)
          ctx->par.NumIslands        = 1;
@@ -786,7 +818,7 @@ void PGASetUp ( PGAContext *ctx )
     if ( ctx->par.DefaultComm      == MPI_COMM_NULL )
          ctx->par.DefaultComm       = MPI_COMM_WORLD;
 
-    
+
 
 /* rep */
     if ( ctx->rep.PrintFreq == PGA_UNINITIALIZED_INT)
@@ -1038,8 +1070,64 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
     ind->evalfunc     = 0.0;
     ind->fitness      = 0.0;
     ind->evaluptodate = PGA_FALSE;
+    if (ctx->ga.NumAuxEval) {
+        ind->auxeval = malloc (sizeof (double) * ctx->ga.NumAuxEval);
+    } else {
+        ind->auxeval = NULL;
+    }
 
     (*ctx->cops.CreateString)(ctx, p, pop, initflag);
-    
+
     PGADebugExited("PGACreateIndividual");
+}
+
+/*I****************************************************************************
+  PGASetNumAuxEval - initialize the number of auxiliary evaluations
+
+  Inputs:
+     ctx      - context variable
+     n        - Number of auxiliary evaluations.
+
+  Outputs:
+     None
+
+  Example:
+     PGAContext *ctx;
+     :
+     PGASetNumAuxEval(ctx, 5);
+
+****************************************************************************I*/
+void PGASetNumAuxEval (PGAContext *ctx, int n)
+{
+    PGADebugEntered("PGASetNumAuxEval");
+
+    if (n <= 0) {
+        PGAError(ctx, "PGASetNumAuxEval: Parameter needs to be positive",
+                 PGA_FATAL, PGA_VOID, NULL);
+    } else {
+        ctx->ga.NumAuxEval = n;
+    }
+
+    PGADebugExited("PGASetNumAuxEval");
+}
+
+/*I****************************************************************************
+  PGAGetNumAuxEval - Get the number of auxiliary evaluations
+
+  Inputs:
+     ctx      - context variable
+
+  Outputs:
+     Number of auxiliary evaluations
+
+  Example:
+     PGAContext *ctx;
+     int num;
+     :
+     num = PGAGetNumAuxEval(ctx);
+
+****************************************************************************I*/
+int PGAGetNumAuxEval (PGAContext *ctx)
+{
+    return ctx->ga.NumAuxEval;
 }

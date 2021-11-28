@@ -1,6 +1,6 @@
 #include <pgapack.h>
 
-double evaluate (PGAContext *ctx, int p, int pop);
+double evaluate (PGAContext *ctx, int p, int pop, double *dummy);
 int myMutation  (PGAContext *, int, int, double);
 
 int main( int argc, char **argv )
@@ -33,7 +33,7 @@ int myMutation(PGAContext *ctx, int p, int pop, double pm)
     }
     return ((double) count);
 }
-double evaluate(PGAContext *ctx, int p, int pop)
+double evaluate(PGAContext *ctx, int p, int pop, double *dummy)
 {
      int stringlen, i, sum = 0;
      stringlen = PGAGetStringLength(ctx);

@@ -482,50 +482,6 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
     PGADebugExited("PGASetPopReplaceType");
 }
 
-/*
- * Compare two individuals from different populations. First index is
- * the one from newpop, second from oldpop.
- * Note that we cannot use the fitness since it is not comparable across
- * populations.
- * Note the '>='/'<=' comparison, differential evolution can walk across
- * areas with equal evaluation this way
- */
-static int PGANewpopIndividuumIsBetter (PGAContext *ctx, int p1, int p2)
-{
-    int dir = PGAGetOptDirFlag (ctx);
-    if (!ctx->ga.newpop[p1].evaluptodate) {
-        PGAError
-            ( ctx
-            , "PGANewpopIndividuumIsBetter: newpop indivicual not up to date:"
-            , PGA_FATAL, PGA_INT, (void *) &p1
-            );
-    }
-    if (!ctx->ga.oldpop[p2].evaluptodate) {
-        PGAError
-            ( ctx
-            , "PGANewpopIndividuumIsBetter: oldpop individual not up to date:"
-            , PGA_FATAL, PGA_INT, (void *) &p2
-            );
-    }
-    switch (dir) {
-    case PGA_MAXIMIZE:
-        return ctx->ga.newpop[p1].evalfunc >= ctx->ga.oldpop[p2].evalfunc;
-        break;
-    case PGA_MINIMIZE:
-        return ctx->ga.newpop[p1].evalfunc <= ctx->ga.oldpop[p2].evalfunc;
-        break;
-    default:
-        PGAError
-            (ctx
-            , "PGANewpopIndividuumIsBetter: Invalid value of PGAGetOptDirFlag:"
-            , PGA_FATAL, PGA_INT, (void *) &dir
-            );
-        break;
-    }
-    /* notreached */
-    return 0;
-}
-
 /*U****************************************************************************
    PGARestrictedTournamentReplacement - Perform restricted tournament
    replacement: for each individual in PGA_NEWPOP we select a window of
@@ -582,7 +538,8 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
             }
         }
 
-        if (PGANewpopIndividuumIsBetter (ctx, i, closest)) {
+        /* If new population individual is better */
+        if (PGAStringCompare (ctx, i, PGA_NEWPOP, closest, PGA_OLDPOP) <= 0) {
             /* Copy i in PGA_NEWPOP to closest in PGA_OLDPOP */
             PGACopyIndividual (ctx, i, PGA_NEWPOP, closest, PGA_OLDPOP);
         }
@@ -632,7 +589,10 @@ void PGAPairwiseBestReplacement (PGAContext *ctx)
 
     PGADebugEntered("PGAPairwiseBestReplacement");
     for (i=popsize - numreplace; i<popsize; i++) {
-        if (PGANewpopIndividuumIsBetter (ctx, i, i)) {
+        /* Note the '<=' comparison, differential evolution can walk across
+         * areas with equal evaluation this way
+         */
+        if (PGAStringCompare (ctx, PGA_NEWPOP, i, PGA_OLDPOP, i) <= 0) {
             /* Copy i in PGA_NEWPOP to i in PGA_OLDPOP */
             PGACopyIndividual (ctx, i, PGA_NEWPOP, i, PGA_OLDPOP);
         }

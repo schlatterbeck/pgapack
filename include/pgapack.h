@@ -242,7 +242,8 @@ extern "C" {
 #define PGA_USERFUNCTION_ENDOFGEN                10
 #define PGA_USERFUNCTION_GEN_DIFFERENCE          11
 #define PGA_USERFUNCTION_PRE_EVAL                12
-#define PGA_NUM_USERFUNCTIONS                    12
+#define PGA_USERFUNCTION_STRING_COMPARE          13
+#define PGA_NUM_USERFUNCTIONS                    13
 
 /*****************************************
 *           MPI SEND/RECV TAGS           *
@@ -263,6 +264,9 @@ typedef struct {                    /* primary population data structure   */
   double fitness;                   /* fitness    function value           */
   int    evaluptodate;              /* flag whether evalfunc is current    */
   void   *chrom;                    /* pointer to the GA string            */
+  double *auxeval;                  /* Auxiliary evaluations               */
+  double auxtotal;                  /* Total aux evaluation                */
+  int    auxtotaluptodate;          /* flag wether auxtotal is current     */
 } PGAIndividual;
 
 
@@ -276,6 +280,7 @@ typedef struct {
     int fw;                  /* number of full (WL length) words          */
     int eb;                  /* number of extra bits in last NOT full word*/
     int PopSize;             /* Number of strings to use                  */
+    int NumAuxEval;          /* Number of auxiliary evaluation values     */
     int StringLen;           /* string lengths                            */
     int StoppingRule;        /* Termination Criteria                      */
     int MaxIter;             /* Maximum number of iterations to run       */
@@ -348,6 +353,7 @@ typedef struct {
     void         (*EndOfGen)(PGAContext *);
     double       (*GeneDistance)(PGAContext *, int, int, int, int);
     void         (*PreEval)(PGAContext *, int);
+    int          (*StringCompare)(PGAContext *, int, int, int, int);
 } PGACOperations;
 
 typedef struct {
@@ -361,6 +367,7 @@ typedef struct {
     void         (*EndOfGen)(void *);
     double       (*GeneDistance)(void *, void *, void *, void *, void *);
     void         (*PreEval)(void *, void *);
+    int          (*StringCompare)(void *, void *, void *, void *, void *);
 } PGAFortranOperations;
 
 typedef struct sample_state_s {
@@ -524,6 +531,8 @@ void PGASetRandomInitFlag(PGAContext *ctx, int RandomBoolean);
 int PGAGetRandomInitFlag (PGAContext *ctx);
 void PGACreatePop (PGAContext *ctx, int pop);
 void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag);
+void PGASetNumAuxEval (PGAContext *ctx, int n);
+int PGAGetNumAuxEval (PGAContext *ctx);
 
 /*****************************************
 *          cross.c
@@ -589,31 +598,50 @@ int PGAGetNoDuplicatesFlag (PGAContext *ctx);
 *          evaluate.c
 *****************************************/
 
-void PGASetEvaluation ( PGAContext *ctx, int p, int pop, double val );
-double PGAGetEvaluation ( PGAContext *ctx, int p, int pop );
-void PGASetEvaluationUpToDateFlag ( PGAContext *ctx, int p, int pop,
-                                   int status );
-int PGAGetEvaluationUpToDateFlag ( PGAContext *ctx, int p, int pop );
-double PGAGetRealFromBinary(PGAContext *ctx, int p, int pop, int start,
-                            int end, double lower, double upper);
-double PGAGetRealFromGrayCode(PGAContext *ctx, int p, int pop, int start,
-                                  int end, double lower, double upper);
-void PGAEncodeRealAsBinary(PGAContext *ctx, int p, int pop, int start,
-                               int end, double low, double high, double val);
-void PGAEncodeRealAsGrayCode(PGAContext *ctx, int p, int pop, int start,
+/* Macro trickery for optional aux argument */
+/* See https://stackoverflow.com/questions/1472138/c-default-arguments */
+struct opt_ptr_ptr { const double **d; };
+struct opt_ptr     { const double *d;  };
+void _PGASetEvaluation
+    (PGAContext *ctx, int p, int pop, double v, const double *aux);
+static inline void _PGASetEvaluation_s
+    (PGAContext *ctx, int p, int pop, double v, const struct opt_ptr opt_ptr)
+{
+    _PGASetEvaluation (ctx, p, pop, v, opt_ptr.d);
+}
+#define PGASetEvaluation(a, b, c, d, ...) \
+    _PGASetEvaluation_s(a, b, c, d, (struct opt_ptr){__VA_ARGS__})
+double _PGAGetEvaluation (PGAContext *ctx, int p, int pop, const double **aux);
+static inline double _PGAGetEvaluation_s
+    (PGAContext *ctx, int p, int pop, const struct opt_ptr_ptr opt_ptr_ptr)
+{
+    return _PGAGetEvaluation (ctx, p, pop, opt_ptr_ptr.d);
+}
+#define PGAGetEvaluation(a, b, c, ...) \
+    _PGAGetEvaluation_s(a, b, c, (struct opt_ptr_ptr){__VA_ARGS__})
+double *PGAGetAuxEvaluation (PGAContext *ctx, int p, int pop);
+void PGASetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop, int status);
+int PGAGetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop);
+double PGAGetRealFromBinary (PGAContext *ctx, int p, int pop, int start,
+                             int end, double lower, double upper);
+double PGAGetRealFromGrayCode (PGAContext *ctx, int p, int pop, int start,
+                               int end, double lower, double upper);
+void PGAEncodeRealAsBinary (PGAContext *ctx, int p, int pop, int start,
+                            int end, double low, double high, double val);
+void PGAEncodeRealAsGrayCode (PGAContext *ctx, int p, int pop, int start,
                               int end, double low, double high, double val);
-int PGAGetIntegerFromBinary(PGAContext *ctx, int p, int pop, int start,
+int PGAGetIntegerFromBinary (PGAContext *ctx, int p, int pop, int start,
                                  int end);
-int PGAGetIntegerFromGrayCode(PGAContext *ctx, int p, int pop, int start,
-                                   int end);
-void PGAEncodeIntegerAsBinary(PGAContext *ctx, int p, int pop, int start,
-                              int end, int val);
-void PGAEncodeIntegerAsGrayCode(PGAContext *ctx, int p, int pop, int start,
-                                int end, int val);
+int PGAGetIntegerFromGrayCode (PGAContext *ctx, int p, int pop, int start,
+                               int end);
+void PGAEncodeIntegerAsBinary (PGAContext *ctx, int p, int pop, int start,
+                               int end, int val);
+void PGAEncodeIntegerAsGrayCode (PGAContext *ctx, int p, int pop, int start,
+                                 int end, int val);
 double PGAMapIntegerToReal (PGAContext *ctx, int v, int a, int b, double l,
                             double u);
-int PGAMapRealToInteger(PGAContext *ctx, double r, double l, double u, int a,
-                        int b);
+int PGAMapRealToInteger (PGAContext *ctx, double r, double l, double u, int a,
+                         int b);
 
 /*****************************************
 *          fitness.c
@@ -724,18 +752,21 @@ int PGAGetDEDitherPerIndividual (PGAContext *ctx);
 *          parallel.c
 *****************************************/
 
-void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int),
+void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
 	      MPI_Comm comm);
 void PGAEvaluateSeq(PGAContext *ctx, int pop,
-		    double (*f)(PGAContext *, int, int));
+		    double (*f)(PGAContext *, int, int, double *));
 void PGAEvaluateCoop(PGAContext *ctx, int pop,
-		     double (*f)(PGAContext *, int, int), MPI_Comm comm);
+		     double (*f)(PGAContext *, int, int, double *),
+                     MPI_Comm comm);
 void PGAEvaluateMS(PGAContext *ctx, int pop,
-		   double (*f)(PGAContext *c, int p, int pop), MPI_Comm comm);
+		   double (*f)(PGAContext *c, int p, int pop, double *),
+                   MPI_Comm comm);
 void PGAEvaluateSlave(PGAContext *ctx, int pop,
-		      double (*f)(PGAContext *, int, int), MPI_Comm comm);
+		      double (*f)(PGAContext *, int, int, double *),
+                      MPI_Comm comm);
 void PGAEvaluate(PGAContext *ctx, int pop,
-		 double (*f)(PGAContext *, int, int), MPI_Comm comm);
+		 double (*f)(PGAContext *, int, int, double *), MPI_Comm comm);
 MPI_Datatype PGABuildDatatype(PGAContext *ctx, int p, int pop);
 void PGASendIndividual(PGAContext *ctx, int p, int pop, int dest, int tag,
                        MPI_Comm comm);
@@ -745,9 +776,10 @@ void PGASendReceiveIndividual(PGAContext *ctx, int send_p, int send_pop,
                               int dest, int send_tag, int recv_p, int recv_pop,
                               int source, int recv_tag, MPI_Comm comm,
                               MPI_Status *status);
-void PGARunIM(PGAContext *ctx, double (*f)(PGAContext *c, int p, int pop),
-              MPI_Comm tcomm);
-void PGARunNM(PGAContext *ctx, double (*f)(PGAContext *c, int p, int pop),
+void PGARunIM(PGAContext *ctx, double (*f)
+              (PGAContext *c, int p, int pop, double *), MPI_Comm tcomm);
+void PGARunNM(PGAContext *ctx,
+              double (*f)(PGAContext *c, int p, int pop, double *),
               MPI_Comm tcomm);
 int PGAGetRank (PGAContext *ctx, MPI_Comm comm);
 int PGAGetNumProcs (PGAContext *ctx, MPI_Comm comm);
@@ -762,7 +794,8 @@ MPI_Comm PGAGetCommunicator( PGAContext *ctx);
 *          pga.c
 *****************************************/
 
-void PGARun(PGAContext *ctx, double (*evaluate)(PGAContext *c, int p, int pop));
+void PGARun(PGAContext *ctx,
+    double (*evaluate)(PGAContext *c, int p, int pop, double *auxeval));
 void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop);
 void PGARunMutationOrCrossover ( PGAContext *ctx, int oldpop, int newpop );
 void PGARunMutationOnly ( PGAContext *ctx, int oldpop, int newpop );
@@ -868,26 +901,27 @@ double PGAGetRestartAlleleChangeProb(PGAContext *ctx);
 *          select.c
 *****************************************/
 
-void PGASelect( PGAContext *ctx, int popix );
-int PGASelectNextIndex ( PGAContext *ctx, int popix );
-void PGASetSelectType( PGAContext *ctx, int select_type);
+void PGASelect (PGAContext *ctx, int popix);
+int PGASelectNextIndex (PGAContext *ctx, int popix);
+void PGASetSelectType (PGAContext *ctx, int select_type);
 int PGAGetSelectType (PGAContext *ctx);
-void PGASetPTournamentProb(PGAContext *ctx, double ptournament_prob);
-double PGAGetPTournamentProb(PGAContext *ctx);
-int PGASelectProportional(PGAContext *ctx, PGAIndividual *pop);
-void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop );
-int PGASelectTournament( PGAContext *ctx, PGAIndividual *pop );
-int PGASelectPTournament( PGAContext *ctx, PGAIndividual *pop );
-int PGASelectTruncation( PGAContext *ctx, PGAIndividual *pop );
-int PGASelectLinear( PGAContext *ctx, PGAIndividual *pop );
-void PGASetTournamentSize(PGAContext *ctx, int tournament_size);
-int PGAGetTournamentSize(PGAContext *ctx);
-void PGASetTournamentWithReplacement(PGAContext *ctx, int value);
-int PGAGetTournamentWithReplacement(PGAContext *ctx);
-void PGASetTruncationProportion(PGAContext *ctx, double proportion);
-double PGAGetTruncationProportion(PGAContext *ctx);
-void PGASetRandomizeSelect(PGAContext *ctx, int value);
-int PGAGetRandomizeSelect(PGAContext *ctx);
+void PGASetPTournamentProb (PGAContext *ctx, double ptournament_prob);
+double PGAGetPTournamentProb (PGAContext *ctx);
+int PGASelectProportional (PGAContext *ctx, PGAIndividual *pop);
+void PGASelectSUS (PGAContext *ctx, PGAIndividual *pop);
+int PGASelectTournament (PGAContext *ctx, int pop);
+int PGASelectPTournament (PGAContext *ctx, int pop);
+int PGASelectTruncation (PGAContext *ctx, int pop);
+int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop);
+void PGASetTournamentSize (PGAContext *ctx, int tournament_size);
+int PGAGetTournamentSize (PGAContext *ctx);
+void PGASetTournamentWithReplacement (PGAContext *ctx, int value);
+int PGAGetTournamentWithReplacement (PGAContext *ctx);
+void PGASetTruncationProportion (PGAContext *ctx, double proportion);
+double PGAGetTruncationProportion (PGAContext *ctx);
+void PGASetRandomizeSelect (PGAContext *ctx, int value);
+int PGAGetRandomizeSelect (PGAContext *ctx);
+int PGAStringCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 
 /*****************************************
 *          stop.c

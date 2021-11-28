@@ -71,7 +71,8 @@ privately owned rights.
     PGADestroy(ctx);
 
 ****************************************************************************U*/
-void PGARun(PGAContext *ctx, double (*evaluate)(PGAContext *c, int p, int pop))
+void PGARun (PGAContext *ctx,
+             double (*evaluate)(PGAContext *c, int p, int pop, double *))
 {
      MPI_Comm comm;                  /* value of default communicator */
      int nprocs;                     /* number of processes in above  */
