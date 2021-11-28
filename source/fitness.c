@@ -272,7 +272,7 @@ double PGAGetFitness ( PGAContext *ctx, int p, int pop )
 
     PGADebugExited("PGAGetFitness");
 
-    return(ind->evalfunc);
+    return(ind->fitness);
 }
 
 /*U***************************************************************************
