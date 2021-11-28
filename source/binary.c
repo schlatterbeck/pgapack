@@ -590,25 +590,33 @@ void PGABinaryUniformCrossover(PGAContext *ctx, int p1, int p2, int pop1,
       PGABinaryPrintString( ctx, stdout, s, PGA_NEWPOP );
 
 ****************************************************************************I*/
-void PGABinaryPrintString( PGAContext *ctx, FILE *fp, int p, int pop )
+void PGABinaryPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 {
-     PGABinary *c = (PGABinary *)PGAGetIndividual(ctx, p, pop)->chrom;
-     int i;
+    PGABinary *c = (PGABinary *)PGAGetIndividual (ctx, p, pop)->chrom;
+    int wsize = 64 / WL;
+    int i, j;
+    int done = 0;
 
-     PGADebugEntered("PGABinaryPrintString");
+    PGADebugEntered ("PGABinaryPrintString");
 
-     for( i=0; i<ctx->ga.fw; i++ ) {
-          fprintf(fp,"[ ");
-          PGABinaryPrint( ctx, fp, (c+i), WL );
-          fprintf(fp," ]\n");
-     }
-     if ( ctx->ga.eb > 0 ) {
-          fprintf(fp,"[ ");
-          PGABinaryPrint( ctx, fp, (c+ctx->ga.fw), ctx->ga.eb );
-          fprintf(fp," ]");
-     }
+    for (i=0; i<ctx->ga.fw; i+=wsize) {
+         fprintf (fp,"[ ");
+         for (j=0; j<wsize && i+j<ctx->ga.fw; j++) {
+             PGABinaryPrint (ctx, fp, (c+i+j), WL);
+         }
+         if (j < wsize && ctx->ga.eb > 0) {
+             PGABinaryPrint (ctx, fp, (c+ctx->ga.fw), ctx->ga.eb);
+             done = 1;
+         }
+         fprintf (fp," ]\n");
+    }
+    if (ctx->ga.eb > 0 && !done) {
+         fprintf (fp,"[ ");
+         PGABinaryPrint (ctx, fp, (c+ctx->ga.fw), ctx->ga.eb);
+         fprintf (fp," ]\n");
+    }
 
-     PGADebugExited("PGABinaryPrintString");
+    PGADebugExited ("PGABinaryPrintString");
 }
 
 /*I****************************************************************************

@@ -21,5 +21,6 @@ Iter #     Field      Value
 The Best Evaluation: 1.050000e-02.
 The Best String:
 [ 011111111110000010101000000010 ]
+
 The real interpretation:
 #   0: [      -0.01], [        0.1], [       0.02]

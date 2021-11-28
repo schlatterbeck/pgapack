@@ -44,7 +44,9 @@ ifeq (${MPI},openmpi)
     # architecture-specific and there is no distribution-independent way
     # to really find out the architecture used. So you may end up
     # specifying MPI_INC and MPI_LIB by hand.
-    MPI_INC := -I /usr/include/mpi
+    CC = mpicc.openmpi
+    FC = mpif77.openmpi
+    MPI_INC :=
     MPI_LIB := -lmpi_mpifh -lmpi
 else ifeq (${MPI},mpich)
     MPI_INCLUDE:=$(shell ls -1d /usr/include/mpich /usr/include/*/mpich 2> /dev/null)
@@ -173,6 +175,12 @@ all:
 	$(MAKE) -C examples
 	$(MAKE) -C test
 	$(MAKE) -C docs
+
+test: all
+	$(MAKE) -C test test
+
+testclean:
+	$(MAKE) -C test testclean
 
 clean:
 	$(MAKE) -C source   clean

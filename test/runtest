@@ -7,14 +7,31 @@
 # as we have parameters: The C and fortran examples have different
 # questions (whitespace).
 
-fn=$(basename $1 .data)
-args=$(echo $fn | sed 's/_/ /g')
-set $args
+if [ -n "$MPI" -a "$MPI" != serial ]; then
+    nproc=-np
+    fileopt=-f
+    if [ "$MPI" = openmpi ] ; then
+        fileopt="--hostfile"
+    fi
+    file="${fileopt} ${MPI_MACHINEFILE}"
+    if [ "$MPI" = lam ] ; then
+        file=""
+    fi
+    mpicmd="mpirun ${file} ${nproc} ${MPI_NUM_PROCESS}"
+fi
 
-dir=$1
-shift
-cmd=$1
-shift
-for arg in $@; do
-    echo "$arg"
-done | ../examples/$dir/$cmd | grep -v '\?'
+fn=$(basename $1 .data)
+if [ "$fn" != instverf ]; then
+    args=$(echo $fn | sed 's/_/ /g')
+    set $args
+    dir=$1
+    shift
+    cmd=$1
+    shift
+    for arg in $@; do
+        echo "$arg"
+    done | ${mpicmd} ../examples/$dir/$cmd | grep -v '\?'
+else
+    ${mpicmd} instverf
+fi
+

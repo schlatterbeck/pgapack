@@ -286,6 +286,10 @@ void EOG(PGAContext *ctx) {
     best = PGAGetBestIndex(ctx, PGA_NEWPOP);
     besteval = PGAGetEvaluation(ctx, best, PGA_NEWPOP);
 
+    if (iter > 1000) {
+        printf ("Iter <= 1000 expected, got: %d\n", iter);
+        return;
+    }
     Results[ResultsIndex][iter] = besteval;
 }
 
