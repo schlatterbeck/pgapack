@@ -65,17 +65,21 @@ privately owned rights.
 #include "pgapack.h"
 
 #if defined(FORTRANCAP)
+/* binary.c */
 #define pgasetbinaryallele_              PGASETBINARYALLELE
 #define pgagetbinaryallele_              PGAGETBINARYALLELE
 #define pgasetbinaryinitprob_            PGASETBINARYINITPROB
 #define pgagetbinaryinitprob_            PGAGETBINARYINITPROB
+/* char.c */
 #define pgasetcharacterallele_           PGASETCHARACTERALLELE
 #define pgagetcharacterallele_           PGAGETCHARACTERALLELE
 #define pgasetcharacterinittype_         PGASETCHARACTERINITTYPE
+/* create.c */
 #define pgacreate_                       PGACREATE
 #define pgasetup_                        PGASETUP
 #define pgasetrandominitflag_            PGASETRANDOMINITFLAG
 #define pgagetrandominitflag_            PGAGETRANDOMINITFLAG
+/* cross.c */
 #define pgacrossover_                    PGACROSSOVER
 #define pgagetcrossovertype_             PGAGETCROSSOVERTYPE
 #define pgagetcrossoverprob_             PGAGETCROSSOVERPROB
@@ -83,15 +87,18 @@ privately owned rights.
 #define pgasetcrossovertype_             PGASETCROSSOVERTYPE
 #define pgasetcrossoverprob_             PGASETCROSSOVERPROB
 #define pgasetuniformcrossoverprob_      PGASETUNIFORMCROSSOVERPROB
+/* debug.c */
 #define pgadebugprint_                   PGADEBUGPRINT
 #define pgasetdebuglevel_                PGASETDEBUGLEVEL
 #define pgacleardebuglevel_              PGACLEARDEBUGLEVEL
 #define pgasetdebuglevelbyname_          PGASETDEBUGLEVELBYNAME
 #define pgacleardebuglevelbyname_        PGACLEARDEBUGLEVELBYNAME
+/* duplcate.c */
 #define pgaduplicate_                    PGADUPLICATE
 #define pgachange_                       PGACHANGE
 #define pgasetnoduplicatesflag_          PGASETNODUPLICATESFLAG
 #define pgagetnoduplicatesflag_          PGAGETNODUPLICATESFLAG
+/* evaluate.c */
 #define pgasetevaluation_                PGASETEVALUATION
 #define pgagetevaluation_                PGAGETEVALUATION
 #define pgasetevaluationuptodateflag_    PGASETEVALUATIONUPTODATEFLAG
@@ -104,6 +111,7 @@ privately owned rights.
 #define pgagetintegerfromgraycode_       PGAGETINTEGERFROMGRAYCODE
 #define pgaencodeintegerasbinary_        PGAENCODEINTEGERASBINARY
 #define pgaencodeintegerasgraycode_      PGAENCODEINTEGERASGRAYCODE
+/* fitness.c */
 #define pgafitness_                      PGAFITNESS
 #define pgarank_                         PGARANK
 #define pgagetfitness_                   PGAGETFITNESS
@@ -115,7 +123,9 @@ privately owned rights.
 #define pgasetmaxfitnessrank_            PGASETMAXFITNESSRANK
 #define pgasetfitnesscmaxvalue_          PGASETFITNESSCMAXVALUE
 #define pgagetfitnesscmaxvalue_          PGAGETFITNESSCMAXVALUE
+/* hamming.c */
 #define pgahammingdistance_              PGAHAMMINGDISTANCE
+/* integer.c */
 #define pgasetintegerallele_             PGASETINTEGERALLELE
 #define pgagetintegerallele_             PGAGETINTEGERALLELE
 #define pgasetintegerinitpermute_        PGASETINTEGERINITPERMUTE
@@ -123,6 +133,7 @@ privately owned rights.
 #define pgagetintegerinittype_           PGAGETINTEGERINITTYPE
 #define pgagetminintegerinitvalue_       PGAGETMININTEGERINITVALUE
 #define pgagetmaxintegerinitvalue_       PGAGETMAXINTEGERINITVALUE
+/* mutation.c */
 #define pgamutate_                       PGAMUTATE
 #define pgasetmutationtype_              PGASETMUTATIONTYPE
 #define pgagetmutationtype_              PGAGETMUTATIONTYPE
@@ -132,8 +143,31 @@ privately owned rights.
 #define pgagetmutationintegervalue_      PGAGETMUTATIONINTEGERVALUE
 #define pgasetmutationboundedflag_       PGASETMUTATIONBOUNDEDFLAG
 #define pgagetmutationboundedflag_       PGAGETMUTATIONBOUNDEDFLAG
+#define pgasetmutationbouncebackflag_    PGASETMUTATIONBOUNCEBACKFLAG
+#define pgagetmutationbouncebackflag_    PGAGETMUTATIONBOUNCEBACKFLAG
 #define pgasetmutationprob_              PGASETMUTATIONPROB
 #define pgagetmutationprob_              PGAGETMUTATIONPROB
+#define pgasetdevariant_                 PGASETDEVARIANT
+#define pgagetdevariant_                 PGAGETDEVARIANT
+#define pgasetdenumdiffs_                PGASETDENUMDIFFS
+#define pgagetdenumdiffs_                PGAGETDENUMDIFFS
+#define pgasetdescalefactor_             PGASETDESCALEFACTOR
+#define pgagetdescalefactor_             PGAGETDESCALEFACTOR
+#define pgasetdeauxfactor_               PGASETDEAUXFACTOR
+#define pgagetdeauxfactor_               PGAGETDEAUXFACTOR
+#define pgasetdecrossoverprob_           PGASETDECROSSOVERPROB
+#define pgagetdecrossoverprob_           PGAGETDECROSSOVERPROB
+#define pgasetdejitter_                  PGASETDEJITTER
+#define pgagetdejitter_                  PGAGETDEJITTER
+#define pgasetdeprobabilityeo_           PGASETDEPROBABILITYEO
+#define pgagetdeprobabilityeo_           PGAGETDEPROBABILITYEO
+#define pgasetdecrossovertype_           PGASETDECROSSOVERTYPE
+#define pgagetdecrossovertype_           PGAGETDECROSSOVERTYPE
+#define pgasetdedither_                  PGASETDEDITHER
+#define pgagetdedither_                  PGAGETDEDITHER
+#define pgasetdeditherperindividual_     PGASETDEDITHERPERINDIVIDUAL
+#define pgagetdeditherperindividual_     PGAGETDEDITHERPERINDIVIDUAL
+/* parallel.c */
 #define pgarungm_                        PGARUNGM
 #define pgaevaluate_                     PGAEVALUATE
 #define pgabuilddatatype_                PGABUILDDATATYPE
@@ -144,9 +178,11 @@ privately owned rights.
 #define pgagetnumprocs_                  PGAGETNUMPROCS
 #define pgasetcommunicator_              PGASETCOMMUNICATOR
 #define pgagetcommunicator_              PGAGETCOMMUNICATOR
+/* pga.c */
 #define pgarun_                          PGARUN
 #define pgarunmutationandcrossover_      PGARUNMUTATIONANDCROSSOVER
 #define pgarunmutationorcrossover_       PGARUNMUTATIONORCROSSOVER
+#define pgarunmutationonly_              PGARUNMUTATIONONLY
 #define pgaupdategeneration_             PGAUPDATEGENERATION
 #define pgagetdatatype_                  PGAGETDATATYPE
 #define pgagetoptdirflag_                PGAGETOPTDIRFLAG
@@ -154,16 +190,22 @@ privately owned rights.
 #define pgagetgaitervalue_               PGAGETGAITERVALUE
 #define pgasetmutationorcrossoverflag_   PGASETMUTATIONORCROSSOVERFLAG
 #define pgasetmutationandcrossoverflag_  PGASETMUTATIONANDCROSSOVERFLAG
+#define pgasetmutationonlyflag_          PGASETMUTATIONONLYFLAG
 #define pgagetmutationorcrossoverflag_   PGAGETMUTATIONORCROSSOVERFLAG
 #define pgagetmutationandcrossoverflag_  PGAGETMUTATIONANDCROSSOVERFLAG
+#define pgagetmutationonlyflag_          PGAGETMUTATIONONLYFLAG
+/* pop.c */
 #define pgasortpop_                      PGASORTPOP
 #define pgagetpopsize_                   PGAGETPOPSIZE
 #define pgagetnumreplacevalue_           PGAGETNUMREPLACEVALUE
 #define pgagetpopreplacetype_            PGAGETPOPREPLACETYPE
+#define pgagetrtrwindowsize_             PGAGETRTRWINDOWSIZE
 #define pgagetsortedpopindex_            PGAGETSORTEDPOPINDEX
 #define pgasetpopsize_                   PGASETPOPSIZE
 #define pgasetnumreplacevalue_           PGASETNUMREPLACEVALUE
 #define pgasetpopreplacetype_            PGASETPOPREPLACETYPE
+#define pgasetrtrwindowsize_             PGASETRTRWINDOWSIZE
+/* random.c */
 #define pgarandomflip_                   PGARANDOMFLIP
 #define pgarandominterval_               PGARANDOMINTERVAL
 #define pgarandom01_                     PGARANDOM01
@@ -171,6 +213,7 @@ privately owned rights.
 #define pgarandomgaussian_               PGARANDOMGAUSSIAN
 #define pgagetrandomseed_                PGAGETRANDOMSEED
 #define pgasetrandomseed_                PGASETRANDOMSEED
+/* real.c */
 #define pgasetrealallele_                PGASETREALALLELE
 #define pgagetrealallele_                PGAGETREALALLELE
 #define pgasetrealinitpercent_           PGASETREALINITPERCENT
@@ -178,6 +221,7 @@ privately owned rights.
 #define pgagetminrealinitvalue_          PGAGETMINREALINITVALUE
 #define pgagetmaxrealinitvalue_          PGAGETMAXREALINITVALUE
 #define pgagetrealinittype_              PGAGETREALINITTYPE
+/* report.c */
 #define pgaprintreport_                  PGAPRINTREPORT
 #define pgasetprintoptions_              PGASETPRINTOPTIONS
 #define pgasetprintfrequencyvalue_       PGASETPRINTFREQUENCYVALUE
@@ -186,6 +230,7 @@ privately owned rights.
 #define pgaprintindividual_              PGAPRINTINDIVIDUAL
 #define pgaprintstring_                  PGAPRINTSTRING
 #define pgaprintcontextvariable_         PGAPRINTCONTEXTVARIABLE
+/* restart.c */
 #define pgarestart_                      PGARESTART
 #define pgasetrestartflag_               PGASETRESTARTFLAG
 #define pgagetrestartflag_               PGAGETRESTARTFLAG
@@ -193,12 +238,22 @@ privately owned rights.
 #define pgagetrestartfrequencyvalue_     PGAGETRESTARTFREQUENCYVALUE
 #define pgasetrestartallelechangeprob_   PGASETRESTARTALLELECHANGEPROB
 #define pgagetrestartallelechangeprob_   PGAGETRESTARTALLELECHANGEPROB
+/* select.c */
 #define pgaselect_                       PGASELECT
 #define pgaselectnextindex_              PGASELECTNEXTINDEX
 #define pgasetselecttype_                PGASETSELECTTYPE
 #define pgagetselecttype_                PGAGETSELECTTYPE
 #define pgasetptournamentprob_           PGASETPTOURNAMENTPROB
 #define pgagetptournamentprob_           PGAGETPTOURNAMENTPROB
+#define pgasettournamentsize_            PGASETTOURNAMENTSIZE
+#define pgagettournamentsize_            PGAGETTOURNAMENTSIZE
+#define pgasettournamentwithreplacement_ PGASETTOURNAMENTWITHREPLACEMENT
+#define pgagettournamentwithreplacement_ PGAGETTOURNAMENTWITHREPLACEMENT
+#define pgasettruncationproportion_      PGASETTRUNCATIONPROPORTION
+#define pgagettruncationproportion_      PGAGETTRUNCATIONPROPORTION
+#define pgasetrandomizeselect_           PGASETRANDOMIZESELECT
+#define pgagetrandomizeselect_           PGAGETRANDOMIZESELECT
+/* stop.c */
 #define pgadone_                         PGADONE
 #define pgacheckstoppingconditions_      PGACHECKSTOPPINGCONDITIONS
 #define pgasetstoppingruletype_          PGASETSTOPPINGRULETYPE
@@ -207,6 +262,7 @@ privately owned rights.
 #define pgagetmaxgaitervalue_            PGAGETMAXGAITERVALUE
 #define pgasetmaxnochangevalue_          PGASETMAXNOCHANGEVALUE
 #define pgasetmaxsimilarityvalue_        PGASETMAXSIMILARITYVALUE
+/* system.c */
 #define pgaerror_                        PGAERROR
 #define pgadestroy_                      PGADESTROY
 #define pgagetmaxmachineintvalue_        PGAGETMAXMACHINEINTVALUE
@@ -215,7 +271,9 @@ privately owned rights.
 #define pgagetminmachinedoublevalue_     PGAGETMINMACHINEDOUBLEVALUE
 #define pgausage_                        PGAUSAGE
 #define pgaprintversionnumber_           PGAPRINTVERSIONNUMBER
+/* user.c */
 #define pgasetuserfunction_              PGASETUSERFUNCTION
+/* utility.c */
 #define pgamean_                         PGAMEAN
 #define pgastddev_                       PGASTDDEV
 #define pgaround_                        PGAROUND
@@ -223,29 +281,23 @@ privately owned rights.
 #define pgachecksum_                     PGACHECKSUM
 #define pgagetworstindex_                PGAGETWORSTINDEX
 #define pgagetbestindex_                 PGAGETBESTINDEX
-#define pgasettournamentsize_            PGASETTOURNAMENTSIZE
-#define pgagettournamentsize_            PGAGETTOURNAMENTSIZE
-#define pgasetrtrwindowsize_             PGASETRTRWINDOWSIZE
-#define pgagetrtrwindowsize_             PGAGETRTRWINDOWSIZE
-#define pgasettruncationproportion_      PGASETTRUNCATIONPROPORTION
-#define pgagettruncationproportion_      PGAGETTRUNCATIONPROPORTION
-#define pgasettournamentwithreplacement_ PGASETTOURNAMENTWITHREPLACEMENT
-#define pgagettournamentwithreplacement_ PGAGETTOURNAMENTWITHREPLACEMENT
-#define pgasetrandomizeselect_           PGASETRANDOMIZESELECT
-#define pgagetrandomizeselect_           PGAGETRANDOMIZESELECT
 
 #elif defined(FORTRANTWOUNDERSCORE)
+/* binary.c */
 #define pgasetbinaryallele_              _pgasetbinaryallele_
 #define pgagetbinaryallele_              _pgagetbinaryallele_
 #define pgasetbinaryinitprob_            _pgasetbinaryinitprob_
 #define pgagetbinaryinitprob_            _pgagetbinaryinitprob_
+/* char.c */
 #define pgasetcharacterallele_           _pgasetcharacterallele_
 #define pgagetcharacterallele_           _pgagetcharacterallele_
 #define pgasetcharacterinittype_         _pgasetcharacterinittype_
+/* create.c */
 #define pgacreate_                       _pgacreate_
 #define pgasetup_                        _pgasetup_
 #define pgasetrandominitflag_            _pgasetrandominitflag_
 #define pgagetrandominitflag_            _pgagetrandominitflag_
+/* cross.c */
 #define pgacrossover_                    _pgacrossover_
 #define pgagetcrossovertype_             _pgagetcrossovertype_
 #define pgagetcrossoverprob_             _pgagetcrossoverprob_
@@ -253,15 +305,18 @@ privately owned rights.
 #define pgasetcrossovertype_             _pgasetcrossovertype_
 #define pgasetcrossoverprob_             _pgasetcrossoverprob_
 #define pgasetuniformcrossoverprob_      _pgasetuniformcrossoverprob_
+/* debug.c */
 #define pgadebugprint_                   _pgadebugprint_
 #define pgasetdebuglevel_                _pgasetdebuglevel_
 #define pgacleardebuglevel_              _pgacleardebuglevel_
 #define pgasetdebuglevelbyname_          _pgasetdebuglevelbyname_
 #define pgacleardebuglevelbyname_        _pgacleardebuglevelbyname_
+/* duplcate.c */
 #define pgaduplicate_                    _pgaduplicate_
 #define pgachange_                       _pgachange_
 #define pgasetnoduplicatesflag_          _pgasetnoduplicatesflag_
 #define pgagetnoduplicatesflag_          _pgagetnoduplicatesflag_
+/* evaluate.c */
 #define pgasetevaluation_                _pgasetevaluation_
 #define pgagetevaluation_                _pgagetevaluation_
 #define pgasetevaluationuptodateflag_    _pgasetevaluationuptodateflag_
@@ -274,6 +329,7 @@ privately owned rights.
 #define pgagetintegerfromgraycode_       _pgagetintegerfromgraycode_
 #define pgaencodeintegerasbinary_        _pgaencodeintegerasbinary_
 #define pgaencodeintegerasgraycode_      _pgaencodeintegerasgraycode_
+/* fitness.c */
 #define pgafitness_                      _pgafitness_
 #define pgarank_                         _pgarank_
 #define pgagetfitness_                   _pgagetfitness_
@@ -285,7 +341,9 @@ privately owned rights.
 #define pgasetmaxfitnessrank_            _pgasetmaxfitnessrank_
 #define pgasetfitnesscmaxvalue_          _pgasetfitnesscmaxvalue_
 #define pgagetfitnesscmaxvalue_          _pgagetfitnesscmaxvalue_
+/* hamming.c */
 #define pgahammingdistance_              _pgahammingdistance_
+/* integer.c */
 #define pgasetintegerallele_             _pgasetintegerallele_
 #define pgagetintegerallele_             _pgagetintegerallele_
 #define pgasetintegerinitpermute_        _pgasetintegerinitpermute_
@@ -293,6 +351,7 @@ privately owned rights.
 #define pgagetintegerinittype_           _pgagetintegerinittype_
 #define pgagetminintegerinitvalue_       _pgagetminintegerinitvalue_
 #define pgagetmaxintegerinitvalue_       _pgagetmaxintegerinitvalue_
+/* mutation.c */
 #define pgamutate_                       _pgamutate_
 #define pgasetmutationtype_              _pgasetmutationtype_
 #define pgagetmutationtype_              _pgagetmutationtype_
@@ -302,8 +361,31 @@ privately owned rights.
 #define pgagetmutationintegervalue_      _pgagetmutationintegervalue_
 #define pgasetmutationboundedflag_       _pgasetmutationboundedflag_
 #define pgagetmutationboundedflag_       _pgagetmutationboundedflag_
+#define pgasetmutationbouncebackflag_    _pgasetmutationbouncebackflag_
+#define pgagetmutationbouncebackflag_    _pgagetmutationbouncebackflag_
 #define pgasetmutationprob_              _pgasetmutationprob_
 #define pgagetmutationprob_              _pgagetmutationprob_
+#define pgasetdevariant_                 _pgasetdevariant_
+#define pgagetdevariant_                 _pgagetdevariant_
+#define pgasetdenumdiffs_                _pgasetdenumdiffs_
+#define pgagetdenumdiffs_                _pgagetdenumdiffs_
+#define pgasetdescalefactor_             _pgasetdescalefactor_
+#define pgagetdescalefactor_             _pgagetdescalefactor_
+#define pgasetdeauxfactor_               _pgasetdeauxfactor_
+#define pgagetdeauxfactor_               _pgagetdeauxfactor_
+#define pgasetdecrossoverprob_           _pgasetdecrossoverprob_
+#define pgagetdecrossoverprob_           _pgagetdecrossoverprob_
+#define pgasetdejitter_                  _pgasetdejitter_
+#define pgagetdejitter_                  _pgagetdejitter_
+#define pgasetdeprobabilityeo_           _pgasetdeprobabilityeo_
+#define pgagetdeprobabilityeo_           _pgagetdeprobabilityeo_
+#define pgasetdecrossovertype_           _pgasetdecrossovertype_
+#define pgagetdecrossovertype_           _pgagetdecrossovertype_
+#define pgasetdedither_                  _pgasetdedither_
+#define pgagetdedither_                  _pgagetdedither_
+#define pgasetdeditherperindividual_     _pgasetdeditherperindividual_
+#define pgagetdeditherperindividual_     _pgagetdeditherperindividual_
+/* parallel.c */
 #define pgarungm_                        _pgarungm_
 #define pgaevaluate_                     _pgaevaluate_
 #define pgabuilddatatype_                _pgabuilddatatype_
@@ -314,9 +396,11 @@ privately owned rights.
 #define pgagetnumprocs_                  _pgagetnumprocs_
 #define pgasetcommunicator_              _pgasetcommunicator_
 #define pgagetcommunicator_              _pgagetcommunicator_
+/* pga.c */
 #define pgarun_                          _pgarun_
 #define pgarunmutationandcrossover_      _pgarunmutationandcrossover_
 #define pgarunmutationorcrossover_       _pgarunmutationorcrossover_
+#define pgarunmutationonly_              _pgarunmutationonly_
 #define pgaupdategeneration_             _pgaupdategeneration_
 #define pgagetdatatype_                  _pgagetdatatype_
 #define pgagetoptdirflag_                _pgagetoptdirflag_
@@ -324,16 +408,22 @@ privately owned rights.
 #define pgagetgaitervalue_               _pgagetgaitervalue_
 #define pgasetmutationorcrossoverflag_   _pgasetmutationorcrossoverflag_
 #define pgasetmutationandcrossoverflag_  _pgasetmutationandcrossoverflag_
+#define pgasetmutationonlyflag_          _pgasetmutationonlyflag_
 #define pgagetmutationorcrossoverflag_   _pgagetmutationorcrossoverflag_
 #define pgagetmutationandcrossoverflag_  _pgagetmutationandcrossoverflag_
+#define pgagetmutationonlyflag_          _pgagetmutationonlyflag_
+/* pop.c */
 #define pgasortpop_                      _pgasortpop_
 #define pgagetpopsize_                   _pgagetpopsize_
 #define pgagetnumreplacevalue_           _pgagetnumreplacevalue_
 #define pgagetpopreplacetype_            _pgagetpopreplacetype_
+#define pgagetrtrwindowsize_             _pgagetrtrwindowsize_
 #define pgagetsortedpopindex_            _pgagetsortedpopindex_
 #define pgasetpopsize_                   _pgasetpopsize_
 #define pgasetnumreplacevalue_           _pgasetnumreplacevalue_
 #define pgasetpopreplacetype_            _pgasetpopreplacetype_
+#define pgasetrtrwindowsize_             _pgasetrtrwindowsize_
+/* random.c */
 #define pgarandomflip_                   _pgarandomflip_
 #define pgarandominterval_               _pgarandominterval_
 #define pgarandom01_                     _pgarandom01_
@@ -341,6 +431,7 @@ privately owned rights.
 #define pgarandomgaussian_               _pgarandomgaussian_
 #define pgagetrandomseed_                _pgagetrandomseed_
 #define pgasetrandomseed_                _pgasetrandomseed_
+/* real.c */
 #define pgasetrealallele_                _pgasetrealallele_
 #define pgagetrealallele_                _pgagetrealallele_
 #define pgasetrealinitpercent_           _pgasetrealinitpercent_
@@ -348,6 +439,7 @@ privately owned rights.
 #define pgagetminrealinitvalue_          _pgagetminrealinitvalue_
 #define pgagetmaxrealinitvalue_          _pgagetmaxrealinitvalue_
 #define pgagetrealinittype_              _pgagetrealinittype_
+/* report.c */
 #define pgaprintreport_                  _pgaprintreport_
 #define pgasetprintoptions_              _pgasetprintoptions_
 #define pgasetprintfrequencyvalue_       _pgasetprintfrequencyvalue_
@@ -356,6 +448,7 @@ privately owned rights.
 #define pgaprintindividual_              _pgaprintindividual_
 #define pgaprintstring_                  _pgaprintstring_
 #define pgaprintcontextvariable_         _pgaprintcontextvariable_
+/* restart.c */
 #define pgarestart_                      _pgarestart_
 #define pgasetrestartflag_               _pgasetrestartflag_
 #define pgagetrestartflag_               _pgagetrestartflag_
@@ -363,12 +456,22 @@ privately owned rights.
 #define pgagetrestartfrequencyvalue_     _pgagetrestartfrequencyvalue_
 #define pgasetrestartallelechangeprob_   _pgasetrestartallelechangeprob_
 #define pgagetrestartallelechangeprob_   _pgagetrestartallelechangeprob_
+/* select.c */
 #define pgaselect_                       _pgaselect_
 #define pgaselectnextindex_              _pgaselectnextindex_
 #define pgasetselecttype_                _pgasetselecttype_
 #define pgagetselecttype_                _pgagetselecttype_
 #define pgasetptournamentprob_           _pgasetptournamentprob_
 #define pgagetptournamentprob_           _pgagetptournamentprob_
+#define pgasettournamentsize_            _pgasettournamentsize_
+#define pgagettournamentsize_            _pgagettournamentsize_
+#define pgasettournamentwithreplacement_ _pgasettournamentwithreplacement_
+#define pgagettournamentwithreplacement_ _pgagettournamentwithreplacement_
+#define pgasettruncationproportion_      _pgasettruncationproportion_
+#define pgagettruncationproportion_      _pgagettruncationproportion_
+#define pgasetrandomizeselect_           _pgasetrandomizeselect_
+#define pgagetrandomizeselect_           _pgagetrandomizeselect_
+/* stop.c */
 #define pgadone_                         _pgadone_
 #define pgacheckstoppingconditions_      _pgacheckstoppingconditions_
 #define pgasetstoppingruletype_          _pgasetstoppingruletype_
@@ -377,6 +480,7 @@ privately owned rights.
 #define pgagetmaxgaitervalue_            _pgagetmaxgaitervalue_
 #define pgasetmaxnochangevalue_          _pgasetmaxnochangevalue_
 #define pgasetmaxsimilarityvalue_        _pgasetmaxsimilarityvalue_
+/* system.c */
 #define pgaerror_                        _pgaerror_
 #define pgadestroy_                      _pgadestroy_
 #define pgagetmaxmachineintvalue_        _pgagetmaxmachineintvalue_
@@ -385,7 +489,9 @@ privately owned rights.
 #define pgagetminmachinedoublevalue_     _pgagetminmachinedoublevalue_
 #define pgausage_                        _pgausage_
 #define pgaprintversionnumber_           _pgaprintversionnumber_
+/* user.c */
 #define pgasetuserfunction_              _pgasetuserfunction_
+/* utility.c */
 #define pgamean_                         _pgamean_
 #define pgastddev_                       _pgastddev_
 #define pgaround_                        _pgaround_
@@ -393,29 +499,23 @@ privately owned rights.
 #define pgachecksum_                     _pgachecksum_
 #define pgagetworstindex_                _pgagetworstindex_
 #define pgagetbestindex_                 _pgagetbestindex_
-#define pgasettournamentsize_            _pgasettournamentsize_
-#define pgagettournamentsize_            _pgagettournamentsize_
-#define pgasetrtrwindowsize_             _pgasetrtrwindowsize_
-#define pgagetrtrwindowsize_             _pgagetrtrwindowsize_
-#define pgasettruncationproportion_      _pgasettruncationproportion_
-#define pgagettruncationproportion_      _pgagettruncationproportion_
-#define pgasettournamentwithreplacement_ _pgasettournamentwithreplacement_
-#define pgagettournamentwithreplacement_ _pgagettournamentwithreplacement_
-#define pgasetrandomizeselect_           _pgasetrandomizeselect_
-#define pgagetrandomizeselect_           _pgagetrandomizeselect_
 
 #elif !defined(FORTRANUNDERSCORE)
+/* binary.c */
 #define pgasetbinaryallele_              pgasetbinaryallele
 #define pgagetbinaryallele_              pgagetbinaryallele
 #define pgasetbinaryinitprob_            pgasetbinaryinitprob
 #define pgagetbinaryinitprob_            pgagetbinaryinitprob
+/* char.c */
 #define pgasetcharacterallele_           pgasetcharacterallele
 #define pgagetcharacterallele_           pgagetcharacterallele
 #define pgasetcharacterinittype_         pgasetcharacterinittype
+/* create.c */
 #define pgacreate_                       pgacreate
 #define pgasetup_                        pgasetup
 #define pgasetrandominitflag_            pgasetrandominitflag
 #define pgagetrandominitflag_            pgagetrandominitflag
+/* cross.c */
 #define pgacrossover_                    pgacrossover
 #define pgagetcrossovertype_             pgagetcrossovertype
 #define pgagetcrossoverprob_             pgagetcrossoverprob
@@ -423,15 +523,18 @@ privately owned rights.
 #define pgasetcrossovertype_             pgasetcrossovertype
 #define pgasetcrossoverprob_             pgasetcrossoverprob
 #define pgasetuniformcrossoverprob_      pgasetuniformcrossoverprob
+/* debug.c */
 #define pgadebugprint_                   pgadebugprint
 #define pgasetdebuglevel_                pgasetdebuglevel
 #define pgacleardebuglevel_              pgacleardebuglevel
 #define pgasetdebuglevelbyname_          pgasetdebuglevelbyname
 #define pgacleardebuglevelbyname_        pgacleardebuglevelbyname
+/* duplcate.c */
 #define pgaduplicate_                    pgaduplicate
 #define pgachange_                       pgachange
 #define pgasetnoduplicatesflag_          pgasetnoduplicatesflag
 #define pgagetnoduplicatesflag_          pgagetnoduplicatesflag
+/* evaluate.c */
 #define pgasetevaluation_                pgasetevaluation
 #define pgagetevaluation_                pgagetevaluation
 #define pgasetevaluationuptodateflag_    pgasetevaluationuptodateflag
@@ -444,6 +547,7 @@ privately owned rights.
 #define pgagetintegerfromgraycode_       pgagetintegerfromgraycode
 #define pgaencodeintegerasbinary_        pgaencodeintegerasbinary
 #define pgaencodeintegerasgraycode_      pgaencodeintegerasgraycode
+/* fitness.c */
 #define pgafitness_                      pgafitness
 #define pgarank_                         pgarank
 #define pgagetfitness_                   pgagetfitness
@@ -455,7 +559,9 @@ privately owned rights.
 #define pgasetmaxfitnessrank_            pgasetmaxfitnessrank
 #define pgasetfitnesscmaxvalue_          pgasetfitnesscmaxvalue
 #define pgagetfitnesscmaxvalue_          pgagetfitnesscmaxvalue
+/* hamming.c */
 #define pgahammingdistance_              pgahammingdistance
+/* integer.c */
 #define pgasetintegerallele_             pgasetintegerallele
 #define pgagetintegerallele_             pgagetintegerallele
 #define pgasetintegerinitpermute_        pgasetintegerinitpermute
@@ -463,6 +569,7 @@ privately owned rights.
 #define pgagetintegerinittype_           pgagetintegerinittype
 #define pgagetminintegerinitvalue_       pgagetminintegerinitvalue
 #define pgagetmaxintegerinitvalue_       pgagetmaxintegerinitvalue
+/* mutation.c */
 #define pgamutate_                       pgamutate
 #define pgasetmutationtype_              pgasetmutationtype
 #define pgagetmutationtype_              pgagetmutationtype
@@ -472,8 +579,31 @@ privately owned rights.
 #define pgagetmutationintegervalue_      pgagetmutationintegervalue
 #define pgasetmutationboundedflag_       pgasetmutationboundedflag
 #define pgagetmutationboundedflag_       pgagetmutationboundedflag
+#define pgasetmutationbouncebackflag_    pgasetmutationbouncebackflag
+#define pgagetmutationbouncebackflag_    pgagetmutationbouncebackflag
 #define pgasetmutationprob_              pgasetmutationprob
 #define pgagetmutationprob_              pgagetmutationprob
+#define pgasetdevariant_                 pgasetdevariant
+#define pgagetdevariant_                 pgagetdevariant
+#define pgasetdenumdiffs_                pgasetdenumdiffs
+#define pgagetdenumdiffs_                pgagetdenumdiffs
+#define pgasetdescalefactor_             pgasetdescalefactor
+#define pgagetdescalefactor_             pgagetdescalefactor
+#define pgasetdeauxfactor_               pgasetdeauxfactor
+#define pgagetdeauxfactor_               pgagetdeauxfactor
+#define pgasetdecrossoverprob_           pgasetdecrossoverprob
+#define pgagetdecrossoverprob_           pgagetdecrossoverprob
+#define pgasetdejitter_                  pgasetdejitter
+#define pgagetdejitter_                  pgagetdejitter
+#define pgasetdeprobabilityeo_           pgasetdeprobabilityeo
+#define pgagetdeprobabilityeo_           pgagetdeprobabilityeo
+#define pgasetdecrossovertype_           pgasetdecrossovertype
+#define pgagetdecrossovertype_           pgagetdecrossovertype
+#define pgasetdedither_                  pgasetdedither
+#define pgagetdedither_                  pgagetdedither
+#define pgasetdeditherperindividual_     pgasetdeditherperindividual
+#define pgagetdeditherperindividual_     pgagetdeditherperindividual
+/* parallel.c */
 #define pgarungm_                        pgarungm
 #define pgaevaluate_                     pgaevaluate
 #define pgabuilddatatype_                pgabuilddatatype
@@ -484,9 +614,11 @@ privately owned rights.
 #define pgagetnumprocs_                  pgagetnumprocs
 #define pgasetcommunicator_              pgasetcommunicator
 #define pgagetcommunicator_              pgagetcommunicator
+/* pga.c */
 #define pgarun_                          pgarun
 #define pgarunmutationandcrossover_      pgarunmutationandcrossover
 #define pgarunmutationorcrossover_       pgarunmutationorcrossover
+#define pgarunmutationonly_              pgarunmutationonly
 #define pgaupdategeneration_             pgaupdategeneration
 #define pgagetdatatype_                  pgagetdatatype
 #define pgagetoptdirflag_                pgagetoptdirflag
@@ -494,16 +626,22 @@ privately owned rights.
 #define pgagetgaitervalue_               pgagetgaitervalue
 #define pgasetmutationorcrossoverflag_   pgasetmutationorcrossoverflag
 #define pgasetmutationandcrossoverflag_  pgasetmutationandcrossoverflag
+#define pgasetmutationonlyflag_          pgasetmutationonlyflag
 #define pgagetmutationorcrossoverflag_   pgagetmutationorcrossoverflag
 #define pgagetmutationandcrossoverflag_  pgagetmutationandcrossoverflag
+#define pgagetmutationonlyflag_          pgagetmutationonlyflag
+/* pop.c */
 #define pgasortpop_                      pgasortpop
 #define pgagetpopsize_                   pgagetpopsize
 #define pgagetnumreplacevalue_           pgagetnumreplacevalue
 #define pgagetpopreplacetype_            pgagetpopreplacetype
+#define pgagetrtrwindowsize_             pgagetrtrwindowsize
 #define pgagetsortedpopindex_            pgagetsortedpopindex
 #define pgasetpopsize_                   pgasetpopsize
 #define pgasetnumreplacevalue_           pgasetnumreplacevalue
 #define pgasetpopreplacetype_            pgasetpopreplacetype
+#define pgasetrtrwindowsize_             pgasetrtrwindowsize
+/* random.c */
 #define pgarandomflip_                   pgarandomflip
 #define pgarandominterval_               pgarandominterval
 #define pgarandom01_                     pgarandom01
@@ -511,6 +649,7 @@ privately owned rights.
 #define pgarandomgaussian_               pgarandomgaussian
 #define pgagetrandomseed_                pgagetrandomseed
 #define pgasetrandomseed_                pgasetrandomseed
+/* real.c */
 #define pgasetrealallele_                pgasetrealallele
 #define pgagetrealallele_                pgagetrealallele
 #define pgasetrealinitpercent_           pgasetrealinitpercent
@@ -518,6 +657,7 @@ privately owned rights.
 #define pgagetminrealinitvalue_          pgagetminrealinitvalue
 #define pgagetmaxrealinitvalue_          pgagetmaxrealinitvalue
 #define pgagetrealinittype_              pgagetrealinittype
+/* report.c */
 #define pgaprintreport_                  pgaprintreport
 #define pgasetprintoptions_              pgasetprintoptions
 #define pgasetprintfrequencyvalue_       pgasetprintfrequencyvalue
@@ -526,6 +666,7 @@ privately owned rights.
 #define pgaprintindividual_              pgaprintindividual
 #define pgaprintstring_                  pgaprintstring
 #define pgaprintcontextvariable_         pgaprintcontextvariable
+/* restart.c */
 #define pgarestart_                      pgarestart
 #define pgasetrestartflag_               pgasetrestartflag
 #define pgagetrestartflag_               pgagetrestartflag
@@ -533,12 +674,22 @@ privately owned rights.
 #define pgagetrestartfrequencyvalue_     pgagetrestartfrequencyvalue
 #define pgasetrestartallelechangeprob_   pgasetrestartallelechangeprob
 #define pgagetrestartallelechangeprob_   pgagetrestartallelechangeprob
+/* select.c */
 #define pgaselect_                       pgaselect
 #define pgaselectnextindex_              pgaselectnextindex
 #define pgasetselecttype_                pgasetselecttype
 #define pgagetselecttype_                pgagetselecttype
 #define pgasetptournamentprob_           pgasetptournamentprob
 #define pgagetptournamentprob_           pgagetptournamentprob
+#define pgasettournamentsize_            pgasettournamentsize
+#define pgagettournamentsize_            pgagettournamentsize
+#define pgasettournamentwithreplacement_ pgasettournamentwithreplacement
+#define pgagettournamentwithreplacement_ pgagettournamentwithreplacement
+#define pgasettruncationproportion_      pgasettruncationproportion
+#define pgagettruncationproportion_      pgagettruncationproportion
+#define pgasetrandomizeselect_           pgasetrandomizeselect
+#define pgagetrandomizeselect_           pgagetrandomizeselect
+/* stop.c */
 #define pgadone_                         pgadone
 #define pgacheckstoppingconditions_      pgacheckstoppingconditions
 #define pgasetstoppingruletype_          pgasetstoppingruletype
@@ -547,6 +698,7 @@ privately owned rights.
 #define pgagetmaxgaitervalue_            pgagetmaxgaitervalue
 #define pgasetmaxnochangevalue_          pgasetmaxnochangevalue
 #define pgasetmaxsimilarityvalue_        pgasetmaxsimilarityvalue
+/* system.c */
 #define pgaerror_                        pgaerror
 #define pgadestroy_                      pgadestroy
 #define pgagetmaxmachineintvalue_        pgagetmaxmachineintvalue
@@ -555,7 +707,9 @@ privately owned rights.
 #define pgagetminmachinedoublevalue_     pgagetminmachinedoublevalue
 #define pgausage_                        pgausage
 #define pgaprintversionnumber_           pgaprintversionnumber
+/* user.c */
 #define pgasetuserfunction_              pgasetuserfunction
+/* utility.c */
 #define pgamean_                         pgamean
 #define pgastddev_                       pgastddev
 #define pgaround_                        pgaround
@@ -563,32 +717,26 @@ privately owned rights.
 #define pgachecksum_                     pgachecksum
 #define pgagetworstindex_                pgagetworstindex
 #define pgagetbestindex_                 pgagetbestindex
-#define pgasettournamentsize_            pgasettournamentsize
-#define pgagettournamentsize_            pgagettournamentsize
-#define pgasetrtrwindowsize_             pgasetrtrwindowsize
-#define pgagetrtrwindowsize_             pgagetrtrwindowsize
-#define pgasettruncationproportion_      pgasettruncationproportion
-#define pgagettruncationproportion_      pgagettruncationproportion
-#define pgasettournamentwithreplacement_ pgasettournamentwithreplacement
-#define pgagettournamentwithreplacement_ pgagettournamentwithreplacement
-#define pgasetrandomizeselect_           pgasetrandomizeselect
-#define pgagetrandomizeselect_           pgagetrandomizeselect
 #endif
 
+/* binary.c */
 void pgasetbinaryallele_(PGAContext **ftx, int *p, int *pop, int *i,
      int *val);
 int pgagetbinaryallele_(PGAContext **ftx, int *p, int *pop, int *i);
 void pgasetbinaryinitprob_(PGAContext **ftx, double *probability);
 double pgagetbinaryinitprob_(PGAContext **ftx);
+/* char.c */
 void pgasetcharacterallele_(PGAContext **ftx, int *p, int *pop, int *i,
      char *val);
 void pgagetcharacterallele_(char *retval_ptr, int retval_len, PGAContext **ftx,
      int *p, int *pop, int *i);
 void pgasetcharacterinittype_(PGAContext **ftx, int *value);
+/* create.c */
 unsigned long pgacreate_(int *datatype, int *len, int *maxormin);
 void pgasetup_(PGAContext **ftx);
 void pgasetrandominitflag_(PGAContext **ftx, int *RandomBoolean);
 int pgagetrandominitflag_(PGAContext **ftx);
+/* cross.c */
 void pgacrossover_(PGAContext **ftx, int *m1, int *m2, int *oldpop, int *t1,
      int *t2, int *newpop);
 int pgagetcrossovertype_(PGAContext **ftx);
@@ -598,16 +746,19 @@ void pgasetcrossovertype_(PGAContext **ftx, int *crossover_type);
 void pgasetcrossoverprob_(PGAContext **ftx, double *crossover_prob);
 void pgasetuniformcrossoverprob_(PGAContext **ftx,
      double *uniform_cross_prob);
+/* debug.c */
 void pgadebugprint_(PGAContext **ftx, int *level, char *funcname, char *msg,
      int *datatype, void *data, int len1, int len2);
 void pgasetdebuglevel_(PGAContext **ftx, int *level);
 void pgacleardebuglevel_(PGAContext **ftx, int *level);
 void pgasetdebuglevelbyname_(PGAContext **ftx, char *name, int len);
 void pgacleardebuglevelbyname_(PGAContext **ftx, char *name, int len);
+/* duplcate.c */
 int pgaduplicate_(PGAContext **ftx, int *j, int *pop1, int *pop2, int *n);
 void pgachange_(PGAContext **ftx, int *j, int *popindex);
 void pgasetnoduplicatesflag_(PGAContext **ftx, int *no_dup);
 int pgagetnoduplicatesflag_(PGAContext **ftx);
+/* evaluate.c */
 void pgasetevaluation_( PGAContext **ftx, int *p, int *pop, double *val );
 double pgagetevaluation_(PGAContext **ftx, int *p, int *pop);
 void pgasetevaluationuptodateflag_(PGAContext **ftx, int *p, int *pop, int *status);
@@ -630,6 +781,7 @@ void pgaencodeintegerasbinary_(PGAContext **ftx, int *p, int *pop,
      int*start, int *end, int *value);
 void pgaencodeintegerasgraycode_(PGAContext **ftx, int *p, int *pop,
      int*start, int *end, int *value);
+/* fitness.c */
 void pgafitness_(PGAContext **ftx, int *popindex);
 int pgarank_(PGAContext **ftx, int *p, int *order, int *n);
 double pgagetfitness_(PGAContext **ftx, int *p, int *pop);
@@ -641,7 +793,9 @@ void pgasetfitnessmintype_(PGAContext **ftx, int *fitness_type);
 void pgasetmaxfitnessrank_(PGAContext **ftx, double *fitness_rank_max);
 void pgasetfitnesscmaxvalue_(PGAContext **ftx, double *val);
 double pgagetfitnesscmaxvalue_(PGAContext **ftx);
+/* hamming.c */
 double pgahammingdistance_(PGAContext **ftx, int *popindex);
+/* integer.c */
 void pgasetintegerallele_(PGAContext **ftx, int *p, int *pop, int *i,
      int *val);
 int pgagetintegerallele_(PGAContext **ftx, int *p, int *pop, int *i);
@@ -650,6 +804,7 @@ void pgasetintegerinitrange_ (PGAContext **ftx, int *min, int *max);
 int pgagetintegerinittype_(PGAContext **ftx);
 int pgagetminintegerinitvalue_ (PGAContext **ftx, int *i);
 int pgagetmaxintegerinitvalue_ (PGAContext **ftx, int *i);
+/* mutation.c */
 void pgamutate_(PGAContext **ftx, int *p, int *pop);
 void pgasetmutationtype_(PGAContext **ftx, int *mutation_type);
 int pgagetmutationtype_(PGAContext **ftx);
@@ -659,8 +814,31 @@ void pgasetmutationintegervalue_(PGAContext **ftx, int *val);
 int pgagetmutationintegervalue_(PGAContext **ftx);
 void pgasetmutationboundedflag_(PGAContext **ftx, int *val);
 int pgagetmutationboundedflag_(PGAContext **ftx);
+void pgasetmutationbouncebackflag_(PGAContext **ftx, int *val);
+int pgagetmutationbouncebackflag_(PGAContext **ftx);
 void pgasetmutationprob_(PGAContext **ftx, double *mutation_prob);
 double pgagetmutationprob_(PGAContext **ftx);
+void pgasetdevariant_ (PGAContext **ftx, int *val);
+int pgagetdevariant_ (PGAContext **ftx);
+void pgasetdenumdiffs_ (PGAContext **ftx, int *val);
+int pgagetdenumdiffs_ (PGAContext **ftx);
+void pgasetdescalefactor_ (PGAContext **ftx, double *val);
+double pgagetdescalefactor_ (PGAContext **ftx);
+void pgasetdeauxfactor_ (PGAContext **ftx, double *val);
+double pgagetdeauxfactor_ (PGAContext **ftx);
+void pgasetdecrossoverprob_ (PGAContext **ftx, double *val);
+double pgagetdecrossoverprob_ (PGAContext **ftx);
+void pgasetdejitter_ (PGAContext **ftx, double *val);
+double pgagetdejitter_ (PGAContext **ftx);
+void pgasetdeprobabilityeo_ (PGAContext **ftx, double *val);
+double pgagetdeprobabilityeo_ (PGAContext **ftx);
+void pgasetdecrossovertype_ (PGAContext **ftx, int *val);
+int pgagetdecrossovertype_ (PGAContext **ftx);
+void pgasetdedither_ (PGAContext **ftx, double *val);
+double pgagetdedither_ (PGAContext **ftx);
+void pgasetdeditherperindividual_ (PGAContext **ftx, int *val);
+int pgagetdeditherperindividual_ (PGAContext **ftx);
+/* parallel.c */
 void pgarungm_(PGAContext **ftx, double (*f)(PGAContext *, int, int),
      MPI_Comm *comm);
 void pgaevaluate_(PGAContext **ftx, int *pop,
@@ -673,11 +851,13 @@ int pgagetrank_(PGAContext **ftx, MPI_Comm *comm);
 int pgagetnumprocs_(PGAContext **ftx, MPI_Comm *comm);
 void pgasetcommunicator_(PGAContext **ftx, MPI_Comm *comm);
 MPI_Comm pgagetcommunicator_(PGAContext **ftx);
+/* pga.c */
 void pgarun_(PGAContext **ftx,
      double (*evaluate)(PGAContext *c, int p, int pop));
 void pgarunmutationandcrossover_(PGAContext **ftx, int *oldpop,
      int *newpop);
 void pgarunmutationorcrossover_(PGAContext **ftx, int *oldpop, int *newpop);
+void pgarunmutationonly_(PGAContext **ftx, int *oldpop, int *newpop);
 void pgaupdategeneration_(PGAContext **ftx, MPI_Comm *comm);
 int pgagetdatatype_(PGAContext **ftx);
 int pgagetoptdirflag_(PGAContext **ftx);
@@ -685,16 +865,22 @@ int pgagetstringlength_(PGAContext **ftx);
 int pgagetgaitervalue_(PGAContext **ftx);
 void pgasetmutationorcrossoverflag_(PGAContext **ftx, int *flag);
 void pgasetmutationandcrossoverflag_(PGAContext **ftx, int *flag);
+void pgasetmutationonlyflag_(PGAContext **ftx, int *flag);
 int pgagetmutationorcrossoverflag_(PGAContext **ftx);
 int pgagetmutationandcrossoverflag_(PGAContext **ftx);
+int pgagetmutationonlyflag_(PGAContext **ftx);
+/* pop.c */
 void pgasortpop_(PGAContext **ftx, int *pop);
 int pgagetpopsize_(PGAContext **ftx);
 int pgagetnumreplacevalue_(PGAContext **ftx);
 int pgagetpopreplacetype_(PGAContext **ftx);
+int pgagetrtrwindowsize_(PGAContext **ftx);
 int pgagetsortedpopindex_(PGAContext **ftx, int *n);
 void pgasetpopsize_(PGAContext **ftx, int *popsize);
 void pgasetnumreplacevalue_(PGAContext **ftx, int *pop_replace);
 void pgasetpopreplacetype_(PGAContext **ftx, int *pop_replace);
+void pgasetrtrwindowsize_(PGAContext **ftx, int *size);
+/* random.c */
 int pgarandomflip_(PGAContext **ftx, double *p);
 int pgarandominterval_(PGAContext **ftx, int *start, int *end);
 double pgarandom01_(PGAContext **ftx, int *newseed);
@@ -702,6 +888,7 @@ double pgarandomuniform_(PGAContext **ftx, double *start, double *end);
 double pgarandomgaussian_(PGAContext **ftx, double *mean, double *sigma);
 int pgagetrandomseed_(PGAContext **ftx);
 void pgasetrandomseed_(PGAContext **ftx, int *seed);
+/* real.c */
 void pgasetrealallele_(PGAContext **ftx, int *p, int *pop, int *i,
      double *val);
 double pgagetrealallele_(PGAContext **ftx, int *p, int *pop, int *i);
@@ -710,6 +897,7 @@ void pgasetrealinitrange_ (PGAContext **ftx, double *min, double *max);
 double pgagetminrealinitvalue_(PGAContext **ftx, int *i);
 double pgagetmaxrealinitvalue_(PGAContext **ftx, int *i);
 int pgagetrealinittype_(PGAContext **ftx);
+/* report.c */
 void pgaprintreport_(PGAContext **ftx, char *name, int *pop, int len);
 void pgasetprintoptions_(PGAContext **ftx, int *option);
 void pgasetprintfrequencyvalue_(PGAContext **ftx, int *print_freq);
@@ -720,6 +908,7 @@ void pgaprintindividual_ (PGAContext **ftx, char *name, int *p,
 void pgaprintstring_ (PGAContext **ftx, char *name, int *p,
      int *pop, int len);
 void pgaprintcontextvariable_(PGAContext **ftx, char *name, int len);
+/* restart.c */
 void pgarestart_(PGAContext **ftx, int *source_pop, int *dest_pop);
 void pgasetrestartflag_(PGAContext **ftx, int *val);
 int pgagetrestartflag_(PGAContext **ftx);
@@ -727,12 +916,22 @@ void pgasetrestartfrequencyvalue_(PGAContext **ftx, int *numiter);
 int pgagetrestartfrequencyvalue_(PGAContext **ftx);
 void pgasetrestartallelechangeprob_(PGAContext **ftx, double *prob);
 double pgagetrestartallelechangeprob_(PGAContext **ftx);
+/* select.c */
 void pgaselect_(PGAContext **ftx, int *popix);
 int pgaselectnextindex_(PGAContext **ftx, int *pop);
 void pgasetselecttype_(PGAContext **ftx, int *select_type);
 int pgagetselecttype_(PGAContext **ftx);
 void pgasetptournamentprob_(PGAContext **ftx, double *ptournament_prob);
 double pgagetptournamentprob_(PGAContext **ftx);
+void pgasettournamentsize_(PGAContext **ftx, int *tournament_size);
+int pgagettournamentsize_(PGAContext **ftx);
+void pgasettournamentwithreplacement_(PGAContext **ftx, int *value);
+int pgagettournamentwithreplacement_(PGAContext **ftx);
+void pgasettruncationproportion_(PGAContext **ftx, double *proportion);
+double pgagettruncationproportion_(PGAContext **ftx);
+void pgasetrandomizeselect_(PGAContext **ftx, int *value);
+int pgagetrandomizeselect_(PGAContext **ftx);
+/* stop.c */
 int pgadone_(PGAContext **ftx, MPI_Comm *comm);
 int pgacheckstoppingconditions_(PGAContext **ftx);
 void pgasetstoppingruletype_(PGAContext **ftx, int *stoprule);
@@ -741,6 +940,7 @@ void pgasetmaxgaitervalue_(PGAContext **ftx, int *maxiter);
 int pgagetmaxgaitervalue_(PGAContext **ftx);
 void pgasetmaxnochangevalue_(PGAContext **ftx, int *max_no_change);
 void pgasetmaxsimilarityvalue_(PGAContext **ftx, int *max_similarity);
+/* system.c */
 void pgaerror_(PGAContext **ftx, char *msg, int *level, int *datatype,
      void **data, int len);
 void pgadestroy_(PGAContext **ftx);
@@ -750,7 +950,9 @@ double pgagetmaxmachinedoublevalue_(PGAContext **ftx);
 double pgagetminmachinedoublevalue_(PGAContext **ftx);
 void pgausage_(PGAContext **ftx);
 void pgaprintversionnumber_(PGAContext **ftx);
+/* user.c */
 void pgasetuserfunction_(PGAContext **ftx, int *constant, void *f);
+/* utility.c */
 double pgamean_(PGAContext **ftx, double *a, int *n);
 double pgastddev_(PGAContext **ftx, double *a, int *n, double *m);
 int pgaround_(PGAContext **ftx, double *x);
@@ -758,17 +960,8 @@ void pgacopyindividual_(PGAContext **ftx, int *i, int *p1, int *j, int *p2);
 int pgachecksum_(PGAContext **ftx, int *p, int *pop);
 int pgagetworstindex_(PGAContext **ftx, int *pop);
 int pgagetbestindex_(PGAContext **ftx, int *pop);
-void pgasettournamentsize_(PGAContext **ftx, int *size);
-int  pgagettournamentsize_(PGAContext **ftx);
-void pgasetrtrwindowsize_(PGAContext **ftx, int *size);
-int  pgagetrtrwindowsize_(PGAContext **ftx);
-void   pgasettruncationproportion_(PGAContext **ftx, double *prop);
-double pgagettruncationproportion_(PGAContext **ftx);
-void pgasettournamentwithreplacement_(PGAContext **ftx, int *v);
-int  pgagettournamentwithreplacement_(PGAContext **ftx);
-void pgasetrandomizeselect_(PGAContext **ftx, int *v);
-int  pgagetrandomizeselect_(PGAContext **ftx);
 
+/* binary.c */
 void pgasetbinaryallele_(PGAContext **ftx, int *p, int *pop, int *i,
      int *val)
 {
@@ -794,6 +987,7 @@ double pgagetbinaryinitprob_(PGAContext **ftx)
      return PGAGetBinaryInitProb  (*ftx);
 }
 
+/* char.c */
 void pgasetcharacterallele_(PGAContext **ftx, int *p, int *pop, int *i,
      char *val)
 {
@@ -815,6 +1009,7 @@ void pgasetcharacterinittype_(PGAContext **ftx, int *value)
      PGASetCharacterInitType  (*ftx, *value);
 }
 
+/* create.c */
 unsigned long pgacreate_(int *datatype, int *len, int *maxormin)
 {
      int argc;
@@ -845,6 +1040,7 @@ int pgagetrandominitflag_(PGAContext **ftx)
      return PGAGetRandomInitFlag  (*ftx);
 }
 
+/* cross.c */
 void pgacrossover_(PGAContext **ftx, int *m1, int *m2, int *oldpop, int *t1,
      int *t2, int *newpop)
 {
@@ -889,6 +1085,7 @@ void pgasetuniformcrossoverprob_(PGAContext **ftx,
 }
 
 #if OPTIMIZE==0
+/* debug.c */
 void pgadebugprint_(PGAContext **ftx, int *level, char *funcname, char *msg,
      int *datatype, void *data, int len1, int len2)
 /* FORTRAN implicitly passes the lengths of funcname and msg into len1
@@ -952,6 +1149,7 @@ void pgacleardebuglevelbyname_(PGAContext **ftx, char *name, int len)
     printf("PGAClearDebugLevelByName is not supported in the optimized version of PGAPack.\n");
 }
 #endif
+/* duplcate.c */
 int pgaduplicate_(PGAContext **ftx, int *j, int *pop1, int *pop2, int *n)
 {
      return PGADuplicate(*ftx,
@@ -976,6 +1174,7 @@ int pgagetnoduplicatesflag_(PGAContext **ftx)
      return PGAGetNoDuplicatesFlag  (*ftx);
 }
 
+/* evaluate.c */
 void pgasetevaluation_( PGAContext **ftx, int *p, int *pop, double *val )
 {
      PGASetEvaluation(*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1,
@@ -1072,6 +1271,7 @@ void pgaencodeintegerasgraycode_(PGAContext **ftx, int *p, int *pop,
           *pop, *start-1, *end-1, *value);
 }
 
+/* fitness.c */
 void pgafitness_(PGAContext **ftx, int *popindex)
 {
      PGAFitness  (*ftx, *popindex);
@@ -1127,11 +1327,13 @@ double pgagetfitnesscmaxvalue_(PGAContext **ftx)
      return PGAGetFitnessCmaxValue  (*ftx);
 }
 
+/* hamming.c */
 double pgahammingdistance_(PGAContext **ftx, int *popindex)
 {
      return PGAHammingDistance  (*ftx, *popindex);
 }
 
+/* integer.c */
 void pgasetintegerallele_(PGAContext **ftx, int *p, int *pop, int *i,
      int *val)
 {
@@ -1172,6 +1374,7 @@ int pgagetmaxintegerinitvalue_ (PGAContext **ftx, int *i)
      return PGAGetMaxIntegerInitValue(*ftx, *i-1);
 }
 
+/* mutation.c */
 void pgamutate_(PGAContext **ftx, int *p, int *pop)
 {
      PGAMutate(*ftx,
@@ -1218,6 +1421,16 @@ int pgagetmutationboundedflag_(PGAContext **ftx)
      return PGAGetMutationBoundedFlag  (*ftx);
 }
 
+void pgasetmutationbouncebackflag_(PGAContext **ftx, int *val)
+{
+     PGASetMutationBounceBackFlag  (*ftx, *val);
+}
+
+int pgagetmutationbouncebackflag_(PGAContext **ftx)
+{
+     return PGAGetMutationBounceBackFlag  (*ftx);
+}
+
 void pgasetmutationprob_(PGAContext **ftx, double *mutation_prob)
 {
      PGASetMutationProb  (*ftx, *mutation_prob);
@@ -1228,6 +1441,108 @@ double pgagetmutationprob_(PGAContext **ftx)
      return PGAGetMutationProb  (*ftx);
 }
 
+void pgasetdevariant_ (PGAContext **ftx, int *val)
+{
+    PGASetDEVariant (*ftx, *val);
+}
+
+int pgagetdevariant_ (PGAContext **ftx)
+{
+    return PGAGetDEVariant (*ftx);
+}
+
+void pgasetdenumdiffs_ (PGAContext **ftx, int *val)
+{
+    PGASetDENumDiffs (*ftx, *val);
+}
+
+int pgagetdenumdiffs_ (PGAContext **ftx)
+{
+    return PGAGetDENumDiffs (*ftx);
+}
+
+void pgasetdescalefactor_ (PGAContext **ftx, double *val)
+{
+    PGASetDEScaleFactor (*ftx, *val);
+}
+
+double pgagetdescalefactor_ (PGAContext **ftx)
+{
+    return PGAGetDEScaleFactor (*ftx);
+}
+
+void pgasetdeauxfactor_ (PGAContext **ftx, double *val)
+{
+    PGASetDEAuxFactor (*ftx, *val);
+}
+
+double pgagetdeauxfactor_ (PGAContext **ftx)
+{
+    return PGAGetDEAuxFactor (*ftx);
+}
+
+void pgasetdecrossoverprob_ (PGAContext **ftx, double *val)
+{
+    PGASetDECrossoverProb (*ftx, *val);
+}
+
+double pgagetdecrossoverprob_ (PGAContext **ftx)
+{
+    return PGAGetDECrossoverProb (*ftx);
+}
+
+void pgasetdejitter_ (PGAContext **ftx, double *val)
+{
+    PGASetDEJitter (*ftx, *val);
+}
+
+double pgagetdejitter_ (PGAContext **ftx)
+{
+    return PGAGetDEJitter (*ftx);
+}
+
+void pgasetdeprobabilityeo_ (PGAContext **ftx, double *val)
+{
+    PGASetDEProbabilityEO (*ftx, *val);
+}
+
+double pgagetdeprobabilityeo_ (PGAContext **ftx)
+{
+    return PGAGetDEProbabilityEO (*ftx);
+}
+
+void pgasetdecrossovertype_ (PGAContext **ftx, int *val)
+{
+    PGASetDECrossoverType (*ftx, *val);
+}
+
+int pgagetdecrossovertype_ (PGAContext **ftx)
+{
+    return PGAGetDECrossoverType (*ftx);
+}
+
+void pgasetdedither_ (PGAContext **ftx, double *val)
+{
+    PGASetDEDither (*ftx, *val);
+}
+
+double pgagetdedither_ (PGAContext **ftx)
+{
+    return PGAGetDEDither (*ftx);
+}
+
+void pgasetdeditherperindividual_ (PGAContext **ftx, int *val)
+{
+    PGASetDEDitherPerIndividual (*ftx, *val);
+}
+
+int pgagetdeditherperindividual_ (PGAContext **ftx)
+{
+    return PGAGetDEDitherPerIndividual (*ftx);
+}
+
+
+/* parallel.c */
 void pgarungm_(PGAContext **ftx, double (*f)(PGAContext *, int, int),
      MPI_Comm *comm)
 {
@@ -1288,6 +1603,7 @@ MPI_Comm pgagetcommunicator_(PGAContext **ftx)
      return PGAGetCommunicator  (*ftx);
 }
 
+/* pga.c */
 void pgarun_(PGAContext **ftx,
      double (*evaluate)(PGAContext *c, int p, int pop))
 {
@@ -1304,6 +1620,12 @@ void pgarunmutationorcrossover_(PGAContext **ftx, int *oldpop, int *newpop)
 {
      PGARunMutationOrCrossover  (*ftx, *oldpop, *newpop);
 }
+
+void pgarunmutationonly_(PGAContext **ftx, int *oldpop, int *newpop)
+{
+    PGARunMutationOnly (*ftx, *oldpop, *newpop);
+}
+
 
 void pgaupdategeneration_(PGAContext **ftx, MPI_Comm *comm)
 {
@@ -1340,6 +1662,11 @@ void pgasetmutationandcrossoverflag_(PGAContext **ftx, int *flag)
      PGASetMutationAndCrossoverFlag  (*ftx, *flag);
 }
 
+void pgasetmutationonlyflag_(PGAContext **ftx, int *flag)
+{
+    PGASetMutationOnlyFlag(*ftx, *flag);
+}
+
 int pgagetmutationorcrossoverflag_(PGAContext **ftx)
 {
      return PGAGetMutationOrCrossoverFlag  (*ftx);
@@ -1350,6 +1677,12 @@ int pgagetmutationandcrossoverflag_(PGAContext **ftx)
      return PGAGetMutationAndCrossoverFlag  (*ftx);
 }
 
+int pgagetmutationonlyflag_(PGAContext **ftx)
+{
+    return PGAGetMutationOnlyFlag (*ftx);
+}
+
+/* pop.c */
 void pgasortpop_(PGAContext **ftx, int *pop)
 {
      PGASortPop  (*ftx, *pop);
@@ -1368,6 +1701,11 @@ int pgagetnumreplacevalue_(PGAContext **ftx)
 int pgagetpopreplacetype_(PGAContext **ftx)
 {
      return PGAGetPopReplaceType  (*ftx);
+}
+
+int pgagetrtrwindowsize_(PGAContext **ftx)
+{
+    return PGAGetRTRWindowSize (*ftx);
 }
 
 int pgagetsortedpopindex_(PGAContext **ftx, int *n)
@@ -1390,6 +1728,12 @@ void pgasetpopreplacetype_(PGAContext **ftx, int *pop_replace)
      PGASetPopReplaceType  (*ftx, *pop_replace);
 }
 
+void pgasetrtrwindowsize_(PGAContext **ftx, int *size)
+{
+    PGASetRTRWindowSize(*ftx, *size);
+}
+
+/* random.c */
 int pgarandomflip_(PGAContext **ftx, double *p)
 {
      return PGARandomFlip  (*ftx, *p);
@@ -1425,6 +1769,7 @@ void pgasetrandomseed_(PGAContext **ftx, int *seed)
      PGASetRandomSeed  (*ftx, *seed);
 }
 
+/* real.c */
 void pgasetrealallele_(PGAContext **ftx, int *p, int *pop, int *i,
      double *val)
 {
@@ -1465,6 +1810,7 @@ int pgagetrealinittype_(PGAContext **ftx)
      return PGAGetRealInitType  (*ftx);
 }
 
+/* report.c */
 void pgaprintreport_(PGAContext **ftx, char *name, int *pop, int len)
 /* FORTRAN implicitly passes the length of name into len. */
 {
@@ -1638,6 +1984,7 @@ void pgaprintcontextvariable_(PGAContext **ftx, char *name, int len)
      }
 }
 
+/* restart.c */
 void pgarestart_(PGAContext **ftx, int *source_pop, int *dest_pop)
 {
      PGARestart  (*ftx, *source_pop, *dest_pop);
@@ -1673,6 +2020,7 @@ double pgagetrestartallelechangeprob_(PGAContext **ftx)
      return PGAGetRestartAlleleChangeProb  (*ftx);
 }
 
+/* select.c */
 void pgaselect_(PGAContext **ftx, int *popix)
 {
      PGASelect  (*ftx, *popix);
@@ -1703,6 +2051,47 @@ double pgagetptournamentprob_(PGAContext **ftx)
      return PGAGetPTournamentProb  (*ftx);
 }
 
+void pgasettournamentsize_(PGAContext **ftx, int *tournament_size)
+{
+    PGASetTournamentSize(*ftx, *tournament_size);
+}
+
+int pgagettournamentsize_(PGAContext **ftx)
+{
+    return PGAGetTournamentSize(*ftx);
+}
+
+void pgasettournamentwithreplacement_(PGAContext **ftx, int *value)
+{
+    PGASetTournamentWithReplacement(*ftx, *value);
+}
+
+int pgagettournamentwithreplacement_(PGAContext **ftx)
+{
+    return PGAGetTournamentWithReplacement(*ftx);
+}
+
+void pgasettruncationproportion_(PGAContext **ftx, double *proportion)
+{
+    PGASetTruncationProportion(*ftx, *proportion);
+}
+
+double pgagettruncationproportion_(PGAContext **ftx)
+{
+    return PGAGetTruncationProportion(*ftx);
+}
+
+void pgasetrandomizeselect_(PGAContext **ftx, int *value)
+{
+    PGASetRandomizeSelect(*ftx, *value);
+}
+
+int pgagetrandomizeselect_(PGAContext **ftx)
+{
+    return PGAGetRandomizeSelect(*ftx);
+}
+
+/* stop.c */
 int pgadone_(PGAContext **ftx, MPI_Comm *comm)
 {
      return PGADone  (*ftx, *comm);
@@ -1743,6 +2132,7 @@ void pgasetmaxsimilarityvalue_(PGAContext **ftx, int *max_similarity)
      PGASetMaxSimilarityValue  (*ftx, *max_similarity);
 }
 
+/* system.c */
 void pgaerror_(PGAContext **ftx, char *msg, int *level, int *datatype,
      void **data, int len)
 /* FORTRAN implicitly passes the length of msg into len. */
@@ -1787,11 +2177,13 @@ void pgaprintversionnumber_(PGAContext **ftx)
      PGAPrintVersionNumber  (*ftx);
 }
 
+/* user.c */
 void pgasetuserfunction_(PGAContext **ftx, int *constant, void *f)
 {
      PGASetUserFunction(*ftx, *constant, f);
 }
 
+/* utility.c */
 double pgamean_(PGAContext **ftx, double *a, int *n)
 {
      return PGAMean(*ftx, a, *n);
@@ -1829,54 +2221,4 @@ int pgagetworstindex_(PGAContext **ftx, int *pop)
 int pgagetbestindex_(PGAContext **ftx, int *pop)
 {
      return PGAGetBestIndex(*ftx, *pop) + 1;
-}
-
-void pgasettournamentsize_(PGAContext **ftx, int *size)
-{
-    PGASetTournamentSize(*ftx, *size);
-}
-
-int  pgagettournamentsize_(PGAContext **ftx)
-{
-    return PGAGetTournamentSize(*ftx);
-}
-
-void pgasetrtrwindowsize_(PGAContext **ftx, int *size)
-{
-    PGASetRTRWindowSize(*ftx, *size);
-}
-
-int  pgagetrtrwindowsize_(PGAContext **ftx)
-{
-    return PGAGetRTRWindowSize(*ftx);
-}
-
-void   pgasettruncationproportion_(PGAContext **ftx, double *prop)
-{
-    PGASetTruncationProportion(*ftx, *prop);
-}
-
-double pgagettruncationproportion_(PGAContext **ftx)
-{
-    return PGAGetTruncationProportion(*ftx);
-}
-
-void pgasettournamentwithreplacement_(PGAContext **ftx, int *v)
-{
-    PGASetTournamentWithReplacement(*ftx, *v);
-}
-
-int  pgagettournamentwithreplacement_(PGAContext **ftx)
-{
-    return PGAGetTournamentWithReplacement(*ftx);
-}
-
-void pgasetrandomizeselect_(PGAContext **ftx, int *v)
-{
-    PGASetRandomizeSelect(*ftx, *v);
-}
-
-int  pgagetrandomizeselect_(PGAContext **ftx)
-{
-    return PGAGetRandomizeSelect(*ftx);
 }

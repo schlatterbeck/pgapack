@@ -31,7 +31,7 @@ c *** ABSTRACT DATA TYPES
       integer PGA_VOID
       parameter( PGA_VOID =                  4)
 
-    
+
 c *** BOOLEANS &  FLAGS
       integer PGA_TRUE
       parameter ( PGA_TRUE =                   1)
@@ -81,7 +81,7 @@ c *** DIRECTION
       parameter ( PGA_MAXIMIZE =            1)
       integer PGA_MINIMIZE
       parameter ( PGA_MINIMIZE =            2)
-    
+
 c *** STOPPING CRITERIA
       integer PGA_STOP_MAXITER
       parameter ( PGA_STOP_MAXITER =        1)
@@ -107,6 +107,10 @@ c *** SELECTION
       parameter ( PGA_SELECT_TOURNAMENT =   3)
       integer PGA_SELECT_PTOURNAMENT
       parameter ( PGA_SELECT_PTOURNAMENT =  4)
+      integer PGA_SELECT_TRUNCATION
+      parameter ( PGA_SELECT_TRUNCATION =   5)
+      integer PGA_SELECT_LINEAR
+      parameter ( PGA_SELECT_LINEAR =       6)
 
 c *** FITNESS
       integer PGA_FITNESS_RAW
@@ -133,14 +137,34 @@ c *** MUTATION
       parameter ( PGA_MUTATION_GAUSSIAN =  4)
       integer PGA_MUTATION_PERMUTE
       parameter ( PGA_MUTATION_PERMUTE  =  5)
-    
+      integer PGA_MUTATION_DE
+      parameter ( PGA_MUTATION_DE       =  6)
+
+c *** Differential Evolution Variant
+      integer PGA_DE_VARIANT_RAND
+      parameter ( PGA_DE_VARIANT_RAND      =  1)
+      integer PGA_DE_VARIANT_BEST
+      parameter ( PGA_DE_VARIANT_BEST      =  2)
+      integer PGA_DE_VARIANT_EITHER_OR
+      parameter ( PGA_DE_VARIANT_EITHER_OR =  3)
+
+c *** Differential Evolution Crossover Variant
+      integer PGA_DE_CROSSOVER_BIN
+      parameter ( PGA_DE_CROSSOVER_BIN =  1)
+      integer PGA_DE_CROSSOVER_EXP
+      parameter ( PGA_DE_CROSSOVER_EXP =  2)
+
 c *** POPULATION REPLACEMENT
       integer PGA_POPREPL_BEST
-      parameter ( PGA_POPREPL_BEST =         1)
+      parameter ( PGA_POPREPL_BEST =            1)
       integer PGA_POPREPL_RANDOM_NOREP
-      parameter ( PGA_POPREPL_RANDOM_NOREP = 2)
+      parameter ( PGA_POPREPL_RANDOM_NOREP =    2)
       integer PGA_POPREPL_RANDOM_REP
-      parameter ( PGA_POPREPL_RANDOM_REP =   3)
+      parameter ( PGA_POPREPL_RANDOM_REP =      3)
+      integer PGA_POPREPL_RTR
+      parameter ( PGA_POPREPL_RTR =             4)
+      integer PGA_POPREPL_PAIRWISE_BEST
+      parameter ( PGA_POPREPL_PAIRWISE_BEST =   5)
 
 c *** REPORT OPTIONS
       integer PGA_REPORT_ONLINE
@@ -189,6 +213,10 @@ c *** SET USER FUNCTION
       parameter ( PGA_USERFUNCTION_STOPCOND =           9)
       integer PGA_USERFUNCTION_ENDOFGEN
       parameter ( PGA_USERFUNCTION_ENDOFGEN =          10)
+      integer PGA_USERFUNCTION_GEN_DIFFERENCE
+      parameter ( PGA_USERFUNCTION_GEN_DIFFERENCE =    11)
+      integer PGA_USERFUNCTION_PRE_EVAL
+      parameter ( PGA_USERFUNCTION_PRE_EVAL =          12)
 
 c *** TAGS
       integer PGA_COMM_STRINGTOEVAL
@@ -197,176 +225,216 @@ c *** TAGS
       parameter ( PGA_COMM_EVALOFSTRING =              2)
       integer PGA_COMM_DONEWITHEVALS
       parameter ( PGA_COMM_DONEWITHEVALS =             3)
+c *** binary
       integer PGAGetBinaryAllele
-      double precision PGAGetBinaryInitProb
-      character PGAGetCharacterAllele
-      integer(8) PGACreate
-      integer PGAGetRandomInitFlag
-      integer PGAGetCrossoverType
-      double precision PGAGetCrossoverProb
-      double precision PGAGetUniformCrossoverProb
-      integer PGADuplicate
-      integer PGAGetNoDuplicatesFlag
-      double precision PGAGetEvaluation
-      integer PGAGetEvaluationUpToDateFlag
-      double precision PGAGetRealFromBinary
-      double precision PGAGetRealFromGrayCode
-      integer PGAGetIntegerFromBinary
-      integer PGAGetIntegerFromGrayCode
-      integer PGARank
-      double precision PGAGetFitness
-      integer PGAGetFitnessType
-      integer PGAGetFitnessMinType
-      double precision PGAGetMaxFitnessRank
-      double precision PGAGetFitnessCmaxValue
-      double precision PGAHammingDistance
-      integer PGAGetIntegerAllele
-      integer PGAGetIntegerInitType
-      integer PGAGetMinIntegerInitValue
-      integer PGAGetMaxIntegerInitValue
-      integer PGAMutate
-      integer PGAGetMutationType
-      double precision PGAGetMutationRealValue
-      integer PGAGetMutationIntegerValue
-      integer PGAGetMutationBoundedFlag
-      double precision PGAGetMutationProb
-      integer PGABuildDatatype
-      integer PGAGetRank
-      integer PGAGetNumProcs
-      integer PGAGetCommunicator
-      integer PGAGetDataType
-      integer PGAGetOptDirFlag
-      integer PGAGetStringLength
-      integer PGAGetGAIterValue
-      integer PGAGetMutationOrCrossoverFlag
-      integer PGAGetMutationAndCrossoverFlag
-      integer PGAGetPopSize
-      integer PGAGetNumReplaceValue
-      integer PGAGetPopReplaceType
-      integer PGAGetSortedPopIndex
-      integer PGARandomFlip
-      integer PGARandomInterval
-      double precision PGARandom01
-      double precision PGARandomUniform
-      double precision PGARandomGaussian
-      integer PGAGetRandomSeed
-      double precision PGAGetRealAllele
-      double precision PGAGetMinRealInitValue
-      double precision PGAGetMaxRealInitValue
-      integer PGAGetRealInitType
-      integer PGAGetPrintFrequencyValue
-      integer PGAGetRestartFlag
-      integer PGAGetRestartFrequencyValue
-      double precision PGAGetRestartAlleleChangeProb
-      integer PGASelectNextIndex
-      integer PGAGetSelectType
-      integer PGAGetTournamentSize
-      double precision PGAGetPTournamentProb
-      integer PGADone
-      integer PGACheckStoppingConditions
-      integer PGAGetStoppingRuleType
-      integer PGAGetMaxGAIterValue
-      integer PGAGetMaxMachineIntValue
-      integer PGAGetMinMachineIntValue
-      double precision PGAGetMaxMachineDoubleValue
-      double precision PGAGetMinMachineDoubleValue
-      double precision PGAMean
-      double precision PGAStddev
-      integer PGARound
-      integer PGACheckSum
-      integer PGAGetWorstIndex
-      integer PGAGetBestIndex
-      integer PGAGetRTRWindowSize
-      double precision PGAGetTruncationProportion
-      integer PGAGetTournamentWithReplacement
-      integer PGAGetRandomizeSelect
-
       external PGAGetBinaryAllele
+      double precision PGAGetBinaryInitProb
       external PGAGetBinaryInitProb
+c *** char
+      character PGAGetCharacterAllele
       external PGAGetCharacterAllele
+c *** create
+      integer(8) PGACreate
       external PGACreate
+      integer PGAGetRandomInitFlag
       external PGAGetRandomInitFlag
+c *** cross
+      integer PGAGetCrossoverType
       external PGAGetCrossoverType
+      double precision PGAGetCrossoverProb
       external PGAGetCrossoverProb
+      double precision PGAGetUniformCrossoverProb
       external PGAGetUniformCrossoverProb
+c *** duplcate
+      integer PGADuplicate
       external PGADuplicate
+      integer PGAGetNoDuplicatesFlag
       external PGAGetNoDuplicatesFlag
+c *** evaluate
+      double precision PGAGetEvaluation
       external PGAGetEvaluation
+      integer PGAGetEvaluationUpToDateFlag
       external PGAGetEvaluationUpToDateFlag
+      double precision PGAGetRealFromBinary
       external PGAGetRealFromBinary
+      double precision PGAGetRealFromGrayCode
       external PGAGetRealFromGrayCode
+      integer PGAGetIntegerFromBinary
       external PGAGetIntegerFromBinary
+      integer PGAGetIntegerFromGrayCode
       external PGAGetIntegerFromGrayCode
+c *** fitness
+      integer PGARank
       external PGARank
+      double precision PGAGetFitness
       external PGAGetFitness
+      integer PGAGetFitnessType
       external PGAGetFitnessType
+      integer PGAGetFitnessMinType
       external PGAGetFitnessMinType
+      double precision PGAGetMaxFitnessRank
       external PGAGetMaxFitnessRank
+      double precision PGAGetFitnessCmaxValue
       external PGAGetFitnessCmaxValue
+c *** hamming
+      double precision PGAHammingDistance
       external PGAHammingDistance
+c *** integer
+      integer PGAGetIntegerAllele
       external PGAGetIntegerAllele
+      integer PGAGetIntegerInitType
       external PGAGetIntegerInitType
+      integer PGAGetMinIntegerInitValue
       external PGAGetMinIntegerInitValue
+      integer PGAGetMaxIntegerInitValue
       external PGAGetMaxIntegerInitValue
+c *** mutation
+      integer PGAMutate
       external PGAMutate
+      integer PGAGetMutationType
       external PGAGetMutationType
+      double precision PGAGetMutationRealValue
       external PGAGetMutationRealValue
+      integer PGAGetMutationIntegerValue
       external PGAGetMutationIntegerValue
+      integer PGAGetMutationBoundedFlag
       external PGAGetMutationBoundedFlag
+      integer PGAGetMutationBounceBackFlag
+      external PGAGetMutationBounceBackFlag
+      double precision PGAGetMutationProb
       external PGAGetMutationProb
+      integer PGAGetDEVariant
+      external PGAGetDEVariant
+      integer PGAGetDENumDiffs
+      external PGAGetDENumDiffs
+      double precision PGAGetDEScaleFactor
+      external PGAGetDEScaleFactor
+      double precision PGAGetDEAuxFactor
+      external PGAGetDEAuxFactor
+      double precision PGAGetDECrossoverProb
+      external PGAGetDECrossoverProb
+      double precision PGAGetDEJitter
+      external PGAGetDEJitter
+      double precision PGAGetDEProbabilityEO
+      external PGAGetDEProbabilityEO
+      integer PGAGetDECrossoverType
+      external PGAGetDECrossoverType
+      double precision PGAGetDEDither
+      external PGAGetDEDither
+      integer PGAGetDEDitherPerIndividual
+      external PGAGetDEDitherPerIndividual
+c *** parallel
+      integer(8) PGABuildDatatype
       external PGABuildDatatype
+      integer PGAGetRank
       external PGAGetRank
+      integer PGAGetNumProcs
       external PGAGetNumProcs
+      integer(8) PGAGetCommunicator
       external PGAGetCommunicator
+c *** pga
+      integer PGAGetDataType
       external PGAGetDataType
+      integer PGAGetOptDirFlag
       external PGAGetOptDirFlag
+      integer PGAGetStringLength
       external PGAGetStringLength
+      integer PGAGetGAIterValue
       external PGAGetGAIterValue
+      integer PGAGetMutationOrCrossoverFlag
       external PGAGetMutationOrCrossoverFlag
+      integer PGAGetMutationAndCrossoverFlag
       external PGAGetMutationAndCrossoverFlag
+      integer PGAGetMutationOnlyFlag
+      external PGAGetMutationOnlyFlag
+c *** pop
+      integer PGAGetPopSize
       external PGAGetPopSize
+      integer PGAGetNumReplaceValue
       external PGAGetNumReplaceValue
+      integer PGAGetPopReplaceType
       external PGAGetPopReplaceType
-      external PGAGetSortedPopIndex
-      external PGARandomFlip
-      external PGARandomInterval
-      external PGARandom01
-      external PGARandomUniform
-      external PGARandomGaussian
-      external PGAGetRandomSeed
-      external PGAGetRealAllele
-      external PGAGetMinRealInitValue
-      external PGAGetMaxRealInitValue
-      external PGAGetRealInitType
-      external PGAGetPrintFrequencyValue
-      external PGAGetRestartFlag
-      external PGAGetRestartFrequencyValue
-      external PGAGetRestartAlleleChangeProb
-      external PGASelectNextIndex
-      external PGAGetSelectType
-      external PGAGetPTournamentProb
-      external PGAGetTournamentSize
-      external PGADone
-      external PGACheckStoppingConditions
-      external PGAGetStoppingRuleType
-      external PGAGetMaxGAIterValue
-      external PGAGetMaxMachineIntValue
-      external PGAGetMinMachineIntValue
-      external PGAGetMaxMachineDoubleValue
-      external PGAGetMinMachineDoubleValue
-      external PGAMean
-      external PGAStddev
-      external PGARound
-      external PGACheckSum
-      external PGAGetWorstIndex
-      external PGAGetBestIndex
-      external PGASetTournamentSize
-      external PGASetRTRWindowSize
+      integer PGAGetRTRWindowSize
       external PGAGetRTRWindowSize
-      external PGASetTruncationProportion
-      external PGAGetTruncationProportion
-      external PGASetTournamentWithReplacement
+      integer PGAGetSortedPopIndex
+      external PGAGetSortedPopIndex
+c *** random
+      integer PGARandomFlip
+      external PGARandomFlip
+      integer PGARandomInterval
+      external PGARandomInterval
+      double precision PGARandom01
+      external PGARandom01
+      double precision PGARandomUniform
+      external PGARandomUniform
+      double precision PGARandomGaussian
+      external PGARandomGaussian
+      integer PGAGetRandomSeed
+      external PGAGetRandomSeed
+      integer PGARandomNextSample
+      external PGARandomNextSample
+c *** real
+      double precision PGAGetRealAllele
+      external PGAGetRealAllele
+      double precision PGAGetMinRealInitValue
+      external PGAGetMinRealInitValue
+      double precision PGAGetMaxRealInitValue
+      external PGAGetMaxRealInitValue
+      integer PGAGetRealInitType
+      external PGAGetRealInitType
+c *** report
+      integer PGAGetPrintFrequencyValue
+      external PGAGetPrintFrequencyValue
+c *** restart
+      integer PGAGetRestartFlag
+      external PGAGetRestartFlag
+      integer PGAGetRestartFrequencyValue
+      external PGAGetRestartFrequencyValue
+      double precision PGAGetRestartAlleleChangeProb
+      external PGAGetRestartAlleleChangeProb
+c *** select
+      integer PGASelectNextIndex
+      external PGASelectNextIndex
+      integer PGAGetSelectType
+      external PGAGetSelectType
+      double precision PGAGetPTournamentProb
+      external PGAGetPTournamentProb
+      integer PGAGetTournamentSize
+      external PGAGetTournamentSize
+      integer PGAGetTournamentWithReplacement
       external PGAGetTournamentWithReplacement
-      external PGASetRandomizeSelect
+      double precision PGAGetTruncationProportion
+      external PGAGetTruncationProportion
+      integer PGAGetRandomizeSelect
       external PGAGetRandomizeSelect
-
+c *** stop
+      integer PGADone
+      external PGADone
+      integer PGACheckStoppingConditions
+      external PGACheckStoppingConditions
+      integer PGAGetStoppingRuleType
+      external PGAGetStoppingRuleType
+      integer PGAGetMaxGAIterValue
+      external PGAGetMaxGAIterValue
+c *** system
+      integer PGAGetMaxMachineIntValue
+      external PGAGetMaxMachineIntValue
+      integer PGAGetMinMachineIntValue
+      external PGAGetMinMachineIntValue
+      double precision PGAGetMaxMachineDoubleValue
+      external PGAGetMaxMachineDoubleValue
+      double precision PGAGetMinMachineDoubleValue
+      external PGAGetMinMachineDoubleValue
+c *** utility
+      double precision PGAMean
+      external PGAMean
+      double precision PGAStddev
+      external PGAStddev
+      integer PGARound
+      external PGARound
+      integer PGACheckSum
+      external PGACheckSum
+      integer PGAGetWorstIndex
+      external PGAGetWorstIndex
+      integer PGAGetBestIndex
+      external PGAGetBestIndex
