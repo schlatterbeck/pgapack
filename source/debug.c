@@ -192,6 +192,7 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGACreateIndividual",            303 },
         { "PGAGetRandomInitFlag",           304 },
         { "PGASetRandomInitFlag",           305 },
+        { "PGASetNumAuxEval",               306 },
 
         /* cross.c */
         { "PGACrossover",                   310 },
