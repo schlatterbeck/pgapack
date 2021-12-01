@@ -1175,15 +1175,31 @@ int pgagetnoduplicatesflag_(PGAContext **ftx)
 }
 
 /* evaluate.c */
-void pgasetevaluation_( PGAContext **ftx, int *p, int *pop, double *val )
+void pgasetevaluation_
+    (PGAContext **ftx, int *p, int *pop, double *val)
 {
-     PGASetEvaluation(*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1,
-           *pop, *val );
+     PGASetEvaluation
+        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop, *val);
 }
 
-double pgagetevaluation_(PGAContext **ftx, int *p, int *pop)
+double pgagetevaluation_ (PGAContext **ftx, int *p, int *pop)
 {
-     return PGAGetEvaluation(*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop);
+     return PGAGetEvaluation
+        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop);
+}
+
+void pgasetevaluationaux_
+    (PGAContext **ftx, int *p, int *pop, double *val, double *aux)
+{
+     PGASetEvaluation
+        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop, *val, aux);
+}
+
+double pgagetevaluationaux_
+    (PGAContext **ftx, int *p, int *pop, const double **aux)
+{
+     return PGAGetEvaluation
+        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop, aux);
 }
 
 void pgasetevaluationuptodateflag_(PGAContext **ftx, int *p, int *pop, int *status)

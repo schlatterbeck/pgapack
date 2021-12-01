@@ -185,14 +185,21 @@ void PGACopyIndividual( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
     PGAIndividual *source, *dest;
 
-    PGADebugEntered("PGACopyIndividual");
+    PGADebugEntered ("PGACopyIndividual");
 
-    source = PGAGetIndividual ( ctx, p1, pop1 );
-    dest   = PGAGetIndividual ( ctx, p2, pop2 );
+    source = PGAGetIndividual (ctx, p1, pop1);
+    dest   = PGAGetIndividual (ctx, p2, pop2);
 
-    dest->evalfunc     = source->evalfunc;
-    dest->fitness      = source->fitness;
-    dest->evaluptodate = source->evaluptodate;
+    dest->evalfunc         = source->evalfunc;
+    dest->fitness          = source->fitness;
+    dest->evaluptodate     = source->evaluptodate;
+    dest->auxtotal         = source->auxtotal;
+    dest->auxtotaluptodate = source->auxtotaluptodate;
+    if (ctx->ga.NumAuxEval) {
+        memcpy (dest->auxeval, source->auxeval, ctx->ga.NumAuxEval);
+    } else {
+        dest->auxeval = NULL;
+    }
 
     (*ctx->cops.CopyString)(ctx, p1, pop1, p2, pop2);
 

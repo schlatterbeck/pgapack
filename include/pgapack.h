@@ -922,6 +922,7 @@ double PGAGetTruncationProportion (PGAContext *ctx);
 void PGASetRandomizeSelect (PGAContext *ctx, int value);
 int PGAGetRandomizeSelect (PGAContext *ctx);
 int PGAStringCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+double PGAGetAuxTotal (PGAContext *ctx, int p, int pop);
 
 /*****************************************
 *          stop.c

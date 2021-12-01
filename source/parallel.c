@@ -145,14 +145,18 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
     }
 
     if (rank == 0) {
-	best_p = PGAGetBestIndex(ctx, PGA_OLDPOP);
-	printf("The Best Evaluation: %e.\n",
-	       PGAGetEvaluation(ctx, best_p, PGA_OLDPOP));
-	printf("The Best String:\n");
-	PGAPrintString(ctx, stdout, best_p, PGA_OLDPOP);
-	fflush(stdout);
+        int pop = PGA_OLDPOP;
+	best_p = PGAGetBestIndex (ctx, pop);
+	printf("The Best Evaluation: %e", PGAGetEvaluation (ctx, best_p, pop));
+        if (PGAGetNumAuxEval (ctx)) {
+            printf (" Constraints: %e", PGAGetAuxTotal (ctx, best_p, pop));
+        }
+        printf (".\n");
+	printf ("The Best String:\n");
+	PGAPrintString (ctx, stdout, best_p, pop);
+	fflush (stdout);
     }
-    PGADebugExited("PGARunGM");
+    PGADebugExited ("PGARunGM");
 }
 
 
@@ -183,7 +187,7 @@ void PGAEvaluateSeq(PGAContext *ctx, int pop,
     /*  Standard sequential evaluation.  */
     for (p=0; p<ctx->ga.PopSize; p++) {
         if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop)) {
-            double *aux = PGAGetAuxEvaluation (ctx, p-1, pop);
+            double *aux = PGAGetAuxEvaluation (ctx, p, pop);
             if (ctx->sys.UserFortran == PGA_TRUE) {
                 int fp = p + 1;
 		e = (*((double(*)(void *, void *, void *, void *))f))

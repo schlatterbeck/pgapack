@@ -53,7 +53,7 @@ static inline double CMP (double a, double b)
 }
 
 /*U****************************************************************************
-  PGAAuxTotal - Compute total value over all aux evaluations
+  PGAGetAuxTotal - Compute total value over all aux evaluations
 
   Category: Operators
 
@@ -71,10 +71,10 @@ static inline double CMP (double a, double b)
     PGAContext *ctx;
     double result;
     :
-    result = PGAAuxTotal(ctx, p, PGA_OLDPOP);
+    result = PGAGetAuxTotal(ctx, p, PGA_OLDPOP);
 
 ****************************************************************************U*/
-static double PGAAuxTotal (PGAContext *ctx, int p, int pop)
+double PGAGetAuxTotal (PGAContext *ctx, int p, int pop)
 {
     PGAIndividual *ind = PGAGetIndividual(ctx, p, pop);
     if (!ind->auxtotaluptodate) {
@@ -143,8 +143,8 @@ int PGAStringCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
             );
     }
     if (ctx->ga.NumAuxEval > 0) {
-        auxt1 = PGAAuxTotal (ctx, p1, pop1);
-        auxt2 = PGAAuxTotal (ctx, p2, pop2);
+        auxt1 = PGAGetAuxTotal (ctx, p1, pop1);
+        auxt2 = PGAGetAuxTotal (ctx, p2, pop2);
     }
     if (auxt1 || auxt2) {
         return CMP (auxt2, auxt1);
