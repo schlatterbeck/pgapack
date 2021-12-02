@@ -12,6 +12,7 @@ static struct constrained_problem *problems [] =
 , &deb_3
 , &deb_4
 , &deb_5
+, &deb_6
 };
 static const int nproblems =
     sizeof (problems) / sizeof (struct constrained_problem *);

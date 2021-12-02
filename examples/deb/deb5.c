@@ -61,8 +61,8 @@ int main ()
         double *x = xx [i];
         double g;
         double s = 0;
-        for (i=0; i< deb_5.nfunc - 1; i++) {
-            g = deb_5.f [i+1] (x);
+        for (j=0; j<deb_5.nfunc - 1; j++) {
+            g = deb_5.f [j+1] (x);
             printf ("c: %e\n", g);
             if (g > 0) {
                 s += g;
