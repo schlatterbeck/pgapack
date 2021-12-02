@@ -1,4 +1,4 @@
-OBJS = deb0.o deb1.o deb2.o deb3.o deb4.o optimize.o
+OBJS = deb0.o deb1.o deb2.o deb3.o deb4.o deb5.o optimize.o
 
 all: optimize
 
