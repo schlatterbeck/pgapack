@@ -13,9 +13,18 @@ struct constrained_problem
     int nfunc;                  /* Number of constraints + 1 (objective f) */
     double (*lower);            /* Init ranges lower bounds */
     double (*upper);            /* Init ranges upper bounds */
+    int enforce_bounds;         /* Enforce bounds on init range */
+    int iterations;             /* Number of iterations if 0 default = 100 */
     double (*f [])(double *);   /* Functions: 0th is objective function */
 };
 
 extern struct constrained_problem deb_0;
-
-
+extern struct constrained_problem deb_1;
+extern struct constrained_problem deb_2;
+extern struct constrained_problem deb_3;
+extern struct constrained_problem deb_4;
+extern struct constrained_problem deb_5;
+extern struct constrained_problem deb_6;
+extern struct constrained_problem deb_7;
+extern struct constrained_problem deb_8;
+extern struct constrained_problem deb_9;

@@ -1,27 +1,28 @@
 #include "constraint.h"
 #include <stdio.h>
 
-static double deb_0_f (double *x)
+static double f (double *x)
 {
     return pow (x [0] - 0.8, 2) + pow (x [1] - 0.3, 2);
 }
 
-static double deb_0_g_1 (double *x)
+static double g1 (double *x)
 {
     return (pow (x [0] - 0.2, 2) + pow (x [1] - 0.5, 2)) / 0.16 - 1;
 }
 
-static double deb_0_g_2 (double *x)
+static double g2 (double *x)
 {
     return 1 - (pow (x [0] + 0.5, 2) + pow (x [1] - 0.5, 2)) / 0.81;
 }
 
 struct constrained_problem deb_0 =
-{ .dimension     = 2
-, .nfunc         = 3
-, .lower         = (double []){ -5, -5 }
-, .upper         = (double []){  5,  5 }
-, .f             = { &deb_0_f, &deb_0_g_1, &deb_0_g_2 }
+{ .dimension      = 2
+, .nfunc          = 3
+, .lower          = (double []){ -5, -5 }
+, .upper          = (double []){  5,  5 }
+, .enforce_bounds = 0
+, .f              = { &f, &g1, &g2 }
 };
 
 #ifdef DEBUG_EVAL

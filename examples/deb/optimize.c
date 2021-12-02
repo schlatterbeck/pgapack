@@ -5,6 +5,14 @@
 #include <pgapack.h>
 #include "constraint.h"
 
+static struct constrained_problem *problems [] =
+{ &deb_0
+, &deb_1
+, &deb_2
+};
+static const int nproblems =
+    sizeof (problems) / sizeof (struct constrained_problem *);
+
 static struct constrained_problem *problem;
 
 double evaluate (PGAContext *ctx, int p, int pop, double *aux)
@@ -22,17 +30,32 @@ double evaluate (PGAContext *ctx, int p, int pop, double *aux)
 int main (int argc, char **argv)
 {
     PGAContext *ctx;
+    int popsize = 60;
+    int fidx = 0;
     int maxiter = 100;
 
-    problem = &deb_0;
+    if (argc > 1) {
+        fidx = atoi (argv [1]);
+        if (fidx < 0 || fidx > nproblems - 1) {
+            fprintf
+                ( stderr, "Usage: %s [f-index]\nIndex in range 0-%d\n"
+                , argv [0], nproblems - 1
+                );
+            exit (1);
+        }
+    }
+    problem = problems [fidx];
+    if (problem->iterations > maxiter) {
+        maxiter = problem->iterations;
+    }
     ctx = PGACreate
         (&argc, argv, PGA_DATATYPE_REAL, problem->dimension, PGA_MINIMIZE);
     
     PGASetRandomSeed(ctx, 1);
 
-    PGASetPopSize          (ctx, 60);
+    PGASetPopSize          (ctx, popsize);
+    PGASetNumReplaceValue  (ctx, popsize);
     PGASetSelectType       (ctx, PGA_SELECT_LINEAR);
-    PGASetNumReplaceValue  (ctx, 60);
     PGASetPopReplaceType   (ctx, PGA_POPREPL_PAIRWISE_BEST);
     PGASetMutationOnlyFlag (ctx, PGA_TRUE);
     PGASetMutationType     (ctx, PGA_MUTATION_DE);
@@ -40,8 +63,11 @@ int main (int argc, char **argv)
     PGASetDECrossoverType  (ctx, PGA_DE_CROSSOVER_BIN);
     PGASetDEVariant        (ctx, PGA_DE_VARIANT_RAND);
     PGASetDEScaleFactor    (ctx, 0.85);
+    if (problem->enforce_bounds) {
+        PGASetMutationBounceBackFlag (ctx, PGA_TRUE);
+    };
 
-    PGASetRealInitRange    (ctx, deb_0.lower, deb_0.upper);
+    PGASetRealInitRange    (ctx, problem->lower, problem->upper);
     PGASetMaxGAIterValue   (ctx, maxiter);
     PGASetNumAuxEval       (ctx, problem->nfunc - 1);
     
