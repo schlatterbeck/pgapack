@@ -10,6 +10,7 @@ static struct constrained_problem *problems [] =
 , &deb_1
 , &deb_2
 , &deb_3
+, &deb_4
 };
 static const int nproblems =
     sizeof (problems) / sizeof (struct constrained_problem *);
@@ -48,6 +49,9 @@ int main (int argc, char **argv)
     problem = problems [fidx];
     if (problem->iterations > maxiter) {
         maxiter = problem->iterations;
+    }
+    if (problem->popsize > popsize) {
+        popsize = problem->popsize;
     }
     ctx = PGACreate
         (&argc, argv, PGA_DATATYPE_REAL, problem->dimension, PGA_MINIMIZE);
