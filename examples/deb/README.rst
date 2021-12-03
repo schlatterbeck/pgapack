@@ -27,11 +27,15 @@ but 150 instead of 50 generations. The number of function evaluations is
 still only a little more than half compared to the paper [1]_.  The
 solutions found (with only a hard-coded random number initialisation of
 1, i.e.  only a single experiment) are generally better than the ones
-achieved in the original paper [1]_. Note that, e.g., problem 7 which has
-3 equality constraints solves the problem with one order of magnitude
-better precision (10e-4 for epsilon instead of 10e-3 in [1]_) with only a
-population size of 10 (!) and the same number of 7000 generations. It
-achieves a much better solution than orignal paper [1]_.
+achieved in the original paper [1]_.
+
+An exception is problem 7 which has 3 equality constraints. The problem
+is solved with one order of magnitude less precision (10e-2 for epsilon
+instead of 10e-3 in [1]_) with only a population size of 4 (!) and 2000
+generations. With a smaller epsilon it converges to a local minimum that
+is one order of magnitude worse than the best solution. I've not tried if
+with different random number initialization the problem could be solved
+with a smaller epsilon.
 
 _[1]: Kalyanmoy Deb. An efficient constraint handling method
       for genetic algorithms. Computer Methods in Applied Mechanics and
