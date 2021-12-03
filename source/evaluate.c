@@ -98,8 +98,11 @@ void _PGASetEvaluation
     /* In serial evaluation it will occur that the aux array is modified
      * in place, so we do not need to copy if it's the same pointer
      */
-    if (ctx->ga.NumAuxEval && aux != ind->auxeval) {
-        memcpy (ind->auxeval, aux, sizeof (double) * ctx->ga.NumAuxEval);
+    if (ctx->ga.NumAuxEval) {
+        if (aux != NULL && aux != ind->auxeval) {
+            memcpy (ind->auxeval, aux, sizeof (double) * ctx->ga.NumAuxEval);
+        }
+        ind->auxtotaluptodate = PGA_FALSE;
     }
 
     PGADebugExited ("PGASetEvaluation");

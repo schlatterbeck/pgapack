@@ -357,42 +357,24 @@ int PGAGetWorstIndex(PGAContext *ctx, int pop)
 ***************************************************************************U*/
 int PGAGetBestIndex(PGAContext *ctx, int pop)
 {
-     int     p, Best_indx = 0;
-     double  eval, Best_eval;
+    int     p, Best_indx = 0;
 
     PGADebugEntered("PGAGetBestIndex");
      
-     for (p = 0; p < ctx->ga.PopSize; p++)
-	 if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop))
-	     PGAError(ctx, "PGAGetBestIndex: Evaluate function not up to "
-		      "date:", PGA_FATAL, PGA_INT, (void *) &p);
-     
-     Best_eval = PGAGetEvaluation(ctx, 0, pop);
+    for (p = 0; p < ctx->ga.PopSize; p++)
+        if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop))
+	    PGAError(ctx, "PGAGetBestIndex: Evaluate function not up to "
+                     "date:", PGA_FATAL, PGA_INT, (void *) &p);
 
-     switch (PGAGetOptDirFlag(ctx)) {
-     case PGA_MAXIMIZE :
-	 for (p = 1; p < ctx->ga.PopSize; p++) {
-	     eval = PGAGetEvaluation(ctx, p, pop);
-	     if (eval > Best_eval) {
-		 Best_indx = p;
-		 Best_eval = eval;
-	     }
-	 }
-	 break;
-     case PGA_MINIMIZE :
-	 for (p = 1; p < ctx->ga.PopSize; p++) {
-	     eval = PGAGetEvaluation(ctx, p, pop);
-	     if (eval < Best_eval) {
-		 Best_indx = p;
-		 Best_eval = eval;
-	     }
-	 }
-	 break;
-     }
+    for (p=1; p<ctx->ga.PopSize; p++) {
+        if (PGAStringCompare (ctx, p, pop, Best_indx, pop) > 0) {
+            Best_indx = p;
+        }
+    }
      
     PGADebugExited("PGAGetBestIndex");
 
-     return (Best_indx);
+    return (Best_indx);
 }
 
 

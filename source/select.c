@@ -102,6 +102,14 @@ double PGAGetAuxTotal (PGAContext *ctx, int p, int pop)
   The default handling of auxiliary evaluations is incompatible with
   certain selection schemes, see checks in create.c
 
+  Note that PGAStringCompare is now used in several contexts, including
+  finding the best evaluation. For very badly scaled problems, the
+  default fitness computation will degenerate if there are very large
+  evaluation values and very small ones. In that case the fitness will
+  not reflect the evaluation. Therefore PGAStringCompare will now always
+  sort on evaluation values ignoring the fitness. This improves
+  Tournament selection for very badly scaled problems.
+
   Category: Operators
 
   Inputs:
@@ -128,6 +136,8 @@ double PGAGetAuxTotal (PGAContext *ctx, int p, int pop)
 int PGAStringCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
     double auxt1 = 0, auxt2 = 0;
+    int dir = PGAGetOptDirFlag (ctx);
+    PGAIndividual *ind1, *ind2;
     if (!PGAGetEvaluationUpToDateFlag (ctx, p1, pop1)) {
         PGAError
             ( ctx
@@ -149,31 +159,26 @@ int PGAStringCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     if (auxt1 || auxt2) {
         return CMP (auxt2, auxt1);
     }
-    /* We may use the fitness only if both populations are the same
-       otherwise fitness values are not comparable.
+    /* We might use the fitness if both populations are the same
+       otherwise fitness values are not comparable. But we now
+       use the evaluation in any case.
      */
-    if (pop1 == pop2) {
-        return CMP
-            (PGAGetFitness (ctx, p1, pop1), PGAGetFitness (ctx, p2, pop2));
-    } else {
-        int dir = PGAGetOptDirFlag (ctx);
-        PGAIndividual *ind1 = PGAGetIndividual (ctx, p1, pop1);
-        PGAIndividual *ind2 = PGAGetIndividual (ctx, p2, pop2);
-	switch (dir) {
-	case PGA_MAXIMIZE:
-            return CMP (ind1->evalfunc, ind2->evalfunc);
-	    break;
-	case PGA_MINIMIZE:
-            return CMP (ind2->evalfunc, ind1->evalfunc);
-	    break;
-	default:
-	    PGAError
-		(ctx
-		, "PGAStringCompare: Invalid value of PGAGetOptDirFlag:"
-		, PGA_FATAL, PGA_INT, (void *) &dir
-		);
-	    break;
-	}
+    ind1 = PGAGetIndividual (ctx, p1, pop1);
+    ind2 = PGAGetIndividual (ctx, p2, pop2);
+    switch (dir) {
+    case PGA_MAXIMIZE:
+        return CMP (ind1->evalfunc, ind2->evalfunc);
+        break;
+    case PGA_MINIMIZE:
+        return CMP (ind2->evalfunc, ind1->evalfunc);
+        break;
+    default:
+        PGAError
+            (ctx
+            , "PGAStringCompare: Invalid value of PGAGetOptDirFlag:"
+            , PGA_FATAL, PGA_INT, (void *) &dir
+            );
+        break;
     }
     /* notreached */
     return 0;
