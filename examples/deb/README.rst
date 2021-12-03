@@ -7,12 +7,28 @@ problems from Kalyanmoy Deb's constraint handling method [1]_.
 The second problem with 38 constraints was first published by Hock and
 Schittkowski [2]_ and is number 85 in their publication.
 The best value documented by Schittkowski is -1.9051338 for which the
-input values are given (see comments at the end of deb2.c). But he claims
+input values are given (see comments at the end of deb2.c). He claims
 that his optimizer found a solution with value -1.9051553 (which is
 better and also found by the differential evolution implemenation in this
 directory). Deb gives the evaluation value -1.914595 which is even lower,
 but it produces constraint violations, probably because of a typo in one
 of the tables, see also comments in deb2.c.
+
+The last problem (number 9) is the welded beam design from Deb [1]_ which
+is introduced in the beginning of the paper and revisited at the end.
+
+Note that it was tried to solve the given problems using Differential
+Evolution [3]_, [4]_, [5]_ with a lower population size as in Deb [1]_
+and often less generations -- although some tough problems require a
+larger population size, but due to the smaller population size with still
+equal or smaller number of function evaluations. The solutions found
+(with only a hard-coded random number initialisation of 1, i.e. only a
+single experiment) are generally better than the ones achieven in the
+original paper [1]_. Note that, e.g., problem 7 which has 3 equality
+constraints solves the problem with one order of magnitude better
+precision (10e-4 for epsilon instead of 10e-3 in [1]_) with only a
+population size of 10 (!) and the same number of 7000 generations. It
+achieves a much better solution than orignal paper [1]_.
 
 _[1]: Kalyanmoy Deb. An efficient constraint handling method
       for genetic algorithms. Computer Methods in Applied Mechanics and
@@ -20,3 +36,13 @@ _[1]: Kalyanmoy Deb. An efficient constraint handling method
 _[2]: W. Hock and K. Schittkowski. Test examples for nonlinear
       programming codes. Lecture Notes in Economics and Mathematical
       Systems, 187, 1981.
+_[3]: Rainer Storn and Kenneth Price. Differential evolution – a simple
+      and efficient adaptive scheme for global optimization over
+      continuous spaces. Technical Report TR-95-012, International
+      Computer Science Institute (ICSI), March 1995.
+_[4]: Rainer Storn and Kenneth Price. Differential evolution – a simple
+      and efficient heuristic for global optimization over continuous spaces.
+      Journal of Global Optimization, 11(4):341–359, December 1997.
+_[5]: Kenneth V. Price, Rainer M. Storn, and Jouni A. Lampinen.
+      Differential Evolution: A Practical Approach to Global
+      Optimization.  Springer, Berlin, Heidelberg, 2005.
