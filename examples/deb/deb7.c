@@ -60,7 +60,7 @@ struct constrained_problem deb_7 =
 , .lower          = (double []){ -2.3, -2.3, -3.2, -3.2, -3.2 }
 , .upper          = (double []){  2.3,  2.3,  3.2,  3.2,  3.2 }
 , .enforce_bounds = 1
-, .iterations     = 7000
+, .generations    = 7000
 , .popsize        = 10
 , .f              = { &f, &g1, &g2, &g3, &g4, &g5, &g6 }
 };

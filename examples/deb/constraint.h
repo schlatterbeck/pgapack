@@ -14,7 +14,7 @@ struct constrained_problem
     double (*lower);            /* Init ranges lower bounds */
     double (*upper);            /* Init ranges upper bounds */
     int enforce_bounds;         /* Enforce bounds on init range */
-    int iterations;             /* Number of iterations if 0 default = 100 */
+    int generations;            /* Number of generations if 0 default = 100 */
     int popsize;                /* Population size if 0 default = 60 */
     double (*f [])(double *);   /* Functions: 0th is objective function */
 };

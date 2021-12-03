@@ -20,13 +20,16 @@ is introduced in the beginning of the paper and revisited at the end.
 Note that it was tried to solve the given problems using Differential
 Evolution [3]_, [4]_, [5]_ with a lower population size as in Deb [1]_
 and often less generations -- although some tough problems require a
-larger population size, but due to the smaller population size with still
-equal or smaller number of function evaluations. The solutions found
-(with only a hard-coded random number initialisation of 1, i.e. only a
-single experiment) are generally better than the ones achieven in the
-original paper [1]_. Note that, e.g., problem 7 which has 3 equality
-constraints solves the problem with one order of magnitude better
-precision (10e-4 for epsilon instead of 10e-3 in [1]_) with only a
+larger number of generations, but due to the smaller population size with
+still equal or smaller number of function evaluations. Consider problem 1
+as an example: It has a population size of only 4 (compared to 20 in [1]_)
+but 150 instead of 50 generations. The number of function evaluations is
+still only a little more than half compared to the paper [1]_.  The
+solutions found (with only a hard-coded random number initialisation of
+1, i.e.  only a single experiment) are generally better than the ones
+achieved in the original paper [1]_. Note that, e.g., problem 7 which has
+3 equality constraints solves the problem with one order of magnitude
+better precision (10e-4 for epsilon instead of 10e-3 in [1]_) with only a
 population size of 10 (!) and the same number of 7000 generations. It
 achieves a much better solution than orignal paper [1]_.
 

@@ -51,7 +51,8 @@ struct constrained_problem deb_6 =
 , .lower          = (double []){  78, 33, 27, 27, 27 }
 , .upper          = (double []){ 102, 45, 45, 45, 45 }
 , .enforce_bounds = 1
-, .iterations     = 500
+, .generations    = 500
+, .popsize        = 5
 , .f              = { &f, &g1, &g2, &g3, &g4, &g5, &g6 }
 };
 

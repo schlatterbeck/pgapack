@@ -42,7 +42,7 @@ struct constrained_problem deb_4 =
 , .lower          = (double []){ 1e2, 1e3, 1e3, 10,  10,  10,  10,  10 }
 , .upper          = (double []){ 1e4, 1e4, 1e4, 1e3, 1e3, 1e3, 1e3, 1e3 }
 , .enforce_bounds = 1
-, .iterations     = 4000
-, .popsize        = 80
+, .generations    = 5000
+, .popsize        = 5
 , .f              = { &f, &g1, &g2, &g3, &g4, &g5, &g6 }
 };

@@ -174,7 +174,8 @@ struct constrained_problem deb_2 =
 , .lower          = (double []){ 704.4148,   68.6,    0.0,  193.0,    25.0 }
 , .upper          = (double []){ 906.3855,  288.88, 134.75, 287.0966, 84.1988}
 , .enforce_bounds = 1
-, .iterations     = 600
+, .popsize        = 10
+, .generations    = 600
 , .f              = { f, g1, g2, g3
                     , g_j2_2, g_j2_3, g_j2_4, g_j2_5, g_j2_6, g_j2_7
                     , g_j2_8, g_j2_9 , g_j2_10, g_j2_11, g_j2_12, g_j2_13

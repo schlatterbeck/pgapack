@@ -52,8 +52,8 @@ int main (int argc, char **argv)
         }
     }
     problem = problems [fidx];
-    if (problem->iterations > maxiter) {
-        maxiter = problem->iterations;
+    if (problem->generations > maxiter) {
+        maxiter = problem->generations;
     }
     if (problem->popsize > popsize) {
         popsize = problem->popsize;

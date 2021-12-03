@@ -22,6 +22,7 @@ struct constrained_problem deb_0 =
 , .lower          = (double []){ -5, -5 }
 , .upper          = (double []){  5,  5 }
 , .enforce_bounds = 0
+, .popsize        = 10
 , .f              = { &f, &g1, &g2 }
 };
 
@@ -38,21 +39,20 @@ int main ()
         , {-2.102253e+16,       1.643393e+17}
         , {0.9321836,           0.5648792}
         };
-    size_t sz = sizeof (xx) / (2 * sizeof (double));
+    size_t sz = sizeof (xx) / (deb_0.dimension * sizeof (double));
     for (i=0; i<sz; i++) {
         double *x = xx [i];
-        double g [2];
+        double g;
         double s = 0;
-        printf ("x: %e %e\n", x [0], x [1]);
-        g [0] = deb_0_g_1 (x);
-        g [1] = deb_0_g_2 (x);
-        printf ("f: %e g1: %e g2: %e\n", deb_0_f (x), g [0], g [1]);
-        for (j=0; j<2; j++) {
-            if (g [j] > 0) {
-                s += g [j];
+        for (j=0; j<deb_0.nfunc - 1; j++) {
+            g = deb_0.f [j+1] (x);
+            printf ("c: %e\n", g);
+            if (g > 0) {
+                s += g;
             }
         }
         printf ("constraints: %e\n", s);
+        printf ("evaluation:  %e\n", deb_0.f [0] (x));
     }
 }
 #endif

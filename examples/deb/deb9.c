@@ -116,8 +116,8 @@ struct constrained_problem deb_9 =
 , .lower          = (double []){0.125, 0.1, 0.1, 0.1}
 , .upper          = (double []){   10,  10,  10,  10}
 , .enforce_bounds = 1
-, .popsize        = 40
-, .iterations     = 640
+, .popsize        = 4
+, .generations    = 640
 , .f              = { &f, &g1, &g2, &g3, &g4, &g5 }
 };
 
