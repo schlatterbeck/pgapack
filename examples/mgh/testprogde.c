@@ -10,8 +10,8 @@ int nprob = 0;
 
 static const int popsizes [] =
 /*    1/10 2/11   3/12  4/13 5/14 6/15 7/16 8/17 9/18 */
-    {    6,  50,  2000,   60,  60,   6,   4,  40,  60
-    ,    4,  60,  60,     60,  60,  60,  60,  60,  60
+    {    6,  50,  2000,   60,  60,   6,   4,  40,   8
+    ,    4,   4,     4,   10,  16,  60,  60,  60,  60
     };
 
 /* Initialization ranges: Many badly scaled functions don't work at all
@@ -33,8 +33,8 @@ static const double * init_lower [] =
     , NULL
     , NULL
     , (double []){ 0, 0 }
-    , NULL
-    , NULL
+    , (double []){ 0, 0, 0, 0 }
+    , (double []){ 0, 0, 0 }
     , NULL
     , NULL
     , NULL
@@ -58,8 +58,8 @@ static const double * init_upper [] =
     , NULL
     , NULL
     , (double []){ 1e8, 1 }
-    , NULL
-    , NULL
+    , (double []){ 10, 10, 10, 10 }
+    , (double []){ 100, 100, 100 }
     , NULL
     , NULL
     , NULL
