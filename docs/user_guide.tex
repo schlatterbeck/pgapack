@@ -296,7 +296,7 @@ Section~\ref{sec:execute} shows how to compile, link, and execute a
 \begin{figure}
 \begin{verbatim}
 #include "pgapack.h"
-double evaluate (PGAContext *ctx, int p, int pop);
+double evaluate (PGAContext *ctx, int p, int pop, double *aux);
 
 int main(int argc, char **argv)
 {
@@ -308,7 +308,7 @@ int main(int argc, char **argv)
     return;
 }
 
-double evaluate (PGAContext *ctx, int p, int pop)
+double evaluate (PGAContext *ctx, int p, int pop, double *aux)
 {
     int i, nbits, stringlen;
 
@@ -341,8 +341,13 @@ that all \pga\ functions take the context variable as an argument (except {\tt
 PGACreate}, which creates the context variable).
 
 The {\tt evaluate} function must be written by the user, must return a {\tt
-double}, and must follow the exact calling sequence shown.  {\tt
-PGAGetStringLength} returns the string length.  {\tt PGAGetBinaryAllele}
+double}, and must follow the exact calling sequence shown. An evaluation
+function may return more values than just the return value in the array
+pointed to by \verb+aux+. This can be used for evaluating constraints for
+constrained problems or for multi-objective optimization. Usually the
+number of auxiliary return values is zero and the \verb+aux+ argument is
+ignored. For details, see section~\ref{sec:evaluation}.
+{\tt PGAGetStringLength} returns the string length.  {\tt PGAGetBinaryAllele}
 returns the value of the {\tt i}th bit of string {\tt p} in population {\tt
 pop}.
 
@@ -394,7 +399,10 @@ are omitted from the {\tt PGACreate} function call.  The context variable,
 {\tt ctx}, is declared {\tt integer} in Fortran.
 
 The evaluation function {\tt evaluate} must contain exactly the calling
-sequence shown and must return a {\tt double precision} value.  Note that {\tt
+sequence shown and must return a {\tt double precision} value. The
+\verb+aux+ value is optional in fortran because fortran does less strict
+type-checking than C and with standard calling conventions the argument
+can be omitted if not needed.  Note that {\tt
 evaluate} is declared in an {\tt external} statement in the program unit in
 which it is used as an actual argument.  This is a requirement of the Fortran
 language.  In Fortran, the range of allele values is {\tt 1:stringlen}, rather
@@ -407,7 +415,7 @@ than {\tt 0:stringlen-1} as in C.
 \begin{figure}
 \begin{verbatim}
 #include "pgapack.h"
-double evaluate (PGAContext *ctx, int p, int pop);
+double evaluate (PGAContext *ctx, int p, int pop, double *aux);
 
 int main(int argc, char **argv)
 {
@@ -499,7 +507,7 @@ it makes sense to apply DE to all individuals in each generation.
 \begin{figure}
 \begin{verbatim}
 #include "pgapack.h"
-double evaluate (PGAContext *ctx, int p, int pop);
+double evaluate (PGAContext *ctx, int p, int pop, double *aux);
 
 int main( int argc, char **argv )
 {
@@ -882,16 +890,19 @@ is the name of a user-supplied evaluation function that returns a {\tt double}
 ({\tt double precision} in Fortran) value that is the user's evaluation of an
 individual string.  In C the prototype for this function looks like
 \begin{verbatim}
-double evaluate (PGAContext *ctx, int p, int pop);
+double evaluate (PGAContext *ctx, int p, int pop, double *aux);
 \end{verbatim}
 and in Fortran
 \begin{verbatim}
-double precision function evaluate (ctx, p, pop)
+double precision function evaluate (ctx, p, pop, aux)
 integer ctx, p, pop
+double precision aux(*)
 \end{verbatim}
 The user {\em must} write the evaluation function, and it {\em must} have the
 calling sequence shown above and discussed further in
-Section~\ref{sec:evaluation}.  After {\tt PGARun} terminates, {\tt PGADestroy}
+Section~\ref{sec:evaluation}, except that depending on the architecture
+and the calling convention of the compiler, the aux argument can be left
+out.  After {\tt PGARun} terminates, {\tt PGADestroy}
 is called to release all memory allocated by \pga.
 \footnote{{\tt PGADestroy} will also call {\tt MPI\_finalize}, if MPI was
 started by {\tt PGACreate}.}
@@ -907,7 +918,7 @@ with other values may well yield better performance on any given problem.
 %*****************************************************************************
 \section{Population Replacement}\label{sec:population-replacement}
 %*****************************************************************************
-\pga supports several different population replacement schemes.
+\pga\ supports several different population replacement schemes.
 Among them the two most common replacement schemes in the literature.
 The first,
 the {\em generational replacement} genetic algorithm (GRGA), replaces the
@@ -1585,12 +1596,13 @@ sequence for this function (which we call {\tt evaluate} in the rest of this
 section, but may have any name) {\em must} follow the format given here.  In C
 the format is
 \begin{verbatim}
-double evaluate (PGAContext *ctx, int p, int pop);
+double evaluate (PGAContext *ctx, int p, int pop, double *aux);
 \end{verbatim}
 and in Fortran
 \begin{verbatim}
-double precision function evaluate (ctx, p, pop)
+double precision function evaluate (ctx, p, pop, aux)
 integer ctx, p, pop
+double precision aux(*)
 \end{verbatim}
 
 The function {\tt evaluate} will be called by {\tt PGARun} whenever a string
@@ -1599,10 +1611,57 @@ pop} that will be evaluated.  The correct values of {\tt p} and {\tt pop} will
 be passed to the evaluation function by {\tt PGARun}.  (If {\tt PGARun} is not
 used, {\tt PGAEvaluate} must be.  See Chapter~\ref{chp:explicit}.)
 As shown below,  {\tt p}
-and {\tt pop} are used for reading (and sometimes writing) allele values
+and {\tt pop} are used for reading (and sometimes writing) allele values.
 Sample evaluation functions
 are shown in Figures~\ref{example:simple-main} and
 \ref{example:maxbit-fortran}, and online in the {\tt ./examples} directory. 
+
+In addition to returning just one evaluation, \pga\ supports
+additional \textit{auxiliary} evaluations. The default use for this
+mechanism is the specification of \textit{constraints} on the objective
+function. If a problem does not allow all areas of the search space
+because it may contain invalid solutions, additional restrictions on the
+validity of points in the search space may be specified via constraints.
+
+Another use-case for auxiliary evaluations is multiobjective
+optimization: The algorithm is not just searching for \textit{one}
+solution but for an array of objectives that can usually not all be
+optimized to their optimum value. Instead a better value for one
+objective may necessitate a worse value for another objective. A
+multiobjective algorithm tries to find many \textit{non dominated}
+solutions to a problem (a solution is said to dominate another solution
+if it is better in at least one objective but not worse in any other
+objective). These non-dominated solutions are said to lie on a
+\textit{Pareto Front} after the mathematicial Vilfredo Pareto who first
+defined the concept today known as \textit{pareto optimality}. \pga\
+currently does not implement a multiobjective algorithm.
+
+By default, auxiliary evaluations are used for constraints. All
+auxiliary evaluation are summed if the value is positive. If it is zero
+or negative, the constraint is not violated and not included in the sum.
+So the algorithm is
+minimizing constraint violations.  Individuals are sorted by the amount
+of their constraint violations and the value of the objective function.
+If an individual without constraint violations is compared to one with
+constraint violations, the one without violations wins. For two
+individuals with constraint violations the one with the lower sum of
+violations wins. For two individuals without constraint violations the
+normal comparison (depending on the direction of the search, i.e.
+minimization or maximization) is used. This algorithm works better than
+trying to code the constraint violations into a complicated evaluation
+function. It was shown to work better than customized penalty functions
+by Deb \cite{Deb00}.
+
+Auxiliary evaluations are returned in an array pointed to by the \verb+aux+
+parameter of the users's evaluation function. To use auxiliary
+evaluations, the number of auxiliary evaluations has to be specified
+with the \verb+PGASetNumAuxEval+ function which gets the number of
+auxiliary evaluations as the second paramter. The default is 0.
+
+Note that auxiliary evaluations can not be used together with selection
+schemes that use mechanisms where individuals are not directly compared.
+These currently are proportional selection and stochastic universal
+selection, see section~\ref{sec:selection}.
 
 Traditionally, genetic algorithms assume fitness values are nonnegative and
 monotonically increasing the more fit a string is.  The user's evaluation of a
@@ -1647,6 +1706,14 @@ the worst string has a nonzero fitness.  The function call {\tt
 PGASetFitnessCmaxValue (ctx, 1.2)} will change the multiplier to 1.2
 Alternatively, if {\tt PGA\_FITNESSMIN\_RECIPROCAL} is specified the remapping
 is done by using the reciprocal of the evaluation function.
+
+Note that for algorithms that can directly compare individuals in the
+selection method (any of the tournament selection methods, truncation
+selection, and linear selection, see section~\ref{sec:selection}) or in
+the replacement scheme (restricted tournament replacement or pairwise
+best replacement, see section~\ref{sec:population-replacement}) do not
+use the fitness but compare the evaluation value (and optionally the sum
+of constraint violations) directly.
 
 \section{Accessing Allele Values}\label{sec:allele-access}
 
@@ -2036,7 +2103,7 @@ in Section~\ref{sec:par-explicit-usage}.
 \begin{figure}
 \begin{verbatim}
 #include "pgapack.h"
-double evaluate (PGAContext *ctx, int p, int pop);
+double evaluate (PGAContext *ctx, int p, int pop, double *aux);
 
 int main(int argc, char **argv)
 {
@@ -2071,7 +2138,7 @@ int main(int argc, char **argv)
 \begin{figure}
 \begin{verbatim}
 #include "pgapack.h"
-double evaluate(PGAContext *ctx, int p, int pop);
+double evaluate(PGAContext *ctx, int p, int pop, double *aux);
 
 int main(int argc, char **argv)
 {
@@ -2411,7 +2478,7 @@ integer on the interval $[1,L]$.
 \begin{verbatim}
 #include <pgapack.h>
 
-double evaluate (PGAContext *ctx, int p, int pop);
+double evaluate (PGAContext *ctx, int p, int pop, double *aux);
 int myMutation  (PGAContext *ctx, int p, int pop, double pm);
 
 int main( int argc, char **argv )
@@ -2438,7 +2505,7 @@ int myMutation(PGAContext *ctx, int p, int pop, double pm)
     }
     return ((double) count);
 }
-double evaluate(PGAContext *ctx, int p, int pop)
+double evaluate(PGAContext *ctx, int p, int pop, double *aux)
 {
      int stringlen, i, sum = 0;
      stringlen = PGAGetStringLength(ctx);
@@ -2820,7 +2887,7 @@ ANSI C {\tt memcmp} function for this purpose.
 
 \begin{figure}
 \begin{verbatim}
-double Evaluate(PGAContext *ctx, int p, int pop) {
+double Evaluate(PGAContext *ctx, int p, int pop, double *aux) {
     int i, j;
     double x[6];
     int sc[40];
@@ -2945,6 +3012,8 @@ user's hill-climbing function to get and set evaluation function values, and
 {\tt PGASetEvaluationUpToDateFlag} and {\tt
 PGAGetEvaluationUpToDateFlag} to get and set the flag that indicates
 whether an evaluation function value is up to date.
+These functions have an optional fifth argument \verb+aux+, that allows
+to get or set the auxiliary evaluations, see section~\ref{sec:evaluation}.
 \end{itemize}
 \end{sloppypar}
 
@@ -2968,7 +3037,7 @@ evaluation routine.
 \begin{verbatim}
 #include "pgapack.h"
 
-double evaluate(PGAContext *, int, int);
+double evaluate(PGAContext *, int, int, double *aux);
 void hillclimb (PGAContext *, int);
 
 int main(int argc, char **argv)
@@ -3123,7 +3192,7 @@ process is in the communicator.
 \begin{figure}
 \begin{verbatim}
 #include "pgapack.h"
-double evaluate (PGAContext *ctx, int p, int pop);
+double evaluate (PGAContext *ctx, int p, int pop, double *aux);
 
 int main(int argc, char **argv)
 {
@@ -3906,7 +3975,7 @@ void &  PGAReceiveIndividual(PGAContext *ctx, int p, int pop, int source, \\
 void &  PGARestart(PGAContext *ctx, int source\_pop, int dest\_pop) \\ \hline
 int &  PGARound(PGAContext *ctx, double x) \\ \hline
 void &  PGARun(PGAContext *ctx, double(*evaluate)(PGAContext *c, int p, int
-pop)) \\ \hline
+pop, double *aux)) \\ \hline
 void &  PGARunGM(PGAContext *ctx, double(*f)(PGAContext *, int, int), MPI\_Comm
 comm) \\ \hline
 void &  PGARunMutationAndCrossover(PGAContext *ctx, int oldpop, int newpop) \\
@@ -4187,7 +4256,7 @@ values specified at run time, we suggest that  your I/O that reads in \pga\
 parameters be done as follows:
 \begin{verbatim}
 #include "pgapack.h"
-double evaluate (PGAContext *ctx, int p, int pop);
+double evaluate (PGAContext *ctx, int p, int pop, double *aux);
 
 int main( int argc, char **argv )
 {
