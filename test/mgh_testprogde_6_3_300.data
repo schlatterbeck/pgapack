@@ -1,0 +1,64 @@
+Iter #     Field      Value
+10         Best       5.616452e-02
+Iter #     Field      Value
+20         Best       5.616452e-02
+Iter #     Field      Value
+30         Best       4.264002e-02
+Iter #     Field      Value
+40         Best       3.873600e-02
+Iter #     Field      Value
+50         Best       2.277508e-02
+Iter #     Field      Value
+60         Best       1.163343e-02
+Iter #     Field      Value
+70         Best       6.009930e-03
+Iter #     Field      Value
+80         Best       5.288881e-03
+Iter #     Field      Value
+90         Best       3.769796e-03
+Iter #     Field      Value
+100        Best       2.551619e-04
+Iter #     Field      Value
+110        Best       2.551619e-04
+Iter #     Field      Value
+120        Best       2.049162e-04
+Iter #     Field      Value
+130        Best       2.049162e-04
+Iter #     Field      Value
+140        Best       2.049162e-04
+Iter #     Field      Value
+150        Best       1.271597e-04
+Iter #     Field      Value
+160        Best       4.023170e-05
+Iter #     Field      Value
+170        Best       4.023170e-05
+Iter #     Field      Value
+180        Best       2.656472e-05
+Iter #     Field      Value
+190        Best       6.363053e-06
+Iter #     Field      Value
+200        Best       1.561456e-07
+Iter #     Field      Value
+210        Best       8.137780e-08
+Iter #     Field      Value
+220        Best       4.724339e-08
+Iter #     Field      Value
+230        Best       4.479536e-08
+Iter #     Field      Value
+240        Best       3.691179e-08
+Iter #     Field      Value
+250        Best       2.253589e-08
+Iter #     Field      Value
+260        Best       6.150481e-10
+Iter #     Field      Value
+270        Best       6.150481e-10
+Iter #     Field      Value
+280        Best       6.150481e-10
+Iter #     Field      Value
+290        Best       6.150481e-10
+Iter #     Field      Value
+300        Best       6.150481e-10
+The Best Evaluation: 6.150481e-10.
+The Best String:
+#   0: [   1.000006], [   1.000019], [  0.9999853]
+

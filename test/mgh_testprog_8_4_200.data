@@ -32,49 +32,46 @@
 
  Please enter the problem number and dimension now.
 Iter #     Field      Value
-10         Best       7.695719e+01
+10         Best       2.368905e-05
 Iter #     Field      Value
-20         Best       2.640653e+01
+20         Best       2.293236e-05
 Iter #     Field      Value
-30         Best       1.982556e+01
+30         Best       2.282700e-05
 Iter #     Field      Value
-40         Best       3.202522e+00
+40         Best       2.280336e-05
 Iter #     Field      Value
-50         Best       8.470667e-01
+50         Best       2.280336e-05
 Iter #     Field      Value
-60         Best       1.217897e-01
+60         Best       2.275358e-05
 Iter #     Field      Value
-70         Best       3.520551e-02
+70         Best       2.275358e-05
 Iter #     Field      Value
-80         Best       1.921255e-02
+80         Best       2.261397e-05
 Iter #     Field      Value
-90         Best       1.170397e-02
+90         Best       2.261397e-05
 Iter #     Field      Value
-100        Best       4.874557e-03
+100        Best       2.261397e-05
 Iter #     Field      Value
-110        Best       4.219795e-03
+110        Best       2.261397e-05
 Iter #     Field      Value
-120        Best       4.219795e-03
+120        Best       2.261397e-05
 Iter #     Field      Value
-130        Best       4.160234e-03
+130        Best       2.261397e-05
 Iter #     Field      Value
-140        Best       4.121089e-03
+140        Best       2.261397e-05
 Iter #     Field      Value
-150        Best       4.105280e-03
+150        Best       2.261397e-05
 Iter #     Field      Value
-160        Best       4.103663e-03
+160        Best       2.261397e-05
 Iter #     Field      Value
-170        Best       3.980735e-03
+170        Best       2.261397e-05
 Iter #     Field      Value
-180        Best       3.980735e-03
+180        Best       2.261397e-05
 Iter #     Field      Value
-190        Best       3.934711e-03
+190        Best       2.261397e-05
 Iter #     Field      Value
-200        Best       3.932492e-03
-The Best Evaluation: 3.932492e-03.
+200        Best       2.261397e-05
+The Best Evaluation: 2.261397e-05.
 The Best String:
-#   0: [  0.1879083], [ 0.04283224], [ 0.01474941], [0.004732192], [ 0.02693707]
-#   5: [ 0.05504489], [ 0.05349588], [ 0.04185069], [ 0.01926506], [ 0.01005231]
-#  10: [ 0.08346391], [ 0.06075698], [ 0.08087176], [   0.059282], [ 0.05553436]
-#  15: [ 0.06418961], [   0.170515], [ 0.02132589]
+#   0: [  0.2427104], [  0.2120711], [  0.2614724], [  0.2786331]
 

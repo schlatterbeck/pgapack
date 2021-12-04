@@ -32,49 +32,47 @@
 
  Please enter the problem number and dimension now.
 Iter #     Field      Value
-10         Best       1.147563e+00
+10         Best       4.817466e-01
 Iter #     Field      Value
-20         Best       6.076553e-01
+20         Best       1.785799e-03
 Iter #     Field      Value
-30         Best       1.098802e-01
+30         Best       9.680133e-04
 Iter #     Field      Value
-40         Best       2.649318e-02
+40         Best       4.434529e-04
 Iter #     Field      Value
-50         Best       3.813737e-04
+50         Best       3.554489e-04
 Iter #     Field      Value
-60         Best       1.477967e-04
+60         Best       2.984804e-04
 Iter #     Field      Value
-70         Best       1.445148e-04
+70         Best       2.975271e-04
 Iter #     Field      Value
-80         Best       1.440927e-04
+80         Best       2.959954e-04
 Iter #     Field      Value
-90         Best       1.440927e-04
+90         Best       2.943687e-04
 Iter #     Field      Value
-100        Best       1.440927e-04
+100        Best       2.943687e-04
 Iter #     Field      Value
-110        Best       1.436103e-04
+110        Best       2.943687e-04
 Iter #     Field      Value
-120        Best       1.436103e-04
+120        Best       2.943687e-04
 Iter #     Field      Value
-130        Best       1.436103e-04
+130        Best       2.943687e-04
 Iter #     Field      Value
-140        Best       1.436103e-04
+140        Best       2.943687e-04
 Iter #     Field      Value
-150        Best       1.434824e-04
+150        Best       2.943687e-04
 Iter #     Field      Value
-160        Best       1.434824e-04
+160        Best       2.943687e-04
 Iter #     Field      Value
-170        Best       1.432383e-04
+170        Best       2.943687e-04
 Iter #     Field      Value
-180        Best       1.432383e-04
+180        Best       2.942308e-04
 Iter #     Field      Value
-190        Best       1.432383e-04
+190        Best       2.942308e-04
 Iter #     Field      Value
-200        Best       1.429755e-04
-The Best Evaluation: 1.429755e-04.
+200        Best       2.942308e-04
+The Best Evaluation: 2.942308e-04.
 The Best String:
-#   0: [  0.1194897], [  0.1678787], [ 0.08786833], [ 0.09516114], [ 0.07707287]
-#   5: [  0.1745992], [  0.1073081], [ 0.06702518], [  0.1275839], [  0.1321675]
-#  10: [  0.1600776], [   0.144688], [  0.1001993], [ 0.05069375], [  0.0397595]
-#  15: [  0.1289088], [  0.1492293], [ 0.06574208]
+#   0: [  0.1996357], [ 0.03639168], [ 0.02903449], [ 0.02080967], [ 0.09115362]
+#   5: [  0.1136574], [ 0.06021585], [  0.1847994], [  0.2770668], [   0.441331]
 

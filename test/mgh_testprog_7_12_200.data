@@ -1,0 +1,79 @@
+ The following is a list of the test functions this program supports.
+ The number in parentheses after the name of the function is the
+ dimension of the problem.  If the dimension is not a constant (i.e.,
+ problems # 6-9, 13 - 15, and 18), the limitations on the dimension
+ follow in parentheses after the function name.
+
+ 1.  Helical Valley Function (3)
+ 2.  Biggs EXP6 function (6)
+ 3.  Gaussian Function (3)
+ 4.  Powell Badly Scaled Function (2)
+ 5.  Box Three-Dimensional Function (3)
+ 6.  Variably-dimentioned Function (variable)
+ 7.  Watson Function (2 - 31)
+ 8.  Penalty function I (variable)
+ 9.  Penalty function II (variable)
+ 10.  Brown Badly Scaled Function (2)
+ 11.  Brown and Dennis Function (4)
+ 12.  Gulf Research And Development Function (3)
+ 13.  Trigonometric Function (variable)
+ 14.  Extended Rosenbrock Function (even)
+ 15.  Extended Powell Singular Function (multiple of 4)
+ 16.  Beale Function (2)
+ 17.  Wood Function (4)
+ 18.  Chebyquad Function (variable less than 51)
+
+ You will need to enter both the problem number and the dimension of the
+ problem.  For problems with a constant dimension, use the number in
+ parenthesis.  For problems with variable dimension, make sure the
+ dimension that you choose falls within the stated limitations AND is
+ less than or equal to 100.  For example, to select the Watson function
+ with dimension twelve, enter the following: 7 12
+
+ Please enter the problem number and dimension now.
+Iter #     Field      Value
+10         Best       2.001623e+00
+Iter #     Field      Value
+20         Best       6.138323e-01
+Iter #     Field      Value
+30         Best       5.210466e-01
+Iter #     Field      Value
+40         Best       3.999177e-01
+Iter #     Field      Value
+50         Best       2.243619e-01
+Iter #     Field      Value
+60         Best       1.465316e-01
+Iter #     Field      Value
+70         Best       1.439971e-01
+Iter #     Field      Value
+80         Best       1.245435e-01
+Iter #     Field      Value
+90         Best       9.462985e-02
+Iter #     Field      Value
+100        Best       9.462985e-02
+Iter #     Field      Value
+110        Best       9.323257e-02
+Iter #     Field      Value
+120        Best       8.903613e-02
+Iter #     Field      Value
+130        Best       8.903613e-02
+Iter #     Field      Value
+140        Best       8.478810e-02
+Iter #     Field      Value
+150        Best       8.284091e-02
+Iter #     Field      Value
+160        Best       7.601727e-02
+Iter #     Field      Value
+170        Best       7.601727e-02
+Iter #     Field      Value
+180        Best       7.601260e-02
+Iter #     Field      Value
+190        Best       5.767432e-02
+Iter #     Field      Value
+200        Best       5.767432e-02
+The Best Evaluation: 5.767432e-02.
+The Best String:
+#   0: [   0.200465], [  0.9923867], [  0.3519658], [   0.294803], [  0.2276337]
+#   5: [ 0.02196467], [  0.1040105], [ 0.04211086], [  0.0942626], [  0.1168091]
+#  10: [ 0.04909557], [ 0.06824052]
+
