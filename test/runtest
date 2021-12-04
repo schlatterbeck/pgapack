@@ -30,7 +30,8 @@ else
     shift
     cmd=$1
     shift
-    if [ "$dir" = mgh -a "$cmd" = testprogde ]; then
+    if [ "$dir" = mgh -a '(' "$cmd" = testprogde -o "$cmd" = testprogdertr ')' ]
+    then
         ${mpicmd} ../examples/$dir/$cmd $@
     else
         for arg in $@; do
