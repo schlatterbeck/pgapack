@@ -11,7 +11,7 @@ int nprob = 0;
 static const int popsizes [] =
 /*    1/10 2/11   3/12  4/13 5/14 6/15 7/16 8/17 9/18 */
     {    6,  50,  2000,   60,  60,   6,   4,  40,   8
-    ,    4,   4,     4,   10,  16,  60,  60,  60,  60
+    ,    4,   4,     4,   10,  16,   4,   4,   4,  10
     };
 
 /* Initialization ranges: Many badly scaled functions don't work at all
