@@ -220,7 +220,7 @@ void PGASetIntegerInitPermute ( PGAContext *ctx, int min, int max)
       PGASetIntegerInitRange(ctx, low, high);
 
 ****************************************************************************U*/
-void PGASetIntegerInitRange (PGAContext *ctx, int *min, int *max)
+void PGASetIntegerInitRange (PGAContext *ctx, const int *min, const int *max)
 {
      int i;
 

@@ -1,4 +1,4 @@
-all: testprog
+all: testprog testprogde
 
 COMPILE.f = @$(FC) $(FFLAGS) -c
 
@@ -15,5 +15,8 @@ tprobs.a: $(OBJS)
 testprog: testprog.f tprobs.a
 	$(FC) $(FFLAGS) testprog.f tprobs.a $(LDFLAGS) -o testprog
 
+testprogde: testprogde.c tprobs.a
+	$(CC) $(CFLAGS) testprogde.c tprobs.a $(LDFLAGS) -o testprogde
+
 clean:
-	rm -f $(OBJS) tprobs.a testprog
+	rm -f $(OBJS) tprobs.a testprog testprogde

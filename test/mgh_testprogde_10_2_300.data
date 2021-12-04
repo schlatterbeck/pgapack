@@ -1,0 +1,64 @@
+Iter #     Field      Value
+10         Best       8.144997e+12
+Iter #     Field      Value
+20         Best       1.109385e+10
+Iter #     Field      Value
+30         Best       1.437475e+08
+Iter #     Field      Value
+40         Best       2.882913e+06
+Iter #     Field      Value
+50         Best       2.882913e+06
+Iter #     Field      Value
+60         Best       2.174400e+06
+Iter #     Field      Value
+70         Best       9.512375e+05
+Iter #     Field      Value
+80         Best       3.826725e+05
+Iter #     Field      Value
+90         Best       2.517572e+05
+Iter #     Field      Value
+100        Best       4.883050e+04
+Iter #     Field      Value
+110        Best       3.046449e+02
+Iter #     Field      Value
+120        Best       2.228045e+02
+Iter #     Field      Value
+130        Best       4.899078e+01
+Iter #     Field      Value
+140        Best       4.899078e+01
+Iter #     Field      Value
+150        Best       4.301937e+01
+Iter #     Field      Value
+160        Best       1.149628e-01
+Iter #     Field      Value
+170        Best       9.054403e-02
+Iter #     Field      Value
+180        Best       4.089361e-02
+Iter #     Field      Value
+190        Best       1.008019e-02
+Iter #     Field      Value
+200        Best       1.253090e-03
+Iter #     Field      Value
+210        Best       1.478014e-04
+Iter #     Field      Value
+220        Best       2.978163e-05
+Iter #     Field      Value
+230        Best       4.173661e-08
+Iter #     Field      Value
+240        Best       6.377401e-09
+Iter #     Field      Value
+250        Best       2.827251e-09
+Iter #     Field      Value
+260        Best       1.374941e-09
+Iter #     Field      Value
+270        Best       1.931869e-11
+Iter #     Field      Value
+280        Best       1.931869e-11
+Iter #     Field      Value
+290        Best       1.801108e-13
+Iter #     Field      Value
+300        Best       1.256082e-14
+The Best Evaluation: 1.256082e-14.
+The Best String:
+#   0: [    1000000], [      2e-06]
+

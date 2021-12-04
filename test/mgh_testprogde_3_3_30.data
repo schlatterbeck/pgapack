@@ -1,0 +1,10 @@
+Iter #     Field      Value
+10         Best       8.853951e-05
+Iter #     Field      Value
+20         Best       7.393123e-07
+Iter #     Field      Value
+30         Best       7.393123e-07
+The Best Evaluation: 7.393123e-07.
+The Best String:
+#   0: [  0.3992372], [  0.9990791], [-0.0007697923]
+

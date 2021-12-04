@@ -224,7 +224,7 @@ void PGASetRealInitPercent ( PGAContext *ctx, double *median, double *percent)
      PGASetRealInitRange(ctx, low, high);
 
 ****************************************************************************U*/
-void PGASetRealInitRange (PGAContext *ctx, double *min, double *max)
+void PGASetRealInitRange (PGAContext *ctx, const double *min, const double *max)
 {
      int i;
     PGADebugEntered("PGASetRealInitRange");

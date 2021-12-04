@@ -21,17 +21,21 @@ if [ -n "$MPI" -a "$MPI" != serial ]; then
 fi
 
 fn=$(basename $1 .data)
-if [ "$fn" != instverf ]; then
-    args=$(echo $fn | sed 's/_/ /g')
-    set $args
+args=$(echo $fn | sed 's/_/ /g')
+set $args
+if [ "$fn" = instverf ]; then
+    ${mpicmd} instverf
+else
     dir=$1
     shift
     cmd=$1
     shift
-    for arg in $@; do
-        echo "$arg"
-    done | ${mpicmd} ../examples/$dir/$cmd | grep -v '\?'
-else
-    ${mpicmd} instverf
+    if [ "$dir" = mgh -a "$cmd" = testprogde ]; then
+        ${mpicmd} ../examples/$dir/$cmd $@
+    else
+        for arg in $@; do
+            echo "$arg"
+        done | ${mpicmd} ../examples/$dir/$cmd | grep -v '\?'
+    fi
 fi
 
