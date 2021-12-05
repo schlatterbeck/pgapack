@@ -184,14 +184,6 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 	    ctx->cops.GeneDistance =
                 (double(*)(PGAContext *, int, int, int, int))f;
 	break;
-      case PGA_USERFUNCTION_EVAL_COMPARE:
-	if (ctx->sys.UserFortran)
-	    ctx->fops.EvalCompare =
-                (int(*)(void *, void *, void *, void *, void *))f;
-	else
-	    ctx->cops.EvalCompare =
-                (int(*)(PGAContext *, int, int, int, int))f;
-	break;
       default:
 	PGAError(ctx, "PGASetUserFunction: Invalid constant:",
 		 PGA_FATAL, PGA_INT, (void *) &constant);

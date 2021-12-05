@@ -242,8 +242,7 @@ extern "C" {
 #define PGA_USERFUNCTION_ENDOFGEN                10
 #define PGA_USERFUNCTION_GEN_DIFFERENCE          11
 #define PGA_USERFUNCTION_PRE_EVAL                12
-#define PGA_USERFUNCTION_EVAL_COMPARE            13
-#define PGA_NUM_USERFUNCTIONS                    13
+#define PGA_NUM_USERFUNCTIONS                    12
 
 /*****************************************
 *           MPI SEND/RECV TAGS           *
