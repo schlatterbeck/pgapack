@@ -767,7 +767,7 @@ MPI_Datatype PGABinaryBuildDatatype(PGAContext *ctx, int p, int pop)
     PGADebugEntered("PGABinaryBuildDatatype");
 
     traveller = PGAGetIndividual(ctx, p, pop);
-    MPI_Get_address(&traveller->evalfunc, &displs[0]);
+    MPI_Get_address(&traveller->evalue, &displs[0]);
     counts[0] = 1;
     types[0]  = MPI_DOUBLE;
 

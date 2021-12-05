@@ -48,6 +48,43 @@ privately owned rights.
 #include "pgapack.h"
 
 /*U****************************************************************************
+  INDGetAuxTotal - Compute total value over all aux evaluations
+
+  Category: Operators
+
+  Inputs:
+    ind   - Pointer to Individual
+
+  Outputs:
+    Computed or cached total value over all aux evaluations
+    This is the sum of all *positive* individual aux evaluations.
+    The semantics is a total value of all constraint violations.
+
+  Example:
+    PGAIndividual *ind = PGAGetIndividual (ctx, p, PGA_OLDPOP);
+    double result;
+    :
+    result = INDGetAuxTotal (ind);
+
+****************************************************************************U*/
+double INDGetAuxTotal (PGAIndividual *ind)
+{
+    PGAContext *ctx = ind->ctx;
+    if (!ind->auxtotaluptodate) {
+        int i;
+        double s = 0;
+        for (i=0; i<ctx->ga.NumAuxEval; i++) {
+            if (ind->auxeval [i] > 0) {
+                s += ind->auxeval [i];
+            }
+        }
+        ind->auxtotal = s;
+        ind->auxtotaluptodate = PGA_TRUE;
+    }
+    return ind->auxtotal;
+}
+
+/*U****************************************************************************
   PGAGetAuxTotal - Compute total value over all aux evaluations
 
   Category: Operators
@@ -72,18 +109,7 @@ privately owned rights.
 double PGAGetAuxTotal (PGAContext *ctx, int p, int pop)
 {
     PGAIndividual *ind = PGAGetIndividual(ctx, p, pop);
-    if (!ind->auxtotaluptodate) {
-        int i;
-        double s = 0;
-        for (i=0; i<ctx->ga.NumAuxEval; i++) {
-            if (ind->auxeval [i] > 0) {
-                s += ind->auxeval [i];
-            }
-        }
-        ind->auxtotal = s;
-        ind->auxtotaluptodate = PGA_TRUE;
-    }
-    return ind->auxtotal;
+    return INDGetAuxTotal (ind);
 }
 
 /*U****************************************************************************
@@ -715,7 +741,7 @@ int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
     for (i=1; i<ctx->ga.TournamentSize; i++) {
         int mn = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
         /* use '>=' for backwards-compat with prev. binary tournament */
-        if (PGAEvalCompare (ctx, mn, pop, m, pop) >= 0) {
+        if (PGAEvalCompare (ctx, mn, pop, m, pop) <= 0) {
             m = mn;
         }
     }
@@ -792,7 +818,7 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
     m = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
     for (i=1; i<ctx->ga.TournamentSize; i++) {
         int mn = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
-        if (PGAEvalCompare (ctx, mn, pop, m, pop) >= 0) {
+        if (PGAEvalCompare (ctx, mn, pop, m, pop) <= 0) {
             m = mn;
         }
     }
@@ -852,18 +878,6 @@ int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
     l = PGASelectTruncation (ctx, PGA_OLDPOP);
 
 ****************************************************************************I*/
-/* Helper function making PGAEvalCompare compatible with qsort
- * This needs to set poptmp and ctxtmp before sorting
- */
-
-static int poptmp = -1;
-static PGAContext *ctxtmp = NULL;
-static int string_compare_helper (const void *a, const void *b)
-{
-    const int *aa = a, *bb = b;
-    return PGAEvalCompare (ctxtmp, *aa, poptmp, *bb, poptmp);
-}
-
 int PGASelectTruncation (PGAContext *ctx, int pop)
 {
     int m = -1;
@@ -889,20 +903,8 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
         perm_idx = k;
     }
     if (last_generation != ctx->ga.iter) {
-        int bestidx [ctx->ga.PopSize];
-        int i;
-        for (i=0; i<ctx->ga.PopSize; i++) {
-            bestidx [i] = i;
-        }
-        poptmp = pop;
-        ctxtmp = ctx;
-        qsort (bestidx, ctx->ga.PopSize, sizeof (int), string_compare_helper);
-        poptmp = -1;
-        ctxtmp = NULL;
-
-        for (i=0; i<k; i++) {
-            kbest [i] = bestidx [i];
-        }
+        /* Returns sorted list of indeces in kbest, no need to initialize */
+        PGAEvalSort (ctx, pop, kbest);
         last_generation = ctx->ga.iter;
         perm_idx = k;
     }

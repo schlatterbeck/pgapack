@@ -45,6 +45,7 @@ privately owned rights.
 *              Brian P. Walenz
 *****************************************************************************/
 
+#include <assert.h>
 #include "pgapack.h"
 
 /*U****************************************************************************
@@ -87,70 +88,59 @@ privately owned rights.
       :
 
 ****************************************************************************U*/
-void PGASortPop ( PGAContext *ctx, int pop )
+void PGASortPop (PGAContext *ctx, int pop)
 {
     int i,j;
-    PGADebugEntered("PGASortPop");
+    PGAIndividual *popptr = pop == PGA_OLDPOP ? ctx->ga.oldpop : ctx->ga.newpop;
+
+    PGADebugEntered ("PGASortPop");
+    if (pop != PGA_OLDPOP && pop != PGA_NEWPOP) {
+        PGAError(ctx,
+                 "PGASort: Invalid value of pop:",
+                 PGA_FATAL,
+                 PGA_INT,
+                 (void *) &pop);
+    }
     switch (ctx->ga.PopReplace) {
     case PGA_POPREPL_BEST:
-            switch ( pop ) {
-            case PGA_OLDPOP:
-                for (i = 0 ; i < ctx->ga.PopSize ; i++ ) {
-                    ctx->ga.sorted[i] = i;
-                    ctx->scratch.dblscratch[i] = ctx->ga.oldpop[i].fitness;
-                };
-                break;
-            case PGA_NEWPOP:
-                for (i = 0 ; i < ctx->ga.PopSize ; i++ ) {
-                    ctx->ga.sorted[i] = i;
-                    ctx->scratch.dblscratch[i] = ctx->ga.newpop[i].fitness;
-                };
-                break;
-            default:
-                PGAError( ctx,
-                         "PGASort: Invalid value of pop:",
-                         PGA_FATAL,
-                         PGA_INT,
-                         (void *) &pop );
-                break;
-            };
-            PGADblHeapSort ( ctx, ctx->scratch.dblscratch, ctx->ga.sorted,
-                            ctx->ga.PopSize );
-            break;
+        for (i=0; i<ctx->ga.PopSize; i++) {
+            ctx->ga.sorted [i] = i;
+            ctx->scratch.dblscratch [i] = popptr [i].fitness;
+        }
+        PGADblHeapSort (ctx, ctx->scratch.dblscratch, ctx->ga.sorted,
+                        ctx->ga.PopSize);
+# if 0
+        /* No need to init ga.sorted, done by PGAEvalSort */
+        { int sorted [ctx->ga.PopSize];
+            PGAEvalSort (ctx, pop, sorted);
+            for (i=0; i<ctx->ga.PopSize; i++) {
+                assert (ctx->ga.sorted [i] == sorted [i]);
+            }
+        }
+# endif
+        break;
     case PGA_POPREPL_RANDOM_REP:
-        if ((pop != PGA_OLDPOP) && (pop != PGA_NEWPOP))
-            PGAError( ctx,
-                     "PGASort: Invalid value of pop:",
-                      PGA_FATAL,
-                      PGA_INT,
-                      (void *) &pop );
         for (i = 0; i < ctx->ga.PopSize; i++) {
-            ctx->scratch.intscratch[i] = i;
+            ctx->scratch.intscratch [i] = i;
         };
         for (i = 0; i < ctx->ga.PopSize; i++) {
-            j = PGARandomInterval ( ctx, 0, ctx->ga.PopSize-1 );
-            ctx->ga.sorted[i] = ctx->scratch.intscratch[j];
+            j = PGARandomInterval (ctx, 0, ctx->ga.PopSize-1);
+            ctx->ga.sorted [i] = ctx->scratch.intscratch [j];
         };
         break;
     case PGA_POPREPL_RANDOM_NOREP:
-        if ((pop != PGA_OLDPOP) && (pop != PGA_NEWPOP))
-            PGAError( ctx,
-                     "PGASort: Invalid value of pop:",
-                      PGA_FATAL,
-                      PGA_INT,
-                      (void *) &pop );
         for (i = 0; i < ctx->ga.PopSize; i++) {
-            ctx->scratch.intscratch[i] = i;
+            ctx->scratch.intscratch [i] = i;
         };
         for (i = 0; i < ctx->ga.PopSize; i++) {
-            j = PGARandomInterval ( ctx, 0, ctx->ga.PopSize-i-1 );
+            j = PGARandomInterval (ctx, 0, ctx->ga.PopSize-i-1);
             ctx->ga.sorted[i] = ctx->scratch.intscratch[j];
-            ctx->scratch.intscratch[j] =
-                ctx->scratch.intscratch[ctx->ga.PopSize-i-1];
+            ctx->scratch.intscratch [j] =
+                ctx->scratch.intscratch [ctx->ga.PopSize-i-1];
         };
         break;
     }
-    PGADebugExited("PGASortPop");
+    PGADebugExited ("PGASortPop");
 }
 
 
@@ -539,7 +529,7 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
         }
 
         /* If new population individual is better */
-        if (PGAEvalCompare (ctx, i, PGA_NEWPOP, closest, PGA_OLDPOP) >= 0) {
+        if (PGAEvalCompare (ctx, i, PGA_NEWPOP, closest, PGA_OLDPOP) <= 0) {
             /* Copy i in PGA_NEWPOP to closest in PGA_OLDPOP */
             PGACopyIndividual (ctx, i, PGA_NEWPOP, closest, PGA_OLDPOP);
         }
@@ -592,7 +582,7 @@ void PGAPairwiseBestReplacement (PGAContext *ctx)
         /* Note the '<=' comparison, differential evolution can walk across
          * areas with equal evaluation this way
          */
-        if (PGAEvalCompare (ctx, i, PGA_NEWPOP, i, PGA_OLDPOP) >= 0) {
+        if (PGAEvalCompare (ctx, i, PGA_NEWPOP, i, PGA_OLDPOP) <= 0) {
             /* Copy i in PGA_NEWPOP to i in PGA_OLDPOP */
             PGACopyIndividual (ctx, i, PGA_NEWPOP, i, PGA_OLDPOP);
         }

@@ -296,7 +296,7 @@ void PGAPrintIndividual ( PGAContext *ctx, FILE *fp, int p, int pop )
 
     ind = PGAGetIndividual ( ctx, p, pop );
 
-    fprintf( fp,"%d  %e %e ", p, ind->evalfunc, ind->fitness);
+    fprintf( fp,"%d  %e %e ", p, ind->evalue, ind->fitness);
     if ( ind->evaluptodate )
         fprintf( fp, "T\n" );
     else

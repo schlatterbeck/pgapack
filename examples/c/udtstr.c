@@ -214,7 +214,7 @@ MPI_Datatype BuildDT(PGAContext *ctx, int p, int pop) {
    *  the user still must include it.  See pgapack.h for details one the
    *  fields (under PGAIndividual)
    */
-  MPI_Get_address(&P->evalfunc, &displs[0]);
+  MPI_Get_address(&P->evalue, &displs[0]);
   counts[0] = 2;
   types[0]  = MPI_DOUBLE;
 

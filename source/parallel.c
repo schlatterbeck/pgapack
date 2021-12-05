@@ -233,7 +233,7 @@ MPI_Datatype PGABuildEvaluation (PGAContext *ctx, int p, int pop)
     PGAIndividual *traveller;      /* address of individual in question */
 
     traveller = PGAGetIndividual(ctx, p, pop);
-    MPI_Get_address(&traveller->evalfunc, &displs[0]);
+    MPI_Get_address(&traveller->evalue, &displs[0]);
     counts[0] = 1;
     types[0]  = MPI_DOUBLE;
 
@@ -479,7 +479,7 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
             , MPI_ANY_SOURCE, PGA_COMM_EVALOFSTRING, comm, &stat
             );
 	p = work [stat.MPI_SOURCE];
-        PGASetEvaluation (ctx, p, pop, tmp1->evalfunc, tmp1->auxeval);
+        PGASetEvaluation (ctx, p, pop, tmp1->evalue, tmp1->auxeval);
 #if DEBUG_EVAL
 	printf("%4d: %10.8e Slave %d  Sent %d\n", work[stat.MPI_SOURCE],
 	       e, stat.MPI_SOURCE, k); fflush(stdout);
@@ -501,7 +501,7 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
             , MPI_ANY_SOURCE, PGA_COMM_EVALOFSTRING, comm, &stat
             );
         p = work [stat.MPI_SOURCE];
-        PGASetEvaluation (ctx, p, pop, tmp1->evalfunc, tmp1->auxeval);
+        PGASetEvaluation (ctx, p, pop, tmp1->evalue, tmp1->auxeval);
 	sentout--;
 #if DEBUG_EVAL
 	printf("%4d: %10.8e Slave %d\n",

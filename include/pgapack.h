@@ -260,13 +260,15 @@ extern "C" {
 *****************************************/
 
 typedef struct {                    /* primary population data structure   */
-  double evalfunc;                  /* evaluation function value           */
+  double evalue;                    /* evaluation function value           */
   double fitness;                   /* fitness    function value           */
-  int    evaluptodate;              /* flag whether evalfunc is current    */
+  int    evaluptodate;              /* flag whether evalue is current    */
   void   *chrom;                    /* pointer to the GA string            */
   double *auxeval;                  /* Auxiliary evaluations               */
   double auxtotal;                  /* Total aux evaluation                */
   int    auxtotaluptodate;          /* flag wether auxtotal is current     */
+  /* The following is not transmitted via MPI */
+  struct PGAContext *ctx;           /* Pointer to our PGAContext           */
 } PGAIndividual;
 
 
@@ -811,8 +813,6 @@ void PGASetMutationOnlyFlag( PGAContext *ctx, int flag);
 int PGAGetMutationOrCrossoverFlag (PGAContext *ctx);
 int PGAGetMutationAndCrossoverFlag (PGAContext *ctx);
 int PGAGetMutationOnlyFlag (PGAContext *ctx);
-void PGARestrictedTournamentReplacement (PGAContext *ctx);
-void PGAPairwiseBestReplacement (PGAContext *ctx);
 
 /*****************************************
 *          pop.c
@@ -828,6 +828,8 @@ void PGASetPopSize (PGAContext *ctx, int popsize);
 void PGASetNumReplaceValue( PGAContext *ctx, int pop_replace);
 void PGASetPopReplaceType( PGAContext *ctx, int pop_replace);
 void PGASetRTRWindowSize (PGAContext *ctx, int window);
+void PGARestrictedTournamentReplacement (PGAContext *ctx);
+void PGAPairwiseBestReplacement (PGAContext *ctx);
 
 /*****************************************
 *          random.c
@@ -921,6 +923,7 @@ void PGASetTruncationProportion (PGAContext *ctx, double proportion);
 double PGAGetTruncationProportion (PGAContext *ctx);
 void PGASetRandomizeSelect (PGAContext *ctx, int value);
 int PGAGetRandomizeSelect (PGAContext *ctx);
+double INDGetAuxTotal (PGAIndividual *ind);
 double PGAGetAuxTotal (PGAContext *ctx, int p, int pop);
 
 /*****************************************
@@ -972,7 +975,9 @@ void PGAUpdateAverage(PGAContext *ctx, int pop);
 void PGAUpdateOnline(PGAContext *ctx, int pop);
 void PGAUpdateOffline(PGAContext *ctx, int pop);
 int PGAComputeSimilarity(PGAContext *ctx, PGAIndividual *pop);
+int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2);
 int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+void PGAEvalSort (PGAContext *ctx, int pop, int *idx);
 
 #ifdef __cplusplus
 }

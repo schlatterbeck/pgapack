@@ -93,7 +93,7 @@ void _PGASetEvaluation
                    PGA_DOUBLE, (void *) &val );
 
     ind               = PGAGetIndividual (ctx, p, pop);
-    ind->evalfunc     = val;
+    ind->evalue       = val;
     ind->evaluptodate = PGA_TRUE;
     /* In serial evaluation it will occur that the aux array is modified
      * in place, so we do not need to copy if it's the same pointer
@@ -160,7 +160,7 @@ double _PGAGetEvaluation (PGAContext *ctx, int p, int pop, const double **aux)
         *aux = ind->auxeval;
     }
     PGADebugExited("PGAGetEvaluation");
-    return(ind->evalfunc);
+    return(ind->evalue);
 }
 
 /*U***************************************************************************

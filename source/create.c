@@ -1067,13 +1067,18 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
 
     PGADebugEntered("PGACreateIndividual");
 
-    ind->evalfunc         = 0.0;
+    ind->ctx              = ctx;
+    ind->evalue           = 0.0;
     ind->fitness          = 0.0;
     ind->evaluptodate     = PGA_FALSE;
     ind->auxtotal         = 0.0;
     ind->auxtotaluptodate = PGA_FALSE;
     if (ctx->ga.NumAuxEval) {
         ind->auxeval = malloc (sizeof (double) * ctx->ga.NumAuxEval);
+        if (ind->auxeval == NULL) {
+            PGAError(ctx, "PGACreateIndividual: Failed to allocate auxeval",
+                     PGA_FATAL, PGA_VOID, NULL);
+        }
     } else {
         ind->auxeval = NULL;
     }

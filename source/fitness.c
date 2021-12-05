@@ -111,7 +111,7 @@ void PGAFitness ( PGAContext *ctx, int popindex )
     /* put raw fitness into fitness field */
 
     for( i=0; i<ctx->ga.PopSize; i++ )
-        (pop+i)->fitness = (pop+i)->evalfunc;
+        (pop+i)->fitness = (pop+i)->evalue;
 
     /* translate to all positive sequence (if necessary) */
 
@@ -670,13 +670,13 @@ void PGAFitnessMinCmax ( PGAContext *ctx, PGAIndividual *pop )
     cmax = 0.;
 
     for(i=0; i<ctx->ga.PopSize; i++)
-        if ( (pop+i)->evalfunc > cmax )
-            cmax = (pop+i)->evalfunc;
+        if ( (pop+i)->evalue > cmax )
+            cmax = (pop+i)->evalue;
 
     cmax *= ctx->ga.FitnessCmaxValue; /* so worst string has nonzero fitness */
 
     for(i=0;i<ctx->ga.PopSize;i++)
-        (pop+i)->fitness = cmax - (pop+i)->evalfunc;
+        (pop+i)->fitness = cmax - (pop+i)->evalue;
 
     PGADebugExited("PGAFitnessMinCmax");
 }
