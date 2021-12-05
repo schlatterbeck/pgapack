@@ -91,7 +91,6 @@ privately owned rights.
 void PGASortPop (PGAContext *ctx, int pop)
 {
     int i,j;
-    PGAIndividual *popptr = pop == PGA_OLDPOP ? ctx->ga.oldpop : ctx->ga.newpop;
 
     PGADebugEntered ("PGASortPop");
     if (pop != PGA_OLDPOP && pop != PGA_NEWPOP) {
@@ -103,21 +102,8 @@ void PGASortPop (PGAContext *ctx, int pop)
     }
     switch (ctx->ga.PopReplace) {
     case PGA_POPREPL_BEST:
-        for (i=0; i<ctx->ga.PopSize; i++) {
-            ctx->ga.sorted [i] = i;
-            ctx->scratch.dblscratch [i] = popptr [i].fitness;
-        }
-        PGADblHeapSort (ctx, ctx->scratch.dblscratch, ctx->ga.sorted,
-                        ctx->ga.PopSize);
-# if 0
         /* No need to init ga.sorted, done by PGAEvalSort */
-        { int sorted [ctx->ga.PopSize];
-            PGAEvalSort (ctx, pop, sorted);
-            for (i=0; i<ctx->ga.PopSize; i++) {
-                assert (ctx->ga.sorted [i] == sorted [i]);
-            }
-        }
-# endif
+        PGAEvalSort (ctx, pop, ctx->ga.sorted);
         break;
     case PGA_POPREPL_RANDOM_REP:
         for (i = 0; i < ctx->ga.PopSize; i++) {

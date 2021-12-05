@@ -1,13 +1,13 @@
 Iter #     Field      Value
-10         Best       -2.100000e+01
+10         Best       -2.200000e+01
 Iter #     Field      Value
-20         Best       -2.300000e+01
+20         Best       -2.400000e+01
 Iter #     Field      Value
-30         Best       -2.600000e+01
+30         Best       -2.400000e+01
 Iter #     Field      Value
-40         Best       -2.600000e+01
+40         Best       -2.700000e+01
 Iter #     Field      Value
-50         Best       -2.700000e+01
+50         Best       -2.900000e+01
 Iter #     Field      Value
 60         Best       -2.900000e+01
 Iter #     Field      Value
@@ -20,7 +20,7 @@ Iter #     Field      Value
 100        Best       -2.900000e+01
 The Best Evaluation: -2.900000e+01.
 The Best String:
-[ 00000000100000000111000101101100000001110000000001 ]
+[ 00000010100000001011000000011000001100100000000000 ]
 
 The real interpretation:
-#   0: [       -5.1], [      -5.05], [      -4.21], [      -5.05], [      -5.11]
+#   0: [      -5.02], [      -5.01], [      -5.06], [      -4.62], [      -5.12]

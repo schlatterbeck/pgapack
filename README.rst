@@ -23,6 +23,11 @@ Updated December 2021:
   constrained optimization you will only have to change your objective
   function to add this paramter, it is unused in that configuration.
   In Fortran you can get away without any changes.
+- This release probably changes the path an optimization takes because we
+  use a new (stable) sort for sorting populations during copying of
+  individuals for elitist algorithms. This can result in different
+  individuals being copied (which have the same evaluation but might have
+  different genetic material).
 - Add auxiliary evaluations, currently only used for constrained
   optimization from a paper by Deb, 2000 (see user guide for citation). 
   To find out about the new feature see the user guide, section 4.9
