@@ -1,4 +1,5 @@
-all: testprog testprogde testprogdertr
+PROGS=testprog testprogde testprogdertr testprogmax
+all: $(PROGS)
 
 COMPILE.f = @$(FC) $(FFLAGS) -c
 
@@ -15,6 +16,9 @@ tprobs.a: $(OBJS)
 testprog: testprog.f tprobs.a
 	$(FC) $(FFLAGS) testprog.f tprobs.a $(LDFLAGS) -o testprog
 
+testprogmax: testprogmax.f tprobs.a
+	$(FC) $(FFLAGS) testprogmax.f tprobs.a $(LDFLAGS) -o testprogmax
+
 testprogde: testprogde.c tprobs.a
 	$(CC) $(CFLAGS) testprogde.c tprobs.a $(LDFLAGS) -o testprogde
 
@@ -22,4 +26,4 @@ testprogdertr: testprogdertr.c tprobs.a
 	$(CC) $(CFLAGS) testprogdertr.c tprobs.a $(LDFLAGS) -o testprogdertr
 
 clean:
-	rm -f $(OBJS) tprobs.a testprog testprogde
+	rm -f $(OBJS) tprobs.a $(PROGS)
