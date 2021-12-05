@@ -367,7 +367,7 @@ int PGAGetBestIndex(PGAContext *ctx, int pop)
                      "date:", PGA_FATAL, PGA_INT, (void *) &p);
 
     for (p=1; p<ctx->ga.PopSize; p++) {
-        if (PGAStringCompare (ctx, p, pop, Best_indx, pop) > 0) {
+        if (PGAEvalCompare (ctx, p, pop, Best_indx, pop) > 0) {
             Best_indx = p;
         }
     }
@@ -603,3 +603,103 @@ int PGAComputeSimilarity(PGAContext *ctx, PGAIndividual *pop)
 
      return(100 * max / ctx->ga.PopSize);
 }
+
+/* Used in PGAEvalCompare below */
+static inline double CMP (double a, double b)
+{
+    return (a < b ? -1 : (a > b ? 1 : 0));
+}
+
+/*U****************************************************************************
+  PGAEvalCompare - Compare two strings for selection.
+  This typically simply compares fitness.
+  But if auxiliary evaluations are defined, the auxiliary evaluations are
+  treated as constraints. This function is a user function and can be
+  redefined for other purposes: By redefining this function, e.g.,
+  instead of using the aux evaluations for constraint-handling, instead
+  (or in addition), multi objective evaluation can be implemented.
+  The default handling of auxiliary evaluations is incompatible with
+  certain selection schemes, see checks in create.c
+
+  Note that PGAEvalCompare is now used in several contexts, including
+  finding the best evaluation. For very badly scaled problems, the
+  default fitness computation will degenerate if there are very large
+  evaluation values and very small ones. In that case the fitness will
+  not reflect the evaluation. Therefore PGAEvalCompare will now always
+  sort on evaluation values ignoring the fitness. This improves
+  Tournament selection for very badly scaled problems.
+
+  Category: Operators
+
+  Inputs:
+    ctx   - context variable
+    p1    - first string to compare
+    pop1  - symbolic constant of population of first string
+    p2    - second string to compare
+    pop2  - symbolic constant of population of second string
+
+  Outputs:
+    <0 if p2 is "better" than p1
+    >0 if p1 is "better" than p2
+    0  if both compare equal
+    Thinks of this as sorting individuals by decreasing fitness or
+    increasing constraint violations.
+
+  Example:
+    PGAContext *ctx;
+    int result;
+    :
+    result = PGAEvalCompare(ctx, p1, PGA_OLDPOP, p2, PGA_OLDPOP);
+
+****************************************************************************U*/
+int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+{
+    double auxt1 = 0, auxt2 = 0;
+    int dir = PGAGetOptDirFlag (ctx);
+    PGAIndividual *ind1, *ind2;
+    if (!PGAGetEvaluationUpToDateFlag (ctx, p1, pop1)) {
+        PGAError
+            ( ctx
+            , "PGAEvalCompare: first individual not up to date:"
+            , PGA_FATAL, PGA_INT, (void *) &p1
+            );
+    }
+    if (!PGAGetEvaluationUpToDateFlag (ctx, p2, pop2)) {
+        PGAError
+            ( ctx
+            , "PGAEvalCompare: second individual not up to date:"
+            , PGA_FATAL, PGA_INT, (void *) &p2
+            );
+    }
+    if (ctx->ga.NumAuxEval > 0) {
+        auxt1 = PGAGetAuxTotal (ctx, p1, pop1);
+        auxt2 = PGAGetAuxTotal (ctx, p2, pop2);
+    }
+    if (auxt1 || auxt2) {
+        return CMP (auxt2, auxt1);
+    }
+    /* We might use the fitness if both populations are the same
+       otherwise fitness values are not comparable. But we now
+       use the evaluation in any case.
+     */
+    ind1 = PGAGetIndividual (ctx, p1, pop1);
+    ind2 = PGAGetIndividual (ctx, p2, pop2);
+    switch (dir) {
+    case PGA_MAXIMIZE:
+        return CMP (ind1->evalfunc, ind2->evalfunc);
+        break;
+    case PGA_MINIMIZE:
+        return CMP (ind2->evalfunc, ind1->evalfunc);
+        break;
+    default:
+        PGAError
+            (ctx
+            , "PGAEvalCompare: Invalid value of PGAGetOptDirFlag:"
+            , PGA_FATAL, PGA_INT, (void *) &dir
+            );
+        break;
+    }
+    /* notreached */
+    return 0;
+}
+

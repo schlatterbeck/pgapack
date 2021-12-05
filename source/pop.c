@@ -539,7 +539,7 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
         }
 
         /* If new population individual is better */
-        if (PGAStringCompare (ctx, i, PGA_NEWPOP, closest, PGA_OLDPOP) >= 0) {
+        if (PGAEvalCompare (ctx, i, PGA_NEWPOP, closest, PGA_OLDPOP) >= 0) {
             /* Copy i in PGA_NEWPOP to closest in PGA_OLDPOP */
             PGACopyIndividual (ctx, i, PGA_NEWPOP, closest, PGA_OLDPOP);
         }
@@ -592,7 +592,7 @@ void PGAPairwiseBestReplacement (PGAContext *ctx)
         /* Note the '<=' comparison, differential evolution can walk across
          * areas with equal evaluation this way
          */
-        if (PGAStringCompare (ctx, i, PGA_NEWPOP, i, PGA_OLDPOP) >= 0) {
+        if (PGAEvalCompare (ctx, i, PGA_NEWPOP, i, PGA_OLDPOP) >= 0) {
             /* Copy i in PGA_NEWPOP to i in PGA_OLDPOP */
             PGACopyIndividual (ctx, i, PGA_NEWPOP, i, PGA_OLDPOP);
         }

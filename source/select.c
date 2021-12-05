@@ -47,11 +47,6 @@ privately owned rights.
 
 #include "pgapack.h"
 
-static inline double CMP (double a, double b)
-{
-    return (a < b ? -1 : (a > b ? 1 : 0));
-}
-
 /*U****************************************************************************
   PGAGetAuxTotal - Compute total value over all aux evaluations
 
@@ -89,99 +84,6 @@ double PGAGetAuxTotal (PGAContext *ctx, int p, int pop)
         ind->auxtotaluptodate = PGA_TRUE;
     }
     return ind->auxtotal;
-}
-
-/*U****************************************************************************
-  PGAStringCompare - Compare two strings for selection.
-  This typically simply compares fitness.
-  But if auxiliary evaluations are defined, the auxiliary evaluations are
-  treated as constraints. This function is a user function and can be
-  redefined for other purposes: By redefining this function, e.g.,
-  instead of using the aux evaluations for constraint-handling, instead
-  (or in addition), multi objective evaluation can be implemented.
-  The default handling of auxiliary evaluations is incompatible with
-  certain selection schemes, see checks in create.c
-
-  Note that PGAStringCompare is now used in several contexts, including
-  finding the best evaluation. For very badly scaled problems, the
-  default fitness computation will degenerate if there are very large
-  evaluation values and very small ones. In that case the fitness will
-  not reflect the evaluation. Therefore PGAStringCompare will now always
-  sort on evaluation values ignoring the fitness. This improves
-  Tournament selection for very badly scaled problems.
-
-  Category: Operators
-
-  Inputs:
-    ctx   - context variable
-    p1    - first string to compare
-    pop1  - symbolic constant of population of first string
-    p2    - second string to compare
-    pop2  - symbolic constant of population of second string
-
-  Outputs:
-    <0 if p2 is "better" than p1
-    >0 if p1 is "better" than p2
-    0  if both compare equal
-    Thinks of this as sorting individuals by decreasing fitness or
-    increasing constraint violations.
-
-  Example:
-    PGAContext *ctx;
-    int result;
-    :
-    result = PGAStringCompare(ctx, p1, PGA_OLDPOP, p2, PGA_OLDPOP);
-
-****************************************************************************U*/
-int PGAStringCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
-{
-    double auxt1 = 0, auxt2 = 0;
-    int dir = PGAGetOptDirFlag (ctx);
-    PGAIndividual *ind1, *ind2;
-    if (!PGAGetEvaluationUpToDateFlag (ctx, p1, pop1)) {
-        PGAError
-            ( ctx
-            , "PGAStringCompare: first individual not up to date:"
-            , PGA_FATAL, PGA_INT, (void *) &p1
-            );
-    }
-    if (!PGAGetEvaluationUpToDateFlag (ctx, p2, pop2)) {
-        PGAError
-            ( ctx
-            , "PGAStringCompare: second individual not up to date:"
-            , PGA_FATAL, PGA_INT, (void *) &p2
-            );
-    }
-    if (ctx->ga.NumAuxEval > 0) {
-        auxt1 = PGAGetAuxTotal (ctx, p1, pop1);
-        auxt2 = PGAGetAuxTotal (ctx, p2, pop2);
-    }
-    if (auxt1 || auxt2) {
-        return CMP (auxt2, auxt1);
-    }
-    /* We might use the fitness if both populations are the same
-       otherwise fitness values are not comparable. But we now
-       use the evaluation in any case.
-     */
-    ind1 = PGAGetIndividual (ctx, p1, pop1);
-    ind2 = PGAGetIndividual (ctx, p2, pop2);
-    switch (dir) {
-    case PGA_MAXIMIZE:
-        return CMP (ind1->evalfunc, ind2->evalfunc);
-        break;
-    case PGA_MINIMIZE:
-        return CMP (ind2->evalfunc, ind1->evalfunc);
-        break;
-    default:
-        PGAError
-            (ctx
-            , "PGAStringCompare: Invalid value of PGAGetOptDirFlag:"
-            , PGA_FATAL, PGA_INT, (void *) &dir
-            );
-        break;
-    }
-    /* notreached */
-    return 0;
 }
 
 /*U****************************************************************************
@@ -813,7 +715,7 @@ int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
     for (i=1; i<ctx->ga.TournamentSize; i++) {
         int mn = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
         /* use '>=' for backwards-compat with prev. binary tournament */
-        if (PGAStringCompare (ctx, mn, pop, m, pop) >= 0) {
+        if (PGAEvalCompare (ctx, mn, pop, m, pop) >= 0) {
             m = mn;
         }
     }
@@ -890,7 +792,7 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
     m = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
     for (i=1; i<ctx->ga.TournamentSize; i++) {
         int mn = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
-        if (PGAStringCompare (ctx, mn, pop, m, pop) >= 0) {
+        if (PGAEvalCompare (ctx, mn, pop, m, pop) >= 0) {
             m = mn;
         }
     }
@@ -950,7 +852,7 @@ int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
     l = PGASelectTruncation (ctx, PGA_OLDPOP);
 
 ****************************************************************************I*/
-/* Helper function making PGAStringCompare compatible with qsort
+/* Helper function making PGAEvalCompare compatible with qsort
  * This needs to set poptmp and ctxtmp before sorting
  */
 
@@ -959,7 +861,7 @@ static PGAContext *ctxtmp = NULL;
 static int string_compare_helper (const void *a, const void *b)
 {
     const int *aa = a, *bb = b;
-    return PGAStringCompare (ctxtmp, *aa, poptmp, *bb, poptmp);
+    return PGAEvalCompare (ctxtmp, *aa, poptmp, *bb, poptmp);
 }
 
 int PGASelectTruncation (PGAContext *ctx, int pop)
@@ -1071,7 +973,7 @@ int PGASelectPTournament (PGAContext *ctx, int pop)
     m1 = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
     m2 = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
 
-    if (PGAStringCompare (ctx, m1, pop, m2, pop) < 0) {
+    if (PGAEvalCompare (ctx, m1, pop, m2, pop) < 0) {
         RetVal = drand < ctx->ga.PTournamentProb ? m1 : m2;
     } else {
         RetVal = drand < ctx->ga.PTournamentProb ? m2 : m1;

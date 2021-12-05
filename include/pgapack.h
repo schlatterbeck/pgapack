@@ -242,7 +242,7 @@ extern "C" {
 #define PGA_USERFUNCTION_ENDOFGEN                10
 #define PGA_USERFUNCTION_GEN_DIFFERENCE          11
 #define PGA_USERFUNCTION_PRE_EVAL                12
-#define PGA_USERFUNCTION_STRING_COMPARE          13
+#define PGA_USERFUNCTION_EVAL_COMPARE            13
 #define PGA_NUM_USERFUNCTIONS                    13
 
 /*****************************************
@@ -353,7 +353,7 @@ typedef struct {
     void         (*EndOfGen)(PGAContext *);
     double       (*GeneDistance)(PGAContext *, int, int, int, int);
     void         (*PreEval)(PGAContext *, int);
-    int          (*StringCompare)(PGAContext *, int, int, int, int);
+    int          (*EvalCompare)(PGAContext *, int, int, int, int);
 } PGACOperations;
 
 typedef struct {
@@ -367,7 +367,7 @@ typedef struct {
     void         (*EndOfGen)(void *);
     double       (*GeneDistance)(void *, void *, void *, void *, void *);
     void         (*PreEval)(void *, void *);
-    int          (*StringCompare)(void *, void *, void *, void *, void *);
+    int          (*EvalCompare)(void *, void *, void *, void *, void *);
 } PGAFortranOperations;
 
 typedef struct sample_state_s {
@@ -921,7 +921,6 @@ void PGASetTruncationProportion (PGAContext *ctx, double proportion);
 double PGAGetTruncationProportion (PGAContext *ctx);
 void PGASetRandomizeSelect (PGAContext *ctx, int value);
 int PGAGetRandomizeSelect (PGAContext *ctx);
-int PGAStringCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 double PGAGetAuxTotal (PGAContext *ctx, int p, int pop);
 
 /*****************************************
@@ -973,6 +972,7 @@ void PGAUpdateAverage(PGAContext *ctx, int pop);
 void PGAUpdateOnline(PGAContext *ctx, int pop);
 void PGAUpdateOffline(PGAContext *ctx, int pop);
 int PGAComputeSimilarity(PGAContext *ctx, PGAIndividual *pop);
+int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 
 #ifdef __cplusplus
 }

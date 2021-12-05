@@ -270,7 +270,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->cops.EndOfGen          = NULL;
     ctx->cops.GeneDistance      = NULL;
     ctx->cops.PreEval           = NULL;
-    ctx->cops.StringCompare     = NULL;
+    ctx->cops.EvalCompare       = NULL;
 
     ctx->fops.Mutation          = NULL;
     ctx->fops.Crossover         = NULL;
@@ -282,7 +282,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
     ctx->fops.EndOfGen          = NULL;
     ctx->fops.GeneDistance      = NULL;
     ctx->fops.PreEval           = NULL;
-    ctx->fops.StringCompare     = NULL;
+    ctx->fops.EvalCompare       = NULL;
 
     /* Parallel */
     ctx->par.NumIslands        = PGA_UNINITIALIZED_INT;
@@ -417,7 +417,7 @@ void PGASetUp ( PGAContext *ctx )
     int    (*Duplicate)(PGAContext *, int, int, int, int) = NULL;
     void   (*InitString)(PGAContext *, int, int) = NULL;
     double (*GeneDist)(PGAContext *, int, int, int, int) = NULL;
-    int    (*StringCompare)(PGAContext *, int, int, int, int) = NULL;
+    int    (*EvalCompare)(PGAContext *, int, int, int, int) = NULL;
     MPI_Datatype (*BuildDatatype)(PGAContext *, int, int) = NULL;
     int err=0, i;
 
@@ -497,7 +497,7 @@ void PGASetUp ( PGAContext *ctx )
        && (  ctx->ga.SelectType == PGA_SELECT_PROPORTIONAL
           || ctx->ga.SelectType == PGA_SELECT_SUS
           )
-       && (ctx->fops.StringCompare || ctx->cops.StringCompare)
+       && (ctx->fops.EvalCompare || ctx->cops.EvalCompare)
        )
     {
         if (ctx->ga.SelectType == PGA_SELECT_SUS) {
@@ -665,7 +665,7 @@ void PGASetUp ( PGAContext *ctx )
 		 "PGASetUp: Using PGADone as the user stopping condition will"
 		 " result in an infinite loop!", PGA_FATAL, PGA_VOID, NULL);
 
-    StringCompare = PGAStringCompare;
+    EvalCompare = PGAEvalCompare;
     switch (ctx->ga.datatype) {
     case PGA_DATATYPE_BINARY:
 	CreateString  = PGABinaryCreateString;
@@ -807,8 +807,8 @@ void PGASetUp ( PGAContext *ctx )
 	ctx->cops.CopyString    = CopyString;
     if (ctx->cops.BuildDatatype == NULL)
 	ctx->cops.BuildDatatype = BuildDatatype;
-    if (ctx->cops.StringCompare == NULL)
-	ctx->cops.StringCompare = StringCompare;
+    if (ctx->cops.EvalCompare   == NULL)
+	ctx->cops.EvalCompare   = EvalCompare;
 
 /* par */
     if ( ctx->par.NumIslands       == PGA_UNINITIALIZED_INT)

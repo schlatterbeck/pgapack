@@ -66,7 +66,7 @@ privately owned rights.
        PGA_USERFUNCTION_PRE_EVAL         -- Auxiliary functions before
                                             evaluation but after
                                             crossover and mutation
-       PGA_USERFUNCTION_STRING_COMPARE   -- String Comparison
+       PGA_USERFUNCTION_EVAL_COMPARE     -- Comparison of Evaluation
    It MAY be called when using a native datatype to replace the built-in
    functions PGAPack has for that datatype (For example, if the Integer data
    type is used for a traveling salesperson problem, the user may want to
@@ -115,9 +115,12 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 	break;
       case PGA_USERFUNCTION_CROSSOVER:
 	if (ctx->sys.UserFortran)
-	    ctx->fops.Crossover = (void(*)(void *, void *, void *, void *, void *, void *, void *))f;
+	    ctx->fops.Crossover =
+                (void(*)( void *, void *, void *, void *, void *, void *
+                        , void *))f;
 	else
-	    ctx->cops.Crossover =  (void(*)(PGAContext *, int, int, int, int, int, int))f;
+	    ctx->cops.Crossover =
+                (void(*)(PGAContext *, int, int, int, int, int, int))f;
 	break;
       case PGA_USERFUNCTION_PRINTSTRING:
 	if (ctx->sys.UserFortran)
@@ -135,7 +138,8 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 	break;
       case PGA_USERFUNCTION_DUPLICATE:
 	if (ctx->sys.UserFortran)
-	    ctx->fops.Duplicate = (int(*)(void *, void *, void *, void *, void *))f;
+	    ctx->fops.Duplicate =
+                (int(*)(void *, void *, void *, void *, void *))f;
 	else
 	    ctx->cops.Duplicate = (int(*)(PGAContext *, int, int, int, int))f;
 	break;
@@ -151,7 +155,8 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 		     "PGA_USERFUNCTION_BUILDDATATYPE from Fortran.",
 		     PGA_FATAL, PGA_VOID, NULL);
 	else
-	    ctx->cops.BuildDatatype = (MPI_Datatype(*)(PGAContext *, int, int))f;
+	    ctx->cops.BuildDatatype =
+                (MPI_Datatype(*)(PGAContext *, int, int))f;
 	break;
       case PGA_USERFUNCTION_STOPCOND:
 	if (ctx->sys.UserFortran)
@@ -173,15 +178,19 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 	break;
       case PGA_USERFUNCTION_GEN_DIFFERENCE:
 	if (ctx->sys.UserFortran)
-	    ctx->fops.GeneDistance = (double(*)(void *, void *, void *, void *, void *))f;
+	    ctx->fops.GeneDistance =
+                (double(*)(void *, void *, void *, void *, void *))f;
 	else
-	    ctx->cops.GeneDistance = (double(*)(PGAContext *, int, int, int, int))f;
+	    ctx->cops.GeneDistance =
+                (double(*)(PGAContext *, int, int, int, int))f;
 	break;
-      case PGA_USERFUNCTION_STRING_COMPARE:
+      case PGA_USERFUNCTION_EVAL_COMPARE:
 	if (ctx->sys.UserFortran)
-	    ctx->fops.StringCompare = (int(*)(void *, void *, void *, void *, void *))f;
+	    ctx->fops.EvalCompare =
+                (int(*)(void *, void *, void *, void *, void *))f;
 	else
-	    ctx->cops.StringCompare = (int(*)(PGAContext *, int, int, int, int))f;
+	    ctx->cops.EvalCompare =
+                (int(*)(PGAContext *, int, int, int, int))f;
 	break;
       default:
 	PGAError(ctx, "PGASetUserFunction: Invalid constant:",

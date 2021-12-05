@@ -217,8 +217,8 @@ c *** SET USER FUNCTION
       parameter ( PGA_USERFUNCTION_GEN_DIFFERENCE =    11)
       integer PGA_USERFUNCTION_PRE_EVAL
       parameter ( PGA_USERFUNCTION_PRE_EVAL =          12)
-      integer PGA_USERFUNCTION_STRING_COMPARE
-      parameter ( PGA_USERFUNCTION_STRING_COMPARE =    13)
+      integer PGA_USERFUNCTION_EVAL_COMPARE
+      parameter ( PGA_USERFUNCTION_EVAL_COMPARE =      13)
 
 c *** TAGS
       integer PGA_COMM_STRINGTOEVAL
@@ -411,8 +411,6 @@ c *** select
       external PGAGetTruncationProportion
       integer PGAGetRandomizeSelect
       external PGAGetRandomizeSelect
-      integer PGAStringCompare
-      external PGAStringCompare
       double precision PGAGetAuxTotal
       external PGAGetAuxTotal
 c *** stop
@@ -446,3 +444,5 @@ c *** utility
       external PGAGetWorstIndex
       integer PGAGetBestIndex
       external PGAGetBestIndex
+      integer PGAEvalCompare
+      external PGAEvalCompare
