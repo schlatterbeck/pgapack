@@ -2338,6 +2338,7 @@ Termination Criteria & \verb+PGA_USERFUNCTION_STOPCOND+ \\
 End of generation    & \verb+PGA_USERFUNCTION_ENDOFGEN+ \\
 Genetic difference   & \verb+PGA_USERFUNCTION_GEN_DIFFERENCE+ \\
 Pre-Evaluate Hook    & \verb+PGA_USERFUNCTION_PRE_EVAL+ \\
+Evaluation compare   & \verb+PGA_USERFUNCTION_EVAL_COMPARE+ \\
 \hline
 \end{tabular}
 \end{table}
@@ -2425,6 +2426,12 @@ implementations this would not work because each parallel instance would
 use a separate cache.
 The pre evaluation user function is called only in the master instance
 for a parallel implementation.
+
+The evaluation comparison function can be used to re-define how
+evaluations are compared. Currently with constrained optimization, the
+function uses the auxiliary evaluations together with the objective
+function value. For new algorithms this can be redefined to provide new
+functionality.
 
 
 \begin{table}
