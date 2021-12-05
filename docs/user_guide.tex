@@ -1667,16 +1667,28 @@ Traditionally, genetic algorithms assume fitness values are nonnegative and
 monotonically increasing the more fit a string is.  The user's evaluation of a
 string, however, may reflect a minimization problem and/or be negative.
 Therefore, the user's {\em evaluation value} is mapped to a nonnegative and
-monotonically increasing {\em fitness value}.  First, all evaluations are
+monotonically increasing {\em fitness value}.
+
+You may think of the algorithm used as follows (actually for the ranking
+methods the evaluation values are never translated):
+First, all evaluations are
 mapped to positive values (if any were negative).  Next, these values are
 translated to a maximization problem (if the direction of optimization
 specified was minimization).  Finally, these values are mapped to a fitness
 value by using the identity (the default), linear ranking, or linear
-normalization, The choice of fitness mapping may be set with the function {\tt
-PGASetFitnessType}.  The second argument must be one of {\tt
-PGA\_FITNESS\_RAW}, {\tt PGA\_FITNESS\_RANKING}, or {\tt
-PGA\_FITNESS\_NORMAL}, for the identity, linear ranking, or linear
+normalization, The choice of fitness mapping may be set with the function
+\verb+PGASetFitnessType+.  The second argument must be one of
+\verb+PGA_FITNESS_RAW+, \verb+PGA_FITNESS_RANKING+, or
+\verb+PGA_FITNESS_NORMAL+, for the identity, linear ranking, or linear
 normalization, respectively.
+
+Note that the \verb+PGA_FITNESS_RAW+ is subject to overflows if you have
+very large (or very small negative) fitness values. If this occurs, an
+error message is printed and the program terminates.
+Letting the search continue with such an overflow would map many
+\textit{different} evaluation values to the \textit{same} fitness.
+For such ill-conditioned problems you should use one of the ranking
+variants \verb+PGA_FITNESS_NORMAL+ or \verb+PGA_FITNESS_RANKING+.
 
 A {\em linear rank} fitness function \cite{Ba87,Wh89} is given by
 \begin{equation}
