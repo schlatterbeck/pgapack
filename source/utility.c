@@ -573,32 +573,42 @@ void PGAUpdateOffline(PGAContext *ctx, int pop)
      PGAComputeSimilarity(ctx,PGA_NEWPOP);
 
 **************************************************************************I*/
-int PGAComputeSimilarity(PGAContext *ctx, PGAIndividual *pop)
+int PGAComputeSimilarity (PGAContext *ctx, int popindex)
 {
     int max = 0, curr = 1, i;
-    double prev;
+    PGAIndividual *prev;
 
-    PGADebugEntered("PGAComputeSimilarity");
+    PGADebugEntered ("PGAComputeSimilarity");
 
-    for (i=0; i < ctx->ga.PopSize; i++) {
-        ctx->scratch.dblscratch [i] = (pop + i)->evalue;
-        ctx->scratch.intscratch [i] = i;
-    }
+    /* No need to init the indeces, filled in by PGAEvalSort */
+    PGAEvalSort (ctx, popindex, ctx->scratch.intscratch);
 
-    PGADblHeapSort(ctx, ctx->scratch.dblscratch, ctx->scratch.intscratch,
-                   ctx->ga.PopSize);
+    prev = PGAGetIndividual (ctx, 0, popindex);
 
-    prev = ctx->scratch.dblscratch [0];
-
-    for(i = 1; i < ctx->ga.PopSize; i++)
+    for (i=1; i<ctx->ga.PopSize; i++)
     {
-        if (ctx->scratch.dblscratch[i] == prev) {
+        PGAIndividual *ind = PGAGetIndividual (ctx, i, popindex);
+        int same = 0;
+
+        if (ind->evalue == prev->evalue) {
+            int j;
+            same = 1;
+            for (j=0; j<ctx->ga.NumAuxEval; j++) {
+                if (ind->auxeval [j] != prev->auxeval [j]) {
+                    same = 0;
+                    break;
+                }
+            }
+        }
+
+        if (same) {
             curr++;
         } else {
             if (curr > max)
                 max = curr;
             curr = 1;
         }
+        same = 0;
     }
 
     PGADebugExited ("PGAComputeSimilarity");
@@ -771,8 +781,9 @@ static int cmphelp (const void *a1, const void *a2)
 
   Example:
     PGAContext *ctx;
+    int indexes [ctx->ga.PopSize];
     :
-    PGAEvalSort (ctx, PGA_OLDPOP);
+    PGAEvalSort (ctx, PGA_OLDPOP, indexes);
 
 ****************************************************************************U*/
 void PGAEvalSort (PGAContext *ctx, int pop, int *idx)

@@ -394,14 +394,6 @@ PGAFuncRec PGAFuncIndex[] =
         /* hamming.c */
         { "PGAHammingDistance",             800 },
 
-        /* heap.c */
-        { "PGADblHeapSort",                 810 },
-        { "PGADblHeapify",                  811 },
-        { "PGADblAdjustHeap",               812 },
-        { "PGAIntHeapSort",                 813 },
-        { "PGAIntHeapify",                  814 },
-        { "PGAIntAdjustHeap",               815 },
-
         /* report.c */
         { "PGAPrintPopulation",             820 },
         { "PGAPrintIndividual",             821 },
@@ -1439,12 +1431,6 @@ void PGASetDebugFlag60(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[320] = Flag; /*PGASortPop*/
    ctx->debug.PGADebugFlags[324] = Flag; /*PGAGetSortedPopIndex*/
-   ctx->debug.PGADebugFlags[810] = Flag; /*PGADblHeapSort*/
-   ctx->debug.PGADebugFlags[811] = Flag; /*PGADblHeapify*/
-   ctx->debug.PGADebugFlags[812] = Flag; /*PGADblAdjustHeap*/
-   ctx->debug.PGADebugFlags[813] = Flag; /*PGAIntHeapSort*/
-   ctx->debug.PGADebugFlags[814] = Flag; /*PGAIntHeapify*/
-   ctx->debug.PGADebugFlags[815] = Flag; /*PGAIntAdjustHeap*/
 }
 
 /*I****************************************************************************

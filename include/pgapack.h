@@ -648,20 +648,16 @@ int PGAMapRealToInteger (PGAContext *ctx, double r, double l, double u, int a,
 *          fitness.c
 *****************************************/
 
-void PGAFitness ( PGAContext *ctx, int popindex );
-int PGARank( PGAContext *ctx, int p, int *order, int n );
-double PGAGetFitness ( PGAContext *ctx, int p, int pop );
+void PGAFitness (PGAContext *ctx, int popindex);
+int PGARank (PGAContext *ctx, int p, int *order, int n);
+double PGAGetFitness (PGAContext *ctx, int p, int pop);
 int PGAGetFitnessType (PGAContext *ctx);
 int PGAGetFitnessMinType (PGAContext *ctx);
 double PGAGetMaxFitnessRank (PGAContext *ctx);
-void PGASetFitnessType( PGAContext *ctx, int fitness_type);
-void PGASetFitnessMinType( PGAContext *ctx, int fitness_type);
-void PGASetMaxFitnessRank( PGAContext *ctx, double fitness_rank_max);
-void PGAFitnessLinearNormal ( PGAContext *ctx, PGAIndividual *pop );
-void PGAFitnessLinearRank ( PGAContext *ctx, PGAIndividual *pop );
-void PGAFitnessMinReciprocal ( PGAContext *ctx, PGAIndividual *pop );
-void PGAFitnessMinCmax ( PGAContext *ctx, PGAIndividual *pop );
-void PGASetFitnessCmaxValue( PGAContext *ctx, double val);
+void PGASetFitnessType (PGAContext *ctx, int fitness_type);
+void PGASetFitnessMinType (PGAContext *ctx, int fitness_type);
+void PGASetMaxFitnessRank (PGAContext *ctx, double fitness_rank_max);
+void PGASetFitnessCmaxValue (PGAContext *ctx, double val);
 double PGAGetFitnessCmaxValue (PGAContext *ctx);
 
 /*****************************************
@@ -669,13 +665,6 @@ double PGAGetFitnessCmaxValue (PGAContext *ctx);
 *****************************************/
 
 double PGAHammingDistance( PGAContext *ctx, int popindex);
-
-/*****************************************
-*          heap.c
-*****************************************/
-
-void PGADblHeapSort ( PGAContext *ctx, double *a, int *idx, int n );
-void PGAIntHeapSort ( PGAContext *ctx, int *a, int *idx, int n );
 
 /*****************************************
 *          integer.c
@@ -962,18 +951,18 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f);
 *          utility.c
 *****************************************/
 
-double PGAMean ( PGAContext *ctx, double *a, int n);
-double PGAStddev ( PGAContext *ctx, double *a, int n, double mean);
-int PGARound(PGAContext *ctx, double x);
-void PGACopyIndividual( PGAContext *ctx, int p1, int pop1, int p2, int pop2);
-int PGACheckSum(PGAContext *ctx, int p, int pop);
-int PGAGetWorstIndex(PGAContext *ctx, int pop);
-int PGAGetBestIndex(PGAContext *ctx, int pop);
-PGAIndividual *PGAGetIndividual ( PGAContext *ctx, int p, int pop);
-void PGAUpdateAverage(PGAContext *ctx, int pop);
-void PGAUpdateOnline(PGAContext *ctx, int pop);
-void PGAUpdateOffline(PGAContext *ctx, int pop);
-int PGAComputeSimilarity(PGAContext *ctx, PGAIndividual *pop);
+double PGAMean (PGAContext *ctx, double *a, int n);
+double PGAStddev (PGAContext *ctx, double *a, int n, double mean);
+int PGARound (PGAContext *ctx, double x);
+void PGACopyIndividual (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+int PGACheckSum (PGAContext *ctx, int p, int pop);
+int PGAGetWorstIndex (PGAContext *ctx, int pop);
+int PGAGetBestIndex (PGAContext *ctx, int pop);
+PGAIndividual *PGAGetIndividual (PGAContext *ctx, int p, int pop);
+void PGAUpdateAverage (PGAContext *ctx, int pop);
+void PGAUpdateOnline (PGAContext *ctx, int pop);
+void PGAUpdateOffline (PGAContext *ctx, int pop);
+int PGAComputeSimilarity (PGAContext *ctx, int popix);
 int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2);
 int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 void PGAEvalSort (PGAContext *ctx, int pop, int *idx);

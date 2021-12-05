@@ -47,6 +47,48 @@ privately owned rights.
 
 #include "pgapack.h"
 
+static void PGAFitnessLinearRank (PGAContext *ctx, int popindex);
+static void PGAFitnessLinearNormal (PGAContext *ctx, int popindex);
+static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop);
+static void PGAFitnessMinReciprocal (PGAContext *ctx, PGAIndividual *pop);
+
+/* Helper function for fitness computation */
+static void remap_to_positive (PGAContext *ctx, PGAIndividual *pop)
+{
+    int i;
+    double mineval;
+    /* put raw fitness into fitness field */
+
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        (pop+i)->fitness = (pop+i)->evalue;
+    }
+
+    /* translate to all positive sequence (if necessary) */
+
+    mineval = ctx->sys.PGAMaxDouble;
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        if ((pop+i)->fitness < mineval) {
+            mineval = (pop+i)->fitness;
+        }
+    }
+    if (mineval < 0.0) {
+        mineval = (-1.01) * mineval;
+        for (i=0; i<ctx->ga.PopSize; i++) {
+            double fitness = (pop+i)->fitness;
+            if (  (mineval != 0 && fitness + mineval == fitness)
+               || (fitness != 0 && fitness + mineval == mineval)
+               )
+            {
+                PGAError(ctx,
+                         "PGAFitness: Overflow computing positive fitness, "
+                         "use a ranking variant of fitness computation:",
+                         PGA_FATAL, PGA_DOUBLE, (void *) &mineval);
+            }
+            (pop+i)->fitness = fitness + mineval;
+        }
+    }
+}
+
 /*U****************************************************************************
   PGAFitness - Maps the user's evaluation function value to a fitness value.
   First, the user's evaluation function value is translated to all positive
@@ -76,64 +118,44 @@ privately owned rights.
      PGAFitness (ctx, PGA_NEWPOP);
 
 ****************************************************************************U*/
-void PGAFitness ( PGAContext *ctx, int popindex )
+void PGAFitness (PGAContext *ctx, int popindex)
 {
     int i;
-    double mineval;
-    PGAIndividual *pop = NULL;
+    /* set pointer to appropriate population, validity check below */
+    PGAIndividual *pop =
+        (popindex == PGA_OLDPOP) ? ctx->ga.oldpop : ctx->ga.newpop;
 
-    PGADebugEntered("PGAFitness");
+    PGADebugEntered ("PGAFitness");
 
-    /* set pointer to appropriate population */
-
-    switch (popindex) {
-    case PGA_OLDPOP:
-        pop = ctx->ga.oldpop;
-        break;
-    case PGA_NEWPOP:
-        pop = ctx->ga.newpop;
-        break;
-    default:
-        PGAError( ctx, "PGAFitness: Invalid value of popindex:",
-                  PGA_FATAL, PGA_INT, (void *) &popindex );
-        break;
+    if (popindex != PGA_OLDPOP && popindex != PGA_NEWPOP) {
+        PGAError(ctx, "PGAFitness: Invalid value of popindex:",
+                 PGA_FATAL, PGA_INT, (void *) &popindex);
     }
 
     /* make sure all evaluation function values are up-to-date */
 
-    for( i=0; i<ctx->ga.PopSize; i++ ) {
-        /*printf("i = %d, evaluptodate = %d\n",i,(pop+i)->evaluptodate);*/
-        if ( (pop+i)->evaluptodate != PGA_TRUE )
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        if ((pop+i)->evaluptodate != PGA_TRUE) {
             PGAError( ctx, "PGAFitness: evaluptodate not PGA_TRUE for:",
                       PGA_FATAL, PGA_INT, (void *) &i );
+        }
     }
 
-    /* put raw fitness into fitness field */
-
-    for( i=0; i<ctx->ga.PopSize; i++ )
-        (pop+i)->fitness = (pop+i)->evalue;
-
-    /* translate to all positive sequence (if necessary) */
-
-    mineval = ctx->sys.PGAMaxDouble;
-    for( i=0; i<ctx->ga.PopSize; i++ )
-        if ( (pop+i)->fitness < mineval )
-            mineval =(pop+i)->fitness;
-    if ( mineval < 0.0 ) {
-        mineval = (-1.01) * mineval;
-        for( i=0; i<ctx->ga.PopSize; i++ )
-           (pop+i)->fitness  = (pop+i)->fitness + mineval;
-    }
-
-    /* translate to maximization problem  (if necessary) */
-
-    if ( ctx->ga.optdir == PGA_MINIMIZE ) {
+    /* translate to maximization problem  (if necessary)
+     * Only necessary for raw fitness
+     */
+    if (  ctx->ga.optdir == PGA_MINIMIZE
+       && ctx->ga.FitnessType == PGA_FITNESS_RAW
+       )
+    {
         switch (ctx->ga.FitnessMinType) {
         case PGA_FITNESSMIN_RECIPROCAL:
-            PGAFitnessMinReciprocal( ctx, pop );
+            remap_to_positive (ctx, pop);
+            PGAFitnessMinReciprocal (ctx, pop);
             break;
         case PGA_FITNESSMIN_CMAX:
-            PGAFitnessMinCmax      ( ctx, pop );
+            /* Needs no remapping to positive value */
+            PGAFitnessMinCmax (ctx, pop);
             break;
         default:
             PGAError( ctx,
@@ -149,12 +171,18 @@ void PGAFitness ( PGAContext *ctx, int popindex )
 
     switch (ctx->ga.FitnessType) {
     case PGA_FITNESS_RAW:
+        if (ctx->ga.optdir != PGA_MINIMIZE) {
+            /* minimization already did the remapping */
+            remap_to_positive (ctx, pop);
+        }
         break;
     case PGA_FITNESS_NORMAL:
-        PGAFitnessLinearNormal    ( ctx, pop );
+        /* Needs no remapping to positive value */
+        PGAFitnessLinearNormal (ctx, popindex);
         break;
     case PGA_FITNESS_RANKING:
-        PGAFitnessLinearRank   ( ctx, pop );
+        /* Needs no remapping to positive value */
+        PGAFitnessLinearRank (ctx, popindex);
         break;
     default:
         PGAError( ctx,
@@ -189,19 +217,11 @@ void PGAFitness ( PGAContext *ctx, int popindex )
     Determine the rank of string p.
 
     PGAContext *ctx;
-    int i, popsize, rank, *order;
-    double *fitness;
+    int i, popsize, rank;
+    int popsize = PGAGetPopsize (ctx)
+    int order [popsize];
 
-    popsize = PGAGetPopsize(ctx);
-    order   = (int *)   malloc(sizeof(int)    * popsize);
-    fitness = (double *)malloc(sizeof(double) * popsize);
-
-    for(i=0;i<popsize; i++) {
-        fitness[i] = PGAGetFitness(ctx, p, PGA_OLDPOP);
-        order[i]   = i;
-    }
-
-    PGADblHeapSort(ctx, fitness, order, popsize);
+    PGAEvalSort (ctx, pop, order);
     rank = PGARank(ctx, p, order, popsize)
 
 ****************************************************************************U*/
@@ -214,7 +234,7 @@ int PGARank( PGAContext *ctx, int p, int *order, int n )
     /*  If the user gives us PGA_TEMP1 or PGA_TEMP2 (or, gasp, some random
      *  number that is not in the population), fail.
      */
-    if ((p<0) || (p > PGAGetPopSize(ctx)))
+    if ((p<0) || (p >= PGAGetPopSize(ctx)))
         PGAError(ctx, "PGARank: Not a valid population member, p = ",
                  PGA_FATAL, PGA_INT, (void *)&p);
 
@@ -515,7 +535,7 @@ void PGASetMaxFitnessRank( PGAContext *ctx, double fitness_rank_max)
 
   Inputs:
     ctx  - context variable
-    pop  - population pointer to calculate fitness for
+    pop  - population index to calculate fitness for
 
   Outputs:
      Calculates the fitness for each string in the population via side effect
@@ -523,35 +543,34 @@ void PGASetMaxFitnessRank( PGAContext *ctx, double fitness_rank_max)
   Example:
 
 ****************************************************************************I*/
-void PGAFitnessLinearNormal ( PGAContext *ctx, PGAIndividual *pop )
+static void PGAFitnessLinearNormal (PGAContext *ctx, int popindex)
 {
 
     int i;
     double K, sigma, mean;
+    PGAIndividual *pop =
+        (popindex == PGA_OLDPOP) ? ctx->ga.oldpop : ctx->ga.newpop;
 
     PGADebugEntered("PGAFitnessLinearNormal");
 
-    /* fill arrays for sorting */
-
-    for(i=0;i<ctx->ga.PopSize;i++) {
-        ctx->scratch.dblscratch[i] = (pop+i)->fitness;
-        ctx->scratch.intscratch[i] =                i;
-    }
+    /* Sort by *eval* (not fitness), no need to init array */
+    PGAEvalSort (ctx, popindex, ctx->scratch.intscratch);
 
     /* calculate parameters for linear normalization */
 
-    mean  = PGAMean   ( ctx, ctx->scratch.dblscratch, ctx->ga.PopSize  );
-    sigma = PGAStddev ( ctx, ctx->scratch.dblscratch, ctx->ga.PopSize, mean );
-    if (sigma == 0)
+    mean  = PGAMean   (ctx, ctx->scratch.dblscratch, ctx->ga.PopSize);
+    sigma = PGAStddev (ctx, ctx->scratch.dblscratch, ctx->ga.PopSize, mean);
+    if (sigma == 0) {
          sigma = 1;
+    }
     K = sigma * (double) ctx->ga.PopSize;
-    PGADblHeapSort ( ctx, ctx->scratch.dblscratch,
-                  ctx->scratch.intscratch,
-                  ctx->ga.PopSize);
 
-    for( i=0; i<ctx->ga.PopSize; i++ )
-        (pop+i)->fitness = K - ( sigma *
-            (double) PGARank(ctx,i,ctx->scratch.intscratch,ctx->ga.PopSize) );
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        (pop+i)->fitness =
+            K - ( sigma
+                * (double)PGARank (ctx,i,ctx->scratch.intscratch,ctx->ga.PopSize)
+                );
+    }
 
     PGADebugExited("PGAFitnessLinearNormal");
 }
@@ -567,7 +586,7 @@ void PGAFitnessLinearNormal ( PGAContext *ctx, PGAIndividual *pop )
 
   Inputs:
     ctx  - context variable
-    pop  - population pointer to calculate fitness for
+    pop  - population index to calculate fitness for
 
   Outputs:
      Calculates the fitness for each string in the population via side effect
@@ -575,36 +594,38 @@ void PGAFitnessLinearNormal ( PGAContext *ctx, PGAIndividual *pop )
   Example:
 
 ****************************************************************************I*/
-void PGAFitnessLinearRank ( PGAContext *ctx, PGAIndividual *pop )
+static void PGAFitnessLinearRank (PGAContext *ctx, int popindex)
 {
     double max, min, popsize, rpopsize;
+    int *scratch = ctx->scratch.intscratch;
     int i;
+    PGAIndividual *pop =
+        (popindex == PGA_OLDPOP) ? ctx->ga.oldpop : ctx->ga.newpop;
 
-    PGADebugEntered("PGAFitnessLinearRank");
+    PGADebugEntered ("PGAFitnessLinearRank");
 
     max      = ctx->ga.FitnessRankMax;
     min      = 2. - max;
     popsize  = (double) ctx->ga.PopSize;
     rpopsize = 1.0/popsize;
 
-    for(i=0;i<ctx->ga.PopSize;i++) {
-        ctx->scratch.dblscratch[i] = (pop+i)->fitness;
-        ctx->scratch.intscratch[i] =                i;
-    }
-
-    PGADblHeapSort ( ctx, ctx->scratch.dblscratch,
-                  ctx->scratch.intscratch,
-                  ctx->ga.PopSize);
+    /* Sort by *eval* (not fitness), no need to init array */
+    PGAEvalSort (ctx, popindex, scratch);
 
     for(i=0;i<ctx->ga.PopSize;i++) {
-        (pop+i)->fitness = rpopsize * ( max -
-        ( (max - min) *
-        ( ( (double) PGARank(ctx,i,ctx->scratch.intscratch,ctx->ga.PopSize)
-             - 1. ) / ( popsize - 1. ) ) ) );
-
+        (pop+i)->fitness =
+            ( rpopsize
+            * ( max
+              - ( (max - min)
+                * ( ((double)PGARank(ctx,i,scratch,ctx->ga.PopSize) - 1.)
+                  / (popsize - 1.)
+                  )
+                )
+              )
+            );
     }
 
-    PGADebugExited("PGAFitnessLinearRank");
+    PGADebugExited ("PGAFitnessLinearRank");
 }
 
 
@@ -623,7 +644,7 @@ void PGAFitnessLinearRank ( PGAContext *ctx, PGAIndividual *pop )
   Example:
 
 ****************************************************************************I*/
-void PGAFitnessMinReciprocal ( PGAContext *ctx, PGAIndividual *pop )
+static void PGAFitnessMinReciprocal ( PGAContext *ctx, PGAIndividual *pop )
 {
     int i;
 
@@ -660,25 +681,37 @@ void PGAFitnessMinReciprocal ( PGAContext *ctx, PGAIndividual *pop )
   Example:
 
 ****************************************************************************I*/
-void PGAFitnessMinCmax ( PGAContext *ctx, PGAIndividual *pop )
+static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop)
 {
     int i;
     double cmax;
 
-    PGADebugEntered("PGAFitnessMinCmax");
+    PGADebugEntered ("PGAFitnessMinCmax");
 
     cmax = 0.;
 
-    for(i=0; i<ctx->ga.PopSize; i++)
-        if ( (pop+i)->evalue > cmax )
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        if ((pop+i)->evalue > cmax) {
             cmax = (pop+i)->evalue;
+        }
+    }
 
     cmax *= ctx->ga.FitnessCmaxValue; /* so worst string has nonzero fitness */
 
-    for(i=0;i<ctx->ga.PopSize;i++)
-        (pop+i)->fitness = cmax - (pop+i)->evalue;
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        /* Check that we're not mapping distinct evaluations to the same
+         * fitness
+         */
+        int evalue = (pop+i)->evalue;
+        if (cmax == cmax - evalue && evalue != 0) {
+            PGAError(ctx, "PGAFitness: Overflow computing cmax fitness, "
+                     "use a ranking variant of fitness computation:",
+                     PGA_FATAL, PGA_DOUBLE, (void *) &cmax);
+        }
+        (pop+i)->fitness = cmax - evalue;
+    }
 
-    PGADebugExited("PGAFitnessMinCmax");
+    PGADebugExited ("PGAFitnessMinCmax");
 }
 
 
