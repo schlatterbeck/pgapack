@@ -1666,7 +1666,12 @@ selection, see section~\ref{sec:selection}.
 Traditionally, genetic algorithms assume fitness values are nonnegative and
 monotonically increasing the more fit a string is.  The user's evaluation of a
 string, however, may reflect a minimization problem and/or be negative.
-Therefore, the user's {\em evaluation value} is mapped to a nonnegative and
+Most modern selection algorithms (e.g. the default tournament variants)
+directly compare individuals and will directly use the users evaluation.
+There are two selection mechanisms, \verb+PGA_SELECT_SUS+ and
+\verb+PGA_SELECT_PROPORTIONAL+ which need a nonnegative and
+monotonically increasing fitness. \textit{Only for these}
+the user's {\em evaluation value} is mapped to a nonnegative and
 monotonically increasing {\em fitness value}.
 
 You may think of the algorithm used as follows (actually for the ranking
