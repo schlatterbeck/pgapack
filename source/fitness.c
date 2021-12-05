@@ -79,10 +79,12 @@ static void remap_to_positive (PGAContext *ctx, PGAIndividual *pop)
                || (fitness != 0 && fitness + mineval == mineval)
                )
             {
-                PGAError(ctx,
-                         "PGAFitness: Overflow computing positive fitness, "
-                         "use a ranking variant of fitness computation:",
-                         PGA_FATAL, PGA_DOUBLE, (void *) &mineval);
+                PGAErrorPrintf(ctx, PGA_FATAL
+                    , "PGAFitness: Overflow computing positive fitness\n"
+                      "Values: mineval=%e, fitness=%e\n"
+                      "You can use a ranking variant of fitness computation\n"
+                    , mineval, fitness
+                    );
             }
             (pop+i)->fitness = fitness + mineval;
         }
@@ -704,9 +706,12 @@ static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop)
          */
         int evalue = (pop+i)->evalue;
         if (cmax == cmax - evalue && evalue != 0) {
-            PGAError(ctx, "PGAFitness: Overflow computing cmax fitness, "
-                     "use a ranking variant of fitness computation:",
-                     PGA_FATAL, PGA_DOUBLE, (void *) &cmax);
+            PGAErrorPrintf (ctx, PGA_FATAL
+                , "PGAFitness: Overflow computing cmax fitness\n"
+                  "Values: cmax=%e, evalue=%e\n"
+                  "You can use a ranking variant of fitness computation\n"
+                , cmax, evalue
+                );
         }
         (pop+i)->fitness = cmax - evalue;
     }

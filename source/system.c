@@ -105,6 +105,47 @@ void PGAError( PGAContext *ctx, char *msg,
 }
 
 /*U****************************************************************************
+   PGAErrorPrintf - reports error messages.
+   Prints out the message supplied, and the value of a piece of data.
+   Uses printf-style.
+   Terminates if PGA_FATAL.
+   Note that compared to PGAError msg and level are exchanged, seems
+   more natural.
+
+   Category: System
+
+   Inputs:
+      ctx      - context variable
+      level    - PGA_WARNING or PGA_FATAL to indicate the error's severity
+      fmt      - the printf-style format to print
+      params   - additional parameters depending on format string in msg
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      int         val;
+      :
+      PGAErrorPrintf (ctx, PGA_WARNING, "Some Non Fatal Error: val = %d", val);
+      :
+      PGAErrorPrintf (ctx, PGA_FATAL, "A Fatal Error!");
+
+****************************************************************************U*/
+void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...)
+{
+    va_list args;
+    va_start (args, fmt);
+    vfprintf (stderr, fmt, args);
+    va_end (args);
+    if (level == PGA_FATAL) {
+	fprintf (stderr, "PGAError: Fatal\n");
+	PGADestroy (ctx);
+	exit (-1);
+    }
+}
+
+/*U****************************************************************************
   PGADestroy - deallocate memory for this instance of PGAPack, if this context
   initialized MPI, finalize MPI as well.
 

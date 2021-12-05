@@ -13,6 +13,7 @@
 #include <float.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdarg.h>
 #include <mpi.h>
 
 #ifdef __cplusplus
@@ -931,15 +932,16 @@ void PGASetMaxSimilarityValue(PGAContext *ctx, int max_similarity);
 *          system.c
 *****************************************/
 
-void PGAError( PGAContext *ctx, char *msg,
-               int level, int datatype, void *data );
+void PGAError (PGAContext *ctx, char *msg,
+               int level, int datatype, void *data);
+void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...);
 void PGADestroy (PGAContext *ctx);
 int PGAGetMaxMachineIntValue (PGAContext *ctx);
 int PGAGetMinMachineIntValue (PGAContext *ctx);
 double PGAGetMaxMachineDoubleValue (PGAContext *ctx);
 double PGAGetMinMachineDoubleValue (PGAContext *ctx);
-void PGAUsage( PGAContext *ctx );
-void PGAPrintVersionNumber( PGAContext *ctx );
+void PGAUsage (PGAContext *ctx);
+void PGAPrintVersionNumber (PGAContext *ctx);
 
 /*****************************************
 *          user.c
