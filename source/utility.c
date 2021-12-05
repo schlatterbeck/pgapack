@@ -680,7 +680,8 @@ int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2)
     }
     /* We might use the fitness if both populations are the same
        otherwise fitness values are not comparable. But we now
-       use the evaluation in any case.
+       use the evaluation in any case. This avoids overflows on fitness
+       computation, see documentation.
      */
     switch (dir) {
     case PGA_MAXIMIZE:

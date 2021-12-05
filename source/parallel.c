@@ -97,7 +97,10 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
 
     PGAEvaluate(ctx, PGA_OLDPOP, f, comm);
     if (rank == 0) {
-	PGAFitness(ctx, PGA_OLDPOP);
+        int st = PGAGetSelectType (ctx);
+        if (st == PGA_SELECT_SUS || st == PGA_SELECT_PROPORTIONAL) {
+            PGAFitness (ctx, PGA_OLDPOP);
+        }
     }
 
     if (PGAGetMutationOnlyFlag(ctx)) {
@@ -130,8 +133,12 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
 	MPI_Bcast(&Restarted, 1, MPI_INT, 0, comm);
 
 	PGAEvaluate(ctx, PGA_NEWPOP, f, comm);
-	if (rank == 0)
-	    PGAFitness(ctx, PGA_NEWPOP);
+	if (rank == 0) {
+            int st = PGAGetSelectType (ctx);
+            if (st == PGA_SELECT_SUS || st == PGA_SELECT_PROPORTIONAL) {
+                PGAFitness (ctx, PGA_NEWPOP);
+            }
+        }
 
 	/*  If the GA wasn't restarted, update the generation and print
          *  stuff.  We do this because a restart is NOT counted as a

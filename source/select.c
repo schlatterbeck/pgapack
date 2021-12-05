@@ -709,7 +709,7 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop )
 
 /*I****************************************************************************
   PGASelectTournamentWithReplacement - chooses N strings randomly and
-  returns the one with highest fitness, N is the value set with
+  returns the one with best evaluation, N is the value set with
   PGASetTournamentSize, the default is 2. The selection happens *with*
   replacement. See decription of PGASelectTournamentWithoutReplacement
   for details of sampling without replacement.
@@ -750,7 +750,7 @@ int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
 
 /*I****************************************************************************
   PGASelectTournamentWithoutReplacement - chooses N strings randomly and
-  returns the one with highest fitness, N is the value set with
+  returns the one with best evaluation, N is the value set with
   PGASetTournamentSize, the default is 2. The selection happens *without*
   replacement. This means if we select N individuals with a tournament
   size of 2, each individual is participating in exactly two
@@ -915,7 +915,7 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
 
 /*I****************************************************************************
   PGASelectTournament - chooses N strings randomly and
-  returns the one with highest fitness, N is the value set with
+  returns the one with best evaluation, N is the value set with
   PGASetTournamentSize, the default is 2. Depending on the setting of
   PGASetTournamentWithReplacement calls one of two local functions to
   use the right sampling.
@@ -947,7 +947,7 @@ int PGASelectTournament (PGAContext *ctx, int pop)
 
 /*I****************************************************************************
   PGASelectPTournament - chooses two strings randomly and returns the one with
-  higher fitness with a specified probability
+  better evaluation with a specified probability
   Ref:    D. Goldberg, Genetic Algorithms, pg. 121
 
   Inputs:

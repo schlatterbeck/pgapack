@@ -178,7 +178,7 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
 
     popsize = PGAGetPopSize (ctx);
     numreplace = PGAGetNumReplaceValue (ctx);
-    /*** first, copy n best strings (sorted by fitness) to new pop ***/
+    /*** first, copy n best strings to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
     n = popsize - numreplace;
@@ -258,7 +258,7 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
 
     popsize = PGAGetPopSize (ctx);
     numreplace = PGAGetNumReplaceValue (ctx);
-    /*** first, copy n best strings (sorted by fitness) to new pop ***/
+    /*** first, copy n best strings to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
     n = popsize - numreplace;
@@ -343,7 +343,7 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
 
     popsize = PGAGetPopSize (ctx);
     numreplace = PGAGetNumReplaceValue (ctx);
-    /*** first, copy n best strings (sorted by fitness) to new pop ***/
+    /*** first, copy n best strings to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
     n = popsize - numreplace;
