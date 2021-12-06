@@ -1,9 +1,10 @@
+PROG=classic dejong example maxbit maxchar maxint name namefull udtstr \
+    leastsquare
 
-all: classic dejong example maxbit maxchar maxint name namefull udtstr
+all: $(PROG)
 
 %: %.c
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 
 clean: 
-	rm -f classic dejong example maxbit maxchar maxint name namefull \
-	       udtstr *.o
+	rm -f $(PROG) *.o

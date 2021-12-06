@@ -1,0 +1,654 @@
+* Minimize
+* Proportional Selection
+* Raw Fitness
+* Reciprocal Fitness Minimization
+Iter #     Field      Value
+10         Best       2.374752e-01
+Iter #     Field      Value
+20         Best       4.000315e-02
+Iter #     Field      Value
+30         Best       1.000060e-02
+Iter #     Field      Value
+40         Best       1.392351e-05
+Iter #     Field      Value
+50         Best       1.041412e-06
+Iter #     Field      Value
+60         Best       3.248573e-07
+Iter #     Field      Value
+70         Best       5.466855e-08
+Iter #     Field      Value
+80         Best       1.261165e-08
+Iter #     Field      Value
+90         Best       2.711331e-09
+Iter #     Field      Value
+100        Best       1.421465e-10
+The Best Evaluation: 1.421465e-10.
+The Best String:
+#   0: [-7.184926e-06], [-9.384503e-07], [1.745499e-06], [1.272596e-06], [9.218262e-06]
+
+* Minimize
+* Proportional Selection
+* Raw Fitness
+* CMAX Fitness Minimization
+Iter #     Field      Value
+10         Best       5.974083e-01
+Iter #     Field      Value
+20         Best       1.712089e-01
+Iter #     Field      Value
+30         Best       3.965048e-02
+Iter #     Field      Value
+40         Best       5.076948e-03
+Iter #     Field      Value
+50         Best       1.431360e-03
+Iter #     Field      Value
+60         Best       1.266834e-04
+Iter #     Field      Value
+70         Best       4.916087e-05
+Iter #     Field      Value
+80         Best       7.474570e-06
+Iter #     Field      Value
+90         Best       9.744407e-07
+Iter #     Field      Value
+100        Best       1.654638e-07
+The Best Evaluation: 1.654638e-07.
+The Best String:
+#   0: [0.0001405433], [-0.0003543069], [-6.256484e-05], [0.0001252125], [2.419777e-05]
+
+* Minimize
+* Proportional Selection
+* Normal Fitness
+* Reciprocal Fitness Minimization
+Iter #     Field      Value
+10         Best       8.768064e-01
+Iter #     Field      Value
+20         Best       2.884195e-02
+Iter #     Field      Value
+30         Best       3.365317e-03
+Iter #     Field      Value
+40         Best       6.065089e-04
+Iter #     Field      Value
+50         Best       1.704075e-04
+Iter #     Field      Value
+60         Best       5.183142e-05
+Iter #     Field      Value
+70         Best       1.777090e-05
+Iter #     Field      Value
+80         Best       1.900497e-06
+Iter #     Field      Value
+90         Best       4.169688e-07
+Iter #     Field      Value
+100        Best       3.511817e-08
+The Best Evaluation: 3.511817e-08.
+The Best String:
+#   0: [2.445038e-06], [-3.75084e-05], [4.236593e-05], [8.504558e-06], [0.0001784324]
+
+* Minimize
+* Proportional Selection
+* Normal Fitness
+* CMAX Fitness Minimization
+Iter #     Field      Value
+10         Best       8.768064e-01
+Iter #     Field      Value
+20         Best       2.884195e-02
+Iter #     Field      Value
+30         Best       3.365317e-03
+Iter #     Field      Value
+40         Best       6.065089e-04
+Iter #     Field      Value
+50         Best       1.704075e-04
+Iter #     Field      Value
+60         Best       5.183142e-05
+Iter #     Field      Value
+70         Best       1.777090e-05
+Iter #     Field      Value
+80         Best       1.900497e-06
+Iter #     Field      Value
+90         Best       4.169688e-07
+Iter #     Field      Value
+100        Best       3.511817e-08
+The Best Evaluation: 3.511817e-08.
+The Best String:
+#   0: [2.445038e-06], [-3.75084e-05], [4.236593e-05], [8.504558e-06], [0.0001784324]
+
+* Minimize
+* Proportional Selection
+* Ranking Fitness
+* Reciprocal Fitness Minimization
+Iter #     Field      Value
+10         Best       7.916153e-01
+Iter #     Field      Value
+20         Best       3.139327e-01
+Iter #     Field      Value
+30         Best       2.062453e-02
+Iter #     Field      Value
+40         Best       1.756843e-03
+Iter #     Field      Value
+50         Best       6.456267e-04
+Iter #     Field      Value
+60         Best       2.542446e-04
+Iter #     Field      Value
+70         Best       5.606603e-05
+Iter #     Field      Value
+80         Best       1.058776e-05
+Iter #     Field      Value
+90         Best       6.581575e-06
+Iter #     Field      Value
+100        Best       1.176523e-06
+The Best Evaluation: 1.176523e-06.
+The Best String:
+#   0: [0.0004728046], [0.0005891923], [-2.353379e-05], [0.000777771], [-1.869039e-05]
+
+* Minimize
+* Proportional Selection
+* Ranking Fitness
+* CMAX Fitness Minimization
+Iter #     Field      Value
+10         Best       7.916153e-01
+Iter #     Field      Value
+20         Best       3.139327e-01
+Iter #     Field      Value
+30         Best       2.062453e-02
+Iter #     Field      Value
+40         Best       1.756843e-03
+Iter #     Field      Value
+50         Best       6.456267e-04
+Iter #     Field      Value
+60         Best       2.542446e-04
+Iter #     Field      Value
+70         Best       5.606603e-05
+Iter #     Field      Value
+80         Best       1.058776e-05
+Iter #     Field      Value
+90         Best       6.581575e-06
+Iter #     Field      Value
+100        Best       1.176523e-06
+The Best Evaluation: 1.176523e-06.
+The Best String:
+#   0: [0.0004728046], [0.0005891923], [-2.353379e-05], [0.000777771], [-1.869039e-05]
+
+* Minimize
+* Stochastic Universal Selection
+* Raw Fitness
+* Reciprocal Fitness Minimization
+Iter #     Field      Value
+10         Best       2.247174e-01
+Iter #     Field      Value
+20         Best       7.866303e-02
+Iter #     Field      Value
+30         Best       2.365221e-02
+Iter #     Field      Value
+40         Best       2.093493e-03
+Iter #     Field      Value
+50         Best       3.762924e-04
+Iter #     Field      Value
+60         Best       2.985724e-05
+Iter #     Field      Value
+70         Best       9.756113e-06
+Iter #     Field      Value
+80         Best       2.260841e-06
+Iter #     Field      Value
+90         Best       7.869012e-07
+Iter #     Field      Value
+100        Best       2.662593e-07
+The Best Evaluation: 2.662593e-07.
+The Best String:
+#   0: [0.0001205932], [-0.0002544125], [-0.0001394001], [9.911016e-05], [0.0003971595]
+
+* Minimize
+* Stochastic Universal Selection
+* Raw Fitness
+* CMAX Fitness Minimization
+Iter #     Field      Value
+10         Best       1.373060e+00
+Iter #     Field      Value
+20         Best       2.118901e-01
+Iter #     Field      Value
+30         Best       3.830755e-02
+Iter #     Field      Value
+40         Best       5.518266e-03
+Iter #     Field      Value
+50         Best       2.075851e-03
+Iter #     Field      Value
+60         Best       7.870135e-04
+Iter #     Field      Value
+70         Best       2.016696e-04
+Iter #     Field      Value
+80         Best       5.482241e-05
+Iter #     Field      Value
+90         Best       6.469130e-06
+Iter #     Field      Value
+100        Best       1.189065e-06
+The Best Evaluation: 1.189065e-06.
+The Best String:
+#   0: [0.0007118406], [0.0007358922], [-9.446112e-05], [-1.664625e-05], [0.0003627812]
+
+* Minimize
+* Stochastic Universal Selection
+* Normal Fitness
+* Reciprocal Fitness Minimization
+Iter #     Field      Value
+10         Best       1.518421e+00
+Iter #     Field      Value
+20         Best       1.809925e-01
+Iter #     Field      Value
+30         Best       3.100930e-02
+Iter #     Field      Value
+40         Best       8.936180e-03
+Iter #     Field      Value
+50         Best       2.079528e-03
+Iter #     Field      Value
+60         Best       5.009895e-04
+Iter #     Field      Value
+70         Best       1.208183e-04
+Iter #     Field      Value
+80         Best       6.489476e-06
+Iter #     Field      Value
+90         Best       6.401663e-07
+Iter #     Field      Value
+100        Best       9.233215e-08
+The Best Evaluation: 9.233215e-08.
+The Best String:
+#   0: [8.81229e-07], [4.470601e-05], [-1.30097e-05], [9.708536e-05], [0.0002841442]
+
+* Minimize
+* Stochastic Universal Selection
+* Normal Fitness
+* CMAX Fitness Minimization
+Iter #     Field      Value
+10         Best       1.518421e+00
+Iter #     Field      Value
+20         Best       1.809925e-01
+Iter #     Field      Value
+30         Best       3.100930e-02
+Iter #     Field      Value
+40         Best       8.936180e-03
+Iter #     Field      Value
+50         Best       2.079528e-03
+Iter #     Field      Value
+60         Best       5.009895e-04
+Iter #     Field      Value
+70         Best       1.208183e-04
+Iter #     Field      Value
+80         Best       6.489476e-06
+Iter #     Field      Value
+90         Best       6.401663e-07
+Iter #     Field      Value
+100        Best       9.233215e-08
+The Best Evaluation: 9.233215e-08.
+The Best String:
+#   0: [8.81229e-07], [4.470601e-05], [-1.30097e-05], [9.708536e-05], [0.0002841442]
+
+* Minimize
+* Stochastic Universal Selection
+* Ranking Fitness
+* Reciprocal Fitness Minimization
+Iter #     Field      Value
+10         Best       7.615999e-01
+Iter #     Field      Value
+20         Best       1.942240e-01
+Iter #     Field      Value
+30         Best       5.752029e-03
+Iter #     Field      Value
+40         Best       2.519136e-03
+Iter #     Field      Value
+50         Best       9.729128e-04
+Iter #     Field      Value
+60         Best       3.415876e-04
+Iter #     Field      Value
+70         Best       9.872251e-05
+Iter #     Field      Value
+80         Best       2.068592e-05
+Iter #     Field      Value
+90         Best       1.081725e-05
+Iter #     Field      Value
+100        Best       4.009059e-06
+The Best Evaluation: 4.009059e-06.
+The Best String:
+#   0: [8.175482e-06], [-4.774982e-06], [-0.001506841], [0.0009120824], [0.0009521055]
+
+* Minimize
+* Stochastic Universal Selection
+* Ranking Fitness
+* CMAX Fitness Minimization
+Iter #     Field      Value
+10         Best       7.615999e-01
+Iter #     Field      Value
+20         Best       1.942240e-01
+Iter #     Field      Value
+30         Best       5.752029e-03
+Iter #     Field      Value
+40         Best       2.519136e-03
+Iter #     Field      Value
+50         Best       9.729128e-04
+Iter #     Field      Value
+60         Best       3.415876e-04
+Iter #     Field      Value
+70         Best       9.872251e-05
+Iter #     Field      Value
+80         Best       2.068592e-05
+Iter #     Field      Value
+90         Best       1.081725e-05
+Iter #     Field      Value
+100        Best       4.009059e-06
+The Best Evaluation: 4.009059e-06.
+The Best String:
+#   0: [8.175482e-06], [-4.774982e-06], [-0.001506841], [0.0009120824], [0.0009521055]
+
+* Minimize
+* Tournament Selection
+Iter #     Field      Value
+10         Best       3.717749e+00
+Iter #     Field      Value
+20         Best       9.706037e-01
+Iter #     Field      Value
+30         Best       2.676078e-01
+Iter #     Field      Value
+40         Best       4.269492e-02
+Iter #     Field      Value
+50         Best       7.732990e-03
+Iter #     Field      Value
+60         Best       1.986950e-03
+Iter #     Field      Value
+70         Best       1.317450e-04
+Iter #     Field      Value
+80         Best       1.652710e-05
+Iter #     Field      Value
+90         Best       4.172355e-06
+Iter #     Field      Value
+100        Best       2.301976e-06
+The Best Evaluation: 2.301976e-06.
+The Best String:
+#   0: [-0.0001032685], [-0.0008937207], [-0.0007482853], [0.000522744], [-0.0008120236]
+
+* Minimize
+* Probabilistic Tournament Selection
+Iter #     Field      Value
+10         Best       1.809915e+00
+Iter #     Field      Value
+20         Best       3.559919e-01
+Iter #     Field      Value
+30         Best       1.404474e-01
+Iter #     Field      Value
+40         Best       3.234951e-02
+Iter #     Field      Value
+50         Best       7.030758e-03
+Iter #     Field      Value
+60         Best       2.328872e-03
+Iter #     Field      Value
+70         Best       8.542160e-04
+Iter #     Field      Value
+80         Best       2.161419e-04
+Iter #     Field      Value
+90         Best       1.033652e-04
+Iter #     Field      Value
+100        Best       2.625250e-05
+The Best Evaluation: 2.625250e-05.
+The Best String:
+#   0: [2.735447e-05], [-0.002647244], [-0.003856309], [0.002057998], [0.0003706451]
+
+* Minimize
+* Truncation Selection
+Iter #     Field      Value
+10         Best       1.411968e+00
+Iter #     Field      Value
+20         Best       7.069146e-01
+Iter #     Field      Value
+30         Best       2.157121e-01
+Iter #     Field      Value
+40         Best       7.812921e-02
+Iter #     Field      Value
+50         Best       1.470031e-02
+Iter #     Field      Value
+60         Best       4.629178e-03
+Iter #     Field      Value
+70         Best       1.369762e-03
+Iter #     Field      Value
+80         Best       3.221812e-05
+Iter #     Field      Value
+90         Best       4.882664e-06
+Iter #     Field      Value
+100        Best       2.752286e-06
+The Best Evaluation: 2.752286e-06.
+The Best String:
+#   0: [0.0001252037], [-0.0009813225], [-0.001251331], [0.0003408298], [0.0003026899]
+
+* Maximize
+* Proportional Selection
+* Raw Fitness
+Iter #     Field      Value
+10         Best       -5.974083e-01
+Iter #     Field      Value
+20         Best       -1.712089e-01
+Iter #     Field      Value
+30         Best       -3.965048e-02
+Iter #     Field      Value
+40         Best       -5.076948e-03
+Iter #     Field      Value
+50         Best       -1.431360e-03
+Iter #     Field      Value
+60         Best       -1.266834e-04
+Iter #     Field      Value
+70         Best       -4.916087e-05
+Iter #     Field      Value
+80         Best       -7.474570e-06
+Iter #     Field      Value
+90         Best       -9.744407e-07
+Iter #     Field      Value
+100        Best       -1.654638e-07
+The Best Evaluation: -1.654638e-07.
+The Best String:
+#   0: [0.0001405433], [-0.0003543069], [-6.256484e-05], [0.0001252125], [2.419777e-05]
+
+* Maximize
+* Proportional Selection
+* Normal Fitness
+Iter #     Field      Value
+10         Best       -8.768064e-01
+Iter #     Field      Value
+20         Best       -2.884195e-02
+Iter #     Field      Value
+30         Best       -3.365317e-03
+Iter #     Field      Value
+40         Best       -6.065089e-04
+Iter #     Field      Value
+50         Best       -1.704075e-04
+Iter #     Field      Value
+60         Best       -5.183142e-05
+Iter #     Field      Value
+70         Best       -1.777090e-05
+Iter #     Field      Value
+80         Best       -1.900497e-06
+Iter #     Field      Value
+90         Best       -4.169688e-07
+Iter #     Field      Value
+100        Best       -3.511817e-08
+The Best Evaluation: -3.511817e-08.
+The Best String:
+#   0: [2.445038e-06], [-3.75084e-05], [4.236593e-05], [8.504558e-06], [0.0001784324]
+
+* Maximize
+* Proportional Selection
+* Ranking Fitness
+Iter #     Field      Value
+10         Best       -7.916153e-01
+Iter #     Field      Value
+20         Best       -3.139327e-01
+Iter #     Field      Value
+30         Best       -2.062453e-02
+Iter #     Field      Value
+40         Best       -1.756843e-03
+Iter #     Field      Value
+50         Best       -6.456267e-04
+Iter #     Field      Value
+60         Best       -2.542446e-04
+Iter #     Field      Value
+70         Best       -5.606603e-05
+Iter #     Field      Value
+80         Best       -1.058776e-05
+Iter #     Field      Value
+90         Best       -6.581575e-06
+Iter #     Field      Value
+100        Best       -1.176523e-06
+The Best Evaluation: -1.176523e-06.
+The Best String:
+#   0: [0.0004728046], [0.0005891923], [-2.353379e-05], [0.000777771], [-1.869039e-05]
+
+* Maximize
+* Stochastic Universal Selection
+* Raw Fitness
+Iter #     Field      Value
+10         Best       -1.373060e+00
+Iter #     Field      Value
+20         Best       -2.118901e-01
+Iter #     Field      Value
+30         Best       -3.830755e-02
+Iter #     Field      Value
+40         Best       -5.518266e-03
+Iter #     Field      Value
+50         Best       -2.075851e-03
+Iter #     Field      Value
+60         Best       -7.870135e-04
+Iter #     Field      Value
+70         Best       -2.016696e-04
+Iter #     Field      Value
+80         Best       -5.482241e-05
+Iter #     Field      Value
+90         Best       -6.469130e-06
+Iter #     Field      Value
+100        Best       -1.189065e-06
+The Best Evaluation: -1.189065e-06.
+The Best String:
+#   0: [0.0007118406], [0.0007358922], [-9.446112e-05], [-1.664625e-05], [0.0003627812]
+
+* Maximize
+* Stochastic Universal Selection
+* Normal Fitness
+Iter #     Field      Value
+10         Best       -1.518421e+00
+Iter #     Field      Value
+20         Best       -1.809925e-01
+Iter #     Field      Value
+30         Best       -3.100930e-02
+Iter #     Field      Value
+40         Best       -8.936180e-03
+Iter #     Field      Value
+50         Best       -2.079528e-03
+Iter #     Field      Value
+60         Best       -5.009895e-04
+Iter #     Field      Value
+70         Best       -1.208183e-04
+Iter #     Field      Value
+80         Best       -6.489476e-06
+Iter #     Field      Value
+90         Best       -6.401663e-07
+Iter #     Field      Value
+100        Best       -9.233215e-08
+The Best Evaluation: -9.233215e-08.
+The Best String:
+#   0: [8.81229e-07], [4.470601e-05], [-1.30097e-05], [9.708536e-05], [0.0002841442]
+
+* Maximize
+* Stochastic Universal Selection
+* Ranking Fitness
+Iter #     Field      Value
+10         Best       -7.615999e-01
+Iter #     Field      Value
+20         Best       -1.942240e-01
+Iter #     Field      Value
+30         Best       -5.752029e-03
+Iter #     Field      Value
+40         Best       -2.519136e-03
+Iter #     Field      Value
+50         Best       -9.729128e-04
+Iter #     Field      Value
+60         Best       -3.415876e-04
+Iter #     Field      Value
+70         Best       -9.872251e-05
+Iter #     Field      Value
+80         Best       -2.068592e-05
+Iter #     Field      Value
+90         Best       -1.081725e-05
+Iter #     Field      Value
+100        Best       -4.009059e-06
+The Best Evaluation: -4.009059e-06.
+The Best String:
+#   0: [8.175482e-06], [-4.774982e-06], [-0.001506841], [0.0009120824], [0.0009521055]
+
+* Maximize
+* Tournament Selection
+Iter #     Field      Value
+10         Best       -3.717749e+00
+Iter #     Field      Value
+20         Best       -9.706037e-01
+Iter #     Field      Value
+30         Best       -2.676078e-01
+Iter #     Field      Value
+40         Best       -4.269492e-02
+Iter #     Field      Value
+50         Best       -7.732990e-03
+Iter #     Field      Value
+60         Best       -1.986950e-03
+Iter #     Field      Value
+70         Best       -1.317450e-04
+Iter #     Field      Value
+80         Best       -1.652710e-05
+Iter #     Field      Value
+90         Best       -4.172355e-06
+Iter #     Field      Value
+100        Best       -2.301976e-06
+The Best Evaluation: -2.301976e-06.
+The Best String:
+#   0: [-0.0001032685], [-0.0008937207], [-0.0007482853], [0.000522744], [-0.0008120236]
+
+* Maximize
+* Probabilistic Tournament Selection
+Iter #     Field      Value
+10         Best       -1.809915e+00
+Iter #     Field      Value
+20         Best       -3.559919e-01
+Iter #     Field      Value
+30         Best       -1.404474e-01
+Iter #     Field      Value
+40         Best       -3.234951e-02
+Iter #     Field      Value
+50         Best       -7.030758e-03
+Iter #     Field      Value
+60         Best       -2.328872e-03
+Iter #     Field      Value
+70         Best       -8.542160e-04
+Iter #     Field      Value
+80         Best       -2.161419e-04
+Iter #     Field      Value
+90         Best       -1.033652e-04
+Iter #     Field      Value
+100        Best       -2.625250e-05
+The Best Evaluation: -2.625250e-05.
+The Best String:
+#   0: [2.735447e-05], [-0.002647244], [-0.003856309], [0.002057998], [0.0003706451]
+
+* Maximize
+* Truncation Selection
+Iter #     Field      Value
+10         Best       -1.411968e+00
+Iter #     Field      Value
+20         Best       -7.069146e-01
+Iter #     Field      Value
+30         Best       -2.157121e-01
+Iter #     Field      Value
+40         Best       -7.812921e-02
+Iter #     Field      Value
+50         Best       -1.470031e-02
+Iter #     Field      Value
+60         Best       -4.629178e-03
+Iter #     Field      Value
+70         Best       -1.369762e-03
+Iter #     Field      Value
+80         Best       -3.221812e-05
+Iter #     Field      Value
+90         Best       -4.882664e-06
+Iter #     Field      Value
+100        Best       -2.752286e-06
+The Best Evaluation: -2.752286e-06.
+The Best String:
+#   0: [0.0001252037], [-0.0009813225], [-0.001251331], [0.0003408298], [0.0003026899]
+
