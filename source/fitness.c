@@ -147,7 +147,7 @@ void PGAFitness (PGAContext *ctx, int popindex)
      * Only necessary for raw fitness
      */
     if (  ctx->ga.optdir == PGA_MINIMIZE
-       && ctx->ga.FitnessType == PGA_FITNESS_RAW
+       && ctx->ga.FitnessType != PGA_FITNESS_RANKING
        )
     {
         switch (ctx->ga.FitnessMinType) {
@@ -179,11 +179,14 @@ void PGAFitness (PGAContext *ctx, int popindex)
         }
         break;
     case PGA_FITNESS_NORMAL:
-        /* Needs no remapping to positive value */
+        if (ctx->ga.optdir != PGA_MINIMIZE) {
+            /* minimization already did the remapping */
+            remap_to_positive (ctx, pop);
+        }
         PGAFitnessLinearNormal (ctx, popindex);
         break;
     case PGA_FITNESS_RANKING:
-        /* Needs no remapping to positive value */
+        /* Needs no remapping */
         PGAFitnessLinearRank (ctx, popindex);
         break;
     default:
@@ -560,6 +563,9 @@ static void PGAFitnessLinearNormal (PGAContext *ctx, int popindex)
 
     /* calculate parameters for linear normalization */
 
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        ctx->scratch.dblscratch [i] = (pop+i)->fitness;
+    }
     mean  = PGAMean   (ctx, ctx->scratch.dblscratch, ctx->ga.PopSize);
     sigma = PGAStddev (ctx, ctx->scratch.dblscratch, ctx->ga.PopSize, mean);
     if (sigma == 0) {
@@ -704,7 +710,7 @@ static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop)
         /* Check that we're not mapping distinct evaluations to the same
          * fitness
          */
-        int evalue = (pop+i)->evalue;
+        double evalue = (pop+i)->evalue;
         if (cmax == cmax - evalue && evalue != 0) {
             PGAErrorPrintf (ctx, PGA_FATAL
                 , "PGAFitness: Overflow computing cmax fitness\n"

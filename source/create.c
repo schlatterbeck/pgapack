@@ -116,6 +116,7 @@ PGAContext *PGACreate ( int *argc, char **argv,
 	fprintf(stderr, "PGACreate: No room to allocate ctx\n");
 	exit(-1);
     }
+    memset (ctx, 0, sizeof (*ctx));
 
 
     /*  We use this (indirectly) in PGAReadCmdLine -- in processing
@@ -881,7 +882,9 @@ void PGASetUp ( PGAContext *ctx )
          PGAError(ctx, "PGASetUp: No room to allocate ctx->scratch.intscratch",
                   PGA_FATAL, PGA_VOID, NULL);
 
-    ctx->scratch.dblscratch = (double *)malloc(sizeof(double) * ctx->ga.PopSize);
+    ctx->scratch.dblscratch =
+        (double *)malloc(sizeof(double) * ctx->ga.PopSize);
+
     if (ctx->scratch.dblscratch == NULL)
          PGAError(ctx, "PGASetUp: No room to allocate ctx->scratch.dblscratch",
                   PGA_FATAL, PGA_VOID, NULL);

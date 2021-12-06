@@ -903,8 +903,14 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
         perm_idx = k;
     }
     if (last_generation != ctx->ga.iter) {
-        /* Returns sorted list of indeces in kbest, no need to initialize */
-        PGAEvalSort (ctx, pop, kbest);
+        int i;
+        int bestidx [ctx->ga.PopSize];
+        /* Returns sorted list of indeces in bestidx, no need to initialize */
+        PGAEvalSort (ctx, pop, bestidx);
+        /* Copy the k first indeces */
+        for (i=0; i<k; i++) {
+            kbest [i] = bestidx [i];
+        }
         last_generation = ctx->ga.iter;
         perm_idx = k;
     }
@@ -968,12 +974,13 @@ int PGASelectPTournament (PGAContext *ctx, int pop)
 {
     int m1, m2;
     int RetVal;
-    int drand = PGARandom01 (ctx, 0);
+    double drand;
 
     PGADebugEntered("PGASelectPTournament");
 
     m1 = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
     m2 = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
+    drand = PGARandom01 (ctx, 0);
 
     if (PGAEvalCompare (ctx, m1, pop, m2, pop) < 0) {
         RetVal = drand < ctx->ga.PTournamentProb ? m1 : m2;

@@ -105,10 +105,11 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
 
     if (PGAGetMutationOnlyFlag(ctx)) {
 	CreateNewGeneration = PGARunMutationOnly;
-    } else if (PGAGetMutationOrCrossoverFlag(ctx))
+    } else if (PGAGetMutationOrCrossoverFlag(ctx)) {
 	CreateNewGeneration = PGARunMutationOrCrossover;
-    else
+    } else {
 	CreateNewGeneration = PGARunMutationAndCrossover;
+    }
 
     while (!PGADone(ctx, comm)) {
 	if (rank == 0) {
