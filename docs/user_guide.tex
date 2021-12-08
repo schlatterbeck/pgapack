@@ -1632,7 +1632,7 @@ multiobjective algorithm tries to find many \textit{non dominated}
 solutions to a problem (a solution is said to dominate another solution
 if it is better in at least one objective but not worse in any other
 objective). These non-dominated solutions are said to lie on a
-\textit{Pareto Front} after the mathematicial Vilfredo Pareto who first
+\textit{Pareto Front} after the mathematician Vilfredo Pareto who first
 defined the concept today known as \textit{pareto optimality}. \pga\
 currently does not implement a multiobjective algorithm.
 
@@ -1675,7 +1675,7 @@ the user's {\em evaluation value} is mapped to a nonnegative and
 monotonically increasing {\em fitness value}.
 
 You may think of the algorithm used as follows (actually for the ranking
-methods the evaluation values are never translated):
+method the evaluation value is never translated):
 First, all evaluations are
 mapped to positive values (if any were negative).  Next, these values are
 translated to a maximization problem (if the direction of optimization
@@ -1687,13 +1687,14 @@ normalization, The choice of fitness mapping may be set with the function
 \verb+PGA_FITNESS_NORMAL+, for the identity, linear ranking, or linear
 normalization, respectively.
 
-Note that the \verb+PGA_FITNESS_RAW+ is subject to overflows if you have
+Note that \verb+PGA_FITNESS_RAW+ and \verb+PGA_FITNESS_NORMAL+ are
+subject to overflows if you have
 very large (or very small negative) fitness values. If this occurs, an
 error message is printed and the program terminates.
 Letting the search continue with such an overflow would map many
 \textit{different} evaluation values to the \textit{same} fitness.
-For such ill-conditioned problems you should use one of the ranking
-variants \verb+PGA_FITNESS_NORMAL+ or \verb+PGA_FITNESS_RANKING+.
+For such ill-conditioned problems you should use the ranking
+variant \verb+PGA_FITNESS_RANKING+.
 
 A {\em linear rank} fitness function \cite{Ba87,Wh89} is given by
 \begin{equation}
