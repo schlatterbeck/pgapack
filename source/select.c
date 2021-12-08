@@ -48,6 +48,71 @@ privately owned rights.
 #include "pgapack.h"
 
 /*U****************************************************************************
+  INDGetAuxTotal - Compute total value over all aux evaluations
+
+  Category: Operators
+
+  Inputs:
+    ind   - Pointer to Individual
+
+  Outputs:
+    Computed or cached total value over all aux evaluations
+    This is the sum of all *positive* individual aux evaluations.
+    The semantics is a total value of all constraint violations.
+
+  Example:
+    PGAIndividual *ind = PGAGetIndividual (ctx, p, PGA_OLDPOP);
+    double result;
+    :
+    result = INDGetAuxTotal (ind);
+
+****************************************************************************U*/
+double INDGetAuxTotal (PGAIndividual *ind)
+{
+    PGAContext *ctx = ind->ctx;
+    if (!ind->auxtotaluptodate) {
+        int i;
+        double s = 0;
+        for (i=0; i<ctx->ga.NumAuxEval; i++) {
+            if (ind->auxeval [i] > 0) {
+                s += ind->auxeval [i];
+            }
+        }
+        ind->auxtotal = s;
+        ind->auxtotaluptodate = PGA_TRUE;
+    }
+    return ind->auxtotal;
+}
+
+/*U****************************************************************************
+  PGAGetAuxTotal - Compute total value over all aux evaluations
+
+  Category: Operators
+
+  Inputs:
+    ctx   - context variable
+    p     - individual
+    pop   - population
+
+  Outputs:
+    Computed or cached total value over all aux evaluations
+    This is the sum of all *positive* individual aux evaluations.
+    The semantics is a total value of all constraint violations.
+
+  Example:
+    PGAContext *ctx;
+    double result;
+    :
+    result = PGAGetAuxTotal(ctx, p, PGA_OLDPOP);
+
+****************************************************************************U*/
+double PGAGetAuxTotal (PGAContext *ctx, int p, int pop)
+{
+    PGAIndividual *ind = PGAGetIndividual(ctx, p, pop);
+    return INDGetAuxTotal (ind);
+}
+
+/*U****************************************************************************
   PGASelect - performs genetic algorithm selection using either the default
   selection scheme or that specified with PGASetSelectType().  Valid selection
   methods are proportional, stochastic universal, tournament, probabilistic
@@ -96,15 +161,15 @@ void PGASelect (PGAContext *ctx, int popix)
         break;
     case PGA_SELECT_TOURNAMENT:    /* tournament selection               */
         for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectTournament (ctx, pop);
+            ctx->ga.selected[i] = PGASelectTournament (ctx, popix);
         break;
     case PGA_SELECT_PTOURNAMENT:   /* probabilistic tournament selection */
         for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectPTournament (ctx, pop);
+            ctx->ga.selected[i] = PGASelectPTournament (ctx, popix);
         break;
     case PGA_SELECT_TRUNCATION:   /* truncation selection */
         for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectTruncation (ctx, pop);
+            ctx->ga.selected[i] = PGASelectTruncation (ctx, popix);
         break;
     case PGA_SELECT_LINEAR:      /* linear selection */
         for (i=0; i<ctx->ga.PopSize; i++)
@@ -644,7 +709,7 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop )
 
 /*I****************************************************************************
   PGASelectTournamentWithReplacement - chooses N strings randomly and
-  returns the one with highest fitness, N is the value set with
+  returns the one with best evaluation, N is the value set with
   PGASetTournamentSize, the default is 2. The selection happens *with*
   replacement. See decription of PGASelectTournamentWithoutReplacement
   for details of sampling without replacement.
@@ -655,8 +720,8 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop )
           Genetic Algorithms (FOGA) 1, pp. 69-93, 1991.
 
   Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    ctx - context variable
+    pop - symbolic constant of population to select from
 
   Outputs:
     index of the selected string
@@ -669,21 +734,15 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop )
 
 ****************************************************************************I*/
 static
-int PGASelectTournamentWithReplacement( PGAContext *ctx, PGAIndividual *pop )
+int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
 {
-    int m;
-    double maxfit;
     int i;
-
-    m = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
-    maxfit = (pop+m)->fitness;
+    int m = PGARandomInterval (ctx, 0, ctx->ga.PopSize-1);
     for (i=1; i<ctx->ga.TournamentSize; i++) {
         int mn = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
-        double fit = (pop+mn)->fitness;
         /* use '>=' for backwards-compat with prev. binary tournament */
-        if (fit >= maxfit) {
+        if (PGAEvalCompare (ctx, mn, pop, m, pop) <= 0) {
             m = mn;
-            maxfit = fit;
         }
     }
     return m;
@@ -691,7 +750,7 @@ int PGASelectTournamentWithReplacement( PGAContext *ctx, PGAIndividual *pop )
 
 /*I****************************************************************************
   PGASelectTournamentWithoutReplacement - chooses N strings randomly and
-  returns the one with highest fitness, N is the value set with
+  returns the one with best evaluation, N is the value set with
   PGASetTournamentSize, the default is 2. The selection happens *without*
   replacement. This means if we select N individuals with a tournament
   size of 2, each individual is participating in exactly two
@@ -703,8 +762,8 @@ int PGASelectTournamentWithReplacement( PGAContext *ctx, PGAIndividual *pop )
           Complex Systems, 3(5):493–530, 1989.
 
   Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    ctx - context variable
+    pop - symbolic constant of population to select from
 
   Outputs:
     index of the selected string
@@ -739,10 +798,9 @@ static void _shuffle (PGAContext *ctx, int *list, int n)
       : (perm) [(idx)++]
 
 static
-int PGASelectTournamentWithoutReplacement (PGAContext *ctx, PGAIndividual *pop)
+int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
 {
     int m;
-    double maxfit;
     int i;
     static int *permutation = NULL;
     static int perm_idx = 0;
@@ -758,13 +816,10 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, PGAIndividual *pop)
     }
 
     m = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
-    maxfit = (pop+m)->fitness;
     for (i=1; i<ctx->ga.TournamentSize; i++) {
         int mn = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
-        double fit = (pop+mn)->fitness;
-        if (fit >= maxfit) {
+        if (PGAEvalCompare (ctx, mn, pop, m, pop) <= 0) {
             m = mn;
-            maxfit = fit;
         }
     }
     return m;
@@ -810,8 +865,8 @@ int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
   next integer.
 
   Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    ctx - context variable
+    pop - symbolic constant of population to select from
 
   Outputs:
     index of the selected string
@@ -823,7 +878,7 @@ int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
     l = PGASelectTruncation (ctx, PGA_OLDPOP);
 
 ****************************************************************************I*/
-int PGASelectTruncation (PGAContext *ctx, PGAIndividual *pop)
+int PGASelectTruncation (PGAContext *ctx, int pop)
 {
     int m = -1;
     int k = (int)(ctx->ga.PopSize * ctx->ga.TruncProportion + 0.5);
@@ -848,13 +903,11 @@ int PGASelectTruncation (PGAContext *ctx, PGAIndividual *pop)
         perm_idx = k;
     }
     if (last_generation != ctx->ga.iter) {
-        int bestidx [ctx->ga.PopSize];
         int i;
-        for (i=0; i<ctx->ga.PopSize; i++) {
-            bestidx [i] = i;
-            ctx->scratch.dblscratch [i] = pop [i].fitness;
-        }
-        PGADblHeapSort (ctx, ctx->scratch.dblscratch, bestidx, ctx->ga.PopSize);
+        int bestidx [ctx->ga.PopSize];
+        /* Returns sorted list of indeces in bestidx, no need to initialize */
+        PGAEvalSort (ctx, pop, bestidx);
+        /* Copy the k first indeces */
         for (i=0; i<k; i++) {
             kbest [i] = bestidx [i];
         }
@@ -868,14 +921,14 @@ int PGASelectTruncation (PGAContext *ctx, PGAIndividual *pop)
 
 /*I****************************************************************************
   PGASelectTournament - chooses N strings randomly and
-  returns the one with highest fitness, N is the value set with
+  returns the one with best evaluation, N is the value set with
   PGASetTournamentSize, the default is 2. Depending on the setting of
   PGASetTournamentWithReplacement calls one of two local functions to
   use the right sampling.
 
   Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    ctx - context variable
+    pop - symbolic constant of population to select from
 
   Outputs:
     index of the selected string
@@ -887,7 +940,7 @@ int PGASelectTruncation (PGAContext *ctx, PGAIndividual *pop)
     l = PGASelectTournament(ctx, PGA_OLDPOP);
 
 ****************************************************************************I*/
-int PGASelectTournament (PGAContext *ctx, PGAIndividual *pop)
+int PGASelectTournament (PGAContext *ctx, int pop)
 {
     PGADebugEntered("PGASelectTournament");
     if (ctx->ga.TournamentWithRepl) {
@@ -900,12 +953,12 @@ int PGASelectTournament (PGAContext *ctx, PGAIndividual *pop)
 
 /*I****************************************************************************
   PGASelectPTournament - chooses two strings randomly and returns the one with
-  higher fitness with a specified probability
+  better evaluation with a specified probability
   Ref:    D. Goldberg, Genetic Algorithms, pg. 121
 
   Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    ctx - context variable
+    pop - symbolic constant of population to select from
 
   Outputs:
     index of the selected string
@@ -917,29 +970,24 @@ int PGASelectTournament (PGAContext *ctx, PGAIndividual *pop)
     l = PGASelectPTournament(ctx, PGA_OLDPOP);
 
 ****************************************************************************I*/
-int PGASelectPTournament( PGAContext *ctx, PGAIndividual *pop )
+int PGASelectPTournament (PGAContext *ctx, int pop)
 {
     int m1, m2;
     int RetVal;
+    double drand;
 
     PGADebugEntered("PGASelectPTournament");
 
     m1 = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
     m2 = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
+    drand = PGARandom01 (ctx, 0);
 
-    if ( (pop+m1)->fitness > (pop+m2)->fitness )
-        if ( (double) PGARandom01(ctx, 0) < ctx->ga.PTournamentProb )
-            RetVal = m1;
-        else
-            RetVal = m2;
-    else
-        if ( (double) PGARandom01(ctx, 0) < ctx->ga.PTournamentProb )
-            RetVal = m2;
-        else
-            RetVal = m1;
+    if (PGAEvalCompare (ctx, m1, pop, m2, pop) < 0) {
+        RetVal = drand < ctx->ga.PTournamentProb ? m1 : m2;
+    } else {
+        RetVal = drand < ctx->ga.PTournamentProb ? m2 : m1;
+    }
 
     PGADebugExited("PGASelectPTournament");
     return(RetVal);
 }
-
-

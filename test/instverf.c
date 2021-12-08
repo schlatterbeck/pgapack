@@ -13,11 +13,11 @@
 #include <pgapack.h>
 
 
-double maxbit(PGAContext *, int, int);
-double ordering(PGAContext *, int, int);
-double name(PGAContext *, int, int);
-double function(PGAContext *, int, int);
-double functionb(PGAContext *, int, int);
+double maxbit(PGAContext *, int, int, double *);
+double ordering(PGAContext *, int, int, double *);
+double name(PGAContext *, int, int, double *);
+double function(PGAContext *, int, int, double *);
+double functionb(PGAContext *, int, int, double *);
 
 /*  The user defined functions.
  *
@@ -193,7 +193,7 @@ int main(int argc, char **argv) {
  *  The fitness functions
  *
  *****************************************************************************/
-double maxbit(PGAContext *ctx, int p, int pop) {
+double maxbit(PGAContext *ctx, int p, int pop, double *dummy) {
     int i, result;
 
     result = 0;
@@ -208,7 +208,7 @@ double maxbit(PGAContext *ctx, int p, int pop) {
 /*  Award points if two alleles are increasing (i.e., gene = .., 1, 2, ..)
  *  and if any allele is in the correct spot (i.e., gene = 1, 2, 3, 4, ...)
  */
-double ordering(PGAContext *ctx, int p, int pop) {
+double ordering(PGAContext *ctx, int p, int pop, double *dummy) {
     int i, n, o, len, result;
 
     len = PGAGetStringLength(ctx);
@@ -229,7 +229,7 @@ double ordering(PGAContext *ctx, int p, int pop) {
     return((double)result);
 }
 
-double name(PGAContext *ctx, int p, int pop) {
+double name(PGAContext *ctx, int p, int pop, double *dummy) {
     int  i, result;
 
     result = 0;
@@ -241,7 +241,7 @@ double name(PGAContext *ctx, int p, int pop) {
 }
 
 
-double function(PGAContext *ctx, int p, int pop) {
+double function(PGAContext *ctx, int p, int pop, double *dummy) {
     int    i;
     double x, result;
 
@@ -255,7 +255,7 @@ double function(PGAContext *ctx, int p, int pop) {
 }
 
 
-double functionb(PGAContext *ctx, int p, int pop) {
+double functionb(PGAContext *ctx, int p, int pop, double *dummy) {
     int    i;
     double x, result;
 

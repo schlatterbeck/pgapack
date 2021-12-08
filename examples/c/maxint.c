@@ -4,7 +4,7 @@
  */
 #include <pgapack.h>
 
-double evaluate(PGAContext *, int, int);
+double evaluate(PGAContext *, int, int, double *);
 int    myMutation(PGAContext *, int, int, double);
 int    GetIntegerParameter(char *query);
 
@@ -58,7 +58,7 @@ int myMutation(PGAContext *ctx, int p, int pop, double mr) {
 
 
 
-double evaluate(PGAContext *ctx, int p, int pop) {
+double evaluate(PGAContext *ctx, int p, int pop, double *dummy) {
      int  stringlen, i, sum;
 
      stringlen = PGAGetStringLength(ctx);

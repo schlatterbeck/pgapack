@@ -1,0 +1,405 @@
+Iter #     Field      Value           Constraints
+10         Best       1.888436e+03    0.000000e+00
+Iter #     Field      Value           Constraints
+20         Best       1.302203e+03    0.000000e+00
+Iter #     Field      Value           Constraints
+30         Best       1.238281e+03    0.000000e+00
+Iter #     Field      Value           Constraints
+40         Best       8.835690e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+50         Best       8.150254e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+60         Best       7.882649e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+70         Best       7.882649e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+80         Best       7.730386e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+90         Best       7.357074e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+100        Best       7.347028e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+110        Best       7.106460e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+120        Best       7.061783e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+130        Best       6.996650e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+140        Best       6.944851e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+150        Best       6.944851e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+160        Best       6.887418e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+170        Best       6.875213e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+180        Best       6.843022e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+190        Best       6.843022e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+200        Best       6.843022e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+210        Best       6.843022e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+220        Best       6.837639e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+230        Best       6.825338e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+240        Best       6.825338e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+250        Best       6.825338e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+260        Best       6.814668e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+270        Best       6.814668e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+280        Best       6.814668e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+290        Best       6.814058e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+300        Best       6.812873e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+310        Best       6.812180e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+320        Best       6.812180e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+330        Best       6.811985e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+340        Best       6.810871e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+350        Best       6.810871e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+360        Best       6.810871e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+370        Best       6.809569e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+380        Best       6.809569e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+390        Best       6.809569e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+400        Best       6.809569e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+410        Best       6.809569e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+420        Best       6.809184e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+430        Best       6.809184e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+440        Best       6.809138e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+450        Best       6.808792e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+460        Best       6.807613e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+470        Best       6.807613e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+480        Best       6.807613e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+490        Best       6.807613e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+500        Best       6.807568e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+510        Best       6.807568e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+520        Best       6.807568e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+530        Best       6.807096e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+540        Best       6.807096e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+550        Best       6.806939e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+560        Best       6.806939e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+570        Best       6.806939e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+580        Best       6.806939e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+590        Best       6.806939e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+600        Best       6.806930e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+610        Best       6.806930e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+620        Best       6.806930e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+630        Best       6.806601e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+640        Best       6.806555e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+650        Best       6.806555e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+660        Best       6.806555e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+670        Best       6.806555e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+680        Best       6.806555e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+690        Best       6.806555e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+700        Best       6.806555e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+710        Best       6.806555e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+720        Best       6.806555e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+730        Best       6.806500e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+740        Best       6.806500e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+750        Best       6.806500e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+760        Best       6.806492e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+770        Best       6.806464e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+780        Best       6.806420e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+790        Best       6.806349e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+800        Best       6.806349e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+810        Best       6.806349e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+820        Best       6.806349e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+830        Best       6.806349e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+840        Best       6.806349e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+850        Best       6.806349e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+860        Best       6.806332e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+870        Best       6.806332e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+880        Best       6.806332e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+890        Best       6.806332e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+900        Best       6.806332e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+910        Best       6.806332e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+920        Best       6.806332e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+930        Best       6.806332e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+940        Best       6.806332e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+950        Best       6.806332e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+960        Best       6.806332e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+970        Best       6.806332e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+980        Best       6.806329e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+990        Best       6.806329e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1000       Best       6.806329e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1010       Best       6.806322e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1020       Best       6.806322e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1030       Best       6.806322e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1040       Best       6.806322e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1050       Best       6.806321e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1060       Best       6.806321e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1070       Best       6.806321e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1080       Best       6.806321e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1090       Best       6.806311e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1100       Best       6.806311e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1110       Best       6.806311e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1120       Best       6.806311e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1130       Best       6.806311e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1140       Best       6.806311e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1150       Best       6.806309e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1160       Best       6.806309e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1170       Best       6.806305e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1180       Best       6.806305e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1190       Best       6.806305e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1200       Best       6.806305e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1210       Best       6.806305e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1220       Best       6.806305e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1230       Best       6.806305e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1240       Best       6.806305e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1250       Best       6.806305e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1260       Best       6.806305e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1270       Best       6.806305e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1280       Best       6.806305e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1290       Best       6.806303e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1300       Best       6.806303e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1310       Best       6.806303e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1320       Best       6.806303e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1330       Best       6.806303e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1340       Best       6.806303e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1350       Best       6.806303e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1360       Best       6.806303e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1370       Best       6.806303e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1380       Best       6.806303e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1390       Best       6.806303e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1400       Best       6.806303e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1410       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1420       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1430       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1440       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1450       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1460       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1470       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1480       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1490       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1500       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1510       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1520       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1530       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1540       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1550       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1560       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1570       Best       6.806302e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1580       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1590       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1600       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1610       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1620       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1630       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1640       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1650       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1660       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1670       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1680       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1690       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1700       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1710       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1720       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1730       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1740       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1750       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1760       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1770       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1780       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1790       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1800       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1810       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1820       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1830       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1840       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1850       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1860       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1870       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1880       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1890       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1900       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1910       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1920       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1930       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1940       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1950       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1960       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1970       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1980       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+1990       Best       6.806301e+02    0.000000e+00
+Iter #     Field      Value           Constraints
+2000       Best       6.806301e+02    0.000000e+00
+The Best Evaluation: 6.806301e+02 Constraints: 0.000000e+00.
+The Best String:
+#   0: [   2.330349], [   1.951438], [ -0.4773296], [   4.365617], [ -0.6246512]
+#   5: [    1.03817], [   1.594015]
+

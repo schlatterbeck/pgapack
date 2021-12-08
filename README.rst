@@ -16,6 +16,40 @@ companion projects:
 Updates 
 =======
 
+Updated December 2021:
+
+- If you're upgrading: The signature of your evaluation function has
+  changed, it has grown a new paramter at the end. If you're not using
+  constrained optimization you will only have to change your objective
+  function to add this paramter, it is unused in that configuration.
+  In Fortran you can get away without any changes.
+- This release probably changes the path an optimization takes because we
+  use a new (stable) sort for sorting populations during copying of
+  individuals for elitist algorithms. This can result in different
+  individuals being copied (which have the same evaluation but might have
+  different genetic material).
+- Add auxiliary evaluations, currently only used for constrained
+  optimization from a paper by Deb, 2000 (see user guide for citation). 
+  To find out about the new feature see the user guide, section 4.9
+  "String Evaluation and Fitness". You may also want to look at the
+  examples in examples/deb.
+- Fixes for Fortran on 64-bit machines: The context variable is a
+  pointer that didn't fit into a 4-byte integer on these machines
+  resulting in a core-dump.
+- Regression tests that use the alreay-coded examples as tests, this
+  includes the Fortran examples.
+  You can run them with "make test". Or, e.g., "make MPI=openmpi test"
+  The default for MPI is to run with 4 processors and use the machine
+  file .mpi-${MPI}-machinefile in your home directory (${MPI} is replaced
+  by the mpi implementation given to the make command, openmpi in this
+  example).
+- New examples for constrained optimization using all the examples from
+  Deb 2000.
+- Tested MPI on a multiprocessor machine (a bunch of Orange-Pi computers
+  acting as a (slow :-) multiprocessor). Works fine with Debian's
+  OpenMPI and MPICH MPI implementations. Does not work for me with LAM,
+  there is a debian bug-report #1000446.
+
 Updated September 2020:
 
 - Add Differential Evolution (DE) as a new Mutation Strategy

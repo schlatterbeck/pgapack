@@ -45,6 +45,7 @@ privately owned rights.
 *              Brian P. Walenz
 *****************************************************************************/
 
+#include <assert.h>
 #include <pgapack.h>
 
 /*U****************************************************************************
@@ -185,14 +186,24 @@ void PGACopyIndividual( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
     PGAIndividual *source, *dest;
 
-    PGADebugEntered("PGACopyIndividual");
+    PGADebugEntered ("PGACopyIndividual");
 
-    source = PGAGetIndividual ( ctx, p1, pop1 );
-    dest   = PGAGetIndividual ( ctx, p2, pop2 );
+    source = PGAGetIndividual (ctx, p1, pop1);
+    dest   = PGAGetIndividual (ctx, p2, pop2);
 
-    dest->evalfunc     = source->evalfunc;
-    dest->fitness      = source->fitness;
-    dest->evaluptodate = source->evaluptodate;
+    assert (source->ctx != NULL);
+    assert (dest->ctx == NULL || dest->ctx == source->ctx);
+    dest->ctx              = source->ctx;
+    dest->evalue           = source->evalue;
+    dest->fitness          = source->fitness;
+    dest->evaluptodate     = source->evaluptodate;
+    dest->auxtotal         = source->auxtotal;
+    dest->auxtotaluptodate = source->auxtotaluptodate;
+    if (ctx->ga.NumAuxEval) {
+        memcpy (dest->auxeval, source->auxeval, ctx->ga.NumAuxEval);
+    } else {
+        dest->auxeval = NULL;
+    }
 
     (*ctx->cops.CopyString)(ctx, p1, pop1, p2, pop2);
 
@@ -350,42 +361,24 @@ int PGAGetWorstIndex(PGAContext *ctx, int pop)
 ***************************************************************************U*/
 int PGAGetBestIndex(PGAContext *ctx, int pop)
 {
-     int     p, Best_indx = 0;
-     double  eval, Best_eval;
+    int     p, Best_indx = 0;
 
     PGADebugEntered("PGAGetBestIndex");
      
-     for (p = 0; p < ctx->ga.PopSize; p++)
-	 if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop))
-	     PGAError(ctx, "PGAGetBestIndex: Evaluate function not up to "
-		      "date:", PGA_FATAL, PGA_INT, (void *) &p);
-     
-     Best_eval = PGAGetEvaluation(ctx, 0, pop);
+    for (p = 0; p < ctx->ga.PopSize; p++)
+        if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop))
+	    PGAError(ctx, "PGAGetBestIndex: Evaluate function not up to "
+                     "date:", PGA_FATAL, PGA_INT, (void *) &p);
 
-     switch (PGAGetOptDirFlag(ctx)) {
-     case PGA_MAXIMIZE :
-	 for (p = 1; p < ctx->ga.PopSize; p++) {
-	     eval = PGAGetEvaluation(ctx, p, pop);
-	     if (eval > Best_eval) {
-		 Best_indx = p;
-		 Best_eval = eval;
-	     }
-	 }
-	 break;
-     case PGA_MINIMIZE :
-	 for (p = 1; p < ctx->ga.PopSize; p++) {
-	     eval = PGAGetEvaluation(ctx, p, pop);
-	     if (eval < Best_eval) {
-		 Best_indx = p;
-		 Best_eval = eval;
-	     }
-	 }
-	 break;
-     }
+    for (p=1; p<ctx->ga.PopSize; p++) {
+        if (PGAEvalCompare (ctx, p, pop, Best_indx, pop) < 0) {
+            Best_indx = p;
+        }
+    }
      
     PGADebugExited("PGAGetBestIndex");
 
-     return (Best_indx);
+    return (Best_indx);
 }
 
 
@@ -580,37 +573,233 @@ void PGAUpdateOffline(PGAContext *ctx, int pop)
      PGAComputeSimilarity(ctx,PGA_NEWPOP);
 
 **************************************************************************I*/
-int PGAComputeSimilarity(PGAContext *ctx, PGAIndividual *pop)
+int PGAComputeSimilarity (PGAContext *ctx, int popindex)
 {
-     int max = 0, curr = 1, i;
-     double prev;
+    int max = 0, curr = 1, i;
+    PGAIndividual *prev;
 
-    PGADebugEntered("PGAComputeSimilarity");
+    PGADebugEntered ("PGAComputeSimilarity");
 
-     for(i=0; i < ctx->ga.PopSize; i++)
-     {
-          ctx->scratch.dblscratch[i] = (pop + i)->evalfunc;
-          ctx->scratch.intscratch[i] = i;
-     }
+    /* No need to init the indeces, filled in by PGAEvalSort */
+    PGAEvalSort (ctx, popindex, ctx->scratch.intscratch);
 
-     PGADblHeapSort(ctx, ctx->scratch.dblscratch, ctx->scratch.intscratch,
-                    ctx->ga.PopSize);
+    prev = PGAGetIndividual (ctx, 0, popindex);
 
-     prev = ctx->scratch.dblscratch[0];
+    for (i=1; i<ctx->ga.PopSize; i++)
+    {
+        PGAIndividual *ind = PGAGetIndividual (ctx, i, popindex);
+        int same = 0;
 
-     for(i = 1; i < ctx->ga.PopSize; i++)
-     {
-          if (ctx->scratch.dblscratch[i] == prev)
-               curr++;
-          else
-          {
-               if (curr > max)
-                    max = curr;
-               curr = 1;
-          }
-     }
+        if (ind->evalue == prev->evalue) {
+            int j;
+            same = 1;
+            for (j=0; j<ctx->ga.NumAuxEval; j++) {
+                if (ind->auxeval [j] != prev->auxeval [j]) {
+                    same = 0;
+                    break;
+                }
+            }
+        }
 
-    PGADebugExited("PGAComputeSimilarity");
+        if (same) {
+            curr++;
+        } else {
+            if (curr > max)
+                max = curr;
+            curr = 1;
+        }
+        same = 0;
+    }
 
-     return(100 * max / ctx->ga.PopSize);
+    PGADebugExited ("PGAComputeSimilarity");
+
+    return (100 * max / ctx->ga.PopSize);
 }
+
+/* Used in PGAEvalCompare below */
+static inline double CMP (double a, double b)
+{
+    return (a < b ? -1 : (a > b ? 1 : 0));
+}
+
+/*U****************************************************************************
+  INDEvalCompare - Compare two individuals by evaluation.
+  This typically simply compares evaluation taking into account the
+  evaluation direction (minimize/maximize). We sort "better" individuals
+  first.
+
+  Category: Operators
+
+  Inputs:
+    ind1  - Pointer to first individual
+    ind2  - Pointer to second individual
+
+  Outputs:
+    >0 if p2 is "better" than p1
+    <0 if p1 is "better" than p2
+    0  if both compare equal
+    Thinks of this as sorting individuals by decreasing fitness or
+    increasing constraint violations.
+
+  Example:
+    PGAIndividual *ind1, *ind2;
+    int result;
+    ind1 = PGAGetIndividual(...
+    ind2 = PGAGetIndividual(...
+    :
+    result = INDEvalCompare(ind1, ind2);
+
+****************************************************************************U*/
+int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2)
+{
+    double auxt1 = 0, auxt2 = 0;
+    PGAContext *ctx = ind1->ctx;
+    int dir = PGAGetOptDirFlag (ctx);
+    assert (ind1->ctx == ind2->ctx);
+
+    if (!ind1->evaluptodate) {
+        PGAError
+            ( ctx
+            , "EvalCompare: first individual not up to date:"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
+    }
+    if (!ind2->evaluptodate) {
+        PGAError
+            ( ctx
+            , "EvalCompare: second individual not up to date:"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
+    }
+    if (ctx->ga.NumAuxEval > 0) {
+        auxt1 = INDGetAuxTotal (ind1);
+        auxt2 = INDGetAuxTotal (ind2);
+    }
+    if (auxt1 || auxt2) {
+        return CMP (auxt1, auxt2);
+    }
+    /* We might use the fitness if both populations are the same
+       otherwise fitness values are not comparable. But we now
+       use the evaluation in any case. This avoids overflows on fitness
+       computation, see documentation.
+     */
+    switch (dir) {
+    case PGA_MAXIMIZE:
+        return CMP (ind2->evalue, ind1->evalue);
+        break;
+    case PGA_MINIMIZE:
+        return CMP (ind1->evalue, ind2->evalue);
+        break;
+    default:
+        PGAError
+            (ctx
+            , "EvalCompare: Invalid value of PGAGetOptDirFlag:"
+            , PGA_FATAL, PGA_INT, (void *) &dir
+            );
+        break;
+    }
+    /* notreached */
+    return 0;
+}
+
+/*U****************************************************************************
+  PGAEvalCompare - Compare two strings for selection.
+  This typically simply compares evaluation taking into account the
+  evaluation direction (minimize/maximize).
+  But if auxiliary evaluations are defined, the auxiliary evaluations are
+  treated as constraints. This function is a user function and can be
+  redefined for other purposes: By redefining this function, e.g.,
+  instead of using the aux evaluations for constraint-handling, instead
+  (or in addition), multi objective evaluation can be implemented.
+  The default handling of auxiliary evaluations is incompatible with
+  certain selection schemes, see checks in create.c
+
+  Note that PGAEvalCompare is now used in several contexts, including
+  finding the best evaluation. For very badly scaled problems, the
+  default fitness computation will degenerate if there are very large
+  evaluation values and very small ones. In that case the fitness will
+  not reflect the evaluation. Therefore PGAEvalCompare will now always
+  sort on evaluation values ignoring the fitness. This improves
+  Tournament selection for very badly scaled problems.
+
+  Category: Operators
+
+  Inputs:
+    ctx   - context variable
+    p1    - first string to compare
+    pop1  - symbolic constant of population of first string
+    p2    - second string to compare
+    pop2  - symbolic constant of population of second string
+
+  Outputs:
+    >0 if p2 is "better" than p1
+    <0 if p1 is "better" than p2
+    0  if both compare equal
+    Thinks of this as sorting individuals by decreasing fitness or
+    increasing constraint violations.
+
+  Example:
+    PGAContext *ctx;
+    int result;
+    :
+    result = PGAEvalCompare(ctx, p1, PGA_OLDPOP, p2, PGA_OLDPOP);
+
+****************************************************************************U*/
+int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+{
+    PGAIndividual *ind1 = PGAGetIndividual (ctx, p1, pop1);
+    PGAIndividual *ind2 = PGAGetIndividual (ctx, p2, pop2);
+    return INDEvalCompare (ind1, ind2);
+}
+
+static int cmphelp (const void *a1, const void *a2)
+{
+    /* Note: We cast away the const because INDGetAuxTotal does caching
+     * and writes to the individual
+     */
+    PGAIndividual **i1 = (void *)a1;
+    PGAIndividual **i2 = (void *)a2;
+    return INDEvalCompare (*i1, *i2);
+}
+
+/*U****************************************************************************
+  PGAEvalSort - Sort list of population indeces by evaluation
+
+  Category: Operators
+
+  Inputs:
+    ctx   - context variable
+    pop   - symbolic constant of population to sort
+    idx   - Array of integer indeces into population pop
+
+  Outputs:
+    Array idx sorted by evalation
+    Note that the given list of indeces need not be initialized. It just
+    has to have the correct size of course.
+    Thinks of this as sorting individuals by "better" evaluation or
+    increasing constraint violations. The best individals are sorted
+    first.
+
+  Example:
+    PGAContext *ctx;
+    int indexes [ctx->ga.PopSize];
+    :
+    PGAEvalSort (ctx, PGA_OLDPOP, indexes);
+
+****************************************************************************U*/
+void PGAEvalSort (PGAContext *ctx, int pop, int *idx)
+{
+    int i;
+    PGAIndividual *sorttmp [ctx->ga.PopSize];
+    /* No need to check validity of pop, done by PGAIndividual */
+    PGAIndividual *first = PGAGetIndividual (ctx, 0, pop);
+
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        sorttmp [i] = first + i;
+    }
+    qsort (sorttmp, ctx->ga.PopSize, sizeof (sorttmp [0]), cmphelp);
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        idx [i] = sorttmp [i] - first;
+    }
+}
+

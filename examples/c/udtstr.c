@@ -8,7 +8,7 @@
 #include <pgapack.h>
 
 double       energy           (double *, int *);
-double       Evaluate         (PGAContext *, int, int);
+double       Evaluate         (PGAContext *, int, int, double *);
 void         CreateString     (PGAContext *, int, int, int);
 int          Mutation         (PGAContext *, int, int, double);
 void         Crossover        (PGAContext *, int, int, int, int, int, int);
@@ -214,7 +214,7 @@ MPI_Datatype BuildDT(PGAContext *ctx, int p, int pop) {
    *  the user still must include it.  See pgapack.h for details one the
    *  fields (under PGAIndividual)
    */
-  MPI_Get_address(&P->evalfunc, &displs[0]);
+  MPI_Get_address(&P->evalue, &displs[0]);
   counts[0] = 2;
   types[0]  = MPI_DOUBLE;
 
@@ -239,7 +239,7 @@ MPI_Datatype BuildDT(PGAContext *ctx, int p, int pop) {
 
 
 
-double Evaluate(PGAContext *ctx, int p, int pop) {
+double Evaluate(PGAContext *ctx, int p, int pop, double *dummy) {
     int     i;
     double  x[6];
     int     sc[40];

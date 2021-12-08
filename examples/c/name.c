@@ -22,7 +22,7 @@
 void   N_InitString(PGAContext *ctx, int p, int pop);
 int    N_Mutation(PGAContext *ctx, int p, int pop, double mr);
 int    N_StopCond(PGAContext *ctx);
-double EvalName(PGAContext *ctx, int p, int pop);
+double EvalName(PGAContext *ctx, int p, int pop, double *dummy);
 void   GetStringParameter(char *query, char *string);
 
 /*  Global, because we use it in EvalName.  */
@@ -111,7 +111,7 @@ int N_StopCond(PGAContext *ctx) {
 /*  Evaluate the string.  A highly fit string will have many of
  *  the characters matching Name.
  */
-double EvalName(PGAContext *ctx, int p, int pop) {
+double EvalName(PGAContext *ctx, int p, int pop, double *dummy) {
     int     i, count;
     
     count = 0;

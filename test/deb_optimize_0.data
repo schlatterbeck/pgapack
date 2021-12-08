@@ -1,0 +1,24 @@
+Iter #     Field      Value           Constraints
+10         Best       1.223957e-01    0.000000e+00
+Iter #     Field      Value           Constraints
+20         Best       5.511466e-02    0.000000e+00
+Iter #     Field      Value           Constraints
+30         Best       5.511466e-02    0.000000e+00
+Iter #     Field      Value           Constraints
+40         Best       5.495970e-02    0.000000e+00
+Iter #     Field      Value           Constraints
+50         Best       5.419581e-02    0.000000e+00
+Iter #     Field      Value           Constraints
+60         Best       5.404359e-02    0.000000e+00
+Iter #     Field      Value           Constraints
+70         Best       5.404179e-02    0.000000e+00
+Iter #     Field      Value           Constraints
+80         Best       5.403637e-02    0.000000e+00
+Iter #     Field      Value           Constraints
+90         Best       5.403601e-02    0.000000e+00
+Iter #     Field      Value           Constraints
+100        Best       5.403567e-02    0.000000e+00
+The Best Evaluation: 5.403567e-02 Constraints: 0.000000e+00.
+The Best String:
+#   0: [  0.5794188], [  0.3733459]
+

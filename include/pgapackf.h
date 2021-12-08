@@ -253,6 +253,8 @@ c *** duplcate
 c *** evaluate
       double precision PGAGetEvaluation
       external PGAGetEvaluation
+      double precision PGAGetEvaluationAux
+      external PGAGetEvaluationAux
       integer PGAGetEvaluationUpToDateFlag
       external PGAGetEvaluationUpToDateFlag
       double precision PGAGetRealFromBinary
@@ -407,6 +409,8 @@ c *** select
       external PGAGetTruncationProportion
       integer PGAGetRandomizeSelect
       external PGAGetRandomizeSelect
+      double precision PGAGetAuxTotal
+      external PGAGetAuxTotal
 c *** stop
       integer PGADone
       external PGADone
@@ -438,3 +442,5 @@ c *** utility
       external PGAGetWorstIndex
       integer PGAGetBestIndex
       external PGAGetBestIndex
+      integer PGAEvalCompare
+      external PGAEvalCompare

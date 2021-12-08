@@ -5,7 +5,7 @@
 
 #include <pgapack.h>
 
-double NumberOfSetBits(PGAContext *, int, int);
+double NumberOfSetBits(PGAContext *, int, int, double *);
 
 /*******************************************************************
 *                   user main program                              *
@@ -30,7 +30,7 @@ int main( int argc, char **argv ) {
 *   p   - chromosome index in population                           *
 *   pop - which population to refer to                             *
 *******************************************************************/
-double NumberOfSetBits(PGAContext *ctx, int p, int pop) {
+double NumberOfSetBits(PGAContext *ctx, int p, int pop, double *dummy) {
     int i, nbits, stringlen;
 
     stringlen = PGAGetStringLength(ctx);

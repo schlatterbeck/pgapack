@@ -839,10 +839,10 @@ double pgagetdedither_ (PGAContext **ftx);
 void pgasetdeditherperindividual_ (PGAContext **ftx, int *val);
 int pgagetdeditherperindividual_ (PGAContext **ftx);
 /* parallel.c */
-void pgarungm_(PGAContext **ftx, double (*f)(PGAContext *, int, int),
+void pgarungm_(PGAContext **ftx, double (*f)(PGAContext *, int, int, double *),
      MPI_Comm *comm);
 void pgaevaluate_(PGAContext **ftx, int *pop,
-     double (*f)(PGAContext *, int, int), MPI_Comm *comm);
+     double (*f)(PGAContext *, int, int, double *), MPI_Comm *comm);
 unsigned long pgabuilddatatype_(PGAContext **ftx, int *p, int *pop);
 void pgasendindividual_(PGAContext **ftx, int *p, int *pop, int *dest, int *tag, MPI_Comm *comm);
 void pgareceiveindividual_(PGAContext **ftx, int *p, int *pop, int *source, int *tag, MPI_Comm *comm, MPI_Status *status);
@@ -853,7 +853,7 @@ void pgasetcommunicator_(PGAContext **ftx, MPI_Comm *comm);
 MPI_Comm pgagetcommunicator_(PGAContext **ftx);
 /* pga.c */
 void pgarun_(PGAContext **ftx,
-     double (*evaluate)(PGAContext *c, int p, int pop));
+     double (*evaluate)(PGAContext *c, int p, int pop, double *aux));
 void pgarunmutationandcrossover_(PGAContext **ftx, int *oldpop,
      int *newpop);
 void pgarunmutationorcrossover_(PGAContext **ftx, int *oldpop, int *newpop);
@@ -1175,15 +1175,31 @@ int pgagetnoduplicatesflag_(PGAContext **ftx)
 }
 
 /* evaluate.c */
-void pgasetevaluation_( PGAContext **ftx, int *p, int *pop, double *val )
+void pgasetevaluation_
+    (PGAContext **ftx, int *p, int *pop, double *val)
 {
-     PGASetEvaluation(*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1,
-           *pop, *val );
+     PGASetEvaluation
+        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop, *val);
 }
 
-double pgagetevaluation_(PGAContext **ftx, int *p, int *pop)
+double pgagetevaluation_ (PGAContext **ftx, int *p, int *pop)
 {
-     return PGAGetEvaluation(*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop);
+     return PGAGetEvaluation
+        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop);
+}
+
+void pgasetevaluationaux_
+    (PGAContext **ftx, int *p, int *pop, double *val, double *aux)
+{
+     PGASetEvaluation
+        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop, *val, aux);
+}
+
+double pgagetevaluationaux_
+    (PGAContext **ftx, int *p, int *pop, const double **aux)
+{
+     return PGAGetEvaluation
+        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop, aux);
 }
 
 void pgasetevaluationuptodateflag_(PGAContext **ftx, int *p, int *pop, int *status)
@@ -1543,14 +1559,14 @@ int pgagetdeditherperindividual_ (PGAContext **ftx)
 
 
 /* parallel.c */
-void pgarungm_(PGAContext **ftx, double (*f)(PGAContext *, int, int),
+void pgarungm_(PGAContext **ftx, double (*f)(PGAContext *, int, int, double *),
      MPI_Comm *comm)
 {
      PGARunGM  (*ftx, (*f), *comm);
 }
 
 void pgaevaluate_(PGAContext **ftx, int *pop,
-     double (*f)(PGAContext *, int, int), MPI_Comm *comm)
+     double (*f)(PGAContext *, int, int, double *), MPI_Comm *comm)
 {
      PGAEvaluate  (*ftx, *pop, (*f), *comm);
 }
@@ -1605,7 +1621,7 @@ MPI_Comm pgagetcommunicator_(PGAContext **ftx)
 
 /* pga.c */
 void pgarun_(PGAContext **ftx,
-     double (*evaluate)(PGAContext *c, int p, int pop))
+     double (*evaluate)(PGAContext *c, int p, int pop, double *aux))
 {
      PGARun  (*ftx, (*evaluate));
 }

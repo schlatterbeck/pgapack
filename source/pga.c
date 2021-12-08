@@ -71,7 +71,8 @@ privately owned rights.
     PGADestroy(ctx);
 
 ****************************************************************************U*/
-void PGARun(PGAContext *ctx, double (*evaluate)(PGAContext *c, int p, int pop))
+void PGARun (PGAContext *ctx,
+             double (*evaluate)(PGAContext *c, int p, int pop, double *))
 {
      MPI_Comm comm;                  /* value of default communicator */
      int nprocs;                     /* number of processes in above  */
@@ -177,7 +178,7 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
 
     popsize = PGAGetPopSize (ctx);
     numreplace = PGAGetNumReplaceValue (ctx);
-    /*** first, copy n best strings (sorted by fitness) to new pop ***/
+    /*** first, copy n best strings to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
     n = popsize - numreplace;
@@ -257,7 +258,7 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
 
     popsize = PGAGetPopSize (ctx);
     numreplace = PGAGetNumReplaceValue (ctx);
-    /*** first, copy n best strings (sorted by fitness) to new pop ***/
+    /*** first, copy n best strings to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
     n = popsize - numreplace;
@@ -342,7 +343,7 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
 
     popsize = PGAGetPopSize (ctx);
     numreplace = PGAGetNumReplaceValue (ctx);
-    /*** first, copy n best strings (sorted by fitness) to new pop ***/
+    /*** first, copy n best strings to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
     n = popsize - numreplace;
@@ -389,16 +390,16 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
     PGAUpdateGeneration(ctx, MPI_COMM_WORLD);
 
 ****************************************************************************U*/
-void PGAUpdateGeneration(PGAContext *ctx, MPI_Comm comm)
+void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm)
 {
     PGAIndividual *temp;
     int i, rank;
 
-    PGADebugEntered("PGAUpdateGeneration");
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGAUpdateGeneration",
-                  "ga.iter = ", PGA_INT, (void *) &(ctx->ga.iter) );
+    PGADebugEntered ("PGAUpdateGeneration");
+    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGAUpdateGeneration",
+                   "ga.iter = ", PGA_INT, (void *) &(ctx->ga.iter));
 
-    rank = PGAGetRank(ctx, comm);
+    rank = PGAGetRank (ctx, comm);
 
     ctx->ga.iter++;
 
@@ -427,35 +428,40 @@ void PGAUpdateGeneration(PGAContext *ctx, MPI_Comm comm)
             PGAPairwiseBestReplacement (ctx);
         }
 
-	if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE)
+	if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) {
 	    PGAUpdateAverage(ctx, PGA_NEWPOP);
+        }
 
-	if (ctx->rep.PrintOptions & PGA_REPORT_ONLINE)
+	if (ctx->rep.PrintOptions & PGA_REPORT_ONLINE) {
 	    PGAUpdateOnline(ctx, PGA_NEWPOP);
+        }
 
-	if (ctx->rep.PrintOptions & PGA_REPORT_OFFLINE)
+	if (ctx->rep.PrintOptions & PGA_REPORT_OFFLINE) {
 	    PGAUpdateOffline(ctx, PGA_NEWPOP);
+        }
 
 	if ((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) || ctx->ga.restart) {
-	    i = PGAGetBestIndex(ctx, PGA_NEWPOP);
+	    i = PGAGetBestIndex (ctx, PGA_NEWPOP);
 	    if (ctx->rep.Best == PGAGetEvaluation(ctx, i, PGA_NEWPOP))
 		ctx->ga.ItersOfSame++;
 	    else {
-		ctx->rep.Best = PGAGetEvaluation(ctx, i, PGA_NEWPOP);
+		ctx->rep.Best = PGAGetEvaluation (ctx, i, PGA_NEWPOP);
 		ctx->ga.ItersOfSame = 1;
 	    }
 	}
 
 	if (ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR)
-	    ctx->ga.PercentSame = PGAComputeSimilarity(ctx, ctx->ga.newpop);
+	    ctx->ga.PercentSame = PGAComputeSimilarity (ctx, PGA_NEWPOP);
 
 	/*  Clear this twice in case the user EOG calls PGASelect.  */
 	ctx->ga.SelectIndex = 0;
 
-	if (ctx->fops.EndOfGen)
+	if (ctx->fops.EndOfGen) {
 	    (*ctx->fops.EndOfGen)(&ctx);
-	if (ctx->cops.EndOfGen)
+        }
+	if (ctx->cops.EndOfGen) {
 	    (*ctx->cops.EndOfGen)(ctx);
+        }
 
 	ctx->ga.SelectIndex = 0;
 	temp           = ctx->ga.oldpop;
@@ -463,7 +469,7 @@ void PGAUpdateGeneration(PGAContext *ctx, MPI_Comm comm)
 	ctx->ga.newpop = temp;
     }
 
-    PGADebugExited("PGAUpdateGeneration");
+    PGADebugExited ("PGAUpdateGeneration");
 }
 
 

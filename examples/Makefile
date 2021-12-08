@@ -2,6 +2,7 @@ all: C Fortran
 
 C:
 	$(MAKE) -C c
+	$(MAKE) -C deb
 
 ifeq (,${FC})
 
@@ -20,5 +21,6 @@ clean:
 	$(MAKE) -C c       clean
 	$(MAKE) -C fortran clean
 	$(MAKE) -C mgh     clean
+	$(MAKE) -C deb     clean
 
 .PHONY: all C Fortran clean

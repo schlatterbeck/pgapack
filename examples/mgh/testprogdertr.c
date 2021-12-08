@@ -68,7 +68,7 @@ static const double * init_upper [] =
     , NULL
     };
 
-double evaluate (PGAContext *ctx, int p, int pop)
+double evaluate (PGAContext *ctx, int p, int pop, double *aux)
 {
     int i;
     int dimension = PGAGetStringLength (ctx);

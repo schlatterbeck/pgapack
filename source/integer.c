@@ -860,41 +860,56 @@ void PGAIntegerInitString(PGAContext *ctx, int p, int pop)
 ****************************************************************************I*/
 MPI_Datatype PGAIntegerBuildDatatype(PGAContext *ctx, int p, int pop)
 {
-
-     int            counts[4];      /* Number of elements in each
-                                       block (array of integer) */
-     MPI_Aint       displs[4];      /* byte displacement of each
-                                       block (array of integer) */
-     MPI_Datatype   types[4];       /* type of elements in each block (array
-                                       of handles to datatype objects) */
-     MPI_Datatype   individualtype; /* new datatype (handle) */
-     PGAIndividual *traveller;      /* address of individual in question */
+    int            n = 6;
+    int            counts[7];      /* Number of elements in each
+                                      block (array of integer) */
+    MPI_Aint       displs[7];      /* byte displacement of each
+                                      block (array of integer) */
+    MPI_Datatype   types[7];       /* type of elements in each block (array
+                                      of handles to datatype objects) */
+    MPI_Datatype   individualtype; /* new datatype (handle) */
+    PGAIndividual *traveller;      /* address of individual in question */
 
     PGADebugEntered("PGAIntegerBuildDatatype");
 
-     traveller = PGAGetIndividual(ctx, p, pop);
-     MPI_Get_address(&traveller->evalfunc, &displs[0]);
-     counts[0] = 1;
-     types[0]  = MPI_DOUBLE;
+    traveller = PGAGetIndividual(ctx, p, pop);
+    MPI_Get_address(&traveller->evalue, &displs[0]);
+    counts[0] = 1;
+    types[0]  = MPI_DOUBLE;
 
-     MPI_Get_address(&traveller->fitness, &displs[1]);
-     counts[1] = 1;
-     types[1]  = MPI_DOUBLE;
+    MPI_Get_address(&traveller->fitness, &displs[1]);
+    counts[1] = 1;
+    types[1]  = MPI_DOUBLE;
 
-     MPI_Get_address(&traveller->evaluptodate, &displs[2]);
-     counts[2] = 1;
-     types[2]  = MPI_INT;
+    MPI_Get_address(&traveller->evaluptodate, &displs[2]);
+    counts[2] = 1;
+    types[2]  = MPI_INT;
 
-     MPI_Get_address(traveller->chrom, &displs[3]);
-     counts[3] = ctx->ga.StringLen;
-     types[3]  = MPI_LONG;
+    MPI_Get_address(traveller->chrom, &displs[3]);
+    counts[3] = ctx->ga.StringLen;
+    types[3]  = MPI_LONG;
 
-     MPI_Type_create_struct(4, counts, displs, types, &individualtype);
-     MPI_Type_commit(&individualtype);
+    MPI_Get_address(&traveller->auxtotal, &displs[4]);
+    counts[4] = 1;
+    types[4]  = MPI_DOUBLE;
+
+    MPI_Get_address(&traveller->auxtotaluptodate, &displs[5]);
+    counts[5] = 1;
+    types[5]  = MPI_INT;
+
+    if (ctx->ga.NumAuxEval) {
+        MPI_Get_address(traveller->auxeval, &displs[6]);
+        counts[6] = ctx->ga.NumAuxEval;
+        types[6]  = MPI_DOUBLE;
+        n += 1;
+    }
+
+    MPI_Type_create_struct(n, counts, displs, types, &individualtype);
+    MPI_Type_commit(&individualtype);
 
     PGADebugExited("PGAIntegerBuildDatatype");
 
-     return (individualtype);
+    return (individualtype);
 }
 
 /*I****************************************************************************

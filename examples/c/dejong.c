@@ -3,11 +3,11 @@
  */
 #include <pgapack.h>
 
-double dejong1(PGAContext *, int, int);
-double dejong2(PGAContext *, int, int);
-double dejong3(PGAContext *, int, int);
-double dejong4(PGAContext *, int, int);
-double dejong5(PGAContext *, int, int);
+double dejong1(PGAContext *, int, int, double *);
+double dejong2(PGAContext *, int, int, double *);
+double dejong3(PGAContext *, int, int, double *);
+double dejong4(PGAContext *, int, int, double *);
+double dejong5(PGAContext *, int, int, double *);
 void   printResultInterpretation(PGAContext *, int);
 int    GetIntegerParameter(char *query);
 
@@ -72,7 +72,7 @@ double GetTerm(PGAContext *ctx, int p, int pop, int t, int problem) {
 }
 
 
-double dejong1(PGAContext *ctx, int p, int pop) {
+double dejong1(PGAContext *ctx, int p, int pop, double *dummy) {
     int i;
     double term, sum = 0;
     
@@ -85,7 +85,7 @@ double dejong1(PGAContext *ctx, int p, int pop) {
 }
 
 
-double dejong2(PGAContext *ctx, int p, int pop) {
+double dejong2(PGAContext *ctx, int p, int pop, double *dummy) {
     double x1, x2, p1, p2;
     
     x1 = GetTerm(ctx, p, pop, 0, 1);
@@ -97,7 +97,7 @@ double dejong2(PGAContext *ctx, int p, int pop) {
     return (100 * p1 * p1 + p2 * p2);
 }
 
-double dejong3(PGAContext *ctx, int p, int pop) {
+double dejong3(PGAContext *ctx, int p, int pop, double *dummy) {
     int i;
     double sum = 0;
     
@@ -107,7 +107,7 @@ double dejong3(PGAContext *ctx, int p, int pop) {
     return (sum);
 }
 
-double dejong4(PGAContext *ctx, int p, int pop) {
+double dejong4(PGAContext *ctx, int p, int pop, double *dummy) {
     int i;
     double term, sum = 0;
     
@@ -119,7 +119,7 @@ double dejong4(PGAContext *ctx, int p, int pop) {
     return (sum + PGARandomGaussian(ctx, 0, 1));
 }
 
-double dejong5(PGAContext *ctx, int p, int pop) {
+double dejong5(PGAContext *ctx, int p, int pop, double *dummy) {
     int    a[2][25];
     int    i, j;
     double sum_over_i = 0, sum_over_j = 0;

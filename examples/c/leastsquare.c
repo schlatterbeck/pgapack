@@ -38,7 +38,7 @@ static const intconf fitness_min [] =
 };
 static const int nfitmin = sizeof (fitness_min) / sizeof (intconf);
 
-double evaluate_min (PGAContext *ctx, int p, int pop)
+double evaluate_min (PGAContext *ctx, int p, int pop, double *aux)
 {
     int i;
     int dimension = PGAGetStringLength (ctx);
@@ -51,15 +51,15 @@ double evaluate_min (PGAContext *ctx, int p, int pop)
     return e;
 }
 
-double evaluate_max (PGAContext *ctx, int p, int pop)
+double evaluate_max (PGAContext *ctx, int p, int pop, double *aux)
 {
-    return -evaluate_min (ctx, p, pop);
+    return -evaluate_min (ctx, p, pop, aux);
 }
 
 static const struct evalconf
 {
     int    maxormin;
-    double (*f)(PGAContext *, int, int);
+    double (*f)(PGAContext *, int, int, double *);
 } evalconf [] =
 { { PGA_MINIMIZE, evaluate_min }
 , { PGA_MAXIMIZE, evaluate_max }

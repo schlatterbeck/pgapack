@@ -5,7 +5,7 @@
 
 #include <pgapack.h>
 
-double NumberOfZs(PGAContext *, int, int);
+double NumberOfZs(PGAContext *, int, int, double *);
 int    myMutation(PGAContext *, int, int, double);
 int    GetIntegerParameter(char *query);
 
@@ -45,7 +45,7 @@ int main( int argc, char **argv )
 *   p   - chromosome index in population                           *
 *   pop - which population to refer to                             *
 *******************************************************************/
-double NumberOfZs(PGAContext *ctx, int p, int pop) {
+double NumberOfZs(PGAContext *ctx, int p, int pop, double *dummy) {
      int i, nzs;
      int stringlen;
 

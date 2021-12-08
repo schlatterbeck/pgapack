@@ -70,55 +70,52 @@ privately owned rights.
 ****************************************************************************U*/
 void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
 {
-     int p, best_p;
-     double e, best_e;
+    int p, best_p;
+    double e, best_e;
+    int numaux;
 
     PGADebugEntered("PGAPrintReport");
 
+
     /*
      * edd  07 Feb 2007  this prints unconditionally, so let's change it
-     *                    WAS:  if (ctx->ga.iter == 1)
      */
-     if ((ctx->rep.PrintFreq >=0) && !(ctx->ga.iter % ctx->rep.PrintFreq))
-/*       fprintf (fp, "Iter #     Field      Value           Time\n");  */
-         fprintf (fp, "Iter #     Field      Value\n");
+    if ((ctx->rep.PrintFreq <= 0) || (ctx->ga.iter % ctx->rep.PrintFreq)) {
+        return;
+    }
+    best_p = PGAGetBestIndex(ctx, pop);
+    best_e = PGAGetEvaluation(ctx, best_p, pop);
+    numaux = PGAGetNumAuxEval (ctx);
 
+    fprintf (fp, "Iter #     Field      Value");
+    if (numaux) {
+        fprintf (fp, "           Constraints");
+    }
+    fprintf (fp, "\n");
 
-     best_p = PGAGetBestIndex(ctx, pop);
-     best_e = PGAGetEvaluation(ctx, best_p, pop);
-    /*
-     * edd  07 Feb 2007  this prints unconditionally, so let's change it
-     *                    WAS:  (!(ctx->ga.iter % ctx->rep.PrintFreq) || ctx->ga.iter == 1)
-     */
-     if ((ctx->rep.PrintFreq >=0) && !(ctx->ga.iter % ctx->rep.PrintFreq))
-     {
-          fprintf(fp, "%-11dBest       %e\n", PGAGetGAIterValue(ctx), best_e);
-/*        fprintf(fp, "      %ld\n", time(NULL) - ctx->rep.starttime);  */
-          if ((ctx->rep.PrintOptions & PGA_REPORT_WORST) == PGA_REPORT_WORST)
-          {
-               p = PGAGetWorstIndex(ctx, pop);
-               e = PGAGetEvaluation(ctx, p, pop);
-               fprintf(fp, "           Worst      %e\n", e);
-          }
+    fprintf(fp, "%-11dBest       %e", PGAGetGAIterValue(ctx), best_e);
+    if (numaux) {
+        fprintf (fp, "    %e", PGAGetAuxTotal (ctx, best_p, pop));
+    }
+    fprintf (fp, "\n");
+    if ((ctx->rep.PrintOptions & PGA_REPORT_WORST) == PGA_REPORT_WORST)
+    {
+        p = PGAGetWorstIndex(ctx, pop);
+        e = PGAGetEvaluation(ctx, p, pop);
+        fprintf(fp, "           Worst      %e\n", e);
+    }
 
-          if ((ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) == PGA_REPORT_AVERAGE)
-               fprintf(fp, "           Average    %e\n", ctx->rep.Average);
-
-          if ((ctx->rep.PrintOptions & PGA_REPORT_OFFLINE)
-               == PGA_REPORT_OFFLINE)
-               fprintf(fp, "           Offline    %e\n", ctx->rep.Offline);
-
-          if ((ctx->rep.PrintOptions & PGA_REPORT_ONLINE) == PGA_REPORT_ONLINE)
-               fprintf(fp, "           Online     %e\n", ctx->rep.Online);
-
-          if((ctx->rep.PrintOptions & PGA_REPORT_HAMMING)
-             == PGA_REPORT_HAMMING)
-               fprintf(fp, "           Hamming    %e\n",
-                       PGAHammingDistance(ctx, pop));
-          if ((ctx->rep.PrintOptions & PGA_REPORT_STRING) == PGA_REPORT_STRING)
-               PGAPrintString(ctx, fp, best_p, pop);
-     }
-     fflush(fp);
+    if ((ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) == PGA_REPORT_AVERAGE)
+        fprintf(fp, "           Average    %e\n", ctx->rep.Average);
+    if ((ctx->rep.PrintOptions & PGA_REPORT_OFFLINE) == PGA_REPORT_OFFLINE)
+        fprintf(fp, "           Offline    %e\n", ctx->rep.Offline);
+    if ((ctx->rep.PrintOptions & PGA_REPORT_ONLINE) == PGA_REPORT_ONLINE)
+        fprintf(fp, "           Online     %e\n", ctx->rep.Online);
+    if ((ctx->rep.PrintOptions & PGA_REPORT_HAMMING) == PGA_REPORT_HAMMING)
+        fprintf(fp, "           Hamming    %e\n", PGAHammingDistance(ctx, pop));
+    if ((ctx->rep.PrintOptions & PGA_REPORT_STRING) == PGA_REPORT_STRING)
+        PGAPrintString(ctx, fp, best_p, pop);
+    fflush(fp);
 
     PGADebugExited("PGAPrintReport");
 }
@@ -299,7 +296,7 @@ void PGAPrintIndividual ( PGAContext *ctx, FILE *fp, int p, int pop )
 
     ind = PGAGetIndividual ( ctx, p, pop );
 
-    fprintf( fp,"%d  %e %e ", p, ind->evalfunc, ind->fitness);
+    fprintf( fp,"%d  %e %e ", p, ind->evalue, ind->fitness);
     if ( ind->evaluptodate )
         fprintf( fp, "T\n" );
     else
