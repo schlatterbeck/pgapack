@@ -19,7 +19,7 @@ Updates
 Updated December 2021:
 
 - If you're upgrading: The signature of your evaluation function has
-  changed, it has grown a new paramter at the end. If you're not using
+  changed, it has grown a new parameter at the end. If you're not using
   constrained optimization you will only have to change your objective
   function to add this paramter, it is unused in that configuration.
   In Fortran you can get away without any changes.
