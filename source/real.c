@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -181,7 +181,6 @@ void PGASetRealInitPercent ( PGAContext *ctx, double *median, double *percent)
          offset = fabs(median[i] * percent[i]);
          ctx->init.RealMin[i] = median[i] - offset;
          ctx->init.RealMax[i] = median[i] + offset;
-         
     }
     ctx->init.RealType = PGA_RINIT_PERCENT;
 
@@ -386,9 +385,9 @@ void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
     PGAIndividual *new = PGAGetIndividual(ctx, p, pop);
     int i, fp;
     PGAReal *c;
-    
+
     PGADebugEntered("PGARealCreateString");
-    
+
     new->chrom = (void *) malloc (ctx->ga.StringLen * sizeof(PGAReal));
     if (new->chrom == NULL)
 	PGAError(ctx, "PGARealCreateString: No room to allocate new->chrom",
@@ -404,7 +403,7 @@ void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
     else
 	for (i=ctx->ga.StringLen-1; i>=0; i--)
 	    c[i] = 0.0;
-    
+
     PGADebugExited("PGARealCreateString");
 }
 
@@ -490,20 +489,43 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
         }
         /* Use (PopSize - avoid) to avoid collision with running index
          * and with the best index (unless this is the same)
+         * We may use this form of selection of the indeces needed for
+         * DE for linear selection, for other selection schemes we use
+         * the selected individuals and re-sample if we get collisions.
          */
-        PGARandomSampleInit (ctx, &sstate, nrand, ctx->ga.PopSize - avoid);
-        for (i=0; i<nrand; i++) {
-            int rawidx = PGARandomNextSample (&sstate);
-            /* Avoid collision with p and optionally best, samples are
-             * drawn with reduced upper bound, see PGARandomSampleInit above
-             */
-            if (rawidx >= p) {
-                rawidx += 1;
+        if (ctx->ga.SelectType == PGA_SELECT_LINEAR) {
+            PGARandomSampleInit (ctx, &sstate, nrand, ctx->ga.PopSize - avoid);
+            for (i=0; i<nrand; i++) {
+                int rawidx = PGARandomNextSample (&sstate);
+                /* Avoid collision with p and optionally best, samples
+                 * are drawn with reduced upper bound, see
+                 * PGARandomSampleInit above
+                 */
+                if (rawidx >= p) {
+                    rawidx += 1;
+                }
+                /* The best individual can be in the part of the old
+                 * population that is copied verbatim to the new
+                 * population. In that case never increment the index
+                 */
+                if (do_best && best != p && rawidx >= best) {
+                    rawidx += 1;
+                }
+                idx [i] = rawidx;
             }
-            if (do_best && best != p && rawidx >= best) {
-                rawidx += 1;
+        } else {
+            for (i=0; i<nrand; i++) {
+                do {
+                    idx [i] = PGASelectNextIndex (ctx, PGA_OLDPOP);
+                } while
+                    (  idx [i] == p
+                    || (do_best && idx [i] == best)
+                    || (i > 0 && idx [i] == idx [i-1])
+                    || (i > 1 && idx [i] == idx [i-2])
+                    || (i > 2 && idx [i] == idx [i-3])
+                    || (i > 3 && idx [i] == idx [i-4])
+                    );
             }
-            idx [i] = rawidx;
         }
         /* Since indices from PGARandomNextSample are
          * returned in order we need to shuffle
@@ -579,7 +601,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
             case PGA_MUTATION_DE:
                 switch (ctx->ga.DECrossoverType) {
                 case PGA_DE_CROSSOVER_BIN:
-                    do_crossover = 
+                    do_crossover =
                         (  idx == midx
                         || PGARandomFlip (ctx, ctx->ga.DECrossoverProb)
                         );
@@ -591,7 +613,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                     if (do_crossover) {
                         idx = (midx + i) % ctx->ga.StringLen;
                         if (i > 0) {
-                            do_crossover = 
+                            do_crossover =
                                 (PGARandomFlip (ctx, ctx->ga.DECrossoverProb));
                         }
                     }

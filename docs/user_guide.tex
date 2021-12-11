@@ -1553,6 +1553,18 @@ Therefore an alternative called ``Bounce-Back'' was proposed: If
 \verb+PGASetMutationBounceBackFlag(ctx, PGA_TRUE)+ is set, the new value
 is set to a random value between the old value and the bound.
 
+A note on the use of the DE mutation type together with other selection
+or replacements schemes: The DE mutation is very disruptive. It will not
+work well or not work at all with a non-elitist replacement scheme. Due
+to the high disruption, if not retaining at least one best individual
+in each generation, it is very likely that the search will diverge. Good
+choices for an elitist strategy are the two elitist replacement schemes
+\verb+PGA_POPREPL_PAIRWISE_BEST+ (which is the standard replacement
+scheme for Differential Evolution) and \verb+PGA_POPREPL_RTR+. The
+latter may help if the algorithm stagnates due to premature convergence.
+In that case RTR can help to retain more genetic diversity. For details
+see section~\ref{sec:population-replacement}.
+
 
 %*****************************************************************************
 \section{Restart}\label{sec:restart}
