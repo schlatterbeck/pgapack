@@ -556,6 +556,8 @@ void PGASetNumAuxEval (PGAContext *ctx, int n);
 int PGAGetNumAuxEval (PGAContext *ctx);
 void PGASetNumConstraint (PGAContext *ctx, int n);
 int PGAGetNumConstraint (PGAContext *ctx);
+void PGASetSumConstraintsFlag (PGAContext *ctx, int n);
+int PGAGetSumConstraintsFlag (PGAContext *ctx);
 
 /*****************************************
 *          cross.c

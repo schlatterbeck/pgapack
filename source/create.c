@@ -744,7 +744,23 @@ void PGASetUp ( PGAContext *ctx )
     }
 
     if (ctx->ga.PopReplace        == PGA_UNINITIALIZED_INT) {
-        ctx->ga.PopReplace         = PGA_POPREPL_BEST;
+        if (ctx->ga.NumAuxEval - ctx->ga.NumConstraint > 0) {
+            ctx->ga.PopReplace    = PGA_POPREPL_NSGA_II;
+        } else {
+            ctx->ga.PopReplace    = PGA_POPREPL_BEST;
+        }
+    }
+
+    if (  ctx->ga.NumAuxEval - ctx->ga.NumConstraint > 0
+       && ctx->ga.PopReplace != PGA_POPREPL_NSGA_II
+       )
+    {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetUp: NumAuxEval=%d, NumConstraint=%d: Population "
+              "replacement with multi-objective optimization must be NSGA-II"
+            , ctx->ga.NumAuxEval, ctx->ga.NumConstraint
+            );
     }
 
     if (ctx->ga.restart           == PGA_UNINITIALIZED_INT) {
@@ -1401,4 +1417,63 @@ void PGASetNumConstraint (PGAContext *ctx, int n)
 int PGAGetNumConstraint (PGAContext *ctx)
 {
     return ctx->ga.NumConstraint;
+}
+
+/*I****************************************************************************
+  PGASetSumConstraintsFlag - Configure if constraints are summed for
+  minimization or use NSGA-II for optimization. This only has an effect
+  if the NSGA-II replacement scheme is configured. In that case, using
+  NSGA-II nondominated sorting for constraint optimization is the
+  default. If the default is turned off by setting this configuration to
+  PGA_TRUE, constraints are summed and the sum in minimized. The latter
+  is also used when NSGA-II replacement is not in use.
+
+  Inputs:
+     ctx      - context variable
+     n        - PGA_TRUE or PGA_FALSE
+
+  Outputs:
+     None
+
+  Example:
+     PGAContext *ctx;
+     :
+     PGASetSumConstraintsFlag (ctx, PGA_FALSE);
+
+****************************************************************************I*/
+void PGASetSumConstraintsFlag (PGAContext *ctx, int n)
+{
+    PGADebugEntered("PGASetSumConstraintsFlag");
+
+    if (n != PGA_FALSE && n != PGA_TRUE) {
+        PGAError
+            ( ctx, "PGASetSumConstraints: PGA_TRUE or PGA_FALSE required"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
+    }
+    ctx->ga.SumConstraints = n;
+
+    PGADebugExited("PGASetSumConstraintsFlag");
+}
+
+/*I****************************************************************************
+  PGAGetSumConstraintsFlag - Query if constraints are summed or optimized by
+  NSGA-II nondominated sorting
+
+  Inputs:
+     ctx      - context variable
+
+  Outputs:
+     PGAGetSumConstraintsFlag
+
+  Example:
+     PGAContext *ctx;
+     int n;
+     :
+     n = PGAGetSumConstraintsFlag (ctx);
+
+****************************************************************************I*/
+int PGAGetSumConstraintsFlag (PGAContext *ctx)
+{
+    return ctx->ga.SumConstraints;
 }

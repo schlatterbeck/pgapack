@@ -194,6 +194,7 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGASetRandomInitFlag",           305 },
         { "PGASetNumAuxEval",               306 },
         { "PGASetNumConstraint",            307 },
+        { "PGASetSumConstraintsFlag",       308 },
 
         /* cross.c */
         { "PGACrossover",                   310 },
