@@ -682,19 +682,21 @@ void PGABinaryCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 ****************************************************************************I*/
 int PGABinaryDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
-     PGABinary *a = (PGABinary *)PGAGetIndividual(ctx, p1, pop1)->chrom;
-     PGABinary *b = (PGABinary *)PGAGetIndividual(ctx, p2, pop2)->chrom;
+     PGABinary *a = (PGABinary *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+     PGABinary *b = (PGABinary *)PGAGetIndividual (ctx, p2, pop2)->chrom;
      int wi;
 
-     PGADebugEntered("PGABinaryDuplicate");
+     PGADebugEntered ("PGABinaryDuplicate");
 
-     wi = ctx->ga.tw-1;
-     if (a[0] == b[0])
-         for (; (wi>0) && (a[wi] == b[wi]); wi--);
+     for (wi=0; wi<ctx->ga.tw; wi++) {
+        if (a [wi] != b [wi]) {
+            break;
+        }
+     }
 
-     PGADebugExited("PGABinaryDuplicate");
+     PGADebugExited ("PGABinaryDuplicate");
 
-     return((wi==0) ? PGA_TRUE : PGA_FALSE);
+     return wi == ctx->ga.tw ? PGA_TRUE : PGA_FALSE;
 }
 
 /*I****************************************************************************

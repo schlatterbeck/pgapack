@@ -778,19 +778,21 @@ void PGAIntegerCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 ****************************************************************************I*/
 int PGAIntegerDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
-     PGAInteger *a = (PGAInteger *)PGAGetIndividual(ctx, p1, pop1)->chrom;
-     PGAInteger *b = (PGAInteger *)PGAGetIndividual(ctx, p2, pop2)->chrom;
-     int i;
+    PGAInteger *a = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    PGAInteger *b = (PGAInteger *)PGAGetIndividual (ctx, p2, pop2)->chrom;
+    int count = 0;
 
-    PGADebugEntered("PGAIntegerDuplicate");
+    PGADebugEntered ("PGAIntegerDuplicate");
 
-     i = ctx->ga.StringLen-1;
-     if (a[0] == b[0])
-       for(; (i>0) && (a[i] == b[i]); i--);
+    for (count=0; count<ctx->ga.StringLen; count++) {
+        if (a [count] != b [count]) {
+            break;
+        }
+    }
 
     PGADebugExited("PGAIntegerDuplicate");
 
-     return((i==0) ? PGA_TRUE : PGA_FALSE);
+    return count == ctx->ga.StringLen ? PGA_TRUE : PGA_FALSE;
 }
 
 /*I****************************************************************************

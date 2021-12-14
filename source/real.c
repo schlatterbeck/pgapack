@@ -1006,19 +1006,21 @@ void PGARealCopyString ( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 ****************************************************************************I*/
 int PGARealDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
-     PGAReal *a = (PGAReal *)PGAGetIndividual(ctx, p1, pop1)->chrom;
-     PGAReal *b = (PGAReal *)PGAGetIndividual(ctx, p2, pop2)->chrom;
-     int i;
+    PGAReal *a = (PGAReal *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    PGAReal *b = (PGAReal *)PGAGetIndividual (ctx, p2, pop2)->chrom;
+    int count = 0;
 
-    PGADebugEntered("PGARealDuplicate");
+    PGADebugEntered ("PGARealDuplicate");
 
-     i = ctx->ga.StringLen-1;
-     if (a[0] == b[0])
-       for(; (i>0) && (a[i] == b[i]); i--);
+    for (count=0; count<ctx->ga.StringLen; count++) {
+        if (a [count] != b [count]) {
+            break;
+        }
+    }
 
-    PGADebugExited("PGARealDuplicate");
+    PGADebugExited ("PGARealDuplicate");
 
-     return((i==0) ? PGA_TRUE : PGA_FALSE);
+    return count == ctx->ga.StringLen ? PGA_TRUE : PGA_FALSE;
 }
 
 /*I****************************************************************************
