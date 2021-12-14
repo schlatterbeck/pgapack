@@ -827,7 +827,7 @@ int PGAComputeSimilarity (PGAContext *ctx, int popindex)
   INDEvalCompare - Compare two individuals by evaluation.
   This typically simply compares evaluation taking into account the
   evaluation direction (minimize/maximize). We sort "better" individuals
-  first.
+  first. For more details see PGAEvalCompare.
 
   Category: Operators
 
@@ -879,6 +879,10 @@ int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2)
     if (auxt1 || auxt2) {
         return CMP (auxt1, auxt2);
     }
+    /* Multiobjective? */
+    if (ctx->ga.NumAuxEval - ctx->ga.NumConstraint > 0) {
+        return CMP (ind1->rank, ind2->rank);
+    }
     /* We might use the fitness if both populations are the same
        otherwise fitness values are not comparable. But we now
        use the evaluation in any case. This avoids overflows on fitness
@@ -908,12 +912,19 @@ int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2)
   This typically simply compares evaluation taking into account the
   evaluation direction (minimize/maximize).
   But if auxiliary evaluations are defined, the auxiliary evaluations are
-  treated as constraints. This function is a user function and can be
-  redefined for other purposes: By redefining this function, e.g.,
-  instead of using the aux evaluations for constraint-handling, instead
-  (or in addition), multi objective evaluation can be implemented.
+  treated as constraints or for multi-objective optimization.
   The default handling of auxiliary evaluations is incompatible with
   certain selection schemes, see checks in create.c
+  We handle constraints to compare first: If two constrained individuals
+  are compared, the one with less constraint violations wins. If a
+  constrained individual is compared to an unconstrained one, the latter
+  wins. If two unconstrained individuals are compared, the (single)
+  evaluation is compared depending on the direction of optimization
+  (minimization or maximization).
+
+  For multi-objective optimization we do not compare the evaluations but
+  only the rank (as computed by the NSGA-II algorithm). Note that many
+  individuals may have the same rank.
 
   Note that PGAEvalCompare is now used in several contexts, including
   finding the best evaluation. For very badly scaled problems, the
