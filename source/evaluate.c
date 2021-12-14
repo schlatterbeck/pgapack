@@ -102,7 +102,7 @@ void _PGASetEvaluation
         if (aux != NULL && aux != ind->auxeval) {
             memcpy (ind->auxeval, aux, sizeof (double) * ctx->ga.NumAuxEval);
         }
-        ind->auxtotaluptodate = PGA_FALSE;
+        ind->auxtotalok = PGA_FALSE;
     }
 
     PGADebugExited ("PGASetEvaluation");
@@ -257,7 +257,7 @@ void PGASetEvaluationUpToDateFlag ( PGAContext *ctx, int p, int pop,
       ind->evaluptodate = status;
       /* Invalidate cached auxtotal */
       if (!status) {
-        ind->auxtotaluptodate = PGA_FALSE;
+        ind->auxtotalok = PGA_FALSE;
       }
       break;
     default:

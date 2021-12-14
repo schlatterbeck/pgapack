@@ -70,16 +70,18 @@ privately owned rights.
 double INDGetAuxTotal (PGAIndividual *ind)
 {
     PGAContext *ctx = ind->ctx;
-    if (!ind->auxtotaluptodate) {
+    if (!ind->auxtotalok) {
         int i;
         double s = 0;
-        for (i=0; i<ctx->ga.NumAuxEval; i++) {
+        int numaux = ctx->ga.NumAuxEval;
+        int numcon = ctx->ga.NumConstraint;
+        for (i=numaux - numcon; i<numaux; i++) {
             if (ind->auxeval [i] > 0) {
                 s += ind->auxeval [i];
             }
         }
-        ind->auxtotal = s;
-        ind->auxtotaluptodate = PGA_TRUE;
+        ind->auxtotal   = s;
+        ind->auxtotalok = PGA_TRUE;
     }
     return ind->auxtotal;
 }

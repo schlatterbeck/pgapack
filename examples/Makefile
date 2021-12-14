@@ -3,6 +3,7 @@ all: C Fortran
 C:
 	$(MAKE) -C c
 	$(MAKE) -C deb
+	$(MAKE) -C nsgaii
 
 ifeq (,${FC})
 
@@ -22,5 +23,6 @@ clean:
 	$(MAKE) -C fortran clean
 	$(MAKE) -C mgh     clean
 	$(MAKE) -C deb     clean
+	$(MAKE) -C nsgaii  clean
 
 .PHONY: all C Fortran clean

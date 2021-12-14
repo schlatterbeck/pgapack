@@ -74,7 +74,7 @@ privately owned rights.
 void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
 	      MPI_Comm comm)
 {
-    int       rank, Restarted, best_p;
+    int       rank, Restarted;
     void    (*CreateNewGeneration)(PGAContext *, int, int);
 
     /*  Let this be warned:
@@ -154,14 +154,38 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
 
     if (rank == 0) {
         int pop = PGA_OLDPOP;
-	best_p = PGAGetBestIndex (ctx, pop);
-	printf("The Best Evaluation: %e", PGAGetEvaluation (ctx, best_p, pop));
-        if (PGAGetNumAuxEval (ctx)) {
-            printf (" Constraints: %e", PGAGetAuxTotal (ctx, best_p, pop));
+        int numaux = PGAGetNumAuxEval (ctx);
+        int numcon = PGAGetNumConstraint (ctx);
+        if (numaux == numcon) {
+            int best_p = PGAGetBestIndex (ctx, pop);
+            printf
+                ( "The Best Evaluation: %e"
+                , PGAGetEvaluation (ctx, best_p, pop)
+                );
+            if (numaux) {
+                printf (" Constraints: %e", PGAGetAuxTotal (ctx, best_p, pop));
+            }
+            printf (".\n");
+            printf ("The Best String:\n");
+            PGAPrintString (ctx, stdout, best_p, pop);
+        } else {
+            int i, k;
+            PGAIndividual *ind = PGAGetIndividual (ctx, 0, pop);
+            for (k=0; k<numaux+1; k++) {
+                printf ("The Best (%d) evaluation: %e\n", k, ctx->rep.Best [k]);
+            }
+            printf ("The Nondominated Strings:\n");
+            for (i=0; i<ctx->ga.PopSize; i++) {
+                if (ind->rank == 0) {
+                    for (k=0; k<numaux+1; k++) {
+                        double e = (k==0) ? ind->evalue : ind->auxeval [k-1];
+                        printf ("F %5d %20.14e\n", k, e);
+                    }
+                    PGAPrintString (ctx, stdout, i, pop);
+                }
+                ind++;
+            }
         }
-        printf (".\n");
-	printf ("The Best String:\n");
-	PGAPrintString (ctx, stdout, best_p, pop);
 	fflush (stdout);
     }
     PGADebugExited ("PGARunGM");

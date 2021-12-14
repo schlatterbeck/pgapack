@@ -1,0 +1,41 @@
+Multiobjective Example
+======================
+
+This directory contains C source code of multiobjective problems
+from the NSGA-II paper by Kalyanmoy Deb et. al. [1]_.
+
+Note that it was tried to solve the given problems using Differential
+Evolution [2]_, [3]_, [4]_ -- except for the population replacement
+scheme which uses NSGA-II.
+
+Some of the problems were given more generations than in the paper. Note
+that the ZDT4 example has a typo in the NSGA-II paper [1]_ and should
+remove the factor g(x) from f2(x), see the original paper by Zitzler,
+Deb, and Thiele [5]_ p.178 formula (10). Even with more generations, the
+current implementation fails to find a solution similar to the NSGA-II
+paper [1]_: It is better in the lower values of f1 but worse in the
+higher values. It's currently unsure if the test problem is correctly
+implemented or if there are other errors.
+
+There is a small python script ``crowdingplot`` which can be used to
+do a scatter-plot of the first variable against the second. This
+reproduces some of the results in the paper [1]_. Just pipe the output
+of the optimization run through the script.
+
+.. [1] Kalyanmoy Deb, Amrit Pratap, Sameer Agarwal, and T. Meyarivan.
+       A fast and elitist multiobjective genetic algorithm: NSGA-II.
+       IEEE Transactions on Evolutionary Computation, 6(2):182–197,
+       April 2002.
+.. [2] Rainer Storn and Kenneth Price. Differential evolution – a simple
+       and efficient adaptive scheme for global optimization over
+       continuous spaces. Technical Report TR-95-012, International
+       Computer Science Institute (ICSI), March 1995.
+.. [3] Rainer Storn and Kenneth Price. Differential evolution – a simple
+       and efficient heuristic for global optimization over continuous spaces.
+       Journal of Global Optimization, 11(4):341–359, December 1997.
+.. [4] Kenneth V. Price, Rainer M. Storn, and Jouni A. Lampinen.
+       Differential Evolution: A Practical Approach to Global
+       Optimization.  Springer, Berlin, Heidelberg, 2005.
+.. [5] Eckart Zitzler, Kalyanmoy Deb, and Lothar Thiele. Comparison of
+       multiobjective evolutionary algorithms: Empirical results.
+       Evolutionary Computation, 8(2):173–195, 2000.

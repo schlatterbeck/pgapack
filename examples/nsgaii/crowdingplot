@@ -1,0 +1,29 @@
+#!/usr/bin/python3
+
+import sys
+import matplotlib.pyplot as plt
+
+f  = sys.stdin
+fn = None
+if len (sys.argv) > 1 :
+    fn = sys.argv [1]
+    f = open (fn, 'r')
+
+X = []
+Y = []
+
+for line in f :
+    if line.startswith ('Example:') :
+        name = line.strip ().split (None, 1) [-1]
+    if line.startswith ('F') :
+        f, idx, number = line.split ()
+        idx = int (idx)
+        num = float (number)
+        if idx :
+            Y.append (num)
+        else :
+            X.append (num)
+
+plt.scatter (X, Y)
+plt.title (name)
+plt.show ()

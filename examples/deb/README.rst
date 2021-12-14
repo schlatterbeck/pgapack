@@ -37,19 +37,19 @@ is one order of magnitude worse than the best solution. I've not tried if
 with different random number initialization the problem could be solved
 with a smaller epsilon.
 
-_[1]: Kalyanmoy Deb. An efficient constraint handling method
-      for genetic algorithms. Computer Methods in Applied Mechanics and
-      Engineering, 186(2–4):311–338, June 2000.
-_[2]: W. Hock and K. Schittkowski. Test examples for nonlinear
-      programming codes. Lecture Notes in Economics and Mathematical
-      Systems, 187, 1981.
-_[3]: Rainer Storn and Kenneth Price. Differential evolution – a simple
-      and efficient adaptive scheme for global optimization over
-      continuous spaces. Technical Report TR-95-012, International
-      Computer Science Institute (ICSI), March 1995.
-_[4]: Rainer Storn and Kenneth Price. Differential evolution – a simple
-      and efficient heuristic for global optimization over continuous spaces.
-      Journal of Global Optimization, 11(4):341–359, December 1997.
-_[5]: Kenneth V. Price, Rainer M. Storn, and Jouni A. Lampinen.
-      Differential Evolution: A Practical Approach to Global
-      Optimization.  Springer, Berlin, Heidelberg, 2005.
+.. [1] Kalyanmoy Deb. An efficient constraint handling method
+       for genetic algorithms. Computer Methods in Applied Mechanics and
+       Engineering, 186(2–4):311–338, June 2000.
+.. [2] W. Hock and K. Schittkowski. Test examples for nonlinear
+       programming codes. Lecture Notes in Economics and Mathematical
+       Systems, 187, 1981.
+.. [3] Rainer Storn and Kenneth Price. Differential evolution – a simple
+       and efficient adaptive scheme for global optimization over
+       continuous spaces. Technical Report TR-95-012, International
+       Computer Science Institute (ICSI), March 1995.
+.. [4] Rainer Storn and Kenneth Price. Differential evolution – a simple
+       and efficient heuristic for global optimization over continuous spaces.
+       Journal of Global Optimization, 11(4):341–359, December 1997.
+.. [5] Kenneth V. Price, Rainer M. Storn, and Jouni A. Lampinen.
+       Differential Evolution: A Practical Approach to Global
+       Optimization.  Springer, Berlin, Heidelberg, 2005.

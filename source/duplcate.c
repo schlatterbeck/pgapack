@@ -111,17 +111,19 @@ int PGADuplicate(PGAContext *ctx, int p, int pop1, int pop2, int n)
     if (ctx->ga.NoDuplicates == PGA_TRUE) {
 	if (ctx->fops.Duplicate) {
 	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
-	    for (p2 = 1; p2 <= n; p2++)
+	    for (p2 = 1; p2 <= n; p2++) {
 		if ((*ctx->fops.Duplicate)(&ctx, &fp, &pop1, &p2, &pop2)) {
 		    RetVal = PGA_TRUE;
 		    p2 = n+1;
 		}
+            }
 	} else {
-	    for (p2 = 0; p2 < n; p2++)
+	    for (p2 = 0; p2 < n; p2++) {
 		if ((*ctx->cops.Duplicate)(ctx, p, pop1, p2, pop2)) {
 		    RetVal = PGA_TRUE;
 		    p2 = n;
 		}
+            }
 	}
     }
 #pragma GCC diagnostic pop

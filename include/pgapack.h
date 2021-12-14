@@ -76,6 +76,12 @@ extern "C" {
 #define INDEX(ix,bx,bit,WL) ix=bit/WL;bx=bit%WL /* map global column (bit)   */
                                                 /* to word (ix) and bit (bx) */
 
+/* Used in PGAEvalCompare and others */
+static inline double CMP (const double a, const double b)
+{
+    return (a < b ? -1 : (a > b ? 1 : 0));
+}
+
 /*****************************************
 *       ABSTRACT DATA TYPES              *
 *****************************************/
@@ -206,6 +212,7 @@ extern "C" {
 #define PGA_POPREPL_RANDOM_REP    3  /* Select random string w/  replacement*/
 #define PGA_POPREPL_RTR           4  /* Restricted tournament replacement   */
 #define PGA_POPREPL_PAIRWISE_BEST 5  /* Pairwise compare old/newpop         */
+#define PGA_POPREPL_NSGA_II       6  /* NSGA-II non-dominated sorting       */
 
 /****************************************
  *       REPORT OPTIONS                 *
@@ -259,16 +266,20 @@ extern "C" {
 *       INDIVIDUAL STRUCTURE             *
 *****************************************/
 
-typedef struct {                    /* primary population data structure   */
-  double evalue;                    /* evaluation function value           */
-  double fitness;                   /* fitness    function value           */
-  int    evaluptodate;              /* flag whether evalue is current    */
-  void   *chrom;                    /* pointer to the GA string            */
-  double *auxeval;                  /* Auxiliary evaluations               */
-  double auxtotal;                  /* Total aux evaluation                */
-  int    auxtotaluptodate;          /* flag wether auxtotal is current     */
-  /* The following is not transmitted via MPI */
-  struct PGAContext *ctx;           /* Pointer to our PGAContext           */
+typedef struct PGAIndividual {         /* primary population data structure */
+  double                evalue;        /* evaluation function value         */
+  double                fitness;       /* fitness    function value         */
+  int                   evaluptodate;  /* flag whether evalue is current    */
+  void                 *chrom;         /* pointer to the GA string          */
+  double               *auxeval;       /* Auxiliary evaluations             */
+  double                auxtotal;      /* Total aux evaluation              */
+  int                   auxtotalok;    /* flag wether auxtotal is current*/
+  unsigned int          rank;          /* Rank for dominance-sorting        */
+  /* The following are not transmitted via MPI */
+  struct PGAContext    *ctx;           /* Pointer to our PGAContext         */
+  struct PGAIndividual *pop;           /* The population of this indiv.     */
+  double                crowding;      /* Crowding metric for NSGA-II       */
+  int                   funcidx;       /* Temporary function index          */
 } PGAIndividual;
 
 
@@ -283,6 +294,9 @@ typedef struct {
     int eb;                  /* number of extra bits in last NOT full word*/
     int PopSize;             /* Number of strings to use                  */
     int NumAuxEval;          /* Number of auxiliary evaluation values     */
+    int NumConstraint;       /* Number of constraints                     */
+    int SumConstraints;      /* PGA_TRUE if no dominance-sorting for
+                                constraints                               */
     int StringLen;           /* string lengths                            */
     int StoppingRule;        /* Termination Criteria                      */
     int MaxIter;             /* Maximum number of iterations to run       */
@@ -395,13 +409,17 @@ typedef struct {
 *          REPORT STRUCTURE              *
 *****************************************/
 typedef struct {
-     int    PrintFreq;               /* How often to print statistics reports*/
-     int    PrintOptions;
-     double Offline;
-     double Online;
-     double Average;
-     double Best;
-     time_t starttime;
+     int             PrintFreq;    /* How often to print statistics reports */
+     int             PrintOptions;
+     double         *Offline;      /* One value for each function           */
+     double         *Online;       /* One value for each function           */
+     double         *Average;      /* One value for each function           */
+     double         *Best;         /* One value for each function           */
+     int            *BestIdx;      /* Indices of best individuals           */
+     int             validcount;   /* # indivs w/o constraint-violations    */
+     int             validonline;  /* cumulated validcount                  */
+     int             validoffline; /* cumulated best indiv valid count      */
+     time_t          starttime;
 } PGAReport;
 
 
@@ -445,8 +463,9 @@ typedef struct {
 *      SCRATCH DATA STRUCTURES           *
 *****************************************/
 typedef struct {
-    int    *intscratch;            /* integer-scratch space                 */
-    double *dblscratch;            /* double- scratch space                 */
+    int          *intscratch;            /* integer-scratch space          */
+    double       *dblscratch;            /* double- scratch space          */
+    unsigned int *dominance;             /* for dominance sorting          */
 } PGAScratch;
 
 /*****************************************
@@ -535,6 +554,8 @@ void PGACreatePop (PGAContext *ctx, int pop);
 void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag);
 void PGASetNumAuxEval (PGAContext *ctx, int n);
 int PGAGetNumAuxEval (PGAContext *ctx);
+void PGASetNumConstraint (PGAContext *ctx, int n);
+int PGAGetNumConstraint (PGAContext *ctx);
 
 /*****************************************
 *          cross.c
@@ -819,6 +840,7 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace);
 void PGASetRTRWindowSize (PGAContext *ctx, int window);
 void PGARestrictedTournamentReplacement (PGAContext *ctx);
 void PGAPairwiseBestReplacement (PGAContext *ctx);
+void PGA_NSGA_II_Replacement (PGAContext *ctx);
 
 /*****************************************
 *          random.c
@@ -956,18 +978,21 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f);
 double PGAMean (PGAContext *ctx, double *a, int n);
 double PGAStddev (PGAContext *ctx, double *a, int n, double mean);
 int PGARound (PGAContext *ctx, double x);
+void INDCopyIndividual (PGAIndividual *src, PGAIndividual *dst);
 void PGACopyIndividual (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 int PGACheckSum (PGAContext *ctx, int p, int pop);
 int PGAGetWorstIndex (PGAContext *ctx, int pop);
 int PGAGetBestIndex (PGAContext *ctx, int pop);
 PGAIndividual *PGAGetIndividual (PGAContext *ctx, int p, int pop);
 void PGAUpdateAverage (PGAContext *ctx, int pop);
+void PGAUpdateBest (PGAContext *ctx, int pop);
 void PGAUpdateOnline (PGAContext *ctx, int pop);
 void PGAUpdateOffline (PGAContext *ctx, int pop);
 int PGAComputeSimilarity (PGAContext *ctx, int popix);
 int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2);
 int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 void PGAEvalSort (PGAContext *ctx, int pop, int *idx);
+int PGAEvalSortHelper (const void *i1, const void *i2);
 
 #ifdef __cplusplus
 }

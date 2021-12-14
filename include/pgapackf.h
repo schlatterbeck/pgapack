@@ -165,6 +165,8 @@ c *** POPULATION REPLACEMENT
       parameter ( PGA_POPREPL_RTR =             4)
       integer PGA_POPREPL_PAIRWISE_BEST
       parameter ( PGA_POPREPL_PAIRWISE_BEST =   5)
+      integer PGA_POPREPL_NSGA_II
+      parameter ( PGA_POPREPL_NSGA_II =         6)
 
 c *** REPORT OPTIONS
       integer PGA_REPORT_ONLINE
