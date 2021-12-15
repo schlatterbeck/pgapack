@@ -43,6 +43,7 @@ int main (int argc, char **argv)
     int popsize = 100;
     int fidx = 0;
     int maxiter = 250;
+    int sum_constraints = PGA_FALSE;
 
     if (argc > 1) {
         fidx = atoi (argv [1]);
@@ -61,36 +62,40 @@ int main (int argc, char **argv)
     if (0 && problem->popsize > popsize) {
         popsize = problem->popsize;
     }
-    printf ("Example: %s\n", problem->name);
+    if (problem->nconstraint > 0 && argc > 2) {
+        sum_constraints = atoi (argv [2]) ? PGA_TRUE : PGA_FALSE;
+    }
+    printf ("Example: %s", problem->name);
+    if (problem->nconstraint > 0) {
+        printf (" sum constraints: %s", sum_constraints ? "yes" : "no");
+    }
+    printf ("\n");
     ctx = PGACreate
         (&argc, argv, PGA_DATATYPE_REAL, problem->dimension, PGA_MINIMIZE);
     
-    PGASetRandomSeed       (ctx, 1);
-    PGASetPopSize          (ctx, popsize);
-    PGASetNumReplaceValue  (ctx, popsize);
-    PGASetSelectType       (ctx, PGA_SELECT_LINEAR);
-    PGASetPopReplaceType   (ctx, PGA_POPREPL_NSGA_II);
-    PGASetMutationOnlyFlag (ctx, PGA_TRUE);
-    PGASetMutationType     (ctx, PGA_MUTATION_DE);
-    PGASetDECrossoverProb  (ctx, 0.8);
-    PGASetDECrossoverType  (ctx, PGA_DE_CROSSOVER_BIN);
-    PGASetDEVariant        (ctx, PGA_DE_VARIANT_RAND);
-    PGASetDEScaleFactor    (ctx, 0.85);
+    PGASetRandomSeed         (ctx, 1);
+    PGASetPopSize            (ctx, popsize);
+    PGASetNumReplaceValue    (ctx, popsize);
+    PGASetSelectType         (ctx, PGA_SELECT_LINEAR);
+    PGASetPopReplaceType     (ctx, PGA_POPREPL_NSGA_II);
+    PGASetMutationOnlyFlag   (ctx, PGA_TRUE);
+    PGASetMutationType       (ctx, PGA_MUTATION_DE);
+    PGASetDECrossoverProb    (ctx, 0.8);
+    PGASetDECrossoverType    (ctx, PGA_DE_CROSSOVER_BIN);
+    PGASetDEVariant          (ctx, PGA_DE_VARIANT_RAND);
+    PGASetDEScaleFactor      (ctx, 0.85);
+    PGASetRealInitRange      (ctx, problem->lower, problem->upper);
+    PGASetMaxGAIterValue     (ctx, maxiter);
+    PGASetNumAuxEval         (ctx, problem->nfunc - 1);
+    PGASetNumConstraint      (ctx, problem->nconstraint);
+    PGASetSumConstraintsFlag (ctx, sum_constraints);
+    PGASetNoDuplicatesFlag   (ctx, PGA_TRUE);
     if (problem->enforce_bounds) {
         PGASetMutationBounceBackFlag (ctx, PGA_TRUE);
     };
-
-    PGASetRealInitRange    (ctx, problem->lower, problem->upper);
-    PGASetMaxGAIterValue   (ctx, maxiter);
-    PGASetNumAuxEval       (ctx, problem->nfunc - 1);
-    PGASetNumConstraint    (ctx, problem->nconstraint);
-    PGASetNoDuplicatesFlag (ctx, PGA_TRUE);
     
-    PGASetUp(ctx);
-
-    PGARun (ctx, evaluate);
-
-    PGADestroy(ctx);
+    PGASetUp   (ctx);
+    PGARun     (ctx, evaluate);
+    PGADestroy (ctx);
     return 0;
 }
-
