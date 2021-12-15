@@ -30,3 +30,7 @@ extern struct multi_problem zdt2;
 extern struct multi_problem zdt3;
 extern struct multi_problem zdt4;
 extern struct multi_problem zdt6;
+extern struct multi_problem constr;
+extern struct multi_problem srn;
+extern struct multi_problem tnk;
+extern struct multi_problem water;

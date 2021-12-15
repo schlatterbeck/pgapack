@@ -1,4 +1,5 @@
-OBJS = sch.o fon.o kur.o pol.o zdt1.o zdt2.o zdt3.o zdt4.o zdt6.o optimize.o
+OBJS = sch.o fon.o kur.o pol.o zdt1.o zdt2.o zdt3.o zdt4.o zdt6.o \
+    constr.o srn.o tnk.o water.o optimize.o
 
 all: optimize
 

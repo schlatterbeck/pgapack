@@ -2,12 +2,29 @@
 
 import sys
 import matplotlib.pyplot as plt
+from argparse import ArgumentParser
 
 f  = sys.stdin
-fn = None
-if len (sys.argv) > 1 :
-    fn = sys.argv [1]
-    f = open (fn, 'r')
+
+cmd = ArgumentParser ()
+cmd.add_argument \
+    ( "filename"
+    , help    = "Filename to read optimization data from, default stdin"
+    , nargs   = '?'
+    )
+cmd.add_argument \
+    ( "-x", "--x-axis"
+    , type    = int
+    , default = 0
+    )
+cmd.add_argument \
+    ( "-y", "--y-axis"
+    , type    = int
+    , default = 1
+    )
+args = cmd.parse_args ()
+if args.filename :
+    f = open (args.filename, 'r')
 
 X = []
 Y = []
@@ -19,9 +36,9 @@ for line in f :
         f, idx, number = line.split ()
         idx = int (idx)
         num = float (number)
-        if idx :
+        if idx == args.y_axis :
             Y.append (num)
-        else :
+        elif idx == args.x_axis :
             X.append (num)
 
 plt.scatter (X, Y)
