@@ -79,6 +79,13 @@ privately owned rights.
 #define pgasetup_                        PGASETUP
 #define pgasetrandominitflag_            PGASETRANDOMINITFLAG
 #define pgagetrandominitflag_            PGAGETRANDOMINITFLAG
+#define pgasetnumauxeval_                PGASETNUMAUXEVAL
+#define pgagetnumauxeval_                PGAGETNUMAUXEVAL
+#define pgasetnumconstraint_             PGASETNUMCONSTRAINT
+#define pgagetnumconstraint_             PGAGETNUMCONSTRAINT
+#define pgasetsumconstraintsflag_        PGASETSUMCONSTRAINTSFLAG
+#define pgagetsumconstraintsflag_        PGAGETSUMCONSTRAINTSFLAG
+
 /* cross.c */
 #define pgacrossover_                    PGACROSSOVER
 #define pgagetcrossovertype_             PGAGETCROSSOVERTYPE
@@ -297,6 +304,12 @@ privately owned rights.
 #define pgasetup_                        _pgasetup_
 #define pgasetrandominitflag_            _pgasetrandominitflag_
 #define pgagetrandominitflag_            _pgagetrandominitflag_
+#define pgasetnumauxeval_                _pgasetnumauxeval_
+#define pgagetnumauxeval_                _pgagetnumauxeval_
+#define pgasetnumconstraint_             _pgasetnumconstraint_
+#define pgagetnumconstraint_             _pgagetnumconstraint_
+#define pgasetsumconstraintsflag_        _pgasetsumconstraintsflag_
+#define pgagetsumconstraintsflag_        _pgagetsumconstraintsflag_
 /* cross.c */
 #define pgacrossover_                    _pgacrossover_
 #define pgagetcrossovertype_             _pgagetcrossovertype_
@@ -515,6 +528,12 @@ privately owned rights.
 #define pgasetup_                        pgasetup
 #define pgasetrandominitflag_            pgasetrandominitflag
 #define pgagetrandominitflag_            pgagetrandominitflag
+#define pgasetnumauxeval_                pgasetnumauxeval
+#define pgagetnumauxeval_                pgagetnumauxeval
+#define pgasetnumconstraint_             pgasetnumconstraint
+#define pgagetnumconstraint_             pgagetnumconstraint
+#define pgasetsumconstraintsflag_        pgasetsumconstraintsflag
+#define pgagetsumconstraintsflag_        pgagetsumconstraintsflag
 /* cross.c */
 #define pgacrossover_                    pgacrossover
 #define pgagetcrossovertype_             pgagetcrossovertype
@@ -736,6 +755,12 @@ unsigned long pgacreate_(int *datatype, int *len, int *maxormin);
 void pgasetup_(PGAContext **ftx);
 void pgasetrandominitflag_(PGAContext **ftx, int *RandomBoolean);
 int pgagetrandominitflag_(PGAContext **ftx);
+void pgasetnumauxeval_(PGAContext **ftx, int *n);
+int pgagetnumauxeval_(PGAContext **ftx);
+void pgasetnumconstraint_(PGAContext **ftx, int *n);
+int pgagetnumconstraint_(PGAContext **ftx);
+void pgasetsumconstraintsflag_(PGAContext **ftx, int *n);
+int pgagetsumconstraintsflag_(PGAContext **ftx);
 /* cross.c */
 void pgacrossover_(PGAContext **ftx, int *m1, int *m2, int *oldpop, int *t1,
      int *t2, int *newpop);
@@ -1038,6 +1063,36 @@ void pgasetrandominitflag_(PGAContext **ftx, int *RandomBoolean)
 int pgagetrandominitflag_(PGAContext **ftx)
 {
      return PGAGetRandomInitFlag  (*ftx);
+}
+
+void pgasetnumauxeval_(PGAContext **ftx, int *n)
+{
+     PGASetNumAuxEval (*ftx, *n);
+}
+
+int pgagetnumauxeval_(PGAContext **ftx)
+{
+     return PGAGetNumAuxEval  (*ftx);
+}
+
+void pgasetnumconstraint_(PGAContext **ftx, int *n)
+{
+     PGASetNumConstraint  (*ftx, *n);
+}
+
+int pgagetnumconstraint_(PGAContext **ftx)
+{
+     return PGAGetNumConstraint  (*ftx);
+}
+
+void pgasetsumconstraintsflag_(PGAContext **ftx, int *n)
+{
+     PGASetSumConstraintsFlag  (*ftx, *n);
+}
+
+int pgagetsumconstraintsflag_(PGAContext **ftx)
+{
+     return PGAGetSumConstraintsFlag  (*ftx);
 }
 
 /* cross.c */

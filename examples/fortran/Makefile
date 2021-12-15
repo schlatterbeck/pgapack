@@ -1,4 +1,4 @@
-all: classic dejong example maxbit maxchar maxint name namefull
+all: classic dejong example maxbit maxchar maxint name namefull constr
 
 %: %.f
 	$(FC) $(FFLAGS) $< -o $@ $(LDFLAGS)

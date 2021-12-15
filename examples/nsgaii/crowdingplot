@@ -30,8 +30,9 @@ X = []
 Y = []
 
 for line in f :
+    line = line.strip ()
     if line.startswith ('Example:') :
-        name = line.strip ().split (None, 1) [-1]
+        name = line.split (None, 1) [-1]
     if line.startswith ('F') :
         f, idx, number = line.split ()
         idx = int (idx)

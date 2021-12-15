@@ -240,6 +240,12 @@ c *** create
       external PGACreate
       integer PGAGetRandomInitFlag
       external PGAGetRandomInitFlag
+      integer PGAGetNumAuxEval
+      external PGAGetNumAuxEval
+      integer PGAGetNumConstraint
+      external PGAGetNumConstraint
+      integer PGAGetSumConstraintsFlag
+      external PGAGetSumConstraintsFlag
 c *** cross
       integer PGAGetCrossoverType
       external PGAGetCrossoverType
