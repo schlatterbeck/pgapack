@@ -17,10 +17,19 @@ paper [1]_: It is better in the lower values of f1 but worse in the
 higher values. It's currently unsure if the test problem is correctly
 implemented or if there are other errors.
 
+The multi-objective problems *with* constraints are also implemented.
+Note that in the "water" problem there is also a small typo on the
+formula for g6 which should have a ``/`` (division instead of
+multiplication like for all the other constraint functions) after the
+first constant [6]_. This typo has not much effect on the results.
+
 There is a small python script ``crowdingplot`` which can be used to
-do a scatter-plot of the first variable against the second. This
+do a scatter-plot of one objective against another (in objective space).
+By default the first variable is plotted against the second but the
+variables to plot can be given with the -x and -y options. This
 reproduces some of the results in the paper [1]_. Just pipe the output
-of the optimization run through the script.
+of the optimization run through the script or use the ``nsgaii*.data``
+files in the test directory as input.
 
 .. [1] Kalyanmoy Deb, Amrit Pratap, Sameer Agarwal, and T. Meyarivan.
        A fast and elitist multiobjective genetic algorithm: NSGA-II.
@@ -39,3 +48,6 @@ of the optimization run through the script.
 .. [5] Eckart Zitzler, Kalyanmoy Deb, and Lothar Thiele. Comparison of
        multiobjective evolutionary algorithms: Empirical results.
        Evolutionary Computation, 8(2):173–195, 2000.
+.. [6] Tapabrata Ray, Kang Tai, and Kin Chye Seow. Multiobjective design
+       optimization by an evolutionary algorithm. Engineering Optimization,
+       33(4):399–424, 2001.

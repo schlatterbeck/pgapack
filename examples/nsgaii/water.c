@@ -48,12 +48,12 @@ static double g4 (double *x)
 
 static double g5 (double *x)
 {
-    return 2.138 / (x [0] * x [1]) + 7883.39 * x [2] - 705.04 -1e4;
+    return 2.138 / (x [0] * x [1]) + 7883.39 * x [2] - 705.04 - 1e4;
 }
 
 static double g6 (double *x)
 {
-    return 0.417 * (x [0] * x [1]) + 1721.26 * x [2] - 136.54 - 2e3;
+    return 0.417 / (x [0] * x [1]) + 1721.26 * x [2] - 136.54 - 2e3;
 }
 
 static double g7 (double *x)
