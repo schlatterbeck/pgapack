@@ -17,6 +17,7 @@ Updates
 =======
 
 Second Update December 2021:
+
 - Now the multiobjective optimization algorithm NSGA-II (Nondominated
   Sorting Genetic Algorithm) by Deb et. al. is implemented. Like for
   constrained optimization this uses multiple objective functions.
