@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -160,6 +160,59 @@ int PGARound(PGAContext *ctx, double x)
 }
 
 /*U****************************************************************************
+  INDCopyIndividual - copies source to dest
+
+  Category: Generation
+
+  Inputs:
+     ctx    - context variable
+     source - Individual to copy
+     dest   - Individual to copy ind1 to
+
+  Outputs:
+     Individual dest is a copy of Individual source.
+
+  Example:
+    PGAContext *ctx;
+    PGAIndividual *source, *dest;
+    :
+    INDCopyIndividual(ctx, source, dest);
+
+****************************************************************************U*/
+void INDCopyIndividual (PGAIndividual *src, PGAIndividual *dst)
+{
+    PGAContext *ctx = src->ctx;
+    int srcidx, dstidx;
+    int spop, dpop;
+
+    PGADebugEntered ("INDCopyIndividual");
+
+    assert (src->ctx != NULL);
+    assert (dst->ctx == NULL || dst->ctx == src->ctx);
+    dst->ctx              = src->ctx;
+    dst->evalue           = src->evalue;
+    dst->fitness          = src->fitness;
+    dst->evaluptodate     = src->evaluptodate;
+    dst->auxtotal         = src->auxtotal;
+    dst->auxtotalok       = src->auxtotalok;
+    dst->rank             = src->rank;
+    if (ctx->ga.NumAuxEval) {
+        memcpy
+            (dst->auxeval, src->auxeval, ctx->ga.NumAuxEval * sizeof (double));
+    } else {
+        dst->auxeval = NULL;
+    }
+    srcidx = src - src->pop;
+    dstidx = dst - dst->pop;
+    spop   = src->pop == ctx->ga.oldpop ? PGA_OLDPOP : PGA_NEWPOP;
+    dpop   = dst->pop == ctx->ga.oldpop ? PGA_OLDPOP : PGA_NEWPOP;
+
+    (*ctx->cops.CopyString)(ctx, srcidx, spop, dstidx, dpop);
+
+    PGADebugExited("PGACopyIndividual");
+}
+
+/*U****************************************************************************
   PGACopyIndividual - copies string p1 in population pop1 to position p2 in
   population pop2
 
@@ -182,30 +235,16 @@ int PGARound(PGAContext *ctx, double x)
     PGACopyIndividual(ctx, i, PGA_OLDPOP, j, PGA_NEWPOP);
 
 ****************************************************************************U*/
-void PGACopyIndividual( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+void PGACopyIndividual (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
-    PGAIndividual *source, *dest;
+    PGAIndividual *src, *dst;
 
     PGADebugEntered ("PGACopyIndividual");
 
-    source = PGAGetIndividual (ctx, p1, pop1);
-    dest   = PGAGetIndividual (ctx, p2, pop2);
+    src = PGAGetIndividual (ctx, p1, pop1);
+    dst = PGAGetIndividual (ctx, p2, pop2);
 
-    assert (source->ctx != NULL);
-    assert (dest->ctx == NULL || dest->ctx == source->ctx);
-    dest->ctx              = source->ctx;
-    dest->evalue           = source->evalue;
-    dest->fitness          = source->fitness;
-    dest->evaluptodate     = source->evaluptodate;
-    dest->auxtotal         = source->auxtotal;
-    dest->auxtotaluptodate = source->auxtotaluptodate;
-    if (ctx->ga.NumAuxEval) {
-        memcpy (dest->auxeval, source->auxeval, ctx->ga.NumAuxEval);
-    } else {
-        dest->auxeval = NULL;
-    }
-
-    (*ctx->cops.CopyString)(ctx, p1, pop1, p2, pop2);
+    INDCopyIndividual (src, dst);
 
     PGADebugExited("PGACopyIndividual");
 }
@@ -302,39 +341,25 @@ int PGACheckSum(PGAContext *ctx, int p, int pop)
 int PGAGetWorstIndex(PGAContext *ctx, int pop)
 {
     int     p, worst_indx = 0;
-    double  eval, worst_eval;
 
-    PGADebugEntered("PGAGetWorstIndex");
+    PGADebugEntered ("PGAGetWorstIndex");
 
-    for (p = 0; p < ctx->ga.PopSize; p++)
-	if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop))
-	    PGAError(ctx, "PGAGetWorstIndex: Evaluate function not up to "
-		     "date:", PGA_FATAL, PGA_INT, (void *) &p);
-
-    worst_eval = PGAGetEvaluation(ctx, 0, pop);
-    switch (PGAGetOptDirFlag(ctx)) {
-    case PGA_MAXIMIZE:
-	for (p = 1; p < ctx->ga.PopSize; p++) {
-	    eval = PGAGetEvaluation(ctx, p, pop);
-	    if (eval < worst_eval) {
-		worst_indx = p;
-		worst_eval = eval;
-	    }
-	}
-	break;
-
-    case PGA_MINIMIZE:
-	for (p = 1; p < ctx->ga.PopSize; p++) {
-	    eval = PGAGetEvaluation(ctx, p, pop);
-	    if (eval > worst_eval) {
-		worst_indx = p;
-		worst_eval = eval;
-	    }
-	}
-	break;    
+    for (p=0; p<ctx->ga.PopSize; p++) {
+	if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
+	    PGAError
+                ( ctx, "PGAGetWorstIndex: Evaluate function not up to date:"
+                , PGA_FATAL, PGA_INT, (void *) &p
+                );
+        }
     }
 
-    PGADebugExited("PGAGetWorstIndex");
+    for (p=1; p<ctx->ga.PopSize; p++) {
+        if (PGAEvalCompare (ctx, p, pop, worst_indx, pop) > 0) {
+            worst_indx = p;
+        }
+    }
+
+    PGADebugExited ("PGAGetWorstIndex");
 
     return (worst_indx);
 }
@@ -342,6 +367,8 @@ int PGAGetWorstIndex(PGAContext *ctx, int pop)
 /*U***************************************************************************
   PGAGetBestIndex - returns the index of the string with the best evaluation
   function value in population pop
+  Note that in the presence of multiple evaluations, calling this
+  function does not make much sense.
 
   Category: Utility
 
@@ -363,20 +390,24 @@ int PGAGetBestIndex(PGAContext *ctx, int pop)
 {
     int     p, Best_indx = 0;
 
-    PGADebugEntered("PGAGetBestIndex");
-     
-    for (p = 0; p < ctx->ga.PopSize; p++)
-        if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop))
-	    PGAError(ctx, "PGAGetBestIndex: Evaluate function not up to "
-                     "date:", PGA_FATAL, PGA_INT, (void *) &p);
+    PGADebugEntered ("PGAGetBestIndex");
+
+    for (p=0; p<ctx->ga.PopSize; p++) {
+        if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
+	    PGAError
+                ( ctx, "PGAGetBestIndex: Evaluate function not up to date:"
+                , PGA_FATAL, PGA_INT, (void *) &p
+                );
+        }
+    }
 
     for (p=1; p<ctx->ga.PopSize; p++) {
         if (PGAEvalCompare (ctx, p, pop, Best_indx, pop) < 0) {
             Best_indx = p;
         }
     }
-     
-    PGADebugExited("PGAGetBestIndex");
+
+    PGADebugExited ("PGAGetBestIndex");
 
     return (Best_indx);
 }
@@ -445,7 +476,103 @@ PGAIndividual *PGAGetIndividual ( PGAContext *ctx, int p, int pop)
 
 
 /*I****************************************************************************
+   PGAUpdateBest - Updates the best fitness statistic for reporting.
+   Note that in the presence of constraints if no individual without
+   constraints is found, the best value (for all functions except
+   constraint functions) is NAN.
+
+   Inputs:
+       ctx - context variable
+       pop - symbolic constant of the population
+
+   Outputs:
+
+   Example:
+
+**************************************************************************I*/
+void PGAUpdateBest (PGAContext *ctx, int popix)
+{
+    PGAIndividual *ind = popix == PGA_OLDPOP ? ctx->ga.oldpop : ctx->ga.newpop;
+    PGAIndividual *pop = ind;
+    PGAIndividual *best [ctx->ga.NumAuxEval + 1];
+    int numfun = ctx->ga.NumAuxEval - ctx->ga.NumConstraint;
+    int validcount = 0;
+    int p, k;
+
+    PGADebugEntered ("PGAUpdateBest");
+
+    for (k=0; k<=ctx->ga.NumAuxEval; k++) {
+        best [k] = ind;
+    }
+    if (!INDGetAuxTotal (ind)) {
+        validcount++;
+    }
+    ind++;
+    for (p=1; p<ctx->ga.PopSize; p++) {
+	if (!PGAGetEvaluationUpToDateFlag (ctx, p, popix)) {
+	    PGAError ( ctx
+                     , "PGAUpdateAverage: Evaluate function not up to date:"
+                     , PGA_FATAL, PGA_INT, (void *) &p
+                     );
+        }
+        if (!INDGetAuxTotal (ind)) {
+            validcount++;
+        }
+        for (k=0; k<=ctx->ga.NumAuxEval; k++) {
+            PGAIndividual *b = best [k];
+            double enew;
+            double eold;
+            if (k == 0) {
+                enew = ind->evalue;
+                eold = b->evalue;
+            } else if (k <= numfun) {
+                enew = ind->auxeval [k-1];
+                eold = b->auxeval   [k-1];
+            } else {
+                enew = ind->auxeval [k-1] <= 0 ? 0 : ind->auxeval [k-1];
+                eold = b->auxeval [k-1]   <= 0 ? 0 : b->auxeval [k-1];
+            }
+            if (k > numfun) {
+                if (enew < eold) {
+                    best [k] = ind;
+                }
+            } else {
+                int funcmp = ctx->ga.optdir == PGA_MINIMIZE
+                           ? CMP (enew, eold)
+                           : CMP (eold, enew);
+                if (  (INDGetAuxTotal (b) && !INDGetAuxTotal (ind))
+                   || (!INDGetAuxTotal (ind) && funcmp < 0)
+                   )
+                {
+                    best [k] = ind;
+                }
+            }
+        }
+        ind++;
+    }
+    ctx->rep.validcount = validcount;
+    for (k=0; k<=ctx->ga.NumAuxEval; k++) {
+        if (k<=numfun) {
+            double e = (k==0) ? best [k]->evalue : best [k]->auxeval [k-1];
+            if (INDGetAuxTotal (best [k])) {
+                ctx->rep.Best [k] = NAN;
+            } else {
+                ctx->rep.Best [k] = e;
+            }
+        } else {
+            ctx->rep.Best [k] = best [k]->auxeval [k-1];
+        }
+        ctx->rep.BestIdx [k] = pop - best [k];
+    }
+
+    PGADebugExited ("PGAUpdateBest");
+}
+
+/*I****************************************************************************
    PGAUpdateAverage - Updates the average fitness statistic for reporting.
+   Note that in the presence of constraints only the *unconstrained*
+   function evaluations are averaged, except for the
+   constraint-functions, these are averaged unconditionally.
 
    Inputs:
        ctx - context variable
@@ -458,28 +585,56 @@ PGAIndividual *PGAGetIndividual ( PGAContext *ctx, int p, int pop)
 **************************************************************************I*/
 void PGAUpdateAverage(PGAContext *ctx, int pop)
 {
-    double ThisGensTotal = 0;
-    int p;
+    int validcount = 0;
+    PGAIndividual *ind = pop == PGA_OLDPOP ? ctx->ga.oldpop : ctx->ga.newpop;
+    int numfun = ctx->ga.NumAuxEval - ctx->ga.NumConstraint;
+    int p, k;
 
-    PGADebugEntered("PGAUpdateAverage");
-    
-    for (p = 0; p < ctx->ga.PopSize; p++)
-	if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop))
-	    PGAError(ctx, "PGAUpdateOnline: Evaluate function not up to "
-		     "date:", PGA_FATAL, PGA_INT, (void *) &p);
+    PGADebugEntered ("PGAUpdateAverage");
 
-    for (p = 0; p < ctx->ga.PopSize; p++)
-	ThisGensTotal += PGAGetEvaluation(ctx, p, pop);
-    
-    ctx->rep.Average = ThisGensTotal / (double)ctx->ga.PopSize;
-    
-    PGADebugExited("PGAUpdateAverage");
+    /* Intentionally one more than NumAuxEval: evalue + auxeval */
+    for (k=0; k<=ctx->ga.NumAuxEval; k++) {
+        ctx->rep.Average [k] = 0;
+    }
+    for (p=0; p<ctx->ga.PopSize; p++) {
+	if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
+	    PGAError ( ctx
+                     , "PGAUpdateAverage: Evaluate function not up to date:"
+                     , PGA_FATAL, PGA_INT, (void *) &p
+                     );
+        }
+        if (INDGetAuxTotal (ind) == 0) {
+            ctx->rep.Average [0] += ind->evalue;
+            for (k=0; k<numfun; k++) {
+                ctx->rep.Average [k+1] += ind->auxeval [k];
+            }
+            validcount++;
+        }
+        for (k=numfun; k<ctx->ga.NumAuxEval; k++) {
+            ctx->rep.Average [k+1] += ind->auxeval [k];
+        }
+        ind++;
+    }
+    if (validcount) {
+        for (k=0; k<=numfun; k++) {
+            ctx->rep.Average [k] /= (double)validcount;
+        }
+    }
+    for (k=numfun+1; k<=ctx->ga.NumAuxEval; k++) {
+        ctx->rep.Average [k] /= (double)ctx->ga.PopSize;
+    }
+    ctx->rep.validcount = validcount;
+
+    PGADebugExited ("PGAUpdateAverage");
 }
 
 
 /*I****************************************************************************
   PGAUpdateOnline - Updates the online value based on the results in
   the new generation
+  Note that in the presence of constraints only the *unconstrained*
+  function evaluations are averaged, except for the
+  constraint-functions, these are averaged unconditionally.
 
   Inputs:
      ctx - context variable
@@ -496,32 +651,65 @@ void PGAUpdateAverage(PGAContext *ctx, int pop)
 **************************************************************************I*/
 void PGAUpdateOnline(PGAContext *ctx, int pop)
 {
-     double ThisGensTotal = 0;
-     int p;
+    int validcount = 0;
+    PGAIndividual *ind = pop == PGA_OLDPOP ? ctx->ga.oldpop : ctx->ga.newpop;
+    int numfun = ctx->ga.NumAuxEval - ctx->ga.NumConstraint;
+    double evalsum [ctx->ga.NumAuxEval + 1];
+    int p, k;
 
-    PGADebugEntered("PGAUpdateOnline");
+    PGADebugEntered ("PGAUpdateOnline");
 
-     for (p = 0; p < ctx->ga.PopSize; p++)
-          if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop))
-               PGAError(ctx, "PGAUpdateOnline: Evaluate function not up to "
-                        "date:", PGA_FATAL, PGA_INT, (void *) &p);
+    for (k=0; k<=ctx->ga.NumAuxEval; k++) {
+        if (k > numfun) {
+            ctx->rep.Online [k] *=
+                (double)ctx->ga.PopSize * (double)(ctx->ga.iter - 1);
+        } else {
+            ctx->rep.Online [k] *= (double)ctx->rep.validonline;
+        }
+        evalsum [k] = 0;
+    }
+    for (p=0; p<ctx->ga.PopSize; p++) {
+        if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
+            PGAError ( ctx
+                     , "PGAUpdateOnline: Evaluate function not up to date:"
+                     , PGA_FATAL, PGA_INT, (void *) &p
+                     );
+        }
+        if (INDGetAuxTotal (ind) == 0) {
+            evalsum [0] += ind->evalue;
+            for (k=0; k<numfun; k++) {
+                evalsum [k+1] += ind->auxeval [k];
+            }
+            validcount++;
+        }
+        for (k=numfun; k<ctx->ga.NumAuxEval; k++) {
+            evalsum [k+1] += ind->auxeval [k];
+        }
+        ind++;
+    }
+    ctx->rep.validonline += validcount;
+    for (k=0; k<=ctx->ga.NumAuxEval; k++) {
+        ctx->rep.Online [k] += evalsum [k];
+    }
+    if (ctx->rep.validonline) {
+        for (k=0; k<=numfun; k++) {
+            ctx->rep.Online [k] /= (double)ctx->rep.validonline;
+        }
+    }
+    for (k=numfun+1; k<=ctx->ga.NumAuxEval; k++) {
+        ctx->rep.Online [k] /= (double)ctx->ga.PopSize * (double)ctx->ga.iter;
+    }
 
-     for (p = 0; p < ctx->ga.PopSize; p++)
-          ThisGensTotal += PGAGetEvaluation(ctx, p, pop);
-
-     PGADebugPrint(ctx, PGA_DEBUG_PRINTVAR, "PGAUpdateOnline",
-                   "ThisGensTotal = ", PGA_DOUBLE, (void *) &ThisGensTotal);
-
-     ctx->rep.Online = (ctx->rep.Online * ctx->ga.PopSize * (ctx->ga.iter - 1)
-                        + ThisGensTotal) / ctx->ga.iter / ctx->ga.PopSize;
-
-    PGADebugExited("PGAUpdateOnline");
+    PGADebugExited ("PGAUpdateOnline");
 
 }
 
 /*I****************************************************************************
   PGAUpdateOffline - Updates the offline value based on the results in
   the new generation
+  Note that in the presence of constraints only the *unconstrained*
+  best function evaluations are averaged, except for the
+  constraint-functions, these are averaged unconditionally.
 
   Inputs:
      ctx - context variable
@@ -538,21 +726,36 @@ void PGAUpdateOnline(PGAContext *ctx, int pop)
 **************************************************************************I*/
 void PGAUpdateOffline(PGAContext *ctx, int pop)
 {
-     int p;
+    int k;
+    int numfun = ctx->ga.NumAuxEval - ctx->ga.NumConstraint;
 
-    PGADebugEntered("PGAUpdateOffline");
+    PGADebugEntered ("PGAUpdateOffline");
 
-     for (p = 0; p < ctx->ga.PopSize; p++)
-          if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop))
-               PGAError(ctx, "PGAUpdateOffline: Evaluate function not up to "
-                        "date:", PGA_FATAL, PGA_INT, (void *) &p);
+    PGAUpdateBest (ctx, pop);
 
-     p = PGAGetBestIndex(ctx, pop);
+    for (k=0; k<=ctx->ga.NumAuxEval; k++) {
+        if (k<=numfun) {
+            if (ctx->rep.validcount) {
+                assert (!isnan (ctx->rep.Best [k]));
+                ctx->rep.Offline [k] =
+                    ( ctx->rep.Offline [k] * (double)ctx->rep.validoffline
+                    + ctx->rep.Best [k]
+                    ) / (double)(ctx->rep.validoffline + 1);
+            }
+        } else {
+            assert (!isnan (ctx->rep.Best [k]));
+            ctx->rep.Offline [k] =
+                ( ctx->rep.Offline [k] * (double)(ctx->ga.iter - 1)
+                + ctx->rep.Best [k]
+                ) / (double)ctx->ga.iter;
 
-     ctx->rep.Offline = ((ctx->ga.iter - 1) * ctx->rep.Offline +
-                         PGAGetEvaluation(ctx, p, pop)) / ctx->ga.iter;
+        }
+    }
+    if (ctx->rep.validcount) {
+        ctx->rep.validoffline += 1;
+    }
 
-    PGADebugExited("PGAUpdateOffline");
+    PGADebugExited ("PGAUpdateOffline");
 }
 
 /*I****************************************************************************
@@ -616,17 +819,11 @@ int PGAComputeSimilarity (PGAContext *ctx, int popindex)
     return (100 * max / ctx->ga.PopSize);
 }
 
-/* Used in PGAEvalCompare below */
-static inline double CMP (double a, double b)
-{
-    return (a < b ? -1 : (a > b ? 1 : 0));
-}
-
 /*U****************************************************************************
   INDEvalCompare - Compare two individuals by evaluation.
   This typically simply compares evaluation taking into account the
   evaluation direction (minimize/maximize). We sort "better" individuals
-  first.
+  first. For more details see PGAEvalCompare.
 
   Category: Operators
 
@@ -671,12 +868,16 @@ int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2)
             , PGA_FATAL, PGA_VOID, NULL
             );
     }
-    if (ctx->ga.NumAuxEval > 0) {
+    if (ctx->ga.NumConstraint > 0) {
         auxt1 = INDGetAuxTotal (ind1);
         auxt2 = INDGetAuxTotal (ind2);
     }
     if (auxt1 || auxt2) {
         return CMP (auxt1, auxt2);
+    }
+    /* Multiobjective? */
+    if (ctx->ga.NumAuxEval - ctx->ga.NumConstraint > 0) {
+        return CMP (ind1->rank, ind2->rank);
     }
     /* We might use the fitness if both populations are the same
        otherwise fitness values are not comparable. But we now
@@ -707,12 +908,19 @@ int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2)
   This typically simply compares evaluation taking into account the
   evaluation direction (minimize/maximize).
   But if auxiliary evaluations are defined, the auxiliary evaluations are
-  treated as constraints. This function is a user function and can be
-  redefined for other purposes: By redefining this function, e.g.,
-  instead of using the aux evaluations for constraint-handling, instead
-  (or in addition), multi objective evaluation can be implemented.
+  treated as constraints or for multi-objective optimization.
   The default handling of auxiliary evaluations is incompatible with
   certain selection schemes, see checks in create.c
+  We handle constraints to compare first: If two constrained individuals
+  are compared, the one with less constraint violations wins. If a
+  constrained individual is compared to an unconstrained one, the latter
+  wins. If two unconstrained individuals are compared, the (single)
+  evaluation is compared depending on the direction of optimization
+  (minimization or maximization).
+
+  For multi-objective optimization we do not compare the evaluations but
+  only the rank (as computed by the NSGA-II algorithm). Note that many
+  individuals may have the same rank.
 
   Note that PGAEvalCompare is now used in several contexts, including
   finding the best evaluation. For very badly scaled problems, the
@@ -752,7 +960,10 @@ int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     return INDEvalCompare (ind1, ind2);
 }
 
-static int cmphelp (const void *a1, const void *a2)
+/*U****************************************************************************
+  PGAEvalSortHelper - Compare two PGAIndividual ** for qsort
+****************************************************************************U*/
+int PGAEvalSortHelper (const void *a1, const void *a2)
 {
     /* Note: We cast away the const because INDGetAuxTotal does caching
      * and writes to the individual
@@ -797,7 +1008,7 @@ void PGAEvalSort (PGAContext *ctx, int pop, int *idx)
     for (i=0; i<ctx->ga.PopSize; i++) {
         sorttmp [i] = first + i;
     }
-    qsort (sorttmp, ctx->ga.PopSize, sizeof (sorttmp [0]), cmphelp);
+    qsort (sorttmp, ctx->ga.PopSize, sizeof (sorttmp [0]), PGAEvalSortHelper);
     for (i=0; i<ctx->ga.PopSize; i++) {
         idx [i] = sorttmp [i] - first;
     }

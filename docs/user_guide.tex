@@ -947,6 +947,16 @@ We call this replacement variant
 in the old and the new population are compared and the one with the
 better fitness is used.
 
+A last algorithm is typically used for multi-objective optimization with
+the Nondominated Sorting Genetic Algorithm (Version~2), NSGA-II
+\cite{DPAM02} and is called NSGA-II replacement. It can be used for
+single-objective optimization, too, both with and without constraints.
+If constraints are present, by default nondominated sorting is used for
+constraints, too.  This can be switched to the behaviour without NSGA-II
+by setting \verb+PGASetSumConstraintsFlag+ to \verb+PGA_TRUE+. NSGA-II
+is the only possible population replacement algorithm when using
+multi-objective optimization.
+
 \pga\ supports both GRGA and SSGA and variants in between via {\em
 parameterized} population replacement.  For example, the {\tt PGASet} calls
 \begin{verbatim}
@@ -980,11 +990,19 @@ For pairwise best replacement \verb+PGA_POPREPL_PAIRWISE_BEST+ is used
 as the replacement type. Like restricted tournament replacement it is an
 elitist strategy.
 
-The two replacement types \textit{pairwise best} and \textit{restricted
-tournament replacement} have selection pressure in addition to providing
+For NSGA-II replacement \verb+PGA_POPREPL_NSGA_II+ is used. The number
+of auxiliary evaluation function can be set with \verb+PGASetNumAuxEval+
+and the number of constraints can be set with \verb+PGASetNumConstraint+.
+If the difference between the two is $>0$, these auxiliary evaluations are
+used for multi-objective optimization. Only the NSGA-II replacement is
+possible with these settings.
+
+The three replacement types \textit{pairwise best} and \textit{restricted
+tournament replacement} and NSGA-II replacement have selection pressure
+in addition to providing
 a population replacement strategy. So these can be used if a selection
 scheme without selection pressure (a tournament strategy with only one
-participant in the tournament) is used.
+participant in the tournament or linear selection) is used.
 
 By default, the number of new strings created each generation is 10 percent
 of the population size (an SSGA population replacement strategy).  A GRGA can
@@ -1191,6 +1209,19 @@ tournament selection is always with replacement. The truncation selection
 by default selects half of the population. This proportion of selected
 individuals can be set with \verb+PGASetTruncationProportion+ for which
 the default value is 0.5.
+
+When using multi-objective optimization with the NSGA-II \cite{DPAM02}
+population replacement (see section~\ref{sec:population-replacement}),
+it is possible to either use a selection scheme with or without
+selection pressure. However, selection schemes that rely on direct
+comparison of individuals (e.g. tournament selection) will sort by the
+domination rank of the individuals established by the NSGA-II algorithm.
+This is because for multi-objective optimization there is no full order
+established by multiple objectives as would be the case for
+single-objective optimization. This may result in less selection
+pressure because multiple individuals will typically have the same rank.
+This lower selection pressure is compensated by the selection pressure
+introduced by the NSGA-II population replacement algorithm.
 
 Most selection schemes (except stochastic universal selection) already
 return a randomized sequence. In previous implementations \textit{all}
@@ -1645,8 +1676,12 @@ solutions to a problem (a solution is said to dominate another solution
 if it is better in at least one objective but not worse in any other
 objective). These non-dominated solutions are said to lie on a
 \textit{Pareto Front} after the mathematician Vilfredo Pareto who first
-defined the concept today known as \textit{pareto optimality}. \pga\
-currently does not implement a multiobjective algorithm.
+defined the concept today known as \textit{pareto optimality}.
+
+\pga\ now implements multi-objective optimization with the Nondominated
+Sorting Genetic Algorithm (Version~2) \cite{DPAM02} as a replacement
+strategy. You can mix multi-objective optimization and constraints.
+See below and section~\ref{sec:population-replacement} for details.
 
 By default, auxiliary evaluations are used for constraints. All
 auxiliary evaluation are summed if the value is positive. If it is zero
@@ -1669,6 +1704,14 @@ parameter of the users's evaluation function. To use auxiliary
 evaluations, the number of auxiliary evaluations has to be specified
 with the \verb+PGASetNumAuxEval+ function which gets the number of
 auxiliary evaluations as the second parameter. The default is 0.
+If you want to multi-objective optimization, optionally together with
+constraints, you need to specify the number of constraints using the
+\verb+PGASetNumConstraint+ function. By default the number of
+constraints is equal to the number of auxiliary evaluations. So if you
+want to use multi-objective evaluation you need to set the number of
+constraints lower (optionally to zero if you have only multi-objective
+optimization without constraints) than the number of auxiliary
+evaluations.
 
 Note that auxiliary evaluations can not be used together with selection
 schemes that use mechanisms where individuals are not directly compared.

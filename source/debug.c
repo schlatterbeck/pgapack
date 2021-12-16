@@ -193,6 +193,8 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGAGetRandomInitFlag",           304 },
         { "PGASetRandomInitFlag",           305 },
         { "PGASetNumAuxEval",               306 },
+        { "PGASetNumConstraint",            307 },
+        { "PGASetSumConstraintsFlag",       308 },
 
         /* cross.c */
         { "PGACrossover",                   310 },
@@ -204,6 +206,7 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGASetUniformCrossoverProb",     316 },
 
         /* pop.c */
+        { "PGA_NSGA_II_Replacement",            317 },
         { "PGAPairwiseBestReplacement",         318 },
         { "PGARestrictedTournamentReplacement", 319 },
         { "PGASortPop",                         320 },
@@ -367,6 +370,8 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGAUpdateOnline",                719 },
         { "PGAUpdateOffline",               720 },
         { "PGAComputeSimilarity",           721 },
+        { "INDCopyIndividual",              722 },
+        { "PGAUpdateBest",                  723 },
 
         /* cmdline.c */
         { "PGAReadCmdLine",                 730 },

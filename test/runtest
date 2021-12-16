@@ -31,6 +31,7 @@ else
     cmd=$1
     shift
     if  [   "$dir" = deb \
+        -o  "$dir" = nsgaii \
         -o  "$dir" = mgh \
             -a '(' "$cmd" = testprogde -o "$cmd" = testprogdertr ')' \
         -o  '(' "$dir" = c -a "$cmd" = maxbit ')' \

@@ -789,7 +789,7 @@ MPI_Datatype PGABinaryBuildDatatype(PGAContext *ctx, int p, int pop)
     counts[4] = 1;
     types[4]  = MPI_DOUBLE;
 
-    MPI_Get_address(&traveller->auxtotaluptodate, &displs[5]);
+    MPI_Get_address(&traveller->auxtotalok, &displs[5]);
     counts[5] = 1;
     types[5]  = MPI_INT;
 

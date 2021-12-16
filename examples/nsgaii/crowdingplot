@@ -1,0 +1,47 @@
+#!/usr/bin/python3
+
+import sys
+import matplotlib.pyplot as plt
+from argparse import ArgumentParser
+
+f  = sys.stdin
+
+cmd = ArgumentParser ()
+cmd.add_argument \
+    ( "filename"
+    , help    = "Filename to read optimization data from, default stdin"
+    , nargs   = '?'
+    )
+cmd.add_argument \
+    ( "-x", "--x-axis"
+    , type    = int
+    , default = 0
+    )
+cmd.add_argument \
+    ( "-y", "--y-axis"
+    , type    = int
+    , default = 1
+    )
+args = cmd.parse_args ()
+if args.filename :
+    f = open (args.filename, 'r')
+
+X = []
+Y = []
+
+for line in f :
+    line = line.strip ()
+    if line.startswith ('Example:') :
+        name = line.split (None, 1) [-1]
+    if line.startswith ('F') :
+        f, idx, number = line.split ()
+        idx = int (idx)
+        num = float (number)
+        if idx == args.y_axis :
+            Y.append (num)
+        elif idx == args.x_axis :
+            X.append (num)
+
+plt.scatter (X, Y)
+plt.title (name)
+plt.show ()

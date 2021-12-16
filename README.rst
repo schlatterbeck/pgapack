@@ -16,7 +16,29 @@ companion projects:
 Updates 
 =======
 
-Updated December 2021:
+Second Update December 2021:
+- Now the multiobjective optimization algorithm NSGA-II (Nondominated
+  Sorting Genetic Algorithm) by Deb et. al. is implemented. Like for
+  constrained optimization this uses multiple objective functions.
+- There are examples from the original paper (see README.rst) in the
+  directory ``examples/nsgaii``, both with and without constraints.
+- Note that multiobjective optimization is considered experimental:
+  There are interaction with other parts of the API of the library,
+  e.g., functions dealing with the *best* evaluation like
+  ``PGAGetBestIndex`` currently no longer have a valid semantic
+  interpretation with multiobjective optimization, they sort by
+  nondominance-rank now. And reporting has been rewritten to provide a
+  meaningful output, in particular the optimization result prints all
+  non-dominated solutions.
+- A Fortran example with constraints *and* multi-objective optimization
+  can be found in ``examples/fortran/constr.f``
+- There is a small plotting-utility ``examples/nsgaii/crowdingplot``
+  written in python that can plot one function value (in the objective
+  space) against a second function value, similar to the graphics in the
+  NSGA-II paper.
+- You also want to check the next section for news.
+
+First Update December 2021:
 
 - If you're upgrading: The signature of your evaluation function has
   changed, it has grown a new parameter at the end. If you're not using

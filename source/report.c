@@ -71,8 +71,10 @@ privately owned rights.
 void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
 {
     int p, best_p;
+    int k;
     double e, best_e;
-    int numaux;
+    int numaux = PGAGetNumAuxEval    (ctx);
+    int numcon = PGAGetNumConstraint (ctx);
 
     PGADebugEntered("PGAPrintReport");
 
@@ -83,38 +85,102 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
     if ((ctx->rep.PrintFreq <= 0) || (ctx->ga.iter % ctx->rep.PrintFreq)) {
         return;
     }
-    best_p = PGAGetBestIndex(ctx, pop);
-    best_e = PGAGetEvaluation(ctx, best_p, pop);
-    numaux = PGAGetNumAuxEval (ctx);
+    /* No multi objective eval */
+    if (numaux == numcon) {
+        best_p = PGAGetBestIndex (ctx, pop);
+        best_e = PGAGetEvaluation (ctx, best_p, pop);
 
-    fprintf (fp, "Iter #     Field      Value");
-    if (numaux) {
-        fprintf (fp, "           Constraints");
+        fprintf (fp, "Iter #     Field      Value");
+        if (numcon) {
+            fprintf (fp, "           Constraints");
+        }
+        fprintf (fp, "\n");
+        fprintf
+            (fp, "%-11dBest      %13.6e", PGAGetGAIterValue (ctx), best_e);
+        if (numaux) {
+            fprintf (fp, "   %13.6e", PGAGetAuxTotal (ctx, best_p, pop));
+        }
+        fprintf (fp, "\n");
+        if (ctx->rep.PrintOptions & PGA_REPORT_WORST) {
+            p = PGAGetWorstIndex (ctx, pop);
+            e = PGAGetEvaluation (ctx, p, pop);
+            fprintf (fp, "           Worst     %13.6e", e);
+            if (numaux) {
+                fprintf (fp, "   %13.6e", PGAGetAuxTotal (ctx, p, pop));
+            }
+            fprintf (fp, "\n");
+        }
+        if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) {
+            fprintf
+                (fp, "           Average   %13.6e\n", ctx->rep.Average [0]);
+        }
+        if (ctx->rep.PrintOptions & PGA_REPORT_OFFLINE) {
+            fprintf
+                (fp, "           Offline   %13.6e\n", ctx->rep.Offline [0]);
+        }
+        if (ctx->rep.PrintOptions & PGA_REPORT_ONLINE) {
+            fprintf
+                (fp, "           Online    %13.6e\n", ctx->rep.Online [0]);
+        }
+    } else {
+        fprintf (fp, "Iter #     Field   Idx Value\n");
+        for (k=0; k<numaux+1; k++) {
+            fprintf
+                ( fp, "%-11dBest    %5d %e\n"
+                , ctx->ga.iter, k, ctx->rep.Best [k]
+                );
+        }
+        if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) {
+            for (k=0; k<numaux+1; k++) {
+                fprintf
+                    ( fp, "%-11dAverage %5d %e\n"
+                    , ctx->ga.iter, k, ctx->rep.Average [k]
+                    );
+            }
+        }
+        if (ctx->rep.PrintOptions & PGA_REPORT_OFFLINE) {
+            for (k=0; k<numaux+1; k++) {
+                fprintf
+                    ( fp, "%-11dOffline %5d %e\n"
+                    , ctx->ga.iter, k, ctx->rep.Offline [k]
+                    );
+            }
+        }
+        if (ctx->rep.PrintOptions & PGA_REPORT_ONLINE) {
+            for (k=0; k<numaux+1; k++) {
+                fprintf
+                    ( fp, "%-11dOnline  %5d %e\n"
+                    , ctx->ga.iter, k, ctx->rep.Online [k]
+                    );
+            }
+        }
     }
-    fprintf (fp, "\n");
 
-    fprintf(fp, "%-11dBest       %e", PGAGetGAIterValue(ctx), best_e);
-    if (numaux) {
-        fprintf (fp, "    %e", PGAGetAuxTotal (ctx, best_p, pop));
-    }
-    fprintf (fp, "\n");
-    if ((ctx->rep.PrintOptions & PGA_REPORT_WORST) == PGA_REPORT_WORST)
-    {
-        p = PGAGetWorstIndex(ctx, pop);
-        e = PGAGetEvaluation(ctx, p, pop);
-        fprintf(fp, "           Worst      %e\n", e);
-    }
-
-    if ((ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) == PGA_REPORT_AVERAGE)
-        fprintf(fp, "           Average    %e\n", ctx->rep.Average);
-    if ((ctx->rep.PrintOptions & PGA_REPORT_OFFLINE) == PGA_REPORT_OFFLINE)
-        fprintf(fp, "           Offline    %e\n", ctx->rep.Offline);
-    if ((ctx->rep.PrintOptions & PGA_REPORT_ONLINE) == PGA_REPORT_ONLINE)
-        fprintf(fp, "           Online     %e\n", ctx->rep.Online);
-    if ((ctx->rep.PrintOptions & PGA_REPORT_HAMMING) == PGA_REPORT_HAMMING)
+    if (ctx->rep.PrintOptions & PGA_REPORT_HAMMING) {
         fprintf(fp, "           Hamming    %e\n", PGAHammingDistance(ctx, pop));
-    if ((ctx->rep.PrintOptions & PGA_REPORT_STRING) == PGA_REPORT_STRING)
-        PGAPrintString(ctx, fp, best_p, pop);
+    }
+    if (ctx->rep.PrintOptions & PGA_REPORT_STRING) {
+        if (numaux == numcon) {
+            PGAPrintString (ctx, fp, best_p, pop);
+        } else {
+            PGAIndividual *ind = PGAGetIndividual (ctx, 0, pop);
+            int found = 0;
+            for (k=0; k<ctx->ga.PopSize; k++) {
+                if (ind->rank == 0) {
+                    if (!found) {
+                        printf ("Non-dominated individuals:\n");
+                    }
+                    PGAPrintString (ctx, fp, k, pop);
+                    found++;
+                }
+                ind++;
+            }
+            /* Should never happen */
+            if (!found) {
+                PGAErrorPrintf (ctx, PGA_FATAL, "No undominated individuals");
+            }
+        }
+    }
     fflush(fp);
 
     PGADebugExited("PGAPrintReport");

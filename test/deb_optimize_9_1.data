@@ -1,513 +1,513 @@
 Iter #     Field      Value           Constraints
 10         Best       7.595577e+00    0.000000e+00
-           Worst      8.088579e+01
+           Worst      8.088579e+01    0.000000e+00
            Average    2.565856e+01
            Offline    1.166428e+01
-           Online     7.726147e+01
+           Online     5.715468e+01
 #   0: [  0.2078677], [   9.875948], [   9.963171], [  0.6225015]
 
 Iter #     Field      Value           Constraints
 20         Best       3.254593e+00    0.000000e+00
-           Worst      3.227824e+01
+           Worst      3.227824e+01    0.000000e+00
            Average    1.257719e+01
            Offline    7.803868e+00
-           Online     4.721512e+01
+           Online     3.632868e+01
 #   0: [  0.1741972], [   9.645378], [   9.245108], [  0.2787153]
 
 Iter #     Field      Value           Constraints
 30         Best       2.797088e+00    0.000000e+00
-           Worst      1.544599e+01
+           Worst      1.544599e+01    0.000000e+00
            Average    7.019480e+00
            Offline    6.165442e+00
-           Online     3.459429e+01
+           Online     2.709031e+01
 #   0: [  0.2566648], [   5.769295], [   9.732373], [  0.2568181]
 
 Iter #     Field      Value           Constraints
 40         Best       2.797088e+00    0.000000e+00
-           Worst      9.313849e+00
+           Worst      9.313849e+00    0.000000e+00
            Average    5.225235e+00
            Offline    5.323353e+00
-           Online     2.742011e+01
+           Online     2.168400e+01
 #   0: [  0.2566648], [   5.769295], [   9.732373], [  0.2568181]
 
 Iter #     Field      Value           Constraints
 50         Best       2.797088e+00    0.000000e+00
-           Worst      6.508152e+00
+           Worst      6.508152e+00    0.000000e+00
            Average    4.105113e+00
            Offline    4.818100e+00
-           Online     2.283970e+01
+           Online     1.819499e+01
 #   0: [  0.2566648], [   5.769295], [   9.732373], [  0.2568181]
 
 Iter #     Field      Value           Constraints
 60         Best       2.632791e+00    0.000000e+00
-           Worst      6.420688e+00
+           Worst      6.420688e+00    0.000000e+00
            Average    3.453361e+00
            Offline    4.472359e+00
-           Online     1.965989e+01
+           Online     1.575678e+01
 #   0: [  0.2133105], [   8.444643], [   8.265712], [  0.2474187]
 
 Iter #     Field      Value           Constraints
 70         Best       2.548213e+00    0.000000e+00
-           Worst      4.314011e+00
+           Worst      4.314011e+00    0.000000e+00
            Average    3.053790e+00
            Offline    4.201498e+00
-           Online     1.730831e+01
+           Online     1.394205e+01
 #   0: [   0.259684], [   5.308032], [   8.910962], [  0.2600769]
 
 Iter #     Field      Value           Constraints
 80         Best       2.506108e+00    0.000000e+00
-           Worst      3.158602e+00
+           Worst      3.158602e+00    0.000000e+00
            Average    2.804700e+00
            Offline    3.994311e+00
-           Online     1.550647e+01
+           Online     1.254705e+01
 #   0: [  0.2523711], [   5.971637], [    8.39925], [  0.2584715]
 
 Iter #     Field      Value           Constraints
 90         Best       2.487717e+00    0.000000e+00
-           Worst      2.987358e+00
+           Worst      2.987358e+00    0.000000e+00
            Average    2.709652e+00
            Offline    3.826912e+00
-           Online     1.408881e+01
+           Online     1.144844e+01
 #   0: [   0.236649], [   5.858232], [   9.169296], [  0.2426082]
 
 Iter #     Field      Value           Constraints
 100        Best       2.465328e+00    0.000000e+00
-           Worst      2.913378e+00
+           Worst      2.913378e+00    0.000000e+00
            Average    2.633426e+00
            Offline    3.692768e+00
-           Online     1.294684e+01
+           Online     1.056343e+01
 #   0: [  0.2482811], [   6.312247], [   8.155401], [  0.2554037]
 
 Iter #     Field      Value           Constraints
 110        Best       2.448032e+00    0.000000e+00
-           Worst      2.661269e+00
+           Worst      2.661269e+00    0.000000e+00
            Average    2.554230e+00
            Offline    3.580868e+00
-           Online     1.200494e+01
+           Online     9.832887e+00
 #   0: [  0.2448302], [   6.058678], [   8.570444], [  0.2474811]
 
 Iter #     Field      Value           Constraints
 120        Best       2.443198e+00    0.000000e+00
-           Worst      2.620248e+00
+           Worst      2.620248e+00    0.000000e+00
            Average    2.512029e+00
            Offline    3.486183e+00
-           Online     1.121526e+01
+           Online     9.220132e+00
 #   0: [  0.2368556], [   5.801805], [      9.143], [  0.2392171]
 
 Iter #     Field      Value           Constraints
 130        Best       2.423836e+00    0.000000e+00
-           Worst      2.520183e+00
+           Worst      2.520183e+00    0.000000e+00
            Average    2.470725e+00
            Offline    3.405443e+00
-           Online     1.054397e+01
+           Online     8.699107e+00
 #   0: [  0.2376041], [   6.137456], [   8.683809], [  0.2426082]
 
 Iter #     Field      Value           Constraints
 140        Best       2.400302e+00    0.000000e+00
-           Worst      2.512894e+00
+           Worst      2.512894e+00    0.000000e+00
            Average    2.445149e+00
            Offline    3.334486e+00
-           Online     9.966308e+00
+           Online     8.250656e+00
 #   0: [  0.2423488], [    6.36296], [    8.28603], [  0.2448356]
 
 Iter #     Field      Value           Constraints
 150        Best       2.400302e+00    0.000000e+00
-           Worst      2.490043e+00
+           Worst      2.490043e+00    0.000000e+00
            Average    2.433404e+00
            Offline    3.272207e+00
-           Online     9.464521e+00
+           Online     7.861169e+00
 #   0: [  0.2423488], [    6.36296], [    8.28603], [  0.2448356]
 
 Iter #     Field      Value           Constraints
 160        Best       2.393424e+00    0.000000e+00
-           Worst      2.477482e+00
+           Worst      2.477482e+00    0.000000e+00
            Average    2.421270e+00
            Offline    3.217622e+00
-           Online     9.024706e+00
+           Online     7.519857e+00
 #   0: [  0.2411184], [   6.301195], [   8.335695], [  0.2442733]
 
 Iter #     Field      Value           Constraints
 170        Best       2.393424e+00    0.000000e+00
-           Worst      2.460499e+00
+           Worst      2.460499e+00    0.000000e+00
            Average    2.411233e+00
            Offline    3.169140e+00
-           Online     8.635883e+00
+           Online     7.218135e+00
 #   0: [  0.2411184], [   6.301195], [   8.335695], [  0.2442733]
 
 Iter #     Field      Value           Constraints
 180        Best       2.391637e+00    0.000000e+00
-           Worst      2.427394e+00
+           Worst      2.427394e+00    0.000000e+00
            Average    2.405140e+00
            Offline    3.125965e+00
-           Online     8.289869e+00
+           Online     6.949692e+00
 #   0: [  0.2447046], [   6.164105], [   8.348617], [   0.244955]
 
 Iter #     Field      Value           Constraints
 190        Best       2.386642e+00    0.000000e+00
-           Worst      2.417100e+00
+           Worst      2.417100e+00    0.000000e+00
            Average    2.399553e+00
            Offline    3.087132e+00
-           Online     7.979966e+00
+           Online     6.709312e+00
 #   0: [  0.2441972], [   6.179433], [    8.34608], [  0.2443107]
 
 Iter #     Field      Value           Constraints
 200        Best       2.386642e+00    0.000000e+00
-           Worst      2.407812e+00
+           Worst      2.407812e+00    0.000000e+00
            Average    2.396282e+00
            Offline    3.052108e+00
-           Online     7.700865e+00
+           Online     6.492878e+00
 #   0: [  0.2441972], [   6.179433], [    8.34608], [  0.2443107]
 
 Iter #     Field      Value           Constraints
 210        Best       2.386625e+00    0.000000e+00
-           Worst      2.401437e+00
+           Worst      2.401437e+00    0.000000e+00
            Average    2.392772e+00
            Offline    3.020418e+00
-           Online     7.448180e+00
+           Online     6.296970e+00
 #   0: [    0.24334], [   6.204143], [   8.349023], [  0.2440762]
 
 Iter #     Field      Value           Constraints
 220        Best       2.386625e+00    0.000000e+00
-           Worst      2.397268e+00
+           Worst      2.397268e+00    0.000000e+00
            Average    2.390987e+00
            Offline    2.991610e+00
-           Online     7.218341e+00
+           Online     6.118810e+00
 #   0: [    0.24334], [   6.204143], [   8.349023], [  0.2440762]
 
 Iter #     Field      Value           Constraints
 230        Best       2.385789e+00    0.000000e+00
-           Worst      2.392647e+00
+           Worst      2.392647e+00    0.000000e+00
            Average    2.389433e+00
            Offline    2.965286e+00
-           Online     7.008415e+00
+           Online     5.956124e+00
 #   0: [  0.2441016], [   6.238141], [   8.291056], [  0.2446738]
 
 Iter #     Field      Value           Constraints
 240        Best       2.384610e+00    0.000000e+00
-           Worst      2.391584e+00
+           Worst      2.391584e+00    0.000000e+00
            Average    2.387627e+00
            Offline    2.941109e+00
-           Online     6.815918e+00
+           Online     5.806976e+00
 #   0: [  0.2435414], [    6.22873], [   8.315763], [  0.2442234]
 
 Iter #     Field      Value           Constraints
 250        Best       2.384136e+00    0.000000e+00
-           Worst      2.390347e+00
+           Worst      2.390347e+00    0.000000e+00
            Average    2.386771e+00
            Offline    2.918844e+00
-           Online     6.638767e+00
+           Online     5.669744e+00
 #   0: [  0.2436285], [   6.227916], [   8.309666], [  0.2443244]
 
 Iter #     Field      Value           Constraints
 260        Best       2.383636e+00    0.000000e+00
-           Worst      2.390347e+00
+           Worst      2.390347e+00    0.000000e+00
            Average    2.386095e+00
            Offline    2.898271e+00
-           Online     6.475216e+00
+           Online     5.543073e+00
 #   0: [  0.2440648], [   6.208038], [   8.317178], [  0.2442628]
 
 Iter #     Field      Value           Constraints
 270        Best       2.383211e+00    0.000000e+00
-           Worst      2.386684e+00
+           Worst      2.386684e+00    0.000000e+00
            Average    2.385046e+00
            Offline    2.879195e+00
-           Online     6.323743e+00
+           Online     5.425776e+00
 #   0: [  0.2440081], [   6.232417], [   8.290795], [  0.2445169]
 
 Iter #     Field      Value           Constraints
 280        Best       2.382542e+00    0.000000e+00
-           Worst      2.386517e+00
+           Worst      2.386517e+00    0.000000e+00
            Average    2.384247e+00
            Offline    2.861467e+00
-           Online     6.183063e+00
+           Online     5.316855e+00
 #   0: [  0.2442477], [   6.214544], [   8.300315], [  0.2444157]
 
 Iter #     Field      Value           Constraints
 290        Best       2.382205e+00    0.000000e+00
-           Worst      2.384811e+00
+           Worst      2.384811e+00    0.000000e+00
            Average    2.383559e+00
            Offline    2.844951e+00
-           Online     6.052055e+00
+           Online     5.215437e+00
 #   0: [  0.2442078], [   6.222476], [   8.294559], [  0.2443993]
 
 Iter #     Field      Value           Constraints
 300        Best       2.382068e+00    0.000000e+00
-           Worst      2.384709e+00
+           Worst      2.384709e+00    0.000000e+00
            Average    2.383114e+00
            Offline    2.829522e+00
-           Online     5.929764e+00
+           Online     5.120780e+00
 #   0: [  0.2442954], [    6.21342], [   8.301728], [  0.2443183]
 
 Iter #     Field      Value           Constraints
 310        Best       2.381725e+00    0.000000e+00
-           Worst      2.383660e+00
+           Worst      2.383660e+00    0.000000e+00
            Average    2.382638e+00
            Offline    2.815080e+00
-           Online     5.815347e+00
+           Online     5.032231e+00
 #   0: [  0.2442096], [   6.220701], [   8.295261], [  0.2443545]
 
 Iter #     Field      Value           Constraints
 320        Best       2.381634e+00    0.000000e+00
-           Worst      2.383133e+00
+           Worst      2.383133e+00    0.000000e+00
            Average    2.382375e+00
            Offline    2.801536e+00
-           Online     5.708071e+00
+           Online     4.949219e+00
 #   0: [  0.2444224], [   6.218103], [   8.290817], [  0.2444382]
 
 Iter #     Field      Value           Constraints
 330        Best       2.381554e+00    0.000000e+00
-           Worst      2.382608e+00
+           Worst      2.382608e+00    0.000000e+00
            Average    2.382120e+00
            Offline    2.788810e+00
-           Online     5.607287e+00
+           Online     4.871243e+00
 #   0: [  0.2444028], [   6.216823], [   8.292792], [  0.2444042]
 
 Iter #     Field      Value           Constraints
 340        Best       2.381554e+00    0.000000e+00
-           Worst      2.382393e+00
+           Worst      2.382393e+00    0.000000e+00
            Average    2.381928e+00
            Offline    2.776832e+00
-           Online     5.512426e+00
+           Online     4.797858e+00
 #   0: [  0.2444028], [   6.216823], [   8.292792], [  0.2444042]
 
 Iter #     Field      Value           Constraints
 350        Best       2.381353e+00    0.000000e+00
-           Worst      2.382201e+00
+           Worst      2.382201e+00    0.000000e+00
            Average    2.381797e+00
            Offline    2.765534e+00
-           Online     5.422982e+00
+           Online     4.728671e+00
 #   0: [  0.2443581], [   6.218733], [   8.291844], [   0.244387]
 
 Iter #     Field      Value           Constraints
 360        Best       2.381353e+00    0.000000e+00
-           Worst      2.382102e+00
+           Worst      2.382102e+00    0.000000e+00
            Average    2.381698e+00
            Offline    2.754862e+00
-           Online     5.338503e+00
+           Online     4.663333e+00
 #   0: [  0.2443581], [   6.218733], [   8.291844], [   0.244387]
 
 Iter #     Field      Value           Constraints
 370        Best       2.381353e+00    0.000000e+00
-           Worst      2.381947e+00
+           Worst      2.381947e+00    0.000000e+00
            Average    2.381565e+00
            Offline    2.744767e+00
-           Online     5.258587e+00
+           Online     4.601532e+00
 #   0: [  0.2443581], [   6.218733], [   8.291844], [   0.244387]
 
 Iter #     Field      Value           Constraints
 380        Best       2.381281e+00    0.000000e+00
-           Worst      2.381840e+00
+           Worst      2.381840e+00    0.000000e+00
            Average    2.381496e+00
            Offline    2.735203e+00
-           Online     5.182875e+00
+           Online     4.542987e+00
 #   0: [   0.244351], [   6.216762], [   8.294144], [  0.2443533]
 
 Iter #     Field      Value           Constraints
 390        Best       2.381268e+00    0.000000e+00
-           Worst      2.381671e+00
+           Worst      2.381671e+00    0.000000e+00
            Average    2.381436e+00
            Offline    2.726128e+00
-           Online     5.111044e+00
+           Online     4.487450e+00
 #   0: [  0.2443465], [   6.218551], [   8.292538], [  0.2443646]
 
 Iter #     Field      Value           Constraints
 400        Best       2.381180e+00    0.000000e+00
-           Worst      2.381551e+00
+           Worst      2.381551e+00    0.000000e+00
            Average    2.381365e+00
            Offline    2.717505e+00
-           Online     5.042802e+00
+           Online     4.434693e+00
 #   0: [  0.2443658], [   6.218269], [   8.291963], [  0.2443683]
 
 Iter #     Field      Value           Constraints
 410        Best       2.381180e+00    0.000000e+00
-           Worst      2.381464e+00
+           Worst      2.381464e+00    0.000000e+00
            Average    2.381317e+00
            Offline    2.709302e+00
-           Online     4.977889e+00
+           Online     4.384513e+00
 #   0: [  0.2443658], [   6.218269], [   8.291963], [  0.2443683]
 
 Iter #     Field      Value           Constraints
 420        Best       2.381180e+00    0.000000e+00
-           Worst      2.381400e+00
+           Worst      2.381400e+00    0.000000e+00
            Average    2.381290e+00
            Offline    2.701490e+00
-           Online     4.916065e+00
+           Online     4.336726e+00
 #   0: [  0.2443658], [   6.218269], [   8.291963], [  0.2443683]
 
 Iter #     Field      Value           Constraints
 430        Best       2.381173e+00    0.000000e+00
-           Worst      2.381335e+00
+           Worst      2.381335e+00    0.000000e+00
            Average    2.381253e+00
            Offline    2.694040e+00
-           Online     4.857116e+00
+           Online     4.291166e+00
 #   0: [  0.2443646], [   6.218447], [   8.291849], [  0.2443677]
 
 Iter #     Field      Value           Constraints
 440        Best       2.381167e+00    0.000000e+00
-           Worst      2.381322e+00
+           Worst      2.381322e+00    0.000000e+00
            Average    2.381228e+00
            Offline    2.686930e+00
-           Online     4.800846e+00
+           Online     4.247679e+00
 #   0: [  0.2443724], [   6.218397], [   8.291565], [  0.2443731]
 
 Iter #     Field      Value           Constraints
 450        Best       2.381151e+00    0.000000e+00
-           Worst      2.381244e+00
+           Worst      2.381244e+00    0.000000e+00
            Average    2.381197e+00
            Offline    2.680135e+00
-           Online     4.747077e+00
+           Online     4.206128e+00
 #   0: [   0.244368], [    6.21868], [   8.291484], [  0.2443696]
 
 Iter #     Field      Value           Constraints
 460        Best       2.381151e+00    0.000000e+00
-           Worst      2.381239e+00
+           Worst      2.381239e+00    0.000000e+00
            Average    2.381187e+00
            Offline    2.673635e+00
-           Online     4.695644e+00
+           Online     4.166387e+00
 #   0: [   0.244368], [    6.21868], [   8.291484], [  0.2443696]
 
 Iter #     Field      Value           Constraints
 470        Best       2.381151e+00    0.000000e+00
-           Worst      2.381234e+00
+           Worst      2.381234e+00    0.000000e+00
            Average    2.381178e+00
            Offline    2.667412e+00
-           Online     4.646400e+00
+           Online     4.128339e+00
 #   0: [   0.244368], [    6.21868], [   8.291484], [  0.2443696]
 
 Iter #     Field      Value           Constraints
 480        Best       2.381151e+00    0.000000e+00
-           Worst      2.381194e+00
+           Worst      2.381194e+00    0.000000e+00
            Average    2.381169e+00
            Offline    2.661448e+00
-           Online     4.599208e+00
+           Online     4.091879e+00
 #   0: [   0.244368], [    6.21868], [   8.291484], [  0.2443696]
 
 Iter #     Field      Value           Constraints
 490        Best       2.381147e+00    0.000000e+00
-           Worst      2.381192e+00
+           Worst      2.381192e+00    0.000000e+00
            Average    2.381164e+00
            Offline    2.655728e+00
-           Online     4.553942e+00
+           Online     4.056909e+00
 #   0: [  0.2443685], [   6.218492], [   8.291619], [  0.2443687]
 
 Iter #     Field      Value           Constraints
 500        Best       2.381145e+00    0.000000e+00
-           Worst      2.381176e+00
+           Worst      2.381176e+00    0.000000e+00
            Average    2.381157e+00
            Offline    2.650236e+00
-           Online     4.510486e+00
+           Online     4.023340e+00
 #   0: [  0.2443674], [   6.218634], [    8.29153], [  0.2443686]
 
 Iter #     Field      Value           Constraints
 510        Best       2.381143e+00    0.000000e+00
-           Worst      2.381176e+00
+           Worst      2.381176e+00    0.000000e+00
            Average    2.381153e+00
            Offline    2.644960e+00
-           Online     4.468735e+00
+           Online     3.991090e+00
 #   0: [  0.2443699], [   6.218556], [   8.291497], [    0.24437]
 
 Iter #     Field      Value           Constraints
 520        Best       2.381141e+00    0.000000e+00
-           Worst      2.381159e+00
+           Worst      2.381159e+00    0.000000e+00
            Average    2.381149e+00
            Offline    2.639887e+00
-           Online     4.428589e+00
+           Online     3.960082e+00
 #   0: [  0.2443688], [    6.21864], [   8.291478], [   0.244369]
 
 Iter #     Field      Value           Constraints
 530        Best       2.381138e+00    0.000000e+00
-           Worst      2.381151e+00
+           Worst      2.381151e+00    0.000000e+00
            Average    2.381145e+00
            Offline    2.635005e+00
-           Online     4.389958e+00
+           Online     3.930246e+00
 #   0: [  0.2443688], [   6.218583], [   8.291512], [  0.2443688]
 
 Iter #     Field      Value           Constraints
 540        Best       2.381138e+00    0.000000e+00
-           Worst      2.381150e+00
+           Worst      2.381150e+00    0.000000e+00
            Average    2.381143e+00
            Offline    2.630303e+00
-           Online     4.352758e+00
+           Online     3.901516e+00
 #   0: [  0.2443688], [   6.218583], [   8.291512], [  0.2443688]
 
 Iter #     Field      Value           Constraints
 550        Best       2.381138e+00    0.000000e+00
-           Worst      2.381145e+00
+           Worst      2.381145e+00    0.000000e+00
            Average    2.381141e+00
            Offline    2.625773e+00
-           Online     4.316910e+00
+           Online     3.873833e+00
 #   0: [  0.2443681], [   6.218638], [   8.291474], [   0.244369]
 
 Iter #     Field      Value           Constraints
 560        Best       2.381137e+00    0.000000e+00
-           Worst      2.381144e+00
+           Worst      2.381144e+00    0.000000e+00
            Average    2.381140e+00
            Offline    2.621405e+00
-           Online     4.282343e+00
+           Online     3.847139e+00
 #   0: [  0.2443684], [   6.218597], [   8.291505], [  0.2443688]
 
 Iter #     Field      Value           Constraints
 570        Best       2.381137e+00    0.000000e+00
-           Worst      2.381141e+00
+           Worst      2.381141e+00    0.000000e+00
            Average    2.381139e+00
            Offline    2.617189e+00
-           Online     4.248988e+00
+           Online     3.821384e+00
 #   0: [  0.2443689], [   6.218608], [   8.291479], [  0.2443691]
 
 Iter #     Field      Value           Constraints
 580        Best       2.381136e+00    0.000000e+00
-           Worst      2.381140e+00
+           Worst      2.381140e+00    0.000000e+00
            Average    2.381138e+00
            Offline    2.613119e+00
-           Online     4.216784e+00
+           Online     3.796518e+00
 #   0: [  0.2443686], [   6.218596], [   8.291496], [  0.2443688]
 
 Iter #     Field      Value           Constraints
 590        Best       2.381136e+00    0.000000e+00
-           Worst      2.381139e+00
+           Worst      2.381139e+00    0.000000e+00
            Average    2.381137e+00
            Offline    2.609188e+00
-           Online     4.185671e+00
+           Online     3.772496e+00
 #   0: [  0.2443687], [   6.218609], [   8.291483], [  0.2443689]
 
 Iter #     Field      Value           Constraints
 600        Best       2.381135e+00    0.000000e+00
-           Worst      2.381138e+00
+           Worst      2.381138e+00    0.000000e+00
            Average    2.381136e+00
            Offline    2.605387e+00
-           Online     4.155596e+00
+           Online     3.749275e+00
 #   0: [  0.2443689], [    6.21861], [   8.291472], [   0.244369]
 
 Iter #     Field      Value           Constraints
 610        Best       2.381135e+00    0.000000e+00
-           Worst      2.381137e+00
+           Worst      2.381137e+00    0.000000e+00
            Average    2.381136e+00
            Offline    2.601710e+00
-           Online     4.126506e+00
+           Online     3.726817e+00
 #   0: [  0.2443689], [    6.21861], [   8.291472], [   0.244369]
 
 Iter #     Field      Value           Constraints
 620        Best       2.381135e+00    0.000000e+00
-           Worst      2.381137e+00
+           Worst      2.381137e+00    0.000000e+00
            Average    2.381136e+00
            Offline    2.598153e+00
-           Online     4.098355e+00
+           Online     3.705085e+00
 #   0: [  0.2443688], [   6.218609], [   8.291474], [  0.2443689]
 
 Iter #     Field      Value           Constraints
 630        Best       2.381135e+00    0.000000e+00
-           Worst      2.381136e+00
+           Worst      2.381136e+00    0.000000e+00
            Average    2.381135e+00
            Offline    2.594708e+00
-           Online     4.071098e+00
+           Online     3.684043e+00
 #   0: [  0.2443688], [   6.218609], [   8.291474], [  0.2443689]
 
 Iter #     Field      Value           Constraints
 640        Best       2.381134e+00    0.000000e+00
-           Worst      2.381136e+00
+           Worst      2.381136e+00    0.000000e+00
            Average    2.381135e+00
            Offline    2.591371e+00
-           Online     4.044692e+00
+           Online     3.663660e+00
 #   0: [  0.2443689], [   6.218606], [   8.291473], [  0.2443689]
 
 The Best Evaluation: 2.381134e+00 Constraints: 0.000000e+00.
