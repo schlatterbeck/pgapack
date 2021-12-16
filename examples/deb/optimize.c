@@ -40,6 +40,7 @@ int main (int argc, char **argv)
     int popsize = 60;
     int fidx = 0;
     int maxiter = 100;
+    int full_report = 0;
 
     if (argc > 1) {
         fidx = atoi (argv [1]);
@@ -50,6 +51,9 @@ int main (int argc, char **argv)
                 );
             exit (1);
         }
+    }
+    if (argc > 2 && atoi (argv [2])) {
+        full_report = 1;
     }
     problem = problems [fidx];
     if (problem->generations > maxiter) {
@@ -80,6 +84,15 @@ int main (int argc, char **argv)
     PGASetRealInitRange    (ctx, problem->lower, problem->upper);
     PGASetMaxGAIterValue   (ctx, maxiter);
     PGASetNumAuxEval       (ctx, problem->nfunc - 1);
+
+    /* Extended reporting, HAMMING is only defined for binary strings */
+    if (full_report) {
+        PGASetPrintOptions (ctx, PGA_REPORT_ONLINE);
+        PGASetPrintOptions (ctx, PGA_REPORT_OFFLINE);
+        PGASetPrintOptions (ctx, PGA_REPORT_STRING);
+        PGASetPrintOptions (ctx, PGA_REPORT_WORST);
+        PGASetPrintOptions (ctx, PGA_REPORT_AVERAGE);
+    }
     
     PGASetUp(ctx);
 

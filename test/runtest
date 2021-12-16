@@ -33,6 +33,7 @@ else
     if  [   "$dir" = deb \
         -o  "$dir" = mgh \
             -a '(' "$cmd" = testprogde -o "$cmd" = testprogdertr ')' \
+        -o  '(' "$dir" = c -a "$cmd" = maxbit ')' \
         ]; then
         ${mpicmd} ../examples/$dir/$cmd $@
     else

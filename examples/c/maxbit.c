@@ -12,9 +12,23 @@ double NumberOfSetBits(PGAContext *, int, int, double *);
 *******************************************************************/
 int main( int argc, char **argv ) {
     PGAContext *ctx;
+    int full_report = 0;
+
+    if (argc > 1 && atoi (argv [1])) {
+        full_report = 1;
+    }
     
     ctx = PGACreate(&argc, argv, PGA_DATATYPE_BINARY, 256, PGA_MAXIMIZE);
     PGASetRandomSeed(ctx, 1);
+    /* Extended reporting */
+    if (full_report) {
+        PGASetPrintOptions (ctx, PGA_REPORT_ONLINE);
+        PGASetPrintOptions (ctx, PGA_REPORT_OFFLINE);
+        PGASetPrintOptions (ctx, PGA_REPORT_HAMMING);
+        PGASetPrintOptions (ctx, PGA_REPORT_STRING);
+        PGASetPrintOptions (ctx, PGA_REPORT_WORST);
+        PGASetPrintOptions (ctx, PGA_REPORT_AVERAGE);
+    }
     
     PGASetUp(ctx);
     PGARun(ctx, NumberOfSetBits);
