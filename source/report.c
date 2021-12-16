@@ -95,24 +95,32 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
             fprintf (fp, "           Constraints");
         }
         fprintf (fp, "\n");
-        fprintf(fp, "%-11dBest       %e", PGAGetGAIterValue(ctx), best_e);
+        fprintf
+            (fp, "%-11dBest      %13.6e", PGAGetGAIterValue (ctx), best_e);
         if (numaux) {
-            fprintf (fp, "    %e", PGAGetAuxTotal (ctx, best_p, pop));
+            fprintf (fp, "   %13.6e", PGAGetAuxTotal (ctx, best_p, pop));
         }
         fprintf (fp, "\n");
         if (ctx->rep.PrintOptions & PGA_REPORT_WORST) {
-            p = PGAGetWorstIndex(ctx, pop);
-            e = PGAGetEvaluation(ctx, p, pop);
-            fprintf(fp, "           Worst      %e\n", e);
+            p = PGAGetWorstIndex (ctx, pop);
+            e = PGAGetEvaluation (ctx, p, pop);
+            fprintf (fp, "           Worst     %13.6e", e);
+            if (numaux) {
+                fprintf (fp, "   %13.6e", PGAGetAuxTotal (ctx, p, pop));
+            }
+            fprintf (fp, "\n");
         }
         if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) {
-            fprintf(fp, "           Average    %e\n", ctx->rep.Average [0]);
+            fprintf
+                (fp, "           Average   %13.6e\n", ctx->rep.Average [0]);
         }
         if (ctx->rep.PrintOptions & PGA_REPORT_OFFLINE) {
-            fprintf(fp, "           Offline    %e\n", ctx->rep.Offline [0]);
+            fprintf
+                (fp, "           Offline   %13.6e\n", ctx->rep.Offline [0]);
         }
         if (ctx->rep.PrintOptions & PGA_REPORT_ONLINE) {
-            fprintf(fp, "           Online     %e\n", ctx->rep.Online [0]);
+            fprintf
+                (fp, "           Online    %13.6e\n", ctx->rep.Online [0]);
         }
     } else {
         fprintf (fp, "Iter #     Field   Idx Value\n");

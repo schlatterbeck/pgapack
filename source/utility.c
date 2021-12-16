@@ -341,39 +341,25 @@ int PGACheckSum(PGAContext *ctx, int p, int pop)
 int PGAGetWorstIndex(PGAContext *ctx, int pop)
 {
     int     p, worst_indx = 0;
-    double  eval, worst_eval;
 
-    PGADebugEntered("PGAGetWorstIndex");
+    PGADebugEntered ("PGAGetWorstIndex");
 
-    for (p = 0; p < ctx->ga.PopSize; p++)
-	if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop))
-	    PGAError(ctx, "PGAGetWorstIndex: Evaluate function not up to "
-		     "date:", PGA_FATAL, PGA_INT, (void *) &p);
-
-    worst_eval = PGAGetEvaluation(ctx, 0, pop);
-    switch (PGAGetOptDirFlag(ctx)) {
-    case PGA_MAXIMIZE:
-	for (p = 1; p < ctx->ga.PopSize; p++) {
-	    eval = PGAGetEvaluation(ctx, p, pop);
-	    if (eval < worst_eval) {
-		worst_indx = p;
-		worst_eval = eval;
-	    }
-	}
-	break;
-
-    case PGA_MINIMIZE:
-	for (p = 1; p < ctx->ga.PopSize; p++) {
-	    eval = PGAGetEvaluation(ctx, p, pop);
-	    if (eval > worst_eval) {
-		worst_indx = p;
-		worst_eval = eval;
-	    }
-	}
-	break;
+    for (p=0; p<ctx->ga.PopSize; p++) {
+	if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
+	    PGAError
+                ( ctx, "PGAGetWorstIndex: Evaluate function not up to date:"
+                , PGA_FATAL, PGA_INT, (void *) &p
+                );
+        }
     }
 
-    PGADebugExited("PGAGetWorstIndex");
+    for (p=1; p<ctx->ga.PopSize; p++) {
+        if (PGAEvalCompare (ctx, p, pop, worst_indx, pop) > 0) {
+            worst_indx = p;
+        }
+    }
+
+    PGADebugExited ("PGAGetWorstIndex");
 
     return (worst_indx);
 }
@@ -404,12 +390,16 @@ int PGAGetBestIndex(PGAContext *ctx, int pop)
 {
     int     p, Best_indx = 0;
 
-    PGADebugEntered("PGAGetBestIndex");
+    PGADebugEntered ("PGAGetBestIndex");
 
-    for (p = 0; p < ctx->ga.PopSize; p++)
-        if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop))
-	    PGAError(ctx, "PGAGetBestIndex: Evaluate function not up to "
-                     "date:", PGA_FATAL, PGA_INT, (void *) &p);
+    for (p=0; p<ctx->ga.PopSize; p++) {
+        if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
+	    PGAError
+                ( ctx, "PGAGetBestIndex: Evaluate function not up to date:"
+                , PGA_FATAL, PGA_INT, (void *) &p
+                );
+        }
+    }
 
     for (p=1; p<ctx->ga.PopSize; p++) {
         if (PGAEvalCompare (ctx, p, pop, Best_indx, pop) < 0) {
@@ -417,7 +407,7 @@ int PGAGetBestIndex(PGAContext *ctx, int pop)
         }
     }
 
-    PGADebugExited("PGAGetBestIndex");
+    PGADebugExited ("PGAGetBestIndex");
 
     return (Best_indx);
 }
@@ -620,7 +610,7 @@ void PGAUpdateAverage(PGAContext *ctx, int pop)
             }
             validcount++;
         }
-        for (k=numfun+1; k<ctx->ga.NumAuxEval; k++) {
+        for (k=numfun; k<ctx->ga.NumAuxEval; k++) {
             ctx->rep.Average [k+1] += ind->auxeval [k];
         }
         ind++;
@@ -630,8 +620,8 @@ void PGAUpdateAverage(PGAContext *ctx, int pop)
             ctx->rep.Average [k] /= (double)validcount;
         }
     }
-    for (k=numfun+1; k<ctx->ga.NumAuxEval; k++) {
-        ctx->rep.Average [k+1] /= (double)ctx->ga.PopSize;
+    for (k=numfun+1; k<=ctx->ga.NumAuxEval; k++) {
+        ctx->rep.Average [k] /= (double)ctx->ga.PopSize;
     }
     ctx->rep.validcount = validcount;
 
@@ -664,16 +654,19 @@ void PGAUpdateOnline(PGAContext *ctx, int pop)
     int validcount = 0;
     PGAIndividual *ind = pop == PGA_OLDPOP ? ctx->ga.oldpop : ctx->ga.newpop;
     int numfun = ctx->ga.NumAuxEval - ctx->ga.NumConstraint;
+    double evalsum [ctx->ga.NumAuxEval + 1];
     int p, k;
 
     PGADebugEntered ("PGAUpdateOnline");
 
     for (k=0; k<=ctx->ga.NumAuxEval; k++) {
         if (k > numfun) {
-            ctx->rep.Online [k] *= ctx->ga.PopSize * (ctx->ga.iter - 1);
+            ctx->rep.Online [k] *=
+                (double)ctx->ga.PopSize * (double)(ctx->ga.iter - 1);
         } else {
-            ctx->rep.Online [k] *= ctx->rep.validonline;
+            ctx->rep.Online [k] *= (double)ctx->rep.validonline;
         }
+        evalsum [k] = 0;
     }
     for (p=0; p<ctx->ga.PopSize; p++) {
         if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
@@ -683,25 +676,28 @@ void PGAUpdateOnline(PGAContext *ctx, int pop)
                      );
         }
         if (INDGetAuxTotal (ind) == 0) {
-            ctx->rep.Online [0] += ind->evalue;
+            evalsum [0] += ind->evalue;
             for (k=0; k<numfun; k++) {
-                ctx->rep.Online [k+1] += ind->auxeval [k];
+                evalsum [k+1] += ind->auxeval [k];
             }
             validcount++;
         }
-        for (k=numfun+1; k<ctx->ga.NumAuxEval; k++) {
-            ctx->rep.Online [k+1] += ind->auxeval [k];
+        for (k=numfun; k<ctx->ga.NumAuxEval; k++) {
+            evalsum [k+1] += ind->auxeval [k];
         }
         ind++;
     }
     ctx->rep.validonline += validcount;
+    for (k=0; k<=ctx->ga.NumAuxEval; k++) {
+        ctx->rep.Online [k] += evalsum [k];
+    }
     if (ctx->rep.validonline) {
         for (k=0; k<=numfun; k++) {
             ctx->rep.Online [k] /= (double)ctx->rep.validonline;
         }
     }
-    for (k=numfun+1; k<ctx->ga.NumAuxEval; k++) {
-        ctx->rep.Online [k+1] /= (double)ctx->ga.PopSize * (double)ctx->ga.iter;
+    for (k=numfun+1; k<=ctx->ga.NumAuxEval; k++) {
+        ctx->rep.Online [k] /= (double)ctx->ga.PopSize * (double)ctx->ga.iter;
     }
 
     PGADebugExited ("PGAUpdateOnline");
@@ -742,16 +738,16 @@ void PGAUpdateOffline(PGAContext *ctx, int pop)
             if (ctx->rep.validcount) {
                 assert (!isnan (ctx->rep.Best [k]));
                 ctx->rep.Offline [k] =
-                    ( ctx->rep.Offline [k] * ctx->rep.validoffline
+                    ( ctx->rep.Offline [k] * (double)ctx->rep.validoffline
                     + ctx->rep.Best [k]
-                    ) / (ctx->rep.validoffline + 1);
+                    ) / (double)(ctx->rep.validoffline + 1);
             }
         } else {
             assert (!isnan (ctx->rep.Best [k]));
             ctx->rep.Offline [k] =
-                ( ctx->rep.Offline [k] * (ctx->ga.iter - 1)
+                ( ctx->rep.Offline [k] * (double)(ctx->ga.iter - 1)
                 + ctx->rep.Best [k]
-                ) / ctx->ga.iter;
+                ) / (double)ctx->ga.iter;
 
         }
     }
