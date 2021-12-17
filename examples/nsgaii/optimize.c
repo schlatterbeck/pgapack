@@ -19,6 +19,7 @@ static struct multi_problem *problems [] =
 , &srn
 , &tnk
 , &water
+, &rotated
 };
 static const int nproblems =
     sizeof (problems) / sizeof (struct multi_problem *);

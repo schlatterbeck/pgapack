@@ -34,3 +34,4 @@ extern struct multi_problem constr;
 extern struct multi_problem srn;
 extern struct multi_problem tnk;
 extern struct multi_problem water;
+extern struct multi_problem rotated;

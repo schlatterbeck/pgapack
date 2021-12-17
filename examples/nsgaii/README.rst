@@ -17,6 +17,19 @@ paper [1]_: It is better in the lower values of f1 but worse in the
 higher values. It's currently unsure if the test problem is correctly
 implemented or if there are other errors.
 
+There is a small section where a rotated problem is tried. This is
+implemented in ``rotated.c`` and can be called with index 13 of the
+optimize program. Since the paper does not mention the rotation, we
+rotate around the plane produced by the angle bisector of ``(x [0], x [1])``
+and ``(x [2], x [3])``. The rotation angle is 45°.
+
+We give it a *lot* more generations than in the paper
+(2500 instead of 500) and achieve quite good results. With 5000
+generations the solution is almost as good as with 500 generations of
+the unrotated problem. Note that we force ``yi`` to be between -0.3 and
+0.3 as in the paper. This avoids the multiple pareto fronts that would
+occur with a larger range as in the ZDT4 example.
+
 The multi-objective problems *with* constraints are also implemented.
 Note that in the "water" problem there is also a small typo on the
 formula for g6 which should have a ``/`` (division instead of

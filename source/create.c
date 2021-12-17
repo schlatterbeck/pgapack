@@ -1228,37 +1228,51 @@ int PGAGetRandomInitFlag (PGAContext *ctx)
 ****************************************************************************I*/
 void PGACreatePop (PGAContext *ctx, int pop)
 {
-     int p, flag = 0;
+    int p, flag = 0;
 
     PGADebugEntered("PGACreatePop");
 
-     switch (pop)
-     {
-     case PGA_OLDPOP:
-          ctx->ga.oldpop = (PGAIndividual *)malloc(sizeof(PGAIndividual) *
+    switch (pop)
+    {
+    case PGA_OLDPOP:
+        ctx->ga.oldpop = (PGAIndividual *)malloc
+            (sizeof(PGAIndividual) *
                                                    (ctx->ga.PopSize + 2));
-          if (ctx->ga.oldpop == NULL)
-               PGAError(ctx, "PGACreatePop: No room to allocate "
-                        "ctx->ga.oldpop", PGA_FATAL, PGA_VOID, NULL);
-          flag = ctx->init.RandomInit;
-          break;
-     case PGA_NEWPOP:
-          ctx->ga.newpop = (PGAIndividual *)malloc(sizeof(PGAIndividual) *
-                                                   (ctx->ga.PopSize + 2));
-          if (ctx->ga.newpop == NULL)
-               PGAError(ctx, "PGACreatePop: No room to allocate "
-                        "ctx->ga.newpop", PGA_FATAL, PGA_VOID, NULL);
-          flag = PGA_FALSE;
-          break;
-     default:
-          PGAError(ctx, "PGACreatePop: Invalid value of pop:", PGA_FATAL,
-                   PGA_INT, (void *) &pop );
-          break;
-     };
-     for (p = 0; p < ctx->ga.PopSize; p++)
-          PGACreateIndividual (ctx, p, pop, flag);
-     PGACreateIndividual (ctx, PGA_TEMP1, pop, PGA_FALSE);
-     PGACreateIndividual (ctx, PGA_TEMP2, pop, PGA_FALSE);
+        if (ctx->ga.oldpop == NULL) {
+            PGAError
+                ( ctx, "PGACreatePop: No room to allocate ctx->ga.oldpop"
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+        }
+        memset
+            (ctx->ga.oldpop, 0, sizeof(PGAIndividual) * (ctx->ga.PopSize + 2));
+        flag = ctx->init.RandomInit;
+        break;
+    case PGA_NEWPOP:
+        ctx->ga.newpop = (PGAIndividual *)malloc
+            (sizeof (PGAIndividual) * (ctx->ga.PopSize + 2));
+        if (ctx->ga.newpop == NULL) {
+            PGAError
+                ( ctx, "PGACreatePop: No room to allocate ctx->ga.newpop"
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+        }
+        memset
+            (ctx->ga.newpop, 0, sizeof(PGAIndividual) * (ctx->ga.PopSize + 2));
+        flag = PGA_FALSE;
+        break;
+    default:
+        PGAError
+            ( ctx, "PGACreatePop: Invalid value of pop:"
+            , PGA_FATAL, PGA_INT, (void *) &pop
+            );
+        break;
+    };
+    for (p=0; p<ctx->ga.PopSize; p++) {
+        PGACreateIndividual (ctx, p, pop, flag);
+    }
+    PGACreateIndividual (ctx, PGA_TEMP1, pop, PGA_FALSE);
+    PGACreateIndividual (ctx, PGA_TEMP2, pop, PGA_FALSE);
 
     PGADebugExited("PGACreatePop");
 }
@@ -1300,6 +1314,8 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
     ind->auxtotal         = 0.0;
     ind->auxtotalok       = PGA_FALSE;
     ind->rank             = UINT_MAX;
+    ind->crowding         = 0;
+    ind->funcidx          = 0;
     if (ctx->ga.NumAuxEval) {
         ind->auxeval = malloc (sizeof (double) * ctx->ga.NumAuxEval);
         if (ind->auxeval == NULL) {
