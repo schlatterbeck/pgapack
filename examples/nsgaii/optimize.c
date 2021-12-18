@@ -45,6 +45,7 @@ int main (int argc, char **argv)
     int fidx = 0;
     int maxiter = 250;
     int sum_constraints = PGA_FALSE;
+    double crossover_prob = 0.8;
 
     if (argc > 1) {
         fidx = atoi (argv [1]);
@@ -66,6 +67,9 @@ int main (int argc, char **argv)
     if (problem->nconstraint > 0 && argc > 2) {
         sum_constraints = atoi (argv [2]) ? PGA_TRUE : PGA_FALSE;
     }
+    if (problem->crossover_prob > 0) {
+        crossover_prob = problem->crossover_prob;
+    }
     printf ("Example: %s", problem->name);
     if (problem->nconstraint > 0) {
         printf (" sum constraints: %s", sum_constraints ? "yes" : "no");
@@ -81,7 +85,7 @@ int main (int argc, char **argv)
     PGASetPopReplaceType     (ctx, PGA_POPREPL_NSGA_II);
     PGASetMutationOnlyFlag   (ctx, PGA_TRUE);
     PGASetMutationType       (ctx, PGA_MUTATION_DE);
-    PGASetDECrossoverProb    (ctx, 0.8);
+    PGASetDECrossoverProb    (ctx, crossover_prob);
     PGASetDECrossoverType    (ctx, PGA_DE_CROSSOVER_BIN);
     PGASetDEVariant          (ctx, PGA_DE_VARIANT_RAND);
     PGASetDEScaleFactor      (ctx, 0.85);
@@ -91,6 +95,12 @@ int main (int argc, char **argv)
     PGASetNumConstraint      (ctx, problem->nconstraint);
     PGASetSumConstraintsFlag (ctx, sum_constraints);
     PGASetNoDuplicatesFlag   (ctx, PGA_TRUE);
+    if (problem->dither) {
+        PGASetDEDither       (ctx, 0.5);
+    }
+    if (problem->jitter) {
+        PGASetDEJitter       (ctx, 0.005);
+    }
     if (problem->enforce_bounds) {
         PGASetMutationBounceBackFlag (ctx, PGA_TRUE);
     };

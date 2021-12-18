@@ -31,6 +31,7 @@ struct multi_problem zdt6 =
 , .enforce_bounds = 1
 , .popsize        = 10
 , .generations    = 500
+, .crossover_prob = 0.000001
 , .f              = { &f1, &f2 }
 , .name           = "Zitzler et. al. (ZDT6)"
 };

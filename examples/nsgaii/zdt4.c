@@ -33,6 +33,34 @@ struct multi_problem zdt4 =
 , .enforce_bounds = 1
 , .popsize        = 100
 , .generations    = 150
+, .dither         = 0.5
+, .jitter         = 0.005
+, .crossover_prob = 0.0000001
 , .f              = { &f1, &f2 }
 , .name           = "Zitzler et. al. (ZDT4)"
 };
+
+#ifdef DEBUG_EVAL
+#include <stdio.h>
+int main ()
+{
+    int i, j;
+    static double xx [][10] =
+        { { 1,    0, 0, 0, 0, 0, 0, 0, 0, 0 }
+        , { 0.75, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+        , { 0.5,  0, 0, 0, 0, 0, 0, 0, 0, 0 }
+        , { 0.25, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+        };
+    size_t sz = sizeof (xx) / (zdt4.dimension * sizeof (double));
+    for (i=0; i<sz; i++) {
+        double *x = xx [i];
+        double f;
+        double s = 0;
+        printf ("%d\n", i);
+        for (j=0; j<zdt4.nfunc; j++) {
+            f = zdt4.f [j] (x);
+            printf ("f%d: %e\n", j, f);
+        }
+    }
+}
+#endif

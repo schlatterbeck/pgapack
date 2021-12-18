@@ -6,7 +6,7 @@ all: optimize
 optimize: optimize.o $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o optimize
 
-%.o: %.c
+%.o: %.c constraint.h
 	$(CC) $(CFLAGS) -c $<
 
 clean: 
