@@ -13,14 +13,28 @@ cmd.add_argument \
     , nargs   = '?'
     )
 cmd.add_argument \
+    ( "-n", "--title"
+    , help    = "Default title of the plot, will be overwritten by "
+                "'Example' or 'Title' line"
+    , default = ''
+    )
+cmd.add_argument \
     ( "-x", "--x-axis"
     , type    = int
     , default = 0
     )
 cmd.add_argument \
+    ( "-X", "--x-label"
+    , help    = "Label for X-Axis"
+    )
+cmd.add_argument \
     ( "-y", "--y-axis"
     , type    = int
     , default = 1
+    )
+cmd.add_argument \
+    ( "-Y", "--y-label"
+    , help    = "Label for Y-Axis"
     )
 args = cmd.parse_args ()
 if args.filename :
@@ -29,10 +43,11 @@ if args.filename :
 X = []
 Y = []
 
+title = args.title
 for line in f :
     line = line.strip ()
-    if line.startswith ('Example:') :
-        name = line.split (None, 1) [-1]
+    if line.startswith ('Example:') or line.startswith ('Title:') :
+        title = line.split (None, 1) [-1]
     if line.startswith ('F') :
         f, idx, number = line.split ()
         idx = int (idx)
@@ -41,7 +56,13 @@ for line in f :
             Y.append (num)
         elif idx == args.x_axis :
             X.append (num)
+if args.title :
+    title = args.title
 
 plt.scatter (X, Y)
-plt.title (name)
+x_label = args.x_label or 'Objective %d' % args.x_axis
+y_label = args.y_label or 'Objective %d' % args.y_axis
+plt.xlabel (x_label)
+plt.ylabel (y_label)
+plt.title (title)
 plt.show ()
