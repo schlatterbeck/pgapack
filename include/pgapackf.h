@@ -450,5 +450,9 @@ c *** utility
       external PGAGetWorstIndex
       integer PGAGetBestIndex
       external PGAGetBestIndex
+      double precision PGAGetBestReport
+      external PGAGetBestReport
+      integer PGAGetBestReportIndex
+      external PGAGetBestReportIndex
       integer PGAEvalCompare
       external PGAEvalCompare

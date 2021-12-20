@@ -413,6 +413,97 @@ int PGAGetBestIndex(PGAContext *ctx, int pop)
 }
 
 
+/*U***************************************************************************
+  PGAGetBestReport - returns the string with the best evaluation
+  function value in population pop for the given evaluation.
+  The evaluation function index must be 0 < idx <= NumAuxEval. So for
+  single evaluation only the index 0 is allowed and the return is the
+  evaluation as from PGAGetBestIndex. Note that this accesses the
+  pre-computed statistics and therefore only PGA_OLDPOP is allowed for
+  the population constant.
+
+  Category: Utility
+
+  Inputs:
+     ctx - context variable
+     pop - symbolic constant of the population to find the best string in
+           only PGA_OLDPOP is allowed
+     idx - Index of the evaluation function, 0 for the one return by
+           your evaluation function 1 .. NumAuxEval for the auxiliary
+           evaluations
+
+  Outputs:
+     Index of the string with the best evaluation function value
+
+  Example:
+     PGAContext *ctx;
+     double best;
+     :
+     best = PGAGetBestReport (ctx, PGA_OLDPOP, 1);
+
+***************************************************************************U*/
+double PGAGetBestReport (PGAContext *ctx, int pop, int idx)
+{
+    if (pop != PGA_OLDPOP) {
+        PGAErrorPrintf (ctx, PGA_FATAL, "Index must be PGA_OLDPOP");
+    }
+    if (idx < 0 || idx > ctx->ga.NumAuxEval) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "Index must be 0 <= idx <= NumAuxEval, got %d"
+            , idx
+            );
+    }
+
+    return ctx->rep.Best [idx];
+}
+
+/*U***************************************************************************
+  PGAGetBestReportIndex - returns the index of the string with the best
+  evaluation function value in population pop for the given evaluation.
+  The evaluation function index must be 0 < idx <= NumAuxEval. So for
+  single evaluation only the index 0 is allowed and the return is the
+  same as from PGAGetBestIndex. Note that this accesses the pre-computed
+  statistics and therefore only PGA_OLDPOP is allowed for the population
+  constant.
+
+  Category: Utility
+
+  Inputs:
+     ctx - context variable
+     pop - symbolic constant of the population to find the best string in
+           only PGA_OLDPOP is allowed
+     idx - Index of the evaluation function, 0 for the one return by
+           your evaluation function 1 .. NumAuxEval for the auxiliary
+           evaluations
+
+  Outputs:
+     Index of the string with the best evaluation function value
+
+  Example:
+     PGAContext *ctx;
+     int best;
+     :
+     best = PGAGetBestReportIndex (ctx, PGA_OLDPOP, 1);
+
+***************************************************************************U*/
+int PGAGetBestReportIndex(PGAContext *ctx, int pop, int idx)
+{
+    if (pop != PGA_OLDPOP) {
+        PGAErrorPrintf (ctx, PGA_FATAL, "Index must be PGA_OLDPOP");
+    }
+    if (idx < 0 || idx > ctx->ga.NumAuxEval) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "Index must be 0 <= idx <= NumAuxEval, got %d"
+            , idx
+            );
+    }
+
+    return ctx->rep.BestIdx [idx];
+}
+
+
 /*I****************************************************************************
   PGAGetIndividual - translate string index and population symbolic constant
   into pointer to an individual
@@ -562,7 +653,7 @@ void PGAUpdateBest (PGAContext *ctx, int popix)
         } else {
             ctx->rep.Best [k] = best [k]->auxeval [k-1];
         }
-        ctx->rep.BestIdx [k] = pop - best [k];
+        ctx->rep.BestIdx [k] = best [k] - pop;
     }
 
     PGADebugExited ("PGAUpdateBest");

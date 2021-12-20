@@ -985,6 +985,8 @@ void PGACopyIndividual (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 int PGACheckSum (PGAContext *ctx, int p, int pop);
 int PGAGetWorstIndex (PGAContext *ctx, int pop);
 int PGAGetBestIndex (PGAContext *ctx, int pop);
+double PGAGetBestReport (PGAContext *ctx, int pop, int idx);
+int PGAGetBestReportIndex (PGAContext *ctx, int pop, int idx);
 PGAIndividual *PGAGetIndividual (PGAContext *ctx, int p, int pop);
 void PGAUpdateAverage (PGAContext *ctx, int pop);
 void PGAUpdateBest (PGAContext *ctx, int pop);

@@ -288,6 +288,8 @@ privately owned rights.
 #define pgachecksum_                     PGACHECKSUM
 #define pgagetworstindex_                PGAGETWORSTINDEX
 #define pgagetbestindex_                 PGAGETBESTINDEX
+#define pgagetbestreport_                PGAGETBESTREPORT
+#define pgagetbestreportindex_           PGAGETBESTREPORTINDEX
 
 #elif defined(FORTRANTWOUNDERSCORE)
 /* binary.c */
@@ -512,6 +514,8 @@ privately owned rights.
 #define pgachecksum_                     _pgachecksum_
 #define pgagetworstindex_                _pgagetworstindex_
 #define pgagetbestindex_                 _pgagetbestindex_
+#define pgagetbestreport_                _pgagetbestreport_
+#define pgagetbestreportindex_           _pgagetbestreportindex_
 
 #elif !defined(FORTRANUNDERSCORE)
 /* binary.c */
@@ -736,6 +740,8 @@ privately owned rights.
 #define pgachecksum_                     pgachecksum
 #define pgagetworstindex_                pgagetworstindex
 #define pgagetbestindex_                 pgagetbestindex
+#define pgagetbestreport_                pgagetbestreport
+#define pgagetbestreportindex_           pgagetbestreportindex
 #endif
 
 /* binary.c */
@@ -978,13 +984,15 @@ void pgaprintversionnumber_(PGAContext **ftx);
 /* user.c */
 void pgasetuserfunction_(PGAContext **ftx, int *constant, void *f);
 /* utility.c */
-double pgamean_(PGAContext **ftx, double *a, int *n);
-double pgastddev_(PGAContext **ftx, double *a, int *n, double *m);
-int pgaround_(PGAContext **ftx, double *x);
-void pgacopyindividual_(PGAContext **ftx, int *i, int *p1, int *j, int *p2);
-int pgachecksum_(PGAContext **ftx, int *p, int *pop);
-int pgagetworstindex_(PGAContext **ftx, int *pop);
-int pgagetbestindex_(PGAContext **ftx, int *pop);
+double pgamean_ (PGAContext **ftx, double *a, int *n);
+double pgastddev_ (PGAContext **ftx, double *a, int *n, double *m);
+int pgaround_ (PGAContext **ftx, double *x);
+void pgacopyindividual_ (PGAContext **ftx, int *i, int *p1, int *j, int *p2);
+int pgachecksum_ (PGAContext **ftx, int *p, int *pop);
+int pgagetworstindex_ (PGAContext **ftx, int *pop);
+int pgagetbestindex_ (PGAContext **ftx, int *pop);
+double pgagetbestreport_ (PGAContext **ftx, int *pop, int *idx);
+int pgagetbestreportindex_ (PGAContext **ftx, int *pop, int *idx);
 
 /* binary.c */
 void pgasetbinaryallele_(PGAContext **ftx, int *p, int *pop, int *i,
@@ -2292,4 +2300,14 @@ int pgagetworstindex_(PGAContext **ftx, int *pop)
 int pgagetbestindex_(PGAContext **ftx, int *pop)
 {
      return PGAGetBestIndex(*ftx, *pop) + 1;
+}
+
+double pgagetbestreport_(PGAContext **ftx, int *pop, int *idx)
+{
+     return PGAGetBestReport(*ftx, *pop, *idx - 1);
+}
+
+int pgagetbestreportindex_(PGAContext **ftx, int *pop, int *idx)
+{
+     return PGAGetBestReportIndex(*ftx, *pop, *idx - 1) + 1;
 }
