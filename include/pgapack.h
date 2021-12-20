@@ -419,6 +419,7 @@ typedef struct {
      int             validcount;   /* # indivs w/o constraint-violations    */
      int             validonline;  /* cumulated validcount                  */
      int             validoffline; /* cumulated best indiv valid count      */
+     int             nevals;       /* Number of evaluations                 */
      time_t          starttime;
 } PGAReport;
 
@@ -819,6 +820,7 @@ int PGAGetOptDirFlag (PGAContext *ctx);
 int PGAGetStringLength (PGAContext *ctx);
 int PGAGetVariableStringLength (PGAContext *ctx, int p, int pop);
 int PGAGetGAIterValue (PGAContext *ctx);
+int PGAGetEvalCount (PGAContext *ctx);
 void PGASetMutationOrCrossoverFlag( PGAContext *ctx, int flag);
 void PGASetMutationAndCrossoverFlag( PGAContext *ctx, int flag);
 void PGASetMutationOnlyFlag( PGAContext *ctx, int flag);

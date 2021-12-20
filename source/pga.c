@@ -682,6 +682,31 @@ int PGAGetGAIterValue (PGAContext *ctx)
     return(ctx->ga.iter);
 }
 
+/*U***************************************************************************
+  PGAGetEvalCount - returns the number of function evaluations
+
+   Category: Generation
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The number of function evaluations
+
+   Example:
+      PGAContext *ctx;
+      int g;
+      :
+      g = PGAGetEvalCount(ctx);
+
+***************************************************************************U*/
+int PGAGetEvalCount (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetEvalCount");
+
+    return(ctx->rep.nevals);
+}
+
 /*U****************************************************************************
   PGASetMutationOrCrossoverFlag - A boolean flag to indicate if recombination
   uses exactly one of crossover or mutation on selected strings.

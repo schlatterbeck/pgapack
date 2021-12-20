@@ -228,6 +228,7 @@ void PGAEvaluateSeq(PGAContext *ctx, int pop,
 		e = (*f)(ctx, p, pop, aux);
             }
             PGASetEvaluation(ctx, p, pop, e, aux);
+            ctx->rep.nevals++;
         }
     }
     PGADebugExited("PGAEvaluateSeq");
@@ -410,6 +411,7 @@ void PGAEvaluateCoop(PGAContext *ctx, int pop,
 		e = (*f)(ctx, p, pop, aux);
 	    }
 	    PGASetEvaluation (ctx, p, pop, e, aux);
+            ctx->rep.nevals++;
 #if DEBUG_EVAL
 	    printf ("%4d: %10.8e Local\n", p, e);
             fflush (stdout);
@@ -420,6 +422,7 @@ void PGAEvaluateCoop(PGAContext *ctx, int pop,
             PGAReceiveEvaluation
                 (ctx, q, pop, 1, PGA_COMM_EVALOFSTRING, comm, &stat);
             PGASetEvaluationUpToDateFlag (ctx, q, pop, PGA_TRUE);
+            ctx->rep.nevals++;
 #if DEBUG_EVAL
 	    printf ("%4d: %10.8e Slave %d\n", p, e, 1);
             fflush (stdout);
@@ -512,6 +515,7 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
             );
 	p = work [stat.MPI_SOURCE];
         PGASetEvaluation (ctx, p, pop, tmp1->evalue, tmp1->auxeval);
+        ctx->rep.nevals++;
 #if DEBUG_EVAL
 	printf("%4d: %10.8e Slave %d  Sent %d\n", work[stat.MPI_SOURCE],
 	       e, stat.MPI_SOURCE, k); fflush(stdout);
@@ -534,6 +538,7 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
             );
         p = work [stat.MPI_SOURCE];
         PGASetEvaluation (ctx, p, pop, tmp1->evalue, tmp1->auxeval);
+        ctx->rep.nevals++;
 	sentout--;
 #if DEBUG_EVAL
 	printf("%4d: %10.8e Slave %d\n",

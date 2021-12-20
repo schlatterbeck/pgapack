@@ -311,6 +311,10 @@ PGAContext *PGACreate
     ctx->rep.Best              = NULL;
     ctx->rep.BestIdx           = NULL;
     ctx->rep.starttime         = PGA_UNINITIALIZED_INT;
+    ctx->rep.validcount        = 0;
+    ctx->rep.validonline       = 0;
+    ctx->rep.validoffline      = 0;
+    ctx->rep.nevals            = 0;
 
     /* System
      *

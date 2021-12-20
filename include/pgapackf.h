@@ -351,6 +351,8 @@ c *** pga
       external PGAGetStringLength
       integer PGAGetGAIterValue
       external PGAGetGAIterValue
+      integer PGAGetEvalCount
+      external PGAGetEvalCount
       integer PGAGetMutationOrCrossoverFlag
       external PGAGetMutationOrCrossoverFlag
       integer PGAGetMutationAndCrossoverFlag

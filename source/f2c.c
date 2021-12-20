@@ -195,6 +195,7 @@ privately owned rights.
 #define pgagetoptdirflag_                PGAGETOPTDIRFLAG
 #define pgagetstringlength_              PGAGETSTRINGLENGTH
 #define pgagetgaitervalue_               PGAGETGAITERVALUE
+#define pgagetevalcount_                 PGAGETEVALCOUNT
 #define pgasetmutationorcrossoverflag_   PGASETMUTATIONORCROSSOVERFLAG
 #define pgasetmutationandcrossoverflag_  PGASETMUTATIONANDCROSSOVERFLAG
 #define pgasetmutationonlyflag_          PGASETMUTATIONONLYFLAG
@@ -421,6 +422,7 @@ privately owned rights.
 #define pgagetoptdirflag_                _pgagetoptdirflag_
 #define pgagetstringlength_              _pgagetstringlength_
 #define pgagetgaitervalue_               _pgagetgaitervalue_
+#define pgagetevalcount_                 _pgagetevalcount_
 #define pgasetmutationorcrossoverflag_   _pgasetmutationorcrossoverflag_
 #define pgasetmutationandcrossoverflag_  _pgasetmutationandcrossoverflag_
 #define pgasetmutationonlyflag_          _pgasetmutationonlyflag_
@@ -647,6 +649,7 @@ privately owned rights.
 #define pgagetoptdirflag_                pgagetoptdirflag
 #define pgagetstringlength_              pgagetstringlength
 #define pgagetgaitervalue_               pgagetgaitervalue
+#define pgagetevalcount_                 pgagetevalcount
 #define pgasetmutationorcrossoverflag_   pgasetmutationorcrossoverflag
 #define pgasetmutationandcrossoverflag_  pgasetmutationandcrossoverflag
 #define pgasetmutationonlyflag_          pgasetmutationonlyflag
@@ -894,6 +897,7 @@ int pgagetdatatype_(PGAContext **ftx);
 int pgagetoptdirflag_(PGAContext **ftx);
 int pgagetstringlength_(PGAContext **ftx);
 int pgagetgaitervalue_(PGAContext **ftx);
+int pgagetevalcount_(PGAContext **ftx);
 void pgasetmutationorcrossoverflag_(PGAContext **ftx, int *flag);
 void pgasetmutationandcrossoverflag_(PGAContext **ftx, int *flag);
 void pgasetmutationonlyflag_(PGAContext **ftx, int *flag);
@@ -1729,6 +1733,11 @@ int pgagetstringlength_(PGAContext **ftx)
 int pgagetgaitervalue_(PGAContext **ftx)
 {
      return PGAGetGAIterValue  (*ftx);
+}
+
+int pgagetevalcount_ (PGAContext **ftx)
+{
+     return PGAGetEvalCount  (*ftx);
 }
 
 void pgasetmutationorcrossoverflag_(PGAContext **ftx, int *flag)
