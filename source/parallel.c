@@ -95,9 +95,10 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
         }
     }
 
-    PGAEvaluate(ctx, PGA_OLDPOP, f, comm);
+    PGAEvaluate (ctx, PGA_OLDPOP, f, comm);
     if (rank == 0) {
         int st = PGAGetSelectType (ctx);
+        PGAUpdateBest (ctx, PGA_OLDPOP);
         if (st == PGA_SELECT_SUS || st == PGA_SELECT_PROPORTIONAL) {
             PGAFitness (ctx, PGA_OLDPOP);
         }

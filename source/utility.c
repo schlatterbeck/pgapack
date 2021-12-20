@@ -602,7 +602,7 @@ void PGAUpdateBest (PGAContext *ctx, int popix)
     for (p=1; p<ctx->ga.PopSize; p++) {
 	if (!PGAGetEvaluationUpToDateFlag (ctx, p, popix)) {
 	    PGAError ( ctx
-                     , "PGAUpdateAverage: Evaluate function not up to date:"
+                     , "PGAUpdateBest: Evaluate function not up to date:"
                      , PGA_FATAL, PGA_INT, (void *) &p
                      );
         }
