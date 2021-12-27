@@ -4,13 +4,32 @@ import sys
 import matplotlib.pyplot as plt
 from argparse import ArgumentParser
 
-f  = sys.stdin
+def plot_file (f, args) :
+    X = []
+    Y = []
+    title = args.title
+    for line in f :
+        line = line.strip ()
+        if line.startswith ('Example:') or line.startswith ('Title:') :
+            title = line.split (None, 1) [-1]
+        if line.startswith ('F') :
+            f, idx, number = line.split ()
+            idx = int (idx)
+            num = float (number)
+            if idx == args.y_axis :
+                Y.append (num)
+            elif idx == args.x_axis :
+                X.append (num)
+    if args.title :
+        title = args.title
+    plt.scatter (X, Y)
+    return title
 
 cmd = ArgumentParser ()
 cmd.add_argument \
     ( "filename"
     , help    = "Filename to read optimization data from, default stdin"
-    , nargs   = '?'
+    , nargs   = '*'
     )
 cmd.add_argument \
     ( "-n", "--title"
@@ -37,29 +56,14 @@ cmd.add_argument \
     , help    = "Label for Y-Axis"
     )
 args = cmd.parse_args ()
+f  = sys.stdin
 if args.filename :
-    f = open (args.filename, 'r')
+    for fn in args.filename :
+        with open (fn, 'r') as f :
+            title = plot_file (f, args)
+else :
+    plot_file (f, args)
 
-X = []
-Y = []
-
-title = args.title
-for line in f :
-    line = line.strip ()
-    if line.startswith ('Example:') or line.startswith ('Title:') :
-        title = line.split (None, 1) [-1]
-    if line.startswith ('F') :
-        f, idx, number = line.split ()
-        idx = int (idx)
-        num = float (number)
-        if idx == args.y_axis :
-            Y.append (num)
-        elif idx == args.x_axis :
-            X.append (num)
-if args.title :
-    title = args.title
-
-plt.scatter (X, Y)
 x_label = args.x_label or 'Objective %d' % args.x_axis
 y_label = args.y_label or 'Objective %d' % args.y_axis
 plt.xlabel (x_label)
