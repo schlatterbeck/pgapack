@@ -139,7 +139,7 @@ void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...)
     vfprintf (stderr, fmt, args);
     va_end (args);
     if (level == PGA_FATAL) {
-	fprintf (stderr, "PGAError: Fatal\n");
+	fprintf (stderr, "\nPGAError: Fatal\n");
 	PGADestroy (ctx);
 	exit (-1);
     }

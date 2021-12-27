@@ -168,16 +168,16 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
             for (k=0; k<ctx->ga.PopSize; k++) {
                 if (ind->rank == 0) {
                     if (!found) {
-                        printf ("Non-dominated individuals:\n");
+                        fprintf (fp, "Non-dominated individuals:\n");
                     }
                     PGAPrintString (ctx, fp, k, pop);
                     found++;
                 }
                 ind++;
             }
-            /* Should never happen */
+            /* Can happen if none of the individuals fulfills constraints */
             if (!found) {
-                PGAErrorPrintf (ctx, PGA_FATAL, "No undominated individuals");
+                fprintf (fp, "No individuals fulfilling constraints\n");
             }
         }
     }
