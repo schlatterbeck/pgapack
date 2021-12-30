@@ -176,15 +176,23 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
                 printf ("The Best (%d) evaluation: %e\n", k, ctx->rep.Best [k]);
             }
             printf ("The Nondominated Strings:\n");
-            for (i=0; i<ctx->ga.PopSize; i++) {
+            for (i=0; i<ctx->ga.PopSize; i++, ind++) {
+                int j;
                 if (ind->rank == 0) {
+                    for (j=0; j<numcon; j++) {
+                        if (ind->auxeval [numaux - numcon + j] > 0) {
+                            break;
+                        }
+                    }
+                    if (j < numcon) {
+                        continue;
+                    }
                     for (k=0; k<numaux+1; k++) {
                         double e = (k==0) ? ind->evalue : ind->auxeval [k-1];
                         printf ("F %5d %20.14e\n", k, e);
                     }
                     PGAPrintString (ctx, stdout, i, pop);
                 }
-                ind++;
             }
         }
 	fflush (stdout);

@@ -165,15 +165,23 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
         } else {
             PGAIndividual *ind = PGAGetIndividual (ctx, 0, pop);
             int found = 0;
-            for (k=0; k<ctx->ga.PopSize; k++) {
+            for (k=0; k<ctx->ga.PopSize; k++, ind++) {
+                int j = 0;
                 if (ind->rank == 0) {
+                    for (j=0; j<numcon; j++) {
+                        if (ind->auxeval [numaux - numcon + j] > 0) {
+                            break;
+                        }
+                    }
+                    if (j < numcon) {
+                        continue;
+                    }
                     if (!found) {
                         fprintf (fp, "Non-dominated individuals:\n");
                     }
                     PGAPrintString (ctx, fp, k, pop);
                     found++;
                 }
-                ind++;
             }
             /* Can happen if none of the individuals fulfills constraints */
             if (!found) {
