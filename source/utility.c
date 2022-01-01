@@ -49,6 +49,40 @@ privately owned rights.
 #include <pgapack.h>
 
 /*U****************************************************************************
+  PGAShuffle:
+    We're using Durstenfeld's version of the Fisher-Yates shuffle
+
+  Category: Utility
+
+  Inputs:
+    ctx  - Context pointer
+    list - array of integers to shuffle
+    n    - number of elements in array
+
+  Outputs:
+    Shuffled array
+
+  Example:
+    list [ctx->ga.PopSize];
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        list [i] = i;
+    }
+    PGAShuffle (ctx, list, ctx->ga.PopSize);
+
+****************************************************************************U*/
+void PGAShuffle (PGAContext *ctx, int *list, int n)
+{
+    int i, j, tmp = 0;
+
+    for (i=0; i<n-1; i++) {
+        j = PGARandomInterval (ctx, i, n - 1);
+        tmp = list [j];
+        list [j] = list [i];
+        list [i] = tmp;
+    }
+}
+
+/*U****************************************************************************
   PGAMean - calculates the mean value of an array of elements
 
   Category: Utility
@@ -367,8 +401,11 @@ int PGAGetWorstIndex(PGAContext *ctx, int pop)
 /*U***************************************************************************
   PGAGetBestIndex - returns the index of the string with the best evaluation
   function value in population pop
-  Note that in the presence of multiple evaluations, calling this
-  function does not make much sense.
+  Note that in the presence of multiple evaluations, this will return
+  - If all strings violate constraints the one with the least constraint
+    violation
+  - In case there exist strings without constraint violations one
+    *randomly* chosen from rank 0.
 
   Category: Utility
 
@@ -386,25 +423,41 @@ int PGAGetWorstIndex(PGAContext *ctx, int pop)
      best = PGAGetBestIndex(ctx,PGA_OLDPOP);
 
 ***************************************************************************U*/
-int PGAGetBestIndex(PGAContext *ctx, int pop)
+int PGAGetBestIndex (PGAContext *ctx, int popidx)
 {
-    int     p, Best_indx = 0;
+    int p, Best_indx = 0;
+    int bestidxs [ctx->ga.PopSize];
+    int nbest = 0;
+    int is_multi = ctx->ga.NumAuxEval > ctx->ga.NumConstraint;
+    PGAIndividual *pop = PGAGetIndividual (ctx, 0, popidx);
 
     PGADebugEntered ("PGAGetBestIndex");
 
     for (p=0; p<ctx->ga.PopSize; p++) {
-        if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
+        if (!PGAGetEvaluationUpToDateFlag (ctx, p, popidx)) {
 	    PGAError
                 ( ctx, "PGAGetBestIndex: Evaluate function not up to date:"
                 , PGA_FATAL, PGA_INT, (void *) &p
                 );
         }
     }
+    if (is_multi && pop->rank == 0 && !INDGetAuxTotal (pop)) {
+        bestidxs [nbest++] = 0;
+    }
 
     for (p=1; p<ctx->ga.PopSize; p++) {
-        if (PGAEvalCompare (ctx, p, pop, Best_indx, pop) < 0) {
+        if (PGAEvalCompare (ctx, p, popidx, Best_indx, popidx) < 0) {
             Best_indx = p;
         }
+        if (is_multi && (pop + p)->rank == 0 && !INDGetAuxTotal (pop + p)) {
+            bestidxs [nbest++] = p;
+        }
+    }
+    /* Shuffle and return first */
+    if (is_multi && nbest > 1) {
+        PGAShuffle (ctx, bestidxs, nbest);
+        Best_indx = bestidxs [0];
+        assert ((pop + Best_indx)->rank == 0);
     }
 
     PGADebugExited ("PGAGetBestIndex");

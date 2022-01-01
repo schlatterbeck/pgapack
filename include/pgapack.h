@@ -999,6 +999,7 @@ int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2);
 int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 void PGAEvalSort (PGAContext *ctx, int pop, int *idx);
 int PGAEvalSortHelper (const void *i1, const void *i2);
+void PGAShuffle (PGAContext *ctx, int *list, int n);
 
 #ifdef __cplusplus
 }

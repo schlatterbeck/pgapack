@@ -780,19 +780,12 @@ int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
 
 
 /* Helper function to compute permuted list */
-/* We're using Durstenfeld's version of the Fisher-Yates shuffle */
-
 static void _shuffle (PGAContext *ctx, int *list, int n)
 {
-    int i = 0, j = 0, tmp = 0;
-    for (i = 0; i < n; i++)
-	list[i] = i;
-    for (i = 0; i < n-1; i++) {
-	j = PGARandomInterval (ctx, i, n - 1);
-        tmp = list[j];
-        list [j] = list [i];
-        list [i] = tmp;
-    }
+    int i = 0;
+    for (i=0; i<n; i++)
+	list [i] = i;
+    PGAShuffle (ctx, list, n);
 }
 #define NEXT_IDX(ctx, perm, idx, n)                           \
     ((idx) >= (n))                                            \

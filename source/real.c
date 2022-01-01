@@ -530,13 +530,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
         /* Since indices from PGARandomNextSample are
          * returned in order we need to shuffle
          */
-        for (i=0; i<nrand-1; i++) {
-            int tmp;
-            j = PGARandomInterval (ctx, i, nrand-1);
-            tmp = idx [j];
-            idx [j] = idx [i];
-            idx [i] = tmp;
-        }
+        PGAShuffle (ctx, idx, nrand);
         /* Now we have a list of shuffled indexes that do not
          * collide with one-another or with p or best
          * Add best index as last to the list if do_best
