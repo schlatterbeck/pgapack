@@ -1198,7 +1198,10 @@ a parameter of \verb+PGA_FALSE+ or \verb+PGA_TRUE+. Sampling without
 replacement guarantees that for $n$ tournaments, each individual
 participates in the same number of tournaments (as long as $n$
 multiplied by the tournament size is a multiple of the population size)
-\cite{GKD89}.  The default sampling is
+\cite{GKD89}. The was later re-invented by Sokolov and Whitley under
+the name \textit{Unbiased Tournament Selection} \cite{SW05}.
+
+The default sampling is
 \texttt{with} replacement as if \verb+PGASetTournamentWithReplacement+
 had been called with the parameter \verb+PGA_TRUE+.  The probabilistic
 tournament selection is always binary (two participants in the
