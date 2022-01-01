@@ -4,7 +4,7 @@ import sys
 import matplotlib.pyplot as plt
 from argparse import ArgumentParser
 
-def plot_file (f, args) :
+def plot_file (f, args, n) :
     X = []
     Y = []
     title = args.title
@@ -22,7 +22,9 @@ def plot_file (f, args) :
                 X.append (num)
     if args.title :
         title = args.title
-    plt.scatter (X, Y)
+
+    d = dict (facecolors = 'none', linewidths = 0.5, s = 12)
+    plt.scatter (X, Y, edgecolors='C%d' % (n % 10), **d)
     return title
 
 cmd = ArgumentParser ()
@@ -58,11 +60,11 @@ cmd.add_argument \
 args = cmd.parse_args ()
 f  = sys.stdin
 if args.filename :
-    for fn in args.filename :
+    for n, fn in enumerate (args.filename) :
         with open (fn, 'r') as f :
-            title = plot_file (f, args)
+            title = plot_file (f, args, n)
 else :
-    plot_file (f, args)
+    title = plot_file (f, args, 0)
 
 x_label = args.x_label or 'Objective %d' % args.x_axis
 y_label = args.y_label or 'Objective %d' % args.y_axis
