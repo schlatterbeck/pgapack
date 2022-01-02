@@ -460,8 +460,11 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
     if (ctx->ga.MutationType == PGA_MUTATION_DE) {
         int idx [maxidx];
         PGASampleState sstate;
-        int best = PGAGetBestIndex (ctx, PGA_OLDPOP);
+        int best = 0;
         int avoid = 1;
+        if (do_best) {
+            best = PGAGetBestIndex (ctx, PGA_OLDPOP);
+        }
 
         if (ctx->ga.DEDither > 0) {
             if (ctx->ga.DEDitherPerIndividual || last_iter != ctx->ga.iter) {
