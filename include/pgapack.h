@@ -319,7 +319,7 @@ typedef struct {
     int MutateIntegerValue;  /* Multiplier to mutate Integer strings with */
     int MutateBoundedFlag;   /* Confine alleles to given range (bound)    */
     int MutateBounceFlag;    /* Confine alleles to given range (random)   */
-    int TournamentSize;      /* Number of participants in tournament      */
+    double TournamentSize;   /* Number of participants in tournament      */
     int RTRWindowSize;       /* Window for restricted tournament select   */
     int TournamentWithRepl;  /* Tournament with / without replacement     */
     int RandomizeSelect;     /* Additional randomisation during select    */
@@ -930,8 +930,8 @@ int PGASelectTournament (PGAContext *ctx, int pop);
 int PGASelectPTournament (PGAContext *ctx, int pop);
 int PGASelectTruncation (PGAContext *ctx, int pop);
 int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop);
-void PGASetTournamentSize (PGAContext *ctx, int tournament_size);
-int PGAGetTournamentSize (PGAContext *ctx);
+void PGASetTournamentSize (PGAContext *ctx, double tournament_size);
+double PGAGetTournamentSize (PGAContext *ctx);
 void PGASetTournamentWithReplacement (PGAContext *ctx, int value);
 int PGAGetTournamentWithReplacement (PGAContext *ctx);
 void PGASetTruncationProportion (PGAContext *ctx, double proportion);

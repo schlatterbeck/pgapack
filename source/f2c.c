@@ -958,7 +958,7 @@ void pgasetselecttype_(PGAContext **ftx, int *select_type);
 int pgagetselecttype_(PGAContext **ftx);
 void pgasetptournamentprob_(PGAContext **ftx, double *ptournament_prob);
 double pgagetptournamentprob_(PGAContext **ftx);
-void pgasettournamentsize_(PGAContext **ftx, int *tournament_size);
+void pgasettournamentsize_(PGAContext **ftx, double *tournament_size);
 int pgagettournamentsize_(PGAContext **ftx);
 void pgasettournamentwithreplacement_(PGAContext **ftx, int *value);
 int pgagettournamentwithreplacement_(PGAContext **ftx);
@@ -2139,7 +2139,7 @@ double pgagetptournamentprob_(PGAContext **ftx)
      return PGAGetPTournamentProb  (*ftx);
 }
 
-void pgasettournamentsize_(PGAContext **ftx, int *tournament_size)
+void pgasettournamentsize_(PGAContext **ftx, double *tournament_size)
 {
     PGASetTournamentSize(*ftx, *tournament_size);
 }

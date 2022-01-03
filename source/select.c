@@ -420,13 +420,13 @@ double PGAGetPTournamentProb(PGAContext *ctx)
       PGASetTournamentSize(ctx,3);
 
 ****************************************************************************U*/
-void PGASetTournamentSize(PGAContext *ctx, int tournament_size)
+void PGASetTournamentSize (PGAContext *ctx, double tournament_size)
 {
-    PGADebugEntered("PGASetTournamentSize");
+    PGADebugEntered ("PGASetTournamentSize");
 
     ctx->ga.TournamentSize = tournament_size;
 
-    PGADebugExited("PGASetTournamentSize");
+    PGADebugExited ("PGASetTournamentSize");
 }
 
 /*U***************************************************************************
@@ -443,19 +443,19 @@ void PGASetTournamentSize(PGAContext *ctx, int tournament_size)
 
    Example:
       PGAContext *ctx;
-      int sz;
+      double sz;
       :
-      sz = PGAGetTournamentSize(ctx);
+      sz = PGAGetTournamentSize (ctx);
 
 ***************************************************************************U*/
-int PGAGetTournamentSize(PGAContext *ctx)
+double PGAGetTournamentSize (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetTournamentSize");
+    PGADebugEntered ("PGAGetTournamentSize");
     PGAFailIfNotSetUp("PGAGetTournamentSize");
 
-    PGADebugExited("PGAGetTournamentSize");
+    PGADebugExited ("PGAGetTournamentSize");
 
-     return ctx->ga.TournamentSize;
+    return ctx->ga.TournamentSize;
 }
 /*U****************************************************************************
    PGASetTournamentWithReplacement - Specifies if tournament is with or
@@ -740,9 +740,13 @@ int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
 {
     int i;
     int m = PGARandomInterval (ctx, 0, ctx->ga.PopSize-1);
-    for (i=1; i<ctx->ga.TournamentSize; i++) {
+    int t = ctx->ga.TournamentSize;
+    if (ctx->ga.TournamentSize - t) {
+        t += PGARandomFlip (ctx, ctx->ga.TournamentSize - t);
+    }
+    for (i=1; i<t; i++) {
         int mn = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
-        /* use '>=' for backwards-compat with prev. binary tournament */
+        /* use '<=' for backwards-compat with prev. binary tournament */
         if (PGAEvalCompare (ctx, mn, pop, m, pop) <= 0) {
             m = mn;
         }
@@ -799,6 +803,11 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
     int i;
     static int *permutation = NULL;
     static int perm_idx = 0;
+    int t = ctx->ga.TournamentSize;
+
+    if (ctx->ga.TournamentSize - t) {
+        t += PGARandomFlip (ctx, ctx->ga.TournamentSize - t);
+    }
 
     if (permutation == NULL) {
         permutation  = (int *) malloc(sizeof (int) * ctx->ga.PopSize);
@@ -811,7 +820,7 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
     }
 
     m = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
-    for (i=1; i<ctx->ga.TournamentSize; i++) {
+    for (i=1; i<t; i++) {
         int mn = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
         if (PGAEvalCompare (ctx, mn, pop, m, pop) <= 0) {
             m = mn;

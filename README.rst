@@ -16,6 +16,15 @@ companion projects:
 Updates 
 =======
 
+Update Jan 2022:
+
+- Now the tournament size can be a floating-point value implementing
+  fine-grained tournaments (the fractional part is used to add an
+  additional tournament participant probabilistically). See the
+  Selection chapter in the user guide and the citations on the topic.
+  For Fortran this could mean changes to the constant passed to
+  PGASetTournamentSize.
+
 Second Update December 2021:
 
 - Now the multiobjective optimization algorithm NSGA-II (Nondominated

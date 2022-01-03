@@ -411,7 +411,7 @@ c *** select
       external PGAGetSelectType
       double precision PGAGetPTournamentProb
       external PGAGetPTournamentProb
-      integer PGAGetTournamentSize
+      double precision PGAGetTournamentSize
       external PGAGetTournamentSize
       integer PGAGetTournamentWithReplacement
       external PGAGetTournamentWithReplacement

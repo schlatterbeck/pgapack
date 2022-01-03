@@ -1180,7 +1180,16 @@ probabilistic tournament selection, and linear selection, respectively.
 The default is tournament selection. For tournament
 selection, the size of the tournament (number of participants) can be
 set e.g., with \verb+PGASetTournamentSize(ctx, 3)+. The default is binary
-tournament (size = 2). Note that with a tournament size of 1 (or with
+tournament (size = 2). To allow a more fine-grained selection pressure,
+the tournament size is a floating-point value. The integer part of
+that value specifies the minimum tournament size. For each tournament
+for the fractional part, a biased coin is flipped (using \verb+PGARandomFlip+)
+and the tournament size is increased by one if the outcome is positive.
+This mechanism for fine-grained tournaments was first proposed by Harik
+and Goldberg \cite{HG96} and later rediscovered by Filipovi\'{c}
+et.~al.\ \cite{FKTL00}.
+
+Note that with a tournament size of 1 (or with
 the linear selection scheme) there is no
 selection pressure. Having no selection pressure in this step can be
 compensated by using a replacement scheme with selection pressure, i.e.,

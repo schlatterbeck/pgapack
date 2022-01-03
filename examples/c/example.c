@@ -7,18 +7,24 @@ int main( int argc, char **argv )
 {
      PGAContext *ctx; 
      int i, lower[10], upper[10];
+     double tournament_size = 2;
+
+     if (argc > 1 && atof (argv [1])) {
+         tournament_size = atof (argv [1]);
+     }
 
      for (i=0; i<10; i++) {
 	 lower[i] = 1;
 	 upper[i] = 10;
      }
      ctx = PGACreate (&argc, argv, PGA_DATATYPE_INTEGER, 10, PGA_MAXIMIZE);
-     PGASetRandomSeed(ctx, 1);
+     PGASetRandomSeed (ctx, 1);
      PGASetUserFunction (ctx, PGA_USERFUNCTION_MUTATION, (void *)myMutation);
-     PGASetIntegerInitRange(ctx, lower, upper);
-     PGASetUp              (ctx);
-     PGARun                (ctx, evaluate);
-     PGADestroy            (ctx);
+     PGASetIntegerInitRange (ctx, lower, upper);
+     PGASetTournamentSize   (ctx, tournament_size);
+     PGASetUp               (ctx);
+     PGARun                 (ctx, evaluate);
+     PGADestroy             (ctx);
      return(0);
 }
 int myMutation(PGAContext *ctx, int p, int pop, double pm)
