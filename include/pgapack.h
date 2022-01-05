@@ -157,6 +157,7 @@ static inline double CMP (const double a, const double b)
 #define PGA_CROSSOVER_ONEPT     1    /* One point crossover                */
 #define PGA_CROSSOVER_TWOPT     2    /* Two point crossover                */
 #define PGA_CROSSOVER_UNIFORM   3    /* Uniform   crossover                */
+#define PGA_CROSSOVER_SBX       4    /* Simulated binary crossover (SBX)   */
 
 /*****************************************
 *            SELECTION                   *
@@ -309,6 +310,10 @@ typedef struct {
     int PercentSame;         /* % of pop that is homogeneous              */
     int NoDuplicates;        /* Don't allow duplicate strings             */
     int CrossoverType;       /* Type of crossover for genetic algorithm   */
+    int CrossBoundedFlag;    /* Confine alleles to given range (bound)    */
+    int CrossBounceFlag;     /* Confine alleles to given range (bounce)   */
+    double CrossSBXNu;       /* nu value for SBX                          */
+    int CrossSBXOnce;        /* SBX probability once for whole string     */
     int SelectType;          /* Type of selection for genetic algorithm   */
     int SelectIndex;         /* index of Select for next two individuals  */
     int FitnessType;         /* Type of fitness transformation used       */
@@ -572,6 +577,16 @@ double PGAGetUniformCrossoverProb (PGAContext *ctx);
 void PGASetCrossoverType (PGAContext *ctx, int crossover_type);
 void PGASetCrossoverProb( PGAContext *ctx, double crossover_prob);
 void PGASetUniformCrossoverProb( PGAContext *ctx, double uniform_cross_prob);
+void PGASetCrossoverBoundedFlag(PGAContext *ctx, int val);
+int PGAGetCrossoverBoundedFlag(PGAContext *ctx);
+void PGASetCrossoverBounceBackFlag(PGAContext *ctx, int val);
+int PGAGetCrossoverBounceBackFlag(PGAContext *ctx);
+void PGASetCrossoverSBXNu(PGAContext *ctx, double nu);
+double PGAGetCrossoverSBXNu(PGAContext *ctx);
+void PGASetCrossoverSBXOncePerString (PGAContext *ctx, int val);
+int PGAGetCrossoverSBXOncePerString (PGAContext *ctx);
+void PGACrossoverSBX
+    (PGAContext *ctx, double p1, double p2, double u, double *c1, double *c2);
 
 /*****************************************
 *          debug.c
@@ -697,28 +712,30 @@ double PGAHammingDistance( PGAContext *ctx, int popindex);
 
 void PGASetIntegerAllele (PGAContext *ctx, int p, int pop, int i, int value);
 int PGAGetIntegerAllele (PGAContext *ctx, int p, int pop, int i);
-void PGASetIntegerInitPermute ( PGAContext *ctx, int min, int max);
+void PGASetIntegerInitPermute (PGAContext *ctx, int min, int max);
 void PGASetIntegerInitRange (PGAContext *ctx, const int *min, const int *max);
 int PGAGetIntegerInitType (PGAContext *ctx);
 int PGAGetMinIntegerInitValue (PGAContext *ctx, int i);
 int PGAGetMaxIntegerInitValue (PGAContext *ctx, int i);
 void PGAIntegerCreateString (PGAContext *ctx, int p, int pop, int InitFlag);
-int PGAIntegerMutation( PGAContext *ctx, int p, int pop, double mr );
-void PGAIntegerOneptCrossover(PGAContext *ctx, int p1, int p2, int pop1,
-                              int c1, int c2, int pop2);
-void PGAIntegerTwoptCrossover( PGAContext *ctx, int p1, int p2, int pop1,
-                              int c1, int c2, int pop2);
-void PGAIntegerUniformCrossover(PGAContext *ctx, int p1, int p2, int pop1,
-                                int c1, int c2, int pop2);
-void PGAIntegerPrintString ( PGAContext *ctx, FILE *fp, int p, int pop);
+int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr);
+void PGAIntegerOneptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerTwoptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerUniformCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerSBXCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerPrintString (PGAContext *ctx, FILE *fp, int p, int pop);
 void PGAIntegerCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
-int PGAIntegerDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2);
-void PGAIntegerInitString(PGAContext *ctx, int p, int pop);
-MPI_Datatype PGAIntegerBuildDatatype(PGAContext *ctx, int p, int pop);
-double PGAIntegerGeneDistance (PGAContext *ctx, int p1, int pop1, int p2,
-                               int pop2);
-double PGAIntegerEuclidianDistance (PGAContext *ctx, int p1, int pop1, int p2,
-                              int pop2);
+int PGAIntegerDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+void PGAIntegerInitString (PGAContext *ctx, int p, int pop);
+MPI_Datatype PGAIntegerBuildDatatype (PGAContext *ctx, int p, int pop);
+double PGAIntegerGeneDistance
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+double PGAIntegerEuclidianDistance
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 
 /*****************************************
 *          mpi_stub.c
@@ -866,28 +883,31 @@ int PGARandomNextSample(PGASampleState *state);
 
 void PGASetRealAllele (PGAContext *ctx, int p, int pop, int i, double value);
 double PGAGetRealAllele (PGAContext *ctx, int p, int pop, int i);
-void PGASetRealInitPercent ( PGAContext *ctx, double *median, double *percent);
-void PGASetRealInitRange (PGAContext *ctx, const double *min, const double *max);
+void PGASetRealInitPercent (PGAContext *ctx, double *median, double *percent);
+void PGASetRealInitRange
+    (PGAContext *ctx, const double *min, const double *max);
 double PGAGetMinRealInitValue (PGAContext *ctx, int i);
 double PGAGetMaxRealInitValue (PGAContext *ctx, int i);
 int PGAGetRealInitType (PGAContext *ctx);
 void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag);
-int PGARealMutation( PGAContext *ctx, int p, int pop, double mr );
-void PGARealOneptCrossover( PGAContext *ctx, int p1, int p2, int pop1,
-                           int c1, int c2, int pop2);
-void PGARealTwoptCrossover( PGAContext *ctx, int p1, int p2, int pop1,
-                           int c1, int c2, int pop2);
-void PGARealUniformCrossover( PGAContext *ctx, int p1, int p2, int pop1,
-                             int c1, int c2, int pop2);
+int PGARealMutation (PGAContext *ctx, int p, int pop, double mr);
+void PGARealOneptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGARealTwoptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGARealUniformCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGARealSBXCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGARealPrintString (PGAContext *ctx, FILE *fp, int p, int pop);
-void PGARealCopyString ( PGAContext *ctx, int p1, int pop1, int p2, int pop2);
-int PGARealDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2);
-void PGARealInitString ( PGAContext *ctx, int p, int pop);
-MPI_Datatype PGARealBuildDatatype(PGAContext *ctx, int p, int pop);
-double PGARealGeneDistance (PGAContext *ctx, int p1, int pop1, int p2,
-                            int pop2);
-double PGARealEuclidianDistance (PGAContext *ctx, int p1, int pop1, int p2,
-                              int pop2);
+void PGARealCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+int PGARealDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+void PGARealInitString (PGAContext *ctx, int p, int pop);
+MPI_Datatype PGARealBuildDatatype (PGAContext *ctx, int p, int pop);
+double PGARealGeneDistance
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+double PGARealEuclidianDistance
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 
 /*****************************************
 *          report.c

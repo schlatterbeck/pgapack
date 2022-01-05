@@ -225,6 +225,10 @@ PGAContext *PGACreate
     ctx->ga.MaxSimilarity      = PGA_UNINITIALIZED_INT;
     ctx->ga.NumReplace         = PGA_UNINITIALIZED_INT;
     ctx->ga.CrossoverType      = PGA_UNINITIALIZED_INT;
+    ctx->ga.CrossBoundedFlag   = PGA_UNINITIALIZED_INT;
+    ctx->ga.CrossBounceFlag    = PGA_UNINITIALIZED_INT;
+    ctx->ga.CrossSBXNu         = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.CrossSBXOnce       = PGA_UNINITIALIZED_INT;
     ctx->ga.SelectType         = PGA_UNINITIALIZED_INT;
     ctx->ga.TournamentSize     = PGA_UNINITIALIZED_INT;
     ctx->ga.TournamentWithRepl = PGA_UNINITIALIZED_INT;
@@ -523,6 +527,33 @@ void PGASetUp ( PGAContext *ctx )
 
     if (ctx->ga.CrossoverType == PGA_UNINITIALIZED_INT) {
         ctx->ga.CrossoverType = PGA_CROSSOVER_TWOPT;
+    }
+
+    if (  ctx->ga.CrossoverType == PGA_CROSSOVER_SBX
+       && ctx->ga.datatype != PGA_DATATYPE_INTEGER
+       && ctx->ga.datatype != PGA_DATATYPE_REAL
+       )
+    {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetUp: SBX crossover only for Integer and Real datatypes"
+            );
+    }
+
+    if (ctx->ga.CrossBoundedFlag == PGA_UNINITIALIZED_INT) {
+        ctx->ga.CrossBoundedFlag = PGA_FALSE;
+    }
+
+    if (ctx->ga.CrossBounceFlag == PGA_UNINITIALIZED_INT) {
+        ctx->ga.CrossBounceFlag = PGA_FALSE;
+    }
+
+    if (ctx->ga.CrossSBXNu == PGA_UNINITIALIZED_DOUBLE) {
+        ctx->ga.CrossSBXNu = 2;
+    }
+
+    if (ctx->ga.CrossSBXOnce == PGA_UNINITIALIZED_INT) {
+        ctx->ga.CrossSBXOnce = PGA_FALSE;
     }
 
     if (ctx->ga.SelectType == PGA_UNINITIALIZED_INT) {
@@ -833,6 +864,9 @@ void PGASetUp ( PGAContext *ctx )
 	  case PGA_CROSSOVER_UNIFORM:
 	    Crossover  = PGAIntegerUniformCrossover;
             break;
+	  case PGA_CROSSOVER_SBX:
+	    Crossover  = PGAIntegerSBXCrossover;
+            break;
         }
 	PrintString    = PGAIntegerPrintString;
 	CopyString     = PGAIntegerCopyString;
@@ -853,6 +887,9 @@ void PGASetUp ( PGAContext *ctx )
             break;
 	  case PGA_CROSSOVER_UNIFORM:
 	    Crossover  = PGARealUniformCrossover;
+            break;
+	  case PGA_CROSSOVER_SBX:
+	    Crossover  = PGARealSBXCrossover;
             break;
         }
 	PrintString   = PGARealPrintString;

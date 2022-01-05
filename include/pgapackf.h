@@ -97,6 +97,8 @@ c *** CROSSOVER
       parameter ( PGA_CROSSOVER_TWOPT =     2)
       integer PGA_CROSSOVER_UNIFORM
       parameter ( PGA_CROSSOVER_UNIFORM =   3)
+      integer PGA_CROSSOVER_SBX
+      parameter ( PGA_CROSSOVER_SBX =       4)
 
 c *** SELECTION
       integer PGA_SELECT_PROPORTIONAL
@@ -253,6 +255,14 @@ c *** cross
       external PGAGetCrossoverProb
       double precision PGAGetUniformCrossoverProb
       external PGAGetUniformCrossoverProb
+      integer PGAGetCrossoverBoundedFlag
+      external PGAGetCrossoverBoundedFlag
+      integer PGAGetCrossoverBounceBackFlag
+      external PGAGetCrossoverBounceBackFlag
+      integer PGASetCrossoverSBXOncePerString
+      external PGASetCrossoverSBXOncePerString
+      double precision PGAGetCrossoverSBXNu
+      external PGAGetCrossoverSBXNu
 c *** duplcate
       integer PGADuplicate
       external PGADuplicate

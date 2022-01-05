@@ -94,6 +94,14 @@ privately owned rights.
 #define pgasetcrossovertype_             PGASETCROSSOVERTYPE
 #define pgasetcrossoverprob_             PGASETCROSSOVERPROB
 #define pgasetuniformcrossoverprob_      PGASETUNIFORMCROSSOVERPROB
+#define pgasetcrossoverboundedflag_      PGASETCROSSOVERBOUNDEDFLAG
+#define pgagetcrossoverboundedflag_      PGAGETCROSSOVERBOUNDEDFLAG
+#define pgasetcrossoverbouncebackflag_   PGASETCROSSOVERBOUNCEBACKFLAG
+#define pgagetcrossoverbouncebackflag_   PGAGETCROSSOVERBOUNCEBACKFLAG
+#define pgasetcrossoversbxnu_            PGASETCROSSOVERSBXNU
+#define pgagetcrossoversbxnu_            PGAGETCROSSOVERSBXNU
+#define pgasetcrossoversbxonceperstring_ PGASETCROSSOVERSBXONCEPERSTRING
+#define pgagetcrossoversbxonceperstring_ PGAGETCROSSOVERSBXONCEPERSTRING
 /* debug.c */
 #define pgadebugprint_                   PGADEBUGPRINT
 #define pgasetdebuglevel_                PGASETDEBUGLEVEL
@@ -321,6 +329,14 @@ privately owned rights.
 #define pgasetcrossovertype_             _pgasetcrossovertype_
 #define pgasetcrossoverprob_             _pgasetcrossoverprob_
 #define pgasetuniformcrossoverprob_      _pgasetuniformcrossoverprob_
+#define pgasetcrossoverboundedflag_      _pgasetcrossoverboundedflag_
+#define pgagetcrossoverboundedflag_      _pgagetcrossoverboundedflag_
+#define pgasetcrossoverbouncebackflag_   _pgasetcrossoverbouncebackflag_
+#define pgagetcrossoverbouncebackflag_   _pgagetcrossoverbouncebackflag_
+#define pgasetcrossoversbxnu_            _pgasetcrossoversbxnu_
+#define pgagetcrossoversbxnu_            _pgagetcrossoversbxnu_
+#define pgasetcrossoversbxonceperstring_ _pgasetcrossoversbxonceperstring_
+#define pgagetcrossoversbxonceperstring_ _pgagetcrossoversbxonceperstring_
 /* debug.c */
 #define pgadebugprint_                   _pgadebugprint_
 #define pgasetdebuglevel_                _pgasetdebuglevel_
@@ -548,6 +564,14 @@ privately owned rights.
 #define pgasetcrossovertype_             pgasetcrossovertype
 #define pgasetcrossoverprob_             pgasetcrossoverprob
 #define pgasetuniformcrossoverprob_      pgasetuniformcrossoverprob
+#define pgasetcrossoverboundedflag_      pgasetcrossoverboundedflag
+#define pgagetcrossoverboundedflag_      pgagetcrossoverboundedflag
+#define pgasetcrossoverbouncebackflag_   pgasetcrossoverbouncebackflag
+#define pgagetcrossoverbouncebackflag_   pgagetcrossoverbouncebackflag
+#define pgasetcrossoversbxnu_            pgasetcrossoversbxnu
+#define pgagetcrossoversbxnu_            pgagetcrossoversbxnu
+#define pgasetcrossoversbxonceperstring_ pgasetcrossoversbxonceperstring
+#define pgagetcrossoversbxonceperstring_ pgagetcrossoversbxonceperstring
 /* debug.c */
 #define pgadebugprint_                   pgadebugprint
 #define pgasetdebuglevel_                pgasetdebuglevel
@@ -778,8 +802,15 @@ double pgagetcrossoverprob_(PGAContext **ftx);
 double pgagetuniformcrossoverprob_(PGAContext **ftx);
 void pgasetcrossovertype_(PGAContext **ftx, int *crossover_type);
 void pgasetcrossoverprob_(PGAContext **ftx, double *crossover_prob);
-void pgasetuniformcrossoverprob_(PGAContext **ftx,
-     double *uniform_cross_prob);
+void pgasetuniformcrossoverprob_(PGAContext **ftx, double *uniform_cross_prob);
+void pgasetcrossoverboundedflag_ (PGAContext **ftx, int *val);
+int pgagetcrossoverboundedflag_ (PGAContext **ftx);
+void pgasetcrossoverbouncebackflag_ (PGAContext **ftx, int *val);
+int pgagetcrossoverbouncebackflag_ (PGAContext **ftx);
+void pgasetcrossoversbxnu_ (PGAContext **ftx, double *val);
+double pgagetcrossoversbxnu_ (PGAContext **ftx);
+void pgasetcrossoversbxonceperstring_ (PGAContext **ftx, int *val);
+int pgagetcrossoversbxonceperstring_ (PGAContext **ftx);
 /* debug.c */
 void pgadebugprint_(PGAContext **ftx, int *level, char *funcname, char *msg,
      int *datatype, void *data, int len1, int len2);
@@ -1149,6 +1180,46 @@ void pgasetuniformcrossoverprob_(PGAContext **ftx,
      double *uniform_cross_prob)
 {
      PGASetUniformCrossoverProb  (*ftx, *uniform_cross_prob);
+}
+
+void pgasetcrossoverboundedflag_ (PGAContext **ftx, int *val)
+{
+     PGASetCrossoverBoundedFlag (*ftx, *val);
+}
+
+int pgagetcrossoverboundedflag_ (PGAContext **ftx)
+{
+     return PGAGetCrossoverBoundedFlag (*ftx);
+}
+
+void pgasetcrossoverbouncebackflag_ (PGAContext **ftx, int *val)
+{
+     PGASetCrossoverBounceBackFlag (*ftx, *val);
+}
+
+int pgagetcrossoverbouncebackflag_ (PGAContext **ftx)
+{
+     return PGAGetCrossoverBounceBackFlag (*ftx);
+}
+
+void pgasetcrossoversbxnu_ (PGAContext **ftx, double *val)
+{
+     PGASetCrossoverSBXNu (*ftx, *val);
+}
+
+double pgagetcrossoversbxnu_ (PGAContext **ftx)
+{
+     return PGAGetCrossoverSBXNu (*ftx);
+}
+
+void pgasetcrossoversbxonceperstring_ (PGAContext **ftx, int *val)
+{
+     PGASetCrossoverSBXOncePerString (*ftx, *val);
+}
+
+int pgagetcrossoversbxonceperstring_ (PGAContext **ftx)
+{
+     return PGAGetCrossoverSBXOncePerString (*ftx);
 }
 
 #if OPTIMIZE==0

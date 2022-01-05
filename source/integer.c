@@ -47,6 +47,32 @@ privately owned rights.
 
 #include "pgapack.h"
 
+/* Helper for bounds/bounce check */
+static void bouncheck
+    ( PGAContext *ctx, int idx, int boundflag, int bounceflag
+    , PGAInteger *child, PGAInteger minp, PGAInteger maxp
+    )
+{
+    if (boundflag || bounceflag) {
+        if (child [idx] < ctx->init.IntegerMin [idx]) {
+            if (bounceflag) {
+                child [idx] = PGARandomInterval
+                    (ctx, ctx->init.IntegerMin [idx], minp);
+            } else {
+                child [idx] = ctx->init.IntegerMin [idx];
+            }
+        }
+        if (child [idx] > ctx->init.IntegerMax [idx]) {
+            if (bounceflag) {
+                child [idx] = PGARandomInterval
+                    (ctx, maxp, ctx->init.IntegerMax [idx]);
+            } else {
+                child [idx] = ctx->init.IntegerMax [idx];
+            }
+        }
+    }
+}
+
 /*U****************************************************************************
    PGASetIntegerAllele - sets the value of a (integer) allele.
 
@@ -467,24 +493,10 @@ int PGAIntegerMutation( PGAContext *ctx, int p, int pop, double mr )
             }
 
             /* reset to min/max or bounce if outside range */
-            if (ctx->ga.MutateBoundedFlag || ctx->ga.MutateBounceFlag) {
-                if (c [i] < ctx->init.IntegerMin [i]) {
-                    if (ctx->ga.MutateBounceFlag) {
-                        c [i] = PGARandomInterval
-                            (ctx, ctx->init.IntegerMin [i], old_value);
-                    } else {
-                        c [i] = ctx->init.IntegerMin [i];
-                    }
-                }
-                if (c [i] > ctx->init.IntegerMax [i]) {
-                    if (ctx->ga.MutateBounceFlag) {
-                        c [i] = PGARandomInterval
-                            (ctx, old_value, ctx->init.IntegerMax [i]);
-                    } else {
-                        c [i] = ctx->init.IntegerMax [i];
-                    }
-                }
-            }
+	    bouncheck
+                ( ctx, i, ctx->ga.MutateBoundedFlag, ctx->ga.MutateBounceFlag
+                , c, old_value, old_value
+                );
             count++;
         }
     }
@@ -676,6 +688,80 @@ void PGAIntegerUniformCrossover(PGAContext *ctx, int p1, int p2, int pop1,
     }
 
     PGADebugExited("PGAIntegerUniformCrossover");
+}
+
+/*I****************************************************************************
+   PGAIntegerSBXCrossover - performs simulated binary crossover (SBX)
+   on two parent strings producing two children via side-effect
+
+   Inputs:
+      ctx  - context variable
+      p1   - the first parent string
+      p2   - the second parent string
+      pop1 - symbolic constant of the population containing string p1 and p2
+      c1   - the first child string
+      c2   - the second child string
+      pop2 - symbolic constant of the population to contain string c1 and c2
+
+   Outputs:
+      c1 and c2 in population pop2 are modified by side-effect.
+
+   Example:
+      Performs crossover on the two parent strings m and d, producing
+      children s and b.
+
+      PGAContext *ctx;
+      int m, d, s, b;
+      :
+      PGAIntegerSBXCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+****************************************************************************I*/
+void PGAIntegerSBXCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent1 = (PGAInteger *)PGAGetIndividual
+        (ctx, p1, pop1)->chrom;
+    PGAInteger *parent2 = (PGAInteger *)PGAGetIndividual
+        (ctx, p2, pop1)->chrom;
+    PGAInteger *child1  = (PGAInteger *)PGAGetIndividual
+        (ctx, c1, pop2)->chrom;
+    PGAInteger *child2  = (PGAInteger *)PGAGetIndividual
+        (ctx, c2, pop2)->chrom;
+    int i;
+    double u = 0;
+
+    if (ctx->ga.CrossSBXOnce) {
+        u = PGARandom01 (ctx, 0);
+    }
+
+    for (i=0; i<ctx->ga.StringLen; i++) {
+        if (  parent1[i] == parent2[i]
+           || !PGARandomFlip (ctx, ctx->ga.UniformCrossProb)
+           )
+        {
+            child1 [i] = parent1 [i];
+            child2 [i] = parent2 [i];
+        } else {
+            int j;
+            double c1, c2;
+            PGAInteger minp =
+                parent1 [i] < parent2 [i] ? parent1 [i] : parent2 [i];
+            PGAInteger maxp =
+                parent1 [i] > parent2 [i] ? parent1 [i] : parent2 [i];
+            if (!ctx->ga.CrossSBXOnce) {
+                u = PGARandom01 (ctx, 0);
+            }
+            PGACrossoverSBX (ctx, parent1 [i], parent2 [i], u, &c1, &c2);
+            child1 [i] = round (c1);
+            child2 [i] = round (c2);
+            for (j=0; j<2; j++) {
+                bouncheck
+                    ( ctx, i, ctx->ga.CrossBoundedFlag, ctx->ga.CrossBounceFlag
+                    , j ? child2 : child1, minp, maxp
+                    );
+            }
+        }
+    }
 }
 
 /*I****************************************************************************
