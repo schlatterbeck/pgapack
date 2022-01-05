@@ -1121,7 +1121,7 @@ functions.
 For example, the code
 \begin{verbatim}
 stringlen = PGAGetStringLength(ctx);
-for(i=0;i<stringlen;i++) {
+for(i=0; i<stringlen; i++) {
     low[i]  = -10.0;
     high[i] = (double) i;
 }
@@ -1135,15 +1135,15 @@ strings.  The default interval is $[0,1.0]$.
 percent offset.  For example,
 \begin{verbatim}
 stringlen = PGAGetStringLength(ctx);
-for(i=1;i<=stringlen;i++) {
-    median[i]  = (double)  i;
-    percent[i] =          .5;
+for(i=1; i<=stringlen; i++) {
+    median  [i-1] = (double)  i;
+    percent [i-1] =          .5;
 }
 PGASetRealInitPercent(ctx, median, percent);
 \end{verbatim}
 will select a value for allele {\tt i} uniformly randomly from the increasing
-intervals $[\frac{1}{2}i,\frac{3}{2}i]$.  Note that if 
-the median value is zero for some $i$, than an 
+intervals $[\frac{1}{2}i,\frac{3}{2}i]$.  Note that if
+the median value is zero for some $i$, then an
 interval of $[0,0]$ will be defined.
 
 If character-valued strings are used,
