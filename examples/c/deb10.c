@@ -64,7 +64,7 @@ int main( int argc, char **argv )
     /* PGASetCrossoverSBXOncePerString (ctx, PGA_TRUE); */
     PGASetMutationType              (ctx, PGA_MUTATION_POLY);
     PGASetMutationProb              (ctx, 1.0 / 15);
-    PGASetMutationEtaPoly           (ctx, 20);
+    PGASetMutationPolyEta           (ctx, 20);
     PGASetMutationAndCrossoverFlag  (ctx, PGA_TRUE);
     PGASetMutationBounceBackFlag    (ctx, PGA_TRUE);
     PGASetUserFunction              (ctx, PGA_USERFUNCTION_STOPCOND, stop_cond);
