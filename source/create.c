@@ -244,7 +244,7 @@ PGAContext *PGACreate
     ctx->ga.MutateIntegerValue = PGA_UNINITIALIZED_INT;
     ctx->ga.MutateBoundedFlag  = PGA_UNINITIALIZED_INT;
     ctx->ga.MutateBounceFlag   = PGA_UNINITIALIZED_INT;
-    ctx->ga.MutateEtaPoly      = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.MutatePolyEta      = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.MutatePolyValue    = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.DEVariant          = PGA_UNINITIALIZED_INT;
     ctx->ga.DENumDiffs         = PGA_UNINITIALIZED_INT;
@@ -706,8 +706,8 @@ void PGASetUp ( PGAContext *ctx )
         ctx->ga.MutateBounceFlag   = PGA_FALSE;
     }
 
-    if (ctx->ga.MutateEtaPoly  == PGA_UNINITIALIZED_DOUBLE) {
-        ctx->ga.MutateEtaPoly   = 100;
+    if (ctx->ga.MutatePolyEta  == PGA_UNINITIALIZED_DOUBLE) {
+        ctx->ga.MutatePolyEta   = 100;
     }
 
     if (ctx->ga.MutatePolyValue  == PGA_UNINITIALIZED_DOUBLE) {

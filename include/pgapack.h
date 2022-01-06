@@ -325,7 +325,7 @@ typedef struct {
     int MutateIntegerValue;  /* Multiplier to mutate Integer strings with */
     int MutateBoundedFlag;   /* Confine alleles to given range (bound)    */
     int MutateBounceFlag;    /* Confine alleles to given range (random)   */
-    double MutateEtaPoly;    /* Eta for polynomial mutation               */
+    double MutatePolyEta;    /* Eta for polynomial mutation               */
     double MutatePolyValue;  /* Value for polynomial mutation             */
     double TournamentSize;   /* Number of participants in tournament      */
     int RTRWindowSize;       /* Window for restricted tournament select   */
@@ -782,8 +782,8 @@ void PGASetDEDither (PGAContext *ctx, double val);
 double PGAGetDEDither (PGAContext *ctx);
 void PGASetDEDitherPerIndividual (PGAContext *ctx, int val);
 int PGAGetDEDitherPerIndividual (PGAContext *ctx);
-void PGASetMutationEtaPoly (PGAContext *ctx, double eta);
-double PGAGetMutationEtaPoly (PGAContext *ctx);
+void PGASetMutationPolyEta (PGAContext *ctx, double eta);
+double PGAGetMutationPolyEta (PGAContext *ctx);
 void PGASetMutationPolyValue (PGAContext *ctx, double c);
 double PGAGetMutationPolyValue (PGAContext *ctx);
 

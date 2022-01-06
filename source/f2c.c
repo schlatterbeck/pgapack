@@ -182,8 +182,8 @@ privately owned rights.
 #define pgagetdedither_                  PGAGETDEDITHER
 #define pgasetdeditherperindividual_     PGASETDEDITHERPERINDIVIDUAL
 #define pgagetdeditherperindividual_     PGAGETDEDITHERPERINDIVIDUAL
-#define pgasetmutationetapoly_           PGASETMUTATIONETAPOLY
-#define pgagetmutationetapoly_           PGAGETMUTATIONETAPOLY
+#define pgasetmutationpolyeta_           PGASETMUTATIONPOLYETA
+#define pgagetmutationpolyeta_           PGAGETMUTATIONPOLYETA
 #define pgasetmutationpolyvalue_         PGASETMUTATIONPOLYVALUE
 #define pgagetmutationpolyvalue_         PGAGETMUTATIONPOLYVALUE
 /* parallel.c */
@@ -421,8 +421,8 @@ privately owned rights.
 #define pgagetdedither_                  _pgagetdedither_
 #define pgasetdeditherperindividual_     _pgasetdeditherperindividual_
 #define pgagetdeditherperindividual_     _pgagetdeditherperindividual_
-#define pgasetmutationetapoly_           _pgasetmutationetapoly_
-#define pgagetmutationetapoly_           _pgagetmutationetapoly_
+#define pgasetmutationpolyeta_           _pgasetmutationpolyeta_
+#define pgagetmutationpolyeta_           _pgagetmutationpolyeta_
 #define pgasetmutationpolyvalue_         _pgasetmutationpolyvalue_
 #define pgagetmutationpolyvalue_         _pgagetmutationpolyvalue_
 /* parallel.c */
@@ -660,8 +660,8 @@ privately owned rights.
 #define pgagetdedither_                  pgagetdedither
 #define pgasetdeditherperindividual_     pgasetdeditherperindividual
 #define pgagetdeditherperindividual_     pgagetdeditherperindividual
-#define pgasetmutationetapoly_           pgasetmutationetapoly
-#define pgagetmutationetapoly_           pgagetmutationetapoly
+#define pgasetmutationpolyeta_           pgasetmutationpolyeta
+#define pgagetmutationpolyeta_           pgagetmutationpolyeta
 #define pgasetmutationpolyvalue_         pgasetmutationpolyvalue
 #define pgagetmutationpolyvalue_         pgagetmutationpolyvalue
 /* parallel.c */
@@ -915,8 +915,8 @@ void pgasetdedither_ (PGAContext **ftx, double *val);
 double pgagetdedither_ (PGAContext **ftx);
 void pgasetdeditherperindividual_ (PGAContext **ftx, int *val);
 int pgagetdeditherperindividual_ (PGAContext **ftx);
-void pgasetmutationetapoly_ (PGAContext **ftx, double *val);
-double pgagetmutationetapoly_ (PGAContext **ftx);
+void pgasetmutationpolyeta_ (PGAContext **ftx, double *val);
+double pgagetmutationpolyeta_ (PGAContext **ftx);
 void pgasetmutationpolyvalue_ (PGAContext **ftx, double *val);
 double pgagetmutationpolyvalue_ (PGAContext **ftx);
 /* parallel.c */
@@ -1711,14 +1711,14 @@ int pgagetdeditherperindividual_ (PGAContext **ftx)
     return PGAGetDEDitherPerIndividual (*ftx);
 }
 
-void pgasetmutationetapoly_ (PGAContext **ftx, double *val)
+void pgasetmutationpolyeta_ (PGAContext **ftx, double *val)
 {
-    PGASetMutationEtaPoly (*ftx, *val);
+    PGASetMutationPolyEta (*ftx, *val);
 }
 
-double pgagetmutationetapoly_ (PGAContext **ftx)
+double pgagetmutationpolyeta_ (PGAContext **ftx)
 {
-    return PGAGetMutationEtaPoly (*ftx);
+    return PGAGetMutationPolyEta (*ftx);
 }
 
 void pgasetmutationpolyvalue_ (PGAContext **ftx, double *val)

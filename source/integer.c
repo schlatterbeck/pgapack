@@ -488,7 +488,7 @@ int PGAIntegerMutation( PGAContext *ctx, int p, int pop, double mr )
             case PGA_MUTATION_POLY:
               {
 		double u = PGARandom01 (ctx, 0);
-		double eta = PGAGetMutationEtaPoly (ctx) + 1;
+		double eta = PGAGetMutationPolyEta (ctx) + 1;
                 double delta, val;
 		if (u < 0.5) {
 		    delta = pow (2 * u, 1.0 / eta) - 1.0;

@@ -343,8 +343,8 @@ c *** mutation
       external PGAGetDEDither
       integer PGAGetDEDitherPerIndividual
       external PGAGetDEDitherPerIndividual
-      double precision PGAGetMutationEtaPoly
-      external PGAGetMutationEtaPoly
+      double precision PGAGetMutationPolyEta
+      external PGAGetMutationPolyEta
       double precision PGAGetMutationPolyValue
       external PGAGetMutationPolyValue
 c *** parallel

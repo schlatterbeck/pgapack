@@ -544,22 +544,22 @@ double PGAGetMutationProb (PGAContext *ctx)
    Example:
       PGAContext *ctx;
       :
-      PGASetMutationEtaPoly (ctx, 200);
+      PGASetMutationPolyEta (ctx, 200);
 
 ****************************************************************************U*/
-void PGASetMutationEtaPoly (PGAContext *ctx, double eta)
+void PGASetMutationPolyEta (PGAContext *ctx, double eta)
 {
     if (eta < 0.0) {
         PGAError
-            ( ctx, "PGASetMutationEtaPoly: Invalid value of eta:"
+            ( ctx, "PGASetMutationPolyEta: Invalid value of eta:"
             , PGA_FATAL, PGA_DOUBLE, (void *) &eta
             );
     }
-    ctx->ga.MutateEtaPoly = eta;
+    ctx->ga.MutatePolyEta = eta;
 }
 
 /*U***************************************************************************
-   PGAGetMutationEtaPoly - Returns the eta for polynomial mutation
+   PGAGetMutationPolyEta - Returns the eta for polynomial mutation
 
    Category: Operators
 
@@ -573,13 +573,13 @@ void PGASetMutationEtaPoly (PGAContext *ctx, double eta)
       PGAContext *ctx;
       double eta;
       :
-      eta = PGAGetMutationEtaPoly (ctx);
+      eta = PGAGetMutationPolyEta (ctx);
 
 ***************************************************************************U*/
-double PGAGetMutationEtaPoly (PGAContext *ctx)
+double PGAGetMutationPolyEta (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetMutationEtaPoly");
-    return(ctx->ga.MutateEtaPoly);
+    PGAFailIfNotSetUp("PGAGetMutationPolyEta");
+    return(ctx->ga.MutatePolyEta);
 }
 
 /*U****************************************************************************
