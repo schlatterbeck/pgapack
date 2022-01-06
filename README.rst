@@ -24,6 +24,8 @@ Update Jan 2022:
   Selection chapter in the user guide and the citations on the topic.
   For Fortran this could mean changes to the constant passed to
   PGASetTournamentSize.
+- Implement simulated binary crossover (SBX) and polynomial mutation,
+  see user guide.
 
 Second Update December 2021:
 
