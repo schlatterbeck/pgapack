@@ -343,6 +343,10 @@ c *** mutation
       external PGAGetDEDither
       integer PGAGetDEDitherPerIndividual
       external PGAGetDEDitherPerIndividual
+      double precision PGAGetMutationMuPoly
+      external PGAGetMutationMuPoly
+      double precision PGAGetMutationPolyValue
+      external PGAGetMutationPolyValue
 c *** parallel
       integer(8) PGABuildDatatype
       external PGABuildDatatype

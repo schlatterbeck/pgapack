@@ -45,6 +45,7 @@ privately owned rights.
 *              Brian P. Walenz
 *****************************************************************************/
 
+#include <assert.h>
 #include <pgapack.h>
 /* Helper for bounds/bounce check */
 static void bouncheck
@@ -584,25 +585,49 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
             case PGA_MUTATION_CONSTANT:
             case PGA_MUTATION_UNIFORM:
             case PGA_MUTATION_GAUSSIAN:
+            case PGA_MUTATION_POLY:
                 /* randomly choose an allele   */
                 if ( PGARandomFlip(ctx, mr) ) {
                     /* generate on range, or calculate multiplier */
                     switch (ctx->ga.MutationType) {
-                    case PGA_MUTATION_RANGE:
-                        c [i] = PGARandomUniform(ctx, ctx->init.RealMin [i],
-                                                      ctx->init.RealMax [i]);
+                      case PGA_MUTATION_RANGE:
+                        c [i] = PGARandomUniform
+                            (ctx, ctx->init.RealMin [i], ctx->init.RealMax [i]);
                         break;
-                    case PGA_MUTATION_CONSTANT:
+                      case PGA_MUTATION_CONSTANT:
                         val = ctx->ga.MutateRealValue;
                         break;
-                    case PGA_MUTATION_UNIFORM:
+                      case PGA_MUTATION_UNIFORM:
                         val = PGARandomUniform
                             (ctx, 0.0, ctx->ga.MutateRealValue);
                         break;
-                    case PGA_MUTATION_GAUSSIAN:
+                      case PGA_MUTATION_GAUSSIAN:
                         val = PGARandomGaussian
                             (ctx, 0.0, ctx->ga.MutateRealValue);
                         break;
+                      case PGA_MUTATION_POLY:
+                      {
+                        double u = PGARandom01 (ctx, 0);
+                        double nu = PGAGetMutationMuPoly (ctx) + 1;
+                        double delta;
+                        if (u < 0.5) {
+                            delta = pow (2 * u, 1.0 / nu) - 1.0;
+                        } else {
+                            delta = 1.0 - pow (2 * (1 - u), 1.0 / nu);
+                        }
+                        if (ctx->ga.MutatePolyValue >= 0) {
+                            c [i] += delta * ctx->ga.MutatePolyValue;
+                        } else {
+                            if (delta < 0) {
+                                val = c [i] - ctx->init.RealMin [i];
+                            } else {
+                                val = ctx->init.RealMax [i] - c [i];
+                            }
+                            assert (val > 0);
+                            c [i] += delta * val;
+                        }
+                        break;
+                      }
                     }
                     /* apply multiplier calculated in switch above */
                     if ( (ctx->ga.MutationType == PGA_MUTATION_CONSTANT) ||

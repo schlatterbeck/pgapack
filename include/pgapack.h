@@ -191,6 +191,7 @@ static inline double CMP (const double a, const double b)
 #define PGA_MUTATION_GAUSSIAN   4    /* Real: +- Gaussian random no.        */
 #define PGA_MUTATION_PERMUTE    5    /* Integer: Permutation (swap)         */
 #define PGA_MUTATION_DE         6    /* Differential Evolution (only real)  */
+#define PGA_MUTATION_POLY       7    /* Polynomial mutation                 */
 
 /*****************************************
 * Differential Evolution Variant         *
@@ -324,6 +325,8 @@ typedef struct {
     int MutateIntegerValue;  /* Multiplier to mutate Integer strings with */
     int MutateBoundedFlag;   /* Confine alleles to given range (bound)    */
     int MutateBounceFlag;    /* Confine alleles to given range (random)   */
+    double MutateNuPoly;     /* Nu for polynomial mutation                */
+    double MutatePolyValue;  /* Value for polynomial mutation             */
     double TournamentSize;   /* Number of participants in tournament      */
     int RTRWindowSize;       /* Window for restricted tournament select   */
     int TournamentWithRepl;  /* Tournament with / without replacement     */
@@ -779,6 +782,10 @@ void PGASetDEDither (PGAContext *ctx, double val);
 double PGAGetDEDither (PGAContext *ctx);
 void PGASetDEDitherPerIndividual (PGAContext *ctx, int val);
 int PGAGetDEDitherPerIndividual (PGAContext *ctx);
+void PGASetMutationMuPoly (PGAContext *ctx, double nu);
+double PGAGetMutationMuPoly (PGAContext *ctx);
+void PGASetMutationPolyValue (PGAContext *ctx, double c);
+double PGAGetMutationPolyValue (PGAContext *ctx);
 
 /*****************************************
 *          parallel.c

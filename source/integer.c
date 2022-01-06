@@ -45,6 +45,7 @@ privately owned rights.
 *              Brian P. Walenz
 *****************************************************************************/
 
+#include <assert.h>
 #include "pgapack.h"
 
 /* Helper for bounds/bounce check */
@@ -485,6 +486,29 @@ int PGAIntegerMutation( PGAContext *ctx, int p, int pop, double mr )
                 c[i] = PGARandomInterval(ctx, ctx->init.IntegerMin[i],
                                               ctx->init.IntegerMax[i]);
                 break;
+            case PGA_MUTATION_POLY:
+              {
+		double u = PGARandom01 (ctx, 0);
+		double nu = PGAGetMutationMuPoly (ctx) + 1;
+                double delta, val;
+		if (u < 0.5) {
+		    delta = pow (2 * u, 1.0 / nu) - 1.0;
+		} else {
+		    delta = 1.0 - pow (2 * (1 - u), 1.0 / nu);
+		}
+		if (ctx->ga.MutatePolyValue >= 0) {
+		    c [i] += round (delta * ctx->ga.MutatePolyValue);
+		} else {
+		    if (delta < 0) {
+			val = c [i] - ctx->init.IntegerMin [i] + 0.4999;
+		    } else {
+			val = ctx->init.IntegerMax [i] - c [i] + 0.4999;
+		    }
+		    assert (val > 0);
+		    c [i] += round (delta * val);
+		}
+		break;
+              }
             default:
                 PGAError(ctx, "PGAIntegerMutation: Invalid value of "
                          "ga.MutationType:", PGA_FATAL, PGA_INT,
