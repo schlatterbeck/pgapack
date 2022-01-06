@@ -1,0 +1,38 @@
+Iter #     Field      Value
+10         Best       3.573930e+00
+Iter #     Field      Value
+20         Best       2.307690e+00
+Iter #     Field      Value
+30         Best       1.124490e+00
+Iter #     Field      Value
+40         Best       3.884031e-01
+Iter #     Field      Value
+50         Best       2.212765e-01
+Iter #     Field      Value
+60         Best       1.315303e-01
+Iter #     Field      Value
+70         Best       9.979504e-02
+Iter #     Field      Value
+80         Best       6.619849e-02
+Iter #     Field      Value
+90         Best       4.510892e-02
+Iter #     Field      Value
+100        Best       3.830042e-02
+Iter #     Field      Value
+110        Best       2.872786e-02
+Iter #     Field      Value
+120        Best       2.310912e-02
+Iter #     Field      Value
+130        Best       1.727909e-02
+Iter #     Field      Value
+140        Best       1.384635e-02
+Iter #     Field      Value
+150        Best       1.329895e-02
+Iter #     Field      Value
+160        Best       1.043253e-02
+The Best Evaluation: 9.750138e-03.
+The Best String:
+#   0: [-0.0006192279], [-0.0009973276], [-0.001672474], [0.001653429], [0.001350771]
+#   5: [-0.002438423], [-0.00689636], [0.000210557], [-2.488356e-05], [0.0004198696]
+#  10: [-0.0006438182], [0.0008738513], [-0.002660607], [-0.001614397], [-0.003232057]
+

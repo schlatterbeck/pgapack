@@ -34,7 +34,9 @@ else
         -o  "$dir" = nsgaii \
         -o  "$dir" = mgh \
             -a '(' "$cmd" = testprogde -o "$cmd" = testprogdertr ')' \
-        -o  '(' "$dir" = c -a '(' "$cmd" = maxbit -o "$cmd" = example ')' ')' \
+        -o  '(' "$dir" = c -a \
+            '(' "$cmd" = maxbit -o "$cmd" = example -o "$cmd" = deb10 ')' \
+            ')' \
         ]; then
         ${mpicmd} ../examples/$dir/$cmd $@
     else
