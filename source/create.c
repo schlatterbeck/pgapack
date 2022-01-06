@@ -227,7 +227,7 @@ PGAContext *PGACreate
     ctx->ga.CrossoverType      = PGA_UNINITIALIZED_INT;
     ctx->ga.CrossBoundedFlag   = PGA_UNINITIALIZED_INT;
     ctx->ga.CrossBounceFlag    = PGA_UNINITIALIZED_INT;
-    ctx->ga.CrossSBXNu         = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.CrossSBXEta        = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.CrossSBXOnce       = PGA_UNINITIALIZED_INT;
     ctx->ga.SelectType         = PGA_UNINITIALIZED_INT;
     ctx->ga.TournamentSize     = PGA_UNINITIALIZED_INT;
@@ -244,7 +244,7 @@ PGAContext *PGACreate
     ctx->ga.MutateIntegerValue = PGA_UNINITIALIZED_INT;
     ctx->ga.MutateBoundedFlag  = PGA_UNINITIALIZED_INT;
     ctx->ga.MutateBounceFlag   = PGA_UNINITIALIZED_INT;
-    ctx->ga.MutateNuPoly       = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.MutateEtaPoly      = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.MutatePolyValue    = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.DEVariant          = PGA_UNINITIALIZED_INT;
     ctx->ga.DENumDiffs         = PGA_UNINITIALIZED_INT;
@@ -550,8 +550,8 @@ void PGASetUp ( PGAContext *ctx )
         ctx->ga.CrossBounceFlag = PGA_FALSE;
     }
 
-    if (ctx->ga.CrossSBXNu == PGA_UNINITIALIZED_DOUBLE) {
-        ctx->ga.CrossSBXNu = 2;
+    if (ctx->ga.CrossSBXEta == PGA_UNINITIALIZED_DOUBLE) {
+        ctx->ga.CrossSBXEta = 2;
     }
 
     if (ctx->ga.CrossSBXOnce == PGA_UNINITIALIZED_INT) {
@@ -706,8 +706,8 @@ void PGASetUp ( PGAContext *ctx )
         ctx->ga.MutateBounceFlag   = PGA_FALSE;
     }
 
-    if (ctx->ga.MutateNuPoly  == PGA_UNINITIALIZED_DOUBLE) {
-        ctx->ga.MutateNuPoly   = 100;
+    if (ctx->ga.MutateEtaPoly  == PGA_UNINITIALIZED_DOUBLE) {
+        ctx->ga.MutateEtaPoly   = 100;
     }
 
     if (ctx->ga.MutatePolyValue  == PGA_UNINITIALIZED_DOUBLE) {

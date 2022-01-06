@@ -607,12 +607,12 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                       case PGA_MUTATION_POLY:
                       {
                         double u = PGARandom01 (ctx, 0);
-                        double nu = PGAGetMutationMuPoly (ctx) + 1;
+                        double eta = PGAGetMutationEtaPoly (ctx) + 1;
                         double delta;
                         if (u < 0.5) {
-                            delta = pow (2 * u, 1.0 / nu) - 1.0;
+                            delta = pow (2 * u, 1.0 / eta) - 1.0;
                         } else {
-                            delta = 1.0 - pow (2 * (1 - u), 1.0 / nu);
+                            delta = 1.0 - pow (2 * (1 - u), 1.0 / eta);
                         }
                         if (ctx->ga.MutatePolyValue >= 0) {
                             c [i] += delta * ctx->ga.MutatePolyValue;

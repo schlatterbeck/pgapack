@@ -98,8 +98,8 @@ privately owned rights.
 #define pgagetcrossoverboundedflag_      PGAGETCROSSOVERBOUNDEDFLAG
 #define pgasetcrossoverbouncebackflag_   PGASETCROSSOVERBOUNCEBACKFLAG
 #define pgagetcrossoverbouncebackflag_   PGAGETCROSSOVERBOUNCEBACKFLAG
-#define pgasetcrossoversbxnu_            PGASETCROSSOVERSBXNU
-#define pgagetcrossoversbxnu_            PGAGETCROSSOVERSBXNU
+#define pgasetcrossoversbxeta_           PGASETCROSSOVERSBXETA
+#define pgagetcrossoversbxeta_           PGAGETCROSSOVERSBXETA
 #define pgasetcrossoversbxonceperstring_ PGASETCROSSOVERSBXONCEPERSTRING
 #define pgagetcrossoversbxonceperstring_ PGAGETCROSSOVERSBXONCEPERSTRING
 /* debug.c */
@@ -182,8 +182,8 @@ privately owned rights.
 #define pgagetdedither_                  PGAGETDEDITHER
 #define pgasetdeditherperindividual_     PGASETDEDITHERPERINDIVIDUAL
 #define pgagetdeditherperindividual_     PGAGETDEDITHERPERINDIVIDUAL
-#define pgasetmutationmupoly_            PGASETMUTATIONMUPOLY
-#define pgagetmutationmupoly_            PGAGETMUTATIONMUPOLY
+#define pgasetmutationetapoly_           PGASETMUTATIONETAPOLY
+#define pgagetmutationetapoly_           PGAGETMUTATIONETAPOLY
 #define pgasetmutationpolyvalue_         PGASETMUTATIONPOLYVALUE
 #define pgagetmutationpolyvalue_         PGAGETMUTATIONPOLYVALUE
 /* parallel.c */
@@ -337,8 +337,8 @@ privately owned rights.
 #define pgagetcrossoverboundedflag_      _pgagetcrossoverboundedflag_
 #define pgasetcrossoverbouncebackflag_   _pgasetcrossoverbouncebackflag_
 #define pgagetcrossoverbouncebackflag_   _pgagetcrossoverbouncebackflag_
-#define pgasetcrossoversbxnu_            _pgasetcrossoversbxnu_
-#define pgagetcrossoversbxnu_            _pgagetcrossoversbxnu_
+#define pgasetcrossoversbxeta_           _pgasetcrossoversbxeta_
+#define pgagetcrossoversbxeta_           _pgagetcrossoversbxeta_
 #define pgasetcrossoversbxonceperstring_ _pgasetcrossoversbxonceperstring_
 #define pgagetcrossoversbxonceperstring_ _pgagetcrossoversbxonceperstring_
 /* debug.c */
@@ -421,8 +421,8 @@ privately owned rights.
 #define pgagetdedither_                  _pgagetdedither_
 #define pgasetdeditherperindividual_     _pgasetdeditherperindividual_
 #define pgagetdeditherperindividual_     _pgagetdeditherperindividual_
-#define pgasetmutationmupoly_            _pgasetmutationmupoly_
-#define pgagetmutationmupoly_            _pgagetmutationmupoly_
+#define pgasetmutationetapoly_           _pgasetmutationetapoly_
+#define pgagetmutationetapoly_           _pgagetmutationetapoly_
 #define pgasetmutationpolyvalue_         _pgasetmutationpolyvalue_
 #define pgagetmutationpolyvalue_         _pgagetmutationpolyvalue_
 /* parallel.c */
@@ -576,8 +576,8 @@ privately owned rights.
 #define pgagetcrossoverboundedflag_      pgagetcrossoverboundedflag
 #define pgasetcrossoverbouncebackflag_   pgasetcrossoverbouncebackflag
 #define pgagetcrossoverbouncebackflag_   pgagetcrossoverbouncebackflag
-#define pgasetcrossoversbxnu_            pgasetcrossoversbxnu
-#define pgagetcrossoversbxnu_            pgagetcrossoversbxnu
+#define pgasetcrossoversbxeta_           pgasetcrossoversbxeta
+#define pgagetcrossoversbxeta_           pgagetcrossoversbxeta
 #define pgasetcrossoversbxonceperstring_ pgasetcrossoversbxonceperstring
 #define pgagetcrossoversbxonceperstring_ pgagetcrossoversbxonceperstring
 /* debug.c */
@@ -660,8 +660,8 @@ privately owned rights.
 #define pgagetdedither_                  pgagetdedither
 #define pgasetdeditherperindividual_     pgasetdeditherperindividual
 #define pgagetdeditherperindividual_     pgagetdeditherperindividual
-#define pgasetmutationmupoly_            pgasetmutationmupoly
-#define pgagetmutationmupoly_            pgagetmutationmupoly
+#define pgasetmutationetapoly_           pgasetmutationetapoly
+#define pgagetmutationetapoly_           pgagetmutationetapoly
 #define pgasetmutationpolyvalue_         pgasetmutationpolyvalue
 #define pgagetmutationpolyvalue_         pgagetmutationpolyvalue
 /* parallel.c */
@@ -819,8 +819,8 @@ void pgasetcrossoverboundedflag_ (PGAContext **ftx, int *val);
 int pgagetcrossoverboundedflag_ (PGAContext **ftx);
 void pgasetcrossoverbouncebackflag_ (PGAContext **ftx, int *val);
 int pgagetcrossoverbouncebackflag_ (PGAContext **ftx);
-void pgasetcrossoversbxnu_ (PGAContext **ftx, double *val);
-double pgagetcrossoversbxnu_ (PGAContext **ftx);
+void pgasetcrossoversbxeta_ (PGAContext **ftx, double *val);
+double pgagetcrossoversbxeta_ (PGAContext **ftx);
 void pgasetcrossoversbxonceperstring_ (PGAContext **ftx, int *val);
 int pgagetcrossoversbxonceperstring_ (PGAContext **ftx);
 /* debug.c */
@@ -915,8 +915,8 @@ void pgasetdedither_ (PGAContext **ftx, double *val);
 double pgagetdedither_ (PGAContext **ftx);
 void pgasetdeditherperindividual_ (PGAContext **ftx, int *val);
 int pgagetdeditherperindividual_ (PGAContext **ftx);
-void pgasetmutationmupoly_ (PGAContext **ftx, double *val);
-double pgagetmutationmupoly_ (PGAContext **ftx);
+void pgasetmutationetapoly_ (PGAContext **ftx, double *val);
+double pgagetmutationetapoly_ (PGAContext **ftx);
 void pgasetmutationpolyvalue_ (PGAContext **ftx, double *val);
 double pgagetmutationpolyvalue_ (PGAContext **ftx);
 /* parallel.c */
@@ -1218,14 +1218,14 @@ int pgagetcrossoverbouncebackflag_ (PGAContext **ftx)
      return PGAGetCrossoverBounceBackFlag (*ftx);
 }
 
-void pgasetcrossoversbxnu_ (PGAContext **ftx, double *val)
+void pgasetcrossoversbxeta_ (PGAContext **ftx, double *val)
 {
-     PGASetCrossoverSBXNu (*ftx, *val);
+     PGASetCrossoverSBXEta (*ftx, *val);
 }
 
-double pgagetcrossoversbxnu_ (PGAContext **ftx)
+double pgagetcrossoversbxeta_ (PGAContext **ftx)
 {
-     return PGAGetCrossoverSBXNu (*ftx);
+     return PGAGetCrossoverSBXEta (*ftx);
 }
 
 void pgasetcrossoversbxonceperstring_ (PGAContext **ftx, int *val)
@@ -1711,14 +1711,14 @@ int pgagetdeditherperindividual_ (PGAContext **ftx)
     return PGAGetDEDitherPerIndividual (*ftx);
 }
 
-void pgasetmutationmupoly_ (PGAContext **ftx, double *val)
+void pgasetmutationetapoly_ (PGAContext **ftx, double *val)
 {
-    PGASetMutationMuPoly (*ftx, *val);
+    PGASetMutationEtaPoly (*ftx, *val);
 }
 
-double pgagetmutationmupoly_ (PGAContext **ftx)
+double pgagetmutationetapoly_ (PGAContext **ftx)
 {
-    return PGAGetMutationMuPoly (*ftx);
+    return PGAGetMutationEtaPoly (*ftx);
 }
 
 void pgasetmutationpolyvalue_ (PGAContext **ftx, double *val)

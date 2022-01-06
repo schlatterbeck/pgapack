@@ -261,8 +261,8 @@ c *** cross
       external PGAGetCrossoverBounceBackFlag
       integer PGASetCrossoverSBXOncePerString
       external PGASetCrossoverSBXOncePerString
-      double precision PGAGetCrossoverSBXNu
-      external PGAGetCrossoverSBXNu
+      double precision PGAGetCrossoverSBXEta
+      external PGAGetCrossoverSBXEta
 c *** duplcate
       integer PGADuplicate
       external PGADuplicate
@@ -343,8 +343,8 @@ c *** mutation
       external PGAGetDEDither
       integer PGAGetDEDitherPerIndividual
       external PGAGetDEDitherPerIndividual
-      double precision PGAGetMutationMuPoly
-      external PGAGetMutationMuPoly
+      double precision PGAGetMutationEtaPoly
+      external PGAGetMutationEtaPoly
       double precision PGAGetMutationPolyValue
       external PGAGetMutationPolyValue
 c *** parallel

@@ -313,7 +313,7 @@ typedef struct {
     int CrossoverType;       /* Type of crossover for genetic algorithm   */
     int CrossBoundedFlag;    /* Confine alleles to given range (bound)    */
     int CrossBounceFlag;     /* Confine alleles to given range (bounce)   */
-    double CrossSBXNu;       /* nu value for SBX                          */
+    double CrossSBXEta;      /* eta value for SBX                         */
     int CrossSBXOnce;        /* SBX probability once for whole string     */
     int SelectType;          /* Type of selection for genetic algorithm   */
     int SelectIndex;         /* index of Select for next two individuals  */
@@ -325,7 +325,7 @@ typedef struct {
     int MutateIntegerValue;  /* Multiplier to mutate Integer strings with */
     int MutateBoundedFlag;   /* Confine alleles to given range (bound)    */
     int MutateBounceFlag;    /* Confine alleles to given range (random)   */
-    double MutateNuPoly;     /* Nu for polynomial mutation                */
+    double MutateEtaPoly;    /* Eta for polynomial mutation               */
     double MutatePolyValue;  /* Value for polynomial mutation             */
     double TournamentSize;   /* Number of participants in tournament      */
     int RTRWindowSize;       /* Window for restricted tournament select   */
@@ -584,8 +584,8 @@ void PGASetCrossoverBoundedFlag(PGAContext *ctx, int val);
 int PGAGetCrossoverBoundedFlag(PGAContext *ctx);
 void PGASetCrossoverBounceBackFlag(PGAContext *ctx, int val);
 int PGAGetCrossoverBounceBackFlag(PGAContext *ctx);
-void PGASetCrossoverSBXNu(PGAContext *ctx, double nu);
-double PGAGetCrossoverSBXNu(PGAContext *ctx);
+void PGASetCrossoverSBXEta(PGAContext *ctx, double eta);
+double PGAGetCrossoverSBXEta(PGAContext *ctx);
 void PGASetCrossoverSBXOncePerString (PGAContext *ctx, int val);
 int PGAGetCrossoverSBXOncePerString (PGAContext *ctx);
 void PGACrossoverSBX
@@ -782,8 +782,8 @@ void PGASetDEDither (PGAContext *ctx, double val);
 double PGAGetDEDither (PGAContext *ctx);
 void PGASetDEDitherPerIndividual (PGAContext *ctx, int val);
 int PGAGetDEDitherPerIndividual (PGAContext *ctx);
-void PGASetMutationMuPoly (PGAContext *ctx, double nu);
-double PGAGetMutationMuPoly (PGAContext *ctx);
+void PGASetMutationEtaPoly (PGAContext *ctx, double eta);
+double PGAGetMutationEtaPoly (PGAContext *ctx);
 void PGASetMutationPolyValue (PGAContext *ctx, double c);
 double PGAGetMutationPolyValue (PGAContext *ctx);
 

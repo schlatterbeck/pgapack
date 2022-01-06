@@ -452,14 +452,14 @@ int PGAGetCrossoverBounceBackFlag (PGAContext *ctx)
 }
 
 /*U****************************************************************************
-   PGASetCrossoverSBXNu - Set the nu parameter for simulated binary
+   PGASetCrossoverSBXEta - Set the eta parameter for simulated binary
    crossover (SBX)
 
    Category: Operators
 
    Inputs:
       ctx  - context variable
-      nu   - nu >= 0
+      eta  - eta >= 0
 
    Outputs:
       None
@@ -467,20 +467,20 @@ int PGAGetCrossoverBounceBackFlag (PGAContext *ctx)
    Example:
       PGAContext *ctx;
       :
-      PGASetCrossoverSBXNu (ctx, 10);
+      PGASetCrossoverSBXEta (ctx, 10);
 
 ****************************************************************************U*/
-void PGASetCrossoverSBXNu (PGAContext *ctx, double nu)
+void PGASetCrossoverSBXEta (PGAContext *ctx, double eta)
 {
-    if (nu < 0) {
-        PGAError(ctx, "PGASetCrossoverSBXNu: Invalid value:",
-                 PGA_FATAL, PGA_DOUBLE, (void *) &nu);
+    if (eta < 0) {
+        PGAError(ctx, "PGASetCrossoverSBXEta: Invalid value:",
+                 PGA_FATAL, PGA_DOUBLE, (void *) &eta);
     }
-    ctx->ga.CrossSBXNu = nu;
+    ctx->ga.CrossSBXEta = eta;
 }
 
 /*U****************************************************************************
-   PGAGetCrossoverSBXNu - returns SBX nu value
+   PGAGetCrossoverSBXEta - returns SBX eta value
 
    Category: Operators
 
@@ -488,19 +488,19 @@ void PGASetCrossoverSBXNu (PGAContext *ctx, double nu)
       ctx - context variable
 
    Outputs:
-      The SBX nu value
+      The SBX eta value
 
    Example:
       PGAContext *ctx;
-      double nu;
+      double eta;
       :
-      nu = PGAGetCrossoverSBXNu (ctx);
+      eta = PGAGetCrossoverSBXEta (ctx);
 
 ****************************************************************************U*/
-double PGAGetCrossoverSBXNu (PGAContext *ctx)
+double PGAGetCrossoverSBXEta (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetCrossoverSBXNu");
-    return (ctx->ga.CrossSBXNu);
+    PGAFailIfNotSetUp("PGAGetCrossoverSBXEta");
+    return (ctx->ga.CrossSBXEta);
 }
 
 /*U****************************************************************************
@@ -594,11 +594,11 @@ void PGACrossoverSBX
     (PGAContext *ctx, double p1, double p2, double u, double *c1, double *c2)
 {
     double beta;
-    double nu = PGAGetCrossoverSBXNu (ctx) + 1.0;
+    double eta = PGAGetCrossoverSBXEta (ctx) + 1.0;
     if (u < 0.5) {
-        beta = pow (2.0 * u, 1.0 / nu);
+        beta = pow (2.0 * u, 1.0 / eta);
     } else {
-        beta = pow (2.0 - 2.0 * u, -1.0 / nu);
+        beta = pow (2.0 - 2.0 * u, -1.0 / eta);
     }
     *c1 = 0.5 * ((p1 + p2) - beta * fabs (p1 - p2));
     *c2 = 0.5 * ((p1 + p2) + beta * fabs (p1 - p2));

@@ -530,13 +530,13 @@ double PGAGetMutationProb (PGAContext *ctx)
 }
 
 /*U****************************************************************************
-   PGASetMutationMuPoly - Specifies the mu for polynomial mutation
+   PGASetMutationEtamu for polynomial mutation
 
    Category: Operators
 
    Inputs:
       ctx - context variable
-      nu  - the polynomial mutation nu
+      eta - the polynomial mutation eta
 
    Outputs:
       None
@@ -544,22 +544,22 @@ double PGAGetMutationProb (PGAContext *ctx)
    Example:
       PGAContext *ctx;
       :
-      PGASetMutationMuPoly (ctx, 200);
+      PGASetMutationEtaPoly (ctx, 200);
 
 ****************************************************************************U*/
-void PGASetMutationMuPoly (PGAContext *ctx, double nu)
+void PGASetMutationEtaPoly (PGAContext *ctx, double eta)
 {
-    if (nu < 0.0) {
+    if (eta < 0.0) {
         PGAError
-            ( ctx, "PGASetMutationMuPoly: Invalid value of nu:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &nu
+            ( ctx, "PGASetMutationEtaPoly: Invalid value of eta:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &eta
             );
     }
-    ctx->ga.MutateNuPoly = nu;
+    ctx->ga.MutateEtaPoly = eta;
 }
 
 /*U***************************************************************************
-   PGAGetMutationMuPoly - Returns the nu for polynomial mutation
+   PGAGetMutationEtaPoly - Returns the eta for polynomial mutation
 
    Category: Operators
 
@@ -567,19 +567,19 @@ void PGASetMutationMuPoly (PGAContext *ctx, double nu)
       ctx - context variable
 
    Outputs:
-      The nu for polynomial mutation
+      The eta for polynomial mutation
 
    Example:
       PGAContext *ctx;
-      double nu;
+      double eta;
       :
-      nu = PGAGetMutationMuPoly (ctx);
+      eta = PGAGetMutationEtaPoly (ctx);
 
 ***************************************************************************U*/
-double PGAGetMutationMuPoly (PGAContext *ctx)
+double PGAGetMutationEtaPoly (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetMutationMuPoly");
-    return(ctx->ga.MutateNuPoly);
+    PGAFailIfNotSetUp("PGAGetMutationEtaPoly");
+    return(ctx->ga.MutateEtaPoly);
 }
 
 /*U****************************************************************************
