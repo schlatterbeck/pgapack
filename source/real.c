@@ -45,7 +45,6 @@ privately owned rights.
 *              Brian P. Walenz
 *****************************************************************************/
 
-#include <assert.h>
 #include <pgapack.h>
 /* Helper for bounds/bounce check */
 static void bouncheck
@@ -619,11 +618,10 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                             c [i] += delta * ctx->ga.MutatePolyValue;
                         } else {
                             if (delta < 0) {
-                                val = c [i] - ctx->init.RealMin [i];
+                                val = fabs (c [i] - ctx->init.RealMin [i]);
                             } else {
-                                val = ctx->init.RealMax [i] - c [i];
+                                val = fabs (ctx->init.RealMax [i] - c [i]);
                             }
-                            assert (val > 0);
                             c [i] += delta * val;
                         }
                         break;

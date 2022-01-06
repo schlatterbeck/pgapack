@@ -45,7 +45,6 @@ privately owned rights.
 *              Brian P. Walenz
 *****************************************************************************/
 
-#include <assert.h>
 #include "pgapack.h"
 
 /* Helper for bounds/bounce check */
@@ -500,11 +499,10 @@ int PGAIntegerMutation( PGAContext *ctx, int p, int pop, double mr )
 		    c [i] += round (delta * ctx->ga.MutatePolyValue);
 		} else {
 		    if (delta < 0) {
-			val = c [i] - ctx->init.IntegerMin [i] + 0.4999;
+			val = fabs (c [i] - ctx->init.IntegerMin [i] + 0.4999);
 		    } else {
-			val = ctx->init.IntegerMax [i] - c [i] + 0.4999;
+			val = fabs (ctx->init.IntegerMax [i] - c [i] + 0.4999);
 		    }
-		    assert (val > 0);
 		    c [i] += round (delta * val);
 		}
 		break;
