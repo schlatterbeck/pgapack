@@ -139,6 +139,7 @@ void PGASetMutationType( PGAContext *ctx, int mutation_type)
      case PGA_MUTATION_GAUSSIAN:
      case PGA_MUTATION_PERMUTE:
      case PGA_MUTATION_DE:
+     case PGA_MUTATION_POLY:
           ctx->ga.MutationType = mutation_type;
           break;
      default:
@@ -526,6 +527,112 @@ double PGAGetMutationProb (PGAContext *ctx)
     PGAFailIfNotSetUp("PGAGetMutationProb");
     PGADebugExited("PGAGetMutationProb");
     return(ctx->ga.MutationProb);
+}
+
+/*U****************************************************************************
+   PGASetMutationEtamu for polynomial mutation
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      eta - the polynomial mutation eta
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetMutationEtaPoly (ctx, 200);
+
+****************************************************************************U*/
+void PGASetMutationEtaPoly (PGAContext *ctx, double eta)
+{
+    if (eta < 0.0) {
+        PGAError
+            ( ctx, "PGASetMutationEtaPoly: Invalid value of eta:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &eta
+            );
+    }
+    ctx->ga.MutateEtaPoly = eta;
+}
+
+/*U***************************************************************************
+   PGAGetMutationEtaPoly - Returns the eta for polynomial mutation
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The eta for polynomial mutation
+
+   Example:
+      PGAContext *ctx;
+      double eta;
+      :
+      eta = PGAGetMutationEtaPoly (ctx);
+
+***************************************************************************U*/
+double PGAGetMutationEtaPoly (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetMutationEtaPoly");
+    return(ctx->ga.MutateEtaPoly);
+}
+
+/*U****************************************************************************
+   PGASetMutationPolyValue - Specifies the constant for polynomial mutation
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      v   - the polynomial mutation constant
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetMutationPolyValue (ctx, 2.5);
+
+****************************************************************************U*/
+void PGASetMutationPolyValue (PGAContext *ctx, double v)
+{
+    if (v < 0.0) {
+        PGAError
+            ( ctx, "PGASetMutationPolyConstant: Invalid value:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &v
+            );
+    }
+    ctx->ga.MutatePolyValue = v;
+}
+
+/*U***************************************************************************
+   PGAGetMutationPolyValue - Returns the value for polynomial mutation
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The value for polynomial mutation
+
+   Example:
+      PGAContext *ctx;
+      double v;
+      :
+      v = PGAGetMutationPolyValue (ctx);
+
+***************************************************************************U*/
+double PGAGetMutationPolyValue (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetMutationPolyValue");
+    return(ctx->ga.MutatePolyValue);
 }
 
 

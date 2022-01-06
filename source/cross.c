@@ -136,6 +136,9 @@ void PGACrossover ( PGAContext *ctx, int p1, int p2, int pop1,
       case PGA_CROSSOVER_UNIFORM:
           printf("Crossover Type = PGA_CROSSOVER_UNIFORM\n");
           break;
+      case PGA_CROSSOVER_SBX:
+          printf("Crossover Type = PGA_CROSSOVER_SBX\n");
+          break;
       }
 
 ***************************************************************************U*/
@@ -210,10 +213,8 @@ double PGAGetUniformCrossoverProb (PGAContext *ctx)
 }
 
 /*U****************************************************************************
-   PGASetCrossoverType - specify the type of crossover to use. Valid choices
-   are PGA_CROSSOVER_ONEPT, PGA_CROSSOVER_TWOPT, or PGA_CROSSOVER_UNIFORM for
-   one-point, two-point, and uniform crossover, respectively.  The default is
-   PGA_CROSSOVER_TWOPT.
+   PGASetCrossoverType - specify the type of crossover to use.
+   The default is PGA_CROSSOVER_TWOPT.
 
    Category: Operators
 
@@ -241,6 +242,7 @@ void PGASetCrossoverType (PGAContext *ctx, int crossover_type)
         case PGA_CROSSOVER_ONEPT:
         case PGA_CROSSOVER_TWOPT:
         case PGA_CROSSOVER_UNIFORM:
+        case PGA_CROSSOVER_SBX:
             ctx->ga.CrossoverType = crossover_type;
             break;
         default:
@@ -323,4 +325,281 @@ void PGASetUniformCrossoverProb( PGAContext *ctx, double uniform_cross_prob)
         ctx->ga.UniformCrossProb = uniform_cross_prob;
 
     PGADebugExited("PGASetUniformCrossoverProb");
+}
+
+/*U****************************************************************************
+   PGASetCrossoverBoundedFlag - If this flag is set to PGA_TRUE, then for
+   Integer and Real strings with simulated binary crossover (SBX)
+   crossed over values that exceed the bounds are confined to the
+   bounds by setting them to the boundary.
+
+   Category: Operators
+
+   Inputs:
+      ctx  - context variable
+      flag - either PGA_TRUE or PGA_FALSE
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetCrossoverBoundedFlag (ctx, PGA_TRUE);
+
+****************************************************************************U*/
+void PGASetCrossoverBoundedFlag (PGAContext *ctx, int val)
+{
+    switch (val)
+    {
+    case PGA_TRUE:
+    case PGA_FALSE:
+         ctx->ga.CrossBoundedFlag = val;
+         break;
+    default:
+         PGAError(ctx, "PGASetCrossoverBoundedFlag: Invalid value:",
+                  PGA_FATAL, PGA_INT, (void *) &val);
+         break;
+    }
+}
+
+/*U****************************************************************************
+   PGAGetCrossoverBoundedFlag - returns PGA_TRUE or PGA_FALSE to indicate
+   whether crossed over strings remain in the range specified.
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+
+   Example:
+      PGAContext *ctx;
+      int val;
+      :
+      val = PGAGetCrossoverBoundedFlag (ctx);
+
+****************************************************************************U*/
+int PGAGetCrossoverBoundedFlag (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetCrossoverBoundedFlag");
+    return (ctx->ga.CrossBoundedFlag);
+}
+
+/*U****************************************************************************
+   PGASetCrossoverBounceBackFlag - If this flag is set to PGA_TRUE, then
+   for Integer and Real strings with simulated binary crossover (SBX)
+   crossed over values that exceed the bounds are confined to the
+   bounds by bouncing them back to a random value between the boundary
+   and the neares parent.
+
+   Category: Operators
+
+   Inputs:
+      ctx  - context variable
+      flag - either PGA_TRUE or PGA_FALSE
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetCrossoverBounceBackFlag (ctx, PGA_TRUE);
+
+****************************************************************************U*/
+void PGASetCrossoverBounceBackFlag (PGAContext *ctx, int val)
+{
+    switch (val)
+    {
+    case PGA_TRUE:
+    case PGA_FALSE:
+         ctx->ga.CrossBounceFlag = val;
+         break;
+    default:
+         PGAError(ctx, "PGASetCrossoverBounceBackFlag: Invalid value:",
+                  PGA_FATAL, PGA_INT, (void *) &val);
+         break;
+    }
+}
+
+/*U****************************************************************************
+   PGAGetCrossoverBounceBackFlag - returns PGA_TRUE or PGA_FALSE to indicate
+   whether crossed over strings are bounced back when exceeding the
+   bounds.
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+
+   Example:
+      PGAContext *ctx;
+      int val;
+      :
+      val = PGAGetCrossoverBounceBackFlag (ctx);
+
+****************************************************************************U*/
+int PGAGetCrossoverBounceBackFlag (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetCrossoverBounceBackFlag");
+    return (ctx->ga.CrossBounceFlag);
+}
+
+/*U****************************************************************************
+   PGASetCrossoverSBXEta - Set the eta parameter for simulated binary
+   crossover (SBX)
+
+   Category: Operators
+
+   Inputs:
+      ctx  - context variable
+      eta  - eta >= 0
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetCrossoverSBXEta (ctx, 10);
+
+****************************************************************************U*/
+void PGASetCrossoverSBXEta (PGAContext *ctx, double eta)
+{
+    if (eta < 0) {
+        PGAError(ctx, "PGASetCrossoverSBXEta: Invalid value:",
+                 PGA_FATAL, PGA_DOUBLE, (void *) &eta);
+    }
+    ctx->ga.CrossSBXEta = eta;
+}
+
+/*U****************************************************************************
+   PGAGetCrossoverSBXEta - returns SBX eta value
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The SBX eta value
+
+   Example:
+      PGAContext *ctx;
+      double eta;
+      :
+      eta = PGAGetCrossoverSBXEta (ctx);
+
+****************************************************************************U*/
+double PGAGetCrossoverSBXEta (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetCrossoverSBXEta");
+    return (ctx->ga.CrossSBXEta);
+}
+
+/*U****************************************************************************
+   PGASetCrossoverSBXOncePerString - Compute random number for SBX
+   polynomial distribution only once per string/individual. If set to
+   PGA_TRUE all alleles will use the same value which means that the
+   resulting string will point into the same direction as the vector
+   between both parents.
+
+   Category: Operators
+
+   Inputs:
+      ctx  - context variable
+      val  - PGA_TRUE or PGA_FALSE, default is PGA_FALSE
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetCrossoverSBXOncePerString (ctx, PGA_TRUE);
+
+****************************************************************************U*/
+void PGASetCrossoverSBXOncePerString (PGAContext *ctx, int val)
+{
+    if (val != PGA_TRUE && val != PGA_FALSE) {
+        PGAError(ctx, "PGASetCrossoverSBXOncePerString: Invalid value:",
+                 PGA_FATAL, PGA_INT, (void *) &val);
+    }
+    ctx->ga.CrossSBXOnce = val;
+}
+
+/*U****************************************************************************
+   PGAGetCrossoverSBXOncePerString - returns SBX setting if random
+   number for SBX polynomial distribution is computed once per string.
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The SBX once-per-string value
+
+   Example:
+      PGAContext *ctx;
+      int r;
+      :
+      r = PGAGetCrossoverSBXOncePerString (ctx);
+
+****************************************************************************U*/
+int PGAGetCrossoverSBXOncePerString (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp("PGAGetCrossoverSBXOncePerString");
+    return (ctx->ga.CrossSBXOnce);
+}
+
+
+/*U****************************************************************************
+   PGACrossoverSBX - Cross over two parent alleles with simulated binary
+   crossover. This uses double for both parent alleles but is re-used in
+   both, integer and real SBX crossover. The probability is used to
+   compute the new alleles from the polynomial distribution.
+
+   Category: Operators
+
+   Inputs:
+      ctx - context variable
+      p1  - (double) Allele of first string
+      p2  - (double) Allele of second string
+      u   - Random value between 0 and 1
+      c1  - pointer to new first child allele
+      c2  - pointer to new second child allele
+
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      double p1, p2, u;
+      double c1, c2;
+      double result;
+      :
+      u = PGARandom01 (ctx, 0);
+      result = PGACrossoverSBX (ctx, p1, p2, u, &c1, &c2);
+
+****************************************************************************U*/
+void PGACrossoverSBX
+    (PGAContext *ctx, double p1, double p2, double u, double *c1, double *c2)
+{
+    double beta;
+    double eta = PGAGetCrossoverSBXEta (ctx) + 1.0;
+    if (u < 0.5) {
+        beta = pow (2.0 * u, 1.0 / eta);
+    } else {
+        beta = pow (2.0 - 2.0 * u, -1.0 / eta);
+    }
+    *c1 = 0.5 * ((p1 + p2) - beta * fabs (p1 - p2));
+    *c2 = 0.5 * ((p1 + p2) + beta * fabs (p1 - p2));
 }

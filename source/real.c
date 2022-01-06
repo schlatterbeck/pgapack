@@ -46,6 +46,31 @@ privately owned rights.
 *****************************************************************************/
 
 #include <pgapack.h>
+/* Helper for bounds/bounce check */
+static void bouncheck
+    ( PGAContext *ctx, int idx, int boundflag, int bounceflag
+    , PGAReal *child, PGAReal minp, PGAReal maxp
+    )
+{
+    if (boundflag || bounceflag) {
+        if (child [idx] < ctx->init.RealMin [idx]) {
+            if (bounceflag) {
+                child [idx] = PGARandomUniform
+                    (ctx, ctx->init.RealMin [idx], minp);
+            } else {
+                child [idx] = ctx->init.RealMin [idx];
+            }
+        }
+        if (child [idx] > ctx->init.RealMax [idx]) {
+            if (bounceflag) {
+                child [idx] = PGARandomUniform
+                    (ctx, maxp, ctx->init.RealMax [idx]);
+            } else {
+                child [idx] = ctx->init.RealMax [idx];
+            }
+        }
+    }
+}
 
 /*U****************************************************************************
    PGASetRealAllele - sets the value of real-valued allele i in string p
@@ -559,25 +584,48 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
             case PGA_MUTATION_CONSTANT:
             case PGA_MUTATION_UNIFORM:
             case PGA_MUTATION_GAUSSIAN:
+            case PGA_MUTATION_POLY:
                 /* randomly choose an allele   */
                 if ( PGARandomFlip(ctx, mr) ) {
                     /* generate on range, or calculate multiplier */
                     switch (ctx->ga.MutationType) {
-                    case PGA_MUTATION_RANGE:
-                        c [i] = PGARandomUniform(ctx, ctx->init.RealMin [i],
-                                                      ctx->init.RealMax [i]);
+                      case PGA_MUTATION_RANGE:
+                        c [i] = PGARandomUniform
+                            (ctx, ctx->init.RealMin [i], ctx->init.RealMax [i]);
                         break;
-                    case PGA_MUTATION_CONSTANT:
+                      case PGA_MUTATION_CONSTANT:
                         val = ctx->ga.MutateRealValue;
                         break;
-                    case PGA_MUTATION_UNIFORM:
+                      case PGA_MUTATION_UNIFORM:
                         val = PGARandomUniform
                             (ctx, 0.0, ctx->ga.MutateRealValue);
                         break;
-                    case PGA_MUTATION_GAUSSIAN:
+                      case PGA_MUTATION_GAUSSIAN:
                         val = PGARandomGaussian
                             (ctx, 0.0, ctx->ga.MutateRealValue);
                         break;
+                      case PGA_MUTATION_POLY:
+                      {
+                        double u = PGARandom01 (ctx, 0);
+                        double eta = PGAGetMutationEtaPoly (ctx) + 1;
+                        double delta;
+                        if (u < 0.5) {
+                            delta = pow (2 * u, 1.0 / eta) - 1.0;
+                        } else {
+                            delta = 1.0 - pow (2 * (1 - u), 1.0 / eta);
+                        }
+                        if (ctx->ga.MutatePolyValue >= 0) {
+                            c [i] += delta * ctx->ga.MutatePolyValue;
+                        } else {
+                            if (delta < 0) {
+                                val = fabs (c [i] - ctx->init.RealMin [i]);
+                            } else {
+                                val = fabs (ctx->init.RealMax [i] - c [i]);
+                            }
+                            c [i] += delta * val;
+                        }
+                        break;
+                      }
                     }
                     /* apply multiplier calculated in switch above */
                     if ( (ctx->ga.MutationType == PGA_MUTATION_CONSTANT) ||
@@ -671,24 +719,10 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
         }
 
         /* reset to min/max or bounce if outside range */
-        if (ctx->ga.MutateBoundedFlag || ctx->ga.MutateBounceFlag) {
-            if( c [idx] < ctx->init.RealMin [idx]) {
-                if (ctx->ga.MutateBounceFlag) {
-                    c [idx] = PGARandomUniform
-                        (ctx, ctx->init.RealMin [idx], old_value);
-                } else {
-                    c [idx] = ctx->init.RealMin [idx];
-                }
-            }
-            if( c [idx] > ctx->init.RealMax [idx]) {
-                if (ctx->ga.MutateBounceFlag) {
-                    c [idx] = PGARandomUniform
-                        (ctx, old_value, ctx->init.RealMax [idx]);
-                } else {
-                    c [idx] = ctx->init.RealMax [idx];
-                }
-            }
-        }
+        bouncheck
+            ( ctx, idx, ctx->ga.MutateBoundedFlag, ctx->ga.MutateBounceFlag
+            , c, old_value, old_value
+            );
     }
 
     PGADebugExited("PGARealMutation");
@@ -884,6 +918,74 @@ void PGARealUniformCrossover( PGAContext *ctx, int p1, int p2, int pop1,
     }
 
     PGADebugExited("PGARealUniformCrossover");
+}
+
+/*I****************************************************************************
+   PGARealSBXCrossover - performs simulated binary crossover (SBX)
+   on two parent strings producing two children via side-effect
+
+   Inputs:
+      ctx  - context variable
+      p1   - the first parent string
+      p2   - the second parent string
+      pop1 - symbolic constant of the population containing string p1 and p2
+      c1   - the first child string
+      c2   - the second child string
+      pop2 - symbolic constant of the population to contain string c1 and c2
+
+   Outputs:
+      c1 and c2 in population pop2 are modified by side-effect.
+
+   Example:
+      Performs crossover on the two parent strings m and d, producing
+      children s and b.
+
+      PGAContext *ctx;
+      int m, d, s, b;
+      :
+      PGARealSBXCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+****************************************************************************I*/
+void PGARealSBXCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAReal *parent1 = (PGAReal *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    PGAReal *parent2 = (PGAReal *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    PGAReal *child1  = (PGAReal *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    PGAReal *child2  = (PGAReal *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    int i;
+    double u = 0;
+
+    if (ctx->ga.CrossSBXOnce) {
+        u = PGARandom01 (ctx, 0);
+    }
+
+    for (i=0; i<ctx->ga.StringLen; i++) {
+        if (  parent1 [i] == parent2 [i]
+           || !PGARandomFlip (ctx, ctx->ga.UniformCrossProb)
+           )
+        {
+            child1 [i] = parent1 [i];
+            child2 [i] = parent2 [i];
+        } else {
+            int j;
+            PGAReal minp =
+                parent1 [i] < parent2 [i] ? parent1 [i] : parent2 [i];
+            PGAReal maxp =
+                parent1 [i] > parent2 [i] ? parent1 [i] : parent2 [i];
+            if (!ctx->ga.CrossSBXOnce) {
+                u = PGARandom01 (ctx, 0);
+            }
+            PGACrossoverSBX
+                (ctx, parent1 [i], parent2 [i], u, child1 + i, child2 + i);
+            for (j=0; j<2; j++) {
+                bouncheck
+                    ( ctx, i, ctx->ga.CrossBoundedFlag, ctx->ga.CrossBounceFlag
+                    , j ? child2 : child1, minp, maxp
+                    );
+            }
+        }
+    }
 }
 
 /*I****************************************************************************
