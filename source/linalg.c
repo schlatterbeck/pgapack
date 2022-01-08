@@ -177,26 +177,76 @@ int LIN_binom (int a, int b)
     return r;
 }
 
+/*
+ * LIN_normalize_to_refplane
+ * Normalize a vector with dimension dim to the n-dimensional reference
+ * hyperplane. And, yes, hyperplane is probably a misnomer, it's a
+ * 3-dimensional tetraeder for dimension 4.
+ */
+void LIN_normalize_to_refplane (int dim, double *v)
+{
+    int j;
+    double sq = sqrt (dim);
+    double norm = 0;
+
+    /* Scalar product of v with the middle of the reference plane */
+    for (j=0; j<dim; j++) {
+        norm += v [j] * (1.0 / sq);
+    }
+    for (j=0; j<dim; j++) {
+        v [j] = v [j] / norm / sq;
+    }
+}
+
 /* Static recursive function for LIN_dasdennis, see below */
-static int dasdennis (int dim, int partitions, int depth, int sum, void *p)
+static int dasdennis (int dim, int npart, int depth, int sum, void *p)
 {
     double (*vec)[dim] = p;
-    int n = partitions - sum + 1;
+    int n = npart - sum + 1;
     int i, offset = 0;
 
     if (depth == dim - 1) {
-        vec [0][depth] = 1.0 - (double)sum / partitions;
+        vec [0][depth] = 1.0 - (double)sum / npart;
         return 1;
     }
     for (i=0; i<n; i++) {
-        double v = (double)i / partitions;
+        double v = (double)i / npart;
         if (i && depth) {
             memcpy (vec [offset], vec [0], sizeof (double) * dim);
         }
         vec [offset][depth] = v;
-        offset += dasdennis (dim, partitions, depth + 1, sum + i, vec [offset]);
+        offset += dasdennis (dim, npart, depth + 1, sum + i, vec [offset]);
     }
     return offset;
+}
+
+/* Static function for LIN_dasdennis scaling of points */
+void dasdennisscale (int dim, int npoints, double scale, double *dir, void *v)
+{
+    int i, j;
+    double dir_normed [dim];
+    double (*vec)[dim] = v;
+    assert (scale > 0);
+    assert (scale < 1);
+    for (i=0; i<npoints; i++) {
+        for (j=0; j<dim; j++) {
+            vec [i][j] *= scale;
+        }
+    }
+    for (j=0; j<dim; j++) {
+        dir_normed [j] = dir [j];
+    }
+    LIN_normalize_to_refplane (dim, dir_normed);
+    for (j=0; j<dim; j++) {
+        dir_normed [j] = dir_normed [j] * (1.0 - scale);
+    }
+
+    /* Now shift points back to reference plane */
+    for (i=0; i<npoints; i++) {
+        for (j=0; j<dim; j++) {
+            vec [i][j] += dir_normed [j];
+        }
+    }
 }
 
 /*
@@ -208,33 +258,41 @@ static int dasdennis (int dim, int partitions, int depth, int sum, void *p)
  * given) and return the new number of points. Note that if there are no
  * pre-existing points, the pointer pointed to by result must be NULL
  * and exiting must be 0.
+ * Optionally the points can be scaled (with 0 < scale <= 1) and shifted
+ * in the direction of a given point back onto the reference hyperplane.
+ * This is not done if dir == NULL or scale == 1.
  * Will return -1 on error. A previously allocated result will be
  * de-allocated in case of error.
  */
-int LIN_dasdennis (int dim, int partitions, void *result, int existing)
+int LIN_dasdennis
+    (int dim, int npart, void *result, int nexist, double scale, double *dir)
 {
     void **r = result;
-    int npoints = LIN_binom (dim + partitions - 1, partitions);
+    double (*vec)[dim];
+    int npoints = LIN_binom (dim + npart - 1, npart);
     void *new = NULL;
-    assert (  (*r == NULL && existing == 0)
-           || (*r != NULL && existing != 0)
+    assert (  (*r == NULL && nexist == 0)
+           || (*r != NULL && nexist != 0)
            );
     if (npoints < 0) {
         goto err;
     }
-    if (existing) {
-        new = realloc (*r, existing + sizeof (double) * dim * npoints);
+    if (nexist) {
+        new = realloc (*r, (nexist + npoints) * sizeof (double) * dim);
     } else {
         new = malloc (sizeof (double) * dim * npoints);
     }
     if (new == NULL) {
         goto err;
     }
-    *r = new;
-    dasdennis (dim, partitions, 0, 0, *r + existing);
-    return existing + npoints;
+    vec = *r = new;
+    dasdennis (dim, npart, 0, 0, vec + nexist);
+    if (scale != 1 && dir != NULL) {
+        dasdennisscale (dim, npoints, scale, dir, vec + nexist);
+    }
+    return nexist + npoints;
 err:
-    if (existing) {
+    if (nexist) {
         free (*r);
         *r = NULL;
     }
@@ -252,12 +310,10 @@ void p_binom (int a, int b)
     printf ("binom (%d, %d): %d\n", a, b, LIN_binom (a, b));
 }
 
-void p_dasdennis (int dim, int partitions)
+void p_vec (int dim, int n, void *v)
 {
+    double (*vec)[dim] = v;
     int i, d;
-    double (*vec)[dim] = NULL;
-    int n = LIN_dasdennis (dim, partitions, &vec, 0);
-    printf ("dasdennis (%d, %d):\n", dim, partitions);
     for (i=0; i<n; i++) {
         for (d=0; d<dim; d++) {
             printf ("%e ", vec [i][d]);
@@ -265,6 +321,14 @@ void p_dasdennis (int dim, int partitions)
         printf ("\n");
     }
     printf ("\n");
+}
+
+void p_dasdennis (int dim, int npart)
+{
+    void *p = NULL;
+    int n = LIN_dasdennis (dim, npart, &p, 0, 1, NULL);
+    printf ("dasdennis (%d, %d):\n", dim, npart);
+    p_vec (dim, n, p);
 }
 
 int main ()
@@ -276,6 +340,9 @@ int main ()
     double m4 [][3] = {{0, 0, 1}, {0, 1, 0}, {1, 0, 0}};
     double v [3];
     double v2 [] = {1, 2, 3};
+    void *vec = NULL;
+    int vecl = 0;
+    double dir [3] = {1, 1, 1};
     //LIN_print_matrix (3, m1);
     //LIN_print_matrix (3, m2);
     for (i=0; i<3; i++) {
@@ -317,6 +384,9 @@ int main ()
     p_dasdennis (4, 2);
     p_dasdennis (4, 3);
     p_dasdennis (4, 4);
+    vecl = LIN_dasdennis (3, 2, &vec, vecl, 1, NULL);
+    vecl = LIN_dasdennis (3, 1, &vec, vecl, 0.5, dir);
+    p_vec (3, vecl, vec);
 
     return 0;
 }
