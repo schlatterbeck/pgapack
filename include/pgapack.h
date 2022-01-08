@@ -215,6 +215,7 @@ static inline double CMP (const double a, const double b)
 #define PGA_POPREPL_RTR           4  /* Restricted tournament replacement   */
 #define PGA_POPREPL_PAIRWISE_BEST 5  /* Pairwise compare old/newpop         */
 #define PGA_POPREPL_NSGA_II       6  /* NSGA-II non-dominated sorting       */
+#define PGA_POPREPL_NSGA_III      7  /* NSGA-III non-dominated sorting      */
 
 /****************************************
  *       REPORT OPTIONS                 *
@@ -354,6 +355,19 @@ typedef struct {
     int restartFreq;         /* frequency with which to restart           */
     int *selected;           /* array of indices for selection            */
     int *sorted;             /* array of sorted individual indices        */
+    int nrefdirs;            /* Number of reference directions            */
+    void *refdirs;           /* Reference directions for NSGA-III         */
+    void *normdirs;          /* normalized reference directions           */
+    size_t ndpoints;         /* Number of points in refdir point cloud    */
+    double dirscale;         /* Scale factor for reference directions     */
+    int ndir_npart;          /* Number Das Dennis partitions for refdir   */
+    int nrefpoints;          /* Number of reference points                */
+    void *refpoints;         /* Ref points on normalized hyperplane       */
+    double *extreme;         /* Extreme vector for NSGA-III               */
+    int extreme_valid;       /* PGA_TRUE of above is valid                */
+    double *utopian;         /* Utopian vector for NSGA-III               */
+    double *normalized;      /* Normalized point for NSGA-III             */
+    int utopian_valid;       /* PGA_TRUE of above is valid                */
     PGAIndividual *oldpop;   /* pointer to population (old)               */
     PGAIndividual *newpop;   /* pointer to population (new)               */
 } PGAAlgorithm;
@@ -741,6 +755,21 @@ double PGAIntegerEuclidianDistance
     (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 
 /*****************************************
+*          linalg.c
+*****************************************/
+
+int LIN_solve (int n, void *a, double *b);
+void LIN_print_matrix (int n, void *a);
+void LIN_print_vector (int n, double *v);
+int LIN_gcd (int a, int b);
+int LIN_binom (int a, int b);
+void LIN_normalize_to_refplane (int dim, double *v);
+void LIN_dasdennis_allocated
+    (int dim, int npart, double scale, double *dir, int npoints, void *mem);
+int LIN_dasdennis
+    (int dim, int npart, void *result, int nexist, double scale, double *dir);
+
+/*****************************************
 *          mpi_stub.c
 *****************************************/
 
@@ -869,6 +898,7 @@ void PGASetRTRWindowSize (PGAContext *ctx, int window);
 void PGARestrictedTournamentReplacement (PGAContext *ctx);
 void PGAPairwiseBestReplacement (PGAContext *ctx);
 void PGA_NSGA_II_Replacement (PGAContext *ctx);
+void PGA_NSGA_III_Replacement (PGAContext *ctx);
 
 /*****************************************
 *          random.c

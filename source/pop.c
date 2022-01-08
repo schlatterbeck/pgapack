@@ -448,6 +448,7 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
     case PGA_POPREPL_RTR:
     case PGA_POPREPL_PAIRWISE_BEST:
     case PGA_POPREPL_NSGA_II:
+    case PGA_POPREPL_NSGA_III:
         ctx->ga.PopReplace = pop_replace;
         break;
     default:
@@ -458,6 +459,84 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
     }
 
     PGADebugExited("PGASetPopReplaceType");
+}
+
+/*U****************************************************************************
+   PGASetReferencePoints - Set reference points on reference hyperplane
+   for NSGA-III
+
+   Category: Generation
+
+   Inputs:
+      ctx     - context variable
+      npoints - Number of points
+      points  - Pointer to points
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      int dim = PGAGetNumAuxEval (ctx) - PGAGetNumConstraint (ctx) + 1;
+      void *p = NULL;
+      int np  = 0;
+      :
+      np = LIN_dasdennis (dim, 3, &p, 0, 1, NULL);
+      PGASetReferencePoints (ctx, np, p);
+
+
+****************************************************************************U*/
+void PGASetReferencePoints (PGAContext *ctx, int npoints, void *points)
+{
+    if (ctx->ga.nrefpoints) {
+        PGAErrorPrintf (ctx, PGA_FATAL, "Can't set reference points twice");
+    }
+    ctx->ga.nrefpoints = npoints;
+    ctx->ga.refpoints  = points;
+}
+
+/*U****************************************************************************
+   PGASetReferenceDirections - Set reference directions for NSGA-III
+   A direction is a point in objective space and can be seen as a vector
+   from the origin to that point. During optimization the reference
+   directions are mapped to the reference hyperplane and a scaled
+   Das/Dennis hyperplane is constructed around that point.
+   Each direction consists of dimension double variables.
+
+   Category: Generation
+
+   Inputs:
+      ctx   - context variable
+      ndirs - Number of directions
+      dirs  - Pointer to directions
+      npart - Number of Das / Dennis partitions
+      scale - Scale factor for constructed Das / Dennis points
+              Must be 0 < scale <= 1 but will typically be < 0.5
+
+   Outputs:
+      None
+
+   Example:
+      Asume 3 dimensions, i.e. 3 evaluation functions
+      dim = PGAGetNumAuxEval (ctx) - PGAGetNumConstraint (ctx) + 1;
+
+      PGAContext *ctx;
+      double dirs [][3] = {{1, 2, 3}, {4, 5, 6}};
+      :
+      PGASetReferenceDirections (ctx, 2, dirs, 5, 0.1);
+
+
+****************************************************************************U*/
+void PGASetReferenceDirections
+    (PGAContext *ctx, int ndirs, void *dirs, int npart, double scale)
+{
+    if (ctx->ga.nrefdirs) {
+        PGAErrorPrintf (ctx, PGA_FATAL, "Can't set reference directions twice");
+    }
+    ctx->ga.nrefdirs   = ndirs;
+    ctx->ga.refdirs    = dirs;
+    ctx->ga.ndir_npart = npart;
+    ctx->ga.dirscale   = scale;
 }
 
 /*U****************************************************************************
@@ -585,34 +664,6 @@ void PGAPairwiseBestReplacement (PGAContext *ctx)
     PGADebugExited("PGAPairwiseBestReplacement");
 }
 
-/*U****************************************************************************
-
-   PGA_NSGA_II_Replacement - Perform NSGA-II Replacement
-   First compute a dominance matrix of N x N bits. The rows are the
-   dominated-by relation. We loop over all n^1 pairs of individuals and
-   fill the matrix. Initit all ranks with -1.
-   Then starting with rank0:
-   - Get all rows of the matrix which are 0 and where the individual has
-     no rank yet: These are the currently non-dominated individuals,
-     assign the current rank
-   - Loop over all individuals with the current rank and remove their
-     bits from the dominance matrix
-   - Increment the rank counter
-
-   Category: Generation
-
-   Inputs:
-      ctx         - context variable
-
-   Outputs:
-      None
-
-   Example:
-      PGAContext *ctx;
-      :
-      PGA_NSGA_II_Replacement(ctx);
-
-****************************************************************************U*/
 /* Helper functions for PGA_NSGA_II_Replacement */
 
 #define NONNEGEVAL(v, is_ev) ((is_ev) ? (v) : (((v) < 0) ? 0 : (v)))
@@ -645,7 +696,12 @@ static int nondom_cmp (const void *a1, const void *a2)
     return CMP((*i2)->crowding, (*i1)->crowding);
 }
 
-/* Compute crowding distance over the given individuals */
+/* typedef to make it easier to pass crowding functions as parameter */
+typedef void (* crowding_t)(PGAContext *, PGAIndividual **, int, int);
+
+/* Compute crowding distance over the given individuals
+ * This is specific to NSGA-II.
+ */
 static void crowding (PGAContext *ctx, PGAIndividual **start, int n, int rank)
 {
     int i, k;
@@ -694,8 +750,54 @@ static void crowding (PGAContext *ctx, PGAIndividual **start, int n, int rank)
     }
 }
 
+/* Compute utopian point as the minimum over all solutions */
+static void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n)
+{
+    int i, j;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+
+    if (!ctx->ga.utopian_valid) {
+        for (j=0; j<dim; j++) {
+            ctx->ga.utopian [j] = GETEVAL (start [0], j, 1);
+        }
+        ctx->ga.utopian_valid = PGA_TRUE;
+    }
+    for (i=0; i<n; i++) {
+        for (j=0; j<dim; j++) {
+            int ncmp;
+            double e = GETEVAL (start [j], j, 1);
+            if (ctx->ga.optdir == PGA_MAXIMIZE) {
+                ncmp = CMP (e, ctx->ga.utopian [j]);
+            } else {
+                ncmp = CMP (ctx->ga.utopian [j], e);
+            }
+            if (ncmp > 0) {
+                ctx->ga.utopian [j] = e;
+            }
+        }
+    }
+}
+
+/* Compute niche preservation algorithm over the given individuals
+ * This is specific to NSGA-III.
+ */
+static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
+{
+    compute_utopian (ctx, start, n);
+}
+
 /* Dominance computation, return the maximum rank given or UINT_MAX if
  * goal was reached exactly (in which case no crowding is necessary)
+ * First compute a dominance matrix of N x N bits. The rows are the
+ * dominated-by relation. We loop over all n^2 pairs of individuals and
+ * fill the matrix. Initit all ranks with -1.
+ * Then starting with rank0:
+ * - Get all rows of the matrix which are 0 and where the individual has
+ *   no rank yet: These are the currently non-dominated individuals,
+ *   assign the current rank
+ * - Loop over all individuals with the current rank and remove their
+ *   bits from the dominance matrix
+ * - Increment the rank counter
  */
 static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
 {
@@ -794,7 +896,14 @@ static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
     return rank;
 }
 
-void PGA_NSGA_II_Replacement (PGAContext *ctx)
+/*
+ * PGA_NSGA_Replacement - Perform NSGA Replacement
+ * - Perform dominance computation (ranking)
+ * - Perform crowding computation specific to the NSGA-Variant given as
+ *   the parameter crowding_method
+ * - Sort individuals and replace into next generation
+ */
+static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
 {
     int i;
     int n_unc_ind, n_con_ind;
@@ -807,7 +916,7 @@ void PGA_NSGA_II_Replacement (PGAContext *ctx)
     PGAIndividual *newpop = ctx->ga.newpop;
     PGAIndividual *temp;
 
-    PGADebugEntered("PGA_NSGA_II_Replacement");
+    PGADebugEntered("PGA_NSGA_Replacement");
 
     /* We keep two pointers into the all_individuals array. One with
      * constrained individuals starts from the end. The other with
@@ -856,7 +965,7 @@ void PGA_NSGA_II_Replacement (PGAContext *ctx)
         int rank;
         rank = ranking (ctx, all_individuals, n_unc_ind, popsize);
         if (n_unc_ind >= popsize && rank != UINT_MAX) {
-            crowding (ctx, all_individuals, n_unc_ind, rank);
+            crowding_method (ctx, all_individuals, n_unc_ind, rank);
         }
         qsort \
             ( all_individuals
@@ -932,6 +1041,57 @@ void PGA_NSGA_II_Replacement (PGAContext *ctx)
     temp           = ctx->ga.oldpop;
     ctx->ga.oldpop = ctx->ga.newpop;
     ctx->ga.newpop = temp;
-    PGADebugExited("PGA_NSGA_II_Replacement");
+    PGADebugExited ("PGA_NSGA_Replacement");
 }
 
+/*U****************************************************************************
+
+   PGA_NSGA_II_Replacement - Perform NSGA-II Replacement
+   - Perform dominance computation (ranking)
+   - Perform crowding computation specific to NSGA-II
+   - Sort individuals and replace into next generation
+
+   Category: Generation
+
+   Inputs:
+      ctx         - context variable
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGA_NSGA_II_Replacement(ctx);
+****************************************************************************U*/
+
+void PGA_NSGA_II_Replacement (PGAContext *ctx)
+{
+    PGA_NSGA_Replacement (ctx, crowding);
+}
+
+/*U****************************************************************************
+
+   PGA_NSGA_III_Replacement - Perform NSGA-III Replacement
+   - Perform dominance computation (ranking)
+   - Perform crowding computation specific to NSGA-III
+   - Sort individuals and replace into next generation
+
+   Category: Generation
+
+   Inputs:
+      ctx         - context variable
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGA_NSGA_II_Replacement(ctx);
+****************************************************************************U*/
+
+void PGA_NSGA_III_Replacement (PGAContext *ctx)
+{
+    PGA_NSGA_Replacement (ctx, niching);
+}

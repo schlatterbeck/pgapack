@@ -45,6 +45,8 @@ privately owned rights.
 *              Brian P. Walenz
 *****************************************************************************/
 
+#include <assert.h>
+#include <stdint.h>
 #include "pgapack.h"
 
 /*U****************************************************************************
@@ -272,6 +274,21 @@ PGAContext *PGACreate
     ctx->ga.restart            = PGA_UNINITIALIZED_INT;
     ctx->ga.restartFreq        = PGA_UNINITIALIZED_INT;
     ctx->ga.restartAlleleProb  = PGA_UNINITIALIZED_DOUBLE;
+
+    /* NSGA-III */
+    ctx->ga.nrefdirs      = 0;
+    ctx->ga.nrefpoints    = 0;
+    ctx->ga.refdirs       = NULL;
+    ctx->ga.refpoints     = NULL;
+    ctx->ga.ndir_npart    = 0;
+    ctx->ga.dirscale      = 0;
+    ctx->ga.extreme       = NULL;
+    ctx->ga.extreme_valid = PGA_FALSE;
+    ctx->ga.utopian       = NULL;
+    ctx->ga.utopian_valid = PGA_FALSE;
+    ctx->ga.normalized    = NULL;
+    ctx->ga.normdirs      = NULL;
+    ctx->ga.ndpoints      = 0;
 
     /* Operations */
     ctx->cops.CreateString      = NULL;
@@ -796,6 +813,17 @@ void PGASetUp ( PGAContext *ctx )
         }
     }
 
+    if (ctx->ga.nrefpoints > 0 && ctx->ga.PopReplace != PGA_POPREPL_NSGA_III) {
+        PGAErrorPrintf
+            (ctx, PGA_FATAL, "PGASetUp: Reference points only for NSGA-III");
+    }
+    if (ctx->ga.nrefdirs > 0 && ctx->ga.PopReplace != PGA_POPREPL_NSGA_III) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetUp: Reference directions only for NSGA-III"
+            );
+    }
+
     if (  ctx->ga.NumAuxEval - ctx->ga.NumConstraint > 0
        && ctx->ga.PopReplace != PGA_POPREPL_NSGA_II
        )
@@ -1171,6 +1199,57 @@ void PGASetUp ( PGAContext *ctx )
                  );
     }
     memset (ctx->rep.BestIdx, 0, sizeof (int) * (1 + ctx->ga.NumAuxEval));
+
+    ctx->ga.extreme_valid = PGA_FALSE;
+    ctx->ga.utopian_valid = PGA_FALSE;
+    if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_III) {
+        int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+        ctx->ga.extreme = malloc (sizeof (double) * dim);
+        if (ctx->ga.extreme == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate extreme point");
+        }
+        memset (ctx->ga.extreme, 0, sizeof (double) * dim);
+        ctx->ga.utopian = malloc (sizeof (double) * dim);
+        if (ctx->ga.utopian == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate utopian point");
+        }
+        memset (ctx->ga.utopian, 0, sizeof (double) * dim);
+        ctx->ga.normalized = malloc (sizeof (double) * dim);
+        if (ctx->ga.utopian == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normalized point");
+        }
+        memset (ctx->ga.normalized, 0, sizeof (double) * dim);
+        if (ctx->ga.nrefdirs == 0) {
+            assert (ctx->ga.refdirs == NULL);
+            if (ctx->ga.nrefpoints == 0) {
+                ctx->ga.nrefdirs = LIN_dasdennis
+                    (dim, 2, &ctx->ga.refdirs, 0, 1, NULL);
+            } else {
+                ctx->ga.nrefdirs = LIN_dasdennis
+                    (dim, 1, &ctx->ga.refdirs, 0, 1, NULL);
+            }
+            if (ctx->ga.refdirs == NULL) {
+                PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate ref dirs");
+            }
+        } else {
+            /* Allocate space for normalized reference directions */
+            int npart = ctx->ga.ndir_npart;
+            size_t lb = LIN_binom (dim + npart - 1, npart);
+            size_t n = lb * ctx->ga.nrefdirs;
+            /* Check that there was no overflow */
+            assert (lb < n);
+            assert (lb < SIZE_MAX / (sizeof (double) * dim));
+            ctx->ga.normdirs = malloc (sizeof (double) * dim * lb);
+            if (ctx->ga.normdirs == NULL) {
+                PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normdirs");
+            }
+            ctx->ga.ndpoints = lb;
+        }
+    } else {
+        ctx->ga.nrefdirs = ctx->ga.nrefpoints = 0;
+        ctx->ga.refdirs  = ctx->ga.refpoints = NULL;
+        ctx->ga.extreme  = ctx->ga.utopian = NULL;
+    }
 
     ctx->rep.starttime = time (NULL);
 

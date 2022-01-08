@@ -256,6 +256,20 @@ void dasdennisscale (int dim, int npoints, double scale, double *dir, void *v)
 
 /*
  * Compute Das & Dennis points
+ * This is the case where the memory is already allocated
+ * For details see below.
+ */
+void LIN_dasdennis_allocated
+    (int dim, int npart, double scale, double *dir, int npoints, void *mem)
+{
+    dasdennis (dim, npart, 0, 0, mem);
+    if (scale != 1 && dir != NULL) {
+        dasdennisscale (dim, npoints, scale, dir, mem);
+    }
+}
+
+/*
+ * Compute Das & Dennis points
  * This gets the dimension of the problem, the number of partitions,
  * a list of existing points to extend, and the number of existing
  * points. It will re-alloc the exiting array pointer pointed to by
@@ -291,10 +305,7 @@ int LIN_dasdennis
         goto err;
     }
     vec = *r = new;
-    dasdennis (dim, npart, 0, 0, vec + nexist);
-    if (scale != 1 && dir != NULL) {
-        dasdennisscale (dim, npoints, scale, dir, vec + nexist);
-    }
+    LIN_dasdennis_allocated (dim, npart, scale, dir, npoints, vec + nexist);
     return nexist + npoints;
 err:
     if (nexist) {
