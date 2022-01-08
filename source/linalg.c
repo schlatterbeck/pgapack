@@ -220,11 +220,16 @@ static int dasdennis (int dim, int npart, int depth, int sum, void *p)
     return offset;
 }
 
-/* Static function for LIN_dasdennis scaling of points */
+/* Static function for LIN_dasdennis scaling of points
+ * Note that when scaling we translate the scaled-down points from the
+ * centroid of the shifted points to the reference direction on the
+ * reference plane.
+ */
 void dasdennisscale (int dim, int npoints, double scale, double *dir, void *v)
 {
     int i, j;
     double dir_normed [dim];
+    double centroid [dim];
     double (*vec)[dim] = v;
     assert (scale > 0);
     assert (scale < 1);
@@ -238,13 +243,13 @@ void dasdennisscale (int dim, int npoints, double scale, double *dir, void *v)
     }
     LIN_normalize_to_refplane (dim, dir_normed);
     for (j=0; j<dim; j++) {
-        dir_normed [j] = dir_normed [j] * (1.0 - scale);
+        centroid [j] = dir_normed [j] * scale;
     }
 
     /* Now shift points back to reference plane */
     for (i=0; i<npoints; i++) {
         for (j=0; j<dim; j++) {
-            vec [i][j] += dir_normed [j];
+            vec [i][j] += dir_normed [j] - centroid [j];
         }
     }
 }
@@ -343,6 +348,8 @@ int main ()
     void *vec = NULL;
     int vecl = 0;
     double dir [3] = {1, 1, 1};
+    double dir1 [3] = {3, 4, 5};
+    double dir2 [3] = {7, 6, 2};
     //LIN_print_matrix (3, m1);
     //LIN_print_matrix (3, m2);
     for (i=0; i<3; i++) {
@@ -386,6 +393,13 @@ int main ()
     p_dasdennis (4, 4);
     vecl = LIN_dasdennis (3, 2, &vec, vecl, 1, NULL);
     vecl = LIN_dasdennis (3, 1, &vec, vecl, 0.5, dir);
+    p_vec (3, vecl, vec);
+    free (vec);
+    vec  = NULL;
+    vecl = 0;
+    vecl = LIN_dasdennis (3, 2, &vec, vecl, 1, NULL);
+    vecl = LIN_dasdennis (3, 7, &vec, vecl, 0.1, dir1);
+    vecl = LIN_dasdennis (3, 5, &vec, vecl, 0.1, dir2);
     p_vec (3, vecl, vec);
 
     return 0;
