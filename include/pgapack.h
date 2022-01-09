@@ -363,9 +363,10 @@ typedef struct {
     int ndir_npart;          /* Number Das Dennis partitions for refdir   */
     int nrefpoints;          /* Number of reference points                */
     void *refpoints;         /* Ref points on normalized hyperplane       */
-    double *extreme;         /* Extreme vector for NSGA-III               */
+    void *extreme;           /* Extreme vector for NSGA-III               */
     int extreme_valid;       /* PGA_TRUE of above is valid                */
     double *utopian;         /* Utopian vector for NSGA-III               */
+    double *nadir;           /* Normalized nadir point for NSGA-III       */
     double *normalized;      /* Normalized point for NSGA-III             */
     int utopian_valid;       /* PGA_TRUE of above is valid                */
     PGAIndividual *oldpop;   /* pointer to population (old)               */

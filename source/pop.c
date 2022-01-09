@@ -48,6 +48,11 @@ privately owned rights.
 #include <assert.h>
 #include "pgapack.h"
 
+#define OPT_DIR_CMP(ctx, e1, e2) \
+    (ctx->ga.optdir == PGA_MAXIMIZE ? CMP ((e1), (e2)) : CMP ((e2), (e1)))
+#define NORMALIZE(ctx, e, u) \
+    (ctx->ga.optdir == PGA_MAXIMIZE ? ((u) - (e)) : ((e) - (u)))
+
 /*U****************************************************************************
    PGASortPop - Creates an (internal) array of indices according to one of
    three criteria.  If PGA_POPREPL_BEST is used (the default) the array is
@@ -764,17 +769,142 @@ static void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n)
     }
     for (i=0; i<n; i++) {
         for (j=0; j<dim; j++) {
-            int ncmp;
             double e = GETEVAL (start [j], j, 1);
-            if (ctx->ga.optdir == PGA_MAXIMIZE) {
-                ncmp = CMP (e, ctx->ga.utopian [j]);
-            } else {
-                ncmp = CMP (ctx->ga.utopian [j], e);
-            }
-            if (ncmp > 0) {
+            if (OPT_DIR_CMP (ctx, e, ctx->ga.utopian [j]) > 0) {
                 ctx->ga.utopian [j] = e;
             }
         }
+    }
+}
+
+#define EPS_ASF 1e-6
+#define EPS_NAD 1e-6
+#define WEIGHT(a, j) ((a) == (j) ? 1 : EPS_ASF)
+
+/* Compute ASF (see nsga-iii paper), axis is <= dim - 1 */
+static double compute_asf (PGAContext *ctx, double *point, int axis)
+{
+    int j;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    double *utop = ctx->ga.utopian;
+    double asf = NORMALIZE (ctx, point [0], utop [0]) / WEIGHT (axis, 0);
+
+    for (j=1; j<dim; j++) {
+        double a = NORMALIZE (ctx, point [j], utop [j]) / WEIGHT (axis, j);
+        if (a > asf) {
+            asf = a;
+        }
+    }
+    return asf;
+}
+
+/* Compute extreme points */
+static void compute_extreme (PGAContext *ctx, PGAIndividual **start, int n)
+{
+    int i, j;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    double (*extreme) [dim] = ctx->ga.extreme;
+    double asfmin  [dim];
+
+    if (!ctx->ga.extreme_valid) {
+        for (i=0; i<dim; i++) {
+            for (j=0; j<dim; j++) {
+                extreme [i][j] = GETEVAL (start [0], j, 1);
+            }
+        }
+    }
+    ctx->ga.extreme_valid = PGA_TRUE;
+    for (j=0; j<dim; j++) {
+        asfmin [j] = compute_asf (ctx, extreme [j], j);
+    }
+
+    for (i=0; i<n; i++) {
+        double e [dim];
+        for (j=0; j<dim; j++) {
+            e [j] = GETEVAL (start [i], j, 1);
+        }
+        for (j=0; j<dim; j++) {
+            double asf = compute_asf (ctx, e, j);
+            if (asf < asfmin [j]) {
+                asfmin [j] = asf;
+                memcpy (extreme [j], e, sizeof (double) * dim);
+            }
+        }
+    }
+}
+
+static void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
+{
+    int i, j, d;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    double (*extreme) [dim] = ctx->ga.extreme;
+    double m [dim][dim];
+    double v [dim];
+    double x [dim];
+    double est_nadir [dim];
+    double worst [dim];
+    int wv = 0;
+
+    /* Preferred nadir estimate via extreme points */
+    for (d=0; d<dim; d++) {
+        int result;
+        for (i=0; i<dim-1; i++) {
+            for (j=0; j<dim; j++) {
+                /* No need to normalize with utopian here, cancels */
+                m [j][i] = extreme [i+1][j] - extreme [0][j];
+            }
+        }
+        for (j=0; j<dim; j++) {
+            m [j][dim-1] = j == d ? -1 : 0;
+            v [j] = -NORMALIZE (ctx, extreme [0][j], ctx->ga.utopian [j]);
+        }
+        result = LIN_solve (dim, m, v);
+        /* Matrix singular? */
+        if (result != 0) {
+            break;
+        }
+        x [d] = v [dim - 1];
+        /* Intercept too small or negative? */
+        if (x [d] <= EPS_NAD) {
+            break;
+        }
+    }
+    if (d >= dim) {
+        /* Success: Use nadir estimate from hyper-plane */
+        memcpy (ctx->ga.nadir, x, sizeof (double) * dim);
+    } else {
+        /* Fail: No nadir estimate via extreme points, fall back to est_nadir */
+        PGAErrorPrintf
+            ( ctx, PGA_WARNING
+            , "Intercept computation failed in Generation %d", ctx->ga.iter
+            );
+        /* Compute worst point of population and nadir estimate
+         * (worst of front 0)
+         */
+        for (i=0; i<n; i++) {
+            for (j=0; j<dim; j++) {
+                double e = GETEVAL (start [i], j, 1);
+                if (j==0 || OPT_DIR_CMP (ctx, worst [j], e) < 0) {
+                    worst [j] = e;
+                }
+                if (  start [i]->rank == 0
+                   && (wv == 0 || OPT_DIR_CMP (ctx, worst [j], e) < 0)
+                   )
+                {
+                    est_nadir [j] = e;
+                    wv = 1;
+                }
+            }
+        }
+        assert (wv);
+        for (j=0; j<dim; j++) {
+            assert (OPT_DIR_CMP (ctx, est_nadir [j], ctx->ga.utopian [j]) <= 0);
+            if (fabs (est_nadir [j] - ctx->ga.utopian [j]) < EPS_NAD) {
+                est_nadir [j] = worst [j];
+            }
+            est_nadir [j] = NORMALIZE (ctx, est_nadir [j], ctx->ga.utopian [j]);
+        }
+        memcpy (ctx->ga.nadir, est_nadir, sizeof (double) * dim);
     }
 }
 
@@ -784,6 +914,8 @@ static void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n)
 static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
 {
     compute_utopian (ctx, start, n);
+    compute_extreme (ctx, start, n);
+    compute_nadir   (ctx, start, n);
 }
 
 /* Dominance computation, return the maximum rank given or UINT_MAX if
@@ -1095,3 +1227,29 @@ void PGA_NSGA_III_Replacement (PGAContext *ctx)
 {
     PGA_NSGA_Replacement (ctx, niching);
 }
+
+#ifdef DEBUG_TEST
+int main (int argc, char **argv)
+{
+    PGAContext *ctx = PGACreate
+        (&argc, argv, PGA_DATATYPE_REAL, 4, PGA_MINIMIZE);
+    /* Example from slides EMO '19 */
+    int i;
+    double utop [] = {0.1, 0.1, 0.1};
+    double f [][3] =
+        { { 1.0, 0.1, 0.2 }
+        , { 0.2, 1.0, 0.1 }
+        , { 0.2, 0.5, 1.0 }
+        , { 0.1, 0.9, 0.9 }
+        , { 0.4, 0.4, 0.9 }
+        , { 0.3, 0.3, 100 }
+        };
+    int dl = sizeof (f) / (3 * sizeof (double));
+    ctx->ga.NumAuxEval = 2;
+    ctx->ga.NumConstraint = 0;
+    ctx->ga.utopian = utop;
+    for (i=0; i<dl; i++) {
+        printf ("%e\n", compute_asf (ctx, f [i], 2));
+    }
+}
+#endif /* DEBUG_TEST */

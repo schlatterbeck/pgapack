@@ -286,6 +286,7 @@ PGAContext *PGACreate
     ctx->ga.extreme_valid = PGA_FALSE;
     ctx->ga.utopian       = NULL;
     ctx->ga.utopian_valid = PGA_FALSE;
+    ctx->ga.nadir         = NULL;
     ctx->ga.normalized    = NULL;
     ctx->ga.normdirs      = NULL;
     ctx->ga.ndpoints      = 0;
@@ -1204,16 +1205,21 @@ void PGASetUp ( PGAContext *ctx )
     ctx->ga.utopian_valid = PGA_FALSE;
     if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_III) {
         int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
-        ctx->ga.extreme = malloc (sizeof (double) * dim);
+        ctx->ga.extreme = malloc (sizeof (double) * dim * dim);
         if (ctx->ga.extreme == NULL) {
             PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate extreme point");
         }
-        memset (ctx->ga.extreme, 0, sizeof (double) * dim);
+        memset (ctx->ga.extreme, 0, sizeof (double) * dim * dim);
         ctx->ga.utopian = malloc (sizeof (double) * dim);
         if (ctx->ga.utopian == NULL) {
             PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate utopian point");
         }
         memset (ctx->ga.utopian, 0, sizeof (double) * dim);
+        ctx->ga.nadir = malloc (sizeof (double) * dim);
+        if (ctx->ga.nadir == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate nadir point");
+        }
+        memset (ctx->ga.nadir, 0, sizeof (double) * dim);
         ctx->ga.normalized = malloc (sizeof (double) * dim);
         if (ctx->ga.utopian == NULL) {
             PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normalized point");
