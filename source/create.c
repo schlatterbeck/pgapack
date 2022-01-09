@@ -276,20 +276,19 @@ PGAContext *PGACreate
     ctx->ga.restartAlleleProb  = PGA_UNINITIALIZED_DOUBLE;
 
     /* NSGA-III */
-    ctx->ga.nrefdirs      = 0;
-    ctx->ga.nrefpoints    = 0;
-    ctx->ga.refdirs       = NULL;
-    ctx->ga.refpoints     = NULL;
-    ctx->ga.ndir_npart    = 0;
-    ctx->ga.dirscale      = 0;
-    ctx->ga.extreme       = NULL;
-    ctx->ga.extreme_valid = PGA_FALSE;
-    ctx->ga.utopian       = NULL;
-    ctx->ga.utopian_valid = PGA_FALSE;
-    ctx->ga.nadir         = NULL;
-    ctx->ga.normalized    = NULL;
-    ctx->ga.normdirs      = NULL;
-    ctx->ga.ndpoints      = 0;
+    ctx->ga.nrefdirs       = 0;
+    ctx->ga.nrefpoints     = 0;
+    ctx->ga.refdirs        = NULL;
+    ctx->ga.refpoints      = NULL;
+    ctx->ga.ndir_npart     = 0;
+    ctx->ga.dirscale       = 0;
+    ctx->ga.extreme        = NULL;
+    ctx->ga.extreme_valid  = PGA_FALSE;
+    ctx->ga.utopian        = NULL;
+    ctx->ga.utopian_valid  = PGA_FALSE;
+    ctx->ga.nadir          = NULL;
+    ctx->ga.normdirs       = NULL;
+    ctx->ga.ndpoints       = 0;
 
     /* Operations */
     ctx->cops.CreateString      = NULL;
@@ -1147,10 +1146,9 @@ void PGASetUp ( PGAContext *ctx )
 
     /* If we're doing non-dominated sorting */
     if (ctx->ga.NumAuxEval - ctx->ga.NumConstraint >= 1) {
-        int nintbits = sizeof (int) * 8;
-        int intsfor2pop = (ctx->ga.PopSize * 2 + nintbits - 1) / nintbits;
+        int intsfor2pop = (ctx->ga.PopSize * 2 + WL - 1) / WL;
         ctx->scratch.dominance = malloc
-            (sizeof (unsigned int) * intsfor2pop * 2 * ctx->ga.PopSize);
+            (sizeof (PGABinary) * intsfor2pop * 2 * ctx->ga.PopSize);
     } else {
         ctx->scratch.dominance = NULL;
     }
@@ -1220,22 +1218,16 @@ void PGASetUp ( PGAContext *ctx )
             PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate nadir point");
         }
         memset (ctx->ga.nadir, 0, sizeof (double) * dim);
-        ctx->ga.normalized = malloc (sizeof (double) * dim);
-        if (ctx->ga.utopian == NULL) {
-            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normalized point");
-        }
-        memset (ctx->ga.normalized, 0, sizeof (double) * dim);
         if (ctx->ga.nrefdirs == 0) {
             assert (ctx->ga.refdirs == NULL);
             if (ctx->ga.nrefpoints == 0) {
-                ctx->ga.nrefdirs = LIN_dasdennis
-                    (dim, 2, &ctx->ga.refdirs, 0, 1, NULL);
-            } else {
-                ctx->ga.nrefdirs = LIN_dasdennis
-                    (dim, 1, &ctx->ga.refdirs, 0, 1, NULL);
-            }
-            if (ctx->ga.refdirs == NULL) {
-                PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate ref dirs");
+                assert (ctx->ga.refpoints == NULL);
+                (void)LIN_dasdennis (dim, 2, &ctx->ga.refpoints, 0, 1, NULL);
+                ctx->ga.nrefpoints = LIN_binom (dim + 2 - 1, 2);
+                if (ctx->ga.refpoints == NULL) {
+                    PGAErrorPrintf
+                        (ctx, PGA_FATAL, "Cannot allocate ref points");
+                }
             }
         } else {
             /* Allocate space for normalized reference directions */
@@ -1250,11 +1242,16 @@ void PGASetUp ( PGAContext *ctx )
                 PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normdirs");
             }
             ctx->ga.ndpoints = lb;
+            if (ctx->ga.nrefpoints == 0) {
+                assert (ctx->ga.refpoints == NULL);
+                (void)LIN_dasdennis (dim, 1, &ctx->ga.refpoints, 0, 1, NULL);
+                ctx->ga.nrefpoints = LIN_binom (dim + 1 - 1, 1);
+                if (ctx->ga.refpoints == NULL) {
+                    PGAErrorPrintf
+                        (ctx, PGA_FATAL, "Cannot allocate ref points");
+                }
+            }
         }
-    } else {
-        ctx->ga.nrefdirs = ctx->ga.nrefpoints = 0;
-        ctx->ga.refdirs  = ctx->ga.refpoints = NULL;
-        ctx->ga.extreme  = ctx->ga.utopian = NULL;
     }
 
     ctx->rep.starttime = time (NULL);
@@ -1460,6 +1457,16 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
         }
     } else {
         ind->auxeval = NULL;
+    }
+    if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_III) {
+        int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+        ind->normalized = malloc (sizeof (double) * dim);
+        if (ind->normalized == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normalized point");
+        }
+        memset (ind->normalized, 0, sizeof (double) * dim);
+    } else {
+        ind->normalized = NULL;
     }
 
     (*ctx->cops.CreateString)(ctx, p, pop, initflag);

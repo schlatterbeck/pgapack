@@ -99,6 +99,16 @@ void LIN_print_vector (int n, double *v)
     printf ("\n\n");
 }
 
+double LIN_euclidian_distance (int dim, double *v1, double *v2)
+{
+    int i;
+    double ret = 0;
+    for (i=0; i<dim; i++) {
+        ret += pow (v1 [i] - v2 [i], 2);
+    }
+    return sqrt (ret);
+}
+
 /*
  * LIN_gcd: Greates common divisor of two integers
  */

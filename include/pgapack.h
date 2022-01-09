@@ -109,6 +109,29 @@ static inline double CMP (const double a, const double b)
 #define PGA_TRUE                   1
 #define PGA_FALSE                  0
 
+/* And some functions for manipulating bit arrays */
+static inline void SET_BIT (PGABinary *bitptr, int idx)
+{
+    int iidx   = idx / WL;
+    int ishift = 1 << (idx % WL);
+    bitptr [iidx] |= ishift;
+}
+
+static inline int GET_BIT (PGABinary *bitptr, int idx)
+{
+    int iidx   = idx / WL;
+    int ishift = 1 << (idx % WL);
+    return bitptr [iidx] & ishift;
+}
+
+static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
+{
+    int iidx   = idx / WL;
+    int ishift = 1 << (idx % WL);
+    bitptr [iidx] &= ~ishift;
+}
+
+
 /*****************************************
 *                FLAGS                   *
 *****************************************/
@@ -281,8 +304,12 @@ typedef struct PGAIndividual {         /* primary population data structure */
   /* The following are not transmitted via MPI */
   struct PGAContext    *ctx;           /* Pointer to our PGAContext         */
   struct PGAIndividual *pop;           /* The population of this indiv.     */
-  double                crowding;      /* Crowding metric for NSGA-II       */
+  double                crowding;      /* Crowding metric for NSGA-II,-III  */
   int                   funcidx;       /* Temporary function index          */
+  /* The following are for NSGA-III only */
+  double               *normalized;    /* Normalized point for NSGA-III     */
+  double                distance;      /* Distance to associated point      */
+  int                   point_idx;     /* Index of associated point         */
 } PGAIndividual;
 
 
@@ -366,9 +393,8 @@ typedef struct {
     void *extreme;           /* Extreme vector for NSGA-III               */
     int extreme_valid;       /* PGA_TRUE of above is valid                */
     double *utopian;         /* Utopian vector for NSGA-III               */
-    double *nadir;           /* Normalized nadir point for NSGA-III       */
-    double *normalized;      /* Normalized point for NSGA-III             */
     int utopian_valid;       /* PGA_TRUE of above is valid                */
+    double *nadir;           /* Normalized nadir point for NSGA-III       */
     PGAIndividual *oldpop;   /* pointer to population (old)               */
     PGAIndividual *newpop;   /* pointer to population (new)               */
 } PGAAlgorithm;
@@ -489,7 +515,7 @@ typedef struct {
 typedef struct {
     int          *intscratch;            /* integer-scratch space          */
     double       *dblscratch;            /* double- scratch space          */
-    unsigned int *dominance;             /* for dominance sorting          */
+    PGABinary    *dominance;             /* for dominance sorting          */
 } PGAScratch;
 
 /*****************************************
@@ -769,6 +795,7 @@ void LIN_dasdennis_allocated
     (int dim, int npart, double scale, double *dir, int npoints, void *mem);
 int LIN_dasdennis
     (int dim, int npart, void *result, int nexist, double scale, double *dir);
+double LIN_euclidian_distance (int dim, double *v1, double *v2);
 
 /*****************************************
 *          mpi_stub.c

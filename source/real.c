@@ -1283,13 +1283,8 @@ double PGARealEuclidianDistance (PGAContext *ctx, int p1, int pop1, int p2, int 
 {
     PGAReal *c1 = (PGAReal *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     PGAReal *c2 = (PGAReal *)PGAGetIndividual (ctx, p2, pop2)->chrom;
-    double ret = 0.0;
-    int i;
 
     PGADebugEntered("PGARealGeneDistance");
-    for (i=0; i<ctx->ga.StringLen; i++) {
-        ret += pow (c1 [i] - c2 [i], 2);
-    }
     PGADebugExited("PGARealGeneDistance");
-    return sqrt (ret);
+    return LIN_euclidian_distance (ctx->ga.StringLen, c1, c2);
 }

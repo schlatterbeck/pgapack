@@ -908,14 +908,116 @@ static void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
     }
 }
 
+/* Get points in refpoints and refdir-cloud */
+static double *get_point (PGAContext *ctx, int idx)
+{
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    double (*normdirs)[dim]  = ctx->ga.normdirs;
+    double (*refpoints)[dim] = ctx->ga.refpoints;
+    assert (idx < ctx->ga.ndpoints + ctx->ga.nrefpoints);
+    if (idx > ctx->ga.nrefpoints) {
+        return normdirs [idx];
+    }
+    return refpoints [idx];
+}
+
+static int assoc_cmp (const void *a1, const void *a2)
+{
+    const PGAIndividual * const *i1 = a1;
+    const PGAIndividual * const *i2 = a2;
+    if ((*i1)->point_idx < (*i2)->point_idx) {
+        return -1;
+    }
+    if ((*i1)->point_idx > (*i2)->point_idx) {
+        return 1;
+    }
+    if ((*i1)->rank < (*i2)->rank) {
+        return -1;
+    }
+    if ((*i1)->rank > (*i2)->rank) {
+        return 1;
+    }
+    return CMP((*i1)->distance, (*i2)->distance);
+}
+
 /* Compute niche preservation algorithm over the given individuals
  * This is specific to NSGA-III.
  */
 static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
 {
+    int i, j;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    int npoints = ctx->ga.ndpoints + ctx->ga.nrefpoints;
+    double point [dim];
+    PGAIndividual *ind_sorted [n];
+
     compute_utopian (ctx, start, n);
     compute_extreme (ctx, start, n);
     compute_nadir   (ctx, start, n);
+    /* Normalize points to hyperplane */
+    for (i=0; i<n; i++) {
+        PGAIndividual *ind = start [i];
+        for (j=0; j<dim; j++) {
+            ind->normalized [j] = GETEVAL (start [i], j, 1);
+            ind->normalized [j] -= ctx->ga.utopian [j];
+            ind->normalized [j] /= ctx->ga.nadir [j];
+        }
+        LIN_normalize_to_refplane (dim, ind->normalized);
+    }
+    /* map reference directions to hyperplane
+     * and compute the resulting points
+     */
+    for (i=0; i<ctx->ga.nrefdirs; i++) {
+        size_t sz = ctx->ga.ndpoints * sizeof (double) * dim;
+        double (*refdirs)[3] = ctx->ga.refdirs;
+        memcpy (point, refdirs [i], sizeof (double) * dim);
+        for (j=0; j<dim; j++) {
+            point [j] -= ctx->ga.utopian [j];
+            point [j] /= ctx->ga.nadir [j];
+        }
+        LIN_dasdennis_allocated
+            ( dim, ctx->ga.ndir_npart
+            , ctx->ga.dirscale, point
+            , ctx->ga.ndpoints, ctx->ga.normdirs + i * sz
+            );
+    }
+    for (j=0; j<n; j++) {
+        PGAIndividual *ind = start [j];
+        double mindist = LIN_euclidian_distance
+            (dim, ind->normalized, get_point (ctx, 0));
+        int minidx = 0;
+        for (i=1; i<npoints; i++) {
+            double *point = get_point (ctx, i);
+            double d = LIN_euclidian_distance
+                (dim, ind->normalized, point);
+            if (d < mindist) {
+                mindist = d;
+                minidx  = i;
+            }
+        }
+        ind->distance = mindist;
+        ind->point_idx = minidx;
+    }
+    /* Sort individuals by associated point index, rank, distance */
+    memcpy (ind_sorted, start, n * sizeof (PGAIndividual *));
+    qsort (ind_sorted, n, sizeof (PGAIndividual *), assoc_cmp);
+    /* Iterate over individuals and set crowding metric to
+     * the negative of the count of the current point
+     * We don't care that points with lower rank have now a crowding
+     * metric, too.
+     */
+    {
+        int last_pointidx = -1;
+        int pointcount = 0;
+        for (j=0; j<n; j++) {
+            PGAIndividual *ind = ind_sorted [j];
+            if (last_pointidx != ind->point_idx) {
+                last_pointidx = ind->point_idx;
+                pointcount = 0;
+            }
+            ind->crowding = -pointcount;
+        }
+    }
 }
 
 /* Dominance computation, return the maximum rank given or UINT_MAX if
@@ -941,10 +1043,9 @@ static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
     int na = ctx->ga.NumAuxEval;
     int base = is_ev ? 0 : (na - nc);
     int nfun = is_ev ? (na - nc + 1) : nc;
-    int nintbits = sizeof (int) * 8;
-    int intsforn = (n + nintbits - 1) / nintbits;
-    int (*dominance)[n][intsforn] =
-        (int (*)[n][intsforn])(ctx->scratch.dominance);
+    int intsforn = (n + WL - 1) / WL;
+    PGABinary (*dominance)[n][intsforn] =
+        (PGABinary (*)[n][intsforn])(ctx->scratch.dominance);
 
     for (i=0; i<n; i++) {
         (start [i])->rank = UINT_MAX;
@@ -953,11 +1054,7 @@ static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
         }
     }
     for (i=0; i<n; i++) {
-        int iidx   = i / nintbits;
-        int ishift = 1 << (i % nintbits);
         for (j=i+1; j<n; j++) {
-            int jidx   = j / nintbits;
-            int jshift = 1 << (j % nintbits);
             int cmp = 0;
             for (k=0; k<nfun; k++) {
                 double e1, e2;
@@ -980,10 +1077,10 @@ static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
             }
             /* j dominated by i */
             if (cmp < 0) {
-                (*dominance) [j][iidx] |= ishift;
+                SET_BIT ((*dominance) [j], i);
             /* i dominated by j */
             } else {
-                (*dominance) [i][jidx] |= jshift;
+                SET_BIT ((*dominance) [i], j);
             }
         }
     }
@@ -1011,13 +1108,11 @@ static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
         }
         /* Remove dominance bits for this rank */
         for (i=0; i<n; i++) {
-            int iidx   = i / nintbits;
-            int ishift = 1 << (i % nintbits);
             if ((*(start+i))->rank != rank) {
                 continue;
             }
             for (j=0; j<n; j++) {
-                (*dominance) [j][iidx] &= ~ishift;
+                CLEAR_BIT ((*dominance) [j], i);
             }
         }
     }
