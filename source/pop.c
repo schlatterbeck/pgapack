@@ -949,7 +949,6 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
     int npoints = ctx->ga.ndpoints + ctx->ga.nrefpoints;
     double point [dim];
-    PGAIndividual *ind_sorted [n];
 
     compute_utopian (ctx, start, n);
     compute_extreme (ctx, start, n);
@@ -999,8 +998,7 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
         ind->point_idx = minidx;
     }
     /* Sort individuals by associated point index, rank, distance */
-    memcpy (ind_sorted, start, n * sizeof (PGAIndividual *));
-    qsort (ind_sorted, n, sizeof (PGAIndividual *), assoc_cmp);
+    qsort (start, n, sizeof (PGAIndividual *), assoc_cmp);
     /* Iterate over individuals and set crowding metric to
      * the negative of the count of the current point
      * We don't care that points with lower rank have now a crowding
@@ -1010,7 +1008,7 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
         int last_pointidx = -1;
         int pointcount = 0;
         for (j=0; j<n; j++) {
-            PGAIndividual *ind = ind_sorted [j];
+            PGAIndividual *ind = start [j];
             if (last_pointidx != ind->point_idx) {
                 last_pointidx = ind->point_idx;
                 pointcount = 0;

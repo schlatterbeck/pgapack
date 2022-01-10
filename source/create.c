@@ -826,12 +826,14 @@ void PGASetUp ( PGAContext *ctx )
 
     if (  ctx->ga.NumAuxEval - ctx->ga.NumConstraint > 0
        && ctx->ga.PopReplace != PGA_POPREPL_NSGA_II
+       && ctx->ga.PopReplace != PGA_POPREPL_NSGA_III
        )
     {
         PGAErrorPrintf
             ( ctx, PGA_FATAL
             , "PGASetUp: NumAuxEval=%d, NumConstraint=%d: Population "
               "replacement with multi-objective optimization must be NSGA-II"
+              " or NSGA-III"
             , ctx->ga.NumAuxEval, ctx->ga.NumConstraint
             );
     }

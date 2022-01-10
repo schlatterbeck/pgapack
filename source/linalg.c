@@ -99,6 +99,16 @@ void LIN_print_vector (int n, double *v)
     printf ("\n\n");
 }
 
+double LIN_dot (int dim, double *v1, double *v2)
+{
+    int i;
+    double ret = 0;
+    for (i=0; i<dim; i++) {
+        ret += v1 [i] * v2 [i];
+    }
+    return ret;
+}
+
 double LIN_euclidian_distance (int dim, double *v1, double *v2)
 {
     int i;
@@ -107,6 +117,11 @@ double LIN_euclidian_distance (int dim, double *v1, double *v2)
         ret += pow (v1 [i] - v2 [i], 2);
     }
     return sqrt (ret);
+}
+
+double LIN_2norm (int dim, double *v)
+{
+    return sqrt (LIN_dot (dim, v, v));
 }
 
 /*
@@ -364,7 +379,7 @@ int main ()
     double m2 [][3] = {{1.0, 0.2, 0.0}, {0.4, 0.1, 0.4}, {0.1, 0.0, 1.0}};
     double m3 [3][3];
     double m4 [][3] = {{0, 0, 1}, {0, 1, 0}, {1, 0, 0}};
-    double v [3];
+    double v [3], v1 [3];
     double v2 [] = {1, 2, 3};
     void *vec = NULL;
     int vecl = 0;
@@ -422,6 +437,13 @@ int main ()
     vecl = LIN_dasdennis (3, 7, &vec, vecl, 0.1, dir1);
     vecl = LIN_dasdennis (3, 5, &vec, vecl, 0.1, dir2);
     p_vec (3, vecl, vec);
+    v  [0] = v  [1] = v  [2] = 1;
+    v1 [0] = v1 [1] = v1 [2] = 4;
+    printf ( "Distance (1,1,1), (4,4,4) = %e\n"
+           , LIN_euclidian_distance (3, v, v1)
+           );
+    v [0] = v [1] = v [2] = 1.0 / sqrt (3);
+    printf ("norm2 (1/sqrt(3),1/sqrt(3),1/sqrt(3)) = %e\n", LIN_2norm (3, v));
 
     return 0;
 }

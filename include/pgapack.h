@@ -113,21 +113,21 @@ static inline double CMP (const double a, const double b)
 static inline void SET_BIT (PGABinary *bitptr, int idx)
 {
     int iidx   = idx / WL;
-    int ishift = 1 << (idx % WL);
+    PGABinary ishift = 1lu << (idx % WL);
     bitptr [iidx] |= ishift;
 }
 
 static inline int GET_BIT (PGABinary *bitptr, int idx)
 {
     int iidx   = idx / WL;
-    int ishift = 1 << (idx % WL);
+    PGABinary ishift = 1lu << (idx % WL);
     return bitptr [iidx] & ishift;
 }
 
 static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 {
     int iidx   = idx / WL;
-    int ishift = 1 << (idx % WL);
+    PGABinary ishift = 1lu << (idx % WL);
     bitptr [iidx] &= ~ishift;
 }
 
@@ -796,6 +796,7 @@ void LIN_dasdennis_allocated
 int LIN_dasdennis
     (int dim, int npart, void *result, int nexist, double scale, double *dir);
 double LIN_euclidian_distance (int dim, double *v1, double *v2);
+double LIN_2norm (int dim, double *v);
 
 /*****************************************
 *          mpi_stub.c
