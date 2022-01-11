@@ -446,6 +446,12 @@ void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm)
              * Then OLDPOP/NEWPOP are exchanged
              */
             PGA_NSGA_II_Replacement (ctx);
+        } else if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_III) {
+            /* This performs nondominated sorting and replaces the best
+             * individuals over both populations into OLDPOP.
+             * Then OLDPOP/NEWPOP are exchanged
+             */
+            PGA_NSGA_III_Replacement (ctx);
         }
 
 	if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) {

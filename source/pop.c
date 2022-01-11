@@ -769,7 +769,7 @@ static void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n)
     }
     for (i=0; i<n; i++) {
         for (j=0; j<dim; j++) {
-            double e = GETEVAL (start [j], j, 1);
+            double e = GETEVAL (start [i], j, 1);
             if (OPT_DIR_CMP (ctx, e, ctx->ga.utopian [j]) > 0) {
                 ctx->ga.utopian [j] = e;
             }
@@ -876,7 +876,7 @@ static void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
         /* Fail: No nadir estimate via extreme points, fall back to est_nadir */
         PGAErrorPrintf
             ( ctx, PGA_WARNING
-            , "Intercept computation failed in Generation %d", ctx->ga.iter
+            , "Intercept computation failed in Generation %d\n", ctx->ga.iter
             );
         /* Compute worst point of population and nadir estimate
          * (worst of front 0)
@@ -884,11 +884,11 @@ static void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
         for (i=0; i<n; i++) {
             for (j=0; j<dim; j++) {
                 double e = GETEVAL (start [i], j, 1);
-                if (j==0 || OPT_DIR_CMP (ctx, worst [j], e) < 0) {
+                if (j==0 || OPT_DIR_CMP (ctx, e, worst [j]) < 0) {
                     worst [j] = e;
                 }
                 if (  start [i]->rank == 0
-                   && (wv == 0 || OPT_DIR_CMP (ctx, worst [j], e) < 0)
+                   && (wv == 0 || OPT_DIR_CMP (ctx, e, worst [j]) < 0)
                    )
                 {
                     est_nadir [j] = e;
@@ -898,11 +898,11 @@ static void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
         }
         assert (wv);
         for (j=0; j<dim; j++) {
-            assert (OPT_DIR_CMP (ctx, est_nadir [j], ctx->ga.utopian [j]) <= 0);
             if (fabs (est_nadir [j] - ctx->ga.utopian [j]) < EPS_NAD) {
                 est_nadir [j] = worst [j];
             }
             est_nadir [j] = NORMALIZE (ctx, est_nadir [j], ctx->ga.utopian [j]);
+            //assert (OPT_DIR_CMP (ctx, est_nadir [j], ctx->ga.utopian [j]) <= 0);
         }
         memcpy (ctx->ga.nadir, est_nadir, sizeof (double) * dim);
     }
@@ -1015,6 +1015,28 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
             }
             ind->crowding = -pointcount;
         }
+    }
+}
+
+void print_dom (PGAContext *ctx, int n)
+{
+    int i, j;
+    int intsforn = (n + WL - 1) / WL;
+    PGABinary (*dominance)[n][intsforn] =
+        (PGABinary (*)[n][intsforn])(ctx->scratch.dominance);
+    for (j=0; j<n; j++) {
+        printf ("%3d ", j);
+    }
+    printf ("\n");
+    for (i=0; i<n; i++) {
+        for (j=0; j<n; j++) {
+            if (GET_BIT ((*dominance) [i], j)) {
+                printf (" X  ");
+            } else {
+                printf ("    ");
+            }
+        }
+        printf ("\n");
     }
 }
 

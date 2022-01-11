@@ -72,6 +72,9 @@ int LIN_solve (int n, void *a, double *b)
         }
         b [rowidx [row]] = (b [rowidx [row]] - result) / m [rowidx [row]][row];
         r [row] = b [rowidx [row]];
+        if (isnan (r [row])) {
+            return LIN_ERROR_SINGULAR;
+        }
     }
     memcpy (b, r, sizeof (double) * n);
     return 0;
