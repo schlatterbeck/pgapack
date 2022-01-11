@@ -20,6 +20,11 @@
 extern "C" {
 #endif
 
+/* Hack for regression testing */
+#ifndef STATIC
+#define STATIC static
+#endif
+
 
 /*  If OPTIMIZED, remove various sanity checks, and debug output.
  *

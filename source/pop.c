@@ -707,7 +707,7 @@ typedef void (* crowding_t)(PGAContext *, PGAIndividual **, int, int);
 /* Compute crowding distance over the given individuals
  * This is specific to NSGA-II.
  */
-static void crowding (PGAContext *ctx, PGAIndividual **start, int n, int rank)
+STATIC void crowding (PGAContext *ctx, PGAIndividual **start, int n, int rank)
 {
     int i, k;
     int nrank = 0;
@@ -756,7 +756,7 @@ static void crowding (PGAContext *ctx, PGAIndividual **start, int n, int rank)
 }
 
 /* Compute utopian point as the minimum over all solutions */
-static void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n)
+STATIC void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n)
 {
     int i, j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
@@ -782,7 +782,7 @@ static void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n)
 #define WEIGHT(a, j) ((a) == (j) ? 1 : EPS_ASF)
 
 /* Compute ASF (see nsga-iii paper), axis is <= dim - 1 */
-static double compute_asf (PGAContext *ctx, double *point, int axis)
+STATIC double compute_asf (PGAContext *ctx, double *point, int axis)
 {
     int j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
@@ -799,7 +799,7 @@ static double compute_asf (PGAContext *ctx, double *point, int axis)
 }
 
 /* Compute extreme points */
-static void compute_extreme (PGAContext *ctx, PGAIndividual **start, int n)
+STATIC void compute_extreme (PGAContext *ctx, PGAIndividual **start, int n)
 {
     int i, j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
@@ -833,19 +833,16 @@ static void compute_extreme (PGAContext *ctx, PGAIndividual **start, int n)
     }
 }
 
-static void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
+/* Preferred nadir estimate via extreme points and axes intersect */
+STATIC int compute_intersect (PGAContext *ctx, PGAIndividual **start, int n)
 {
     int i, j, d;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
     double (*extreme) [dim] = ctx->ga.extreme;
     double m [dim][dim];
-    double v [dim];
     double x [dim];
-    double est_nadir [dim];
-    double worst [dim];
-    int wv = 0;
+    double v [dim];
 
-    /* Preferred nadir estimate via extreme points */
     for (d=0; d<dim; d++) {
         int result;
         for (i=0; i<dim-1; i++) {
@@ -872,37 +869,60 @@ static void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
     if (d >= dim) {
         /* Success: Use nadir estimate from hyper-plane */
         memcpy (ctx->ga.nadir, x, sizeof (double) * dim);
-    } else {
-        /* Fail: No nadir estimate via extreme points, fall back to est_nadir */
-        PGAErrorPrintf
-            ( ctx, PGA_WARNING
-            , "Intercept computation failed in Generation %d\n", ctx->ga.iter
-            );
-        /* Compute worst point of population and nadir estimate
-         * (worst of front 0)
-         */
-        for (i=0; i<n; i++) {
-            for (j=0; j<dim; j++) {
-                double e = GETEVAL (start [i], j, 1);
-                if (j==0 || OPT_DIR_CMP (ctx, e, worst [j]) < 0) {
-                    worst [j] = e;
-                }
-                if (  start [i]->rank == 0
-                   && (wv == 0 || OPT_DIR_CMP (ctx, e, worst [j]) < 0)
-                   )
-                {
-                    est_nadir [j] = e;
-                    wv = 1;
+        return 0;
+    }
+    /* Fail: No nadir estimate via extreme points, fall back to est_nadir */
+    PGAErrorPrintf
+        ( ctx, PGA_WARNING
+        , "Intercept computation failed in Generation %d\n", ctx->ga.iter
+        );
+    return 1;
+}
+
+/* Compute worst of population and nadir estimate (worst of front 0) */
+STATIC void compute_worst
+    (PGAContext *ctx, PGAIndividual **start, int n, double *worst, double *wof)
+{
+    int i, j;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    int wv = 0;
+    for (i=0; i<n; i++) {
+        for (j=0; j<dim; j++) {
+            double e = GETEVAL (start [i], j, 1);
+            if (i==0 || OPT_DIR_CMP (ctx, e, worst [j]) < 0) {
+                worst [j] = e;
+            }
+            if (  start [i]->rank == 0
+               && (wv <= j || OPT_DIR_CMP (ctx, e, wof [j]) < 0)
+               )
+            {
+                wof [j] = e;
+                if (wv <= j) {
+                    wv++;
                 }
             }
         }
-        assert (wv);
+    }
+    assert (wv == dim);
+}
+
+STATIC void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
+{
+    int j;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    double est_nadir [dim];
+    double worst [dim];
+    int ret;
+
+    ret = compute_intersect (ctx, start, n);
+    if (ret > 0) {
+        compute_worst (ctx, start, n, worst, est_nadir);
         for (j=0; j<dim; j++) {
             if (fabs (est_nadir [j] - ctx->ga.utopian [j]) < EPS_NAD) {
                 est_nadir [j] = worst [j];
             }
             est_nadir [j] = NORMALIZE (ctx, est_nadir [j], ctx->ga.utopian [j]);
-            //assert (OPT_DIR_CMP (ctx, est_nadir [j], ctx->ga.utopian [j]) <= 0);
+            assert (OPT_DIR_CMP (ctx, est_nadir [j], ctx->ga.utopian [j]) <= 0);
         }
         memcpy (ctx->ga.nadir, est_nadir, sizeof (double) * dim);
     }
@@ -956,13 +976,17 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
     /* Normalize points to hyperplane */
     for (i=0; i<n; i++) {
         PGAIndividual *ind = start [i];
+        printf ("    [ ");
         for (j=0; j<dim; j++) {
             ind->normalized [j] = GETEVAL (start [i], j, 1);
             ind->normalized [j] -= ctx->ga.utopian [j];
             ind->normalized [j] /= ctx->ga.nadir [j];
+            printf ("%e, ", ind->normalized [j]);
         }
+        printf ("]\n");
         LIN_normalize_to_refplane (dim, ind->normalized);
     }
+    printf ("\n");
     /* map reference directions to hyperplane
      * and compute the resulting points
      */
@@ -1053,7 +1077,7 @@ void print_dom (PGAContext *ctx, int n)
  *   bits from the dominance matrix
  * - Increment the rank counter
  */
-static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
+STATIC int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
 {
     int i, j, k;
     int is_ev = INDGetAuxTotal (*start) ? 0 : 1;
@@ -1342,29 +1366,3 @@ void PGA_NSGA_III_Replacement (PGAContext *ctx)
 {
     PGA_NSGA_Replacement (ctx, niching);
 }
-
-#ifdef DEBUG_TEST
-int main (int argc, char **argv)
-{
-    PGAContext *ctx = PGACreate
-        (&argc, argv, PGA_DATATYPE_REAL, 4, PGA_MINIMIZE);
-    /* Example from slides EMO '19 */
-    int i;
-    double utop [] = {0.1, 0.1, 0.1};
-    double f [][3] =
-        { { 1.0, 0.1, 0.2 }
-        , { 0.2, 1.0, 0.1 }
-        , { 0.2, 0.5, 1.0 }
-        , { 0.1, 0.9, 0.9 }
-        , { 0.4, 0.4, 0.9 }
-        , { 0.3, 0.3, 100 }
-        };
-    int dl = sizeof (f) / (3 * sizeof (double));
-    ctx->ga.NumAuxEval = 2;
-    ctx->ga.NumConstraint = 0;
-    ctx->ga.utopian = utop;
-    for (i=0; i<dl; i++) {
-        printf ("%e\n", compute_asf (ctx, f [i], 2));
-    }
-}
-#endif /* DEBUG_TEST */
