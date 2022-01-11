@@ -27,11 +27,11 @@ static void f (double *x, double *y)
         if (j < NOBJ-1) {
             p *= sin (x [j] * M_PI / 2.0);
         }
-        y [i] = p * (1 + gv);
+        y [i] = pow (p * (1 + gv), (i == NOBJ - 1) ? 2 : 4);
     }
 }
 
-struct multi_problem dtlz2 =
+struct multi_problem convex_dtlz2 =
 { .dimension      = DIM
 , .nfunc          = NOBJ
 , .nconstraint    = 0
@@ -40,7 +40,7 @@ struct multi_problem dtlz2 =
 , .popsize        = 0
 , .generations    = 250
 , .f              = f
-, .name           = "DTLZ2"
+, .name           = "Convex DTLZ2"
 };
 
 #ifdef DEBUG_EVAL

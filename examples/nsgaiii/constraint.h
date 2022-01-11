@@ -25,3 +25,6 @@ extern struct multi_problem dtlz1;
 extern struct multi_problem dtlz2;
 extern struct multi_problem dtlz3;
 extern struct multi_problem dtlz4;
+extern struct multi_problem scaled_dtlz1;
+extern struct multi_problem scaled_dtlz2;
+extern struct multi_problem convex_dtlz2;

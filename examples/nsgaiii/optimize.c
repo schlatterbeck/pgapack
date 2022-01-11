@@ -7,8 +7,11 @@
 static struct multi_problem *problems [] =
 { &dtlz1
 , &dtlz2
-//, &dtlz3
-//, &dtlz4
+, &dtlz3
+, &dtlz4
+, &scaled_dtlz1
+, &scaled_dtlz2
+, &convex_dtlz2
 };
 static const int nproblems =
     sizeof (problems) / sizeof (struct multi_problem *);
@@ -32,10 +35,11 @@ int main (int argc, char **argv)
     PGAContext *ctx;
     int popsize = 100;
     int fidx = 0;
-    int maxiter = 300;
+    int maxiter = 400;
     int sum_constraints = PGA_FALSE;
     void *p = NULL;
     int np = LIN_dasdennis (3, 12, &p, 0, 1, NULL);
+    int seed = 1;
 
     if (argc > 1) {
         fidx = atoi (argv [1]);
@@ -47,8 +51,11 @@ int main (int argc, char **argv)
             exit (1);
         }
     }
+    if (argc > 2) {
+        seed = atoi (argv [2]);
+    }
     problem = problems [fidx];
-    if (problem->generations > maxiter) {
+    if (problem->generations != 0) {
         maxiter = problem->generations;
     }
     if (0 && problem->popsize > popsize) {
@@ -62,7 +69,7 @@ int main (int argc, char **argv)
     ctx = PGACreate
         (&argc, argv, PGA_DATATYPE_REAL, problem->dimension, PGA_MINIMIZE);
     
-    //PGASetRandomSeed                (ctx, 1);
+    PGASetRandomSeed                (ctx, seed);
     PGASetPopSize                   (ctx, popsize);
 # if 0
     PGASetNumReplaceValue           (ctx, 60);

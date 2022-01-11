@@ -12,8 +12,8 @@ all: $(VRFY)
 %.vrfy: % %.data
 	$< | diff $*.data - > $@
 
-%.data: %
-	$< > $@
+%.data:
+	$* > $@
 
 clean: 
 	rm -f $(OBJS) $(BIN)

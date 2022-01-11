@@ -777,6 +777,10 @@ STATIC void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n)
     }
 }
 
+/* When computing ASF set values in vector < EPS_VAL to 0
+ * Taken from pymoo code, not documented in any paper.
+ */
+#define EPS_VAL 1e-3
 #define EPS_ASF 1e-6
 #define EPS_NAD 1e-6
 #define WEIGHT(a, j) ((a) == (j) ? 1 : EPS_ASF)
@@ -790,7 +794,11 @@ STATIC double compute_asf (PGAContext *ctx, double *point, int axis)
     double asf = NORMALIZE (ctx, point [0], utop [0]) / WEIGHT (axis, 0);
 
     for (j=1; j<dim; j++) {
-        double a = NORMALIZE (ctx, point [j], utop [j]) / WEIGHT (axis, j);
+        double a = NORMALIZE (ctx, point [j], utop [j]);
+        if (a < EPS_VAL) {
+            a = 0;
+        }
+        a /= WEIGHT (axis, j);
         if (a > asf) {
             asf = a;
         }
@@ -871,7 +879,7 @@ STATIC int compute_intersect (PGAContext *ctx, PGAIndividual **start, int n)
         memcpy (ctx->ga.nadir, x, sizeof (double) * dim);
         return 0;
     }
-    /* Fail: No nadir estimate via extreme points, fall back to est_nadir */
+    /* Fail: No nadir estimate via extreme points, fall back to wof */
     PGAErrorPrintf
         ( ctx, PGA_WARNING
         , "Intercept computation failed in Generation %d\n", ctx->ga.iter
@@ -910,21 +918,31 @@ STATIC void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
 {
     int j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
-    double est_nadir [dim];
+    double wof   [dim];
     double worst [dim];
     int ret;
 
     ret = compute_intersect (ctx, start, n);
-    if (ret > 0) {
-        compute_worst (ctx, start, n, worst, est_nadir);
-        for (j=0; j<dim; j++) {
-            if (fabs (est_nadir [j] - ctx->ga.utopian [j]) < EPS_NAD) {
-                est_nadir [j] = worst [j];
-            }
-            est_nadir [j] = NORMALIZE (ctx, est_nadir [j], ctx->ga.utopian [j]);
-            assert (OPT_DIR_CMP (ctx, est_nadir [j], ctx->ga.utopian [j]) <= 0);
+    compute_worst (ctx, start, n, worst, wof);
+    /* If a component in estimated nadir is *worse* than corresponding
+     * component of the worst point of the best front in the population,
+     * replace this component. Taken from pymoo, not documented in any
+     * paper.
+     */
+    for (j=0; j<dim; j++) {
+        if (OPT_DIR_CMP (ctx, ctx->ga.nadir [j], wof [j]) < 0) {
+            ctx->ga.nadir [j] = wof [j];
         }
-        memcpy (ctx->ga.nadir, est_nadir, sizeof (double) * dim);
+    }
+    if (ret > 0) {
+        for (j=0; j<dim; j++) {
+            if (fabs (wof [j] - ctx->ga.utopian [j]) < EPS_NAD) {
+                wof [j] = worst [j];
+            }
+            wof [j] = NORMALIZE (ctx, wof [j], ctx->ga.utopian [j]);
+            assert (OPT_DIR_CMP (ctx, wof [j], ctx->ga.utopian [j]) <= 0);
+        }
+        memcpy (ctx->ga.nadir, wof, sizeof (double) * dim);
     }
 }
 
@@ -986,7 +1004,6 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
         printf ("]\n");
         LIN_normalize_to_refplane (dim, ind->normalized);
     }
-    printf ("\n");
     /* map reference directions to hyperplane
      * and compute the resulting points
      */
@@ -1036,6 +1053,8 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
             if (last_pointidx != ind->point_idx) {
                 last_pointidx = ind->point_idx;
                 pointcount = 0;
+            } else {
+                pointcount++;
             }
             ind->crowding = -pointcount;
         }
