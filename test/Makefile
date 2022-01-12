@@ -42,6 +42,7 @@ instverf.vrfy: instverf instverf.data
 
 testclean:
 	rm -f *.vrfy
+	make -C unit clobber
 
 clean: testclean
 	rm -f instverf instverf.o
