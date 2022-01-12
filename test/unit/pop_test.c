@@ -8,7 +8,7 @@ void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n);
 void compute_extreme (PGAContext *ctx, PGAIndividual **start, int n);
 int compute_intersect (PGAContext *ctx, PGAIndividual **start, int n);
 void compute_worst
-    (PGAContext *ctx, PGAIndividual **start, int n, double *worst, double *wof);
+    (PGAContext *ctx, PGAIndividual **start, int n, double *wpop, double *wof);
 void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n);
 int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal);
 
@@ -225,13 +225,14 @@ void test_pop (PGAContext *ctx, void *p)
     int i, j;
     double (*pop) [3] = p;
     double (*extreme) [3];
-    double worst [3];
+    double wpop [3];
     double wof [3];
     PGAIndividual *start [npop];
 
     assert (sizeof (pop2) / 3 / sizeof (double) == npop);
 
     ctx->ga.extreme_valid = ctx->ga.utopian_valid = PGA_FALSE;
+    ctx->ga.worst_valid = PGA_FALSE;
     for (i=0; i<npop; i++) {
         PGAIndividual *ind = ctx->ga.newpop + i;
         start [i] = ind;
@@ -244,27 +245,38 @@ void test_pop (PGAContext *ctx, void *p)
         }
     }
     ranking (ctx, start, npop, npop);
-    compute_utopian (ctx, start, npop);
-    compute_extreme (ctx, start, npop);
-    compute_nadir   (ctx, start, npop);
+    compute_utopian   (ctx, start, npop);
+    compute_extreme   (ctx, start, npop);
+    compute_intersect (ctx, start, npop);
     printf ("Utopian: ");
     for (j=0; j<3; j++) {
         printf ("%e ", ctx->ga.utopian [j]);
     }
-    printf ("\nNadir: ");
+    printf ("\nIntersect: ");
+    for (j=0; j<3; j++) {
+        printf ("%e ", ctx->ga.nadir [j]);
+    }
+    compute_nadir   (ctx, start, npop);
+    printf ("\nNadir (norm): ");
+    for (j=0; j<3; j++) {
+        printf ("%e ", ctx->ga.nadir [j] - ctx->ga.utopian [j]);
+    }
+    printf ("\n");
+    printf ("Nadir: ");
     for (j=0; j<3; j++) {
         printf ("%e ", ctx->ga.nadir [j]);
     }
     printf ("\n");
-    printf ("Nadir+Utop: ");
-    for (j=0; j<3; j++) {
-        printf ("%e ", ctx->ga.nadir [j] + ctx->ga.utopian [j]);
-    }
-    printf ("\n");
-    compute_worst (ctx, start, npop, worst, wof);
+    ctx->ga.worst_valid = PGA_FALSE;
+    compute_worst (ctx, start, npop, wpop, wof);
     printf ("worst: ");
     for (j=0; j<3; j++) {
-        printf ("%e ", worst [j]);
+        printf ("%e ", ctx->ga.worst [j]);
+    }
+    printf ("\n");
+    printf ("wpop: ");
+    for (j=0; j<3; j++) {
+        printf ("%e ", wpop [j]);
     }
     printf ("\n");
     printf ("Worst of front: ");

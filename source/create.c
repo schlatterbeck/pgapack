@@ -287,6 +287,8 @@ PGAContext *PGACreate
     ctx->ga.utopian        = NULL;
     ctx->ga.utopian_valid  = PGA_FALSE;
     ctx->ga.nadir          = NULL;
+    ctx->ga.worst          = NULL;
+    ctx->ga.worst_valid    = PGA_FALSE;
     ctx->ga.normdirs       = NULL;
     ctx->ga.ndpoints       = 0;
 
@@ -1203,6 +1205,7 @@ void PGASetUp ( PGAContext *ctx )
 
     ctx->ga.extreme_valid = PGA_FALSE;
     ctx->ga.utopian_valid = PGA_FALSE;
+    ctx->ga.worst_valid   = PGA_FALSE;
     if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_III) {
         int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
         ctx->ga.extreme = malloc (sizeof (double) * dim * dim);
@@ -1220,6 +1223,11 @@ void PGASetUp ( PGAContext *ctx )
             PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate nadir point");
         }
         memset (ctx->ga.nadir, 0, sizeof (double) * dim);
+        ctx->ga.worst = malloc (sizeof (double) * dim);
+        if (ctx->ga.worst == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate worst point");
+        }
+        memset (ctx->ga.worst, 0, sizeof (double) * dim);
         if (ctx->ga.nrefdirs == 0) {
             assert (ctx->ga.refdirs == NULL);
             if (ctx->ga.nrefpoints == 0) {

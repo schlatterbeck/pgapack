@@ -399,7 +399,9 @@ typedef struct {
     int extreme_valid;       /* PGA_TRUE of above is valid                */
     double *utopian;         /* Utopian vector for NSGA-III               */
     int utopian_valid;       /* PGA_TRUE of above is valid                */
-    double *nadir;           /* Normalized nadir point for NSGA-III       */
+    double *nadir;           /* nadir point for NSGA-III                  */
+    double *worst;           /* Worst point discovered so far             */
+    int worst_valid;         /* PGA_TRUE of above is valid                */
     PGAIndividual *oldpop;   /* pointer to population (old)               */
     PGAIndividual *newpop;   /* pointer to population (new)               */
 } PGAAlgorithm;

@@ -52,6 +52,8 @@ privately owned rights.
     (ctx->ga.optdir == PGA_MAXIMIZE ? CMP ((e1), (e2)) : CMP ((e2), (e1)))
 #define NORMALIZE(ctx, e, u) \
     (ctx->ga.optdir == PGA_MAXIMIZE ? ((u) - (e)) : ((e) - (u)))
+#define DENORMALIZE(ctx, e, u) \
+    (ctx->ga.optdir == PGA_MAXIMIZE ? ((u) - (e)) : ((e) + (u)))
 
 /*U****************************************************************************
    PGASortPop - Creates an (internal) array of indices according to one of
@@ -876,10 +878,12 @@ STATIC int compute_intersect (PGAContext *ctx, PGAIndividual **start, int n)
     }
     if (d >= dim) {
         /* Success: Use nadir estimate from hyper-plane */
-        memcpy (ctx->ga.nadir, x, sizeof (double) * dim);
+        for (j=0; j<dim; j++) {
+            ctx->ga.nadir [j] = DENORMALIZE (ctx, x [j], ctx->ga.utopian [j]);
+        }
         return 0;
     }
-    /* Fail: No nadir estimate via extreme points, fall back to wof */
+    /* Fail: No nadir estimate via extreme points, fall back to wof0 */
     PGAErrorPrintf
         ( ctx, PGA_WARNING
         , "Intercept computation failed in Generation %d\n", ctx->ga.iter
@@ -889,7 +893,7 @@ STATIC int compute_intersect (PGAContext *ctx, PGAIndividual **start, int n)
 
 /* Compute worst of population and nadir estimate (worst of front 0) */
 STATIC void compute_worst
-    (PGAContext *ctx, PGAIndividual **start, int n, double *worst, double *wof)
+    (PGAContext *ctx, PGAIndividual **start, int n, double *wpop, double *wof0)
 {
     int i, j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
@@ -897,19 +901,26 @@ STATIC void compute_worst
     for (i=0; i<n; i++) {
         for (j=0; j<dim; j++) {
             double e = GETEVAL (start [i], j, 1);
-            if (i==0 || OPT_DIR_CMP (ctx, e, worst [j]) < 0) {
-                worst [j] = e;
-            }
-            if (  start [i]->rank == 0
-               && (wv <= j || OPT_DIR_CMP (ctx, e, wof [j]) < 0)
+            if (  !ctx->ga.worst_valid
+               || OPT_DIR_CMP (ctx, e, ctx->ga.worst [j]) < 0
                )
             {
-                wof [j] = e;
+                ctx->ga.worst [j] = e;
+            }
+            if (i==0 || OPT_DIR_CMP (ctx, e, wpop [j]) < 0) {
+                wpop [j] = e;
+            }
+            if (  start [i]->rank == 0
+               && (wv <= j || OPT_DIR_CMP (ctx, e, wof0 [j]) < 0)
+               )
+            {
+                wof0 [j] = e;
                 if (wv <= j) {
                     wv++;
                 }
             }
         }
+        ctx->ga.worst_valid = PGA_TRUE;
     }
     assert (wv == dim);
 }
@@ -918,31 +929,31 @@ STATIC void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
 {
     int j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
-    double wof   [dim];
-    double worst [dim];
+    double wof0 [dim]; /* Worst of front 0 */
+    double wpop [dim]; /* Worst of population */
     int ret;
 
     ret = compute_intersect (ctx, start, n);
-    compute_worst (ctx, start, n, worst, wof);
+    compute_worst (ctx, start, n, wpop, wof0);
     /* If a component in estimated nadir is *worse* than corresponding
-     * component of the worst point of the best front in the population,
-     * replace this component. Taken from pymoo, not documented in any
-     * paper.
+     * component of the worst point ever, replace this component.
+     * Taken from pymoo, not documented in any paper.
      */
-    for (j=0; j<dim; j++) {
-        if (OPT_DIR_CMP (ctx, ctx->ga.nadir [j], wof [j]) < 0) {
-            ctx->ga.nadir [j] = wof [j];
-        }
-    }
-    if (ret > 0) {
+    if (ret == 0) {
         for (j=0; j<dim; j++) {
-            if (fabs (wof [j] - ctx->ga.utopian [j]) < EPS_NAD) {
-                wof [j] = worst [j];
+            if (OPT_DIR_CMP (ctx, ctx->ga.nadir [j], ctx->ga.worst [j]) < 0) {
+                ctx->ga.nadir [j] = ctx->ga.worst [j];
             }
-            wof [j] = NORMALIZE (ctx, wof [j], ctx->ga.utopian [j]);
-            assert (OPT_DIR_CMP (ctx, wof [j], ctx->ga.utopian [j]) <= 0);
         }
-        memcpy (ctx->ga.nadir, wof, sizeof (double) * dim);
+    } else {
+        /* Matrix inversion failed, need to fall back on wof0/wpop */
+        for (j=0; j<dim; j++) {
+            if (fabs (wof0 [j] - ctx->ga.utopian [j]) < EPS_NAD) {
+                ctx->ga.nadir [j] = wpop [j];
+            } else {
+                ctx->ga.nadir [j] = wof0 [j];
+            }
+        }
     }
 }
 
@@ -994,14 +1005,12 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
     /* Normalize points to hyperplane */
     for (i=0; i<n; i++) {
         PGAIndividual *ind = start [i];
-        printf ("    [ ");
         for (j=0; j<dim; j++) {
-            ind->normalized [j] = GETEVAL (start [i], j, 1);
-            ind->normalized [j] -= ctx->ga.utopian [j];
-            ind->normalized [j] /= ctx->ga.nadir [j];
-            printf ("%e, ", ind->normalized [j]);
+            double e = GETEVAL (start [i], j, 1);
+            e  = NORMALIZE (ctx, e, ctx->ga.utopian [j]);
+            e /= NORMALIZE (ctx, ctx->ga.nadir [j], ctx->ga.utopian [j]);
+            ind->normalized [j] = e;
         }
-        printf ("]\n");
         LIN_normalize_to_refplane (dim, ind->normalized);
     }
     /* map reference directions to hyperplane
@@ -1012,8 +1021,9 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
         double (*refdirs)[3] = ctx->ga.refdirs;
         memcpy (point, refdirs [i], sizeof (double) * dim);
         for (j=0; j<dim; j++) {
-            point [j] -= ctx->ga.utopian [j];
-            point [j] /= ctx->ga.nadir [j];
+            point [j]  = NORMALIZE (ctx, point [j], ctx->ga.utopian [j]);
+            point [j] /= NORMALIZE
+                (ctx, ctx->ga.nadir [j], ctx->ga.utopian [j]);
         }
         LIN_dasdennis_allocated
             ( dim, ctx->ga.ndir_npart
@@ -1058,28 +1068,6 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
             }
             ind->crowding = -pointcount;
         }
-    }
-}
-
-void print_dom (PGAContext *ctx, int n)
-{
-    int i, j;
-    int intsforn = (n + WL - 1) / WL;
-    PGABinary (*dominance)[n][intsforn] =
-        (PGABinary (*)[n][intsforn])(ctx->scratch.dominance);
-    for (j=0; j<n; j++) {
-        printf ("%3d ", j);
-    }
-    printf ("\n");
-    for (i=0; i<n; i++) {
-        for (j=0; j<n; j++) {
-            if (GET_BIT ((*dominance) [i], j)) {
-                printf (" X  ");
-            } else {
-                printf ("    ");
-            }
-        }
-        printf ("\n");
     }
 }
 
