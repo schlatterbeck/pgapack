@@ -1,5 +1,5 @@
 OBJS = optimize.o dtlz1.o dtlz2.o dtlz3.o dtlz4.o scaled_dtlz1.o \
-    scaled_dtlz2.o convex_dtlz2.o
+    scaled_dtlz2.o convex_dtlz2.o neg_dtlz2.o
 
 all: optimize
 

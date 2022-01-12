@@ -12,6 +12,7 @@ static struct multi_problem *problems [] =
 , &scaled_dtlz1
 , &scaled_dtlz2
 , &convex_dtlz2
+, &neg_dtlz2
 };
 static const int nproblems =
     sizeof (problems) / sizeof (struct multi_problem *);
@@ -40,6 +41,7 @@ int main (int argc, char **argv)
     void *p = NULL;
     int np = LIN_dasdennis (3, 12, &p, 0, 1, NULL);
     int seed = 1;
+    int direction;
 
     if (argc > 1) {
         fidx = atoi (argv [1]);
@@ -66,8 +68,9 @@ int main (int argc, char **argv)
         printf (" sum constraints: %s", sum_constraints ? "yes" : "no");
     }
     printf ("\n");
+    direction = problem->maximize ? PGA_MAXIMIZE : PGA_MINIMIZE;
     ctx = PGACreate
-        (&argc, argv, PGA_DATATYPE_REAL, problem->dimension, PGA_MINIMIZE);
+        (&argc, argv, PGA_DATATYPE_REAL, problem->dimension, direction);
     
     PGASetRandomSeed                (ctx, seed);
     PGASetPopSize                   (ctx, popsize);

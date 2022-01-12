@@ -13,6 +13,7 @@ struct multi_problem
     int dimension;              /* The dimension of the problem */
     int nfunc;                  /* Number of constraints + 1 (objective f) */
     int nconstraint;            /* Number of constraints */
+    int maximize;               /* Maximization problem ? */
     double (*lower);            /* Init ranges lower bounds */
     double (*upper);            /* Init ranges upper bounds */
     int generations;            /* Number of generations if 0 default = 100 */
@@ -28,3 +29,4 @@ extern struct multi_problem dtlz4;
 extern struct multi_problem scaled_dtlz1;
 extern struct multi_problem scaled_dtlz2;
 extern struct multi_problem convex_dtlz2;
+extern struct multi_problem neg_dtlz2;
