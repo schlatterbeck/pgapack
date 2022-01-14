@@ -13,6 +13,10 @@ static struct multi_problem *problems [] =
 , &scaled_dtlz2
 , &convex_dtlz2
 , &neg_dtlz2
+, &c1_dtlz1
+, &c1_dtlz3
+, &c2_dtlz2
+, &c2_convex_dtlz2
 };
 static const int nproblems =
     sizeof (problems) / sizeof (struct multi_problem *);
@@ -37,7 +41,6 @@ int main (int argc, char **argv)
     int popsize = 100;
     int fidx = 0;
     int maxiter = 400;
-    int sum_constraints = PGA_FALSE;
     void *p = NULL;
     int np = LIN_dasdennis (3, 12, &p, 0, 1, NULL);
     int seed = 1;
@@ -63,11 +66,7 @@ int main (int argc, char **argv)
     if (0 && problem->popsize > popsize) {
         popsize = problem->popsize;
     }
-    printf ("Example: %s", problem->name);
-    if (problem->nconstraint > 0) {
-        printf (" sum constraints: %s", sum_constraints ? "yes" : "no");
-    }
-    printf ("\n");
+    printf ("Example: %s\n", problem->name);
     direction = problem->maximize ? PGA_MAXIMIZE : PGA_MINIMIZE;
     ctx = PGACreate
         (&argc, argv, PGA_DATATYPE_REAL, problem->dimension, direction);
@@ -99,7 +98,6 @@ int main (int argc, char **argv)
     PGASetMaxGAIterValue            (ctx, maxiter);
     PGASetNumAuxEval                (ctx, problem->nfunc - 1);
     PGASetNumConstraint             (ctx, problem->nconstraint);
-    //PGASetSumConstraintsFlag        (ctx, sum_constraints);
     PGASetNoDuplicatesFlag          (ctx, PGA_TRUE);
     PGASetReferencePoints           (ctx, np, p);
 # endif
@@ -121,7 +119,6 @@ int main (int argc, char **argv)
     PGASetMaxGAIterValue         (ctx, maxiter);
     PGASetNumAuxEval             (ctx, problem->nfunc - 1);
     PGASetNumConstraint          (ctx, problem->nconstraint);
-    PGASetSumConstraintsFlag     (ctx, sum_constraints);
     PGASetNoDuplicatesFlag       (ctx, PGA_TRUE);
     PGASetMutationBounceBackFlag (ctx, PGA_TRUE);
     PGASetReferencePoints        (ctx, np, p);

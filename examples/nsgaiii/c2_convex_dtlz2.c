@@ -15,10 +15,19 @@ static double g (double *x)
     return s;
 }
 
+// radius in range 3 .. 15
+double r [] = { 0.225, 0.225, 0.225
+              , 0.26, 0.26, 0.26, 0.26, 0.26
+              , 0.27, 0.27, 0.27, 0.27, 0.27
+              };
+
 static void f (double *x, double *y)
 {
     int i, j;
     double gv = g (x + DIM - K);
+    double s = 0;
+    double r2 = pow (r [NOBJ - 3], 2);
+    double lambda = 0;
     for (i=0; i<NOBJ; i++) {
         double p = 1;
         for (j=0; j<NOBJ-i-1; j++) {
@@ -29,18 +38,26 @@ static void f (double *x, double *y)
         }
         y [i] = pow (p * (1 + gv), (i == NOBJ - 1) ? 2 : 4);
     }
+    for (i=0; i<NOBJ; i++) {
+        lambda += y [i];
+    }
+    lambda /= NOBJ;
+    for (i=0; i<NOBJ; i++) {
+        s += pow (y [i] - lambda, 2);
+    }
+    y [NOBJ] = r2 - s;
 }
 
-struct multi_problem convex_dtlz2 =
+struct multi_problem c2_convex_dtlz2 =
 { .dimension      = DIM
-, .nfunc          = NOBJ
-, .nconstraint    = 0
+, .nfunc          = NOBJ + 1
+, .nconstraint    = 1
 , .lower          = (double []){ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 , .upper          = (double []){ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
 , .popsize        = 0
 , .generations    = 250
 , .f              = f
-, .name           = "Convex DTLZ2"
+, .name           = "C2 Convex DTLZ2"
 };
 
 #ifdef DEBUG_EVAL
@@ -350,17 +367,18 @@ int main ()
           , 0.4999992, 0.4999998, 0.5000078, 0.4999992, 0.500001, 0.4999981
           }
         };
-    double yy [NOBJ];
+    double yy [NOBJ + 1];
     size_t sz = sizeof (xx) / (sizeof (double) * DIM);
     for (i=0; i<sz; i++) {
-        double s = 0;
         f (xx [i], yy);
         printf ("G: %e\n", g (xx [i] + DIM - K));
-        for (j=0; j<NOBJ; j++) {
-            printf ("F %d %e\n", j, yy [j]);
-            s += yy [j];
+        if (yy [NOBJ] <= 0) {
+            for (j=0; j<NOBJ; j++) {
+                printf ("F %d %e\n", j, yy [j]);
+            }
+        } else {
+            printf ("F %d %e\n", NOBJ, yy [NOBJ]);
         }
-        printf ("\ns: %e\n", s);
     }
 }
 #endif /* DEBUG_EVAL */
