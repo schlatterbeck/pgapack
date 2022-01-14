@@ -63,7 +63,7 @@ int main (int argc, char **argv)
     if (problem->generations != 0) {
         maxiter = problem->generations;
     }
-    if (0 && problem->popsize > popsize) {
+    if (problem->popsize > popsize) {
         popsize = problem->popsize;
     }
     printf ("Example: %s\n", problem->name);
