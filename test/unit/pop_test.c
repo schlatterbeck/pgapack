@@ -319,6 +319,7 @@ int main (int argc, char **argv)
         printf ("%e\n", compute_asf (ctx, f [i], 2));
     }
     PGASetPopReplaceType (ctx, PGA_POPREPL_NSGA_III);
+    PGASetPopSize (ctx, 100);
     PGASetUp (ctx);
     test_pop (ctx, pop);
     test_pop (ctx, pop2);
