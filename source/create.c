@@ -45,6 +45,8 @@ privately owned rights.
 *              Brian P. Walenz
 *****************************************************************************/
 
+#include <assert.h>
+#include <stdint.h>
 #include "pgapack.h"
 
 /*U****************************************************************************
@@ -273,6 +275,23 @@ PGAContext *PGACreate
     ctx->ga.restartFreq        = PGA_UNINITIALIZED_INT;
     ctx->ga.restartAlleleProb  = PGA_UNINITIALIZED_DOUBLE;
 
+    /* NSGA-III */
+    ctx->ga.nrefdirs       = 0;
+    ctx->ga.nrefpoints     = 0;
+    ctx->ga.refdirs        = NULL;
+    ctx->ga.refpoints      = NULL;
+    ctx->ga.ndir_npart     = 0;
+    ctx->ga.dirscale       = 0;
+    ctx->ga.extreme        = NULL;
+    ctx->ga.extreme_valid  = PGA_FALSE;
+    ctx->ga.utopian        = NULL;
+    ctx->ga.utopian_valid  = PGA_FALSE;
+    ctx->ga.nadir          = NULL;
+    ctx->ga.worst          = NULL;
+    ctx->ga.worst_valid    = PGA_FALSE;
+    ctx->ga.normdirs       = NULL;
+    ctx->ga.ndpoints       = 0;
+
     /* Operations */
     ctx->cops.CreateString      = NULL;
     ctx->cops.Mutation          = NULL;
@@ -480,20 +499,12 @@ void PGASetUp ( PGAContext *ctx )
                  );
     }
 
-    if (ctx->ga.PopSize == PGA_UNINITIALIZED_INT) {
-        ctx->ga.PopSize = 100;
-    }
-
     if (ctx->ga.NumAuxEval == PGA_UNINITIALIZED_INT) {
         ctx->ga.NumAuxEval = 0;
     }
 
     if (ctx->ga.NumConstraint == PGA_UNINITIALIZED_INT) {
         ctx->ga.NumConstraint = ctx->ga.NumAuxEval;
-    }
-
-    if (ctx->ga.SumConstraints == PGA_UNINITIALIZED_INT) {
-        ctx->ga.SumConstraints = PGA_FALSE;
     }
 
     if (  ctx->ga.NumConstraint > ctx->ga.NumAuxEval
@@ -503,6 +514,133 @@ void PGASetUp ( PGAContext *ctx )
          PGAError ( ctx, "PGASetUp: We need 0 <= NumConstraint <= NumAuxEval"
                   , PGA_FATAL, PGA_VOID, NULL
                   );
+    }
+
+    if (ctx->ga.PopReplace        == PGA_UNINITIALIZED_INT) {
+        if (ctx->ga.NumAuxEval - ctx->ga.NumConstraint > 0) {
+            ctx->ga.PopReplace    = PGA_POPREPL_NSGA_II;
+        } else {
+            ctx->ga.PopReplace    = PGA_POPREPL_BEST;
+        }
+    }
+
+    if (ctx->ga.nrefpoints > 0 && ctx->ga.PopReplace != PGA_POPREPL_NSGA_III) {
+        PGAErrorPrintf
+            (ctx, PGA_FATAL, "PGASetUp: Reference points only for NSGA-III");
+    }
+    if (ctx->ga.nrefdirs > 0 && ctx->ga.PopReplace != PGA_POPREPL_NSGA_III) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetUp: Reference directions only for NSGA-III"
+            );
+    }
+
+    if (  ctx->ga.NumAuxEval - ctx->ga.NumConstraint > 0
+       && ctx->ga.PopReplace != PGA_POPREPL_NSGA_II
+       && ctx->ga.PopReplace != PGA_POPREPL_NSGA_III
+       )
+    {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetUp: NumAuxEval=%d, NumConstraint=%d: Population "
+              "replacement with multi-objective optimization must be NSGA-II"
+              " or NSGA-III"
+            , ctx->ga.NumAuxEval, ctx->ga.NumConstraint
+            );
+    }
+
+    ctx->ga.extreme_valid = PGA_FALSE;
+    ctx->ga.utopian_valid = PGA_FALSE;
+    ctx->ga.worst_valid   = PGA_FALSE;
+    if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_III) {
+        int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+        ctx->ga.extreme = malloc (sizeof (double) * dim * dim);
+        if (ctx->ga.extreme == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate extreme point");
+        }
+        memset (ctx->ga.extreme, 0, sizeof (double) * dim * dim);
+        ctx->ga.utopian = malloc (sizeof (double) * dim);
+        if (ctx->ga.utopian == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate utopian point");
+        }
+        memset (ctx->ga.utopian, 0, sizeof (double) * dim);
+        ctx->ga.nadir = malloc (sizeof (double) * dim);
+        if (ctx->ga.nadir == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate nadir point");
+        }
+        memset (ctx->ga.nadir, 0, sizeof (double) * dim);
+        ctx->ga.worst = malloc (sizeof (double) * dim);
+        if (ctx->ga.worst == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate worst point");
+        }
+        memset (ctx->ga.worst, 0, sizeof (double) * dim);
+        if (ctx->ga.nrefdirs == 0) {
+            assert (ctx->ga.refdirs == NULL);
+            if (ctx->ga.nrefpoints == 0) {
+                assert (ctx->ga.refpoints == NULL);
+                (void)LIN_dasdennis (dim, 2, &ctx->ga.refpoints, 0, 1, NULL);
+                ctx->ga.nrefpoints = LIN_binom (dim + 2 - 1, 2);
+                if (ctx->ga.refpoints == NULL) {
+                    PGAErrorPrintf
+                        (ctx, PGA_FATAL, "Cannot allocate ref points");
+                }
+            }
+        } else {
+            /* Allocate space for normalized reference directions */
+            int npart = ctx->ga.ndir_npart;
+            size_t lb = LIN_binom (dim + npart - 1, npart);
+            size_t n = lb * ctx->ga.nrefdirs;
+            /* Check that there was no overflow */
+            assert (lb < n);
+            assert (lb < SIZE_MAX / (sizeof (double) * dim));
+            ctx->ga.normdirs = malloc (sizeof (double) * dim * lb);
+            if (ctx->ga.normdirs == NULL) {
+                PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normdirs");
+            }
+            ctx->ga.ndpoints = lb;
+            if (ctx->ga.nrefpoints == 0) {
+                assert (ctx->ga.refpoints == NULL);
+                (void)LIN_dasdennis (dim, 1, &ctx->ga.refpoints, 0, 1, NULL);
+                ctx->ga.nrefpoints = LIN_binom (dim + 1 - 1, 1);
+                if (ctx->ga.refpoints == NULL) {
+                    PGAErrorPrintf
+                        (ctx, PGA_FATAL, "Cannot allocate ref points");
+                }
+            }
+        }
+    }
+
+    /* Init PopSize from refdirs/refpoints if applicable, otherwise use
+     * default of 100
+     */
+    if (ctx->ga.PopSize == PGA_UNINITIALIZED_INT) {
+        int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+        int mod;
+        size_t ps = 0;
+        if (ctx->ga.nrefpoints > 0) {
+            ps += ctx->ga.nrefpoints;
+        }
+        if (ctx->ga.nrefdirs > 0) {
+            int npart = ctx->ga.ndir_npart;
+            size_t lb = LIN_binom (dim + npart - 1, npart);
+            size_t n = lb * ctx->ga.nrefdirs;
+            ps += n;
+        }
+        /* Next multiple of 4, see NSGA-III papers */
+        mod = ps % 4;
+        if (mod) {
+            ps += 4 - mod;
+        }
+
+        assert (ps < INT_MAX);
+        if (ps == 0) {
+            ps = 100;
+        }
+        ctx->ga.PopSize = ps;
+    }
+
+    if (ctx->ga.SumConstraints == PGA_UNINITIALIZED_INT) {
+        ctx->ga.SumConstraints = PGA_FALSE;
     }
 
     if (ctx->ga.MaxIter == PGA_UNINITIALIZED_INT) {
@@ -786,26 +924,6 @@ void PGASetUp ( PGAContext *ctx )
 
     if (ctx->ga.FitnessCmaxValue  == PGA_UNINITIALIZED_DOUBLE) {
         ctx->ga.FitnessCmaxValue   = 1.01;
-    }
-
-    if (ctx->ga.PopReplace        == PGA_UNINITIALIZED_INT) {
-        if (ctx->ga.NumAuxEval - ctx->ga.NumConstraint > 0) {
-            ctx->ga.PopReplace    = PGA_POPREPL_NSGA_II;
-        } else {
-            ctx->ga.PopReplace    = PGA_POPREPL_BEST;
-        }
-    }
-
-    if (  ctx->ga.NumAuxEval - ctx->ga.NumConstraint > 0
-       && ctx->ga.PopReplace != PGA_POPREPL_NSGA_II
-       )
-    {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "PGASetUp: NumAuxEval=%d, NumConstraint=%d: Population "
-              "replacement with multi-objective optimization must be NSGA-II"
-            , ctx->ga.NumAuxEval, ctx->ga.NumConstraint
-            );
     }
 
     if (ctx->ga.restart           == PGA_UNINITIALIZED_INT) {
@@ -1118,10 +1236,9 @@ void PGASetUp ( PGAContext *ctx )
 
     /* If we're doing non-dominated sorting */
     if (ctx->ga.NumAuxEval - ctx->ga.NumConstraint >= 1) {
-        int nintbits = sizeof (int) * 8;
-        int intsfor2pop = (ctx->ga.PopSize * 2 + nintbits - 1) / nintbits;
+        int intsfor2pop = (ctx->ga.PopSize * 2 + WL - 1) / WL;
         ctx->scratch.dominance = malloc
-            (sizeof (unsigned int) * intsfor2pop * 2 * ctx->ga.PopSize);
+            (sizeof (PGABinary) * intsfor2pop * 2 * ctx->ga.PopSize);
     } else {
         ctx->scratch.dominance = NULL;
     }
@@ -1375,6 +1492,16 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
         }
     } else {
         ind->auxeval = NULL;
+    }
+    if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_III) {
+        int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+        ind->normalized = malloc (sizeof (double) * dim);
+        if (ind->normalized == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normalized point");
+        }
+        memset (ind->normalized, 0, sizeof (double) * dim);
+    } else {
+        ind->normalized = NULL;
     }
 
     (*ctx->cops.CreateString)(ctx, p, pop, initflag);

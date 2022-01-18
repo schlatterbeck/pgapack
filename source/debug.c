@@ -206,7 +206,7 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGASetUniformCrossoverProb",     316 },
 
         /* pop.c */
-        { "PGA_NSGA_II_Replacement",            317 },
+        { "PGA_NSGA_Replacement",               317 },
         { "PGAPairwiseBestReplacement",         318 },
         { "PGARestrictedTournamentReplacement", 319 },
         { "PGASortPop",                         320 },

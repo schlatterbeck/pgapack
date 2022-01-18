@@ -25,7 +25,10 @@ all: instverf
 %: %.c
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 
-test: $(VRFY)
+test: unit $(VRFY)
+
+unit:
+	make -C unit
 
 instverf.vrfy: instverf instverf.data
 	./runtest instverf > instverf.vrfy
@@ -39,8 +42,9 @@ instverf.vrfy: instverf instverf.data
 
 testclean:
 	rm -f *.vrfy
+	make -C unit clobber
 
 clean: testclean
 	rm -f instverf instverf.o
 
-.PHONY: all clean
+.PHONY: all clean unit

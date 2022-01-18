@@ -48,6 +48,13 @@ privately owned rights.
 #include <assert.h>
 #include "pgapack.h"
 
+#define OPT_DIR_CMP(ctx, e1, e2) \
+    (ctx->ga.optdir == PGA_MAXIMIZE ? CMP ((e1), (e2)) : CMP ((e2), (e1)))
+#define NORMALIZE(ctx, e, u) \
+    (ctx->ga.optdir == PGA_MAXIMIZE ? ((u) - (e)) : ((e) - (u)))
+#define DENORMALIZE(ctx, e, u) \
+    (ctx->ga.optdir == PGA_MAXIMIZE ? ((u) - (e)) : ((e) + (u)))
+
 /*U****************************************************************************
    PGASortPop - Creates an (internal) array of indices according to one of
    three criteria.  If PGA_POPREPL_BEST is used (the default) the array is
@@ -448,6 +455,7 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
     case PGA_POPREPL_RTR:
     case PGA_POPREPL_PAIRWISE_BEST:
     case PGA_POPREPL_NSGA_II:
+    case PGA_POPREPL_NSGA_III:
         ctx->ga.PopReplace = pop_replace;
         break;
     default:
@@ -458,6 +466,84 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
     }
 
     PGADebugExited("PGASetPopReplaceType");
+}
+
+/*U****************************************************************************
+   PGASetReferencePoints - Set reference points on reference hyperplane
+   for NSGA-III
+
+   Category: Generation
+
+   Inputs:
+      ctx     - context variable
+      npoints - Number of points
+      points  - Pointer to points
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      int dim = PGAGetNumAuxEval (ctx) - PGAGetNumConstraint (ctx) + 1;
+      void *p = NULL;
+      int np  = 0;
+      :
+      np = LIN_dasdennis (dim, 3, &p, 0, 1, NULL);
+      PGASetReferencePoints (ctx, np, p);
+
+
+****************************************************************************U*/
+void PGASetReferencePoints (PGAContext *ctx, int npoints, void *points)
+{
+    if (ctx->ga.nrefpoints) {
+        PGAErrorPrintf (ctx, PGA_FATAL, "Can't set reference points twice");
+    }
+    ctx->ga.nrefpoints = npoints;
+    ctx->ga.refpoints  = points;
+}
+
+/*U****************************************************************************
+   PGASetReferenceDirections - Set reference directions for NSGA-III
+   A direction is a point in objective space and can be seen as a vector
+   from the origin to that point. During optimization the reference
+   directions are mapped to the reference hyperplane and a scaled
+   Das/Dennis hyperplane is constructed around that point.
+   Each direction consists of dimension double variables.
+
+   Category: Generation
+
+   Inputs:
+      ctx   - context variable
+      ndirs - Number of directions
+      dirs  - Pointer to directions
+      npart - Number of Das / Dennis partitions
+      scale - Scale factor for constructed Das / Dennis points
+              Must be 0 < scale <= 1 but will typically be < 0.5
+
+   Outputs:
+      None
+
+   Example:
+      Asume 3 dimensions, i.e. 3 evaluation functions
+      dim = PGAGetNumAuxEval (ctx) - PGAGetNumConstraint (ctx) + 1;
+
+      PGAContext *ctx;
+      double dirs [][3] = {{1, 2, 3}, {4, 5, 6}};
+      :
+      PGASetReferenceDirections (ctx, 2, dirs, 5, 0.1);
+
+
+****************************************************************************U*/
+void PGASetReferenceDirections
+    (PGAContext *ctx, int ndirs, void *dirs, int npart, double scale)
+{
+    if (ctx->ga.nrefdirs) {
+        PGAErrorPrintf (ctx, PGA_FATAL, "Can't set reference directions twice");
+    }
+    ctx->ga.nrefdirs   = ndirs;
+    ctx->ga.refdirs    = dirs;
+    ctx->ga.ndir_npart = npart;
+    ctx->ga.dirscale   = scale;
 }
 
 /*U****************************************************************************
@@ -585,34 +671,6 @@ void PGAPairwiseBestReplacement (PGAContext *ctx)
     PGADebugExited("PGAPairwiseBestReplacement");
 }
 
-/*U****************************************************************************
-
-   PGA_NSGA_II_Replacement - Perform NSGA-II Replacement
-   First compute a dominance matrix of N x N bits. The rows are the
-   dominated-by relation. We loop over all n^1 pairs of individuals and
-   fill the matrix. Initit all ranks with -1.
-   Then starting with rank0:
-   - Get all rows of the matrix which are 0 and where the individual has
-     no rank yet: These are the currently non-dominated individuals,
-     assign the current rank
-   - Loop over all individuals with the current rank and remove their
-     bits from the dominance matrix
-   - Increment the rank counter
-
-   Category: Generation
-
-   Inputs:
-      ctx         - context variable
-
-   Outputs:
-      None
-
-   Example:
-      PGAContext *ctx;
-      :
-      PGA_NSGA_II_Replacement(ctx);
-
-****************************************************************************U*/
 /* Helper functions for PGA_NSGA_II_Replacement */
 
 #define NONNEGEVAL(v, is_ev) ((is_ev) ? (v) : (((v) < 0) ? 0 : (v)))
@@ -645,8 +703,13 @@ static int nondom_cmp (const void *a1, const void *a2)
     return CMP((*i2)->crowding, (*i1)->crowding);
 }
 
-/* Compute crowding distance over the given individuals */
-static void crowding (PGAContext *ctx, PGAIndividual **start, int n, int rank)
+/* typedef to make it easier to pass crowding functions as parameter */
+typedef void (* crowding_t)(PGAContext *, PGAIndividual **, int, int);
+
+/* Compute crowding distance over the given individuals
+ * This is specific to NSGA-II.
+ */
+STATIC void crowding (PGAContext *ctx, PGAIndividual **start, int n, int rank)
 {
     int i, k;
     int nrank = 0;
@@ -694,10 +757,334 @@ static void crowding (PGAContext *ctx, PGAIndividual **start, int n, int rank)
     }
 }
 
+/* Compute utopian point as the minimum over all solutions */
+STATIC void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n)
+{
+    int i, j;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+
+    if (!ctx->ga.utopian_valid) {
+        for (j=0; j<dim; j++) {
+            ctx->ga.utopian [j] = GETEVAL (start [0], j, 1);
+        }
+        ctx->ga.utopian_valid = PGA_TRUE;
+    }
+    for (i=0; i<n; i++) {
+        for (j=0; j<dim; j++) {
+            double e = GETEVAL (start [i], j, 1);
+            if (OPT_DIR_CMP (ctx, e, ctx->ga.utopian [j]) > 0) {
+                ctx->ga.utopian [j] = e;
+            }
+        }
+    }
+}
+
+/* When computing ASF set values in vector < EPS_VAL to 0
+ * Taken from pymoo code, not documented in any paper.
+ */
+#define EPS_VAL 1e-3
+#define EPS_ASF 1e-6
+#define EPS_NAD 1e-6
+#define WEIGHT(a, j) ((a) == (j) ? 1 : EPS_ASF)
+
+/* Compute ASF (see nsga-iii paper), axis is <= dim - 1 */
+STATIC double compute_asf (PGAContext *ctx, double *point, int axis)
+{
+    int j;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    double *utop = ctx->ga.utopian;
+    double asf = NORMALIZE (ctx, point [0], utop [0]) / WEIGHT (axis, 0);
+
+    for (j=1; j<dim; j++) {
+        double a = NORMALIZE (ctx, point [j], utop [j]);
+        if (a < EPS_VAL) {
+            a = 0;
+        }
+        a /= WEIGHT (axis, j);
+        if (a > asf) {
+            asf = a;
+        }
+    }
+    return asf;
+}
+
+/* Compute extreme points */
+STATIC void compute_extreme (PGAContext *ctx, PGAIndividual **start, int n)
+{
+    int i, j;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    double (*extreme) [dim] = ctx->ga.extreme;
+    double asfmin  [dim];
+
+    if (!ctx->ga.extreme_valid) {
+        for (i=0; i<dim; i++) {
+            for (j=0; j<dim; j++) {
+                extreme [i][j] = GETEVAL (start [0], j, 1);
+            }
+        }
+    }
+    ctx->ga.extreme_valid = PGA_TRUE;
+    for (j=0; j<dim; j++) {
+        asfmin [j] = compute_asf (ctx, extreme [j], j);
+    }
+
+    for (i=0; i<n; i++) {
+        double e [dim];
+        for (j=0; j<dim; j++) {
+            e [j] = GETEVAL (start [i], j, 1);
+        }
+        for (j=0; j<dim; j++) {
+            double asf = compute_asf (ctx, e, j);
+            if (asf < asfmin [j]) {
+                asfmin [j] = asf;
+                memcpy (extreme [j], e, sizeof (double) * dim);
+            }
+        }
+    }
+}
+
+/* Preferred nadir estimate via extreme points and axes intersect */
+STATIC int compute_intersect (PGAContext *ctx, PGAIndividual **start, int n)
+{
+    int i, j, d;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    double (*extreme) [dim] = ctx->ga.extreme;
+    double m [dim][dim];
+    double x [dim];
+    double v [dim];
+
+    for (d=0; d<dim; d++) {
+        int result;
+        for (i=0; i<dim-1; i++) {
+            for (j=0; j<dim; j++) {
+                /* No need to normalize with utopian here, cancels */
+                m [j][i] = extreme [i+1][j] - extreme [0][j];
+            }
+        }
+        for (j=0; j<dim; j++) {
+            m [j][dim-1] = j == d ? -1 : 0;
+            v [j] = -NORMALIZE (ctx, extreme [0][j], ctx->ga.utopian [j]);
+        }
+        result = LIN_solve (dim, m, v);
+        /* Matrix singular? */
+        if (result != 0) {
+            break;
+        }
+        x [d] = v [dim - 1];
+        /* Intercept too small or negative? */
+        if (x [d] <= EPS_NAD) {
+            break;
+        }
+    }
+    if (d >= dim) {
+        /* Success: Use nadir estimate from hyper-plane */
+        for (j=0; j<dim; j++) {
+            ctx->ga.nadir [j] = DENORMALIZE (ctx, x [j], ctx->ga.utopian [j]);
+        }
+        return 0;
+    }
+    /* Fail: No nadir estimate via extreme points, fall back to wof0 */
+    PGAErrorPrintf
+        ( ctx, PGA_WARNING
+        , "Intercept computation failed in Generation %d\n", ctx->ga.iter
+        );
+    return 1;
+}
+
+/* Compute worst of population and nadir estimate (worst of front 0) */
+STATIC void compute_worst
+    (PGAContext *ctx, PGAIndividual **start, int n, double *wpop, double *wof0)
+{
+    int i, j;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    int wv = 0;
+    for (i=0; i<n; i++) {
+        for (j=0; j<dim; j++) {
+            double e = GETEVAL (start [i], j, 1);
+            if (  !ctx->ga.worst_valid
+               || OPT_DIR_CMP (ctx, e, ctx->ga.worst [j]) < 0
+               )
+            {
+                ctx->ga.worst [j] = e;
+            }
+            if (i==0 || OPT_DIR_CMP (ctx, e, wpop [j]) < 0) {
+                wpop [j] = e;
+            }
+            if (  start [i]->rank == 0
+               && (wv <= j || OPT_DIR_CMP (ctx, e, wof0 [j]) < 0)
+               )
+            {
+                wof0 [j] = e;
+                if (wv <= j) {
+                    wv++;
+                }
+            }
+        }
+        ctx->ga.worst_valid = PGA_TRUE;
+    }
+    assert (wv == dim);
+}
+
+STATIC void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
+{
+    int j;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    double wof0 [dim]; /* Worst of front 0 */
+    double wpop [dim]; /* Worst of population */
+    int ret;
+
+    ret = compute_intersect (ctx, start, n);
+    compute_worst (ctx, start, n, wpop, wof0);
+    /* If a component in estimated nadir is *worse* than corresponding
+     * component of the worst point ever, replace this component.
+     * Taken from pymoo, not documented in any paper.
+     */
+    if (ret == 0) {
+        for (j=0; j<dim; j++) {
+            if (OPT_DIR_CMP (ctx, ctx->ga.nadir [j], ctx->ga.worst [j]) < 0) {
+                ctx->ga.nadir [j] = ctx->ga.worst [j];
+            }
+        }
+    } else {
+        /* Matrix inversion failed, need to fall back on wof0/wpop */
+        for (j=0; j<dim; j++) {
+            if (fabs (wof0 [j] - ctx->ga.utopian [j]) < EPS_NAD) {
+                ctx->ga.nadir [j] = wpop [j];
+            } else {
+                ctx->ga.nadir [j] = wof0 [j];
+            }
+        }
+    }
+}
+
+/* Get points in refpoints and refdir-cloud */
+static double *get_point (PGAContext *ctx, int idx)
+{
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    double (*normdirs)[dim]  = ctx->ga.normdirs;
+    double (*refpoints)[dim] = ctx->ga.refpoints;
+    assert (idx < ctx->ga.ndpoints + ctx->ga.nrefpoints);
+    if (idx > ctx->ga.nrefpoints) {
+        return normdirs [idx];
+    }
+    return refpoints [idx];
+}
+
+static int assoc_cmp (const void *a1, const void *a2)
+{
+    const PGAIndividual * const *i1 = a1;
+    const PGAIndividual * const *i2 = a2;
+    if ((*i1)->point_idx < (*i2)->point_idx) {
+        return -1;
+    }
+    if ((*i1)->point_idx > (*i2)->point_idx) {
+        return 1;
+    }
+    if ((*i1)->rank < (*i2)->rank) {
+        return -1;
+    }
+    if ((*i1)->rank > (*i2)->rank) {
+        return 1;
+    }
+    return CMP((*i1)->distance, (*i2)->distance);
+}
+
+/* Compute niche preservation algorithm over the given individuals
+ * This is specific to NSGA-III.
+ */
+static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
+{
+    int i, j;
+    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    int npoints = ctx->ga.ndpoints + ctx->ga.nrefpoints;
+    double point [dim];
+
+    compute_utopian (ctx, start, n);
+    compute_extreme (ctx, start, n);
+    compute_nadir   (ctx, start, n);
+    /* Normalize points to hyperplane */
+    for (i=0; i<n; i++) {
+        PGAIndividual *ind = start [i];
+        for (j=0; j<dim; j++) {
+            double e = GETEVAL (start [i], j, 1);
+            e  = NORMALIZE (ctx, e, ctx->ga.utopian [j]);
+            e /= NORMALIZE (ctx, ctx->ga.nadir [j], ctx->ga.utopian [j]);
+            ind->normalized [j] = e;
+        }
+        LIN_normalize_to_refplane (dim, ind->normalized);
+    }
+    /* map reference directions to hyperplane
+     * and compute the resulting points
+     */
+    for (i=0; i<ctx->ga.nrefdirs; i++) {
+        size_t sz = ctx->ga.ndpoints * sizeof (double) * dim;
+        double (*refdirs)[3] = ctx->ga.refdirs;
+        memcpy (point, refdirs [i], sizeof (double) * dim);
+        for (j=0; j<dim; j++) {
+            point [j]  = NORMALIZE (ctx, point [j], ctx->ga.utopian [j]);
+            point [j] /= NORMALIZE
+                (ctx, ctx->ga.nadir [j], ctx->ga.utopian [j]);
+        }
+        LIN_dasdennis_allocated
+            ( dim, ctx->ga.ndir_npart
+            , ctx->ga.dirscale, point
+            , ctx->ga.ndpoints, ctx->ga.normdirs + i * sz
+            );
+    }
+    for (j=0; j<n; j++) {
+        PGAIndividual *ind = start [j];
+        double mindist = LIN_euclidian_distance
+            (dim, ind->normalized, get_point (ctx, 0));
+        int minidx = 0;
+        for (i=1; i<npoints; i++) {
+            double *point = get_point (ctx, i);
+            double d = LIN_euclidian_distance
+                (dim, ind->normalized, point);
+            if (d < mindist) {
+                mindist = d;
+                minidx  = i;
+            }
+        }
+        ind->distance = mindist;
+        ind->point_idx = minidx;
+    }
+    /* Sort individuals by associated point index, rank, distance */
+    qsort (start, n, sizeof (PGAIndividual *), assoc_cmp);
+    /* Iterate over individuals and set crowding metric to
+     * the negative of the count of the current point
+     * We don't care that points with lower rank have now a crowding
+     * metric, too.
+     */
+    {
+        int last_pointidx = -1;
+        int pointcount = 0;
+        for (j=0; j<n; j++) {
+            PGAIndividual *ind = start [j];
+            if (last_pointidx != ind->point_idx) {
+                last_pointidx = ind->point_idx;
+                pointcount = 0;
+            } else {
+                pointcount++;
+            }
+            ind->crowding = -pointcount;
+        }
+    }
+}
+
 /* Dominance computation, return the maximum rank given or UINT_MAX if
  * goal was reached exactly (in which case no crowding is necessary)
+ * First compute a dominance matrix of N x N bits. The rows are the
+ * dominated-by relation. We loop over all n^2 pairs of individuals and
+ * fill the matrix. Initit all ranks with -1.
+ * Then starting with rank0:
+ * - Get all rows of the matrix which are 0 and where the individual has
+ *   no rank yet: These are the currently non-dominated individuals,
+ *   assign the current rank
+ * - Loop over all individuals with the current rank and remove their
+ *   bits from the dominance matrix
+ * - Increment the rank counter
  */
-static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
+STATIC int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
 {
     int i, j, k;
     int is_ev = INDGetAuxTotal (*start) ? 0 : 1;
@@ -707,10 +1094,9 @@ static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
     int na = ctx->ga.NumAuxEval;
     int base = is_ev ? 0 : (na - nc);
     int nfun = is_ev ? (na - nc + 1) : nc;
-    int nintbits = sizeof (int) * 8;
-    int intsforn = (n + nintbits - 1) / nintbits;
-    int (*dominance)[n][intsforn] =
-        (int (*)[n][intsforn])(ctx->scratch.dominance);
+    int intsforn = (n + WL - 1) / WL;
+    PGABinary (*dominance)[n][intsforn] =
+        (PGABinary (*)[n][intsforn])(ctx->scratch.dominance);
 
     for (i=0; i<n; i++) {
         (start [i])->rank = UINT_MAX;
@@ -719,11 +1105,7 @@ static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
         }
     }
     for (i=0; i<n; i++) {
-        int iidx   = i / nintbits;
-        int ishift = 1 << (i % nintbits);
         for (j=i+1; j<n; j++) {
-            int jidx   = j / nintbits;
-            int jshift = 1 << (j % nintbits);
             int cmp = 0;
             for (k=0; k<nfun; k++) {
                 double e1, e2;
@@ -746,10 +1128,10 @@ static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
             }
             /* j dominated by i */
             if (cmp < 0) {
-                (*dominance) [j][iidx] |= ishift;
+                SET_BIT ((*dominance) [j], i);
             /* i dominated by j */
             } else {
-                (*dominance) [i][jidx] |= jshift;
+                SET_BIT ((*dominance) [i], j);
             }
         }
     }
@@ -777,13 +1159,11 @@ static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
         }
         /* Remove dominance bits for this rank */
         for (i=0; i<n; i++) {
-            int iidx   = i / nintbits;
-            int ishift = 1 << (i % nintbits);
             if ((*(start+i))->rank != rank) {
                 continue;
             }
             for (j=0; j<n; j++) {
-                (*dominance) [j][iidx] &= ~ishift;
+                CLEAR_BIT ((*dominance) [j], i);
             }
         }
     }
@@ -794,7 +1174,14 @@ static int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
     return rank;
 }
 
-void PGA_NSGA_II_Replacement (PGAContext *ctx)
+/*
+ * PGA_NSGA_Replacement - Perform NSGA Replacement
+ * - Perform dominance computation (ranking)
+ * - Perform crowding computation specific to the NSGA-Variant given as
+ *   the parameter crowding_method
+ * - Sort individuals and replace into next generation
+ */
+static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
 {
     int i;
     int n_unc_ind, n_con_ind;
@@ -807,7 +1194,7 @@ void PGA_NSGA_II_Replacement (PGAContext *ctx)
     PGAIndividual *newpop = ctx->ga.newpop;
     PGAIndividual *temp;
 
-    PGADebugEntered("PGA_NSGA_II_Replacement");
+    PGADebugEntered("PGA_NSGA_Replacement");
 
     /* We keep two pointers into the all_individuals array. One with
      * constrained individuals starts from the end. The other with
@@ -856,7 +1243,7 @@ void PGA_NSGA_II_Replacement (PGAContext *ctx)
         int rank;
         rank = ranking (ctx, all_individuals, n_unc_ind, popsize);
         if (n_unc_ind >= popsize && rank != UINT_MAX) {
-            crowding (ctx, all_individuals, n_unc_ind, rank);
+            crowding_method (ctx, all_individuals, n_unc_ind, rank);
         }
         qsort \
             ( all_individuals
@@ -932,6 +1319,57 @@ void PGA_NSGA_II_Replacement (PGAContext *ctx)
     temp           = ctx->ga.oldpop;
     ctx->ga.oldpop = ctx->ga.newpop;
     ctx->ga.newpop = temp;
-    PGADebugExited("PGA_NSGA_II_Replacement");
+    PGADebugExited ("PGA_NSGA_Replacement");
 }
 
+/*U****************************************************************************
+
+   PGA_NSGA_II_Replacement - Perform NSGA-II Replacement
+   - Perform dominance computation (ranking)
+   - Perform crowding computation specific to NSGA-II
+   - Sort individuals and replace into next generation
+
+   Category: Generation
+
+   Inputs:
+      ctx         - context variable
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGA_NSGA_II_Replacement(ctx);
+****************************************************************************U*/
+
+void PGA_NSGA_II_Replacement (PGAContext *ctx)
+{
+    PGA_NSGA_Replacement (ctx, crowding);
+}
+
+/*U****************************************************************************
+
+   PGA_NSGA_III_Replacement - Perform NSGA-III Replacement
+   - Perform dominance computation (ranking)
+   - Perform crowding computation specific to NSGA-III
+   - Sort individuals and replace into next generation
+
+   Category: Generation
+
+   Inputs:
+      ctx         - context variable
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGA_NSGA_II_Replacement(ctx);
+****************************************************************************U*/
+
+void PGA_NSGA_III_Replacement (PGAContext *ctx)
+{
+    PGA_NSGA_Replacement (ctx, niching);
+}

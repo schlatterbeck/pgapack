@@ -26,6 +26,12 @@ Update Jan 2022:
   PGASetTournamentSize.
 - Implement simulated binary crossover (SBX) and polynomial mutation,
   see user guide.
+- NSGA-III for many-objective optimization is now implemented
+- There is a small plotting-utility ``examples/nsgaiii/crowdingplot3``
+  written in python that can plot three function values in a 3D-plot.
+  It can directly use the output of an optimization, e.g.::
+
+    examples/nsgaiii/crowdingplot3 test/nsgaiii_optimize_13_1.data
 
 Second Update December 2021:
 

@@ -947,15 +947,95 @@ We call this replacement variant
 in the old and the new population are compared and the one with the
 better fitness is used.
 
-A last algorithm is typically used for multi-objective optimization with
-the Nondominated Sorting Genetic Algorithm (Version~2), NSGA-II
+Two algorithms are typically used for multi-objective optimization.
+The first one is
+the elitist Nondominated Sorting Genetic Algorithm (Version~2), NSGA-II
 \cite{DPAM02} and is called NSGA-II replacement. It can be used for
 single-objective optimization, too, both with and without constraints.
 If constraints are present, by default nondominated sorting is used for
 constraints, too.  This can be switched to the behaviour without NSGA-II
-by setting \verb+PGASetSumConstraintsFlag+ to \verb+PGA_TRUE+. NSGA-II
-is the only possible population replacement algorithm when using
-multi-objective optimization.
+by setting \verb+PGASetSumConstraintsFlag+ to \verb+PGA_TRUE+.
+
+The second is the Nondominated Sorting Genetic Algorithm for
+many-objective optimization, NSGA-III \cite{DJ14}, \cite{JD14}.
+NSGA-II and NSGA-III are the only possible population replacement
+algorithms when using multi-objective optimization.
+
+With NSGA-III you need to define a regular set of points or
+a set of directions where you want solutions to the multi-objective
+problem to be found, both can be combined, you can specify both, a
+number of reference directions and reference points. The reference
+points are in a hyperplane defined by the M positive axes of the
+objective space, the hyperplane goes through the axes intercepts at
+coordinate 1 for each of the axes. An example for three objectives with
+a partition size of 12 is shown in figure~\ref{fig:refpoints}.
+
+\begin{figure}
+\centerline{\includegraphics{refpoints.eps}}
+\caption{Reference points in 3 dimensions, partition-size 12}
+\label{fig:refpoints}
+\end{figure}
+
+The discovered pareto-front is
+projected onto this hyperplane \cite{BDR19}. When specifying reference
+directions, these are directly defined in the objective space (without
+any projection).
+
+To compute a set of points we use an algorithm
+originally defined in a paper by I.~Das and J.~E.~Dennis \cite{DD98}
+with the function \verb+LIN_dasdennis+. This function gets the dimension
+(the number of objectives to optimize which is the number of auxiliary
+evaluations +1 minus the number of constraints) and the number of
+partitions. It returns the points in \verb+result+ and optionally takes
+a scale factor in the range 0..1 and a direction to shift this scaled
+set of points. The direction is only needed if the scale factor is less
+than one. The first time the function is called, the result must
+point at a NULL pointer. The function automatically allocates the
+necessary memory. It can be called multiple times to extend the points
+already allocated. The resulting points are then passed into the
+function \verb+PGASetReferencePoints+:
+
+\begin{verbatim}
+int npoints = 0;
+void *result = NULL;
+double point [3] = {1, 1, 1};
+
+PGASetNumAuxEval (ctx, 2);
+PGASetNumConstraint (ctx, 0);
+npoints = LIN_dasdennis (3, 2, &result, 0, 1, NULL);
+npoints = LIN_dasdennis (3, 1, &result, npoints, 0.5, point);
+PGASetReferencePoints (ctx, npoints, result);
+\end{verbatim}
+
+For defining reference directions, the function
+\verb+PGASetReferenceDirections+ is used. It gets the number of
+directions and the vector of directions (each direction is a vector of
+the dimensionality of the number of objectives) and the number of
+partitions (for Das/Dennis points) and the scale factor of the generated
+points:
+
+\begin{verbatim}
+    double directions [][3] = {{1, 1, 1}, {1, 2, 3}};
+    PGASetReferenceDirections (ctx, 2, directions, 12, 0.05);
+\end{verbatim}
+
+The difference to the reference points above is that the
+reference directions are in the objective space and the Das/Dennis
+points are generated dynamically in each generation.
+
+Note that by default when no population size if specified, NSGA-III uses
+the number of points defined by the reference points and reference
+directions for the population size.
+
+The NSGA-III replacement optimizes the solutions to be near the
+reference points and/or reference directions. With a high number
+of objective functions, the N-dimensional space forming the solution
+space increases exponentially with the number of objective functions.
+This is known as the ``curse of dimensionality''. With NSGA-II it is
+increasingly hard to find a well distributed set of solutions with more
+than two or three objectives.  With the NSGA-III
+replacement it is possible to concentrate the search to a predefined
+number of reference points or reference directions.
 
 \pga\ supports both GRGA and SSGA and variants in between via {\em
 parameterized} population replacement.  For example, the {\tt PGASet} calls
@@ -990,12 +1070,14 @@ For pairwise best replacement \verb+PGA_POPREPL_PAIRWISE_BEST+ is used
 as the replacement type. Like restricted tournament replacement it is an
 elitist strategy.
 
-For NSGA-II replacement \verb+PGA_POPREPL_NSGA_II+ is used. The number
+For NSGA-II replacement \verb+PGA_POPREPL_NSGA_II+ is used. For NSGA-II
+replacement \verb+PGA_POPREPL_NSGA_III+ is used.  The number
 of auxiliary evaluation function can be set with \verb+PGASetNumAuxEval+
 and the number of constraints can be set with \verb+PGASetNumConstraint+.
-If the difference between the two is $>0$, these auxiliary evaluations are
-used for multi-objective optimization. Only the NSGA-II replacement is
-possible with these settings.
+If the difference between the two is $>0$ (i.e. the number of objectives
+is $>1$), these auxiliary evaluations are used for multi-objective
+optimization. Only the NSGA-II and NSGA-III replacement are possible
+with these settings (i.e. when the number of objectives is $>1$).
 
 The three replacement types \textit{pairwise best} and \textit{restricted
 tournament replacement} and NSGA-II replacement have selection pressure
