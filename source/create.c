@@ -593,7 +593,7 @@ void PGASetUp ( PGAContext *ctx )
             /* Check that there was no overflow */
             assert (lb < n);
             assert (lb < SIZE_MAX / (sizeof (double) * dim));
-            ctx->ga.normdirs = malloc (sizeof (double) * dim * lb);
+            ctx->ga.normdirs = malloc (sizeof (double) * dim * n);
             if (ctx->ga.normdirs == NULL) {
                 PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normdirs");
             }

@@ -498,6 +498,9 @@ void PGASetReferencePoints (PGAContext *ctx, int npoints, void *points)
     if (ctx->ga.nrefpoints) {
         PGAErrorPrintf (ctx, PGA_FATAL, "Can't set reference points twice");
     }
+    if (points == NULL) {
+        PGAErrorPrintf (ctx, PGA_FATAL, "Need non-NULL points");
+    }
     ctx->ga.nrefpoints = npoints;
     ctx->ga.refpoints  = points;
 }
@@ -539,6 +542,9 @@ void PGASetReferenceDirections
 {
     if (ctx->ga.nrefdirs) {
         PGAErrorPrintf (ctx, PGA_FATAL, "Can't set reference directions twice");
+    }
+    if (dirs == NULL) {
+        PGAErrorPrintf (ctx, PGA_FATAL, "Need non-NULL directions");
     }
     ctx->ga.nrefdirs   = ndirs;
     ctx->ga.refdirs    = dirs;
