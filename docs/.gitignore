@@ -6,5 +6,7 @@
 *.log
 *.pdf
 *.toc
+*.pbm
 user_guide.ps
 user_guide.pdf_original
+refpoints.eps
