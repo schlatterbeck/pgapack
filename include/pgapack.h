@@ -50,6 +50,7 @@
 #include <ctype.h>
 #include <stdarg.h>
 #include <mpi.h>
+#include <assert.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -221,6 +222,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_CROSSOVER_TWOPT     2    /* Two point crossover                */
 #define PGA_CROSSOVER_UNIFORM   3    /* Uniform   crossover                */
 #define PGA_CROSSOVER_SBX       4    /* Simulated binary crossover (SBX)   */
+#define PGA_CROSSOVER_EDGE      5    /* Edge Recombination                 */
 
 /*****************************************
 *            SELECTION                   *
@@ -558,6 +560,7 @@ typedef struct {
     int          *intscratch;            /* integer-scratch space          */
     double       *dblscratch;            /* double- scratch space          */
     PGABinary    *dominance;             /* for dominance sorting          */
+    PGAInteger   (*edgemap)[4];          /* For Edge Crossover             */
 } PGAScratch;
 
 /*****************************************
@@ -820,6 +823,8 @@ void PGAIntegerTwoptCrossover
 void PGAIntegerUniformCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGAIntegerSBXCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerEdgeCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGAIntegerPrintString (PGAContext *ctx, FILE *fp, int p, int pop);
 void PGAIntegerCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2);

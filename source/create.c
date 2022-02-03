@@ -45,7 +45,6 @@ privately owned rights.
 *              Brian P. Walenz
 *****************************************************************************/
 
-#include <assert.h>
 #include <stdint.h>
 #include "pgapack.h"
 
@@ -1239,8 +1238,28 @@ void PGASetUp ( PGAContext *ctx )
         int intsfor2pop = (ctx->ga.PopSize * 2 + WL - 1) / WL;
         ctx->scratch.dominance = malloc
             (sizeof (PGABinary) * intsfor2pop * 2 * ctx->ga.PopSize);
+        if (ctx->scratch.dominance == NULL) {
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
+                , "PGASetUp: No room to allocate ctx->scratch.dominance"
+                );
+        }
     } else {
         ctx->scratch.dominance = NULL;
+    }
+
+    /* If the crossover type is Edge crossover */
+    if (ctx->ga.CrossoverType == PGA_CROSSOVER_EDGE) {
+        ctx->scratch.edgemap = malloc
+            (sizeof (PGAInteger) * 4 * ctx->ga.StringLen);
+        if (ctx->scratch.edgemap == NULL) {
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
+                , "PGASetUp: No room to allocate ctx->scratch.edgemap"
+                );
+        }
+    } else {
+        ctx->scratch.edgemap = NULL;
     }
 
     PGACreatePop (ctx, PGA_OLDPOP);

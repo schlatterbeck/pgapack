@@ -787,6 +787,232 @@ void PGAIntegerSBXCrossover
 }
 
 /*I****************************************************************************
+   PGAIntegerEdgeCrossover - performs Edge Recombination
+   on two parent strings producing two children via side-effect
+
+   Inputs:
+      ctx  - context variable
+      p1   - the first parent string
+      p2   - the second parent string
+      pop1 - symbolic constant of the population containing string p1 and p2
+      c1   - the first child string
+      c2   - the second child string
+      pop2 - symbolic constant of the population to contain string c1 and c2
+
+   Outputs:
+      c1 and c2 in population pop2 are modified by side-effect.
+
+   Example:
+      Performs crossover on the two parent strings m and d, producing
+      children s and b.
+
+      PGAContext *ctx;
+      int m, d, s, b;
+      :
+      PGAIntegerEdgeCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+****************************************************************************I*/
+static void append_edge (PGAContext *ctx, PGAInteger n1, PGAInteger n2)
+{
+    int i;
+    PGAInteger *em = ctx->scratch.edgemap [n1];
+    for (i=0; i<4; i++) {
+        if (em [i] == 0) {
+            em [i] = n2 + 1;
+            return;
+        } else if (em [i] == n2 + 1) {
+            em [i] = -em [i];
+            return;
+        } else {
+            assert (-em [i] != n2 + 1);
+        }
+    }
+}
+
+static void build_edge_map (PGAContext *ctx, PGAInteger **parent)
+{
+    int i, j, l = ctx->ga.StringLen;
+    memset (ctx->scratch.edgemap, 0, sizeof (PGAInteger) * 4 * l);
+    unsigned long long s [2] = {0, 0};
+    for (i=0; i<l; i++) {
+        for (j=0; j<2; j++) {
+            PGAInteger n1 = parent [j][i];
+            PGAInteger n2 = parent [j][(i + 1) % l];
+            if (n1 < 0 || n1 >= l || n2 < 0 || n2 >= l) {
+                PGAErrorPrintf
+                    (ctx, PGA_FATAL, "Parent gene is no permutation");
+            }
+            append_edge (ctx, n1, n2);
+            append_edge (ctx, n2, n1);
+            s [j] += parent [j][i];
+        }
+    }
+    for (j=0; j<2; j++) {
+        if (s [j] != (unsigned long long)(l) * (unsigned long long)(l-1) / 2) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Parent gene is no permutation");
+        }
+    }
+}
+
+int count_edges (PGAContext *ctx, PGAInteger idx)
+{
+    int j;
+    int c = 0;
+    PGAInteger *em = ctx->scratch.edgemap [idx];
+    for (j=0; j<4; j++) {
+        if (em [j]) {
+            c++;
+        }
+    }
+    return c;
+}
+
+/* Remove new edge from all right sides, note that only the edges in
+ * the edge table for the new edge have this edge on the right side
+ */
+void remove_edge_from_right (PGAContext *ctx, int cidx)
+{
+    int i, j;
+    for (j=0; j<4; j++) {
+        int v = abs (ctx->scratch.edgemap [cidx][j]) - 1;
+        for (i=0; i<4; i++) {
+            if (abs (ctx->scratch.edgemap [v][i]) - 1 == cidx) {
+                ctx->scratch.edgemap [v][i] = 0;
+                break;
+            }
+        }
+    }
+}
+
+int intcmp (const void *v1, const void *v2)
+{
+    const int *i1 = v1;
+    const int *i2 = v2;
+    if (*i1 < *i2) {
+        return -1;
+    }
+    if (*i1 > *i2) {
+        return 1;
+    }
+    return 0;
+}
+
+void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
+{
+    int i, j;
+    int l = ctx->ga.StringLen;
+    PGAInteger *em = ctx->scratch.edgemap [child [idx]];
+    assert (idx < l - 1);
+    /* Prefer common edges */
+    if (em [0] < 0 && em [1] >= 0) {
+        child [idx + 1] = -em [0] - 1;
+    } else if (em [1] < 0 && em [0] >= 0) {
+        child [idx + 1] = -em [1] - 1;
+    } else if (em [2] < 0) {
+        child [idx + 1] = -em [2] - 1;
+    } else {
+        int idxm = 0;
+        int emin [4];
+        int minv = -1;
+        for (j=0; j<4; j++) {
+            int v;
+            if (em [j] == 0) {
+                continue;
+            }
+            v = count_edges (ctx, abs (em [j]) - 1);
+            if (idxm==0 || v < minv) {
+                minv = v;
+                emin [0] = abs (em [j]) - 1;
+                idxm = 1;
+            } else if (v == minv) {
+                emin [idxm++] = abs (em [j]) - 1;
+            }
+        }
+        if (idxm == 1) {
+            child [idx + 1] = emin [0];
+        } else if (idxm > 1) {
+            child [idx + 1] = emin [PGARandomInterval (ctx, 0, idxm - 1)];
+        } else {
+            int used [idx + 1];
+            int mini = 0;
+            int lastu = 0;
+            memcpy (used, child, sizeof (int) * idx + 1);
+            qsort (used, sizeof (int), idx + 1, intcmp);
+            for (j=0; j<idx+1; j++) {
+                for (i=lastu; i<used [j]; i++) {
+                    int ec = count_edges (ctx, i);
+                    if (minv < 0 || ec < minv) {
+                        minv = ec;
+                        mini = i;
+                    }
+                }
+                lastu = used [j] + 1;
+            }
+            /* don't randomize different indexes with same count */
+            child [idx + 1] = mini;
+        }
+    }
+    remove_edge_from_right (ctx, child [idx + 1]);
+}
+
+void PGAIntegerEdgeCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+    int i, j, ci;
+    int l = ctx->ga.StringLen;
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    /* Build Edge-Map, 0 is unallocated, a node is represented by index+1 */
+    build_edge_map (ctx, parent);
+    /* Find a node with edge-count < 4 for each child
+     * If not possible (e.g. for the 2nd child) we use first node of one
+     * of the parents.
+     */
+    ci = 0;
+    for (i=0; i<l; i++) {
+        for (j=0; j<4; j++) {
+            if (!ctx->scratch.edgemap [i][j]) {
+                child [ci++][0] = i;
+                break;
+            }
+        }
+        if (ci >= 2) {
+            break;
+        }
+    }
+    if (ci < 2) {
+        if (ci == 0) {
+            child [0][0] = parent [0][0];
+            child [1][0] = parent [1][0];
+        } else {
+            if (child [0][0] == parent [0][0]) {
+                child [1][0] = parent [1][0];
+            } else if (child [0][0] == parent [1][0]) {
+                child [1][0] = parent [0][0];
+            } else {
+                child [1][0] = parent [PGARandomFlip (ctx, 0.5)][0];
+            }
+        }
+    }
+    remove_edge_from_right (ctx, child [0][0]);
+    /* Now do the actual crossover */
+    for (ci=0; ci<2; ci++) {
+        for (i=0; i<l-1; i++) {
+            next_edge (ctx, child [ci], i);
+        }
+        /* Need to rebuild, edge-map is consumed above */
+        build_edge_map (ctx, parent);
+        remove_edge_from_right (ctx, child [1][0]);
+    }
+}
+
+/*I****************************************************************************
    PGAIntegerPrintString - writes an integer-valued string to a file.
 
    Inputs:
