@@ -994,6 +994,9 @@ void PGASetUp ( PGAContext *ctx )
 	  case PGA_CROSSOVER_SBX:
 	    Crossover  = PGAIntegerSBXCrossover;
             break;
+	  case PGA_CROSSOVER_EDGE:
+	    Crossover  = PGAIntegerEdgeCrossover;
+            break;
         }
 	PrintString    = PGAIntegerPrintString;
 	CopyString     = PGAIntegerCopyString;
@@ -1105,6 +1108,9 @@ void PGASetUp ( PGAContext *ctx )
     }
     if ((ctx->cops.Crossover    == NULL) && (ctx->fops.Crossover   == NULL)) {
 	ctx->cops.Crossover     = Crossover;
+        if (Crossover == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "PGASetUp: No crossover specified");
+        }
     }
     if ((ctx->cops.PrintString  == NULL) && (ctx->fops.PrintString == NULL)) {
 	ctx->cops.PrintString   = PrintString;
