@@ -259,6 +259,24 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_MUTATION_POLY       7    /* Polynomial mutation                 */
 
 /*****************************************
+*               MIXING                   *
+*****************************************/
+/* This defines how mutation/crossover are combined (or not)
+ * The MUTATE_AND_CROSS variant performs mutation only if crossover was
+ * also performed. The TRADITIONAL variant performs mutation with the
+ * configured probability and then mutates with the given probability
+ * regardless if crossover was performed or not (this is the way all
+ * traditional implementations of GA are handling it).
+ * Note: This replaces the previous flags (PGASetMutationOrCrossoverFlag
+ * and friends) which are still supported for legacy reasons.
+ * The default is PGA_MIX_MUTATE_OR_CROSS also for legacy reasons.
+ */
+#define PGA_MIX_MUTATE_OR_CROSS   1    /* Either mutation or crossover      */
+#define PGA_MIX_MUTATE_AND_CROSS  2    /* Mutation only if crossover        */
+#define PGA_MIX_MUTATE_ONLY       3    /* Only mutation                     */
+#define PGA_MIX_TRADITIONAL       4    /* Mutation after crossover          */
+
+/*****************************************
 * Differential Evolution Variant         *
 *****************************************/
 #define PGA_DE_VARIANT_RAND      1   /* Standard DE */
@@ -389,8 +407,7 @@ typedef struct {
     int SelectIndex;         /* index of Select for next two individuals  */
     int FitnessType;         /* Type of fitness transformation used       */
     int FitnessMinType;      /* Transformation for minimization problems  */
-    int MutateOnly;          /* Mutate only, no crossover at all          */
-    int MutateOnlyNoCross;   /* Mutate only strings not from crossover    */
+    int MixingType;          /* Combination of crossover/mutation         */
     int MutationType;        /* Type of mutation used                     */
     int MutateIntegerValue;  /* Multiplier to mutate Integer strings with */
     int MutateBoundedFlag;   /* Confine alleles to given range (bound)    */
@@ -946,24 +963,26 @@ MPI_Comm PGAGetCommunicator( PGAContext *ctx);
 *          pga.c
 *****************************************/
 
-void PGARun(PGAContext *ctx,
+void PGARun (PGAContext *ctx,
     double (*evaluate)(PGAContext *c, int p, int pop, double *auxeval));
 void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop);
-void PGARunMutationOrCrossover ( PGAContext *ctx, int oldpop, int newpop );
-void PGARunMutationOnly ( PGAContext *ctx, int oldpop, int newpop );
-void PGAUpdateGeneration(PGAContext *ctx, MPI_Comm comm);
+void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop );
+void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop );
+void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm);
 int PGAGetDataType (PGAContext *ctx);
 int PGAGetOptDirFlag (PGAContext *ctx);
 int PGAGetStringLength (PGAContext *ctx);
 int PGAGetVariableStringLength (PGAContext *ctx, int p, int pop);
 int PGAGetGAIterValue (PGAContext *ctx);
 int PGAGetEvalCount (PGAContext *ctx);
-void PGASetMutationOrCrossoverFlag( PGAContext *ctx, int flag);
-void PGASetMutationAndCrossoverFlag( PGAContext *ctx, int flag);
-void PGASetMutationOnlyFlag( PGAContext *ctx, int flag);
+void PGASetMutationOrCrossoverFlag (PGAContext *ctx, int flag);
+void PGASetMutationAndCrossoverFlag (PGAContext *ctx, int flag);
+void PGASetMutationOnlyFlag (PGAContext *ctx, int flag);
+void PGASetMixingType (PGAContext *ctx, int type);
 int PGAGetMutationOrCrossoverFlag (PGAContext *ctx);
 int PGAGetMutationAndCrossoverFlag (PGAContext *ctx);
 int PGAGetMutationOnlyFlag (PGAContext *ctx);
+int PGAGetMixingType (PGAContext *ctx);
 
 /*****************************************
 *          pop.c

@@ -239,8 +239,7 @@ PGAContext *PGACreate
     ctx->ga.FitnessType        = PGA_UNINITIALIZED_INT;
     ctx->ga.FitnessMinType     = PGA_UNINITIALIZED_INT;
     ctx->ga.MutationType       = PGA_UNINITIALIZED_INT;
-    ctx->ga.MutateOnly         = PGA_UNINITIALIZED_INT;
-    ctx->ga.MutateOnlyNoCross  = PGA_UNINITIALIZED_INT;
+    ctx->ga.MixingType         = PGA_UNINITIALIZED_INT;
     ctx->ga.MutateRealValue    = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.MutateIntegerValue = PGA_UNINITIALIZED_INT;
     ctx->ga.MutateBoundedFlag  = PGA_UNINITIALIZED_INT;
@@ -757,23 +756,22 @@ void PGASetUp ( PGAContext *ctx )
         ctx->ga.FitnessMinType     = PGA_FITNESSMIN_CMAX;
     }
 
-    if (ctx->ga.MutateOnly        == PGA_UNINITIALIZED_INT) {
-        ctx->ga.MutateOnly         = PGA_FALSE;
+    if (ctx->ga.MixingType        == PGA_UNINITIALIZED_INT) {
+        ctx->ga.MixingType         = PGA_MIX_MUTATE_OR_CROSS;
     }
 
     /* Require a gene length of at least two if we're doing crossover */
-    if (!ctx->ga.MutateOnly && ctx->ga.StringLen <= 1) {
+    if (  (ctx->ga.MixingType != PGA_MIX_MUTATE_ONLY && ctx->ga.StringLen <= 1)
+       || ctx->ga.StringLen <= 0
+       )
+    {
         PGAError ( ctx, "PGACreate: Invalid value of StringLen:"
                  , PGA_FATAL, PGA_INT, (void *) &ctx->ga.StringLen
                  );
     }
 
-    if (ctx->ga.MutateOnlyNoCross == PGA_UNINITIALIZED_INT) {
-        ctx->ga.MutateOnlyNoCross  = PGA_TRUE;
-    }
-
     if (  ctx->ga.CrossoverType == PGA_CROSSOVER_TWOPT
-       && ctx->ga.StringLen == 2 && !ctx->ga.MutateOnlyNoCross
+       && ctx->ga.StringLen == 2 && ctx->ga.MixingType != PGA_MIX_MUTATE_ONLY
        )
     {
         PGAError ( ctx

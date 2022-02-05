@@ -70,6 +70,7 @@ int main (int argc, char **argv)
     PGASetCrossoverType      (ctx, PGA_CROSSOVER_EDGE);
     PGASetUserFunction       (ctx, PGA_USERFUNCTION_STOPCOND, stop_cond);
     PGASetTournamentSize     (ctx, 1.7);
+    PGASetMixingType         (ctx, PGA_MIX_MUTATE_OR_CROSS);
     //PGASetTournamentWithReplacement (ctx, PGA_FALSE);
     
     PGASetUp   (ctx);

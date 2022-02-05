@@ -375,6 +375,8 @@ c *** pga
       external PGAGetMutationAndCrossoverFlag
       integer PGAGetMutationOnlyFlag
       external PGAGetMutationOnlyFlag
+      integer PGAGetMixingType
+      external PGAGetMixingType
 c *** pop
       integer PGAGetPopSize
       external PGAGetPopSize

@@ -461,8 +461,10 @@ vector which is then crossed-over with an existing individual.
 The algorithm is described in more detail in section~\ref{mutation-de},
 page~\pageref{mutation-de}. Since in \pga{} the DE algorithm is
 implemented in a mutation strategy, typically for DE a strategy with
-only mutation is selected, see \verb+PGASetMutationOnlyFlag+ in
-section~\ref{sec:population-replacement}. DE applies
+only mutation is selected, see \verb+PGASetMixingType+ with option
+\verb+PGA_MIX_MUTATE_ONLY+ in section~\ref{sec:population-replacement}.
+
+DE applies
 selection pressure during population replacement: A newly-mutated string
 replaces its parent if it has the same or a better fitness. There is no
 selection mechanism during the selection phase like in other EAs. To
@@ -479,7 +481,7 @@ given in section~\ref{sec:selection}.
 
     PGASetSelectType (ctx, PGA_SELECT_LINEAR);
     PGASetPopReplaceType (ctx, PGA_POPREPL_PAIRWISE_BEST);
-    PGASetMutationOnlyFlag (ctx, PGA_TRUE);
+    PGASetMixingType (ctx, PGA_MIX_MUTATE_ONLY);
     PGASetMutationType (ctx, PGA_MUTATION_DE);
     PGASetMutationBounceBackFlag (ctx, PGA_TRUE);
 \end{verbatim}
@@ -1094,21 +1096,30 @@ one less than the population size will result in an elitist GRGA, where the
 most fit string is always copied to the new population (since {\tt
 PGA\_POPREPL\_BEST} is the default population replacement strategy).
 
-\begin{sloppypar}
 Traditionally, strings created through recombination first undergo crossover
 and then mutation.  Some practitioners \cite{Da91} have argued that these two
 operators should be separate.  By default, \pga\ applies mutation only to
-strings that did {\em not} undergo crossover.  This is equivalent to setting
-{\tt PGASetMutationOrCrossoverFlag} {\tt (ctx,PGA\_TRUE)}.  To have strings
-undergo {\em both} crossover and mutation, one should use {\tt
-PGASetMutationAndCrossoverFlag} {\tt (ctx,PGA\_TRUE)}. Note that with
-this flag set, strings that are not crossed over are also not mutated.
+strings that did {\em not} undergo crossover.
+
+This is equivalent to setting \verb+PGASetMixingType+ to
+\verb+PGA_MIX_MUTATE_OR_CROSS+ which is also the default.
+To have strings undergo {\em both} crossover and mutation, one should
+set \verb+PGASetMixingType+ to \verb+PGA_MIX_TRADITIONAL+. Note that
+there is also a mode that will not mutate strings that are not also
+crossed over. This can be enabled by setting \verb+PGASetMixingType+ to
+\verb+PGA_MIX_MUTATE_AND_CROSS+.
+
 If an evolutionary algorithm variant without crossover is used or if
 special crossover techniques with more that two parents should be
 applied, all the logic can be implemented in a custom crossover operator
-and the \verb+PGASetMutationOnlyFlag+ can be set to \verb+PGA_TRUE+.
-With this flag set no crossover is performed at all.
-\end{sloppypar}
+and the \verb+PGASetMixingType+ can be set to \verb+PGA_MIX_MUTATE_ONLY+.
+In this mode no crossover is performed at all.
+
+There is also a legacy interface that uses the functions
+\verb+PGASetMutationOrCrossoverFlag+,
+\verb+PGASetMutationAndCrossoverFlag+, and
+\verb+PGASetMutationOnlyFlag+. The legacy interface should not be used
+for new code.
 
 By default, \pga\ allows duplicate strings in the population.  Some
 practitioners advocate not allowing duplicate strings in the population in
@@ -1328,7 +1339,8 @@ This has adverse effects on crossover with linear selection:
 With this scheme the same two adjacent population members are always
 crossed over which makes crossover almost ineffective.
 Linear selection is typically only useful when using special
-mutation operators most often with \verb+PGASetMutationOnlyFlag+ set.
+mutation operators most often with \verb+PGASetMixingType+ set to
+\verb+PGA_MIX_MUTATE_ONLY+.
 If you need a randomized sequence without selection pressure, use
 tournament selection without replacement with a tournament size of one.
 
@@ -1572,8 +1584,8 @@ combined via crossover with the $i^{\hbox{\footnotesize th}}$ member of
 the population $X_i$. Note that the crossover in this implementation of DE is
 \textit{not} the normal genetic algorithm crossover (from
 section~\ref{sec:crossover}), in fact when using DE, crossover is
-typically turned off by setting \verb+PGASetMutationOnlyFlag+ to
-\verb+PGA_TRUE+. Instead DE uses its own crossover implementation
+typically turned off by setting \verb+PGASetMixingType+ to
+\verb+PGA_MIX_MUTATE_ONLY+. Instead DE uses its own crossover implementation
 within the \verb+PGA_MUTATION_DE+ mutation implementation. For each
 vector element (allele), a random variable with a crossover probability
 specified by \verb+PGASetDECrossoverProb+ (default \DefaultDECrossoverProb)
@@ -3768,11 +3780,13 @@ Max. population homogeneity before stopping
 Number of new strings to generate
  &   10                         & \verb+PGASetNumReplaceValue+          \\ \hline
 Apply mutation and crossover
- & \verb+PGA_FALSE+             & \verb+PGASetMutationAndCrossoverFlag+ \\ \hline
+ & \verb+PGA_MIX_MUTATE_AND_CROSS+             & \verb+PGASetMixingType+ \\ \hline
 Apply mutation or crossover
- & \verb+PGA_TRUE+              & \verb+PGASetMutationOrCrossoverFlag+  \\ \hline
+ & \verb+PGA_MIX_MUTATE_OR_CROSS+              & \verb+PGASetMixingType+  \\ \hline
 Apply mutation only
- & \verb+PGA_FALSE+             & \verb+PGASetMutationOnlyFlag+         \\ \hline
+ & \verb+PGA_MIX_MUTATE_ONLY+             & \verb+PGASetMixingType+         \\ \hline
+Traditional crossover then mutation
+ & \verb+PGA_MIX_TRADITIONAL+             & \verb+PGASetMixingType+         \\ \hline
 Crossover type
  & \verb+PGA_CROSSOVER_TWOPT+   & \verb+PGASetCrossoverType+            \\ \hline
 Probability of crossover
@@ -4236,11 +4250,9 @@ void &  PGASetMaxSimilarityValue(PGAContext *ctx, int max\_similarity) \\ \hline
 \begin{tabular}{|l|l|} \hline\hline
 \multicolumn{1}{|c|}{Type} &
 \multicolumn{1}{c|}{Function}  \\  \hline\hline
-void &  PGASetMutationAndCrossoverFlag(PGAContext *ctx, int flag) \\ \hline
+void &  PGASetMixingType(PGAContext *ctx, int type) \\ \hline
 void &  PGASetMutationBoundedFlag(PGAContext *ctx, int val) \\ \hline
 void &  PGASetMutationIntegerValue(PGAContext *ctx, int val) \\ \hline
-void &  PGASetMutationOnlyFlag(PGAContext *ctx, int flag) \\ \hline
-void &  PGASetMutationOrCrossoverFlag(PGAContext *ctx, int flag) \\ \hline
 void &  PGASetMutationProb(PGAContext *ctx, double mutation\_prob) \\ \hline
 void &  PGASetMutationRealValue(PGAContext *ctx, double val) \\ \hline
 void &  PGASetMutationType(PGAContext *ctx, int mutation\_type) \\ \hline

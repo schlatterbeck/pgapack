@@ -104,12 +104,21 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
         }
     }
 
-    if (PGAGetMutationOnlyFlag(ctx)) {
-	CreateNewGeneration = PGARunMutationOnly;
-    } else if (PGAGetMutationOrCrossoverFlag(ctx)) {
+    switch (PGAGetMixingType (ctx)) {
+    case PGA_MIX_MUTATE_OR_CROSS:
 	CreateNewGeneration = PGARunMutationOrCrossover;
-    } else {
+        break;
+    case PGA_MIX_MUTATE_AND_CROSS:
 	CreateNewGeneration = PGARunMutationAndCrossover;
+        break;
+    case PGA_MIX_MUTATE_ONLY:
+	CreateNewGeneration = PGARunMutationOnly;
+        break;
+    case PGA_MIX_TRADITIONAL:
+	CreateNewGeneration = PGARunMutationAndCrossover;
+        break;
+    default:
+        assert (0);
     }
 
     while (!PGADone(ctx, comm)) {

@@ -203,10 +203,10 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
             PGACrossover (ctx, m1, m2, oldpop, PGA_TEMP1, PGA_TEMP2, newpop);
 
             /*** mutate and copy first string to new population ***/
-            PGAMutate ( ctx, PGA_TEMP1, newpop);
-            while (PGADuplicate( ctx, PGA_TEMP1, newpop, newpop, n))
-                 PGAChange ( ctx, PGA_TEMP1, newpop );
-            PGACopyIndividual ( ctx, PGA_TEMP1, newpop, n, newpop);
+            PGAMutate (ctx, PGA_TEMP1, newpop);
+            while (PGADuplicate (ctx, PGA_TEMP1, newpop, newpop, n))
+                 PGAChange (ctx, PGA_TEMP1, newpop);
+            PGACopyIndividual (ctx, PGA_TEMP1, newpop, n, newpop);
             n++;
 
             if ( n < popsize ) {
@@ -220,9 +220,15 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
         }
         else {
             PGACopyIndividual (ctx, m1, oldpop, n, newpop);
+            if (ctx->ga.MixingType == PGA_MIX_TRADITIONAL) {
+                PGAMutate (ctx, n, newpop);
+            }
             n++;
             if (n < ctx->ga.PopSize) {
                 PGACopyIndividual (ctx, m2, oldpop, n, newpop);
+                if (ctx->ga.MixingType == PGA_MIX_TRADITIONAL) {
+                    PGAMutate (ctx, n, newpop);
+                }
                 n++;
             }
         }
@@ -716,6 +722,7 @@ int PGAGetEvalCount (PGAContext *ctx)
 /*U****************************************************************************
   PGASetMutationOrCrossoverFlag - A boolean flag to indicate if recombination
   uses exactly one of crossover or mutation on selected strings.
+  Note: This is a legacy interface, use PGASetMixingType instead.
 
    Category: Generation
 
@@ -727,29 +734,18 @@ int PGAGetEvalCount (PGAContext *ctx)
       None
 
    Example:
-      Set the genetic algorithm to use mutation only when crossover is
-      not used.
-
-      PGAContext *ctx;
-      :
-      PGASetMutationOrCrossoverFlag(ctx,PGA_FALSE);
+      Do not use this for new code.
 
 ****************************************************************************U*/
 void PGASetMutationOrCrossoverFlag( PGAContext *ctx, int flag)
 {
     PGADebugEntered("PGASetMutationOrCrossoverFlag");
 
-     switch (flag)
-     {
-     case PGA_TRUE:
-     case PGA_FALSE:
-          ctx->ga.MutateOnlyNoCross = flag;
-          break;
-     default:
-          PGAError (ctx, "PGASetMutationOrCrossoverFlag: Invalid value of "
-                    "flag:", PGA_FATAL, PGA_INT, (void *) &flag);
-          break;
-     }
+    if (flag) {
+        ctx->ga.MixingType = PGA_MIX_MUTATE_OR_CROSS;
+    } else {
+        ctx->ga.MixingType = PGA_MIX_MUTATE_AND_CROSS;
+    }
 
     PGADebugExited("PGASetMutationOrCrossoverFlag");
 }
@@ -757,6 +753,7 @@ void PGASetMutationOrCrossoverFlag( PGAContext *ctx, int flag)
 /*U****************************************************************************
   PGASetMutationAndCrossoverFlag - A boolean flag to indicate if
   recombination uses both crossover and mutation on selected strings
+  Note: This is a legacy interface, use PGASetMixingType instead.
 
    Category: Generation
 
@@ -768,35 +765,27 @@ void PGASetMutationOrCrossoverFlag( PGAContext *ctx, int flag)
       None
 
    Example:
-      Set the genetic algorithm to use both crossover and mutation when
-      reproducing strings.
-
-      PGAContext *ctx;
-      :
-      PGASetMutationAndCrossoverFlag(ctx,PGA_FALSE);
+      Do not use this for new code.
 
 ****************************************************************************U*/
 void PGASetMutationAndCrossoverFlag( PGAContext *ctx, int flag)
 {
-    PGADebugEntered("PGASetMutationAndCrossoverFlag");
+    PGADebugEntered ("PGASetMutationAndCrossoverFlag");
 
-     switch (flag)
-     {
-     case PGA_TRUE:
-     case PGA_FALSE:
-          ctx->ga.MutateOnlyNoCross = !flag;
-          break;
-     default:
-          PGAError (ctx, "PGASetMutationAndCrossoverFlag: Invalid value of "
-                    "flag:", PGA_FATAL, PGA_INT, (void *) &flag);
-          break;
-     }
+    if (flag) {
+        ctx->ga.MixingType = PGA_MIX_MUTATE_AND_CROSS;
+    } else {
+        ctx->ga.MixingType = PGA_MIX_MUTATE_OR_CROSS;
+    }
 
-    PGADebugExited("PGASetMutationAndCrossoverFlag");
+    PGADebugExited ("PGASetMutationAndCrossoverFlag");
 }
 /*U***************************************************************************
    PGAGetMutationOrCrossoverFlag - Returns true if mutation only occurs when
    crossover does not.
+   Note: This is a legacy interface. If mixing types other than
+   PGA_MIX_MUTATE_OR_CROSS and PGA_MIX_MUTATE_AND_CROSS have been set
+   this might return wrong values, use PGAGetMixingType instead.
 
    Category: Generation
 
@@ -808,33 +797,27 @@ void PGASetMutationAndCrossoverFlag( PGAContext *ctx, int flag)
       otherwise, returns PGA_FALSE.
 
    Example:
-      PGAContext *ctx;
-      int mutatetype;
-      :
-      mutatetype = PGAGetMutationOrCrossoverFlag(ctx);
-      switch (mutatetype) {
-      case PGA_TRUE:
-          printf("Only mutating strings not undergoing crossover\n");
-          break;
-      case PGA_FALSE:
-          printf("Mutating strings only after crossover\n");
-          break;
-      }
+      Do not use this for new code.
 
 ***************************************************************************U*/
 int PGAGetMutationOrCrossoverFlag (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetMutationOrCrossoverFlag");
-    PGAFailIfNotSetUp("PGAGetMutationOrCrossoverFlag");
+    PGADebugEntered ("PGAGetMutationOrCrossoverFlag");
+    PGAFailIfNotSetUp ("PGAGetMutationOrCrossoverFlag");
 
-    PGADebugExited("PGAGetMutationOrCrossoverFlag");
+    PGADebugExited ("PGAGetMutationOrCrossoverFlag");
 
-    return(ctx->ga.MutateOnlyNoCross);
+    return (ctx->ga.MixingType == PGA_MIX_MUTATE_OR_CROSS
+           ? PGA_TRUE : PGA_FALSE
+           );
 }
 
 /*U***************************************************************************
    PGAGetMutationAndCrossoverFlag - Returns true if mutation occurs only
    when crossover does.
+   Note: This is a legacy interface. If mixing types other than
+   PGA_MIX_MUTATE_OR_CROSS and PGA_MIX_MUTATE_AND_CROSS have been set
+   this might return wrong values, use PGAGetMixingType instead.
 
    Category: Generation
 
@@ -846,33 +829,28 @@ int PGAGetMutationOrCrossoverFlag (PGAContext *ctx)
       Otherwise, returns PGA_FALSE
 
    Example:
-      PGAContext *ctx;
-      int mutatetype;
-      :
-      mutatetype = PGAGetMutationAndCrossoverFlag(ctx);
-      switch (mutatetype) {
-      case PGA_TRUE:
-          printf("Mutating strings only after crossover\n");
-          break;
-      case PGA_FALSE:
-          printf("Only mutating strings not undergoing crossover\n");
-          break;
-      }
+      Do not use this for new code.
 
 ***************************************************************************U*/
 int PGAGetMutationAndCrossoverFlag (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetMutationAndCrossoverFlag");
-    PGAFailIfNotSetUp("PGAGetMutationAndCrossoverFlag");
+    PGADebugEntered ("PGAGetMutationAndCrossoverFlag");
+    PGAFailIfNotSetUp ("PGAGetMutationAndCrossoverFlag");
 
-    PGADebugExited("PGAGetMutationAndCrossoverFlag");
+    PGADebugExited ("PGAGetMutationAndCrossoverFlag");
 
-    return(!ctx->ga.MutateOnlyNoCross);
+    return (ctx->ga.MixingType == PGA_MIX_MUTATE_AND_CROSS
+           ? PGA_TRUE : PGA_FALSE
+           );
 }
 
 /*U****************************************************************************
   PGASetMutationOnlyFlag - A boolean flag to indicate that recombination
   uses mutation only.
+  Note: This is a legacy interface, use PGASetMixingType instead.
+  Note: This will override settings of PGASetMutationOrCrossoverFlag and
+  PGASetMutationAndCrossoverFlag and will set the default
+  (PGASetMutationAndCrossoverFlag) when using PGA_FALSE as the flag.
 
    Category: Generation
 
@@ -884,30 +862,21 @@ int PGAGetMutationAndCrossoverFlag (PGAContext *ctx)
       None
 
    Example:
-      Set the genetic algorithm to use mutation only.
-
-      PGAContext *ctx;
-      :
-      PGASetMutationOnlyFlag(ctx,PGA_TRUE);
+      Do not use this for new code.
 
 ****************************************************************************U*/
 void PGASetMutationOnlyFlag (PGAContext *ctx, int flag)
 {
-     switch (flag)
-     {
-     case PGA_TRUE:
-     case PGA_FALSE:
-          ctx->ga.MutateOnly = flag;
-          break;
-     default:
-          PGAError (ctx, "PGASetMutationOrCrossoverFlag: Invalid value of "
-                    "flag:", PGA_FATAL, PGA_INT, (void *) &flag);
-          break;
-     }
+    if (flag) {
+        ctx->ga.MixingType = PGA_MIX_MUTATE_ONLY;
+    } else {
+        ctx->ga.MixingType = PGA_MIX_MUTATE_OR_CROSS;
+    }
 }
 
 /*U***************************************************************************
    PGAGetMutationOnlyFlag - Returns true if only mutation is used
+   Note: This is a legacy interface, use PGAGetMixingType instead.
 
    Category: Generation
 
@@ -919,23 +888,76 @@ void PGASetMutationOnlyFlag (PGAContext *ctx, int flag)
       Otherwise, returns PGA_FALSE
 
    Example:
-      PGAContext *ctx;
-      int mutateonly;
-      :
-      mutateonly = PGAGetMutationOnlyFlag(ctx);
-      switch (mutatetype) {
-      case PGA_TRUE:
-          printf("Mutating only\n");
-          break;
-      case PGA_FALSE:
-          printf("Mutating and/or crossover\n");
-          break;
-      }
+      Do not use this for new code.
 
 ***************************************************************************U*/
 int PGAGetMutationOnlyFlag (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetMutationOnlyFlag");
-    return(ctx->ga.MutateOnly);
+    PGAFailIfNotSetUp ("PGAGetMutationOnlyFlag");
+    return (ctx->ga.MixingType == PGA_MIX_MUTATE_ONLY ? PGA_TRUE : PGA_FALSE);
+}
+
+/*U****************************************************************************
+  PGASetMixingType - Strategy for combining Mutation and Crossover
+
+   Category: Generation
+
+   Inputs:
+      ctx  - context variable
+      type - Type of Mutation/Crossover combination
+
+   Outputs:
+      None
+
+   Example:
+      Set the genetic algorithm to use mutation only.
+
+      PGAContext *ctx;
+      :
+      PGASetMixingType (ctx, PGA_MIX_MUTATE_ONLY);
+
+****************************************************************************U*/
+void PGASetMixingType (PGAContext *ctx, int type)
+{
+    switch (type) {
+    case PGA_MIX_MUTATE_OR_CROSS:
+    case PGA_MIX_MUTATE_AND_CROSS:
+    case PGA_MIX_MUTATE_ONLY:
+    case PGA_MIX_TRADITIONAL:
+        ctx->ga.MixingType = type;
+        break;
+    default:
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetMixingType: Invalid value of type: %d"
+            , type
+            );
+        break;
+    }
+}
+
+/*U***************************************************************************
+   PGAGetMixingType - Returns the strategy setting for combination of
+   mutation and crossover
+
+   Category: Generation
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      Returns the mixing type.
+
+   Example:
+      PGAContext *ctx;
+      int mixtype;
+      :
+      mixtype = PGAGetMixingType (ctx);
+
+***************************************************************************U*/
+int PGAGetMixingType (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp ("PGAGetMixingType");
+    return (ctx->ga.MixingType);
 }
 
