@@ -1,17 +1,18 @@
 #include <math.h>
 #include "pgapack.h"
 
-/* The constrained_problem contains one specific problem:
+/*
  * We store the dimensionality of the problem (the number of variables)
- * and the number of functions. The first function is always the
- * objective function. The rest are constraints. Constraints are --
- * contrary to Deb -- defined as being minimized, so
+ * and the number of functions. There are multiple evaluations and
+ * optionally some constraints. The number of evaluations is
+ * nfunc - nconstraint
+ * Constraints are defined as being minimized, so
  * constraints must be <= 0, i.e.,   gn(X) <= 0 for all n
  */
 struct multi_problem
 {
     int dimension;              /* The dimension of the problem */
-    int nfunc;                  /* Number of constraints + 1 (objective f) */
+    int nfunc;                  /* Number of evaluation functions */
     int nconstraint;            /* Number of constraints */
     int maximize;               /* Maximization problem ? */
     double (*lower);            /* Init ranges lower bounds */

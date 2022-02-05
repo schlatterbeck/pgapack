@@ -3,7 +3,7 @@
  *  Functions taken from Deb et. al., 2002, see README.rst
  */
 #include <pgapack.h>
-#include "constraint.h"
+#include "optimize.h"
 
 static struct multi_problem *problems [] =
 { &sch

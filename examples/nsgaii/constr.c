@@ -1,4 +1,4 @@
-#include "constraint.h"
+#include "optimize.h"
 #include <stdio.h>
 
 static double f1 (double *x)

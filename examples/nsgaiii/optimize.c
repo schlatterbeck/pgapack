@@ -2,7 +2,7 @@
 /*  Constrained function optimizer
  *  Functions taken from Deb and Jain, 2014 (both papers) see README.rst
  */
-#include "constraint.h"
+#include "optimize.h"
 
 static struct multi_problem *problems [] =
 { &dtlz1
@@ -32,7 +32,7 @@ double evaluate (PGAContext *ctx, int p, int pop, double *aux)
     double result [problem->nfunc];
 
     problem->f (params, result);
-    memcpy (aux, result + 1, sizeof (double) * problem->nfunc - 1);
+    memcpy (aux, result + 1, sizeof (double) * (problem->nfunc - 1));
 
     return result [0];
 }
