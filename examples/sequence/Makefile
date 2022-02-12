@@ -8,5 +8,5 @@ optimize: optimize.o $(OBJS)
 %.o: %.c optimize.h
 	$(CC) $(CFLAGS) -c $<
 
-clean: 
+clean:
 	rm -f $(OBJS) optimize

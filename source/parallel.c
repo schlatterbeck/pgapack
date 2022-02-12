@@ -75,7 +75,7 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
 	      MPI_Comm comm)
 {
     int       rank, Restarted;
-    void    (*CreateNewGeneration)(PGAContext *, int, int);
+    void    (*CreateNewGeneration)(PGAContext *, int, int) = NULL;
 
     /*  Let this be warned:
      *  The communicator is NOT duplicated.  There might be problems with

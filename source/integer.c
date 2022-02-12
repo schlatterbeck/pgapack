@@ -901,9 +901,8 @@ int intcmp (const void *v1, const void *v2)
 void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
 {
     PGAInteger i, j;
-    PGAInteger l = ctx->ga.StringLen;
     PGAInteger *em = ctx->scratch.edgemap [child [idx]];
-    assert (idx < l - 1);
+    assert (idx < ctx->ga.StringLen - 1);
     /* Prefer common edges */
     if (em [0] < 0 && em [1] >= 0) {
         child [idx + 1] = -em [0] - 1;

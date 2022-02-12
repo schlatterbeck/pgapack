@@ -59,7 +59,7 @@ int main (int argc, char **argv)
 
     ctx = PGACreate
         (&argc, argv, PGA_DATATYPE_INTEGER, 36, PGA_MINIMIZE);
-    
+
     PGASetRandomSeed         (ctx, seed);
     PGASetPopSize            (ctx, popsize);
     PGASetNumReplaceValue    (ctx, 10);
@@ -72,7 +72,7 @@ int main (int argc, char **argv)
     PGASetTournamentSize     (ctx, 1.7);
     PGASetMixingType         (ctx, PGA_MIX_MUTATE_OR_CROSS);
     //PGASetTournamentWithReplacement (ctx, PGA_FALSE);
-    
+
     PGASetUp   (ctx);
     PGARun     (ctx, evaluate);
     PGADestroy (ctx);
