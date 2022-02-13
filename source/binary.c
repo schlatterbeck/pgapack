@@ -287,32 +287,34 @@ void PGABinaryCreateString(PGAContext *ctx, int p, int pop, int initflag)
 ****************************************************************************I*/
 int PGABinaryMutation( PGAContext *ctx, int p, int pop, double mr )
 {
-     int i,wi;
-     int count = 0;
-     PGABinary *c;
+    int i,wi;
+    int count = 0;
+    PGABinary *c;
 
-     PGADebugEntered("PGABinaryMutation");
+    PGADebugEntered ("PGABinaryMutation");
 
-     c = (PGABinary *)PGAGetIndividual(ctx, p, pop)->chrom;
-     for(wi=0; wi<ctx->ga.fw; wi++)
-          for(i=0; i<WL; ++i)
-               if ( PGARandomFlip(ctx, mr) )
-               {
-                    TOGGLE(i,c[wi]);
-                    count++;
-               }
+    c = (PGABinary *)PGAGetIndividual (ctx, p, pop)->chrom;
+    for (wi=0; wi<ctx->ga.fw; wi++) {
+        for (i=0; i<(int)WL; ++i) {
+            if (PGARandomFlip (ctx, mr)) {
+                TOGGLE (i,c[wi]);
+                count++;
+            }
+        }
+    }
 
-     /* clean up the partial word if eb > 0 */
-     if (ctx->ga.eb > 0 )
-          for(i=0;i<ctx->ga.eb;++i)
-               if ( PGARandomFlip(ctx, mr) )
-               {
-                    TOGGLE(i,c[ctx->ga.fw]);
-                    count++;
-               }
+    /* clean up the partial word if eb > 0 */
+    if (ctx->ga.eb > 0) {
+        for (i=0; i<ctx->ga.eb; ++i) {
+            if (PGARandomFlip (ctx, mr)) {
+                TOGGLE (i,c[ctx->ga.fw]);
+                count++;
+            }
+        }
+    }
 
-    PGADebugExited("PGABinaryMutation");
-    return(count);
+    PGADebugExited ("PGABinaryMutation");
+    return (count);
 
 }
 
@@ -539,34 +541,35 @@ void PGABinaryTwoptCrossover(PGAContext *ctx, int p1, int p2, int pop1, int c1,
       PGABinaryUniformCrossover( ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP );
 
 ****************************************************************************I*/
-void PGABinaryUniformCrossover(PGAContext *ctx, int p1, int p2, int pop1,
-                               int c1, int c2, int pop2)
+void PGABinaryUniformCrossover (PGAContext *ctx, int p1, int p2, int pop1,
+                                int c1, int c2, int pop2)
 {
-     PGABinary *parent1 = (PGABinary *)PGAGetIndividual(ctx, p1, pop1)->chrom;
-     PGABinary *parent2 = (PGABinary *)PGAGetIndividual(ctx, p2, pop1)->chrom;
-     PGABinary *child1  = (PGABinary *)PGAGetIndividual(ctx, c1, pop2)->chrom;
-     PGABinary *child2  = (PGABinary *)PGAGetIndividual(ctx, c2, pop2)->chrom;
-     PGABinary mask;
-     int j,wi;
+    PGABinary *parent1 = (PGABinary *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    PGABinary *parent2 = (PGABinary *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    PGABinary *child1  = (PGABinary *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    PGABinary *child2  = (PGABinary *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    PGABinary mask;
+    int j,wi;
 
-    PGADebugEntered("PGABinaryUniformCrossover");
+    PGADebugEntered ("PGABinaryUniformCrossover");
 
-    for(wi=0;wi<ctx->ga.tw;wi++) {
-        if ( parent1[wi] == parent2[wi] ) {
+    for (wi=0; wi<ctx->ga.tw; wi++) {
+        if (parent1[wi] == parent2[wi]) {
             child1[wi] = parent1[wi];
             child2[wi] = parent2[wi];
-        }
-        else {
+        } else {
             mask = 0;
-            for (j=0;j<WL;j++)
-                if(PGARandomFlip(ctx, ctx->ga.UniformCrossProb))
+            for (j=0; j<(int)WL; j++) {
+                if (PGARandomFlip (ctx, ctx->ga.UniformCrossProb)) {
                     SET(j,mask);
-            child1[wi] = (mask & parent1[wi])|(~mask & parent2[wi]);
-            child2[wi] = (mask & parent2[wi])|(~mask & parent1[wi]);
+                }
+            }
+            child1[wi] = (mask & parent1 [wi]) | (~mask & parent2 [wi]);
+            child2[wi] = (mask & parent2 [wi]) | (~mask & parent1 [wi]);
         }
     }
 
-    PGADebugExited("PGABinaryUniformCrossover");
+    PGADebugExited ("PGABinaryUniformCrossover");
 }
 
 /*I****************************************************************************
@@ -835,28 +838,28 @@ int PGABinaryHammingDistance ( PGAContext *ctx, PGABinary *s1, PGABinary *s2 )
     int        j, wi, distance;
     PGABinary  t1, t2, mask;
 
-    PGADebugEntered("PGABinaryHammingDistance");
+    PGADebugEntered ("PGABinaryHammingDistance");
 
     distance = 0;
-    for(wi=0; wi<ctx->ga.tw; wi++)  /* step through each word in the string */
-        if ( s1[wi] != s2[wi] ) {   /* if equal, no bits are different      */
-            /*fprintf(stdout,"s1[wi] = %x, s2[wi] = %x\n",s1[wi],s2[wi]);*/
+    for (wi=0; wi<ctx->ga.tw; wi++) { /* step through each word in string   */
+        if (s1[wi] != s2[wi]) {     /* if equal, no bits are different      */
             mask = 1;
-            for(j=0;j<WL;++j) {     /* not equal, compare all bits          */
+            for (j=0; j<(int)WL; ++j) {  /* not equal, compare all bits     */
                 /* Build bit mask in position j. Mask bit from each         */
                 /* string into t1 and t2 and test if bits are the same      */
-                t1 = s1[wi] & mask;
-                t2 = s2[wi] & mask;
-                /*fprintf(stdout,"mask = %u, t1 = %u, t2 = %u, j = %d, wi = %d\n",mask,t1,t2,j,wi);*/
-                if ( t1 != t2 )
+                t1 = s1 [wi] & mask;
+                t2 = s2 [wi] & mask;
+                if (t1 != t2) {
                     distance++;
+                }
                 mask <<= 1;          /* shift mask 1 position */
             }
         }
+    }
 
-    PGADebugExited("PGABinaryHammingDistance");
+    PGADebugExited ("PGABinaryHammingDistance");
 
-    return(distance);
+    return (distance);
 }
 
 /*I****************************************************************************

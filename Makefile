@@ -4,7 +4,7 @@ PGA_DIR = ${CURDIR}
 # Defaults for various compiler settings.
 # We leave CC and FC settings to the make defaults.
 CPPFLAGS = -DFORTRANUNDERSCORE -D_REENTRANT
-CFLAGS = -fPIC -Wall
+CFLAGS = -fPIC -Wall -Wsign-compare
 FFLAGS =
 LDFLAGS =
 LIBS = -lm

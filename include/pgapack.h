@@ -422,7 +422,7 @@ typedef struct {
     int restartFreq;         /* frequency with which to restart           */
     int *selected;           /* array of indices for selection            */
     int *sorted;             /* array of sorted individual indices        */
-    int nrefdirs;            /* Number of reference directions            */
+    size_t nrefdirs;         /* Number of reference directions            */
     void *refdirs;           /* Reference directions for NSGA-III         */
     void *normdirs;          /* normalized reference directions           */
     size_t ndpoints;         /* Number of points in refdir point cloud    */
@@ -749,26 +749,34 @@ static inline double _PGAGetEvaluation_s
 double *PGAGetAuxEvaluation (PGAContext *ctx, int p, int pop);
 void PGASetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop, int status);
 int PGAGetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop);
-double PGAGetRealFromBinary (PGAContext *ctx, int p, int pop, int start,
-                             int end, double lower, double upper);
-double PGAGetRealFromGrayCode (PGAContext *ctx, int p, int pop, int start,
-                               int end, double lower, double upper);
-void PGAEncodeRealAsBinary (PGAContext *ctx, int p, int pop, int start,
-                            int end, double low, double high, double val);
-void PGAEncodeRealAsGrayCode (PGAContext *ctx, int p, int pop, int start,
-                              int end, double low, double high, double val);
-int PGAGetIntegerFromBinary (PGAContext *ctx, int p, int pop, int start,
-                                 int end);
-int PGAGetIntegerFromGrayCode (PGAContext *ctx, int p, int pop, int start,
-                               int end);
-void PGAEncodeIntegerAsBinary (PGAContext *ctx, int p, int pop, int start,
-                               int end, int val);
-void PGAEncodeIntegerAsGrayCode (PGAContext *ctx, int p, int pop, int start,
-                                 int end, int val);
-double PGAMapIntegerToReal (PGAContext *ctx, int v, int a, int b, double l,
-                            double u);
-int PGAMapRealToInteger (PGAContext *ctx, double r, double l, double u, int a,
-                         int b);
+double PGAGetRealFromBinary
+    ( PGAContext *ctx, int p, int pop
+    , int start, int end, double lower, double upper
+    );
+double PGAGetRealFromGrayCode
+    ( PGAContext *ctx, int p, int pop
+    , int start, int end, double lower, double upper
+    );
+void PGAEncodeRealAsBinary
+    ( PGAContext *ctx, int p, int pop
+    , int start, int end, double low, double high, double val
+    );
+void PGAEncodeRealAsGrayCode
+    ( PGAContext *ctx, int p, int pop
+    , int start, int end, double low, double high, double val
+    );
+unsigned int PGAGetIntegerFromBinary
+    (PGAContext *ctx, int p, int pop, int start, int end);
+unsigned int PGAGetIntegerFromGrayCode
+    (PGAContext *ctx, int p, int pop, int start, int end);
+void PGAEncodeIntegerAsBinary
+    (PGAContext *ctx, int p, int pop, int start, int end, unsigned int val);
+void PGAEncodeIntegerAsGrayCode
+    (PGAContext *ctx, int p, int pop, int start, int end, unsigned int val);
+double PGAMapIntegerToReal
+    (PGAContext *ctx, int v, int a, int b, double l, double u);
+int PGAMapRealToInteger
+    (PGAContext *ctx, double r, double l, double u, int a, int b);
 
 /*****************************************
 *          fitness.c

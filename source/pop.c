@@ -710,15 +710,18 @@ static int nondom_cmp (const void *a1, const void *a2)
 }
 
 /* typedef to make it easier to pass crowding functions as parameter */
-typedef void (* crowding_t)(PGAContext *, PGAIndividual **, int, int);
+typedef void (* crowding_t)
+    (PGAContext *, PGAIndividual **, size_t, unsigned int);
 
 /* Compute crowding distance over the given individuals
  * This is specific to NSGA-II.
  */
-STATIC void crowding (PGAContext *ctx, PGAIndividual **start, int n, int rank)
+STATIC void crowding
+    (PGAContext *ctx, PGAIndividual **start, size_t n, unsigned int rank)
 {
-    int i, k;
-    int nrank = 0;
+    size_t i;
+    int k;
+    size_t nrank = 0;
     int is_ev = INDGetAuxTotal (*start) ? 0 : 1;
     DECLARE_DYNARRAY (PGAIndividual *, crowd, n);
     int nc = ctx->ga.NumConstraint;
@@ -976,7 +979,7 @@ static double *get_point (PGAContext *ctx, size_t idx)
     DECLARE_DYNPTR (double, refpoints, dim) = ctx->ga.refpoints;
     assert (idx < ctx->ga.ndpoints + ctx->ga.nrefpoints);
     if (idx > ctx->ga.nrefpoints) {
-        return DEREF1_DYNPTR (normdirs, dim, idx);
+        return DEREF1_DYNPTR (normdirs, dim, idx - ctx->ga.nrefpoints);
     }
     return DEREF1_DYNPTR (refpoints, dim, idx);
 }
@@ -1003,11 +1006,12 @@ static int assoc_cmp (const void *a1, const void *a2)
 /* Compute niche preservation algorithm over the given individuals
  * This is specific to NSGA-III.
  */
-static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
+static void niching
+    (PGAContext *ctx, PGAIndividual **start, size_t n, unsigned int rank)
 {
-    int i, j;
-    int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
-    int npoints = ctx->ga.ndpoints + ctx->ga.nrefpoints;
+    size_t i, j;
+    size_t dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+    size_t npoints = ctx->ga.ndpoints + ctx->ga.nrefpoints;
     DECLARE_DYNARRAY (double, point, dim);
 
     compute_utopian (ctx, start, n);
@@ -1095,17 +1099,19 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
  *   bits from the dominance matrix
  * - Increment the rank counter
  */
-STATIC int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
+STATIC unsigned int ranking
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
-    int i, j, k;
+    size_t i, j;
+    int k;
     int is_ev = INDGetAuxTotal (*start) ? 0 : 1;
-    int rank;
+    unsigned int rank;
     int nranked = 0;
     int nc = ctx->ga.NumConstraint;
     int na = ctx->ga.NumAuxEval;
     int base = is_ev ? 0 : (na - nc);
     int nfun = is_ev ? (na - nc + 1) : nc;
-    int intsforn = (n + WL - 1) / WL;
+    size_t intsforn = (n + WL - 1) / WL;
     DECLARE_DYNPTR (PGABinary, dominance, intsforn) =
         (void *)(ctx->scratch.dominance);
 
@@ -1159,7 +1165,7 @@ STATIC int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
                 }
             }
             /* Non-dominated in this rank */
-            if (j==intsforn) {
+            if (j == intsforn) {
                 (*(start+i))->rank = rank;
                 nranked ++;
             }
@@ -1251,7 +1257,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
             , PGAEvalSortHelper
             );
     } else {
-        int rank;
+        unsigned int rank;
         rank = ranking (ctx, all_individuals, n_unc_ind, popsize);
         if (n_unc_ind >= popsize && rank != UINT_MAX) {
             crowding_method (ctx, all_individuals, n_unc_ind, rank);
@@ -1281,7 +1287,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
                 , PGAEvalSortHelper
                 );
         } else {
-            int rank;
+            unsigned int rank;
             rank = ranking
                 ( ctx
                 , all_individuals + n_unc_ind

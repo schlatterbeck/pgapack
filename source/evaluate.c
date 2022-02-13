@@ -590,42 +590,46 @@ void PGAEncodeRealAsGrayCode(PGAContext *ctx, int p, int pop, int start,
       j = PGAGetIntegerFromBinary(ctx, p, PGA_NEWPOP, 10, 29);
 
 ****************************************************************************U*/
-int PGAGetIntegerFromBinary(PGAContext *ctx, int p, int pop, int start,
-                                 int end)
+unsigned int PGAGetIntegerFromBinary
+    (PGAContext *ctx, int p, int pop, int start, int end)
 {
-     int length, i, val;
-     unsigned power2;
+    size_t length;
+    int i;
+    unsigned int val, power2;
 
-    PGADebugEntered("PGAGetIntegerFromBinary");
-     PGACheckDataType("PGAGetIntegerFromBinary", PGA_DATATYPE_BINARY);
+    PGADebugEntered ("PGAGetIntegerFromBinary");
+    PGACheckDataType ("PGAGetIntegerFromBinary", PGA_DATATYPE_BINARY);
 
-     length = end - start + 1;
-     if (length > sizeof(int) * 8 - 1)
-          PGAError(ctx, "PGAGetIntegerFromBinary: length of bit string "
-                   "exceeds sizeof type int:", PGA_FATAL, PGA_INT,
-                   (void *) &length);
-     if (start < 0)
-          PGAError(ctx, "PGAGetIntegerFromBinary: start less than 0:",
-                   PGA_FATAL, PGA_INT, (void *) &start);
-     if (end >= PGAGetStringLength(ctx))
-          PGAError(ctx, "PGAGetIntegerFromBinary: end greater than string "
-                   "length:", PGA_FATAL, PGA_INT, (void *) &end);
-     if (start >= end)
-          PGAError(ctx, "PGAGetIntegerFromBinary: start exceeds end:",
-                   PGA_FATAL, PGA_INT, (void *) &start);
+    length = end - start + 1;
+    if (length > sizeof(int) * 8 - 1) {
+        PGAError (ctx, "PGAGetIntegerFromBinary: length of bit string "
+                  "exceeds sizeof type int:", PGA_FATAL, PGA_INT,
+                  (void *) &length);
+    }
+    if (start < 0) {
+        PGAError (ctx, "PGAGetIntegerFromBinary: start less than 0:",
+                  PGA_FATAL, PGA_INT, (void *) &start);
+    }
+    if (end >= PGAGetStringLength(ctx)) {
+        PGAError (ctx, "PGAGetIntegerFromBinary: end greater than string "
+                  "length:", PGA_FATAL, PGA_INT, (void *) &end);
+    }
+    if (start >= end) {
+        PGAError (ctx, "PGAGetIntegerFromBinary: start exceeds end:",
+                  PGA_FATAL, PGA_INT, (void *) &start);
+    }
+    val = 0;
+    power2 = 1u << (length - 1);
+    for (i=start; i<=end; i++) {
+        if (PGAGetBinaryAllele (ctx, p, pop, i)) {
+            val += power2;
+        }
+        power2 >>= 1;
+    }
 
-     val = 0;
-     power2 = 1u << (length - 1);
-     for (i = start; i <= end; i++)
-     {
-          if (PGAGetBinaryAllele(ctx, p, pop, i))
-               val += power2;
-          power2 >>= 1;
-     }
+    PGADebugExited ("PGAGetIntegerFromBinary");
 
-    PGADebugExited("PGAGetIntegerFromBinary");
-
-     return(val);
+    return (val);
 }
 
 /*U****************************************************************************
@@ -654,51 +658,59 @@ int PGAGetIntegerFromBinary(PGAContext *ctx, int p, int pop, int start,
       j = PGAGetIntegerFromGrayCode(ctx, p, PGA_NEWPOP, 10, 29);
 
 ****************************************************************************U*/
-int PGAGetIntegerFromGrayCode(PGAContext *ctx, int p, int pop, int start,
-                                   int end)
+unsigned int PGAGetIntegerFromGrayCode
+    (PGAContext *ctx, int p, int pop, int start, int end)
 {
-     int length, *BitString, i, val;
-     unsigned power2;
+    size_t length, i;
+    unsigned int val;
+    int *BitString;
+    unsigned power2;
 
-    PGADebugEntered("PGAGetIntegerFromGrayCode");
-     PGACheckDataType("PGAGetIntegerFromGrayCode", PGA_DATATYPE_BINARY);
+    PGADebugEntered ("PGAGetIntegerFromGrayCode");
+    PGACheckDataType ("PGAGetIntegerFromGrayCode", PGA_DATATYPE_BINARY);
 
-     length = end - start + 1;
-     if (length > sizeof(int) * 8 - 1)
-          PGAError(ctx, "PGAGetIntegerFromGrayCode: length of binary string "
-                   "exceeds size of type int:", PGA_FATAL, PGA_INT,
-                   (void *) &length);
-     if (start < 0)
-          PGAError(ctx, "PGAGetIntegerFromGrayCode: start less than 0:",
-                   PGA_FATAL, PGA_INT, (void *) &start);
-     if (end >= PGAGetStringLength(ctx))
-          PGAError(ctx, "PGAGetIntegerFromGrayCode: end greater than string "
-                   "length:", PGA_FATAL, PGA_INT, (void *) &end);
-     if (start >= end)
-          PGAError(ctx, "PGAGetIntegerFromGrayCode: start exceeds end:",
-                   PGA_FATAL, PGA_INT, (void *) &start);
+    length = end - start + 1;
+    if (length > sizeof (int) * 8 - 1) {
+        PGAError (ctx, "PGAGetIntegerFromGrayCode: length of binary string "
+                  "exceeds size of type int:", PGA_FATAL, PGA_INT,
+                  (void *) &length);
+    }
+    if (start < 0) {
+        PGAError (ctx, "PGAGetIntegerFromGrayCode: start less than 0:",
+                  PGA_FATAL, PGA_INT, (void *) &start);
+    }
+    if (end >= PGAGetStringLength (ctx)) {
+        PGAError (ctx, "PGAGetIntegerFromGrayCode: end greater than string "
+                  "length:", PGA_FATAL, PGA_INT, (void *) &end);
+    }
+    if (start >= end) {
+        PGAError (ctx, "PGAGetIntegerFromGrayCode: start exceeds end:",
+                  PGA_FATAL, PGA_INT, (void *) &start);
+    }
 
-     BitString = (int *) malloc(length * sizeof(int));
-     if (!BitString)
-          PGAError(ctx, "PGAGetIntegerFromGrayCode: No room for BitString",
-                   PGA_FATAL, PGA_VOID, NULL);
-     BitString[0] = PGAGetBinaryAllele(ctx, p, pop, start);
+    BitString = malloc (length * sizeof(int));
+    if (!BitString) {
+        PGAError (ctx, "PGAGetIntegerFromGrayCode: No room for BitString",
+                  PGA_FATAL, PGA_VOID, NULL);
+    }
+    BitString[0] = PGAGetBinaryAllele (ctx, p, pop, start);
 
-     for(i = 1; i < length; i++)
-          BitString[i] = BitString[i-1] ^ PGAGetBinaryAllele(ctx, p, pop,
-                                                             start + i);
-     val = 0;
-     power2 = 1u << (length - 1);
-     for (i = 0; i < length; i++)
-     {
-          if (BitString[i])
-               val += power2;
-          power2 >>= 1;
-     }
-     free(BitString);
+    for (i=1; i<length; i++) {
+        BitString [i] =
+            BitString [i-1] ^ PGAGetBinaryAllele (ctx, p, pop, start + i);
+    }
+    val = 0;
+    power2 = 1u << (length - 1);
+    for (i=0; i<length; i++) {
+        if (BitString[i]) {
+            val += power2;
+        }
+        power2 >>= 1;
+    }
+    free (BitString);
 
-    PGADebugExited("PGAGetIntegerFromGrayCode");
-     return(val);
+    PGADebugExited ("PGAGetIntegerFromGrayCode");
+    return (val);
 }
 
 /*U****************************************************************************
@@ -727,10 +739,10 @@ int PGAGetIntegerFromGrayCode(PGAContext *ctx, int p, int pop, int start,
       PGAEncodeIntegerAsBinary(ctx, p, PGA_NEWPOP, 0, 19, v);
 
 ****************************************************************************U*/
-void PGAEncodeIntegerAsBinary(PGAContext *ctx, int p, int pop, int start,
-                              int end, int val)
+void PGAEncodeIntegerAsBinary
+    (PGAContext *ctx, int p, int pop, int start, int end, unsigned int val)
 {
-    int length, i;
+    size_t length, i;
     unsigned power2;
 
     PGADebugEntered ("PGAEncodeIntegerAsBinary");
@@ -738,7 +750,7 @@ void PGAEncodeIntegerAsBinary(PGAContext *ctx, int p, int pop, int start,
 
     length = end - start + 1;
 
-    if (length > sizeof(int) * 8 - 1) {
+    if (length > sizeof (int) * 8 - 1) {
         PGAError (ctx, "PGAEncodeIntegerAsBinary: length of bit string "
                   "exceeds size of type int:", PGA_FATAL, PGA_INT,
                   (void *) &length);
@@ -755,26 +767,18 @@ void PGAEncodeIntegerAsBinary(PGAContext *ctx, int p, int pop, int start,
         PGAError (ctx, "PGAEncodeIntegerAsBinary: start exceeds end:",
                   PGA_FATAL, PGA_INT, (void *) &start);
     }
-    if (  ((unsigned)val > (1u << length) - 1)
-       && (length != sizeof(int) * 8) - 1
-       )
-    {
+    if ((val > (1u << length) - 1) && (length != sizeof (int) * 8) - 1) {
         PGAError (ctx, "PGAEncodeIntegerAsBinary: Integer too big for string "
                   "length:", PGA_FATAL, PGA_INT, (void *) &val);
     }
-    if (val < 0) {
-        PGAError (ctx, "PGAEncodeIntegerAsBinary: Integer less than zero:",
-                  PGA_FATAL, PGA_INT, (void *) & val);
-    }
 
     power2 = 1u << (length - 1);
-    for (i = 0; i < length; i++)
-    {
-        if ((unsigned)val >= power2) {
+    for (i=0; i<length; i++) {
+        if (val >= power2) {
             PGASetBinaryAllele (ctx, p, pop, start + i, 1);
             val -= power2;
         } else {
-            PGASetBinaryAllele(ctx, p, pop, start + i, 0);
+            PGASetBinaryAllele (ctx, p, pop, start + i, 0);
         }
         power2 >>= 1;
     }
@@ -811,9 +815,10 @@ void PGAEncodeIntegerAsBinary(PGAContext *ctx, int p, int pop, int start,
 
 ****************************************************************************U*/
 void PGAEncodeIntegerAsGrayCode
-    (PGAContext *ctx, int p, int pop, int start, int end, int val)
+    (PGAContext *ctx, int p, int pop, int start, int end, unsigned int val)
 {
-    int i, *bit, length;
+    size_t length, i;
+    int *bit;
     unsigned power2;
 
     PGADebugEntered ("PGAEncodeIntegerAsGrayCode");
@@ -830,7 +835,7 @@ void PGAEncodeIntegerAsGrayCode
         PGAError (ctx, "PGAEncodeIntegerAsGrayCode: start less than 0:",
                   PGA_FATAL, PGA_INT, (void *) &start);
     }
-    if (end >= PGAGetStringLength(ctx)) {
+    if (end >= PGAGetStringLength (ctx)) {
         PGAError (ctx, "PGAEncodeIntegerAsGrayCode: end greater than string "
                   "length:", PGA_FATAL, PGA_INT, (void *) &end);
     }
@@ -838,26 +843,22 @@ void PGAEncodeIntegerAsGrayCode
         PGAError (ctx, "PGAEncodeIntegerAsGrayCode: start exceeds end:",
                   PGA_FATAL, PGA_INT, (void *) &start);
     }
-    if (  ((unsigned)val > (1u << length) - 1)
-       && (length != sizeof(int) * 8 - 1)
-       )
-    {
-        PGAError (ctx, "PGAEncodeIntegerAsGrayCode: Integer too big for "
-                  "string length:", PGA_FATAL, PGA_INT, (void *) &val);
+    if ((val > (1u << length) - 1) && (length != sizeof (int) * 8 - 1)) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGAEncodeIntegerAsGrayCode: Integer too big "
+              "for string length: %u"
+            , val
+            );
     }
-    if (val < 0) {
-        PGAError (ctx, "PGAEncodeIntegerAsGrayCode: Integer less than zero:",
-                  PGA_FATAL, PGA_INT, (void *) &val);
-    }
-
-    bit = (int *) malloc(length * sizeof(int));
+    bit = malloc (length * sizeof (int));
     if (bit == NULL) {
         PGAError (ctx, "PGAEncodeIntegerAsGrayCode: No room to allocate bit",
                   PGA_FATAL, PGA_VOID, NULL);
     }
     power2 = 1u << (length - 1);
     for (i=0; i<length; i++) {
-        if ((unsigned)val >= power2) {
+        if (val >= power2) {
             bit [i] = 1;
             val -= power2;
         } else {
@@ -867,9 +868,9 @@ void PGAEncodeIntegerAsGrayCode
     }
     PGASetBinaryAllele (ctx, p, pop, start, bit[0]);
     for (i=1; i<length; i++) {
-         PGASetBinaryAllele(ctx, p, pop, start + i, bit[i-1] ^ bit[i]);
+        PGASetBinaryAllele (ctx, p, pop, start + i, bit [i-1] ^ bit [i]);
     }
-    free(bit);
+    free (bit);
 
     PGADebugExited ("PGAEncodeIntegerAsGrayCode");
 }
