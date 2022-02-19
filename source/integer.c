@@ -118,6 +118,26 @@ static PGAFixedEdge *get_edge (PGAContext *ctx, PGAInteger node)
         );
 }
 
+#ifdef DEBUG
+static void assert_has_edges (PGAContext *ctx, PGAInteger *a)
+{
+    int i, j1, j2;
+    int found = 0;
+    int l = ctx->ga.StringLen;
+    for (i=0; i<l; i++) {
+        j1 = (i + 1) % l;
+        j2 = (i + 2) % l;
+        if (  (a [i] == 0 && a [j1] == 1 && a [j2] == 2)
+           || (a [i] == 2 && a [j1] == 1 && a [j2] == 0)
+           )
+        {
+            found = 1;
+            break;
+        }
+    }
+    assert (found);
+}
+#endif /* DEBUG */
 
 
 /*U****************************************************************************
@@ -1049,7 +1069,7 @@ void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
                     int ec = count_edges (ctx, i);
                     PGAFixedEdge *p = get_edge (ctx, i);
                     /* May not start in the middle of a run of fixed edges */
-                    if (p && p->prev && p->next) {
+                    if (p && p->prev) {
                         continue;
                     }
                     /* If we have asymmetric (directed) fixed edges and
@@ -1075,7 +1095,7 @@ void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
                 for (j=idx+1; j<ctx->ga.StringLen; j++) {
                     PGAFixedEdge *p = get_edge (ctx, j);
                     /* Don't use intermediate fixed edge */
-                    if (p && p->prev && p->next) {
+                    if (p && p->prev) {
                         continue;
                     }
                     if (ctx->ga.symmetric || NULL == rev_edge (ctx, j)) {
@@ -1096,9 +1116,11 @@ void PGAIntegerEdgeCrossover
 {
     PGAInteger *parent [2];
     PGAInteger *child  [2];
-    int j;
+    int j, oc;
     PGAInteger i, ci;
     PGAInteger l = ctx->ga.StringLen;
+    int p_ok [] = {1, 1};
+    PGAInteger ok [2];
 
     parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
@@ -1113,14 +1135,15 @@ void PGAIntegerEdgeCrossover
      * of the parents.
      */
     ci = 0;
+    oc = 0;
     for (i=0; i<l; i++) {
         PGAFixedEdge *p = get_edge (ctx, i);
         /* May not start with intermediate edge of fixed-edge run */
-        if (p && p->prev && p->next) {
+        if (p && p->prev) {
             continue;
         }
         /* May not start with end node if asymmetric fixed edges */
-        if (ctx->ga.symmetric && rev_edge (ctx, i)) {
+        if (!ctx->ga.symmetric && rev_edge (ctx, i)) {
             continue;
         }
         for (j=0; j<4; j++) {
@@ -1129,19 +1152,46 @@ void PGAIntegerEdgeCrossover
                 break;
             }
         }
+        if (oc < 2 && j == 4) {
+            ok [oc++] = i;
+        }
         if (ci >= 2) {
             break;
         }
     }
     if (ci < 2) {
+        for (i=0; i<2; i++) {
+            PGAFixedEdge *p = get_edge (ctx, parent [i][0]);
+            /* May not start with intermediate edge of fixed-edge run */
+            if (p && p->prev) {
+                p_ok [i] = 0;
+                continue;
+            }
+            /* May not start with end node if asymmetric fixed edges */
+            if (!ctx->ga.symmetric && rev_edge (ctx, i)) {
+                p_ok [i] = 0;
+                continue;
+            }
+        }
+        assert (oc == 2);
         if (ci == 0) {
-            child [0][0] = parent [0][0];
-            child [1][0] = parent [1][0];
-        } else {
-            if (child [0][0] == parent [0][0]) {
+            if (p_ok [0]) {
+                child [0][0] = parent [0][0];
+            } else {
+                child [0][0] = ok [0];
+            }
+            if (p_ok [1]) {
                 child [1][0] = parent [1][0];
-            } else if (child [0][0] == parent [1][0]) {
+            } else {
+                child [1][0] = ok [1];
+            }
+        } else {
+            if (child [0][0] == parent [0][0] && p_ok [1]) {
+                child [1][0] = parent [1][0];
+            } else if (child [0][0] == parent [1][0] && p_ok [0]) {
                 child [1][0] = parent [0][0];
+            } else if (!(p_ok [0] && p_ok [1])) {
+                child [1][0] = ok [0];
             } else {
                 child [1][0] = parent [PGARandomFlip (ctx, 0.5)][0];
             }
@@ -1153,6 +1203,10 @@ void PGAIntegerEdgeCrossover
         for (i=0; i<l-1; i++) {
             next_edge (ctx, child [ci], i);
         }
+        #ifdef DEBUG
+        assert_has_edges (ctx, child [ci]);
+        #endif /* DEBUG */
+
         /* Need to rebuild, edge-map is consumed above */
         build_edge_map (ctx, parent);
         fix_edge_map   (ctx);
@@ -1489,6 +1543,9 @@ void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
                 } while (p);
             }
             free (x);
+            #ifdef DEBUG
+            assert_has_edges (ctx, c);
+            # endif /* DEBUG */
         }
         break;
     case PGA_IINIT_RANGE:

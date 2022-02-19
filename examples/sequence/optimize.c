@@ -35,7 +35,8 @@ int main (int argc, char **argv)
     int maxiter = 2500;
     int x1, y1, x2, y2;
     int seed = 1;
-    PGAInteger edge [][2] = {{0, 1}};
+    PGAInteger edge [][2] = {{0, 1}, {1, 2}};
+    size_t el = sizeof (edge) / (2 * sizeof (PGAInteger));
 
     for (x1=0; x1<6; x1++) {
         for (y1=0; y1<6; y1++) {
@@ -73,7 +74,7 @@ int main (int argc, char **argv)
     PGASetTournamentSize     (ctx, 1.7);
     PGASetMixingType         (ctx, PGA_MIX_MUTATE_OR_CROSS);
     //PGASetTournamentWithReplacement (ctx, PGA_FALSE);
-    PGAIntegerSetFixedEdges  (ctx, 1, edge, PGA_TRUE);
+    PGAIntegerSetFixedEdges  (ctx, el, edge, PGA_TRUE);
 
     PGASetUp   (ctx);
     PGARun     (ctx, evaluate);
