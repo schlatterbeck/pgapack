@@ -273,6 +273,12 @@ PGAContext *PGACreate
     ctx->ga.restartFreq        = PGA_UNINITIALIZED_INT;
     ctx->ga.restartAlleleProb  = PGA_UNINITIALIZED_DOUBLE;
 
+    /* Fixed edges for Edge Crossover */
+    ctx->ga.n_edges            = 0;
+    ctx->ga.edges              = NULL;
+    ctx->ga.r_edge             = NULL;
+    ctx->ga.symmetric          = PGA_FALSE;
+
     /* NSGA-III */
     ctx->ga.nrefdirs       = 0;
     ctx->ga.nrefpoints     = 0;
@@ -1264,6 +1270,16 @@ void PGASetUp ( PGAContext *ctx )
         }
     } else {
         ctx->scratch.edgemap = NULL;
+        if (ctx->ga.n_edges) {
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
+                , "PGASetUp: Fixed edges only for edge crossover"
+                );
+        }
+    }
+    if (ctx->ga.n_edges && ctx->init.IntegerMin [0] != 0) {
+        PGAErrorPrintf
+            (ctx, PGA_FATAL , "PGASetUp: Fixed edges only with IntegerMin=0");
     }
 
     PGACreatePop (ctx, PGA_OLDPOP);

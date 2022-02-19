@@ -372,6 +372,16 @@ typedef struct PGAIndividual {         /* primary population data structure */
   int                   point_idx;     /* Index of associated point         */
 } PGAIndividual;
 
+/*****************************************
+*      Fixed edges data structure        *
+*****************************************/
+typedef struct PGAFixedEdge_s {
+    PGAInteger             lhs;
+    PGAInteger             rhs;
+    struct PGAFixedEdge_s *next;
+    struct PGAFixedEdge_s *prev;
+} PGAFixedEdge;
+
 
 /*****************************************
 *          GA ALGORITHM STRUCTURE        *
@@ -456,6 +466,10 @@ typedef struct {
     double *nadir;           /* nadir point for NSGA-III                  */
     double *worst;           /* Worst point discovered so far             */
     int worst_valid;         /* PGA_TRUE of above is valid                */
+    size_t n_edges;          /* Number of fixed edges                     */
+    int symmetric;           /* Fixed edges are symmetric?                */
+    PGAFixedEdge *edges;     /* Fixed edges for edge crossover            */
+    PGAInteger (*r_edge)[2]; /* Right node + index into edges             */
     PGAIndividual *oldpop;   /* pointer to population (old)               */
     PGAIndividual *newpop;   /* pointer to population (new)               */
 } PGAAlgorithm;
@@ -843,6 +857,8 @@ void PGAIntegerSBXCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGAIntegerEdgeCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerSetFixedEdges
+    (PGAContext *ctx, size_t n, PGAInteger (*edge)[2], int symmetric);
 void PGAIntegerPrintString (PGAContext *ctx, FILE *fp, int p, int pop);
 void PGAIntegerCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 int PGAIntegerDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
