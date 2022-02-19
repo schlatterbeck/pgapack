@@ -1,6 +1,7 @@
 /*  Sequence problems */
 
 #include <pgapack.h>
+#include <unistd.h>
 #include "optimize.h"
 
 double distance [36][36];
@@ -35,8 +36,10 @@ int main (int argc, char **argv)
     int maxiter = 2500;
     int x1, y1, x2, y2;
     int seed = 1;
-    PGAInteger edge [][2] = {{0, 1}, {1, 2}};
+    int opt;
+    PGAInteger edge [][2] = {{0, 1}, {1, 2}, {2, 3}, {4, 5}};
     size_t el = sizeof (edge) / (2 * sizeof (PGAInteger));
+    size_t nfix = el;
 
     for (x1=0; x1<6; x1++) {
         for (y1=0; y1<6; y1++) {
@@ -48,15 +51,21 @@ int main (int argc, char **argv)
             }
         }
     }
-#if 0
-    for (x1=0; x1<36; x1++) {
-        for (y1=0; y1<36; y1++) {
-            printf ("(%2d, %2d): %e\n", x1, y1, distance [x1][y1]);
+    while ((opt = getopt (argc, argv, "r:e:")) > 0) {
+        switch (opt) {
+        case 'r':
+            seed = atoi (optarg);
+            break;
+        case 'e':
+            nfix = atoi (optarg);
+            if (nfix > el) {
+                nfix = el;
+            }
+            break;
+        default:
+            fprintf (stderr, "Usage: %s [-r seed] [-e nfixed]\n", argv [0]);
+            exit (EXIT_FAILURE);
         }
-    }
-#endif
-    if (argc > 1) {
-        seed = atoi (argv [1]);
     }
 
     ctx = PGACreate
@@ -74,7 +83,7 @@ int main (int argc, char **argv)
     PGASetTournamentSize     (ctx, 1.7);
     PGASetMixingType         (ctx, PGA_MIX_MUTATE_OR_CROSS);
     //PGASetTournamentWithReplacement (ctx, PGA_FALSE);
-    PGAIntegerSetFixedEdges  (ctx, el, edge, PGA_TRUE);
+    PGAIntegerSetFixedEdges  (ctx, nfix, edge, PGA_TRUE);
 
     PGASetUp   (ctx);
     PGARun     (ctx, evaluate);

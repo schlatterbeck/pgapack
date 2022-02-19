@@ -121,21 +121,40 @@ static PGAFixedEdge *get_edge (PGAContext *ctx, PGAInteger node)
 #ifdef DEBUG
 static void assert_has_edges (PGAContext *ctx, PGAInteger *a)
 {
-    int i, j1, j2;
-    int found = 0;
+    int i;
     int l = ctx->ga.StringLen;
+    if (!ctx->ga.n_edges) {
+        return;
+    }
     for (i=0; i<l; i++) {
-        j1 = (i + 1) % l;
-        j2 = (i + 2) % l;
-        if (  (a [i] == 0 && a [j1] == 1 && a [j2] == 2)
-           || (a [i] == 2 && a [j1] == 1 && a [j2] == 0)
-           )
-        {
-            found = 1;
-            break;
+        PGAFixedEdge *p = get_edge (ctx, a [i]);
+        if (p && !p->prev) {
+            int j = 0, inc = 0;
+            while (p) {
+                /* Construct to easily set breakpoint on failing assert */
+                if (a [(i + j + l) % l] != p->lhs) {
+                    assert (a [(i + j + l) % l] == p->lhs);
+                }
+                /* First item */
+                if (inc == 0) {
+                    if (a [(i + 1) % l] == p->rhs) {
+                        inc = 1;
+                    } else if (a [(i - 1 + l) % l] == p->rhs) {
+                        inc = -1;
+                    } else {
+                        assert (0);
+                    }
+                } else { /* Subsequent items */
+                    assert (a [(i + j + inc + l) % l] == p->rhs);
+                }
+                p = p->next;
+                j += inc;
+            }
+            if (j > 0) {
+                i += j;
+            }
         }
     }
-    assert (found);
 }
 #endif /* DEBUG */
 
@@ -1504,7 +1523,7 @@ void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
          */
         if (ctx->ga.n_edges) {
             size_t (*x)[2] = malloc (2 * ctx->ga.n_edges * sizeof (size_t));
-            size_t k;
+            size_t k, j = 0;
             if (x == NULL) {
                 PGAErrorPrintf
                     (ctx, PGA_FATAL, "PGAIntegerInitString: Cannot allocate");
@@ -1519,25 +1538,34 @@ void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
                 assert (x [k][0] != SIZE_MAX && x [k][1] != SIZE_MAX);
             }
             for (k=0; k<ctx->ga.n_edges; k++) {
+                PGAInteger v;
                 PGAFixedEdge *p = ctx->ga.edges + k;
-                size_t ix, nix;
+                size_t ix;
                 if (p->prev) {
                     continue;
                 }
+                /* We start at 0, otherwise sequences may overlap and
+                 * destroy each other
+                 */
                 ix = k;
+                /* Relocate first item of sequence */
+                v = c [j];
+                c [j] = c [x [ix][0]];
+                c [x [ix][0]] = v;
+                compute_idx (ctx, x, x [ix][0], v);
+                j++;
                 do {
                     size_t tmp;
-                    PGAInteger v;
-                    nix = (x [ix][0] + 1) % len;
-                    v = c [nix];
-                    c [nix] = c [x [ix][1]];
+                    v = c [j];
+                    c [j] = c [x [ix][1]];
                     c [x [ix][1]] = v;
                     compute_idx (ctx, x, x [ix][1], v);
+                    j++;
                     p = p->next;
                     if (p) {
                         tmp = p - ctx->ga.edges;
                         assert  (x [tmp][0] == x [ix][1]);
-                        x [tmp][0] = nix;
+                        x [tmp][0] = j;
                         ix = tmp;
                     }
                 } while (p);
