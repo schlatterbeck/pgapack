@@ -972,7 +972,7 @@ void PGA_NSGA_II_Replacement (PGAContext *ctx);
 void PGA_NSGA_III_Replacement (PGAContext *ctx);
 void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points);
 void PGASetReferenceDirections
-    (PGAContext *ctx, int ndirs, void *dirs, int npart, double scale);
+    (PGAContext *ctx, size_t ndirs, void *dirs, int npart, double scale);
 
 
 /*****************************************

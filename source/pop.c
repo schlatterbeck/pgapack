@@ -538,7 +538,7 @@ void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points)
 
 ****************************************************************************U*/
 void PGASetReferenceDirections
-    (PGAContext *ctx, int ndirs, void *dirs, int npart, double scale)
+    (PGAContext *ctx, size_t ndirs, void *dirs, int npart, double scale)
 {
     if (ctx->ga.nrefdirs) {
         PGAErrorPrintf (ctx, PGA_FATAL, "Can't set reference directions twice");
