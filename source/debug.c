@@ -416,6 +416,12 @@ PGAFuncRec PGAFuncIndex[] =
         { NULL }
 };
 
+int func_compare (const void *f1, const void *f2)
+{
+    const PGAFuncRec *pf1 = f1;
+    const PGAFuncRec *pf2 = f2;
+    return strcmp (pf1->PGAFuncName, pf2->PGAFuncName);
+}
 
 /*I****************************************************************************
    PGASortDebugIndex - Sort the index of function names alphabetically.
@@ -429,10 +435,8 @@ PGAFuncRec PGAFuncIndex[] =
 ****************************************************************************I*/
 void PGASortFuncNameIndex(PGAContext *ctx)
 {
-    PGANumFcns = sizeof (PGAFuncIndex) / sizeof (PGAFuncRec);
-
-    qsort(PGAFuncIndex, PGANumFcns, sizeof(PGAFuncRec),
-	  (int (*) (const void *, const void *)) &strcmp);
+    PGANumFcns = sizeof (PGAFuncIndex) / sizeof (PGAFuncRec) - 1;
+    qsort (PGAFuncIndex, PGANumFcns, sizeof(PGAFuncRec), func_compare);
 }
 
 
@@ -701,37 +705,19 @@ void PGAClearDebugLevelByName(PGAContext *ctx, char *funcname)
 
 
 ****************************************************************************I*/
-int PGAGetDebugLevelOfName(PGAContext *ctx, char *funcname)
+int PGAGetDebugLevelOfName (PGAContext *ctx, char *funcname)
 {
-    int     l, h;
-    int     m, missing;
-
-    /*  Binary Search  */
-    l = 0;
-    h = PGANumFcns-1;
-    while (l <= h) {
-	m = (l+h)/2 + (l+h)%2;  /*  Actually, floor((l+h)/2)  */
-	missing = strcmp(funcname, PGAFuncIndex[m].PGAFuncName);
-
-        if (missing == 0) {
-            break;
-        } else {
-            if (missing < 0) {
-                h = m - 1;
-            } else {
-                l = m + 1;
-            }
-        }
-    }
-
-    if (missing) {
-	fprintf(stderr, "PGAGetDebugFlag: Function missing from "
-		"PGAFuncIndex: '%s'\n", funcname);
-	PGADestroy(ctx);
-	exit(-1);
+    PGAFuncRec x = { funcname };
+    PGAFuncRec *rec = bsearch
+        (&x, PGAFuncIndex, PGANumFcns, sizeof (PGAFuncRec), func_compare);
+    if (rec == NULL) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGAGetDebugFlag: Function missing from PGAFuncIndex: '%s'\n"
+            , funcname
+            );
     } 
-
-    return(PGAFuncIndex[m].PGAFuncNum);
+    return rec->PGAFuncNum;
 }
 
 /*I****************************************************************************
