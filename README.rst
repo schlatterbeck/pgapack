@@ -16,6 +16,16 @@ companion projects:
 Updates 
 =======
 
+Update Mar 2022:
+
+- Attempt to get everything compiled with visual studio compiler. This
+  compiler is stuck in the 1990s of the last millenium because it does
+  not support dynamically sized arrays on the stack. This is part of the
+  C99 standard. The workarounds involve some ugly macros.
+- Bug-Fix in the genetic distance function PGARealGeneDistance which is
+  used for RTR population replacement. This converted the distances to
+  int which is wrong.
+
 Update Jan 2022:
 
 - Now the tournament size can be a floating-point value implementing
