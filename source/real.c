@@ -475,7 +475,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
     int do_best = (ctx->ga.DEVariant == PGA_DE_VARIANT_BEST);
     int nrand  = 2 * ctx->ga.DENumDiffs + (!do_best);
     int maxidx = 2 * ctx->ga.DENumDiffs + 1;
-    PGAReal *indivs [maxidx];
+    DECLARE_DYNARRAY (PGAReal *, indivs, maxidx);
     int do_crossover = 1;
     static double de_dither = 0.0;
     static int last_iter = -1;
@@ -483,7 +483,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
 
     PGADebugEntered("PGARealMutation");
     if (ctx->ga.MutationType == PGA_MUTATION_DE) {
-        int idx [maxidx];
+        DECLARE_DYNARRAY (int, idx, maxidx);
         PGASampleState sstate;
         int best = 0;
         int avoid = 1;
@@ -1230,6 +1230,7 @@ MPI_Datatype PGARealBuildDatatype(PGAContext *ctx, int p, int pop)
 /*I****************************************************************************
    PGARealGeneDistance - Compute genetic difference of two strings.
    Sum of the absolute values of the differences of each allele.
+   So this is a Manhattan distance (mainly for performance reasons).
 
    Inputs:
       ctx   - context variable
@@ -1254,7 +1255,7 @@ double PGARealGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 
     PGADebugEntered("PGARealGeneDistance");
     for (i=0; i<ctx->ga.StringLen; i++) {
-        ret += abs (c1 [i] - c2 [i]);
+        ret += fabs (c1 [i] - c2 [i]);
     }
     PGADebugExited("PGARealGeneDistance");
     return ret;

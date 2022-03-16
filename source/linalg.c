@@ -36,9 +36,9 @@ Open Source Consulting
 int LIN_solve (int n, void *a, double *b)
 {
     int col, row, row2;
-    int rowidx [n];
+    DECLARE_DYNARRAY (int, rowidx, n);
     double (*m) [n] = a;
-    double r [n];
+    DECLARE_DYNARRAY (double, r, n);
 
     for (row=0; row<n; row++) {
         rowidx [row] = row;
@@ -147,15 +147,15 @@ int LIN_gcd (int a, int b)
  *                                           ( a )
  * LIN_binom: Compute binom of two integers (     )
  *                                           ( b )
- * Will return -1 on overflow
+ * Will return 0 on overflow
  */
-int LIN_binom (int a, int b)
+size_t LIN_binom (int a, int b)
 {
     int i, j;
-    int numer [b];
-    int denom [b];
+    DECLARE_DYNARRAY (size_t, numer, b);
+    DECLARE_DYNARRAY (size_t, denom, b);
     int idxn = 0, idxd = 0;
-    unsigned int r;
+    size_t r;
     assert (a > b);
     assert (b >= 1);
     if (b > a / 2) {
@@ -196,9 +196,9 @@ int LIN_binom (int a, int b)
     }
     r = 1;
     for (i=0; i<idxn; i++) {
-        int m = r * numer [i];
+        unsigned int m = r * numer [i];
         if (m < r || m > INT_MAX) {
-            return -1;
+            return 0;
         }
         r = m;
     }
@@ -256,8 +256,8 @@ static int dasdennis (int dim, int npart, int depth, int sum, void *p)
 void dasdennisscale (int dim, int npoints, double scale, double *dir, void *v)
 {
     int i, j;
-    double dir_normed [dim];
-    double centroid [dim];
+    DECLARE_DYNARRAY (double, dir_normed, dim);
+    DECLARE_DYNARRAY (double, centroid, dim);
     double (*vec)[dim] = v;
     assert (scale > 0);
     assert (scale < 1);

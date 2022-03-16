@@ -102,8 +102,8 @@ privately owned rights.
 #if OPTIMIZE==0
 typedef struct
 {
-        char    PGAFuncName[36];
-        int     PGAFuncNum;
+    char *PGAFuncName;
+    int   PGAFuncNum;
 } PGAFuncRec;
 
 int        PGANumFcns = 0;
@@ -413,7 +413,7 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGASetUserFunction",             830 },
 
         /* END GUARD */
-        { }
+        { NULL }
 };
 
 

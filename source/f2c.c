@@ -1006,7 +1006,7 @@ int pgagetselecttype_(PGAContext **ftx);
 void pgasetptournamentprob_(PGAContext **ftx, double *ptournament_prob);
 double pgagetptournamentprob_(PGAContext **ftx);
 void pgasettournamentsize_(PGAContext **ftx, double *tournament_size);
-int pgagettournamentsize_(PGAContext **ftx);
+double pgagettournamentsize_(PGAContext **ftx);
 void pgasettournamentwithreplacement_(PGAContext **ftx, int *value);
 int pgagettournamentwithreplacement_(PGAContext **ftx);
 void pgasettruncationproportion_(PGAContext **ftx, double *proportion);
@@ -1332,14 +1332,14 @@ int pgagetnoduplicatesflag_(PGAContext **ftx)
 void pgasetevaluation_
     (PGAContext **ftx, int *p, int *pop, double *val)
 {
-     PGASetEvaluation
-        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop, *val);
+     _PGASetEvaluation
+        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop, *val, NULL);
 }
 
 double pgagetevaluation_ (PGAContext **ftx, int *p, int *pop)
 {
-     return PGAGetEvaluation
-        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop);
+     return _PGAGetEvaluation
+        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop, NULL);
 }
 
 void pgasetevaluationaux_
@@ -2251,7 +2251,7 @@ void pgasettournamentsize_(PGAContext **ftx, double *tournament_size)
     PGASetTournamentSize(*ftx, *tournament_size);
 }
 
-int pgagettournamentsize_(PGAContext **ftx)
+double pgagettournamentsize_(PGAContext **ftx)
 {
     return PGAGetTournamentSize(*ftx);
 }

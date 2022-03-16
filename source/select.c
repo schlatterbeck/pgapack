@@ -740,7 +740,7 @@ int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
 {
     int i;
     int m = PGARandomInterval (ctx, 0, ctx->ga.PopSize-1);
-    int t = ctx->ga.TournamentSize;
+    int t = (int)ctx->ga.TournamentSize;
     if (ctx->ga.TournamentSize - t) {
         t += PGARandomFlip (ctx, ctx->ga.TournamentSize - t);
     }
@@ -803,7 +803,7 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
     int i;
     static int *permutation = NULL;
     static int perm_idx = 0;
-    int t = ctx->ga.TournamentSize;
+    int t = (int)ctx->ga.TournamentSize;
 
     if (ctx->ga.TournamentSize - t) {
         t += PGARandomFlip (ctx, ctx->ga.TournamentSize - t);
@@ -908,7 +908,7 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
     }
     if (last_generation != ctx->ga.iter) {
         int i;
-        int bestidx [ctx->ga.PopSize];
+        DECLARE_DYNARRAY (int, bestidx, ctx->ga.PopSize);
         /* Returns sorted list of indeces in bestidx, no need to initialize */
         PGAEvalSort (ctx, pop, bestidx);
         /* Copy the k first indeces */

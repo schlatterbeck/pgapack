@@ -416,7 +416,7 @@ void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm)
     ctx->ga.iter++;
 
     if (rank == 0) {
-        double oldbest [ctx->ga.NumAuxEval + 1];
+        DECLARE_DYNARRAY (double, oldbest, ctx->ga.NumAuxEval + 1);
         /* The three replacement schemes PGA_POPREPL_PAIRWISE_BEST,
          * PGA_POPREPL_RTR, and PGA_POPREPL_NSGA_II all replace some new
          * individuals from PGA_NEWPOP into PGA_OLDPOP. Then

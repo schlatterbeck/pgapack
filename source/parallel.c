@@ -161,7 +161,7 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
             int best_p = PGAGetBestIndex (ctx, pop);
             printf
                 ( "The Best Evaluation: %e"
-                , PGAGetEvaluation (ctx, best_p, pop)
+                , _PGAGetEvaluation (ctx, best_p, pop, NULL)
                 );
             if (numaux) {
                 printf (" Constraints: %e", PGAGetAuxTotal (ctx, best_p, pop));

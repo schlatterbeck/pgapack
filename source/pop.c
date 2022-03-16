@@ -493,7 +493,7 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
 
 
 ****************************************************************************U*/
-void PGASetReferencePoints (PGAContext *ctx, int npoints, void *points)
+void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points)
 {
     if (ctx->ga.nrefpoints) {
         PGAErrorPrintf (ctx, PGA_FATAL, "Can't set reference points twice");
@@ -720,12 +720,13 @@ STATIC void crowding (PGAContext *ctx, PGAIndividual **start, int n, int rank)
     int i, k;
     int nrank = 0;
     int is_ev = INDGetAuxTotal (*start) ? 0 : 1;
-    PGAIndividual *crowd [n];
+    DECLARE_DYNARRAY (PGAIndividual *, crowd, n);
     int nc = ctx->ga.NumConstraint;
     int na = ctx->ga.NumAuxEval;
     int base = is_ev ? 0 : (na - nc);
     int nfun = is_ev ? (na - nc + 1) : nc;
-    double f_min [nfun], f_max [nfun];
+    DECLARE_DYNARRAY (double, f_min, nfun);
+    DECLARE_DYNARRAY (double, f_max, nfun);
 
     for (i=0; i<n; i++) {
         PGAIndividual *ind = start [i];
@@ -820,7 +821,7 @@ STATIC void compute_extreme (PGAContext *ctx, PGAIndividual **start, int n)
     int i, j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
     double (*extreme) [dim] = ctx->ga.extreme;
-    double asfmin  [dim];
+    DECLARE_DYNARRAY (double, asfmin, dim);
 
     if (!ctx->ga.extreme_valid) {
         for (i=0; i<dim; i++) {
@@ -835,7 +836,7 @@ STATIC void compute_extreme (PGAContext *ctx, PGAIndividual **start, int n)
     }
 
     for (i=0; i<n; i++) {
-        double e [dim];
+        DECLARE_DYNARRAY (double, e, dim);
         for (j=0; j<dim; j++) {
             e [j] = GETEVAL (start [i], j, 1);
         }
@@ -856,8 +857,8 @@ STATIC int compute_intersect (PGAContext *ctx, PGAIndividual **start, int n)
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
     double (*extreme) [dim] = ctx->ga.extreme;
     double m [dim][dim];
-    double x [dim];
-    double v [dim];
+    DECLARE_DYNARRAY (double, x, dim);
+    DECLARE_DYNARRAY (double, v, dim);
 
     for (d=0; d<dim; d++) {
         int result;
@@ -935,8 +936,8 @@ STATIC void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
 {
     int j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
-    double wof0 [dim]; /* Worst of front 0 */
-    double wpop [dim]; /* Worst of population */
+    DECLARE_DYNARRAY (double, wof0, dim); /* Worst of front 0 */
+    DECLARE_DYNARRAY (double, wpop, dim); /* Worst of population */
     int ret;
 
     ret = compute_intersect (ctx, start, n);
@@ -964,7 +965,7 @@ STATIC void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
 }
 
 /* Get points in refpoints and refdir-cloud */
-static double *get_point (PGAContext *ctx, int idx)
+static double *get_point (PGAContext *ctx, size_t idx)
 {
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
     double (*normdirs)[dim]  = ctx->ga.normdirs;
@@ -1003,7 +1004,7 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
     int i, j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
     int npoints = ctx->ga.ndpoints + ctx->ga.nrefpoints;
-    double point [dim];
+    DECLARE_DYNARRAY (double, point, dim);
 
     compute_utopian (ctx, start, n);
     compute_extreme (ctx, start, n);
@@ -1193,7 +1194,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
     int n_unc_ind, n_con_ind;
     int popsize = PGAGetPopSize (ctx);
     int numreplace = PGAGetNumReplaceValue (ctx);
-    PGAIndividual *all_individuals [popsize + numreplace];
+    DECLARE_DYNARRAY (PGAIndividual *, all_individuals, popsize + numreplace);
     PGAIndividual **constrained = all_individuals + popsize + numreplace;
     PGAIndividual **unconstrained = all_individuals;
     PGAIndividual *oldpop = ctx->ga.oldpop;

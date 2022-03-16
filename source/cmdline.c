@@ -73,62 +73,62 @@ extern char PGAProgram[100];
 ****************************************************************************I*/
 void PGAReadCmdLine( PGAContext *ctx, int *argc, char **argv )
 {
-     int c;
-     char *s, **a;
+    int c;
+    char *s, **a;
 
      
-     /* Put name of called program (according to the args) into PGAProgram */
-     s = (char *)  strrchr(*argv, '/');
-     if (s)
-          strcpy(PGAProgram, s + 1);
-     else
-          strcpy(PGAProgram, *argv);
+    /* Put name of called program (according to the args) into PGAProgram */
+    s = (char *)strrchr (*argv, '/');
+    if (s) {
+        strncpy (PGAProgram, s + 1, sizeof (PGAProgram));
+    } else {
+        strncpy (PGAProgram, *argv, sizeof (PGAProgram));
+    }
 
-     /* Set all command line flags (except procgroup) to their defaults */
+    /* Set all command line flags (except procgroup) to their defaults */
 
-     /* Move to last argument, so that we can go backwards. */
-     a = &argv[*argc - 1];
+    /* Move to last argument, so that we can go backwards. */
+    a = &argv [*argc - 1];
 
-     /*
-      * Loop backwards through arguments, catching the ones that start with
-      * '-'.  Backwards is more efficient when you are stripping things out.
-      */
-     for (c = (*argc); c > 1; c--, a--)
-     {
-          if (**a != '-')
-               continue;
+    /*
+     * Loop backwards through arguments, catching the ones that start with
+     * '-'.  Backwards is more efficient when you are stripping things out.
+     */
+    for (c = (*argc); c > 1; c--, a--) {
+        if (**a != '-') {
+            continue;
+        }
 
-          if ( !strcmp(*a, "-pgadbg") || !strcmp(*a, "-pgadebug") )
-          {
-               if bad_arg(a[1])
-                    PGAUsage(ctx);
+        if (!strcmp (*a, "-pgadbg") || !strcmp (*a, "-pgadebug")) {
+            if bad_arg (a[1]) {
+                PGAUsage (ctx);
+            }
 #if OPTIMIZE==0
-               PGAParseDebugArg( ctx, a[1] );
+            PGAParseDebugArg (ctx, a[1]);
 #endif
-               PGAStripArgs(a, argc, &c, 2);
-               continue;
-          }
+            PGAStripArgs (a, argc, &c, 2);
+            continue;
+        }
 
-          if ( !strcmp(*a, "-pgaversion") )
-          {
-               PGAStripArgs(a, argc, &c, 1);
-               PGAPrintVersionNumber( ctx );
-	       PGADestroy(ctx);
-	       exit(-1);
-          }
+        if (!strcmp (*a, "-pgaversion")) {
+            PGAStripArgs (a, argc, &c, 1);
+            PGAPrintVersionNumber (ctx);
+	    PGADestroy (ctx);
+	    exit (-1);
+        }
 
-          if (!strcmp(*a, "-pgahelp") )
-          {
-               if (a[1] == NULL)
-                    PGAUsage(ctx);
-               else
-                    if (!strcmp(a[1], "debug"))
-                         PGAPrintDebugOptions(ctx);
-                    else
-                         fprintf(stderr, "Invalid option following"
-                                 "-pgahelp.\n");
-          }
-     }
+        if (!strcmp (*a, "-pgahelp")) {
+            if (a[1] == NULL) {
+                 PGAUsage(ctx);
+            } else {
+                if (!strcmp (a[1], "debug")) {
+                     PGAPrintDebugOptions (ctx);
+                } else {
+                    fprintf (stderr, "Invalid option following -pgahelp.\n");
+                }
+            }
+        }
+    }
 }
 
 #if OPTIMIZE==0
@@ -147,85 +147,78 @@ void PGAReadCmdLine( PGAContext *ctx, int *argc, char **argv )
       Internal function.  Called only by PGAReadCmdLine.
 
 ****************************************************************************I*/
-void PGAParseDebugArg(PGAContext *ctx, char *st)
+void PGAParseDebugArg (PGAContext *ctx, char *st)
 {
-     int           num2index = 0, num1index = 0, index, num1 = 0, num2 = 0, x;
-     unsigned long length = strlen(st);
-     char          range = 0, num1ch[4], num2ch[4];
+    size_t        index, length = strlen (st);
+    int           num2index = 0, num1index = 0, num1 = 0, num2 = 0, x;
+    char          range = 0, num1ch[4], num2ch[4];
 
-
-     length--;
-     for(index=0; index <= length; index++)
-     {
-          if (!isdigit(st[index]) && st[index] != ',' && st[index] != '-')
-               PGAError(ctx, "PGASetDebugLevel: Invalid Debug Value:",
-                        PGA_FATAL, PGA_CHAR, (void *) st);
-          if (st[index] == '-')
-          {
-               range = 1;
-               num1ch[num1index] = '\0';
-               num1 = atoi(num1ch);
-               if (num1 < 0 || num1 > PGA_DEBUG_MAXFLAGS)
-                    PGAError(ctx,
-                             "PGASetDebugLevel: Lower Limit Out of Range:",
-                             PGA_FATAL, PGA_INT, (void *) &num1);
-               num1index = 0;
-          }
-          else
-          {
-               if (isdigit(st[index])) {
-                    if (range)
-                         num2ch[num2index++] = st[index];
-                    else
-                         num1ch[num1index++] = st[index];
-               }
-               if (st[index] == ',' || index == length)
-               {
-                    if (range)
-                    {
-                         num2ch[num2index] = '\0';
-                         num2 = atoi(num2ch);
-                         if (num2 < 0 || num2 > PGA_DEBUG_MAXFLAGS)
-                              PGAError(ctx,
-                                       "PGASetDebugLevel: Upper Limit Out of"
-                                       " Range:",
-                                       PGA_FATAL, PGA_INT, (void *) &num2);
-                         if (num1 <= num2)
-                         {
-                              for (x = num1; x <= num2; x++)
-                              {
-                                   if (x == 212)
-                                        printf("%s %s\n", num1ch, num2ch);
-
-                                   PGASetDebugLevel(ctx, x);
-                              }
-
-                         }
-                         else
-                              PGAError(ctx,
-                                       "PGASetDebugLevel: Lower Limit Exceeds"
-                                       "Upper:", PGA_FATAL, PGA_INT,
-                                       (void *) &num1);
-                         num2index = 0;
-                         range = 0;
+    for (index=0; index<length; index++) {
+        if (!isdigit (st [index]) && st [index] != ',' && st [index] != '-') {
+            PGAError (ctx, "PGASetDebugLevel: Invalid Debug Value:",
+                      PGA_FATAL, PGA_CHAR, (void *) st);
+        }
+        if (st [index] == '-') {
+            range = 1;
+            num1ch [num1index] = '\0';
+            num1 = atoi (num1ch);
+            if (num1 < 0 || num1 > PGA_DEBUG_MAXFLAGS) {
+                PGAError (ctx,
+                          "PGASetDebugLevel: Lower Limit Out of Range:",
+                          PGA_FATAL, PGA_INT, (void *) &num1);
+            }
+            num1index = 0;
+        } else {
+            if (isdigit(st[index])) {
+                if (range) {
+                    num2ch [num2index++] = st [index];
+                } else {
+                    num1ch [num1index++] = st [index];
+                }
+            }
+            if (st[index] == ',' || index == length) {
+                if (range) {
+                    num2ch [num2index] = '\0';
+                    num2 = atoi (num2ch);
+                    if (num2 < 0 || num2 > PGA_DEBUG_MAXFLAGS) {
+                        PGAError (ctx,
+                                  "PGASetDebugLevel: Upper Limit Out of"
+                                  " Range:",
+                                  PGA_FATAL, PGA_INT, (void *) &num2);
                     }
-                    else
-                    {
-                         num1ch[num1index] = '\0';
-                         num1 = atoi(num1ch);
-                         if (num1 < 0 || num1 > PGA_DEBUG_MAXFLAGS)
-                              PGAError(ctx, "PGASetDebugLevel: Debug Number"
-                                       "Out of Range:", PGA_FATAL, PGA_INT,
-                                       (void *) &num1);
-                         if (num1 == 212)
-                              printf("%s\n", num1ch);
-
-                         PGASetDebugLevel(ctx, num1);
-                         num1index = 0;
+                    if (num1 <= num2) {
+                        for (x = num1; x <= num2; x++) {
+                            if (x == 212) {
+                                 printf("%s %s\n", num1ch, num2ch);
+                            }
+                            PGASetDebugLevel (ctx, x);
+                        }
+                    } else {
+                        PGAError (ctx,
+                                  "PGASetDebugLevel: Lower Limit Exceeds"
+                                  "Upper:", PGA_FATAL, PGA_INT,
+                                  (void *) &num1);
                     }
-               }
-          }
-     }
+                    num2index = 0;
+                    range = 0;
+                } else {
+                    num1ch [num1index] = '\0';
+                    num1 = atoi (num1ch);
+                    if (num1 < 0 || num1 > PGA_DEBUG_MAXFLAGS) {
+                        PGAError (ctx, "PGASetDebugLevel: Debug Number"
+                                  "Out of Range:", PGA_FATAL, PGA_INT,
+                                  (void *) &num1);
+                    }
+                    if (num1 == 212) {
+                        printf ("%s\n", num1ch);
+                    }
+
+                    PGASetDebugLevel (ctx, num1);
+                    num1index = 0;
+                }
+            }
+        }
+    }
 }
 #endif
 
