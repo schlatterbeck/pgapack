@@ -19,8 +19,17 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define DECLARE_DYNARRAY(type, name, size) \
         type *name = _alloca (sizeof (type) * (size))
+#define DECLARE_DYNARRAY2(type, name, size1, size2) \
+        type *name = _alloca (sizeof (type) * (size1) * (size2))
+#define DECLARE_DYNPTR(type, name, size) type *name
+#define DEREF1_DYNPTR(name, size, idx) &(name[(idx) * (size)])
+#define DEREF2_DYNPTR(name, size, idx1, idx2) name[(idx1) * (size) + (idx2)]
 #else /* !_MSC_VER */
 #define DECLARE_DYNARRAY(type, name, size) type name [size]
+#define DECLARE_DYNARRAY2(type, name, size1, size2) type name [size1][size2]
+#define DECLARE_DYNPTR(type, name, size) type (*name)[size]
+#define DEREF1_DYNPTR(name, size, idx) name[idx]
+#define DEREF2_DYNPTR(name, size, idx1, idx2) name[idx1][idx2]
 #endif /* !_MSC_VER */
 
 #include <stdio.h>
