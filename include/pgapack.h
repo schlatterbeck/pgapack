@@ -17,20 +17,28 @@
  */
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS
+#define USE_ALLOCA
+#define ALLOCA _alloca
+#endif
+
+#ifdef USE_ALLOCA
+#ifndef ALLOCA
+#define ALLOCA alloca
+#endif
 #define DECLARE_DYNARRAY(type, name, size) \
-        type *name = _alloca (sizeof (type) * (size))
+        type *name = ALLOCA (sizeof (type) * (size))
 #define DECLARE_DYNARRAY2(type, name, size1, size2) \
-        type *name = _alloca (sizeof (type) * (size1) * (size2))
+        type *name = ALLOCA (sizeof (type) * (size1) * (size2))
 #define DECLARE_DYNPTR(type, name, size) type *name
 #define DEREF1_DYNPTR(name, size, idx) &(name[(idx) * (size)])
 #define DEREF2_DYNPTR(name, size, idx1, idx2) name[(idx1) * (size) + (idx2)]
-#else /* !_MSC_VER */
+#else /* !USE_ALLOCA */
 #define DECLARE_DYNARRAY(type, name, size) type name [size]
 #define DECLARE_DYNARRAY2(type, name, size1, size2) type name [size1][size2]
 #define DECLARE_DYNPTR(type, name, size) type (*name)[size]
 #define DEREF1_DYNPTR(name, size, idx) name[idx]
 #define DEREF2_DYNPTR(name, size, idx1, idx2) name[idx1][idx2]
-#endif /* !_MSC_VER */
+#endif /* !USE_ALLOCA */
 
 #include <stdio.h>
 #include <stdlib.h>
