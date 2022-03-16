@@ -496,14 +496,14 @@ int PGAIntegerMutation( PGAContext *ctx, int p, int pop, double mr )
 		    delta = 1.0 - pow (2 * (1 - u), 1.0 / eta);
 		}
 		if (ctx->ga.MutatePolyValue >= 0) {
-		    c [i] += round (delta * ctx->ga.MutatePolyValue);
+		    c [i] += (int)round (delta * ctx->ga.MutatePolyValue);
 		} else {
 		    if (delta < 0) {
 			val = fabs (c [i] - ctx->init.IntegerMin [i] + 0.4999);
 		    } else {
 			val = fabs (ctx->init.IntegerMax [i] - c [i] + 0.4999);
 		    }
-		    c [i] += round (delta * val);
+		    c [i] += (int)round (delta * val);
 		}
 		break;
               }
@@ -774,8 +774,8 @@ void PGAIntegerSBXCrossover
                 u = PGARandom01 (ctx, 0);
             }
             PGACrossoverSBX (ctx, parent1 [i], parent2 [i], u, &c1, &c2);
-            child1 [i] = round (c1);
-            child2 [i] = round (c2);
+            child1 [i] = (int)round (c1);
+            child2 [i] = (int)round (c2);
             for (j=0; j<2; j++) {
                 bouncheck
                     ( ctx, i, ctx->ga.CrossBoundedFlag, ctx->ga.CrossBounceFlag

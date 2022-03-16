@@ -1,8 +1,9 @@
-all: classic dejong example maxbit maxchar maxint name namefull constr
+ALL=classic dejong example maxbit maxchar maxint name namefull constr
+all: ${ALL}
 
 %: %.f
 	$(FC) $(FFLAGS) $< -o $@ $(LDFLAGS)
 
 clean: 
-	rm -f classic dejong example maxbit maxchar maxint name namefull *.o
+	rm -f ${ALL} *.o
 

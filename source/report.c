@@ -88,7 +88,7 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
     /* No multi objective eval */
     if (numaux == numcon) {
         best_p = PGAGetBestIndex (ctx, pop);
-        best_e = PGAGetEvaluation (ctx, best_p, pop);
+        best_e = _PGAGetEvaluation (ctx, best_p, pop, NULL);
 
         fprintf (fp, "Iter #     Field      Value");
         if (numcon) {
@@ -103,7 +103,7 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
         fprintf (fp, "\n");
         if (ctx->rep.PrintOptions & PGA_REPORT_WORST) {
             p = PGAGetWorstIndex (ctx, pop);
-            e = PGAGetEvaluation (ctx, p, pop);
+            e = _PGAGetEvaluation (ctx, p, pop, NULL);
             fprintf (fp, "           Worst     %13.6e", e);
             if (numaux) {
                 fprintf (fp, "   %13.6e", PGAGetAuxTotal (ctx, p, pop));

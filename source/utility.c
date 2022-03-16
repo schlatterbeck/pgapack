@@ -426,7 +426,7 @@ int PGAGetWorstIndex(PGAContext *ctx, int pop)
 int PGAGetBestIndex (PGAContext *ctx, int popidx)
 {
     int p, Best_indx = 0;
-    int bestidxs [ctx->ga.PopSize];
+    DECLARE_DYNARRAY (int, bestidxs, ctx->ga.PopSize);
     int nbest = 0;
     int is_multi = ctx->ga.NumAuxEval > ctx->ga.NumConstraint;
     PGAIndividual *pop = PGAGetIndividual (ctx, 0, popidx);
@@ -638,7 +638,7 @@ void PGAUpdateBest (PGAContext *ctx, int popix)
 {
     PGAIndividual *ind = popix == PGA_OLDPOP ? ctx->ga.oldpop : ctx->ga.newpop;
     PGAIndividual *pop = ind;
-    PGAIndividual *best [ctx->ga.NumAuxEval + 1];
+    DECLARE_DYNARRAY (PGAIndividual *, best, ctx->ga.NumAuxEval + 1);
     int numfun = ctx->ga.NumAuxEval - ctx->ga.NumConstraint;
     int validcount = 0;
     int p, k;
@@ -798,7 +798,7 @@ void PGAUpdateOnline(PGAContext *ctx, int pop)
     int validcount = 0;
     PGAIndividual *ind = pop == PGA_OLDPOP ? ctx->ga.oldpop : ctx->ga.newpop;
     int numfun = ctx->ga.NumAuxEval - ctx->ga.NumConstraint;
-    double evalsum [ctx->ga.NumAuxEval + 1];
+    DECLARE_DYNARRAY (double, evalsum, ctx->ga.NumAuxEval + 1);
     int p, k;
 
     PGADebugEntered ("PGAUpdateOnline");
@@ -1145,7 +1145,7 @@ int PGAEvalSortHelper (const void *a1, const void *a2)
 void PGAEvalSort (PGAContext *ctx, int pop, int *idx)
 {
     int i;
-    PGAIndividual *sorttmp [ctx->ga.PopSize];
+    DECLARE_DYNARRAY (PGAIndividual *, sorttmp, ctx->ga.PopSize);
     /* No need to check validity of pop, done by PGAIndividual */
     PGAIndividual *first = PGAGetIndividual (ctx, 0, pop);
 

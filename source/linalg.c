@@ -36,9 +36,9 @@ Open Source Consulting
 int LIN_solve (int n, void *a, double *b)
 {
     int col, row, row2;
-    int rowidx [n];
-    double (*m) [n] = a;
-    double r [n];
+    DECLARE_DYNARRAY (int, rowidx, n);
+    DECLARE_DYNPTR (double, m, n) = a;
+    DECLARE_DYNARRAY (double, r, n);
 
     for (row=0; row<n; row++) {
         rowidx [row] = row;
@@ -46,7 +46,7 @@ int LIN_solve (int n, void *a, double *b)
 
     for (row=0; row<n-1; row++) {
         for (row2=row; row2<n; row2++) {
-            if (m [rowidx [row2]][rowidx [row]] != 0) {
+            if (DEREF2_DYNPTR (m, n, rowidx [row2], rowidx [row]) != 0) {
                 int tmp = rowidx [rowidx [row]];
                 rowidx [rowidx [row]]  = rowidx [rowidx [row2]];
                 rowidx [rowidx [row2]] = tmp;
@@ -57,20 +57,29 @@ int LIN_solve (int n, void *a, double *b)
             }
         }
         for (row2=row+1; row2<n; row2++) {
-            double c = m [rowidx [row2]][row] / m [rowidx [row]][row];
+            /* m [rowidx [row2]][row] / m [rowidx [row]][row]; */
+            double c = DEREF2_DYNPTR (m, n, rowidx [row2], row)
+                     / DEREF2_DYNPTR (m, n, rowidx [row], row);
             for(col=row+1; col<n; col++) {
-                m [rowidx [row2]][col] -= c * m [rowidx [row]][col];
+                /* m [rowidx [row2]][col] -= c * m [rowidx [row]][col]; */
+                DEREF2_DYNPTR (m, n, rowidx [row2], col)
+                    -= c * DEREF2_DYNPTR (m, n, rowidx [row], col);
             }
-            m [rowidx [row2]][row] = 0;
+            /* m [rowidx [row2]][row] = 0; */
+            DEREF2_DYNPTR (m, n, rowidx [row2], row) = 0;
             b [rowidx [row2]] -= c * b [rowidx [row]];
         }
     }
     for (row=n-1; row>=0; row--) {
         double result = 0;
         for (col=row+1; col<n; col++) {
-            result += m [rowidx [row]][col] * b [rowidx [col]];
+            /* result += m [rowidx [row]][col] * b [rowidx [col]]; */
+            result += DEREF2_DYNPTR (m, n, rowidx [row], col)
+                    * b [rowidx [col]];
         }
-        b [rowidx [row]] = (b [rowidx [row]] - result) / m [rowidx [row]][row];
+        /* ... / m [rowidx [row]][row] */
+        b [rowidx [row]] = (b [rowidx [row]] - result)
+                         / DEREF2_DYNPTR (m, n, rowidx [row], row);
         r [row] = b [rowidx [row]];
         if (isnan (r [row])) {
             return LIN_ERROR_SINGULAR;
@@ -82,11 +91,11 @@ int LIN_solve (int n, void *a, double *b)
 
 void LIN_print_matrix (int n, void *a)
 {
-    double (*m) [n] = a;
+    DECLARE_DYNPTR (double, m, n) = a;
     int row, col;
     for (row=0; row<n; row++) {
         for (col=0; col<n; col++) {
-            printf ("%e ", m [row][col]);
+            printf ("%e ", DEREF2_DYNPTR (m, n, row, col));
         }
         printf ("\n");
     }
@@ -147,15 +156,15 @@ int LIN_gcd (int a, int b)
  *                                           ( a )
  * LIN_binom: Compute binom of two integers (     )
  *                                           ( b )
- * Will return -1 on overflow
+ * Will return 0 on overflow
  */
-int LIN_binom (int a, int b)
+size_t LIN_binom (int a, int b)
 {
     int i, j;
-    int numer [b];
-    int denom [b];
+    DECLARE_DYNARRAY (size_t, numer, b);
+    DECLARE_DYNARRAY (size_t, denom, b);
     int idxn = 0, idxd = 0;
-    unsigned int r;
+    size_t r;
     assert (a > b);
     assert (b >= 1);
     if (b > a / 2) {
@@ -196,9 +205,9 @@ int LIN_binom (int a, int b)
     }
     r = 1;
     for (i=0; i<idxn; i++) {
-        int m = r * numer [i];
+        unsigned int m = r * numer [i];
         if (m < r || m > INT_MAX) {
-            return -1;
+            return 0;
         }
         r = m;
     }
@@ -229,21 +238,26 @@ void LIN_normalize_to_refplane (int dim, double *v)
 /* Static recursive function for LIN_dasdennis, see below */
 static int dasdennis (int dim, int npart, int depth, int sum, void *p)
 {
-    double (*vec)[dim] = p;
+    DECLARE_DYNPTR(double, vec, dim) = p;
     int n = npart - sum + 1;
     int i, offset = 0;
 
     if (depth == dim - 1) {
-        vec [0][depth] = 1.0 - (double)sum / npart;
+        DEREF2_DYNPTR (vec, dim, 0, depth) = 1.0 - (double)sum / npart;
         return 1;
     }
     for (i=0; i<n; i++) {
         double v = (double)i / npart;
         if (i && depth) {
-            memcpy (vec [offset], vec [0], sizeof (double) * dim);
+            memcpy
+                ( DEREF1_DYNPTR (vec, dim, offset)
+                , DEREF1_DYNPTR (vec, dim, 0)
+                , sizeof (double) * dim
+                );
         }
-        vec [offset][depth] = v;
-        offset += dasdennis (dim, npart, depth + 1, sum + i, vec [offset]);
+        DEREF2_DYNPTR (vec, dim, offset, depth) = v;
+        offset += dasdennis
+            (dim, npart, depth + 1, sum + i, DEREF1_DYNPTR (vec, dim, offset));
     }
     return offset;
 }
@@ -256,14 +270,14 @@ static int dasdennis (int dim, int npart, int depth, int sum, void *p)
 void dasdennisscale (int dim, int npoints, double scale, double *dir, void *v)
 {
     int i, j;
-    double dir_normed [dim];
-    double centroid [dim];
-    double (*vec)[dim] = v;
+    DECLARE_DYNARRAY (double, dir_normed, dim);
+    DECLARE_DYNARRAY (double, centroid, dim);
+    DECLARE_DYNPTR (double, vec, dim) = v;
     assert (scale > 0);
     assert (scale < 1);
     for (i=0; i<npoints; i++) {
         for (j=0; j<dim; j++) {
-            vec [i][j] *= scale;
+            DEREF2_DYNPTR (vec, dim, i, j) *= scale;
         }
     }
     for (j=0; j<dim; j++) {
@@ -277,7 +291,7 @@ void dasdennisscale (int dim, int npoints, double scale, double *dir, void *v)
     /* Now shift points back to reference plane */
     for (i=0; i<npoints; i++) {
         for (j=0; j<dim; j++) {
-            vec [i][j] += dir_normed [j] - centroid [j];
+            DEREF2_DYNPTR (vec, dim, i, j) += dir_normed [j] - centroid [j];
         }
     }
 }
@@ -315,7 +329,7 @@ int LIN_dasdennis
     (int dim, int npart, void *result, int nexist, double scale, double *dir)
 {
     void **r = result;
-    double (*vec)[dim];
+    DECLARE_DYNPTR(double, vec, dim);
     int npoints = LIN_binom (dim + npart - 1, npart);
     void *new = NULL;
     assert (  (*r == NULL && nexist == 0)
@@ -333,7 +347,8 @@ int LIN_dasdennis
         goto err;
     }
     vec = *r = new;
-    LIN_dasdennis_allocated (dim, npart, scale, dir, npoints, vec + nexist);
+    LIN_dasdennis_allocated
+        (dim, npart, scale, dir, npoints, DEREF1_DYNPTR (vec, dim, nexist));
     return nexist + npoints;
 err:
     if (nexist) {

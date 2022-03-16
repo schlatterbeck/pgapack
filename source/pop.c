@@ -493,7 +493,7 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
 
 
 ****************************************************************************U*/
-void PGASetReferencePoints (PGAContext *ctx, int npoints, void *points)
+void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points)
 {
     if (ctx->ga.nrefpoints) {
         PGAErrorPrintf (ctx, PGA_FATAL, "Can't set reference points twice");
@@ -720,12 +720,13 @@ STATIC void crowding (PGAContext *ctx, PGAIndividual **start, int n, int rank)
     int i, k;
     int nrank = 0;
     int is_ev = INDGetAuxTotal (*start) ? 0 : 1;
-    PGAIndividual *crowd [n];
+    DECLARE_DYNARRAY (PGAIndividual *, crowd, n);
     int nc = ctx->ga.NumConstraint;
     int na = ctx->ga.NumAuxEval;
     int base = is_ev ? 0 : (na - nc);
     int nfun = is_ev ? (na - nc + 1) : nc;
-    double f_min [nfun], f_max [nfun];
+    DECLARE_DYNARRAY (double, f_min, nfun);
+    DECLARE_DYNARRAY (double, f_max, nfun);
 
     for (i=0; i<n; i++) {
         PGAIndividual *ind = start [i];
@@ -819,23 +820,23 @@ STATIC void compute_extreme (PGAContext *ctx, PGAIndividual **start, int n)
 {
     int i, j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
-    double (*extreme) [dim] = ctx->ga.extreme;
-    double asfmin  [dim];
+    DECLARE_DYNPTR (double, extreme, dim) = ctx->ga.extreme;
+    DECLARE_DYNARRAY (double, asfmin, dim);
 
     if (!ctx->ga.extreme_valid) {
         for (i=0; i<dim; i++) {
             for (j=0; j<dim; j++) {
-                extreme [i][j] = GETEVAL (start [0], j, 1);
+                DEREF2_DYNPTR (extreme, dim, i, j) = GETEVAL (start [0], j, 1);
             }
         }
     }
     ctx->ga.extreme_valid = PGA_TRUE;
     for (j=0; j<dim; j++) {
-        asfmin [j] = compute_asf (ctx, extreme [j], j);
+        asfmin [j] = compute_asf (ctx, DEREF1_DYNPTR (extreme, dim, j), j);
     }
 
     for (i=0; i<n; i++) {
-        double e [dim];
+        DECLARE_DYNARRAY (double, e, dim);
         for (j=0; j<dim; j++) {
             e [j] = GETEVAL (start [i], j, 1);
         }
@@ -843,7 +844,8 @@ STATIC void compute_extreme (PGAContext *ctx, PGAIndividual **start, int n)
             double asf = compute_asf (ctx, e, j);
             if (asf < asfmin [j]) {
                 asfmin [j] = asf;
-                memcpy (extreme [j], e, sizeof (double) * dim);
+                memcpy
+                    (DEREF1_DYNPTR (extreme, dim, j), e, sizeof (double) * dim);
             }
         }
     }
@@ -854,22 +856,25 @@ STATIC int compute_intersect (PGAContext *ctx, PGAIndividual **start, int n)
 {
     int i, j, d;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
-    double (*extreme) [dim] = ctx->ga.extreme;
-    double m [dim][dim];
-    double x [dim];
-    double v [dim];
+    DECLARE_DYNPTR (double, extreme, dim) = ctx->ga.extreme;
+    DECLARE_DYNARRAY2 (double, m, dim, dim);
+    DECLARE_DYNARRAY (double, x, dim);
+    DECLARE_DYNARRAY (double, v, dim);
 
     for (d=0; d<dim; d++) {
         int result;
         for (i=0; i<dim-1; i++) {
             for (j=0; j<dim; j++) {
                 /* No need to normalize with utopian here, cancels */
-                m [j][i] = extreme [i+1][j] - extreme [0][j];
+                DEREF2_DYNPTR (m, dim, j, i)
+                    = DEREF2_DYNPTR (extreme, dim, i+1, j)
+                    - DEREF2_DYNPTR (extreme, dim, 0, j);
             }
         }
         for (j=0; j<dim; j++) {
-            m [j][dim-1] = j == d ? -1 : 0;
-            v [j] = -NORMALIZE (ctx, extreme [0][j], ctx->ga.utopian [j]);
+            DEREF2_DYNPTR (m, dim, j, dim-1) = j == d ? -1 : 0;
+            v [j] = -NORMALIZE
+                (ctx, DEREF2_DYNPTR (extreme, dim, 0, j), ctx->ga.utopian [j]);
         }
         result = LIN_solve (dim, m, v);
         /* Matrix singular? */
@@ -935,8 +940,8 @@ STATIC void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
 {
     int j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
-    double wof0 [dim]; /* Worst of front 0 */
-    double wpop [dim]; /* Worst of population */
+    DECLARE_DYNARRAY (double, wof0, dim); /* Worst of front 0 */
+    DECLARE_DYNARRAY (double, wpop, dim); /* Worst of population */
     int ret;
 
     ret = compute_intersect (ctx, start, n);
@@ -964,16 +969,16 @@ STATIC void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
 }
 
 /* Get points in refpoints and refdir-cloud */
-static double *get_point (PGAContext *ctx, int idx)
+static double *get_point (PGAContext *ctx, size_t idx)
 {
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
-    double (*normdirs)[dim]  = ctx->ga.normdirs;
-    double (*refpoints)[dim] = ctx->ga.refpoints;
+    DECLARE_DYNPTR (double, normdirs,  dim) = ctx->ga.normdirs;
+    DECLARE_DYNPTR (double, refpoints, dim) = ctx->ga.refpoints;
     assert (idx < ctx->ga.ndpoints + ctx->ga.nrefpoints);
     if (idx > ctx->ga.nrefpoints) {
-        return normdirs [idx];
+        return DEREF1_DYNPTR (normdirs, dim, idx);
     }
-    return refpoints [idx];
+    return DEREF1_DYNPTR (refpoints, dim, idx);
 }
 
 static int assoc_cmp (const void *a1, const void *a2)
@@ -1003,7 +1008,7 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
     int i, j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
     int npoints = ctx->ga.ndpoints + ctx->ga.nrefpoints;
-    double point [dim];
+    DECLARE_DYNARRAY (double, point, dim);
 
     compute_utopian (ctx, start, n);
     compute_extreme (ctx, start, n);
@@ -1034,7 +1039,7 @@ static void niching (PGAContext *ctx, PGAIndividual **start, int n, int rank)
         LIN_dasdennis_allocated
             ( dim, ctx->ga.ndir_npart
             , ctx->ga.dirscale, point
-            , ctx->ga.ndpoints, ctx->ga.normdirs + i * sz
+            , ctx->ga.ndpoints, ((char *)ctx->ga.normdirs) + i * sz
             );
     }
     for (j=0; j<n; j++) {
@@ -1101,13 +1106,13 @@ STATIC int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
     int base = is_ev ? 0 : (na - nc);
     int nfun = is_ev ? (na - nc + 1) : nc;
     int intsforn = (n + WL - 1) / WL;
-    PGABinary (*dominance)[n][intsforn] =
-        (PGABinary (*)[n][intsforn])(ctx->scratch.dominance);
+    DECLARE_DYNPTR (PGABinary, dominance, intsforn) =
+        (void *)(ctx->scratch.dominance);
 
     for (i=0; i<n; i++) {
         (start [i])->rank = UINT_MAX;
         for (j=0; j<intsforn; j++) {
-            (*dominance) [i][j] = 0;
+            DEREF2_DYNPTR (dominance, intsforn, i, j) = 0;
         }
     }
     for (i=0; i<n; i++) {
@@ -1134,10 +1139,10 @@ STATIC int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
             }
             /* j dominated by i */
             if (cmp < 0) {
-                SET_BIT ((*dominance) [j], i);
+                SET_BIT (DEREF1_DYNPTR (dominance, intsforn, j), i);
             /* i dominated by j */
             } else {
-                SET_BIT ((*dominance) [i], j);
+                SET_BIT (DEREF1_DYNPTR (dominance, intsforn, i), j);
             }
         }
     }
@@ -1149,7 +1154,7 @@ STATIC int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
                 continue;
             }
             for (j=0; j<intsforn; j++) {
-                if ((*dominance) [i][j]) {
+                if (DEREF2_DYNPTR (dominance, intsforn, i, j)) {
                     break;
                 }
             }
@@ -1169,7 +1174,7 @@ STATIC int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal)
                 continue;
             }
             for (j=0; j<n; j++) {
-                CLEAR_BIT ((*dominance) [j], i);
+                CLEAR_BIT (DEREF1_DYNPTR (dominance, intsforn, j), i);
             }
         }
     }
@@ -1193,7 +1198,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
     int n_unc_ind, n_con_ind;
     int popsize = PGAGetPopSize (ctx);
     int numreplace = PGAGetNumReplaceValue (ctx);
-    PGAIndividual *all_individuals [popsize + numreplace];
+    DECLARE_DYNARRAY (PGAIndividual *, all_individuals, popsize + numreplace);
     PGAIndividual **constrained = all_individuals + popsize + numreplace;
     PGAIndividual **unconstrained = all_individuals;
     PGAIndividual *oldpop = ctx->ga.oldpop;

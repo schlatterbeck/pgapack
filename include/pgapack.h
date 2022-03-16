@@ -5,6 +5,41 @@
 *     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
 *              Brian P. Walenz
 ******************************************************************************/
+/* Microsoft choses to arbitrarily deprecate some standard C-Library functions
+ * (CRT stands for C runtime library) Disable deprecation warning
+ * And Microsoft ist stuck in the 1980s with their C Compiler (well
+ * technically it isn't a C-Compiler because it doesn't support the
+ * latest version of the standard) because they do not support
+ * dynamically allocated variable arrays (in the C standard since 1999).
+ * So this hack uses _alloca (which doesn't return a NULL return value
+ * but throws an exception if allocation fails). We do not bother to
+ * catch the exception in the error-case.
+ */
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#define USE_ALLOCA
+#define ALLOCA _alloca
+#endif
+
+#ifdef USE_ALLOCA
+#ifndef ALLOCA
+#define ALLOCA alloca
+#endif
+#define DECLARE_DYNARRAY(type, name, size) \
+        type *name = ALLOCA (sizeof (type) * (size))
+#define DECLARE_DYNARRAY2(type, name, size1, size2) \
+        type *name = ALLOCA (sizeof (type) * (size1) * (size2))
+#define DECLARE_DYNPTR(type, name, size) type *name
+#define DEREF1_DYNPTR(name, size, idx) &(name[(idx) * (size)])
+#define DEREF2_DYNPTR(name, size, idx1, idx2) name[(idx1) * (size) + (idx2)]
+#else /* !USE_ALLOCA */
+#define DECLARE_DYNARRAY(type, name, size) type name [size]
+#define DECLARE_DYNARRAY2(type, name, size1, size2) type name [size1][size2]
+#define DECLARE_DYNPTR(type, name, size) type (*name)[size]
+#define DEREF1_DYNPTR(name, size, idx) name[idx]
+#define DEREF2_DYNPTR(name, size, idx1, idx2) name[idx1][idx2]
+#endif /* !USE_ALLOCA */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -82,7 +117,7 @@ extern "C" {
                                                 /* to word (ix) and bit (bx) */
 
 /* Used in PGAEvalCompare and others */
-static inline double CMP (const double a, const double b)
+static inline int CMP (const double a, const double b)
 {
     return (a < b ? -1 : (a > b ? 1 : 0));
 }
@@ -393,7 +428,7 @@ typedef struct {
     size_t ndpoints;         /* Number of points in refdir point cloud    */
     double dirscale;         /* Scale factor for reference directions     */
     int ndir_npart;          /* Number Das Dennis partitions for refdir   */
-    int nrefpoints;          /* Number of reference points                */
+    size_t nrefpoints;       /* Number of reference points                */
     void *refpoints;         /* Ref points on normalized hyperplane       */
     void *extreme;           /* Extreme vector for NSGA-III               */
     int extreme_valid;       /* PGA_TRUE of above is valid                */
@@ -796,7 +831,7 @@ int LIN_solve (int n, void *a, double *b);
 void LIN_print_matrix (int n, void *a);
 void LIN_print_vector (int n, double *v);
 int LIN_gcd (int a, int b);
-int LIN_binom (int a, int b);
+size_t LIN_binom (int a, int b);
 void LIN_normalize_to_refplane (int dim, double *v);
 void LIN_dasdennis_allocated
     (int dim, int npart, double scale, double *dir, int npoints, void *mem);
@@ -935,7 +970,7 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx);
 void PGAPairwiseBestReplacement (PGAContext *ctx);
 void PGA_NSGA_II_Replacement (PGAContext *ctx);
 void PGA_NSGA_III_Replacement (PGAContext *ctx);
-void PGASetReferencePoints (PGAContext *ctx, int npoints, void *points);
+void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points);
 void PGASetReferenceDirections
     (PGAContext *ctx, int ndirs, void *dirs, int npart, double scale);
 
