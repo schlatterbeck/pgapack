@@ -78,11 +78,11 @@ void PGAReadCmdLine( PGAContext *ctx, int *argc, char **argv )
 
      
     /* Put name of called program (according to the args) into PGAProgram */
-    s = (char *)strrchr (*argv, '/');
+    s = strrchr (*argv, '/');
     if (s) {
-        strncpy (PGAProgram, s + 1, sizeof (PGAProgram));
+        strncpy (PGAProgram, s + 1, sizeof (PGAProgram) - 1);
     } else {
-        strncpy (PGAProgram, *argv, sizeof (PGAProgram));
+        strncpy (PGAProgram, *argv, sizeof (PGAProgram) - 1);
     }
 
     /* Set all command line flags (except procgroup) to their defaults */
