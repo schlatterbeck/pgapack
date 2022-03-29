@@ -186,6 +186,10 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
             /* Can happen if none of the individuals fulfills constraints */
             if (!found) {
                 fprintf (fp, "No individuals fulfilling constraints\n");
+                best_p = PGAGetBestIndex (ctx, pop);
+                fprintf (fp, "Best individual\nConstraints: ");
+                fprintf (fp, "%13.6e\n", PGAGetAuxTotal (ctx, best_p, pop));
+                PGAPrintString (ctx, fp, best_p, pop);
             }
         }
     }
