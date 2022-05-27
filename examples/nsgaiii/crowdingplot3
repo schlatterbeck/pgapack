@@ -14,7 +14,7 @@ def plot_file (f, args, n) :
         line = line.strip ()
         if line.startswith ('Example:') or line.startswith ('Title:') :
             title = line.split (None, 1) [-1]
-        if line.startswith ('F') :
+        if line.startswith ('F') and line [1].isspace () :
             f, idx, number = line.split ()
             idx = int (idx)
             num = float (number)
