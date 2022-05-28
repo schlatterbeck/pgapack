@@ -2,30 +2,84 @@
 
 import sys
 import matplotlib.pyplot as plt
+import numpy             as np
 from argparse import ArgumentParser
 
-def plot_file (f, args, n) :
-    X = []
-    Y = []
-    title = args.title
-    for line in f :
-        line = line.strip ()
-        if line.startswith ('Example:') or line.startswith ('Title:') :
-            title = line.split (None, 1) [-1]
-        if line.startswith ('F') and line [1].isspace () :
-            f, idx, number = line.split ()
-            idx = int (idx)
-            num = float (number)
-            if idx == args.y_axis :
-                Y.append (num)
-            elif idx == args.x_axis :
-                X.append (num)
-    if args.title :
-        title = args.title
+class Opt_Log :
 
-    d = dict (facecolors = 'none', linewidths = 0.5, s = 12)
-    plt.scatter (X, Y, edgecolors='C%d' % (n % 10), **d)
-    return title
+    def __init__ (self, args, f) :
+        self.args  = args
+        self.f     = f
+        self.coord = []
+        self._mask = None
+        self.dominated_idx = set ()
+        for line in f :
+            line = line.strip ()
+            if line.startswith ('Example:') or line.startswith ('Title:') :
+                self.title = line.split (None, 1) [-1]
+            if line.startswith ('F   ') :
+                f, idx, number = line.split ()
+                idx = int (idx)
+                num = float (number)
+                if idx >= len (self.coord) :
+                    assert idx == len (self.coord)
+                    self.coord.append ([])
+                self.coord [idx].append (num)
+        self.coord = np.array (self.coord)
+    # end def __init__
+
+    @property
+    def mask (self) :
+        if self._mask is None :
+            self._mask = np.zeros (self.coord [0].shape, dtype = bool)
+            self._mask [list (self.dominated_idx)] = True
+        return self._mask
+    # end def mask
+
+
+    def plot (self, plt, color_idx) :
+        kw = dict (facecolors = 'none', linewidths = 0.5, s = 12)
+        if color_idx == 'k' :
+            kw ['edgecolors'] = 'k'
+            mask  = self.mask
+        else :
+            kw ['edgecolors'] = 'C%d' % (color_idx % 10)
+            mask = ~self.mask
+        coord = self.coord.T [mask].T
+        args = [coord [self.args.x_axis], coord [self.args.y_axis]]
+        if self.args.plot3d :
+            args.append (coord [self.args.z_axis])
+        plt.scatter (*args, **kw)
+    # end def plot
+
+    def pareto_dominance (self, other) :
+        """ Put all dominated point indeces into self.dominated_idx,
+            likewise all points dominated in other into other.dominated_idx.
+        """
+        for n1, p1 in enumerate (self.coord.T) :
+            if n1 in self.dominated_idx :
+                continue
+            p1 = p1 [:self.args.dominance_dimension]
+            for n2, p2 in enumerate (other.coord.T) :
+                if n2 in other.dominated_idx :
+                    continue
+                p2 = p2 [:self.args.dominance_dimension]
+                d  = 0
+                lt = (p1 < p2).any ()
+                gt = (p1 > p2).any ()
+                if lt and not gt:
+                    if self.args.maximize :
+                        self.dominated_idx.add (n1)
+                    else :
+                        other.dominated_idx.add (n2)
+                if gt and not lt :
+                    if self.args.maximize :
+                        other.dominated_idx.add (n2)
+                    else :
+                        self.dominated_idx.add (n1)
+    # end def pareto_dominance
+
+# end class Opt_Log
 
 cmd = ArgumentParser ()
 cmd.add_argument \
@@ -34,15 +88,39 @@ cmd.add_argument \
     , nargs   = '*'
     )
 cmd.add_argument \
+    ( "-m", "--maximize"
+    , help    = "When computing dominance, asume maximization"
+    , action  = 'store_true'
+    )
+cmd.add_argument \
     ( "-n", "--title"
-    , help    = "Default title of the plot, will be overwritten by "
+    , help    = "Title of the plot, default is first found "
                 "'Example' or 'Title' line"
     , default = ''
+    )
+cmd.add_argument \
+    ( "-D", "--dominance-dimension"
+    , help    = "Compute pareto dominance, remove dominated points, these"
+                " are later plotted in black. Note that this only has"
+                " effect if more than one file is given. This must give"
+                " the dimensionality of the objectives"
+    , type    = int
+    )
+cmd.add_argument \
+    ( "-3", "--plot3d"
+    , action  = 'store_true'
+    , help    = "Plot 3D"
+    )
+cmd.add_argument \
+    ( "-k", "--plot-dominated"
+    , action  = 'store_true'
+    , help    = "Plot dominated points (in black)"
     )
 cmd.add_argument \
     ( "-x", "--x-axis"
     , type    = int
     , default = 0
+    , help    = "Index used for X-axis, default=%(default)s"
     )
 cmd.add_argument \
     ( "-X", "--x-label"
@@ -52,23 +130,64 @@ cmd.add_argument \
     ( "-y", "--y-axis"
     , type    = int
     , default = 1
+    , help    = "Index used for Y-axis, default=%(default)s"
     )
 cmd.add_argument \
     ( "-Y", "--y-label"
     , help    = "Label for Y-Axis"
     )
+cmd.add_argument \
+    ( "-z", "--z-axis"
+    , type    = int
+    , default = 2
+    , help    = "Index used for Z-axis, default=%(default)s, only used for 3D"
+    )
+cmd.add_argument \
+    ( "-Z", "--z-label"
+    , help    = "Label for Z-Axis (only used for 3D plot)"
+    )
 args = cmd.parse_args ()
-f  = sys.stdin
+# Set 3D option if command ends with '3'
+if not args.plot3d and sys.argv [0].endswith ('3') :
+    args.plot3d = True
+data = []
 if args.filename :
     for n, fn in enumerate (args.filename) :
         with open (fn, 'r') as f :
-            title = plot_file (f, args, n)
+            data.append (Opt_Log (args, f))
+            if not args.title and data [-1].title :
+                args.title = data [-1].title
 else :
-    title = plot_file (f, args, 0)
+    data.append (Opt_Log (args, sys.stdin))
+    if not args.title and data [-1].title :
+        args.title = data [-1].title
 
-x_label = args.x_label or 'Objective %d' % args.x_axis
-y_label = args.y_label or 'Objective %d' % args.y_axis
-plt.xlabel (x_label)
-plt.ylabel (y_label)
-plt.title (title)
+if not args.x_label :
+    args.x_label = 'Objective %d' % args.x_axis
+if not args.y_label :
+    args.y_label = 'Objective %d' % args.y_axis
+if not args.z_label :
+    args.z_label = 'Objective %d' % args.z_axis
+
+if args.dominance_dimension :
+    for n, dat1 in enumerate (data) :
+        for n2 in range (n + 1, len (data)) :
+            dat2 = data [n2]
+            dat1.pareto_dominance (dat2)
+
+fig = plt.figure ()
+axa = {}
+if args.plot3d :
+    axa ['projection'] = '3d'
+ax  = fig.add_subplot (111, **axa)
+for n, dat in enumerate (data) :
+    dat.plot (ax, n)
+    if args.plot_dominated :
+        dat.plot (ax, 'k')
+
+ax.set_xlabel (args.x_label)
+ax.set_ylabel (args.y_label)
+if args.plot3d :
+    ax.set_zlabel (args.z_label)
+plt.title (args.title)
 plt.show ()
