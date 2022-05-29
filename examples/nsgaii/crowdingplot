@@ -2,8 +2,15 @@
 
 import sys
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import numpy             as np
 from argparse import ArgumentParser
+
+try :
+    import plotly.express as px
+    import pandas         as pd
+except ImportError :
+    px = None
 
 class Opt_Log :
 
@@ -36,21 +43,16 @@ class Opt_Log :
         return self._mask
     # end def mask
 
-
-    def plot (self, plt, color_idx) :
-        kw = dict (facecolors = 'none', linewidths = 0.5, s = 12)
-        if color_idx == 'k' :
-            kw ['edgecolors'] = 'k'
-            mask  = self.mask
-        else :
-            kw ['edgecolors'] = 'C%d' % (color_idx % 10)
-            mask = ~self.mask
+    def get_axis_data (self, idx, dominated = False) :
+        """ Get the points for a certain coordinate index.
+            Default is to get non-dominated points
+        """
+        mask = self.mask
+        if not dominated :
+            mask = ~mask
         coord = self.coord.T [mask].T
-        args = [coord [self.args.x_axis], coord [self.args.y_axis]]
-        if self.args.plot3d :
-            args.append (coord [self.args.z_axis])
-        plt.scatter (*args, **kw)
-    # end def plot
+        return coord [idx]
+    # end def get_axis_data
 
     def pareto_dominance (self, other) :
         """ Put all dominated point indeces into self.dominated_idx,
@@ -80,6 +82,110 @@ class Opt_Log :
     # end def pareto_dominance
 
 # end class Opt_Log
+
+class Graphics :
+    """ Encapsulate the graphics engine
+    """
+
+    def __init__ (self, args) :
+        self.args  = args
+        self.data  = []
+        self.hfile = getattr (args, 'export_html', None)
+        self.html  = getattr (args, 'show_in_browser', None)
+        if args.filename :
+            for n, fn in enumerate (args.filename) :
+                with open (fn, 'r') as f :
+                    self.data.append (Opt_Log (args, f))
+                    if not args.title and self.data [-1].title :
+                        args.title = self.data [-1].title
+        else :
+            self.data.append (Opt_Log (args, sys.stdin))
+            if not args.title and data [-1].title :
+                args.title = self.data [-1].title
+
+        if not args.x_label :
+            args.x_label = 'Objective %d' % args.x_axis
+        if not args.y_label :
+            args.y_label = 'Objective %d' % args.y_axis
+        if not args.z_label :
+            args.z_label = 'Objective %d' % args.z_axis
+        self.axes   = [args.x_axis, args.y_axis]
+        self.labels = dict (x = args.x_label, y = args.y_label)
+        if args.plot3d :
+            self.axes.append (args.z_axis)
+            self.labels ['z'] = args.z_label
+
+        if args.dominance_dimension :
+            for n, dat1 in enumerate (self.data) :
+                for n2 in range (n + 1, len (self.data)) :
+                    dat2 = self.data [n2]
+                    dat1.pareto_dominance (dat2)
+        self.colormap = []
+        for cn in mcolors.TABLEAU_COLORS :
+            self.colormap.append (mcolors.TABLEAU_COLORS [cn])
+    # end def __init__
+
+    def plot (self) :
+        if self.hfile or self.html :
+            self.plot_plotly ()
+        else :
+            self.plot_matplotlib ()
+    # end def plot
+
+    def plot_matplotlib (self) :
+        fig = plt.figure ()
+        axa = {}
+        if self.args.plot3d :
+            axa ['projection'] = '3d'
+        ax  = fig.add_subplot (111, **axa)
+        kw = dict (facecolors = 'none', linewidths = 0.5, s = 12)
+        ax.set_xlabel (self.args.x_label)
+        ax.set_ylabel (self.args.y_label)
+        if self.args.plot3d :
+            ax.set_zlabel (self.args.z_label)
+        plt.title (self.args.title)
+        for n, dat in enumerate (self.data) :
+            args = [dat.get_axis_data (a) for a in self.axes]
+            kw ['edgecolors'] = 'C%d' % (n % 10)
+            ax.scatter (*args, **kw)
+            if self.args.plot_dominated :
+                kw ['edgecolors'] = 'k'
+                ax.scatter (*args, **kw)
+        plt.show ()
+    # end def plot_matplotlib
+
+    def plot_plotly (self) :
+        method = px.scatter
+        axes   = ['x', 'y']
+        msize  = 10
+        if args.plot3d :
+            method = px.scatter_3d
+            axes.append ('z')
+            msize = 4
+        pdf = pd.DataFrame ()
+        for datnum, dat in enumerate (self.data) :
+            df = pd.DataFrame ()
+            for n, axis in enumerate (axes) :
+                df [self.labels [axis]] = dat.get_axis_data (n)
+            df ['run'] = str (datnum + 1)
+            pdf = pd.concat ((pdf, df), ignore_index = True)
+        d = dict (color = 'run', color_discrete_sequence = self.colormap)
+        d.update (title = self.args.title)
+        d.update (self.labels)
+        fig = method (pdf, **d)
+        ld  = dict (width = 1, cauto = True)
+        fig.update_traces (marker = dict (size = msize, opacity=0.6, line = ld))
+        fig.update_layout (legend= {'itemsizing': 'constant'})
+        fig.update_layout (title_font = dict (size = 24), title_x=0.5)
+        #help (fig ['layout']['legend'])
+        #fig ['layout']['legend']['itemwidth'] = 500
+        #print (fig ['layout'])
+        if self.hfile :
+            fig.write_html (self.hfile)
+        if self.html :
+            fig.show ()
+    # end def plot_plotly
+# end class Graphics
 
 cmd = ArgumentParser ()
 cmd.add_argument \
@@ -111,6 +217,16 @@ cmd.add_argument \
     , action  = 'store_true'
     , help    = "Plot 3D"
     )
+if px is not None :
+    cmd.add_argument \
+        ( "-H", "--export-html"
+        , help    = "Filename to export graphics as html"
+        )
+    cmd.add_argument \
+        ( "-S", "--show-in-browser"
+        , help    = "Produce a plot shown interactively in a running browser"
+        , action  = 'store_true'
+        )
 cmd.add_argument \
     ( "-k", "--plot-dominated"
     , action  = 'store_true'
@@ -150,44 +266,6 @@ args = cmd.parse_args ()
 # Set 3D option if command ends with '3'
 if not args.plot3d and sys.argv [0].endswith ('3') :
     args.plot3d = True
-data = []
-if args.filename :
-    for n, fn in enumerate (args.filename) :
-        with open (fn, 'r') as f :
-            data.append (Opt_Log (args, f))
-            if not args.title and data [-1].title :
-                args.title = data [-1].title
-else :
-    data.append (Opt_Log (args, sys.stdin))
-    if not args.title and data [-1].title :
-        args.title = data [-1].title
 
-if not args.x_label :
-    args.x_label = 'Objective %d' % args.x_axis
-if not args.y_label :
-    args.y_label = 'Objective %d' % args.y_axis
-if not args.z_label :
-    args.z_label = 'Objective %d' % args.z_axis
-
-if args.dominance_dimension :
-    for n, dat1 in enumerate (data) :
-        for n2 in range (n + 1, len (data)) :
-            dat2 = data [n2]
-            dat1.pareto_dominance (dat2)
-
-fig = plt.figure ()
-axa = {}
-if args.plot3d :
-    axa ['projection'] = '3d'
-ax  = fig.add_subplot (111, **axa)
-for n, dat in enumerate (data) :
-    dat.plot (ax, n)
-    if args.plot_dominated :
-        dat.plot (ax, 'k')
-
-ax.set_xlabel (args.x_label)
-ax.set_ylabel (args.y_label)
-if args.plot3d :
-    ax.set_zlabel (args.z_label)
-plt.title (args.title)
-plt.show ()
+g = Graphics (args)
+g.plot ()
