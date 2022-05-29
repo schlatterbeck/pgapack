@@ -149,6 +149,7 @@ class Graphics :
             kw ['edgecolors'] = 'C%d' % (n % 10)
             ax.scatter (*args, **kw)
             if self.args.plot_dominated :
+                args = [dat.get_axis_data (a, True) for a in self.axes]
                 kw ['edgecolors'] = 'k'
                 ax.scatter (*args, **kw)
         plt.show ()
@@ -162,14 +163,23 @@ class Graphics :
             method = px.scatter_3d
             axes.append ('z')
             msize = 4
-        pdf = pd.DataFrame ()
+        pdf  = pd.DataFrame ()
+        cmap = dict (dominated = 'black')
         for datnum, dat in enumerate (self.data) :
+            if self.args.plot_dominated :
+                df = pd.DataFrame ()
+                for n, axis in enumerate (axes) :
+                    df [self.labels [axis]] = dat.get_axis_data (n, True)
+                df ['run'] = 'dominated'
+                pdf = pd.concat ((pdf, df), ignore_index = True)
             df = pd.DataFrame ()
             for n, axis in enumerate (axes) :
                 df [self.labels [axis]] = dat.get_axis_data (n)
-            df ['run'] = str (datnum + 1)
+            color_idx  = str (datnum + 1)
+            df ['run'] = color_idx
+            cmap [color_idx] = self.colormap [datnum % 10]
             pdf = pd.concat ((pdf, df), ignore_index = True)
-        d = dict (color = 'run', color_discrete_sequence = self.colormap)
+        d = dict (color = 'run', color_discrete_map = cmap)
         d.update (title = self.args.title)
         d.update (self.labels)
         fig = method (pdf, **d)
