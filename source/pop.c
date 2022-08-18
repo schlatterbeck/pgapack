@@ -45,7 +45,6 @@ privately owned rights.
 *              Brian P. Walenz
 *****************************************************************************/
 
-#include <assert.h>
 #include "pgapack.h"
 
 #define OPT_DIR_CMP(ctx, e1, e2) \

@@ -20,7 +20,6 @@ Open Source Consulting
 *     Authors: Ralf Schlatterbeck
 *****************************************************************************/
 
-#include <assert.h>
 #include <stdlib.h>
 #include "pgapack.h"
 #define LIN_ERROR_SINGULAR 1

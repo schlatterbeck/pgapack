@@ -211,9 +211,11 @@ privately owned rights.
 #define pgasetmutationorcrossoverflag_   PGASETMUTATIONORCROSSOVERFLAG
 #define pgasetmutationandcrossoverflag_  PGASETMUTATIONANDCROSSOVERFLAG
 #define pgasetmutationonlyflag_          PGASETMUTATIONONLYFLAG
+#define pgasetmixingtype_                PGASETMIXINGTYPE
 #define pgagetmutationorcrossoverflag_   PGAGETMUTATIONORCROSSOVERFLAG
 #define pgagetmutationandcrossoverflag_  PGAGETMUTATIONANDCROSSOVERFLAG
 #define pgagetmutationonlyflag_          PGAGETMUTATIONONLYFLAG
+#define pgagetmixingtype_                PGAGETMIXINGTYPE
 /* pop.c */
 #define pgasortpop_                      PGASORTPOP
 #define pgagetpopsize_                   PGAGETPOPSIZE
@@ -450,9 +452,11 @@ privately owned rights.
 #define pgasetmutationorcrossoverflag_   _pgasetmutationorcrossoverflag_
 #define pgasetmutationandcrossoverflag_  _pgasetmutationandcrossoverflag_
 #define pgasetmutationonlyflag_          _pgasetmutationonlyflag_
+#define pgasetmixingtype_                _pgasetmixingtype_
 #define pgagetmutationorcrossoverflag_   _pgagetmutationorcrossoverflag_
 #define pgagetmutationandcrossoverflag_  _pgagetmutationandcrossoverflag_
 #define pgagetmutationonlyflag_          _pgagetmutationonlyflag_
+#define pgagetmixingtype_                _pgagetmixingtype_
 /* pop.c */
 #define pgasortpop_                      _pgasortpop_
 #define pgagetpopsize_                   _pgagetpopsize_
@@ -689,9 +693,11 @@ privately owned rights.
 #define pgasetmutationorcrossoverflag_   pgasetmutationorcrossoverflag
 #define pgasetmutationandcrossoverflag_  pgasetmutationandcrossoverflag
 #define pgasetmutationonlyflag_          pgasetmutationonlyflag
+#define pgasetmixingtype_                pgasetmixingtype
 #define pgagetmutationorcrossoverflag_   pgagetmutationorcrossoverflag
 #define pgagetmutationandcrossoverflag_  pgagetmutationandcrossoverflag
 #define pgagetmutationonlyflag_          pgagetmutationonlyflag
+#define pgagetmixingtype_                pgagetmixingtype
 /* pop.c */
 #define pgasortpop_                      pgasortpop
 #define pgagetpopsize_                   pgagetpopsize
@@ -948,9 +954,11 @@ int pgagetevalcount_(PGAContext **ftx);
 void pgasetmutationorcrossoverflag_(PGAContext **ftx, int *flag);
 void pgasetmutationandcrossoverflag_(PGAContext **ftx, int *flag);
 void pgasetmutationonlyflag_(PGAContext **ftx, int *flag);
+void pgasetmixingtype_ (PGAContext **ftx, int *type);
 int pgagetmutationorcrossoverflag_(PGAContext **ftx);
 int pgagetmutationandcrossoverflag_(PGAContext **ftx);
 int pgagetmutationonlyflag_(PGAContext **ftx);
+int pgagetmixingtype_ (PGAContext **ftx);
 /* pop.c */
 void pgasortpop_(PGAContext **ftx, int *pop);
 int pgagetpopsize_(PGAContext **ftx);
@@ -1862,6 +1870,11 @@ void pgasetmutationonlyflag_(PGAContext **ftx, int *flag)
     PGASetMutationOnlyFlag(*ftx, *flag);
 }
 
+void pgasetmixingtype_ (PGAContext **ftx, int *type)
+{
+    PGASetMixingType (*ftx, *type);
+}
+
 int pgagetmutationorcrossoverflag_(PGAContext **ftx)
 {
      return PGAGetMutationOrCrossoverFlag  (*ftx);
@@ -1875,6 +1888,11 @@ int pgagetmutationandcrossoverflag_(PGAContext **ftx)
 int pgagetmutationonlyflag_(PGAContext **ftx)
 {
     return PGAGetMutationOnlyFlag (*ftx);
+}
+
+int pgagetmixingtype_ (PGAContext **ftx)
+{
+    return PGAGetMixingType (*ftx);
 }
 
 /* pop.c */

@@ -645,20 +645,26 @@ void PGAPrintContextVariable ( PGAContext *ctx, FILE *fp )
      };
 
 
-     fprintf( fp,"    Mutate [And,Or] Crossover      : ");
-     switch(ctx->ga.MutateOnlyNoCross)
+     fprintf( fp,"    Mixing Type                    : ");
+     switch(ctx->ga.MixingType)
      {
-     case PGA_TRUE:
-          fprintf( fp,"Or\n");
+     case PGA_MIX_MUTATE_OR_CROSS:
+          fprintf (fp, "Mutation or crossover\n");
           break;
-     case PGA_FALSE:
-          fprintf( fp,"And\n");
+     case PGA_MIX_MUTATE_AND_CROSS:
+          fprintf (fp, "Mutation only if crossover\n");
+          break;
+     case PGA_MIX_MUTATE_ONLY:
+          fprintf (fp, "Mutation only\n");
+          break;
+     case PGA_MIX_TRADITIONAL:
+          fprintf (fp, "Traditional: Mutation after crossover\n");
           break;
      case PGA_UNINITIALIZED_INT:
           fprintf( fp,"*UNINITIALIZED*\n");
           break;
      default:
-          fprintf( fp,"!ERROR!  =(%d)?\n", ctx->ga.MutateOnlyNoCross);
+          fprintf( fp,"!ERROR!  =(%d)?\n", ctx->ga.MixingType);
           break;
      };
 

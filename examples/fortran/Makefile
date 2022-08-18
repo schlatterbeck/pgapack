@@ -6,4 +6,3 @@ all: ${ALL}
 
 clean: 
 	rm -f ${ALL} *.o
-

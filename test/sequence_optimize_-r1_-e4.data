@@ -1,0 +1,139 @@
+Iter #     Field      Value
+10         Best       7.602132e+01
+Iter #     Field      Value
+20         Best       6.791435e+01
+Iter #     Field      Value
+30         Best       6.714620e+01
+Iter #     Field      Value
+40         Best       6.481239e+01
+Iter #     Field      Value
+50         Best       5.813572e+01
+Iter #     Field      Value
+60         Best       5.813572e+01
+Iter #     Field      Value
+70         Best       5.232248e+01
+Iter #     Field      Value
+80         Best       5.232248e+01
+Iter #     Field      Value
+90         Best       4.801534e+01
+Iter #     Field      Value
+100        Best       4.801534e+01
+Iter #     Field      Value
+110        Best       4.472792e+01
+Iter #     Field      Value
+120        Best       4.472792e+01
+Iter #     Field      Value
+130        Best       4.472792e+01
+Iter #     Field      Value
+140        Best       4.472792e+01
+Iter #     Field      Value
+150        Best       4.472792e+01
+Iter #     Field      Value
+160        Best       4.378584e+01
+Iter #     Field      Value
+170        Best       4.378584e+01
+Iter #     Field      Value
+180        Best       4.254978e+01
+Iter #     Field      Value
+190        Best       4.172135e+01
+Iter #     Field      Value
+200        Best       4.172135e+01
+Iter #     Field      Value
+210        Best       4.172135e+01
+Iter #     Field      Value
+220        Best       4.172135e+01
+Iter #     Field      Value
+230        Best       4.089292e+01
+Iter #     Field      Value
+240        Best       4.089292e+01
+Iter #     Field      Value
+250        Best       4.089292e+01
+Iter #     Field      Value
+260        Best       4.030714e+01
+Iter #     Field      Value
+270        Best       4.030714e+01
+Iter #     Field      Value
+280        Best       4.030714e+01
+Iter #     Field      Value
+290        Best       3.972135e+01
+Iter #     Field      Value
+300        Best       3.972135e+01
+Iter #     Field      Value
+310        Best       3.965685e+01
+Iter #     Field      Value
+320        Best       3.965685e+01
+Iter #     Field      Value
+330        Best       3.947871e+01
+Iter #     Field      Value
+340        Best       3.947871e+01
+Iter #     Field      Value
+350        Best       3.947871e+01
+Iter #     Field      Value
+360        Best       3.947871e+01
+Iter #     Field      Value
+370        Best       3.930056e+01
+Iter #     Field      Value
+380        Best       3.930056e+01
+Iter #     Field      Value
+390        Best       3.889292e+01
+Iter #     Field      Value
+400        Best       3.889292e+01
+Iter #     Field      Value
+410        Best       3.889292e+01
+Iter #     Field      Value
+420        Best       3.889292e+01
+Iter #     Field      Value
+430        Best       3.848528e+01
+Iter #     Field      Value
+440        Best       3.848528e+01
+Iter #     Field      Value
+450        Best       3.848528e+01
+Iter #     Field      Value
+460        Best       3.848528e+01
+Iter #     Field      Value
+470        Best       3.824264e+01
+Iter #     Field      Value
+480        Best       3.824264e+01
+Iter #     Field      Value
+490        Best       3.824264e+01
+Iter #     Field      Value
+500        Best       3.765685e+01
+Iter #     Field      Value
+510        Best       3.765685e+01
+Iter #     Field      Value
+520        Best       3.765685e+01
+Iter #     Field      Value
+530        Best       3.723607e+01
+Iter #     Field      Value
+540        Best       3.682843e+01
+Iter #     Field      Value
+550        Best       3.682843e+01
+Iter #     Field      Value
+560        Best       3.682843e+01
+Iter #     Field      Value
+570        Best       3.682843e+01
+Iter #     Field      Value
+580        Best       3.682843e+01
+Iter #     Field      Value
+590        Best       3.682843e+01
+Iter #     Field      Value
+600        Best       3.682843e+01
+Iter #     Field      Value
+610        Best       3.682843e+01
+Iter #     Field      Value
+620        Best       3.682843e+01
+Iter #     Field      Value
+630        Best       3.682843e+01
+Iter #     Field      Value
+640        Best       3.682843e+01
+Iter #     Field      Value
+650        Best       3.682843e+01
+The Best Evaluation: 3.600000e+01.
+The Best String:
+#    0: [       3], [       2], [       1], [       0], [       6], [      12]
+#    6: [      18], [      19], [      20], [      26], [      25], [      24]
+#   12: [      30], [      31], [      32], [      33], [      27], [      28]
+#   18: [      34], [      35], [      29], [      23], [      17], [      11]
+#   24: [       5], [       4], [      10], [      16], [      22], [      21]
+#   30: [      15], [      14], [      13], [       7], [       8], [       9]
+

@@ -50,6 +50,7 @@
 #include <ctype.h>
 #include <stdarg.h>
 #include <mpi.h>
+#include <assert.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -221,6 +222,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_CROSSOVER_TWOPT     2    /* Two point crossover                */
 #define PGA_CROSSOVER_UNIFORM   3    /* Uniform   crossover                */
 #define PGA_CROSSOVER_SBX       4    /* Simulated binary crossover (SBX)   */
+#define PGA_CROSSOVER_EDGE      5    /* Edge Recombination                 */
 
 /*****************************************
 *            SELECTION                   *
@@ -255,6 +257,24 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_MUTATION_PERMUTE    5    /* Integer: Permutation (swap)         */
 #define PGA_MUTATION_DE         6    /* Differential Evolution (only real)  */
 #define PGA_MUTATION_POLY       7    /* Polynomial mutation                 */
+
+/*****************************************
+*               MIXING                   *
+*****************************************/
+/* This defines how mutation/crossover are combined (or not)
+ * The MUTATE_AND_CROSS variant performs mutation only if crossover was
+ * also performed. The TRADITIONAL variant performs mutation with the
+ * configured probability and then mutates with the given probability
+ * regardless if crossover was performed or not (this is the way all
+ * traditional implementations of GA are handling it).
+ * Note: This replaces the previous flags (PGASetMutationOrCrossoverFlag
+ * and friends) which are still supported for legacy reasons.
+ * The default is PGA_MIX_MUTATE_OR_CROSS also for legacy reasons.
+ */
+#define PGA_MIX_MUTATE_OR_CROSS   1    /* Either mutation or crossover      */
+#define PGA_MIX_MUTATE_AND_CROSS  2    /* Mutation only if crossover        */
+#define PGA_MIX_MUTATE_ONLY       3    /* Only mutation                     */
+#define PGA_MIX_TRADITIONAL       4    /* Mutation after crossover          */
 
 /*****************************************
 * Differential Evolution Variant         *
@@ -352,6 +372,16 @@ typedef struct PGAIndividual {         /* primary population data structure */
   int                   point_idx;     /* Index of associated point         */
 } PGAIndividual;
 
+/*****************************************
+*      Fixed edges data structure        *
+*****************************************/
+typedef struct PGAFixedEdge_s {
+    PGAInteger             lhs;
+    PGAInteger             rhs;
+    struct PGAFixedEdge_s *next;
+    struct PGAFixedEdge_s *prev;
+} PGAFixedEdge;
+
 
 /*****************************************
 *          GA ALGORITHM STRUCTURE        *
@@ -387,8 +417,7 @@ typedef struct {
     int SelectIndex;         /* index of Select for next two individuals  */
     int FitnessType;         /* Type of fitness transformation used       */
     int FitnessMinType;      /* Transformation for minimization problems  */
-    int MutateOnly;          /* Mutate only, no crossover at all          */
-    int MutateOnlyNoCross;   /* Mutate only strings not from crossover    */
+    int MixingType;          /* Combination of crossover/mutation         */
     int MutationType;        /* Type of mutation used                     */
     int MutateIntegerValue;  /* Multiplier to mutate Integer strings with */
     int MutateBoundedFlag;   /* Confine alleles to given range (bound)    */
@@ -437,6 +466,10 @@ typedef struct {
     double *nadir;           /* nadir point for NSGA-III                  */
     double *worst;           /* Worst point discovered so far             */
     int worst_valid;         /* PGA_TRUE of above is valid                */
+    size_t n_edges;          /* Number of fixed edges                     */
+    int symmetric;           /* Fixed edges are symmetric?                */
+    PGAFixedEdge *edges;     /* Fixed edges for edge crossover            */
+    PGAInteger (*r_edge)[2]; /* Right node + index into edges             */
     PGAIndividual *oldpop;   /* pointer to population (old)               */
     PGAIndividual *newpop;   /* pointer to population (new)               */
 } PGAAlgorithm;
@@ -558,6 +591,7 @@ typedef struct {
     int          *intscratch;            /* integer-scratch space          */
     double       *dblscratch;            /* double- scratch space          */
     PGABinary    *dominance;             /* for dominance sorting          */
+    PGAInteger   (*edgemap)[4];          /* For Edge Crossover             */
 } PGAScratch;
 
 /*****************************************
@@ -821,6 +855,10 @@ void PGAIntegerUniformCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGAIntegerSBXCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerEdgeCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerSetFixedEdges
+    (PGAContext *ctx, size_t n, PGAInteger (*edge)[2], int symmetric);
 void PGAIntegerPrintString (PGAContext *ctx, FILE *fp, int p, int pop);
 void PGAIntegerCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 int PGAIntegerDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
@@ -941,24 +979,26 @@ MPI_Comm PGAGetCommunicator( PGAContext *ctx);
 *          pga.c
 *****************************************/
 
-void PGARun(PGAContext *ctx,
+void PGARun (PGAContext *ctx,
     double (*evaluate)(PGAContext *c, int p, int pop, double *auxeval));
 void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop);
-void PGARunMutationOrCrossover ( PGAContext *ctx, int oldpop, int newpop );
-void PGARunMutationOnly ( PGAContext *ctx, int oldpop, int newpop );
-void PGAUpdateGeneration(PGAContext *ctx, MPI_Comm comm);
+void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop );
+void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop );
+void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm);
 int PGAGetDataType (PGAContext *ctx);
 int PGAGetOptDirFlag (PGAContext *ctx);
 int PGAGetStringLength (PGAContext *ctx);
 int PGAGetVariableStringLength (PGAContext *ctx, int p, int pop);
 int PGAGetGAIterValue (PGAContext *ctx);
 int PGAGetEvalCount (PGAContext *ctx);
-void PGASetMutationOrCrossoverFlag( PGAContext *ctx, int flag);
-void PGASetMutationAndCrossoverFlag( PGAContext *ctx, int flag);
-void PGASetMutationOnlyFlag( PGAContext *ctx, int flag);
+void PGASetMutationOrCrossoverFlag (PGAContext *ctx, int flag);
+void PGASetMutationAndCrossoverFlag (PGAContext *ctx, int flag);
+void PGASetMutationOnlyFlag (PGAContext *ctx, int flag);
+void PGASetMixingType (PGAContext *ctx, int type);
 int PGAGetMutationOrCrossoverFlag (PGAContext *ctx);
 int PGAGetMutationAndCrossoverFlag (PGAContext *ctx);
 int PGAGetMutationOnlyFlag (PGAContext *ctx);
+int PGAGetMixingType (PGAContext *ctx);
 
 /*****************************************
 *          pop.c

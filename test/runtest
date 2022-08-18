@@ -33,6 +33,7 @@ else
     if  [   "$dir" = deb \
         -o  "$dir" = nsgaii \
         -o  "$dir" = nsgaiii \
+        -o  "$dir" = sequence \
         -o  "$dir" = mgh \
             -a '(' "$cmd" = testprogde -o "$cmd" = testprogdertr ')' \
         -o  '(' "$dir" = c -a \
