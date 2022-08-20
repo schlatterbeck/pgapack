@@ -1,7 +1,12 @@
 #include "constraint.h"
 #include <stdio.h>
 
-#define eps 1e-2
+double eps = 1e-2;
+
+void set_eps (double e)
+{
+    eps = e;
+}
 
 static double f (double *x)
 {
@@ -61,7 +66,7 @@ struct constrained_problem deb_7 =
 , .upper          = (double []){  2.3,  2.3,  3.2,  3.2,  3.2 }
 , .enforce_bounds = 1
 , .generations    = 2000
-, .popsize        = 4
+, .popsize        = 20
 , .f              = { &f, &g1, &g2, &g3, &g4, &g5, &g6 }
 };
 

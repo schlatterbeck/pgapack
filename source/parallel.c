@@ -98,6 +98,30 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
     PGAEvaluate (ctx, PGA_OLDPOP, f, comm);
     if (rank == 0) {
         int st = PGAGetSelectType (ctx);
+        /* If epsilon constraints are used */
+        if (ctx->ga.NumConstraint && ctx->ga.EpsilonGeneration) {
+            int idx;
+            PGAIndividual *ind;
+            /* Sort population by auxiliary eval */
+	    /* No need to init the indeces, filled in by PGAEvalSort */
+	    PGAEvalSort (ctx, PGA_OLDPOP, ctx->scratch.intscratch);
+            idx = ctx->scratch.intscratch [ctx->ga.EpsilonTheta];
+            ind = PGAGetIndividual (ctx, idx, PGA_OLDPOP);
+            assert (ind->auxtotalok);
+            ctx->ga.Epsilon = ctx->ga.Epsilon_0 = ind->auxtotal;
+            if (!ctx->ga.EpsilonExponent) {
+                double l10 = log (10);
+                assert (ctx->ga.EffEpsExponent == 0);
+                ctx->ga.EffEpsExponent =
+                    (-5 - log (ctx->ga.Epsilon) / l10) / (log (0.05) / l10);
+                if (ctx->ga.EffEpsExponent < PGA_EPSILON_EXPONENT_MIN) {
+                    ctx->ga.EffEpsExponent = PGA_EPSILON_EXPONENT_MIN;
+                }
+                if (ctx->ga.EffEpsExponent > PGA_EPSILON_EXPONENT_MAX) {
+                    ctx->ga.EffEpsExponent = PGA_EPSILON_EXPONENT_MAX;
+                }
+            }
+        }
         PGAUpdateBest (ctx, PGA_OLDPOP);
         if (st == PGA_SELECT_SUS || st == PGA_SELECT_PROPORTIONAL) {
             PGAFitness (ctx, PGA_OLDPOP);
@@ -148,6 +172,26 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
             int st = PGAGetSelectType (ctx);
             if (st == PGA_SELECT_SUS || st == PGA_SELECT_PROPORTIONAL) {
                 PGAFitness (ctx, PGA_NEWPOP);
+            }
+            /* If epsilon constraints are used */
+            if (ctx->ga.NumConstraint && ctx->ga.EpsilonGeneration) {
+                /* Smaller Exponent after generation EpsTLambda */
+                if (ctx->ga.EpsTLambda && ctx->ga.iter == ctx->ga.EpsTLambda) {
+                    assert (ctx->ga.EpsilonExponent == 0);
+                    ctx->ga.EffEpsExponent = 0.3 * ctx->ga.EffEpsExponent
+                                           + 0.7 * PGA_EPSILON_EXPONENT_MIN;
+                }
+                if (ctx->ga.iter >= ctx->ga.EpsilonGeneration) {
+                    ctx->ga.Epsilon = 0;
+                } else {
+                    ctx->ga.Epsilon =
+                        ( ctx->ga.Epsilon_0
+                        * pow ( 1.0
+                              - (double)ctx->ga.iter / ctx->ga.EpsilonGeneration
+                              , ctx->ga.EffEpsExponent
+                              )
+                        );
+                }
             }
         }
 

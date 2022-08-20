@@ -23,7 +23,7 @@ struct constrained_problem deb_1 =
 , .lower          = (double []){ 0,  0 }
 , .upper          = (double []){ 6,  6 }
 , .enforce_bounds = 1
-, .popsize        = 4
+, .popsize        = 10
 , .generations    = 150
 , .f              = { &f, &g1, &g2 }
 };

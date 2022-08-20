@@ -43,6 +43,6 @@ struct constrained_problem deb_4 =
 , .upper          = (double []){ 1e4, 1e4, 1e4, 1e3, 1e3, 1e3, 1e3, 1e3 }
 , .enforce_bounds = 1
 , .generations    = 5000
-, .popsize        = 5
+, .popsize        = 6
 , .f              = { &f, &g1, &g2, &g3, &g4, &g5, &g6 }
 };

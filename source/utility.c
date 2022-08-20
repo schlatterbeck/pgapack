@@ -1015,6 +1015,16 @@ int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2)
         auxt1 = INDGetAuxTotal (ind1);
         auxt2 = INDGetAuxTotal (ind2);
     }
+    if (ctx->ga.Epsilon) {
+        auxt1 -= ctx->ga.Epsilon;
+        auxt2 -= ctx->ga.Epsilon;
+        if (auxt1 < 0) {
+            auxt1 = 0;
+        }
+        if (auxt2 < 0) {
+            auxt2 = 0;
+        }
+    }
     if (auxt1 || auxt2) {
         return CMP (auxt1, auxt2);
     }

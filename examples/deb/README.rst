@@ -30,12 +30,25 @@ solutions found (with only a hard-coded random number initialisation of
 achieved in the original paper [1]_.
 
 An exception is problem 7 which has 3 equality constraints. The problem
-is solved with one order of magnitude less precision (10e-2 for epsilon
-instead of 10e-3 in [1]_) with only a population size of 4 (!) and 2000
+is solved with one order of magnitude less precision (1e-2 for epsilon
+instead of 1e-3 in [1]_) with only a population size of 20 (!) and 2000
+generations. In the paper [1]_ Deb uses a population size of 50 and 7000
 generations. With a smaller epsilon it converges to a local minimum that
 is one order of magnitude worse than the best solution. I've not tried if
 with different random number initialization the problem could be solved
 with a smaller epsilon.
+
+Here the Epsilon Constraint method [6]_ comes into play: This allows
+violation of constraints up to an epsilon bound. The epsilon bound is
+decreased during the optimization run and at some generation G the
+bound is set to 0, in our case G=1500. This has the effect that while
+searching for solutions without constraint violations, the objective
+function is optimized, too. With this method, again with a population
+size of 20 and 2000 generations, the search finds a solution with a
+bound of 1e-6 (instead of 1e-3 in the original paper [1]) and a solution
+that is only a little better than the optimal solution cited (the
+optimal solution doesn't allow violations of bounds, we violate the
+bounds by 1e-6, so we find a slightly better solution).
 
 .. [1] Kalyanmoy Deb. An efficient constraint handling method
        for genetic algorithms. Computer Methods in Applied Mechanics and
@@ -53,3 +66,7 @@ with a smaller epsilon.
 .. [5] Kenneth V. Price, Rainer M. Storn, and Jouni A. Lampinen.
        Differential Evolution: A Practical Approach to Global
        Optimization.  Springer, Berlin, Heidelberg, 2005.
+.. [6] Tetsuyuki Takahama and Setsuko Sakai. Constrained optimization by
+       the ε constrained differential evolution with an archive and
+       gradient-based mutation. In IEEE Congress on Evolutionary
+       Computation (CEC), Barcelona, Spain, July 2010.

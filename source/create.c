@@ -220,6 +220,13 @@ PGAContext *PGACreate
     ctx->ga.NumAuxEval         = PGA_UNINITIALIZED_INT;
     ctx->ga.NumConstraint      = PGA_UNINITIALIZED_INT;
     ctx->ga.SumConstraints     = PGA_UNINITIALIZED_INT;
+    ctx->ga.Epsilon            = 0.0;
+    ctx->ga.Epsilon_0          = 0.0;
+    ctx->ga.EpsilonGeneration  = PGA_UNINITIALIZED_INT;
+    ctx->ga.EpsilonExponent    = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.EffEpsExponent     = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.EpsTLambda         = PGA_UNINITIALIZED_INT;
+    ctx->ga.EpsilonTheta       = PGA_UNINITIALIZED_INT;
     ctx->ga.StoppingRule       = PGA_STOP_MAXITER;
     ctx->ga.MaxIter            = PGA_UNINITIALIZED_INT;
     ctx->ga.MaxNoChange        = PGA_UNINITIALIZED_INT;
@@ -665,6 +672,41 @@ void PGASetUp ( PGAContext *ctx )
 
     if (ctx->ga.NumReplace > ctx->ga.PopSize) {
         PGAError ( ctx, "PGASetUp: NumReplace > PopSize"
+                 , PGA_FATAL, PGA_VOID, NULL
+                 );
+    }
+
+    if (ctx->ga.EpsilonGeneration == PGA_UNINITIALIZED_INT) {
+        ctx->ga.EpsilonGeneration = 0;
+    }
+    if (ctx->ga.EpsilonGeneration > ctx->ga.MaxIter) {
+        PGAError ( ctx, "PGASetUp: EpsilonGeneration > MaxIter"
+                 , PGA_FATAL, PGA_VOID, NULL
+                 );
+    }
+
+    if (ctx->ga.EpsilonExponent == PGA_UNINITIALIZED_DOUBLE) {
+        /* This is later used to initialize it to a dynamic value */
+        ctx->ga.EpsilonExponent = 0;
+        ctx->ga.EffEpsExponent  = 0;
+        ctx->ga.EpsTLambda      = round (0.95 * ctx->ga.EpsilonGeneration);
+        if (ctx->ga.EpsTLambda < 1) {
+            ctx->ga.EpsTLambda = 1;
+        }
+    } else {
+        ctx->ga.EffEpsExponent  = ctx->ga.EpsilonExponent;
+        ctx->ga.EpsTLambda      = 0;
+    }
+
+    if (ctx->ga.EpsilonTheta == PGA_UNINITIALIZED_INT) {
+        ctx->ga.EpsilonTheta = round (0.2 * ctx->ga.PopSize);
+        if (!ctx->ga.EpsilonGeneration) {
+            ctx->ga.EpsilonTheta = 0;
+        }
+    }
+
+    if (ctx->ga.EpsilonTheta >= ctx->ga.PopSize - 1) {
+        PGAError ( ctx, "PGASetUp: EpsilonTheta > PopSize - 1"
                  , PGA_FATAL, PGA_VOID, NULL
                  );
     }
@@ -1709,4 +1751,153 @@ void PGASetSumConstraintsFlag (PGAContext *ctx, int n)
 int PGAGetSumConstraintsFlag (PGAContext *ctx)
 {
     return ctx->ga.SumConstraints;
+}
+
+/*I****************************************************************************
+  PGASetEpsilonGeneration - Configure the generation until which
+  constraints are relaxed via the Epsilon Contraint method. The default
+  is 0 (no Epsilon Contraint method is used).
+
+  Inputs:
+     ctx      - context variable
+     gen      - Epsilon contraint generation, must be below the value
+                set with PGASetMaxGAIterValue
+
+  Outputs:
+     None
+
+  Example:
+     PGAContext *ctx;
+     :
+     PGASetEpsilonGeneration (ctx, 50);
+
+****************************************************************************I*/
+void PGASetEpsilonGeneration (PGAContext *ctx, int gen)
+{
+    ctx->ga.EpsilonGeneration = gen;
+}
+
+/*I****************************************************************************
+  PGAGetEpsilonGeneration - Get value of the generation until which
+  constraints are relaxed via the Epsilon Contraint method.
+
+  Inputs:
+     ctx      - context variable
+
+  Outputs:
+     PGAGetEpsilonGeneration
+
+  Example:
+     PGAContext *ctx;
+     int n;
+     :
+     n = PGAGetEpsilonGeneration (ctx);
+
+****************************************************************************I*/
+int PGAGetEpsilonGeneration (PGAContext *ctx)
+{
+    return ctx->ga.EpsilonGeneration;
+}
+
+/*I****************************************************************************
+  PGASetEpsilonExponent - Configure the exponent of the term computing
+  the expsilon value in each generation.
+
+  Inputs:
+     ctx      - context variable
+     e        - Exponent
+
+  Outputs:
+     None
+
+  Example:
+     PGAContext *ctx;
+     :
+     PGASetEpsilonExponent (ctx, 5);
+
+****************************************************************************I*/
+void PGASetEpsilonExponent (PGAContext *ctx, double e)
+{
+    /* Note that in some papers the recommended minimum is 3 while in
+     * others it is 2. We allow 2.
+     */
+    if (e < 2 || e > PGA_EPSILON_EXPONENT_MAX) {
+        PGAError
+            ( ctx, "PGASetEpsilonExponent: 2 <= e <= 10 required"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
+    }
+    ctx->ga.EpsilonExponent = e;
+}
+
+/*I****************************************************************************
+  PGAGetEpsilonExponent - Get the exponent used for epsilon constraints
+
+  Inputs:
+     ctx      - context variable
+
+  Outputs:
+     PGAGetEpsilonExponent
+
+  Example:
+     PGAContext *ctx;
+     double e;
+     :
+     e = PGAGetEpsilonExponent (ctx);
+
+****************************************************************************I*/
+double PGAGetEpsilonExponent (PGAContext *ctx)
+{
+    return ctx->ga.EpsilonExponent;
+}
+
+/*I****************************************************************************
+  PGASetEpsilonTheta - Set the theta generation value that is used for
+  initializing the epsilon constraint. The initial population is sorted
+  by constraint violation and the individual with index theta is used
+  for initializing the epsilon_0 for the epsilon constraint method.
+
+  Inputs:
+     ctx      - context variable
+     n        - population index theta
+
+  Outputs:
+     None
+
+  Example:
+     PGAContext *ctx;
+     :
+     PGASetEpsilonTheta (ctx, n);
+
+****************************************************************************I*/
+void PGASetEpsilonTheta (PGAContext *ctx, int n)
+{
+    if (ctx->ga.EpsilonTheta < 1) {
+        PGAError ( ctx, "PGASetUp: EpsilonTheta < 1"
+                 , PGA_FATAL, PGA_VOID, NULL
+                 );
+    }
+    ctx->ga.EpsilonTheta = n;
+}
+
+/*I****************************************************************************
+  PGAGetEpsilonTheta - Query the population index for initializing
+  epsilon for the epsilon constraint method.
+
+  Inputs:
+     ctx      - context variable
+
+  Outputs:
+     PGAGetEpsilonTheta
+
+  Example:
+     PGAContext *ctx;
+     int n;
+     :
+     n = PGAGetEpsilonTheta (ctx);
+
+****************************************************************************I*/
+int PGAGetEpsilonTheta (PGAContext *ctx)
+{
+    return ctx->ga.EpsilonTheta;
 }
