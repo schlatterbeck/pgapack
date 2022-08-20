@@ -224,6 +224,9 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
             PGAPrintString (ctx, stdout, best_p, pop);
         } else {
             int i, k;
+            char s [20];
+            int p = ctx->rep.MOPrecision + 6;
+            sprintf (s, "F %%5d %%%d.%de\n", p, ctx->rep.MOPrecision);
             PGAIndividual *ind = PGAGetIndividual (ctx, 0, pop);
             for (k=0; k<numaux+1; k++) {
                 printf ("The Best (%d) evaluation: %e\n", k, ctx->rep.Best [k]);
@@ -242,7 +245,7 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
                     }
                     for (k=0; k<numaux+1; k++) {
                         double e = (k==0) ? ind->evalue : ind->auxeval [k-1];
-                        printf ("F %5d %20.14e\n", k, e);
+                        printf (s, k, e);
                     }
                     PGAPrintString (ctx, stdout, i, pop);
                 }

@@ -546,6 +546,7 @@ typedef struct {
 typedef struct {
      int             PrintFreq;    /* How often to print statistics reports */
      int             PrintOptions;
+     int             MOPrecision;  /* Precision of multi objective eval     */
      double         *Offline;      /* One value for each function           */
      double         *Online;       /* One value for each function           */
      double         *Average;      /* One value for each function           */
@@ -1094,6 +1095,8 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop);
 void PGASetPrintOptions (PGAContext *ctx, int option);
 void PGASetPrintFrequencyValue( PGAContext *ctx, int print_freq);
 int PGAGetPrintFrequencyValue (PGAContext *ctx);
+void PGASetMultiObjPrecision (PGAContext *ctx, int prec);
+int PGAGetMultiObjPrecision (PGAContext *ctx);
 void PGAPrintPopulation ( PGAContext *ctx, FILE *fp, int pop );
 void PGAPrintIndividual ( PGAContext *ctx, FILE *fp, int p, int pop );
 void PGAPrintString ( PGAContext *ctx, FILE *file, int p, int pop );

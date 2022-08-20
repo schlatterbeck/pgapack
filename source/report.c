@@ -322,6 +322,62 @@ int PGAGetPrintFrequencyValue (PGAContext *ctx)
 }
 
 /*U****************************************************************************
+   PGASetMultiObjPrecision - Specifies the precision in decimal places
+   for printing evaluations of multi objective optimization.
+
+   Category: Reporting
+
+   Inputs:
+      ctx        - context variable
+      prec       - the precision
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetMultiObjPrecision (ctx, 12);
+
+****************************************************************************U*/
+void PGASetMultiObjPrecision (PGAContext *ctx, int prec)
+{
+    if (prec < 1 || prec > 20) {
+        PGAError
+            ( ctx
+            , "PGASetMultiObjPrecision: 1 <= prec <= 20"
+            , PGA_FATAL, PGA_INT, (void *) &prec
+            );
+    }
+    ctx->rep.MOPrecision = prec;
+}
+
+/*U***************************************************************************
+   PGAGetMultiObjPrecision - returns the precision for printing multi
+   objective optimization evaluations.
+
+   Category: Reporting
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The precision of printing multi objective evaluations
+
+   Example:
+      PGAContext *ctx;
+      int prec;
+      :
+      prec = PGAGetMultiObjPrecision (ctx);
+
+***************************************************************************U*/
+int PGAGetMultiObjPrecision (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp ("PGAGetMultiObjPrecision");
+    return (ctx->rep.MOPrecision);
+}
+
+/*U****************************************************************************
    PGAPrintPopulation - Calls PGAPrintIndividual to print each member of a
    population
 

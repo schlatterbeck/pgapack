@@ -341,6 +341,7 @@ PGAContext *PGACreate
     /* Reporting */
     ctx->rep.PrintFreq         = PGA_UNINITIALIZED_INT;
     ctx->rep.PrintOptions      = 0;
+    ctx->rep.MOPrecision       = 14;
     ctx->rep.Offline           = NULL;
     ctx->rep.Online            = NULL;
     ctx->rep.Average           = NULL;
