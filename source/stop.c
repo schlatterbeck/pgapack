@@ -118,23 +118,36 @@ int PGACheckStoppingConditions( PGAContext *ctx)
 {
     int done = PGA_FALSE;
 
-    PGADebugEntered("PGACheckStoppingConditions");
+    PGADebugEntered ("PGACheckStoppingConditions");
 
     /* Since the check happens *after* the generation, test for >= not > */
-    if (((ctx->ga.StoppingRule & PGA_STOP_MAXITER) == PGA_STOP_MAXITER) &&
-	(ctx->ga.iter >= ctx->ga.MaxIter))
-	done |= PGA_TRUE;
+    if (  ((ctx->ga.StoppingRule & PGA_STOP_MAXITER) == PGA_STOP_MAXITER)
+       && (ctx->ga.iter >= ctx->ga.MaxIter)
+       )
+    {
+	done = PGA_TRUE;
+    }
     
-    if (((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) == PGA_STOP_NOCHANGE) &&
-	(ctx->ga.ItersOfSame >= ctx->ga.MaxNoChange))
-	done |= PGA_TRUE;
+    if (  ((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) == PGA_STOP_NOCHANGE)
+       && (ctx->ga.ItersOfSame >= ctx->ga.MaxNoChange)
+       )
+    {
+	done = PGA_TRUE;
+    }
 	
-    if (((ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR) == PGA_STOP_TOOSIMILAR) &&
-	(ctx->ga.PercentSame >= ctx->ga.MaxSimilarity))
-	done |= PGA_TRUE;
+    if (  ((ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR) == PGA_STOP_TOOSIMILAR)
+       && (ctx->ga.PercentSame >= ctx->ga.MaxSimilarity)
+       )
+    {
+	done = PGA_TRUE;
+    }
 
-    PGADebugExited("PGACheckStoppingConditions");
-    return(done);
+    if (ctx->ga.Epsilon > 0) {
+        done = PGA_FALSE;
+    }
+
+    PGADebugExited ("PGACheckStoppingConditions");
+    return done;
 }
 
 /*U****************************************************************************
