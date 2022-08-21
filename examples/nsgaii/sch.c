@@ -18,8 +18,6 @@ struct multi_problem sch =
 , .lower          = (double []){ -1e3,  -1e3 }
 , .upper          = (double []){  1e3,   1e3 }
 , .enforce_bounds = 0
-, .popsize        = 10
-, .generations    = 150
 , .f              = { &f1, &f2 }
 , .name           = "Schaffer's study (SCH)"
 };

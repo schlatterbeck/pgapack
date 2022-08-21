@@ -551,6 +551,7 @@ typedef struct {
      double         *Online;       /* One value for each function           */
      double         *Average;      /* One value for each function           */
      double         *Best;         /* One value for each function           */
+     double          MinSumConstr; /* Min Sum of violated constraints       */
      int            *BestIdx;      /* Indices of best individuals           */
      int             validcount;   /* # indivs w/o constraint-violations    */
      int             validonline;  /* cumulated validcount                  */

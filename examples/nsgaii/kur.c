@@ -28,8 +28,6 @@ struct multi_problem kur =
 , .lower          = (double []){ -5, -5, -5 }
 , .upper          = (double []){  5,  5,  5 }
 , .enforce_bounds = 0
-, .popsize        = 10
-, .generations    = 150
 , .f              = { &f1, &f2 }
 , .name           = "Kursawe's study (KUR)"
 };

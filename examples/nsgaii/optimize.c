@@ -20,6 +20,7 @@ static struct multi_problem *problems [] =
 , &tnk
 , &water
 , &rotated
+, &deb7
 };
 static const int nproblems =
     sizeof (problems) / sizeof (struct multi_problem *);
@@ -46,6 +47,7 @@ int main (int argc, char **argv)
     int maxiter = 250;
     int sum_constraints = PGA_FALSE;
     double crossover_prob = 0.8;
+    int epsilon_generation = 0;
 
     if (argc > 1) {
         fidx = atoi (argv [1]);
@@ -58,14 +60,19 @@ int main (int argc, char **argv)
         }
     }
     problem = problems [fidx];
-    if (problem->generations > maxiter) {
+    if (problem->generations) {
         maxiter = problem->generations;
     }
-    if (0 && problem->popsize > popsize) {
+    if (problem->popsize) {
         popsize = problem->popsize;
     }
-    if (problem->nconstraint > 0 && argc > 2) {
-        sum_constraints = atoi (argv [2]) ? PGA_TRUE : PGA_FALSE;
+    if (problem->nconstraint > 0) {
+        if (argc > 2) {
+            sum_constraints = atoi (argv [2]) ? PGA_TRUE : PGA_FALSE;
+        }
+        if (argc > 3) {
+            epsilon_generation = atoi (argv [3]);
+        }
     }
     if (problem->crossover_prob > 0) {
         crossover_prob = problem->crossover_prob;
@@ -81,6 +88,7 @@ int main (int argc, char **argv)
     PGASetRandomSeed         (ctx, 1);
     PGASetPopSize            (ctx, popsize);
     PGASetNumReplaceValue    (ctx, popsize);
+    PGASetEpsilonGeneration  (ctx, epsilon_generation);
     PGASetSelectType         (ctx, PGA_SELECT_LINEAR);
     PGASetPopReplaceType     (ctx, PGA_POPREPL_NSGA_II);
     PGASetMutationOnlyFlag   (ctx, PGA_TRUE);

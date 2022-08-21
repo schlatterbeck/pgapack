@@ -137,6 +137,18 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
                 , ctx->ga.iter, k, ctx->rep.Best [k]
                 );
         }
+        if (numcon) {
+            fprintf
+                ( fp, "%-11dMinConstr    %13.6e\n"
+                , ctx->ga.iter, ctx->rep.MinSumConstr
+                );
+        }
+        if (numcon && ctx->ga.EpsilonGeneration) {
+            fprintf
+                ( fp, "%-11dEpsilon      %13.6e\n"
+                , ctx->ga.iter, ctx->ga.Epsilon
+                );
+        }
         if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) {
             for (k=0; k<numaux+1; k++) {
                 fprintf
@@ -196,11 +208,9 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
                 best_p = PGAGetBestIndex (ctx, pop);
                 fprintf (fp, "Best individual\nConstraints: ");
                 fprintf (fp, "%13.6e\n", PGAGetAuxTotal (ctx, best_p, pop));
-                #if 0
                 if (numcon && ctx->ga.EpsilonGeneration) {
                     fprintf (fp, "Epsilon:     %13.6e\n", ctx->ga.Epsilon);
                 }
-                #endif
                 PGAPrintString (ctx, fp, best_p, pop);
             }
         }

@@ -6,6 +6,7 @@ Iter #     Field   Idx Value
 10         Best        3 -5.810890e-03
 10         Best        4 -2.834273e+00
 10         Best        5 -2.872067e+00
+10         MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 20         Best        0 2.495484e-01
 20         Best        1 1.498144e-240
@@ -13,6 +14,7 @@ Iter #     Field   Idx Value
 20         Best        3 -6.358995e-01
 20         Best        4 -2.652413e+00
 20         Best        5 -1.929617e+00
+20         MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 30         Best        0 9.404730e-02
 30         Best        1 2.497665e-242
@@ -20,6 +22,7 @@ Iter #     Field   Idx Value
 30         Best        3 -1.745093e-03
 30         Best        4 -2.894628e+00
 30         Best        5 -2.866540e+00
+30         MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 40         Best        0 9.404730e-02
 40         Best        1 2.497665e-242
@@ -27,6 +30,7 @@ Iter #     Field   Idx Value
 40         Best        3 -3.371142e-05
 40         Best        4 -2.887974e+00
 40         Best        5 -2.859934e+00
+40         MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 50         Best        0 2.849663e-02
 50         Best        1 2.482544e-242
@@ -34,6 +38,7 @@ Iter #     Field   Idx Value
 50         Best        3 -3.371142e-05
 50         Best        4 -2.887974e+00
 50         Best        5 -2.859934e+00
+50         MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 60         Best        0 2.712749e-02
 60         Best        1 0.000000e+00
@@ -41,6 +46,7 @@ Iter #     Field   Idx Value
 60         Best        3 -3.371142e-05
 60         Best        4 -2.887974e+00
 60         Best        5 -2.859934e+00
+60         MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 70         Best        0 2.712007e-02
 70         Best        1 0.000000e+00
@@ -48,6 +54,7 @@ Iter #     Field   Idx Value
 70         Best        3 -3.371142e-05
 70         Best        4 -2.887974e+00
 70         Best        5 -2.859934e+00
+70         MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 80         Best        0 2.109507e-02
 80         Best        1 0.000000e+00
@@ -55,6 +62,7 @@ Iter #     Field   Idx Value
 80         Best        3 -8.115894e-02
 80         Best        4 -2.110021e+00
 80         Best        5 -2.061538e+00
+80         MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 90         Best        0 2.109507e-02
 90         Best        1 0.000000e+00
@@ -62,6 +70,7 @@ Iter #     Field   Idx Value
 90         Best        3 -7.857165e-02
 90         Best        4 -1.194500e+00
 90         Best        5 -6.645536e-01
+90         MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 100        Best        0 5.369036e-03
 100        Best        1 0.000000e+00
@@ -69,6 +78,7 @@ Iter #     Field   Idx Value
 100        Best        3 -1.302139e+00
 100        Best        4 -1.642190e+00
 100        Best        5 -5.978960e-04
+100        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 110        Best        0 2.749344e-03
 110        Best        1 0.000000e+00
@@ -76,6 +86,7 @@ Iter #     Field   Idx Value
 110        Best        3 -1.283623e+00
 110        Best        4 -1.634941e+00
 110        Best        5 -1.005364e-02
+110        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 120        Best        0 8.730131e-05
 120        Best        1 0.000000e+00
@@ -83,6 +94,7 @@ Iter #     Field   Idx Value
 120        Best        3 -1.283623e+00
 120        Best        4 -1.634941e+00
 120        Best        5 -1.005364e-02
+120        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 130        Best        0 8.730131e-05
 130        Best        1 0.000000e+00
@@ -90,6 +102,7 @@ Iter #     Field   Idx Value
 130        Best        3 -1.283623e+00
 130        Best        4 -1.634941e+00
 130        Best        5 -1.005364e-02
+130        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 140        Best        0 8.730131e-05
 140        Best        1 0.000000e+00
@@ -97,6 +110,7 @@ Iter #     Field   Idx Value
 140        Best        3 -1.283623e+00
 140        Best        4 -1.634941e+00
 140        Best        5 -1.005364e-02
+140        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 150        Best        0 8.730131e-05
 150        Best        1 0.000000e+00
@@ -104,6 +118,7 @@ Iter #     Field   Idx Value
 150        Best        3 -1.283623e+00
 150        Best        4 -1.634941e+00
 150        Best        5 -1.005364e-02
+150        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 160        Best        0 2.862078e-06
 160        Best        1 0.000000e+00
@@ -111,6 +126,7 @@ Iter #     Field   Idx Value
 160        Best        3 -1.283623e+00
 160        Best        4 -1.634941e+00
 160        Best        5 -1.005364e-02
+160        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 170        Best        0 2.862078e-06
 170        Best        1 0.000000e+00
@@ -118,6 +134,7 @@ Iter #     Field   Idx Value
 170        Best        3 -1.283623e+00
 170        Best        4 -1.634941e+00
 170        Best        5 -1.005364e-02
+170        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 180        Best        0 2.862078e-06
 180        Best        1 0.000000e+00
@@ -125,6 +142,7 @@ Iter #     Field   Idx Value
 180        Best        3 -7.061076e-02
 180        Best        4 -7.832211e-02
 180        Best        5 -1.713573e-03
+180        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 190        Best        0 2.862078e-06
 190        Best        1 0.000000e+00
@@ -132,6 +150,7 @@ Iter #     Field   Idx Value
 190        Best        3 -7.061076e-02
 190        Best        4 -7.832211e-02
 190        Best        5 -1.713573e-03
+190        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 200        Best        0 1.305899e-06
 200        Best        1 0.000000e+00
@@ -139,6 +158,7 @@ Iter #     Field   Idx Value
 200        Best        3 -7.061076e-02
 200        Best        4 -7.832211e-02
 200        Best        5 -1.713573e-03
+200        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 210        Best        0 1.305899e-06
 210        Best        1 0.000000e+00
@@ -146,6 +166,7 @@ Iter #     Field   Idx Value
 210        Best        3 -2.139890e+00
 210        Best        4 -2.408514e-03
 210        Best        5 -1.922455e+00
+210        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 220        Best        0 1.305899e-06
 220        Best        1 0.000000e+00
@@ -153,6 +174,7 @@ Iter #     Field   Idx Value
 220        Best        3 -2.139890e+00
 220        Best        4 -2.408514e-03
 220        Best        5 -1.922455e+00
+220        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 230        Best        0 1.305899e-06
 230        Best        1 0.000000e+00
@@ -160,6 +182,7 @@ Iter #     Field   Idx Value
 230        Best        3 -2.139890e+00
 230        Best        4 -2.408514e-03
 230        Best        5 -1.922455e+00
+230        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 240        Best        0 1.305899e-06
 240        Best        1 2.873016e-258
@@ -167,6 +190,7 @@ Iter #     Field   Idx Value
 240        Best        3 -2.139887e+00
 240        Best        4 -2.411457e-03
 240        Best        5 -1.922455e+00
+240        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 250        Best        0 1.305899e-06
 250        Best        1 2.854214e-258
@@ -174,6 +198,7 @@ Iter #     Field   Idx Value
 250        Best        3 -3.394003e-01
 250        Best        4 -2.974610e-03
 250        Best        5 -4.169618e-01
+250        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 260        Best        0 1.305899e-06
 260        Best        1 2.853940e-258
@@ -181,6 +206,7 @@ Iter #     Field   Idx Value
 260        Best        3 -3.394003e-01
 260        Best        4 -2.974610e-03
 260        Best        5 -4.169618e-01
+260        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 270        Best        0 1.305899e-06
 270        Best        1 2.852360e-258
@@ -188,6 +214,7 @@ Iter #     Field   Idx Value
 270        Best        3 -3.187579e-01
 270        Best        4 -8.168564e-01
 270        Best        5 -1.240234e-03
+270        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 280        Best        0 5.389819e-07
 280        Best        1 2.852360e-258
@@ -195,6 +222,7 @@ Iter #     Field   Idx Value
 280        Best        3 -3.187579e-01
 280        Best        4 -8.168564e-01
 280        Best        5 -1.240234e-03
+280        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 290        Best        0 6.222563e-08
 290        Best        1 2.845768e-258
@@ -202,6 +230,7 @@ Iter #     Field   Idx Value
 290        Best        3 -3.187579e-01
 290        Best        4 -8.168564e-01
 290        Best        5 -1.240234e-03
+290        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 300        Best        0 8.266100e-09
 300        Best        1 2.845768e-258
@@ -209,6 +238,7 @@ Iter #     Field   Idx Value
 300        Best        3 -3.187579e-01
 300        Best        4 -8.168564e-01
 300        Best        5 -1.240234e-03
+300        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 310        Best        0 9.949763e-10
 310        Best        1 2.841180e-258
@@ -216,6 +246,7 @@ Iter #     Field   Idx Value
 310        Best        3 -3.187579e-01
 310        Best        4 -8.168564e-01
 310        Best        5 -1.240234e-03
+310        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 320        Best        0 4.474346e-10
 320        Best        1 2.233522e-258
@@ -223,6 +254,7 @@ Iter #     Field   Idx Value
 320        Best        3 -1.368995e+00
 320        Best        4 -1.185348e+00
 320        Best        5 -6.102010e-04
+320        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 330        Best        0 1.195955e-09
 330        Best        1 2.049433e-258
@@ -230,6 +262,7 @@ Iter #     Field   Idx Value
 330        Best        3 -2.609367e+00
 330        Best        4 -2.343543e-03
 330        Best        5 -2.509366e+00
+330        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 340        Best        0 1.010998e-09
 340        Best        1 2.043331e-258
@@ -237,6 +270,7 @@ Iter #     Field   Idx Value
 340        Best        3 -2.990982e+00
 340        Best        4 -2.975258e+00
 340        Best        5 -1.346950e-02
+340        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 350        Best        0 1.010998e-09
 350        Best        1 2.040655e-258
@@ -244,6 +278,7 @@ Iter #     Field   Idx Value
 350        Best        3 -1.510744e+00
 350        Best        4 -1.212472e-03
 350        Best        5 -1.137218e+00
+350        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 360        Best        0 5.841736e-10
 360        Best        1 2.019730e-258
@@ -251,6 +286,7 @@ Iter #     Field   Idx Value
 360        Best        3 -1.510744e+00
 360        Best        4 -1.212472e-03
 360        Best        5 -1.137218e+00
+360        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 370        Best        0 1.371548e-10
 370        Best        1 1.994549e-258
@@ -258,6 +294,7 @@ Iter #     Field   Idx Value
 370        Best        3 -9.459366e-01
 370        Best        4 -4.322966e-01
 370        Best        5 -1.241063e-04
+370        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 380        Best        0 1.371548e-10
 380        Best        1 1.991850e-258
@@ -265,6 +302,7 @@ Iter #     Field   Idx Value
 380        Best        3 -1.242571e+00
 380        Best        4 -5.353896e-03
 380        Best        5 -1.534454e+00
+380        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 390        Best        0 1.371548e-10
 390        Best        1 1.375154e-259
@@ -272,6 +310,7 @@ Iter #     Field   Idx Value
 390        Best        3 -1.242571e+00
 390        Best        4 -5.353896e-03
 390        Best        5 -1.534454e+00
+390        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 400        Best        0 5.258574e-11
 400        Best        1 1.375154e-259
@@ -279,6 +318,7 @@ Iter #     Field   Idx Value
 400        Best        3 -1.242571e+00
 400        Best        4 -5.353896e-03
 400        Best        5 -1.534454e+00
+400        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 410        Best        0 5.258574e-11
 410        Best        1 1.375154e-259
@@ -286,6 +326,7 @@ Iter #     Field   Idx Value
 410        Best        3 -2.134684e+00
 410        Best        4 -7.462004e-04
 410        Best        5 -1.917608e+00
+410        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 420        Best        0 5.258574e-11
 420        Best        1 1.375154e-259
@@ -293,6 +334,7 @@ Iter #     Field   Idx Value
 420        Best        3 -2.134684e+00
 420        Best        4 -7.462004e-04
 420        Best        5 -1.917608e+00
+420        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 430        Best        0 2.810972e-12
 430        Best        1 1.375153e-259
@@ -300,6 +342,7 @@ Iter #     Field   Idx Value
 430        Best        3 -2.525196e+00
 430        Best        4 -5.580463e-03
 430        Best        5 -2.400914e+00
+430        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 440        Best        0 2.810972e-12
 440        Best        1 1.375153e-259
@@ -307,6 +350,7 @@ Iter #     Field   Idx Value
 440        Best        3 -2.524144e-04
 440        Best        4 -9.906709e-01
 440        Best        5 -1.392739e+00
+440        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 450        Best        0 2.389935e-12
 450        Best        1 1.375153e-259
@@ -314,6 +358,7 @@ Iter #     Field   Idx Value
 450        Best        3 -2.524144e-04
 450        Best        4 -9.906709e-01
 450        Best        5 -1.392739e+00
+450        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 460        Best        0 2.117143e-12
 460        Best        1 1.375153e-259
@@ -321,6 +366,7 @@ Iter #     Field   Idx Value
 460        Best        3 -2.524144e-04
 460        Best        4 -9.906709e-01
 460        Best        5 -1.392739e+00
+460        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 470        Best        0 2.089681e-12
 470        Best        1 9.619735e-260
@@ -328,6 +374,7 @@ Iter #     Field   Idx Value
 470        Best        3 -2.524144e-04
 470        Best        4 -9.906709e-01
 470        Best        5 -1.392739e+00
+470        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 480        Best        0 1.449845e-12
 480        Best        1 7.684680e-260
@@ -335,6 +382,7 @@ Iter #     Field   Idx Value
 480        Best        3 -2.524144e-04
 480        Best        4 -9.906709e-01
 480        Best        5 -1.392739e+00
+480        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 490        Best        0 1.104701e-13
 490        Best        1 6.270561e-260
@@ -342,6 +390,7 @@ Iter #     Field   Idx Value
 490        Best        3 -2.524144e-04
 490        Best        4 -9.906709e-01
 490        Best        5 -1.392739e+00
+490        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 500        Best        0 1.203545e-16
 500        Best        1 6.270561e-260
@@ -349,6 +398,7 @@ Iter #     Field   Idx Value
 500        Best        3 -2.524144e-04
 500        Best        4 -9.906709e-01
 500        Best        5 -1.392739e+00
+500        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 510        Best        0 1.203544e-16
 510        Best        1 6.270561e-260
@@ -356,6 +406,7 @@ Iter #     Field   Idx Value
 510        Best        3 -2.524144e-04
 510        Best        4 -9.906709e-01
 510        Best        5 -1.392739e+00
+510        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 520        Best        0 1.203544e-16
 520        Best        1 6.262324e-260
@@ -363,6 +414,7 @@ Iter #     Field   Idx Value
 520        Best        3 -2.524144e-04
 520        Best        4 -9.906709e-01
 520        Best        5 -1.392739e+00
+520        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 530        Best        0 6.973304e-17
 530        Best        1 6.262324e-260
@@ -370,6 +422,7 @@ Iter #     Field   Idx Value
 530        Best        3 -2.524144e-04
 530        Best        4 -9.906709e-01
 530        Best        5 -1.392739e+00
+530        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 540        Best        0 5.503643e-17
 540        Best        1 6.262324e-260
@@ -377,6 +430,7 @@ Iter #     Field   Idx Value
 540        Best        3 -2.524144e-04
 540        Best        4 -9.906709e-01
 540        Best        5 -1.392739e+00
+540        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 550        Best        0 5.357775e-17
 550        Best        1 6.262324e-260
@@ -384,6 +438,7 @@ Iter #     Field   Idx Value
 550        Best        3 -2.524144e-04
 550        Best        4 -9.906709e-01
 550        Best        5 -1.392739e+00
+550        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 560        Best        0 9.035548e-17
 560        Best        1 6.262324e-260
@@ -391,6 +446,7 @@ Iter #     Field   Idx Value
 560        Best        3 -2.524144e-04
 560        Best        4 -9.906709e-01
 560        Best        5 -1.392739e+00
+560        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 570        Best        0 8.960099e-17
 570        Best        1 6.262324e-260
@@ -398,6 +454,7 @@ Iter #     Field   Idx Value
 570        Best        3 -3.595131e-01
 570        Best        4 -4.462990e-02
 570        Best        5 -8.859171e-01
+570        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 580        Best        0 8.828281e-17
 580        Best        1 6.262324e-260
@@ -405,6 +462,7 @@ Iter #     Field   Idx Value
 580        Best        3 -3.149159e-01
 580        Best        4 -1.036213e-02
 580        Best        5 -8.240520e-01
+580        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 590        Best        0 8.828281e-17
 590        Best        1 6.262324e-260
@@ -412,6 +470,7 @@ Iter #     Field   Idx Value
 590        Best        3 -3.148396e-01
 590        Best        4 -1.030349e-02
 590        Best        5 -8.239461e-01
+590        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 600        Best        0 4.434590e-17
 600        Best        1 6.262323e-260
@@ -419,6 +478,7 @@ Iter #     Field   Idx Value
 600        Best        3 -3.148396e-01
 600        Best        4 -1.030349e-02
 600        Best        5 -8.239461e-01
+600        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 610        Best        0 4.434588e-17
 610        Best        1 6.262323e-260
@@ -426,6 +486,7 @@ Iter #     Field   Idx Value
 610        Best        3 -3.148396e-01
 610        Best        4 -1.030349e-02
 610        Best        5 -8.239461e-01
+610        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 620        Best        0 4.434588e-17
 620        Best        1 6.262323e-260
@@ -433,6 +494,7 @@ Iter #     Field   Idx Value
 620        Best        3 -1.197160e+00
 620        Best        4 -4.620540e-03
 620        Best        5 -1.561424e+00
+620        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 630        Best        0 4.395690e-17
 630        Best        1 6.250634e-260
@@ -440,6 +502,7 @@ Iter #     Field   Idx Value
 630        Best        3 -2.926547e+00
 630        Best        4 -2.943502e+00
 630        Best        5 -2.993534e-03
+630        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 640        Best        0 4.395690e-17
 640        Best        1 6.236475e-260
@@ -447,6 +510,7 @@ Iter #     Field   Idx Value
 640        Best        3 -2.926547e+00
 640        Best        4 -2.943502e+00
 640        Best        5 -2.993534e-03
+640        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 650        Best        0 4.395690e-17
 650        Best        1 6.236475e-260
@@ -454,6 +518,7 @@ Iter #     Field   Idx Value
 650        Best        3 -1.137480e+00
 650        Best        4 -5.979366e-01
 650        Best        5 -7.391349e-02
+650        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 660        Best        0 4.395690e-17
 660        Best        1 6.236475e-260
@@ -461,6 +526,7 @@ Iter #     Field   Idx Value
 660        Best        3 -1.137480e+00
 660        Best        4 -5.979366e-01
 660        Best        5 -7.391349e-02
+660        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 670        Best        0 4.395395e-17
 670        Best        1 6.236475e-260
@@ -468,6 +534,7 @@ Iter #     Field   Idx Value
 670        Best        3 -9.954393e-01
 670        Best        4 -4.917498e-01
 670        Best        5 -2.549318e-03
+670        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 680        Best        0 4.395395e-17
 680        Best        1 6.236475e-260
@@ -475,6 +542,7 @@ Iter #     Field   Idx Value
 680        Best        3 -9.954393e-01
 680        Best        4 -4.917498e-01
 680        Best        5 -2.549318e-03
+680        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 690        Best        0 4.395151e-17
 690        Best        1 6.233055e-260
@@ -482,6 +550,7 @@ Iter #     Field   Idx Value
 690        Best        3 -9.954393e-01
 690        Best        4 -4.917498e-01
 690        Best        5 -2.549318e-03
+690        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 700        Best        0 4.395151e-17
 700        Best        1 6.233055e-260
@@ -489,6 +558,7 @@ Iter #     Field   Idx Value
 700        Best        3 -9.954393e-01
 700        Best        4 -4.917498e-01
 700        Best        5 -2.549318e-03
+700        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 710        Best        0 4.362103e-17
 710        Best        1 6.233055e-260
@@ -496,6 +566,7 @@ Iter #     Field   Idx Value
 710        Best        3 -9.954393e-01
 710        Best        4 -4.917498e-01
 710        Best        5 -2.549318e-03
+710        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 720        Best        0 4.362103e-17
 720        Best        1 6.233055e-260
@@ -503,6 +574,7 @@ Iter #     Field   Idx Value
 720        Best        3 -9.954393e-01
 720        Best        4 -4.917498e-01
 720        Best        5 -2.549318e-03
+720        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 730        Best        0 4.362103e-17
 730        Best        1 6.233055e-260
@@ -510,6 +582,7 @@ Iter #     Field   Idx Value
 730        Best        3 -9.808151e-01
 730        Best        4 -4.737793e-01
 730        Best        5 -2.239593e-03
+730        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 740        Best        0 4.362103e-17
 740        Best        1 1.137204e-259
@@ -517,6 +590,7 @@ Iter #     Field   Idx Value
 740        Best        3 -4.917498e-01
 740        Best        4 -9.954393e-01
 740        Best        5 -2.549318e-03
+740        MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 750        Best        0 4.362103e-17
 750        Best        1 1.137151e-259
@@ -524,6 +598,7 @@ Iter #     Field   Idx Value
 750        Best        3 -4.917498e-01
 750        Best        4 -9.954393e-01
 750        Best        5 -2.549318e-03
+750        MinConstr     0.000000e+00
 The Best (0) evaluation: 4.362103e-17
 The Best (1) evaluation: 1.137151e-259
 The Best (2) evaluation: 1.118051e-292

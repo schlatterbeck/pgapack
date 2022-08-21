@@ -650,6 +650,7 @@ void PGAUpdateBest (PGAContext *ctx, int popix)
     if (!INDGetAuxTotal (ind)) {
         validcount++;
     }
+    ctx->rep.MinSumConstr = ind->auxtotal;
     ind++;
     for (p=1; p<ctx->ga.PopSize; p++) {
 	if (!PGAGetEvaluationUpToDateFlag (ctx, p, popix)) {
@@ -660,6 +661,9 @@ void PGAUpdateBest (PGAContext *ctx, int popix)
         }
         if (!INDGetAuxTotal (ind)) {
             validcount++;
+        }
+        if (ind->auxtotal < ctx->rep.MinSumConstr) {
+            ctx->rep.MinSumConstr = ind->auxtotal;
         }
         for (k=0; k<=ctx->ga.NumAuxEval; k++) {
             PGAIndividual *b = best [k];
@@ -683,8 +687,12 @@ void PGAUpdateBest (PGAContext *ctx, int popix)
                 int funcmp = ctx->ga.optdir == PGA_MINIMIZE
                            ? CMP (enew, eold)
                            : CMP (eold, enew);
-                if (  (INDGetAuxTotal (b) && !INDGetAuxTotal (ind))
-                   || (!INDGetAuxTotal (ind) && funcmp < 0)
+                if (  (  INDGetAuxTotal (b)   - ctx->ga.Epsilon  > 0
+                      && INDGetAuxTotal (ind) - ctx->ga.Epsilon <= 0
+                      )
+                   || (  INDGetAuxTotal (ind) - ctx->ga.Epsilon <= 0
+                      && funcmp < 0
+                      )
                    )
                 {
                     best [k] = ind;
@@ -697,7 +705,7 @@ void PGAUpdateBest (PGAContext *ctx, int popix)
     for (k=0; k<=ctx->ga.NumAuxEval; k++) {
         if (k<=numfun) {
             double e = (k==0) ? best [k]->evalue : best [k]->auxeval [k-1];
-            if (INDGetAuxTotal (best [k])) {
+            if (INDGetAuxTotal (best [k]) - ctx->ga.Epsilon > 0) {
                 ctx->rep.Best [k] = NAN;
             } else {
                 ctx->rep.Best [k] = e;

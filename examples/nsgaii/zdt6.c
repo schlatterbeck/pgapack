@@ -29,7 +29,6 @@ struct multi_problem zdt6 =
 , .lower          = (double []){ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 , .upper          = (double []){ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
 , .enforce_bounds = 1
-, .popsize        = 10
 , .generations    = 500
 , .crossover_prob = 0.000001
 , .f              = { &f1, &f2 }

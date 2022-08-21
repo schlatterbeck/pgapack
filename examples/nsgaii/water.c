@@ -68,8 +68,6 @@ struct multi_problem water =
 , .lower          = (double []){ 0.01, 0.01, 0.01 }
 , .upper          = (double []){ 0.45, 0.10, 0.10 }
 , .enforce_bounds = 1
-, .popsize        = 10
-, .generations    = 10
 , .crossover_prob = 0.0000000001
 , .f              = { &f1, &f2, &f3, &f4, &f5
                     , &g1, &g2, &g3, &g4, &g5, &g6, &g7

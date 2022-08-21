@@ -38,7 +38,6 @@ struct multi_problem zdt2 =
   , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
   }
 , .enforce_bounds = 1
-, .popsize        = 10
 , .generations    = 1000
 , .f              = { &f1, &f2 }
 , .name           = "Zitzler et. al. (ZDT2)"

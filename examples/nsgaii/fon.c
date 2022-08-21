@@ -28,8 +28,6 @@ struct multi_problem fon =
 , .lower          = (double []){ -4, -4, -4 }
 , .upper          = (double []){  4,  4,  4 }
 , .enforce_bounds = 0
-, .popsize        = 10
-, .generations    = 150
 , .f              = { &f1, &f2 }
 , .name           = "Fonseca and Fleming's study (FON)"
 };
