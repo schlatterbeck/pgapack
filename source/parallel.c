@@ -224,7 +224,7 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
             PGAPrintString (ctx, stdout, best_p, pop);
         } else {
             int i, k;
-            char s [20];
+            char s [34];
             int p = ctx->rep.MOPrecision + 6;
             sprintf (s, "F %%5d %%%d.%de\n", p, ctx->rep.MOPrecision);
             PGAIndividual *ind = PGAGetIndividual (ctx, 0, pop);
