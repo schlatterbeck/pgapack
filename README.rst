@@ -16,6 +16,10 @@ companion projects:
 Updates 
 =======
 
+Update Aug 2022:
+- Add a crossover method for permutations (e.g. traveling salesman)
+- Add Epsilon-Constrained optimization
+
 Update Mar 2022:
 
 - Attempt to get everything compiled with visual studio compiler. This
