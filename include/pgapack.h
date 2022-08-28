@@ -345,7 +345,11 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_COMM_EVALOFSTRING        2  /* MPI tag for returning evaluation */
 #define PGA_COMM_DONEWITHEVALS       3  /* MPI tag for ending parallel eval */
 
-
+/*****************************************
+*           EPSILON CONSTRAINTS          *
+*****************************************/
+#define PGA_EPSILON_EXPONENT_MIN   3.0  /* minimum exponent cp from paper   */
+#define PGA_EPSILON_EXPONENT_MAX  10.0  /* maximum exponent cp from paper   */
 
 
 /*****************************************
@@ -397,6 +401,13 @@ typedef struct {
     int NumConstraint;       /* Number of constraints                     */
     int SumConstraints;      /* PGA_TRUE if no dominance-sorting for
                                 constraints                               */
+    double Epsilon;          /* Current epsilon for eps constraints       */
+    double Epsilon_0;        /* Initial Epsilon for eps constraints       */
+    int EpsilonGeneration;   /* Max Generation for epsilon constraints    */
+    double EpsilonExponent;  /* Exponent for tightening epsilon           */
+    double EffEpsExponent;   /* Effective Exponent for tightening epsilon */
+    int EpsTLambda;          /* Generation lambda for dynamic exponent    */
+    int EpsilonTheta;        /* Theta best individual of epsilon init     */
     int StringLen;           /* string lengths                            */
     int StoppingRule;        /* Termination Criteria                      */
     int MaxIter;             /* Maximum number of iterations to run       */
@@ -535,10 +546,12 @@ typedef struct {
 typedef struct {
      int             PrintFreq;    /* How often to print statistics reports */
      int             PrintOptions;
+     int             MOPrecision;  /* Precision of multi objective eval     */
      double         *Offline;      /* One value for each function           */
      double         *Online;       /* One value for each function           */
      double         *Average;      /* One value for each function           */
      double         *Best;         /* One value for each function           */
+     double          MinSumConstr; /* Min Sum of violated constraints       */
      int            *BestIdx;      /* Indices of best individuals           */
      int             validcount;   /* # indivs w/o constraint-violations    */
      int             validonline;  /* cumulated validcount                  */
@@ -684,6 +697,12 @@ void PGASetNumConstraint (PGAContext *ctx, int n);
 int PGAGetNumConstraint (PGAContext *ctx);
 void PGASetSumConstraintsFlag (PGAContext *ctx, int n);
 int PGAGetSumConstraintsFlag (PGAContext *ctx);
+void PGASetEpsilonGeneration (PGAContext *ctx, int generation);
+int PGAGetEpsilonGeneration (PGAContext *ctx);
+void PGASetEpsilonExponent (PGAContext *ctx, double exponent);
+double PGAGetEpsilonExponent (PGAContext *ctx);
+void PGASetEpsilonTheta (PGAContext *ctx, int theta);
+int PGAGetEpsilonTheta (PGAContext *ctx);
 
 /*****************************************
 *          cross.c
@@ -1077,6 +1096,8 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop);
 void PGASetPrintOptions (PGAContext *ctx, int option);
 void PGASetPrintFrequencyValue( PGAContext *ctx, int print_freq);
 int PGAGetPrintFrequencyValue (PGAContext *ctx);
+void PGASetMultiObjPrecision (PGAContext *ctx, int prec);
+int PGAGetMultiObjPrecision (PGAContext *ctx);
 void PGAPrintPopulation ( PGAContext *ctx, FILE *fp, int pop );
 void PGAPrintIndividual ( PGAContext *ctx, FILE *fp, int p, int pop );
 void PGAPrintString ( PGAContext *ctx, FILE *file, int p, int pop );

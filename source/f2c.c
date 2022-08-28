@@ -85,6 +85,12 @@ privately owned rights.
 #define pgagetnumconstraint_             PGAGETNUMCONSTRAINT
 #define pgasetsumconstraintsflag_        PGASETSUMCONSTRAINTSFLAG
 #define pgagetsumconstraintsflag_        PGAGETSUMCONSTRAINTSFLAG
+#define pgasetepsilongeneration_         PGASETEPSILONGENERATION
+#define pgagetepsilongeneration_         PGAGETEPSILONGENERATION
+#define pgasetepsilonexponent_           PGASETEPSILONEXPONENT
+#define pgagetepsilonexponent_           PGAGETEPSILONEXPONENT
+#define pgasetepsilontheta_              PGASETEPSILONTHETA
+#define pgagetepsilontheta_              PGAGETEPSILONTHETA
 
 /* cross.c */
 #define pgacrossover_                    PGACROSSOVER
@@ -248,6 +254,8 @@ privately owned rights.
 #define pgasetprintoptions_              PGASETPRINTOPTIONS
 #define pgasetprintfrequencyvalue_       PGASETPRINTFREQUENCYVALUE
 #define pgagetprintfrequencyvalue_       PGAGETPRINTFREQUENCYVALUE
+#define pgasetmultiobjprecision_         PGASETMULTIOBJPRECISION
+#define pgagetmultiobjprecision_         PGAGETMULTIOBJPRECISION
 #define pgaprintpopulation_              PGAPRINTPOPULATION
 #define pgaprintindividual_              PGAPRINTINDIVIDUAL
 #define pgaprintstring_                  PGAPRINTSTRING
@@ -327,6 +335,12 @@ privately owned rights.
 #define pgagetnumconstraint_             _pgagetnumconstraint_
 #define pgasetsumconstraintsflag_        _pgasetsumconstraintsflag_
 #define pgagetsumconstraintsflag_        _pgagetsumconstraintsflag_
+#define pgasetepsilongeneration_         _pgasetepsilongeneration_
+#define pgagetepsilongeneration_         _pgagetepsilongeneration_
+#define pgasetepsilonexponent_           _pgasetepsilonexponent_
+#define pgagetepsilonexponent_           _pgagetepsilonexponent_
+#define pgasetepsilontheta_              _pgasetepsilontheta_
+#define pgagetepsilontheta_              _pgagetepsilontheta_
 /* cross.c */
 #define pgacrossover_                    _pgacrossover_
 #define pgagetcrossovertype_             _pgagetcrossovertype_
@@ -489,6 +503,8 @@ privately owned rights.
 #define pgasetprintoptions_              _pgasetprintoptions_
 #define pgasetprintfrequencyvalue_       _pgasetprintfrequencyvalue_
 #define pgagetprintfrequencyvalue_       _pgagetprintfrequencyvalue_
+#define pgasetmultiobjprecision_         _pgasetmultiobjprecision_
+#define pgagetmultiobjprecision_         _pgagetmultiobjprecision_
 #define pgaprintpopulation_              _pgaprintpopulation_
 #define pgaprintindividual_              _pgaprintindividual_
 #define pgaprintstring_                  _pgaprintstring_
@@ -568,6 +584,12 @@ privately owned rights.
 #define pgagetnumconstraint_             pgagetnumconstraint
 #define pgasetsumconstraintsflag_        pgasetsumconstraintsflag
 #define pgagetsumconstraintsflag_        pgagetsumconstraintsflag
+#define pgasetepsilongeneration_         pgasetepsilongeneration
+#define pgagetepsilongeneration_         pgagetepsilongeneration
+#define pgasetepsilonexponent_           pgasetepsilonexponent
+#define pgagetepsilonexponent_           pgagetepsilonexponent
+#define pgasetepsilontheta_              pgasetepsilontheta
+#define pgagetepsilontheta_              pgagetepsilontheta
 /* cross.c */
 #define pgacrossover_                    pgacrossover
 #define pgagetcrossovertype_             pgagetcrossovertype
@@ -730,6 +752,8 @@ privately owned rights.
 #define pgasetprintoptions_              pgasetprintoptions
 #define pgasetprintfrequencyvalue_       pgasetprintfrequencyvalue
 #define pgagetprintfrequencyvalue_       pgagetprintfrequencyvalue
+#define pgasetmultiobjprecision_         pgasetmultiobjprecision
+#define pgagetmultiobjprecision_         pgagetmultiobjprecision
 #define pgaprintpopulation_              pgaprintpopulation
 #define pgaprintindividual_              pgaprintindividual
 #define pgaprintstring_                  pgaprintstring
@@ -812,6 +836,12 @@ void pgasetnumconstraint_(PGAContext **ftx, int *n);
 int pgagetnumconstraint_(PGAContext **ftx);
 void pgasetsumconstraintsflag_(PGAContext **ftx, int *n);
 int pgagetsumconstraintsflag_(PGAContext **ftx);
+void pgasetepsilongeneration_ (PGAContext **ftx, int *n);
+int pgagetepsilongeneration_ (PGAContext **ftx);
+void pgasetepsilonexponent_ (PGAContext **ftx, float *n);
+float pgagetepsilonexponent_ (PGAContext **ftx);
+void pgasetepsilontheta_ (PGAContext **ftx, int *n);
+int pgagetepsilontheta_ (PGAContext **ftx);
 /* cross.c */
 void pgacrossover_(PGAContext **ftx, int *m1, int *m2, int *oldpop, int *t1,
      int *t2, int *newpop);
@@ -992,6 +1022,8 @@ void pgaprintreport_(PGAContext **ftx, char *name, int *pop, int len);
 void pgasetprintoptions_(PGAContext **ftx, int *option);
 void pgasetprintfrequencyvalue_(PGAContext **ftx, int *print_freq);
 int pgagetprintfrequencyvalue_(PGAContext **ftx);
+void pgasetmultiobjprecision_ (PGAContext **ftx, int *n);
+int pgagetmultiobjprecision_ (PGAContext **ftx);
 void pgaprintpopulation_(PGAContext **ftx, char *name, int *pop, int len);
 void pgaprintindividual_ (PGAContext **ftx, char *name, int *p,
      int *pop, int len);
@@ -1160,6 +1192,36 @@ void pgasetsumconstraintsflag_(PGAContext **ftx, int *n)
 int pgagetsumconstraintsflag_(PGAContext **ftx)
 {
      return PGAGetSumConstraintsFlag  (*ftx);
+}
+
+void pgasetepsilongeneration_ (PGAContext **ftx, int *n)
+{
+    PGASetEpsilonGeneration (*ftx, *n);
+}
+
+int pgagetepsilongeneration_ (PGAContext **ftx)
+{
+    return PGAGetEpsilonGeneration (*ftx);
+}
+
+void pgasetepsilonexponent_ (PGAContext **ftx, float *n)
+{
+    PGASetEpsilonExponent (*ftx, *n);
+}
+
+float pgagetepsilonexponent_ (PGAContext **ftx)
+{
+    return PGAGetEpsilonExponent (*ftx);
+}
+
+void pgasetepsilontheta_ (PGAContext **ftx, int *n)
+{
+    PGASetEpsilonTheta (*ftx, *n);
+}
+
+int pgagetepsilontheta_ (PGAContext **ftx)
+{
+    return PGAGetEpsilonTheta (*ftx);
 }
 
 /* cross.c */
@@ -2067,6 +2129,16 @@ void pgasetprintfrequencyvalue_(PGAContext **ftx, int *print_freq)
 int pgagetprintfrequencyvalue_(PGAContext **ftx)
 {
      return PGAGetPrintFrequencyValue  (*ftx);
+}
+
+void pgasetmultiobjprecision_ (PGAContext **ftx, int *n)
+{
+    PGASetMultiObjPrecision (*ftx, *n);
+}
+
+int pgagetmultiobjprecision_ (PGAContext **ftx)
+{
+    return PGAGetMultiObjPrecision (*ftx);
 }
 
 void pgaprintpopulation_(PGAContext **ftx, char *name, int *pop, int len)

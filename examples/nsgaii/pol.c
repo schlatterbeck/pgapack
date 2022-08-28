@@ -24,8 +24,6 @@ struct multi_problem pol =
 , .lower          = (double []){ -M_PI, -M_PI }
 , .upper          = (double []){  M_PI,  M_PI }
 , .enforce_bounds = 0
-, .popsize        = 10
-, .generations    = 150
 , .f              = { &f1, &f2 }
 , .name           = "Poloni's study (POL)"
 };

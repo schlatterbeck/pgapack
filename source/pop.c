@@ -1097,13 +1097,15 @@ static void niching
  * - Loop over all individuals with the current rank and remove their
  *   bits from the dominance matrix
  * - Increment the rank counter
+ * The is_ev flag decides if we're ranking the evaluation functions or
+ * if we're ranking constraint violations, it is 0 for eval functions.
  */
 STATIC unsigned int ranking
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
     size_t i, j;
     int k;
-    int is_ev = INDGetAuxTotal (*start) ? 0 : 1;
+    int is_ev = INDGetAuxTotal (*start) - ctx->ga.Epsilon <= 0;
     unsigned int rank;
     int nranked = 0;
     int nc = ctx->ga.NumConstraint;
@@ -1218,10 +1220,12 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
      */
 
     /* First loop over all old individuals and put them into the
-     * all_individuals array.
+     * all_individuals array. Note that we compare using the current
+     * Epsilon, so this uses Epsilon-Constrained optimization if
+     * enabled.
      */
     for (i=0; i<popsize; i++) {
-        if (INDGetAuxTotal (oldpop + i) > 0) {
+        if (INDGetAuxTotal (oldpop + i) - ctx->ga.Epsilon > 0) {
             constrained--;
             *constrained = oldpop + i;
         } else {
@@ -1231,7 +1235,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
     }
     /* Now put all the new individuals into the same array */
     for (i=popsize - numreplace; i<popsize; i++) {
-        if (INDGetAuxTotal (newpop + i) > 0) {
+        if (INDGetAuxTotal (newpop + i) - ctx->ga.Epsilon > 0) {
             constrained--;
             *constrained = newpop + i;
         } else {

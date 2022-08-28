@@ -730,7 +730,7 @@ data-structure-specific functions executed by the high-level
 data-structure-neutral \pga\ functions.
 
 %*****************************************************************************
-\section{Function Call--Based Library}\label{sec:function}
+\section{Function Call-Based Library}\label{sec:function}
 %*****************************************************************************
 
 All the access to, and functionality of, the \pga\ library is provided
@@ -954,9 +954,10 @@ The first one is
 the elitist Nondominated Sorting Genetic Algorithm (Version~2), NSGA-II
 \cite{DPAM02} and is called NSGA-II replacement. It can be used for
 single-objective optimization, too, both with and without constraints.
-If constraints are present, by default nondominated sorting is used for
-constraints, too.  This can be switched to the behaviour without NSGA-II
-by setting \verb+PGASetSumConstraintsFlag+ to \verb+PGA_TRUE+.
+If constraints are present, by default the constraint violations are
+summed. An alternative is to use nondominated sorting for
+constraints, too.  This can be switched on by setting
+\verb+PGASetSumConstraintsFlag+ to \verb+PGA_FALSE+.
 
 The second is the Nondominated Sorting Genetic Algorithm for
 many-objective optimization, NSGA-III \cite{DJ14}, \cite{JD14}.
@@ -1062,8 +1063,8 @@ The window size can be set or queried
 with \verb+PGASetRTRWindowSize+ and \verb+PGAGetRTRWindowSize+,
 respectively. Note that when restricted tournament replacement is in
 use, the maximum number of new candidates is limited with the number set
-with \verb+PGASetNumReplaceValue+ but fewer -- depending on fitness --
-may be replaced into the new population. Note that it depends on the
+with \verb+PGASetNumReplaceValue+ but fewer---depending on fitness--may
+be replaced into the new population. Note that it depends on the
 selection which individuals in the old population are replaced. Since
 restricted tournament replacement is an elitist strategy the overall
 fitness never dimishes with this replacement strategy.
@@ -1081,8 +1082,8 @@ is $>1$), these auxiliary evaluations are used for multi-objective
 optimization. Only the NSGA-II and NSGA-III replacement are possible
 with these settings (i.e. when the number of objectives is $>1$).
 
-The three replacement types \textit{pairwise best} and \textit{restricted
-tournament replacement} and NSGA-II replacement have selection pressure
+The replacement types \textit{pairwise best}, \textit{restricted tournament
+replacement}, NSGA-II, and NSGA-III replacement have selection pressure
 in addition to providing
 a population replacement strategy. So these can be used if a selection
 scheme without selection pressure (a tournament strategy with only one
@@ -1153,7 +1154,9 @@ mutation.
 rule(s) specified has been met.  The three stopping rules are (1) iteration
 limit exceeded, (2) population too similar, and (3) no change in the best
 solution found in a given number of iterations.  The default is to stop when
-the iteration limit (by default, 1000 iterations) is reached.
+the iteration limit (by default, 1000 iterations) is reached. Note that
+when $\epsilon$-constraint optimization is in use, stopping is not
+triggered as long as $\epsilon>0$, see section~\ref{sec:evaluation}.
 
 \begin{sloppypar}
 The choice of stopping rule is set by {\tt PGASetStoppingRuleType}.  For
@@ -1315,7 +1318,7 @@ by default selects half of the population. This proportion of selected
 individuals can be set with \verb+PGASetTruncationProportion+ for which
 the default value is 0.5.
 
-When using multi-objective optimization with the NSGA-II \cite{DPAM02}
+When using multi-objective optimization with, e.g., the NSGA-II \cite{DPAM02}
 population replacement (see section~\ref{sec:population-replacement}),
 it is possible to either use a selection scheme with or without
 selection pressure. However, selection schemes that rely on direct
@@ -1326,7 +1329,7 @@ established by multiple objectives as would be the case for
 single-objective optimization. This may result in less selection
 pressure because multiple individuals will typically have the same rank.
 This lower selection pressure is compensated by the selection pressure
-introduced by the NSGA-II population replacement algorithm.
+introduced by the NSGA-II (or -III) population replacement algorithm.
 
 Most selection schemes (except stochastic universal selection) already
 return a randomized sequence. In previous implementations \textit{all}
@@ -1853,12 +1856,46 @@ trying to code the constraint violations into a complicated evaluation
 function. It was shown to work better than customized penalty functions
 by Deb \cite{Deb00}.
 
+With this algorithm for optimizing constraints, the constraints are
+optimized first, only after solutions without constraint violations have
+been found is the objective function considered. This has the drawback
+that for certain problems the search will end up in a region of the
+search space where the constraints are not violated but where no good
+solutions exist. So with some problems the solutions found are very far
+from the optimum. An idea by Takahama and Sakai \cite{TS10}, \cite{TS06}
+introduces an $\epsilon$-constraint mechanism. An epsilon tolerance is
+introduced and initialized with the constraint violation sum of the
+$\theta$-best individual. The index of the individual $\theta$ can be
+set with \verb+PGASetEpsilonTheta+, the default is $0.2$ the population
+size.
+
+The comparison of evaluations is modified to include an
+$\epsilon$-tolerance: If both individuals have a constraint violation
+below the tolerance, the evaluation is compared. If only one
+individual exceeds the tolerance the other individual wins and if both
+exceed the tolerance, the one with the lower constraint sum wins. The
+$\epsilon$ is slowly decreased until it becomes zero at some generation
+$T_c$. The slope of decrease can be specified with the
+\verb+PGASetEpsilonExponent+ function, values between 2 (slow decrease)
+and 10 (fast decrease) are possible. The default is an adaptive
+algorithm for decrease of $\epsilon$ described in the 2010 paper \cite{TS06}
+that works well in practise.
+
+For using the $\epsilon$-constraint method, the generation $T_c$ until
+which $\epsilon$ is decreased needs to be set using the
+\verb+PGASetEpsilonGeneration+ function, the default is zero.
+Note that \verb+PGASetEpsilonGeneration+ needs to be below the value set
+with \verb+PGASetMaxGAIterValue+ even if the latter is not used as a
+stopping criterion. Also note that the stopping criteria (see
+section~\ref{sec:stopping-criteria}) are modified to not stop as long as
+$\epsilon$ is not zero.
+
 Auxiliary evaluations are returned in an array pointed to by the \verb+aux+
 parameter of the users's evaluation function. To use auxiliary
 evaluations, the number of auxiliary evaluations has to be specified
 with the \verb+PGASetNumAuxEval+ function which gets the number of
 auxiliary evaluations as the second parameter. The default is 0.
-If you want to multi-objective optimization, optionally together with
+If you want to use multi-objective optimization, optionally with
 constraints, you need to specify the number of constraints using the
 \verb+PGASetNumConstraint+ function. By default the number of
 constraints is equal to the number of auxiliary evaluations. So if you

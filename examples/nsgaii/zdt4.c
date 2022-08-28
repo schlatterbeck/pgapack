@@ -31,8 +31,6 @@ struct multi_problem zdt4 =
 , .upper          = (double []){ 1,  5,  5,  5,  5,  5,  5,  5,  5,  5
   }
 , .enforce_bounds = 1
-, .popsize        = 100
-, .generations    = 150
 , .dither         = 0.5
 , .jitter         = 0.005
 , .crossover_prob = 0.0000001

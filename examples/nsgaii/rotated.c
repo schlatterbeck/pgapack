@@ -109,7 +109,6 @@ struct multi_problem rotated =
 , .upper          = (double [])
                     {  .3,  .3,  .3,  .3,  .3,  .3,  .3,  .3,  .3,  .3 }
 , .enforce_bounds = 1
-, .popsize        = 50
 , .generations    = 2500
 , .f              = { &f1, &f2, &g1, &g2 }
 , .name           = "Rotated Problem"

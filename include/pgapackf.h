@@ -250,6 +250,12 @@ c *** create
       external PGAGetNumConstraint
       integer PGAGetSumConstraintsFlag
       external PGAGetSumConstraintsFlag
+      integer PGAGetEpsilonGeneration
+      external PGAGetEpsilonGeneration
+      double precision PGAGetEpsilonExponent
+      external PGAGetEpsilonExponent
+      integer PGAGetEpsilonTheta
+      external PGAGetEpsilonTheta
 c *** cross
       integer PGAGetCrossoverType
       external PGAGetCrossoverType
@@ -415,6 +421,8 @@ c *** real
 c *** report
       integer PGAGetPrintFrequencyValue
       external PGAGetPrintFrequencyValue
+      integer PGAGetMultiObjPrecision
+      external PGAGetMultiObjPrecision
 c *** restart
       integer PGAGetRestartFlag
       external PGAGetRestartFlag

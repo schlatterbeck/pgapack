@@ -1,106 +1,106 @@
 Iter #     Field      Value           Constraints
-10         Best      -4.847352e+00    1.024191e+00
+10         Best      -1.896996e+01    3.952707e+01
 Iter #     Field      Value           Constraints
-20         Best      -6.624229e+00    0.000000e+00
+20         Best      -9.482673e+00    4.526671e+00
 Iter #     Field      Value           Constraints
-30         Best      -7.419408e+00    0.000000e+00
+30         Best      -4.572881e+00    1.983501e-01
 Iter #     Field      Value           Constraints
-40         Best      -8.503351e+00    0.000000e+00
+40         Best      -5.980172e+00    0.000000e+00
 Iter #     Field      Value           Constraints
-50         Best      -9.342940e+00    0.000000e+00
+50         Best      -7.653313e+00    0.000000e+00
 Iter #     Field      Value           Constraints
-60         Best      -9.798741e+00    0.000000e+00
+60         Best      -8.659241e+00    0.000000e+00
 Iter #     Field      Value           Constraints
-70         Best      -1.111070e+01    0.000000e+00
+70         Best      -1.040549e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-80         Best      -1.126189e+01    0.000000e+00
+80         Best      -1.147529e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-90         Best      -1.152818e+01    0.000000e+00
+90         Best      -1.239186e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-100        Best      -1.223896e+01    0.000000e+00
+100        Best      -1.255205e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-110        Best      -1.276856e+01    0.000000e+00
+110        Best      -1.319447e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-120        Best      -1.290651e+01    0.000000e+00
+120        Best      -1.394468e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-130        Best      -1.314969e+01    0.000000e+00
+130        Best      -1.433338e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-140        Best      -1.346197e+01    0.000000e+00
+140        Best      -1.447455e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-150        Best      -1.370598e+01    0.000000e+00
+150        Best      -1.463824e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-160        Best      -1.384335e+01    0.000000e+00
+160        Best      -1.467903e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-170        Best      -1.395645e+01    0.000000e+00
+170        Best      -1.474081e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-180        Best      -1.396533e+01    0.000000e+00
+180        Best      -1.476225e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-190        Best      -1.416118e+01    0.000000e+00
+190        Best      -1.479000e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-200        Best      -1.429545e+01    0.000000e+00
+200        Best      -1.480467e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-210        Best      -1.429545e+01    0.000000e+00
+210        Best      -1.482282e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-220        Best      -1.429545e+01    0.000000e+00
+220        Best      -1.484648e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-230        Best      -1.452539e+01    0.000000e+00
+230        Best      -1.492442e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-240        Best      -1.455069e+01    0.000000e+00
+240        Best      -1.493833e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-250        Best      -1.463541e+01    0.000000e+00
+250        Best      -1.493864e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-260        Best      -1.466680e+01    0.000000e+00
+260        Best      -1.495555e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-270        Best      -1.467984e+01    0.000000e+00
+270        Best      -1.495857e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-280        Best      -1.475694e+01    0.000000e+00
+280        Best      -1.495925e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-290        Best      -1.475694e+01    0.000000e+00
+290        Best      -1.496770e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-300        Best      -1.481028e+01    0.000000e+00
+300        Best      -1.497874e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-310        Best      -1.481301e+01    0.000000e+00
+310        Best      -1.498506e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-320        Best      -1.482622e+01    0.000000e+00
+320        Best      -1.498689e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-330        Best      -1.484805e+01    0.000000e+00
+330        Best      -1.498842e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-340        Best      -1.485477e+01    0.000000e+00
+340        Best      -1.498964e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-350        Best      -1.490361e+01    0.000000e+00
+350        Best      -1.499243e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-360        Best      -1.490361e+01    0.000000e+00
+360        Best      -1.499344e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-370        Best      -1.490361e+01    0.000000e+00
+370        Best      -1.499497e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-380        Best      -1.492092e+01    0.000000e+00
+380        Best      -1.499553e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-390        Best      -1.493073e+01    0.000000e+00
+390        Best      -1.499623e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-400        Best      -1.494898e+01    0.000000e+00
+400        Best      -1.499678e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-410        Best      -1.495064e+01    0.000000e+00
+410        Best      -1.499753e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-420        Best      -1.495064e+01    0.000000e+00
+420        Best      -1.499788e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-430        Best      -1.495902e+01    0.000000e+00
+430        Best      -1.499852e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-440        Best      -1.496211e+01    0.000000e+00
+440        Best      -1.499871e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-450        Best      -1.496878e+01    0.000000e+00
+450        Best      -1.499921e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-460        Best      -1.496912e+01    0.000000e+00
+460        Best      -1.499936e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-470        Best      -1.497096e+01    0.000000e+00
+470        Best      -1.499952e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-480        Best      -1.497642e+01    0.000000e+00
+480        Best      -1.499961e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-490        Best      -1.497843e+01    0.000000e+00
+490        Best      -1.499968e+01    0.000000e+00
 Iter #     Field      Value           Constraints
-500        Best      -1.498013e+01    0.000000e+00
-The Best Evaluation: -1.498013e+01 Constraints: 0.000000e+00.
+500        Best      -1.499978e+01    0.000000e+00
+The Best Evaluation: -1.499978e+01 Constraints: 0.000000e+00.
 The Best String:
-#   0: [  0.9996839], [  0.9992456], [  0.9999251], [  0.9997517], [  0.9997868]
-#   5: [  0.9992274], [  0.9987253], [  0.9995734], [  0.9995593], [   2.998612]
-#  10: [   2.993837], [   2.998024], [  0.9997474]
+#   0: [  0.9999921], [  0.9999996], [  0.9999993], [  0.9999999], [  0.9999995]
+#   5: [  0.9999672], [  0.9999988], [  0.9999992], [  0.9999984], [   2.999978]
+#  10: [   2.999909], [   2.999976], [  0.9999937]
 

@@ -110,6 +110,13 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
             }
             fprintf (fp, "\n");
         }
+        if (numcon && ctx->ga.EpsilonGeneration) {
+            fprintf
+                ( fp
+                , "           Epsilon                   %13.6e\n"
+                , ctx->ga.Epsilon
+                );
+        }
         if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) {
             fprintf
                 (fp, "           Average   %13.6e\n", ctx->rep.Average [0]);
@@ -128,6 +135,18 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
             fprintf
                 ( fp, "%-11dBest    %5d %e\n"
                 , ctx->ga.iter, k, ctx->rep.Best [k]
+                );
+        }
+        if (numcon) {
+            fprintf
+                ( fp, "%-11dMinConstr    %13.6e\n"
+                , ctx->ga.iter, ctx->rep.MinSumConstr
+                );
+        }
+        if (numcon && ctx->ga.EpsilonGeneration) {
+            fprintf
+                ( fp, "%-11dEpsilon      %13.6e\n"
+                , ctx->ga.iter, ctx->ga.Epsilon
                 );
         }
         if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) {
@@ -189,6 +208,9 @@ void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
                 best_p = PGAGetBestIndex (ctx, pop);
                 fprintf (fp, "Best individual\nConstraints: ");
                 fprintf (fp, "%13.6e\n", PGAGetAuxTotal (ctx, best_p, pop));
+                if (numcon && ctx->ga.EpsilonGeneration) {
+                    fprintf (fp, "Epsilon:     %13.6e\n", ctx->ga.Epsilon);
+                }
                 PGAPrintString (ctx, fp, best_p, pop);
             }
         }
@@ -307,6 +329,62 @@ int PGAGetPrintFrequencyValue (PGAContext *ctx)
     PGADebugExited("PGAGetPrintFrequencyValue");
 
     return(ctx->rep.PrintFreq);
+}
+
+/*U****************************************************************************
+   PGASetMultiObjPrecision - Specifies the precision in decimal places
+   for printing evaluations of multi objective optimization.
+
+   Category: Reporting
+
+   Inputs:
+      ctx        - context variable
+      prec       - the precision
+
+   Outputs:
+      None
+
+   Example:
+      PGAContext *ctx;
+      :
+      PGASetMultiObjPrecision (ctx, 12);
+
+****************************************************************************U*/
+void PGASetMultiObjPrecision (PGAContext *ctx, int prec)
+{
+    if (prec < 1 || prec > 20) {
+        PGAError
+            ( ctx
+            , "PGASetMultiObjPrecision: 1 <= prec <= 20"
+            , PGA_FATAL, PGA_INT, (void *) &prec
+            );
+    }
+    ctx->rep.MOPrecision = prec;
+}
+
+/*U***************************************************************************
+   PGAGetMultiObjPrecision - returns the precision for printing multi
+   objective optimization evaluations.
+
+   Category: Reporting
+
+   Inputs:
+      ctx - context variable
+
+   Outputs:
+      The precision of printing multi objective evaluations
+
+   Example:
+      PGAContext *ctx;
+      int prec;
+      :
+      prec = PGAGetMultiObjPrecision (ctx);
+
+***************************************************************************U*/
+int PGAGetMultiObjPrecision (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp ("PGAGetMultiObjPrecision");
+    return (ctx->rep.MOPrecision);
 }
 
 /*U****************************************************************************

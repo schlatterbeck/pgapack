@@ -124,6 +124,12 @@ int main (int argc, char **argv)
     PGASetNoDuplicatesFlag       (ctx, PGA_TRUE);
     PGASetMutationBounceBackFlag (ctx, PGA_TRUE);
     PGASetReferencePoints        (ctx, np, p);
+    if (fidx == 11) {
+        /* Avoid regression test failing due to rounding error on different
+         * architectures. We reduce the precision printed by one.
+         */
+        PGASetMultiObjPrecision (ctx, 13);
+    }
 # endif
     
     PGASetUp   (ctx);

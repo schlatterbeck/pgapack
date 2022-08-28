@@ -41,6 +41,7 @@ int main (int argc, char **argv)
     int fidx = 0;
     int maxiter = 100;
     int full_report = 0;
+    int epsilon_generation = 0;
 
     if (argc > 1) {
         fidx = atoi (argv [1]);
@@ -55,11 +56,17 @@ int main (int argc, char **argv)
     if (argc > 2 && atoi (argv [2])) {
         full_report = 1;
     }
+    if (argc > 3) {
+        epsilon_generation = atoi (argv [3]);
+    }
+    if (argc > 4) {
+        set_eps (atof (argv [4]));
+    }
     problem = problems [fidx];
     if (problem->generations > maxiter) {
         maxiter = problem->generations;
     }
-    if (problem->popsize > popsize) {
+    if (problem->popsize) {
         popsize = problem->popsize;
     }
     ctx = PGACreate
@@ -67,23 +74,24 @@ int main (int argc, char **argv)
     
     PGASetRandomSeed(ctx, 1);
 
-    PGASetPopSize          (ctx, popsize);
-    PGASetNumReplaceValue  (ctx, popsize);
-    PGASetSelectType       (ctx, PGA_SELECT_LINEAR);
-    PGASetPopReplaceType   (ctx, PGA_POPREPL_PAIRWISE_BEST);
-    PGASetMutationOnlyFlag (ctx, PGA_TRUE);
-    PGASetMutationType     (ctx, PGA_MUTATION_DE);
-    PGASetDECrossoverProb  (ctx, 0.8);
-    PGASetDECrossoverType  (ctx, PGA_DE_CROSSOVER_BIN);
-    PGASetDEVariant        (ctx, PGA_DE_VARIANT_RAND);
-    PGASetDEScaleFactor    (ctx, 0.85);
+    PGASetPopSize           (ctx, popsize);
+    PGASetNumReplaceValue   (ctx, popsize);
+    PGASetEpsilonGeneration (ctx, epsilon_generation);
+    PGASetSelectType        (ctx, PGA_SELECT_LINEAR);
+    PGASetPopReplaceType    (ctx, PGA_POPREPL_PAIRWISE_BEST);
+    PGASetMutationOnlyFlag  (ctx, PGA_TRUE);
+    PGASetMutationType      (ctx, PGA_MUTATION_DE);
+    PGASetDECrossoverProb   (ctx, 0.8);
+    PGASetDECrossoverType   (ctx, PGA_DE_CROSSOVER_BIN);
+    PGASetDEVariant         (ctx, PGA_DE_VARIANT_RAND);
+    PGASetDEScaleFactor     (ctx, 0.85);
     if (problem->enforce_bounds) {
         PGASetMutationBounceBackFlag (ctx, PGA_TRUE);
     };
 
-    PGASetRealInitRange    (ctx, problem->lower, problem->upper);
-    PGASetMaxGAIterValue   (ctx, maxiter);
-    PGASetNumAuxEval       (ctx, problem->nfunc - 1);
+    PGASetRealInitRange     (ctx, problem->lower, problem->upper);
+    PGASetMaxGAIterValue    (ctx, maxiter);
+    PGASetNumAuxEval        (ctx, problem->nfunc - 1);
 
     /* Extended reporting, HAMMING is only defined for binary strings */
     if (full_report) {

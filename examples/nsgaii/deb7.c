@@ -1,7 +1,7 @@
-#include "constraint.h"
+#include "optimize.h"
 #include <stdio.h>
 
-double eps = 1e-2;
+double eps = 1e-6;
 
 void set_eps (double e)
 {
@@ -59,15 +59,23 @@ static double g6 (double *x)
     return eq3 (x) - eps;
 }
 
-struct constrained_problem deb_7 =
+/* This is essentially the problem from examples/deb/deb7 but with two
+ * of the constraint functions (for the first equality constraint) also
+ * used as an optimization criterion. So after finding a solution with
+ * constraints better than eps above we can further optimize that
+ * equality constraint.
+ */
+struct multi_problem deb7 =
 { .dimension      = 5
-, .nfunc          = 7
+, .nfunc          = 8
+, .nconstraint    = 6
 , .lower          = (double []){ -2.3, -2.3, -3.2, -3.2, -3.2 }
 , .upper          = (double []){  2.3,  2.3,  3.2,  3.2,  3.2 }
 , .enforce_bounds = 1
 , .generations    = 2000
 , .popsize        = 20
-, .f              = { &f, &g1, &g2, &g3, &g4, &g5, &g6 }
+, .name           = "Deb 7"
+, .f              = { &f, &f, &g1, &g2, &g3, &g4, &g5, &g6 }
 };
 
 #ifdef DEBUG_EVAL

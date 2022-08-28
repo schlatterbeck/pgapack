@@ -28,8 +28,6 @@ struct multi_problem srn =
 , .lower          = (double []){ -20, -20 }
 , .upper          = (double []){  20,  20 }
 , .enforce_bounds = 1
-, .popsize        = 10
-, .generations    = 10
 , .f              = { &f1, &f2, &g1, &g2 }
 , .name           = "SRN"
 };

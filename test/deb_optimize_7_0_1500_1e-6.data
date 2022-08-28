@@ -1,0 +1,604 @@
+Iter #     Field      Value           Constraints
+10         Best       3.215808e-03    1.293809e+01
+           Epsilon                    1.594156e+01
+Iter #     Field      Value           Constraints
+20         Best       2.133611e-07    1.463861e+01
+           Epsilon                    1.543724e+01
+Iter #     Field      Value           Constraints
+30         Best       2.133611e-07    1.463861e+01
+           Epsilon                    1.494562e+01
+Iter #     Field      Value           Constraints
+40         Best       1.143200e-03    1.050889e+01
+           Epsilon                    1.446646e+01
+Iter #     Field      Value           Constraints
+50         Best       2.422520e-05    1.095589e+01
+           Epsilon                    1.399953e+01
+Iter #     Field      Value           Constraints
+60         Best       2.422520e-05    1.095589e+01
+           Epsilon                    1.354459e+01
+Iter #     Field      Value           Constraints
+70         Best       1.108001e-06    1.169517e+01
+           Epsilon                    1.310143e+01
+Iter #     Field      Value           Constraints
+80         Best       3.906857e-08    1.052936e+01
+           Epsilon                    1.266981e+01
+Iter #     Field      Value           Constraints
+90         Best       3.906857e-08    1.052936e+01
+           Epsilon                    1.224951e+01
+Iter #     Field      Value           Constraints
+100        Best       1.966025e-08    1.141701e+01
+           Epsilon                    1.184031e+01
+Iter #     Field      Value           Constraints
+110        Best       1.966025e-08    1.141701e+01
+           Epsilon                    1.144200e+01
+Iter #     Field      Value           Constraints
+120        Best       3.143622e-08    1.066378e+01
+           Epsilon                    1.105436e+01
+Iter #     Field      Value           Constraints
+130        Best       3.143622e-08    1.066378e+01
+           Epsilon                    1.067717e+01
+Iter #     Field      Value           Constraints
+140        Best       6.845137e-08    1.022205e+01
+           Epsilon                    1.031023e+01
+Iter #     Field      Value           Constraints
+150        Best       9.299716e-08    9.878941e+00
+           Epsilon                    9.953341e+00
+Iter #     Field      Value           Constraints
+160        Best       2.947437e-07    9.342352e+00
+           Epsilon                    9.606287e+00
+Iter #     Field      Value           Constraints
+170        Best       1.076152e-06    9.040748e+00
+           Epsilon                    9.268872e+00
+Iter #     Field      Value           Constraints
+180        Best       1.360432e-06    8.716800e+00
+           Epsilon                    8.940896e+00
+Iter #     Field      Value           Constraints
+190        Best       1.372992e-06    8.620637e+00
+           Epsilon                    8.622166e+00
+Iter #     Field      Value           Constraints
+200        Best       3.522011e-06    8.248533e+00
+           Epsilon                    8.312487e+00
+Iter #     Field      Value           Constraints
+210        Best       5.269032e-06    7.841588e+00
+           Epsilon                    8.011669e+00
+Iter #     Field      Value           Constraints
+220        Best       5.648204e-06    7.716772e+00
+           Epsilon                    7.719524e+00
+Iter #     Field      Value           Constraints
+230        Best       1.273239e-05    7.399834e+00
+           Epsilon                    7.435868e+00
+Iter #     Field      Value           Constraints
+240        Best       2.703758e-05    7.068800e+00
+           Epsilon                    7.160516e+00
+Iter #     Field      Value           Constraints
+250        Best       2.879297e-05    6.859067e+00
+           Epsilon                    6.893290e+00
+Iter #     Field      Value           Constraints
+260        Best       4.023839e-05    6.595083e+00
+           Epsilon                    6.634011e+00
+Iter #     Field      Value           Constraints
+270        Best       4.953364e-05    6.324048e+00
+           Epsilon                    6.382504e+00
+Iter #     Field      Value           Constraints
+280        Best       7.564786e-05    6.129433e+00
+           Epsilon                    6.138597e+00
+Iter #     Field      Value           Constraints
+290        Best       1.440676e-04    5.765173e+00
+           Epsilon                    5.902120e+00
+Iter #     Field      Value           Constraints
+300        Best       1.598658e-04    5.521441e+00
+           Epsilon                    5.672903e+00
+Iter #     Field      Value           Constraints
+310        Best       2.397346e-04    5.403521e+00
+           Epsilon                    5.450784e+00
+Iter #     Field      Value           Constraints
+320        Best       3.040932e-04    5.038759e+00
+           Epsilon                    5.235597e+00
+Iter #     Field      Value           Constraints
+330        Best       4.046284e-04    4.947522e+00
+           Epsilon                    5.027184e+00
+Iter #     Field      Value           Constraints
+340        Best       5.038808e-04    4.715817e+00
+           Epsilon                    4.825385e+00
+Iter #     Field      Value           Constraints
+350        Best       6.207098e-04    4.583623e+00
+           Epsilon                    4.630046e+00
+Iter #     Field      Value           Constraints
+360        Best       6.728958e-04    4.418673e+00
+           Epsilon                    4.441013e+00
+Iter #     Field      Value           Constraints
+370        Best       1.148496e-03    4.076848e+00
+           Epsilon                    4.258135e+00
+Iter #     Field      Value           Constraints
+380        Best       1.148496e-03    4.076848e+00
+           Epsilon                    4.081263e+00
+Iter #     Field      Value           Constraints
+390        Best       1.903802e-03    3.801651e+00
+           Epsilon                    3.910251e+00
+Iter #     Field      Value           Constraints
+400        Best       1.926647e-03    3.740841e+00
+           Epsilon                    3.744955e+00
+Iter #     Field      Value           Constraints
+410        Best       2.156511e-03    3.570764e+00
+           Epsilon                    3.585233e+00
+Iter #     Field      Value           Constraints
+420        Best       2.358348e-03    3.393623e+00
+           Epsilon                    3.430946e+00
+Iter #     Field      Value           Constraints
+430        Best       2.766914e-03    3.224136e+00
+           Epsilon                    3.281957e+00
+Iter #     Field      Value           Constraints
+440        Best       3.626348e-03    3.089292e+00
+           Epsilon                    3.138131e+00
+Iter #     Field      Value           Constraints
+450        Best       3.861346e-03    2.926603e+00
+           Epsilon                    2.999334e+00
+Iter #     Field      Value           Constraints
+460        Best       4.458346e-03    2.854795e+00
+           Epsilon                    2.865436e+00
+Iter #     Field      Value           Constraints
+470        Best       5.183182e-03    2.714461e+00
+           Epsilon                    2.736310e+00
+Iter #     Field      Value           Constraints
+480        Best       6.265746e-03    2.610268e+00
+           Epsilon                    2.611828e+00
+Iter #     Field      Value           Constraints
+490        Best       7.084167e-03    2.456295e+00
+           Epsilon                    2.491868e+00
+Iter #     Field      Value           Constraints
+500        Best       7.845883e-03    2.356163e+00
+           Epsilon                    2.376306e+00
+Iter #     Field      Value           Constraints
+510        Best       8.391219e-03    2.261835e+00
+           Epsilon                    2.265023e+00
+Iter #     Field      Value           Constraints
+520        Best       9.609539e-03    2.114867e+00
+           Epsilon                    2.157901e+00
+Iter #     Field      Value           Constraints
+530        Best       1.004587e-02    2.040625e+00
+           Epsilon                    2.054826e+00
+Iter #     Field      Value           Constraints
+540        Best       1.189724e-02    1.863910e+00
+           Epsilon                    1.955683e+00
+Iter #     Field      Value           Constraints
+550        Best       1.214181e-02    1.843933e+00
+           Epsilon                    1.860360e+00
+Iter #     Field      Value           Constraints
+560        Best       1.499700e-02    1.763200e+00
+           Epsilon                    1.768750e+00
+Iter #     Field      Value           Constraints
+570        Best       1.666006e-02    1.666262e+00
+           Epsilon                    1.680743e+00
+Iter #     Field      Value           Constraints
+580        Best       1.801615e-02    1.534266e+00
+           Epsilon                    1.596236e+00
+Iter #     Field      Value           Constraints
+590        Best       1.896569e-02    1.476399e+00
+           Epsilon                    1.515124e+00
+Iter #     Field      Value           Constraints
+600        Best       2.040688e-02    1.393597e+00
+           Epsilon                    1.437306e+00
+Iter #     Field      Value           Constraints
+610        Best       2.101100e-02    1.278668e+00
+           Epsilon                    1.362682e+00
+Iter #     Field      Value           Constraints
+620        Best       2.101100e-02    1.278668e+00
+           Epsilon                    1.291156e+00
+Iter #     Field      Value           Constraints
+630        Best       2.252562e-02    1.200291e+00
+           Epsilon                    1.222632e+00
+Iter #     Field      Value           Constraints
+640        Best       2.237931e-02    1.149372e+00
+           Epsilon                    1.157015e+00
+Iter #     Field      Value           Constraints
+650        Best       2.496497e-02    1.076546e+00
+           Epsilon                    1.094214e+00
+Iter #     Field      Value           Constraints
+660        Best       2.547546e-02    1.015704e+00
+           Epsilon                    1.034140e+00
+Iter #     Field      Value           Constraints
+670        Best       2.966145e-02    9.436709e-01
+           Epsilon                    9.767042e-01
+Iter #     Field      Value           Constraints
+680        Best       2.813243e-02    8.869412e-01
+           Epsilon                    9.218202e-01
+Iter #     Field      Value           Constraints
+690        Best       2.986353e-02    8.323949e-01
+           Epsilon                    8.694040e-01
+Iter #     Field      Value           Constraints
+700        Best       3.099019e-02    8.021739e-01
+           Epsilon                    8.193728e-01
+Iter #     Field      Value           Constraints
+710        Best       3.131278e-02    7.641761e-01
+           Epsilon                    7.716460e-01
+Iter #     Field      Value           Constraints
+720        Best       3.232390e-02    7.032302e-01
+           Epsilon                    7.261445e-01
+Iter #     Field      Value           Constraints
+730        Best       3.283229e-02    6.784848e-01
+           Epsilon                    6.827911e-01
+Iter #     Field      Value           Constraints
+740        Best       3.350033e-02    6.299733e-01
+           Epsilon                    6.415102e-01
+Iter #     Field      Value           Constraints
+750        Best       3.628855e-02    5.832764e-01
+           Epsilon                    6.022282e-01
+Iter #     Field      Value           Constraints
+760        Best       3.668734e-02    5.567456e-01
+           Epsilon                    5.648728e-01
+Iter #     Field      Value           Constraints
+770        Best       3.717910e-02    5.119343e-01
+           Epsilon                    5.293738e-01
+Iter #     Field      Value           Constraints
+780        Best       3.832587e-02    4.723978e-01
+           Epsilon                    4.956623e-01
+Iter #     Field      Value           Constraints
+790        Best       3.943177e-02    4.591839e-01
+           Epsilon                    4.636713e-01
+Iter #     Field      Value           Constraints
+800        Best       4.005517e-02    4.325613e-01
+           Epsilon                    4.333354e-01
+Iter #     Field      Value           Constraints
+810        Best       4.199986e-02    3.991938e-01
+           Epsilon                    4.045907e-01
+Iter #     Field      Value           Constraints
+820        Best       4.233276e-02    3.750007e-01
+           Epsilon                    3.773749e-01
+Iter #     Field      Value           Constraints
+830        Best       4.268586e-02    3.462520e-01
+           Epsilon                    3.516274e-01
+Iter #     Field      Value           Constraints
+840        Best       4.474823e-02    3.035070e-01
+           Epsilon                    3.272892e-01
+Iter #     Field      Value           Constraints
+850        Best       4.440474e-02    2.894004e-01
+           Epsilon                    3.043026e-01
+Iter #     Field      Value           Constraints
+860        Best       4.523817e-02    2.787339e-01
+           Epsilon                    2.826117e-01
+Iter #     Field      Value           Constraints
+870        Best       4.482547e-02    2.604026e-01
+           Epsilon                    2.621619e-01
+Iter #     Field      Value           Constraints
+880        Best       4.602110e-02    2.237387e-01
+           Epsilon                    2.429002e-01
+Iter #     Field      Value           Constraints
+890        Best       4.602110e-02    2.237387e-01
+           Epsilon                    2.247751e-01
+Iter #     Field      Value           Constraints
+900        Best       4.730164e-02    1.923673e-01
+           Epsilon                    2.077365e-01
+Iter #     Field      Value           Constraints
+910        Best       4.908266e-02    1.776241e-01
+           Epsilon                    1.917356e-01
+Iter #     Field      Value           Constraints
+920        Best       4.911557e-02    1.646423e-01
+           Epsilon                    1.767253e-01
+Iter #     Field      Value           Constraints
+930        Best       4.897107e-02    1.567796e-01
+           Epsilon                    1.626598e-01
+Iter #     Field      Value           Constraints
+940        Best       4.888974e-02    1.386387e-01
+           Epsilon                    1.494945e-01
+Iter #     Field      Value           Constraints
+950        Best       4.917722e-02    1.342513e-01
+           Epsilon                    1.371863e-01
+Iter #     Field      Value           Constraints
+960        Best       4.949831e-02    1.225391e-01
+           Epsilon                    1.256935e-01
+Iter #     Field      Value           Constraints
+970        Best       5.015114e-02    1.147620e-01
+           Epsilon                    1.149757e-01
+Iter #     Field      Value           Constraints
+980        Best       5.021531e-02    1.038684e-01
+           Epsilon                    1.049937e-01
+Iter #     Field      Value           Constraints
+990        Best       5.053958e-02    9.170747e-02
+           Epsilon                    9.570977e-02
+Iter #     Field      Value           Constraints
+1000       Best       5.082275e-02    8.560136e-02
+           Epsilon                    8.708723e-02
+Iter #     Field      Value           Constraints
+1010       Best       5.108531e-02    7.722775e-02
+           Epsilon                    7.909080e-02
+Iter #     Field      Value           Constraints
+1020       Best       5.133933e-02    6.756990e-02
+           Epsilon                    7.168640e-02
+Iter #     Field      Value           Constraints
+1030       Best       5.210878e-02    6.135168e-02
+           Epsilon                    6.484114e-02
+Iter #     Field      Value           Constraints
+1040       Best       5.193164e-02    5.363515e-02
+           Epsilon                    5.852334e-02
+Iter #     Field      Value           Constraints
+1050       Best       5.213825e-02    5.135229e-02
+           Epsilon                    5.270249e-02
+Iter #     Field      Value           Constraints
+1060       Best       5.221723e-02    4.728598e-02
+           Epsilon                    4.734924e-02
+Iter #     Field      Value           Constraints
+1070       Best       5.260548e-02    4.194145e-02
+           Epsilon                    4.243535e-02
+Iter #     Field      Value           Constraints
+1080       Best       5.265836e-02    3.526531e-02
+           Epsilon                    3.793372e-02
+Iter #     Field      Value           Constraints
+1090       Best       5.284884e-02    3.213648e-02
+           Epsilon                    3.381834e-02
+Iter #     Field      Value           Constraints
+1100       Best       5.305383e-02    2.367830e-02
+           Epsilon                    3.006427e-02
+Iter #     Field      Value           Constraints
+1110       Best       5.305383e-02    2.367830e-02
+           Epsilon                    2.664762e-02
+Iter #     Field      Value           Constraints
+1120       Best       5.362732e-02    1.807859e-02
+           Epsilon                    2.354554e-02
+Iter #     Field      Value           Constraints
+1130       Best       5.338808e-02    1.872422e-02
+           Epsilon                    2.073620e-02
+Iter #     Field      Value           Constraints
+1140       Best       5.360015e-02    1.599950e-02
+           Epsilon                    1.819877e-02
+Iter #     Field      Value           Constraints
+1150       Best       5.346916e-02    1.505278e-02
+           Epsilon                    1.591337e-02
+Iter #     Field      Value           Constraints
+1160       Best       5.364618e-02    1.356876e-02
+           Epsilon                    1.386111e-02
+Iter #     Field      Value           Constraints
+1170       Best       5.369359e-02    9.526598e-03
+           Epsilon                    1.202399e-02
+Iter #     Field      Value           Constraints
+1180       Best       5.369359e-02    9.526598e-03
+           Epsilon                    1.038496e-02
+Iter #     Field      Value           Constraints
+1190       Best       5.369724e-02    8.576759e-03
+           Epsilon                    8.927847e-03
+Iter #     Field      Value           Constraints
+1200       Best       5.375980e-02    7.151753e-03
+           Epsilon                    7.637347e-03
+Iter #     Field      Value           Constraints
+1210       Best       5.378215e-02    6.476306e-03
+           Epsilon                    6.499011e-03
+Iter #     Field      Value           Constraints
+1220       Best       5.378713e-02    5.212576e-03
+           Epsilon                    5.499213e-03
+Iter #     Field      Value           Constraints
+1230       Best       5.385329e-02    2.850013e-03
+           Epsilon                    4.625140e-03
+Iter #     Field      Value           Constraints
+1240       Best       5.385329e-02    2.850013e-03
+           Epsilon                    3.864758e-03
+Iter #     Field      Value           Constraints
+1250       Best       5.385329e-02    2.850013e-03
+           Epsilon                    3.206801e-03
+Iter #     Field      Value           Constraints
+1260       Best       5.390441e-02    2.231468e-03
+           Epsilon                    2.640743e-03
+Iter #     Field      Value           Constraints
+1270       Best       5.392387e-02    1.274466e-03
+           Epsilon                    2.156777e-03
+Iter #     Field      Value           Constraints
+1280       Best       5.391449e-02    1.063424e-03
+           Epsilon                    1.745793e-03
+Iter #     Field      Value           Constraints
+1290       Best       5.391449e-02    1.063424e-03
+           Epsilon                    1.399356e-03
+Iter #     Field      Value           Constraints
+1300       Best       5.391449e-02    1.063424e-03
+           Epsilon                    1.109682e-03
+Iter #     Field      Value           Constraints
+1310       Best       5.393175e-02    8.112309e-04
+           Epsilon                    8.696158e-04
+Iter #     Field      Value           Constraints
+1320       Best       5.393588e-02    5.980314e-04
+           Epsilon                    6.726074e-04
+Iter #     Field      Value           Constraints
+1330       Best       5.394012e-02    5.056687e-04
+           Epsilon                    5.126885e-04
+Iter #     Field      Value           Constraints
+1340       Best       5.395026e-02    3.731256e-04
+           Epsilon                    3.844488e-04
+Iter #     Field      Value           Constraints
+1350       Best       5.395858e-02    1.905864e-04
+           Epsilon                    2.830116e-04
+Iter #     Field      Value           Constraints
+1360       Best       5.395858e-02    1.905864e-04
+           Epsilon                    2.040099e-04
+Iter #     Field      Value           Constraints
+1370       Best       5.396500e-02    1.545075e-04
+           Epsilon                    1.435610e-04
+Iter #     Field      Value           Constraints
+1380       Best       5.396500e-02    1.545075e-04
+           Epsilon                    9.824204e-05
+Iter #     Field      Value           Constraints
+1390       Best       5.397935e-02    6.027807e-05
+           Epsilon                    6.506384e-05
+Iter #     Field      Value           Constraints
+1400       Best       5.397935e-02    6.027807e-05
+           Epsilon                    4.144528e-05
+Iter #     Field      Value           Constraints
+1410       Best       5.397935e-02    6.027807e-05
+           Epsilon                    2.518679e-05
+Iter #     Field      Value           Constraints
+1420       Best       5.397935e-02    6.027807e-05
+           Epsilon                    1.444326e-05
+Iter #     Field      Value           Constraints
+1430       Best       5.395471e-02    3.069593e-04
+           Epsilon                    3.421765e-04
+Iter #     Field      Value           Constraints
+1440       Best       5.395168e-02    1.733346e-04
+           Epsilon                    2.001328e-04
+Iter #     Field      Value           Constraints
+1450       Best       5.395454e-02    8.246375e-05
+           Epsilon                    1.063128e-04
+Iter #     Field      Value           Constraints
+1460       Best       5.395888e-02    4.610140e-05
+           Epsilon                    4.916955e-05
+Iter #     Field      Value           Constraints
+1470       Best       5.395560e-02    2.005134e-05
+           Epsilon                    1.831048e-05
+Iter #     Field      Value           Constraints
+1480       Best       5.395463e-02    1.532474e-05
+           Epsilon                    4.624905e-06
+Iter #     Field      Value           Constraints
+1490       Best       5.395463e-02    1.532474e-05
+           Epsilon                    4.708847e-07
+Iter #     Field      Value           Constraints
+1500       Best       5.395463e-02    1.532474e-05
+           Epsilon                    9.853060e-11
+Iter #     Field      Value           Constraints
+1510       Best       5.395322e-02    1.434343e-05
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1520       Best       5.395322e-02    1.434343e-05
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1530       Best       5.395350e-02    6.774630e-06
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1540       Best       5.395350e-02    6.774630e-06
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1550       Best       5.395673e-02    5.657572e-06
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1560       Best       5.395591e-02    1.582121e-06
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1570       Best       5.395591e-02    1.582121e-06
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1580       Best       5.395591e-02    1.582121e-06
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1590       Best       5.395591e-02    1.582121e-06
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1600       Best       5.395591e-02    1.582121e-06
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1610       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1620       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1630       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1640       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1650       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1660       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1670       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1680       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1690       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1700       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1710       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1720       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1730       Best       5.395572e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1740       Best       5.395038e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1750       Best       5.395038e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1760       Best       5.395035e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1770       Best       5.395035e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1780       Best       5.395035e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1790       Best       5.395035e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1800       Best       5.395026e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1810       Best       5.395016e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1820       Best       5.395013e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1830       Best       5.395007e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1840       Best       5.395004e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1850       Best       5.395000e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1860       Best       5.394998e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1870       Best       5.394998e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1880       Best       5.394998e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1890       Best       5.394997e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1900       Best       5.394997e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1910       Best       5.394997e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1920       Best       5.394997e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1930       Best       5.394997e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1940       Best       5.394997e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1950       Best       5.394996e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1960       Best       5.394996e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1970       Best       5.394996e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1980       Best       5.394996e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+1990       Best       5.394996e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+Iter #     Field      Value           Constraints
+2000       Best       5.394996e-02    0.000000e+00
+           Epsilon                    0.000000e+00
+The Best Evaluation: 5.394996e-02 Constraints: 0.000000e+00.
+The Best String:
+#   0: [  -1.717378], [   1.595981], [   -1.82681], [  0.7646075], [ -0.7626277]
+

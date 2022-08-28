@@ -28,8 +28,6 @@ struct multi_problem constr =
 , .lower          = (double []){ 0.1, 0 }
 , .upper          = (double []){ 1,   5 }
 , .enforce_bounds = 1
-, .popsize        = 10
-, .generations    = 10
 , .f              = { &f1, &f2, &g1, &g2 }
 , .name           = "CONSTR"
 };

@@ -29,3 +29,5 @@ extern struct constrained_problem deb_6;
 extern struct constrained_problem deb_7;
 extern struct constrained_problem deb_8;
 extern struct constrained_problem deb_9;
+
+extern void set_eps (double e);
