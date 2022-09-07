@@ -6,29 +6,29 @@ import matplotlib.colors as mcolors
 import numpy             as np
 from argparse import ArgumentParser
 
-try :
+try:
     import plotly.express as px
     import pandas         as pd
-except ImportError :
+except ImportError:
     px = None
 
-class Opt_Log :
+class Opt_Log:
 
-    def __init__ (self, args, f) :
+    def __init__ (self, args, f):
         self.args  = args
         self.f     = f
         self.coord = []
         self._mask = None
         self.dominated_idx = set ()
-        for line in f :
+        for line in f:
             line = line.strip ()
-            if line.startswith ('Example:') or line.startswith ('Title:') :
+            if line.startswith ('Example:') or line.startswith ('Title:'):
                 self.title = line.split (None, 1) [-1]
-            if line.startswith ('F   ') :
+            if line.startswith ('F   '):
                 f, idx, number = line.split ()
                 idx = int (idx)
                 num = float (number)
-                if idx >= len (self.coord) :
+                if idx >= len (self.coord):
                     assert idx == len (self.coord)
                     self.coord.append ([])
                 self.coord [idx].append (num)
@@ -36,144 +36,147 @@ class Opt_Log :
     # end def __init__
 
     @property
-    def mask (self) :
-        if self._mask is None :
+    def mask (self):
+        if self._mask is None:
             self._mask = np.zeros (self.coord [0].shape, dtype = bool)
             self._mask [list (self.dominated_idx)] = True
         return self._mask
     # end def mask
 
-    def get_axis_data (self, idx, dominated = False) :
+    def get_axis_data (self, idx, dominated = False):
         """ Get the points for a certain coordinate index.
             Default is to get non-dominated points
         """
         mask = self.mask
-        if not dominated :
+        if not dominated:
             mask = ~mask
         coord = self.coord.T [mask].T
         return coord [idx]
     # end def get_axis_data
 
-    def pareto_dominance (self, other) :
+    def pareto_dominance (self, other):
         """ Put all dominated point indeces into self.dominated_idx,
             likewise all points dominated in other into other.dominated_idx.
         """
-        for n1, p1 in enumerate (self.coord.T) :
-            if n1 in self.dominated_idx :
+        for n1, p1 in enumerate (self.coord.T):
+            if n1 in self.dominated_idx:
                 continue
             p1 = p1 [:self.args.dominance_dimension]
-            for n2, p2 in enumerate (other.coord.T) :
-                if n2 in other.dominated_idx :
+            for n2, p2 in enumerate (other.coord.T):
+                if n2 in other.dominated_idx:
                     continue
                 p2 = p2 [:self.args.dominance_dimension]
                 d  = 0
                 lt = (p1 < p2).any ()
                 gt = (p1 > p2).any ()
                 if lt and not gt:
-                    if self.args.maximize :
+                    if self.args.maximize:
                         self.dominated_idx.add (n1)
-                    else :
+                    else:
                         other.dominated_idx.add (n2)
-                if gt and not lt :
-                    if self.args.maximize :
+                if gt and not lt:
+                    if self.args.maximize:
                         other.dominated_idx.add (n2)
-                    else :
+                    else:
                         self.dominated_idx.add (n1)
     # end def pareto_dominance
 
 # end class Opt_Log
 
-class Graphics :
+class Graphics:
     """ Encapsulate the graphics engine
     """
 
-    def __init__ (self, args) :
+    def __init__ (self, args):
         self.args  = args
         self.data  = []
         self.hfile = getattr (args, 'export_html', None)
         self.html  = getattr (args, 'show_in_browser', None)
-        if args.filename :
-            for n, fn in enumerate (args.filename) :
-                with open (fn, 'r') as f :
+        if args.filename:
+            for n, fn in enumerate (args.filename):
+                with open (fn, 'r') as f:
                     self.data.append (Opt_Log (args, f))
-                    if not args.title and self.data [-1].title :
+                    if not args.title and self.data [-1].title:
                         args.title = self.data [-1].title
-        else :
+        else:
             self.data.append (Opt_Log (args, sys.stdin))
-            if not args.title and data [-1].title :
+            if not args.title and data [-1].title:
                 args.title = self.data [-1].title
 
-        if not args.x_label :
+        if not args.x_label:
             args.x_label = 'Objective %d' % args.x_axis
-        if not args.y_label :
+        if not args.y_label:
             args.y_label = 'Objective %d' % args.y_axis
-        if not args.z_label :
+        if not args.z_label:
             args.z_label = 'Objective %d' % args.z_axis
         self.axes   = [args.x_axis, args.y_axis]
         self.labels = dict (x = args.x_label, y = args.y_label)
-        if args.plot3d :
+        if args.plot3d:
             self.axes.append (args.z_axis)
             self.labels ['z'] = args.z_label
 
-        if args.dominance_dimension :
-            for n, dat1 in enumerate (self.data) :
-                for n2 in range (n + 1, len (self.data)) :
+        if args.dominance_dimension:
+            for n, dat1 in enumerate (self.data):
+                for n2 in range (n + 1, len (self.data)):
                     dat2 = self.data [n2]
                     dat1.pareto_dominance (dat2)
         self.colormap = []
-        for cn in mcolors.TABLEAU_COLORS :
+        for cn in mcolors.TABLEAU_COLORS:
             self.colormap.append (mcolors.TABLEAU_COLORS [cn])
     # end def __init__
 
-    def plot (self) :
-        if self.hfile or self.html :
+    def plot (self):
+        if self.hfile or self.html:
             self.plot_plotly ()
-        else :
+        else:
             self.plot_matplotlib ()
     # end def plot
 
-    def plot_matplotlib (self) :
+    def plot_matplotlib (self):
         fig = plt.figure ()
         axa = {}
-        if self.args.plot3d :
+        if self.args.plot3d:
             axa ['projection'] = '3d'
         ax  = fig.add_subplot (111, **axa)
-        kw = dict (facecolors = 'none', linewidths = 0.5, s = 12)
+        if self.args.big_filled_blobs:
+            kw = {}
+        else:
+            kw = dict (facecolors = 'none', linewidths = 0.5, s = 12)
         ax.set_xlabel (self.args.x_label)
         ax.set_ylabel (self.args.y_label)
-        if self.args.plot3d :
+        if self.args.plot3d:
             ax.set_zlabel (self.args.z_label)
         plt.title (self.args.title)
-        for n, dat in enumerate (self.data) :
+        for n, dat in enumerate (self.data):
             args = [dat.get_axis_data (a) for a in self.axes]
             kw ['edgecolors'] = 'C%d' % (n % 10)
             ax.scatter (*args, **kw)
-            if self.args.plot_dominated :
+            if self.args.plot_dominated:
                 args = [dat.get_axis_data (a, True) for a in self.axes]
                 kw ['edgecolors'] = 'k'
                 ax.scatter (*args, **kw)
         plt.show ()
     # end def plot_matplotlib
 
-    def plot_plotly (self) :
+    def plot_plotly (self):
         method = px.scatter
         axes   = ['x', 'y']
         msize  = 10
-        if args.plot3d :
+        if args.plot3d:
             method = px.scatter_3d
             axes.append ('z')
             msize = 4
         pdf  = pd.DataFrame ()
         cmap = dict (dominated = 'black')
-        for datnum, dat in enumerate (self.data) :
-            if self.args.plot_dominated :
+        for datnum, dat in enumerate (self.data):
+            if self.args.plot_dominated:
                 df = pd.DataFrame ()
-                for n, axis in enumerate (axes) :
+                for n, axis in enumerate (axes):
                     df [self.labels [axis]] = dat.get_axis_data (n, True)
                 df ['run'] = 'dominated'
                 pdf = pd.concat ((pdf, df), ignore_index = True)
             df = pd.DataFrame ()
-            for n, axis in enumerate (axes) :
+            for n, axis in enumerate (axes):
                 df [self.labels [axis]] = dat.get_axis_data (n)
             color_idx  = str (datnum + 1)
             df ['run'] = color_idx
@@ -190,9 +193,9 @@ class Graphics :
         #help (fig ['layout']['legend'])
         #fig ['layout']['legend']['itemwidth'] = 500
         #print (fig ['layout'])
-        if self.hfile :
+        if self.hfile:
             fig.write_html (self.hfile)
-        if self.html :
+        if self.html:
             fig.show ()
     # end def plot_plotly
 # end class Graphics
@@ -202,6 +205,11 @@ cmd.add_argument \
     ( "filename"
     , help    = "Filename to read optimization data from, default stdin"
     , nargs   = '*'
+    )
+cmd.add_argument \
+    ( "--big-filled-blobs"
+    , help    = "Backward-compat option to use old plotting style"
+    , action  = 'store_true'
     )
 cmd.add_argument \
     ( "-m", "--maximize"
@@ -227,7 +235,7 @@ cmd.add_argument \
     , action  = 'store_true'
     , help    = "Plot 3D"
     )
-if px is not None :
+if px is not None:
     cmd.add_argument \
         ( "-H", "--export-html"
         , help    = "Filename to export graphics as html"
@@ -274,7 +282,7 @@ cmd.add_argument \
     )
 args = cmd.parse_args ()
 # Set 3D option if command ends with '3'
-if not args.plot3d and sys.argv [0].endswith ('3') :
+if not args.plot3d and sys.argv [0].endswith ('3'):
     args.plot3d = True
 
 g = Graphics (args)
