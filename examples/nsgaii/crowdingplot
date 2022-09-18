@@ -195,10 +195,16 @@ class Graphics:
         #help (fig ['layout']['legend'])
         #fig ['layout']['legend']['itemwidth'] = 500
         #print (fig ['layout'])
+        config = dict (displaylogo = False)
+        opt    = {}
+        if not self.args.show_plotly_logo:
+            opt.update (config = config)
+        if self.args.html_export_option and self.hfile:
+            opt.update (include_plotlyjs = self.args.html_export_option)
         if self.hfile:
-            fig.write_html (self.hfile)
+            fig.write_html (self.hfile, **opt)
         if self.html:
-            fig.show ()
+            fig.show (**opt)
     # end def plot_plotly
 # end class Graphics
 
@@ -243,8 +249,21 @@ if px is not None:
         , help    = "Filename to export graphics as html"
         )
     cmd.add_argument \
+        ( "--html-export-option"
+        , help    = "Option passed to write_html include_plotlyjs option, "
+                    "default is to include all javascript in generated "
+                    "output file. To leave out the javascript, specify "
+                    "'directory', this needs the plotly.min.js in the "
+                    "same directory as the output. See plotly docs for details."
+        )
+    cmd.add_argument \
         ( "-S", "--show-in-browser"
         , help    = "Produce a plot shown interactively in a running browser"
+        , action  = 'store_true'
+        )
+    cmd.add_argument \
+        ( "--show-plotly-logo"
+        , help    = "Show plotly logo in menu"
         , action  = 'store_true'
         )
 cmd.add_argument \
