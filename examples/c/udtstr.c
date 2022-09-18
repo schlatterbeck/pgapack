@@ -198,43 +198,39 @@ int DuplicateString(PGAContext *ctx, int p1, int pop1, int p2, int pop2) {
  * BuildDatattype builds an MPI datatype for sending strings to other        *
  * processors.  Consult your favorite MPI manual for more information.       *
  *****************************************************************************/
-MPI_Datatype BuildDT(PGAContext *ctx, int p, int pop) {
-  int             counts[5];
-  MPI_Aint        displs[5];
-  MPI_Datatype    types[5];
+MPI_Datatype BuildDT (PGAContext *ctx, int p, int pop)
+{
+  int             idx = 0;
+  int             counts [PGA_MPI_HEADER_ELEMENTS + 2];
+  MPI_Aint        displs [PGA_MPI_HEADER_ELEMENTS + 2];
+  MPI_Datatype    types  [PGA_MPI_HEADER_ELEMENTS + 2];
   MPI_Datatype    DT_PGAIndividual;
   PGAIndividual  *P;
   ligand         *S;
 
-  P = PGAGetIndividual(ctx, p, pop);
+  P = PGAGetIndividual (ctx, p, pop);
   S = (ligand *)P->chrom;
+  idx = PGABuildDatatypeHeader (ctx, p, pop, counts, displs, types);
 
-  /*  Build the MPI datatype.  Every user defined function needs these.
-   *  The first two calls are stuff that is internal to PGAPack, but 
-   *  the user still must include it.  See pgapack.h for details one the
-   *  fields (under PGAIndividual)
+  /*  Finish the MPI datatype.  Every user defined function needs these.
+   *  The stuff internal to PGAPack is already handled by
+   *  PGABuildDatatypeHeader above.
    */
-  MPI_Get_address(&P->evalue, &displs[0]);
-  counts[0] = 2;
-  types[0]  = MPI_DOUBLE;
 
-  /*  Next, we have an integer, evaluptodate.  */  
-  MPI_Get_address(&P->evaluptodate, &displs[1]);
-  counts[1] = 1;
-  types[1]  = MPI_INT;
+  /*  The actual user-defined string.  */
+  MPI_Get_address (S->t, &displs [idx]);
+  counts [idx] = 6;
+  types  [idx] = MPI_DOUBLE;
+  idx++;
 
-  /*  Finally, we have the actual user-defined string.  */
-  MPI_Get_address(S->t, &displs[2]);
-  counts[2] = 6;
-  types[2]  = MPI_DOUBLE;
+  MPI_Get_address (S->sc, &displs [idx]);
+  counts [idx] = 40;
+  types  [idx] = MPI_INT;
+  idx++;
 
-  MPI_Get_address(S->sc, &displs[3]);
-  counts[3] = 40;
-  types[3]  = MPI_INT;
-
-  MPI_Type_create_struct(4, counts, displs, types, &DT_PGAIndividual);
-  MPI_Type_commit(&DT_PGAIndividual);
-  return(DT_PGAIndividual);
+  MPI_Type_create_struct (idx, counts, displs, types, &DT_PGAIndividual);
+  MPI_Type_commit (&DT_PGAIndividual);
+  return DT_PGAIndividual;
 }
 
 

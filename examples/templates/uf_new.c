@@ -150,12 +150,18 @@ void MyInitString(PGAContext *ctx, int p, int pop) {
 
 
 /*  Create an MPI_Datatype for the "string".  */
-MPI_Datatype MyBuildDatatype(PGAContext *ctx, int p, int pop) {
+MPI_Datatype MyBuildDatatype(PGAContext *ctx, int p, int pop)
+{
   MyStruct   *Data;
+  int idx = 0;
+  int             counts [PGA_MPI_HEADER_ELEMENTS + mysize];
+  MPI_Aint        displs [PGA_MPI_HEADER_ELEMENTS + mysize];
+  MPI_Datatype    types  [PGA_MPI_HEADER_ELEMENTS + mysize];
 
-  Data = (MyStruct *)PGAGetIndividual(ctx, p, pop)->chrom;
+  idx  = PGABuildDatatypeHeader (ctx, p, pop, counts, displs, types);
+  Data = (MyStruct *)PGAGetIndividual (ctx, p, pop)->chrom;
 
-  /*  Insert code to build an MPI datatype here.  */
+  /*  Insert code to build rest of MPI datatype here.  */
 }
 
 

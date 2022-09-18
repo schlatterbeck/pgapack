@@ -760,6 +760,74 @@ MPI_Datatype PGABuildDatatype(PGAContext *ctx, int p, int pop)
 
 
 /*U****************************************************************************
+  PGABuildDatatypeHeader - Common part for building an MPI datatype
+                           for an individual
+
+  Category: Parallel
+
+  Inputs:
+    ctx      - context variable
+    counts   - Number of elements in each block
+    displs   - byte displacement array pointer
+    types    - type elements
+
+
+  Outputs:
+    A partially filled array of counts, displs, types
+    The index of the next-to-be-filled counts, displs, types
+    The returned index will be max PGA_MPI_HEADER_ELEMENTS.
+    This means callers may use a statically allocated buffer.
+
+  Example:
+    PGAContext *ctx;
+    int idx = 0;
+    int counts [7];
+    int displs [7];
+    MPI_Datatype types [7];
+    :
+    idx = PGABuildDatatypeHeader (ctx, counts, displs, types);
+    // Fill rest of counts, displs, types here and build datatype
+    counts [idx] =
+    displs [idx] =
+    types  [idx] =
+    idx++;
+    ...
+
+****************************************************************************U*/
+int PGABuildDatatypeHeader
+    ( PGAContext *ctx, int p, int pop
+    , int *counts, MPI_Aint *displs, MPI_Datatype *types
+    )
+{
+    int n = 5;
+    PGAIndividual *traveller = PGAGetIndividual (ctx, p, pop);
+    MPI_Get_address (&traveller->evalue, &displs [0]);
+    counts [0] = 1;
+    types  [0] = MPI_DOUBLE;
+    MPI_Get_address (&traveller->fitness, &displs [1]);
+    counts [1] = 1;
+    types  [1] = MPI_DOUBLE;
+    MPI_Get_address (&traveller->evaluptodate, &displs [2]);
+    counts [2] = 1;
+    types  [2] = MPI_INT;
+    MPI_Get_address (&traveller->auxtotal, &displs [3]);
+    counts [3] = 1;
+    types  [3] = MPI_DOUBLE;
+    MPI_Get_address (&traveller->auxtotalok, &displs [4]);
+    counts [4] = 1;
+    types  [4] = MPI_INT;
+    if (ctx->ga.NumAuxEval) {
+        MPI_Get_address (traveller->auxeval, &displs [5]);
+        counts [5] = ctx->ga.NumAuxEval;
+        types  [5] = MPI_DOUBLE;
+        n += 1;
+    }
+    assert (n <= PGA_MPI_HEADER_ELEMENTS);
+    return n;
+}
+
+
+/*U****************************************************************************
   PGASendIndividual - transmit an individual to another process
 
   Category: Parallel

@@ -348,6 +348,12 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_COMM_DONEWITHEVALS       3  /* MPI tag for ending parallel eval */
 
 /*****************************************
+*        Max. size of common part        *
+*       When sending PGAIndividual       *
+*****************************************/
+#define PGA_MPI_HEADER_ELEMENTS      6
+
+/*****************************************
 *           EPSILON CONSTRAINTS          *
 *****************************************/
 #define PGA_EPSILON_EXPONENT_MIN   3.0  /* minimum exponent cp from paper   */
@@ -966,43 +972,69 @@ double PGAGetMutationPolyValue (PGAContext *ctx);
 *          parallel.c
 *****************************************/
 
-void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
-	      MPI_Comm comm);
-void PGAEvaluateSeq(PGAContext *ctx, int pop,
-		    double (*f)(PGAContext *, int, int, double *));
-void PGAEvaluateCoop(PGAContext *ctx, int pop,
-		     double (*f)(PGAContext *, int, int, double *),
-                     MPI_Comm comm);
-void PGAEvaluateMS(PGAContext *ctx, int pop,
-		   double (*f)(PGAContext *c, int p, int pop, double *),
-                   MPI_Comm comm);
-void PGAEvaluateSlave(PGAContext *ctx, int pop,
-		      double (*f)(PGAContext *, int, int, double *),
-                      MPI_Comm comm);
-void PGAEvaluate(PGAContext *ctx, int pop,
-		 double (*f)(PGAContext *, int, int, double *), MPI_Comm comm);
-MPI_Datatype PGABuildDatatype(PGAContext *ctx, int p, int pop);
-void PGASendIndividual(PGAContext *ctx, int p, int pop, int dest, int tag,
-                       MPI_Comm comm);
-void PGAReceiveIndividual(PGAContext *ctx, int p, int pop, int source, int tag,
-                          MPI_Comm comm, MPI_Status *status);
-void PGASendReceiveIndividual(PGAContext *ctx, int send_p, int send_pop,
-                              int dest, int send_tag, int recv_p, int recv_pop,
-                              int source, int recv_tag, MPI_Comm comm,
-                              MPI_Status *status);
-void PGARunIM(PGAContext *ctx, double (*f)
-              (PGAContext *c, int p, int pop, double *), MPI_Comm tcomm);
-void PGARunNM(PGAContext *ctx,
-              double (*f)(PGAContext *c, int p, int pop, double *),
-              MPI_Comm tcomm);
+void PGARunGM
+    ( PGAContext *ctx
+    , double (*f)(PGAContext *, int, int, double *)
+    , MPI_Comm comm
+    );
+void PGAEvaluateSeq
+    ( PGAContext *ctx, int pop
+    , double (*f)(PGAContext *, int, int, double *)
+    );
+void PGAEvaluateCoop
+    ( PGAContext *ctx, int pop
+    , double (*f)(PGAContext *, int, int, double *)
+    , MPI_Comm comm
+    );
+void PGAEvaluateMS
+    ( PGAContext *ctx, int pop
+    , double (*f)(PGAContext *c, int p, int pop, double *)
+    , MPI_Comm comm
+    );
+void PGAEvaluateSlave
+    ( PGAContext *ctx, int pop
+    , double (*f)(PGAContext *, int, int, double *)
+    , MPI_Comm comm
+    );
+void PGAEvaluate
+    ( PGAContext *ctx, int pop
+    , double (*f)(PGAContext *, int, int, double *)
+    , MPI_Comm comm
+    );
+MPI_Datatype PGABuildDatatype (PGAContext *ctx, int p, int pop);
+int PGABuildDatatypeHeader
+    ( PGAContext *ctx, int p, int pop
+    , int *counts, MPI_Aint *displs, MPI_Datatype *types
+    );
+void PGASendIndividual
+    (PGAContext *ctx, int p, int pop, int dest, int tag, MPI_Comm comm);
+void PGAReceiveIndividual
+    ( PGAContext *ctx, int p, int pop
+    , int source, int tag, MPI_Comm comm, MPI_Status *status
+    );
+void PGASendReceiveIndividual
+    ( PGAContext *ctx, int send_p, int send_pop
+    , int dest, int send_tag, int recv_p, int recv_pop
+    , int source, int recv_tag, MPI_Comm comm, MPI_Status *status
+    );
+void PGARunIM
+    ( PGAContext *ctx
+    , double (*f) (PGAContext *c, int p, int pop, double *)
+    , MPI_Comm tcomm
+    );
+void PGARunNM
+    ( PGAContext *ctx
+    , double (*f)(PGAContext *c, int p, int pop, double *)
+    , MPI_Comm tcomm
+    );
 int PGAGetRank (PGAContext *ctx, MPI_Comm comm);
 int PGAGetNumProcs (PGAContext *ctx, MPI_Comm comm);
-void PGASetNumIslands( PGAContext *ctx, int n);
+void PGASetNumIslands (PGAContext *ctx, int n);
 int PGAGetNumIslands (PGAContext *ctx);
-void PGASetNumDemes( PGAContext *ctx, int numdemes);
+void PGASetNumDemes (PGAContext *ctx, int numdemes);
 int PGAGetNumDemes (PGAContext *ctx);
-void PGASetCommunicator( PGAContext *ctx, MPI_Comm comm);
-MPI_Comm PGAGetCommunicator( PGAContext *ctx);
+void PGASetCommunicator (PGAContext *ctx, MPI_Comm comm);
+MPI_Comm PGAGetCommunicator (PGAContext *ctx);
 
 /*****************************************
 *          pga.c
