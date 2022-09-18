@@ -222,6 +222,7 @@ size_t npop = sizeof (pop) / 3 / sizeof (double);
 
 void test_pop (PGAContext *ctx, void *p)
 {
+    size_t sz;
     int i, j;
     double (*pop) [3] = p;
     double (*extreme) [3];
@@ -233,14 +234,14 @@ void test_pop (PGAContext *ctx, void *p)
 
     ctx->ga.extreme_valid = ctx->ga.utopian_valid = PGA_FALSE;
     ctx->ga.worst_valid = PGA_FALSE;
-    for (i=0; i<npop; i++) {
-        PGAIndividual *ind = ctx->ga.newpop + i;
-        start [i] = ind;
+    for (sz=0; sz<npop; sz++) {
+        PGAIndividual *ind = ctx->ga.newpop + sz;
+        start [sz] = ind;
         for (j=0; j<3; j++) {
             if (j==0) {
-                ind->evalue = pop [i][j];
+                ind->evalue = pop [sz][j];
             } else {
-                ind->auxeval [j-1] = pop [i][j];
+                ind->auxeval [j-1] = pop [sz][j];
             }
         }
     }
@@ -300,7 +301,7 @@ int main (int argc, char **argv)
     PGAContext *ctx = PGACreate
         (&argc, argv, PGA_DATATYPE_REAL, npop, PGA_MINIMIZE);
     /* Example from slides EMO '19 */
-    int i;
+    size_t sz;
     double utop [] = {0.1, 0.1, 0.1};
     double f [][3] =
         { { 1.0, 0.1, 0.2 }
@@ -310,13 +311,13 @@ int main (int argc, char **argv)
         , { 0.4, 0.4, 0.9 }
         , { 0.3, 0.3, 100 }
         };
-    int dl = sizeof (f) / (3 * sizeof (double));
+    size_t dl = sizeof (f) / (3 * sizeof (double));
     printf ("%zu\n", npop);
     ctx->ga.NumAuxEval = 2;
     ctx->ga.NumConstraint = 0;
     ctx->ga.utopian = utop;
-    for (i=0; i<dl; i++) {
-        printf ("%e\n", compute_asf (ctx, f [i], 2));
+    for (sz=0; sz<dl; sz++) {
+        printf ("%e\n", compute_asf (ctx, f [sz], 2));
     }
     PGASetPopReplaceType (ctx, PGA_POPREPL_NSGA_III);
     PGASetPopSize (ctx, 100);
@@ -326,20 +327,20 @@ int main (int argc, char **argv)
     {
         double minasf = -1;
         double d [3];
-        int asfidx = -1;
-        for (i=0; i<npop; i++) {
+        int asfidx = 0;
+        for (sz=0; sz<npop; sz++) {
             int j;
             double asf;
-            memcpy (d, pop2 [i], 3 * sizeof (double));
+            memcpy (d, pop2 [sz], 3 * sizeof (double));
             for (j=0; j<3; j++) {
                 if (d [j] < 1e-3) {
                     d [j] = 0;
                 }
             }
             asf = compute_asf (ctx, d, 0);
-            if (asfidx < 0 || asf < minasf) {
+            if (asfidx == 0 || asf < minasf) {
                 minasf = asf;
-                asfidx = i;
+                asfidx = sz;
             }
         }
         printf ("ASF22: %e\n", compute_asf (ctx, pop2 [22], 0));

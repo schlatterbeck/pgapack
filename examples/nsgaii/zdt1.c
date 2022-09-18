@@ -20,10 +20,6 @@ static double g (double *x)
 static double f2 (double *x)
 {
     double rg = g (x);
-    printf ("g: %e\n", rg);
-    printf ("x[0]: %e\n", x [0]);
-    printf ("sqrt: %e\n", x [0] / rg);
-    printf ("sqrt: %e\n", sqrt (x [0] / rg));
     return rg * (1 - sqrt (x [0] / rg));
 }
 

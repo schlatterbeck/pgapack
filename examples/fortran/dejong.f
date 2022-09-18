@@ -251,7 +251,7 @@ c
       double precision  Lower(5), Upper(5)
       common /data/     BinLen, NumCoords, Lower, Upper, gray_on
       double precision  value
-      integer comm
+      integer(8) comm
 
 
       comm = PGAGetCommunicator(ctx)

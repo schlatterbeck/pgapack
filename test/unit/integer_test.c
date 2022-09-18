@@ -17,6 +17,7 @@ int popsize = sizeof (pop) / (sizeof (PGAInteger) * 6);
 int main (int argc, char **argv)
 {
     int i, j;
+    size_t sz;
     PGAContext *ctx = PGACreate
         (&argc, argv, PGA_DATATYPE_INTEGER, 6, PGA_MINIMIZE);
     PGAInteger edges[][2] = {{1,3}, {3,4}};
@@ -26,11 +27,11 @@ int main (int argc, char **argv)
     PGASetRandomSeed    (ctx, 2);
     PGAIntegerSetFixedEdges (ctx, elen, edges, PGA_FALSE);
     printf ("Fixed edges:\n");
-    for (i=0; i<elen; i++) {
-        PGAFixedEdge *p = ctx->ga.edges + i;
+    for (sz=0; sz<elen; sz++) {
+        PGAFixedEdge *p = ctx->ga.edges + sz;
         printf
-            ( "%d: %ld %ld %zd %zd\n"
-            , i, p->lhs, p->rhs
+            ( "%zu: %ld %ld %zd %zd\n"
+            , sz, p->lhs, p->rhs
             , p->next ?  p->next - ctx->ga.edges : -1
             , p->prev ?  p->prev - ctx->ga.edges : -1
             );

@@ -48,6 +48,7 @@ int main (int argc, char **argv)
     int sum_constraints = PGA_FALSE;
     double crossover_prob = 0.8;
     int epsilon_generation = 0;
+    MPI_Comm comm;
 
     if (argc > 1) {
         fidx = atoi (argv [1]);
@@ -77,11 +78,6 @@ int main (int argc, char **argv)
     if (problem->crossover_prob > 0) {
         crossover_prob = problem->crossover_prob;
     }
-    printf ("Example: %s", problem->name);
-    if (problem->nconstraint > 0) {
-        printf (" sum constraints: %s", sum_constraints ? "yes" : "no");
-    }
-    printf ("\n");
     ctx = PGACreate
         (&argc, argv, PGA_DATATYPE_REAL, problem->dimension, PGA_MINIMIZE);
     
@@ -114,6 +110,14 @@ int main (int argc, char **argv)
     };
     
     PGASetUp   (ctx);
+    comm = PGAGetCommunicator (ctx);
+    if (PGAGetRank (ctx, comm) == 0) {
+        printf ("Example: %s", problem->name);
+        if (problem->nconstraint > 0) {
+            printf (" sum constraints: %s", sum_constraints ? "yes" : "no");
+        }
+        printf ("\n");
+    }
     PGARun     (ctx, evaluate);
     PGADestroy (ctx);
     return 0;

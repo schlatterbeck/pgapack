@@ -8,7 +8,7 @@ void p_gcd (int a, int b)
 
 void p_binom (int a, int b)
 {
-    printf ("binom (%d, %d): %d\n", a, b, LIN_binom (a, b));
+    printf ("binom (%d, %d): %zu\n", a, b, LIN_binom (a, b));
 }
 
 void p_vec (int dim, int n, void *v)
@@ -35,7 +35,7 @@ void p_dasdennis (int dim, int npart)
 int main ()
 {
     int row, col, i;
-    double m1 [][3] = {{0.8, 0.5, 0.5}, {0.1, 0.3, 0.9}, {0.1, 0.3, 0.9}};
+    //double m1 [][3] = {{0.8, 0.5, 0.5}, {0.1, 0.3, 0.9}, {0.1, 0.3, 0.9}};
     double m2 [][3] = {{1.0, 0.2, 0.0}, {0.4, 0.1, 0.4}, {0.1, 0.0, 1.0}};
     double m3 [3][3];
     double m4 [][3] = {{0, 0, 1}, {0, 1, 0}, {1, 0, 0}};

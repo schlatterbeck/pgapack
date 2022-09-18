@@ -47,6 +47,7 @@ int main (int argc, char **argv)
     int np = LIN_dasdennis (3, 12, &p, 0, 1, NULL);
     int seed = 1;
     int direction;
+    MPI_Comm comm;
 
     if (argc > 1) {
         fidx = atoi (argv [1]);
@@ -68,7 +69,6 @@ int main (int argc, char **argv)
     if (problem->popsize > popsize) {
         popsize = problem->popsize;
     }
-    printf ("Example: %s\n", problem->name);
     direction = problem->maximize ? PGA_MAXIMIZE : PGA_MINIMIZE;
     ctx = PGACreate
         (&argc, argv, PGA_DATATYPE_REAL, problem->dimension, direction);
@@ -133,6 +133,10 @@ int main (int argc, char **argv)
 # endif
     
     PGASetUp   (ctx);
+    comm = PGAGetCommunicator (ctx);
+    if (PGAGetRank (ctx, comm) == 0) {
+        printf ("Example: %s\n", problem->name);
+    }
     PGARun     (ctx, evaluate);
     PGADestroy (ctx);
     return 0;
