@@ -2611,7 +2611,7 @@ Hashing              & \verb+PGA_USERFUNCTION_HASH+ \\
 String Printing      & \verb+PGA_USERFUNCTION_PRINTSTRING+ \\
 Termination Criteria & \verb+PGA_USERFUNCTION_STOPCOND+ \\
 End of generation    & \verb+PGA_USERFUNCTION_ENDOFGEN+ \\
-Genetic difference   & \verb+PGA_USERFUNCTION_GEN_DIFFERENCE+ \\
+Genetic distance     & \verb+PGA_USERFUNCTION_GEN_DISTANCE+ \\
 Pre-Evaluate Hook    & \verb+PGA_USERFUNCTION_PRE_EVAL+ \\
 \hline
 \end{tabular}
@@ -2728,7 +2728,7 @@ Calling Sequences for Customizable Functions\label{tab:custom-functions}
     \verb+(PGAContext*)+ \\
 \verb+PGA_USERFUNCTION_ENDOFGEN+       &\verb+void+   &
     \verb+(PGAContext*)+ \\
-\verb+PGA_USERFUNCTION_GEN_DIFFERENCE+ &\verb+double+ &
+\verb+PGA_USERFUNCTION_GEN_DISTANCE+   &\verb+double+ &
     \verb+(PGAContext*, int, int, int, int)+ \\
 \verb+PGA_USERFUNCTION_PRE_EVAL+       &\verb+void+ &
     \verb+(PGAContext*, int)+ \\
@@ -4118,7 +4118,7 @@ Fortran and C.
 \item \verb+PGA_USERFUNCTION_BUILDDATATYPE+
 \item \verb+PGA_USERFUNCTION_STOPCOND+
 \item \verb+PGA_USERFUNCTION_ENDOFGEN+
-\item \verb+PGA_USERFUNCTION_GEN_DIFFERENCE+
+\item \verb+PGA_USERFUNCTION_GEN_DISTANCE+
 \item \verb+PGA_USERFUNCTION_PRE_EVAL+
 \end{itemize}
 

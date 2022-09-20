@@ -1612,7 +1612,7 @@ void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
 
   Inputs:
       ctx - context variable
-      p   - index of string to randomly initialize
+      p   - index of string
       pop - symbolic constant of the population string p is in
 
   Outputs:

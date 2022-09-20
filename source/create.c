@@ -317,6 +317,9 @@ PGAContext *PGACreate
     ctx->cops.GeneDistance      = NULL;
     ctx->cops.PreEval           = NULL;
     ctx->cops.Hash              = NULL;
+    ctx->cops.Serialize         = NULL;
+    ctx->cops.Deserialize       = NULL;
+    ctx->cops.SerializeFree     = NULL;
 
     ctx->fops.Mutation          = NULL;
     ctx->fops.Crossover         = NULL;
@@ -466,7 +469,7 @@ PGAContext *PGACreate
 void PGASetUp ( PGAContext *ctx )
 {
     /*  These are for temporary storage of datatype specific functions.
-     *  They allow some (understatement of the yesr!!) cleaning of the
+     *  They allow some (understatement of the year!!) cleaning of the
      *  code below.
      */
     void    (*CreateString)(PGAContext *, int, int, int) = NULL;
@@ -483,6 +486,19 @@ void PGASetUp ( PGAContext *ctx )
 
     PGADebugEntered("PGASetUp");
     PGAFailIfSetUp("PGASetUp");
+
+    if (ctx->ga.datatype != PGA_DATATYPE_USER
+       && (  ctx->cops.Serialize
+          || ctx->cops.Deserialize
+          || ctx->cops.SerializeFree
+          )
+       )
+    {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetUp: Serialize/Deserialize only with user defined datatype"
+            );
+    }
 
     if (  ctx->ga.datatype == PGA_DATATYPE_BINARY
        && ctx->ga.tw       == PGA_UNINITIALIZED_INT
@@ -1140,6 +1156,29 @@ void PGASetUp ( PGAContext *ctx )
                 , PGA_FATAL, PGA_INT, (void *) &err
                 );
         }
+        if (  ( ctx->cops.Serialize && !ctx->cops.Deserialize)
+           || (!ctx->cops.Serialize &&  ctx->cops.Deserialize)
+           )
+        {
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
+                , "PGASetUp: Serialize/Deserialize must be specified together"
+                );
+        }
+        if (ctx->cops.Serialize && ctx->cops.BuildDatatype) {
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
+                , "PGASetUp: Serialize/Deserialize must not "
+                  "specify BuildDatatype"
+                );
+        }
+        if (ctx->cops.Serialize) {
+            ctx->cops.BuildDatatype = PGASerializedBuildDatatype;
+            /* If not set we asume it's allocated by malloc and friends */
+            if (ctx->cops.SerializeFree == NULL) {
+                ctx->cops.SerializeFree = &free;
+            }
+        }
         if (ctx->cops.BuildDatatype == NULL) {
              PGAError
                 ( ctx, "PGASetUp: User datatype needs BuildDatatype function:"
@@ -1354,6 +1393,8 @@ void PGASetUp ( PGAContext *ctx )
         PGAErrorPrintf
             (ctx, PGA_FATAL , "PGASetUp: Fixed edges only with IntegerMin=0");
     }
+    ctx->scratch.serialization_size = 0;
+    ctx->scratch.serialized = NULL;
 
     PGACreatePop (ctx, PGA_OLDPOP);
     PGACreatePop (ctx, PGA_NEWPOP);

@@ -335,10 +335,15 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_USERFUNCTION_BUILDDATATYPE           8
 #define PGA_USERFUNCTION_STOPCOND                9
 #define PGA_USERFUNCTION_ENDOFGEN                10
-#define PGA_USERFUNCTION_GEN_DIFFERENCE          11
+#define PGA_USERFUNCTION_GEN_DISTANCE            11
+/* For backward compat */
+#define PGA_USERFUNCTION_GEN_DIFFERENCE PGA_USERFUNCTION_GEN_DISTANCE
 #define PGA_USERFUNCTION_PRE_EVAL                12
 #define PGA_USERFUNCTION_HASH                    13
-#define PGA_NUM_USERFUNCTIONS                    13
+#define PGA_USERFUNCTION_SERIALIZE               14
+#define PGA_USERFUNCTION_DESERIALIZE             15
+#define PGA_USERFUNCTION_SERIALIZE_FREE          16
+#define PGA_NUM_USERFUNCTIONS                    16
 
 /*****************************************
 *           MPI SEND/RECV TAGS           *
@@ -346,6 +351,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_COMM_STRINGTOEVAL        1  /* MPI tag for sending string       */
 #define PGA_COMM_EVALOFSTRING        2  /* MPI tag for returning evaluation */
 #define PGA_COMM_DONEWITHEVALS       3  /* MPI tag for ending parallel eval */
+#define PGA_COMM_SERIALIZE_SIZE      4  /* MPI tag for serialized data size */
 
 /*****************************************
 *        Max. size of common part        *
@@ -513,8 +519,10 @@ typedef struct {
     void         (*EndOfGen)(PGAContext *);
     double       (*GeneDistance)(PGAContext *, int, int, int, int);
     void         (*PreEval)(PGAContext *, int);
-    int          (*EvalCompare)(PGAContext *, int, int, int, int);
     PGAHash      (*Hash)(PGAContext *, int, int);
+    size_t       (*Serialize)(PGAContext *, int, int, const void **);
+    void         (*Deserialize)(PGAContext *, int, int, const void *, size_t);
+    void         (*SerializeFree)(void *);
 } PGACOperations;
 
 typedef struct {
@@ -528,7 +536,6 @@ typedef struct {
     void         (*EndOfGen)(void *);
     double       (*GeneDistance)(void *, void *, void *, void *, void *);
     void         (*PreEval)(void *, void *);
-    int          (*EvalCompare)(void *, void *, void *, void *, void *);
     PGAHash      (*Hash)(void *, void *, void *);
 } PGAFortranOperations;
 
@@ -612,11 +619,13 @@ typedef struct {
 *      SCRATCH DATA STRUCTURES           *
 *****************************************/
 typedef struct {
-    int           *intscratch;            /* integer-scratch space          */
-    double        *dblscratch;            /* double- scratch space          */
-    PGABinary     *dominance;             /* for dominance sorting          */
-    PGAInteger    (*edgemap)[4];          /* For Edge Crossover             */
-    PGAIndividual **hashed;               /* For duplicate checking         */
+    int           *intscratch;         /* integer-scratch space           */
+    double        *dblscratch;         /* double- scratch space           */
+    PGABinary     *dominance;          /* for dominance sorting           */
+    PGAInteger    (*edgemap)[4];       /* For Edge Crossover              */
+    PGAIndividual **hashed;            /* For duplicate checking          */
+    size_t         serialization_size; /* Size for Serialize/Deserialize  */
+    void          *serialized;         /* tmp pointer for serialized data */
 } PGAScratch;
 
 /*****************************************
@@ -1006,6 +1015,7 @@ int PGABuildDatatypeHeader
     ( PGAContext *ctx, int p, int pop
     , int *counts, MPI_Aint *displs, MPI_Datatype *types
     );
+MPI_Datatype PGASerializedBuildDatatype (PGAContext *ctx, int p, int pop);
 void PGASendIndividual
     (PGAContext *ctx, int p, int pop, int dest, int tag, MPI_Comm comm);
 void PGAReceiveIndividual

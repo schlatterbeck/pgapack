@@ -40,6 +40,8 @@ typedef struct {
 #define MPI_ANY_SOURCE      (-2)
 #define MPI_ANY_TAG         (-1)
 
+#define MPI_STATUS_IGNORE   (void *)NULL
+
 /*  Declare prototypes for the MPI functions.  */
 int MPI_Get_address(void *, MPI_Aint *);
 int MPI_Bcast(void *, int, MPI_Datatype, int, MPI_Comm);
