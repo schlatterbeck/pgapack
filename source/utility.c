@@ -466,8 +466,8 @@ int PGAGetBestIndex (PGAContext *ctx, int popidx)
 
 
 /*U***************************************************************************
-  PGAGetBestReport - returns the string with the best evaluation
-  function value in population pop for the given evaluation.
+  PGAGetBestReport - returns the best evaluation value in population pop
+  for the given evaluation.
   The evaluation function index must be 0 < idx <= NumAuxEval. So for
   single evaluation only the index 0 is allowed and the return is the
   evaluation as from PGAGetBestIndex. Note that this accesses the
@@ -478,7 +478,7 @@ int PGAGetBestIndex (PGAContext *ctx, int popidx)
 
   Inputs:
      ctx - context variable
-     pop - symbolic constant of the population to find the best string in
+     pop - symbolic constant of the population to find the best eval,
            only PGA_OLDPOP is allowed
      idx - Index of the evaluation function, 0 for the one return by
            your evaluation function 1 .. NumAuxEval for the auxiliary
