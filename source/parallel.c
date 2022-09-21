@@ -645,11 +645,15 @@ void PGAEvaluateSlave(PGAContext *ctx, int pop,
     PGADebugEntered("PGAEvaluateSlave");
 
     k = PGA_TEMP1;
-    MPI_Probe(0, MPI_ANY_TAG, comm, &stat);
-    while (stat.MPI_TAG == PGA_COMM_STRINGTOEVAL) {
+
+    MPI_Probe (0, MPI_ANY_TAG, comm, &stat);
+    while (  stat.MPI_TAG == PGA_COMM_STRINGTOEVAL
+          || stat.MPI_TAG == PGA_COMM_SERIALIZE_SIZE
+          )
+    {
         double *aux;
-	PGAReceiveIndividual(ctx, PGA_TEMP1, pop, 0, PGA_COMM_STRINGTOEVAL,
-			     comm, &stat);
+	PGAReceiveIndividual
+            (ctx, PGA_TEMP1, pop, 0, PGA_COMM_STRINGTOEVAL, comm, &stat);
 
         aux = PGAGetAuxEvaluation (ctx, PGA_TEMP1, pop);
 	if (ctx->sys.UserFortran == PGA_TRUE)
@@ -920,7 +924,7 @@ void PGASendIndividual(PGAContext *ctx, int p, int pop, int dest, int tag,
     MPI_Type_free (&individualtype);
 
     if (ctx->cops.Serialize) {
-        free (ctx->scratch.serialized);
+        ctx->cops.SerializeFree (ctx->scratch.serialized);
         ctx->scratch.serialized = NULL;
         ctx->scratch.serialization_size = 0;
     }
