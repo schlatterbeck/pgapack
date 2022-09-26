@@ -48,6 +48,7 @@ int MPI_Comm_free(MPI_Comm *);
 int MPI_Comm_rank(MPI_Comm, int *);
 int MPI_Comm_size(MPI_Comm, int *);
 int MPI_Finalize(void);
+int MPI_Finalized(int *);
 int MPI_Init(int *, char ***);
 int MPI_Initialized(int *);
 int MPI_Probe(int, int, MPI_Comm, MPI_Status *);

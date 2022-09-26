@@ -173,6 +173,13 @@ int MPI_Finalize(void) {
     return(0);
 }
 
+/* We're always finalized */
+int MPI_Finalized (int *fin)
+{
+    *fin = 1;
+    return 0;
+}
+
 
 /*  Initializes MPI.
  *  Ideally, we should parse the command-line and remove MPI arguments.

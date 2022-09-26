@@ -28,6 +28,7 @@ c
 c     Functions
       external MPI_Get_address, MPI_Bcast, MPI_Comm_dup, MPI_Comm_free
       external MPI_Comm_rank, MPI_Comm_size, MPI_Finalize, MPI_Init
+      external MPI_Finalized
       external MPI_Initialized, MPI_Probe, MPI_Send, MPI_Recv
       external MPI_Sendrecv, MPI_Type_commit, MPI_Type_free
       external MPI_Type_create_struct
