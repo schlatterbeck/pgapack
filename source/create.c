@@ -1192,9 +1192,6 @@ void PGASetUp ( PGAContext *ctx )
                 ctx->cops.SerializeFree = &free;
             }
         }
-        if (ctx->cops.ChromFree == NULL) {
-            ctx->cops.ChromFree = &ChromFree;
-        }
         if (ctx->cops.BuildDatatype == NULL) {
              PGAError
                 ( ctx, "PGASetUp: User datatype needs BuildDatatype function:"
@@ -1217,6 +1214,9 @@ void PGASetUp ( PGAContext *ctx )
                 );
         }
         break;
+    }
+    if (ctx->cops.ChromFree == NULL) {
+        ctx->cops.ChromFree = &ChromFree;
     }
     if ((ctx->cops.Mutation     == NULL) && (ctx->fops.Mutation    == NULL)) {
 	ctx->cops.Mutation      = Mutation;
