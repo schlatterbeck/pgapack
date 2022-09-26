@@ -167,52 +167,50 @@ void PGADestroy (PGAContext *ctx)
 {
     int i;
 
-    PGADebugEntered("PGADestroy");
+    PGADebugEntered ("PGADestroy");
 
     /*  These are allocated by PGASetUp.  Free then only if PGASetUp
      *  was called.
      */
-    if (ctx->sys.SetUpCalled == PGA_TRUE) {
-      /*  Free the population...fly little birdies!  You're FREE!!!  */
-      for ( i = 0; i < ctx->ga.PopSize + 2; i++ ) {
-        free ( ctx->ga.oldpop[i].chrom );
-        free ( ctx->ga.newpop[i].chrom );
-      }
-      free ( ctx->ga.oldpop );
-      free ( ctx->ga.newpop );
+    if (ctx->sys.SetUpCalled) {
+        /*  Free the population...fly little birdies!  You're FREE!!!  */
+        for (i=0; i<ctx->ga.PopSize + 2; i++) {
+            ctx->cops.ChromFree (ctx->ga.oldpop + i);
+            ctx->cops.ChromFree (ctx->ga.newpop + i);
+        }
+        free (ctx->ga.oldpop);
+        free (ctx->ga.newpop);
 
-      /*  Free the scratch space.  */
-      free ( ctx->scratch.intscratch );
-      free ( ctx->scratch.dblscratch );
-      free ( ctx->ga.selected );
-      free ( ctx->ga.sorted );
+        /*  Free the scratch space.  */
+        free (ctx->scratch.intscratch);
+        free (ctx->scratch.dblscratch);
+        free (ctx->ga.selected);
+        free (ctx->ga.sorted);
     }
 
     /*  These are allocated by PGACreate  */
-    if (ctx->ga.datatype == PGA_DATATYPE_REAL)
-      {
-        free ( ctx->init.RealMax );
-        free ( ctx->init.RealMin );
-      }
-    else if (ctx->ga.datatype == PGA_DATATYPE_INTEGER)
-      {
-        free ( ctx->init.IntegerMax );
-        free ( ctx->init.IntegerMin );
-      }
+    if (ctx->ga.datatype == PGA_DATATYPE_REAL) {
+        free (ctx->init.RealMax);
+        free (ctx->init.RealMin);
+    } else if (ctx->ga.datatype == PGA_DATATYPE_INTEGER) {
+        free (ctx->init.IntegerMax);
+        free (ctx->init.IntegerMin);
+    }
 
     /*  We want to finalize MPI only if it was not started for us (as
      *  fortran would do) AND it is actually running.  It would not be
      *  running if, for example, -pgahelp is specified on the command
      *  line.
      */
-    MPI_Initialized(&i);
-    if ((ctx->par.MPIAlreadyInit == PGA_FALSE) && i)
-      MPI_Finalize();
+    MPI_Initialized (&i);
+    if ((ctx->par.MPIAlreadyInit == PGA_FALSE) && i) {
+        MPI_Finalize ();
+    }
 
     /*  We really should perform a PGADebugPrint here, but we can't;
      *  we've already deallocated most of the stuff we need!!
      */
-    free ( ctx );
+    free (ctx);
 }
 
 /*U***************************************************************************

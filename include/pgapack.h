@@ -343,7 +343,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_USERFUNCTION_SERIALIZE               14
 #define PGA_USERFUNCTION_DESERIALIZE             15
 #define PGA_USERFUNCTION_SERIALIZE_FREE          16
-#define PGA_NUM_USERFUNCTIONS                    16
+#define PGA_USERFUNCTION_CHROM_FREE              17
+#define PGA_NUM_USERFUNCTIONS                    17
 
 /*****************************************
 *           MPI SEND/RECV TAGS           *
@@ -523,6 +524,7 @@ typedef struct {
     size_t       (*Serialize)(PGAContext *, int, int, const void **);
     void         (*Deserialize)(PGAContext *, int, int, const void *, size_t);
     void         (*SerializeFree)(void *);
+    void         (*ChromFree)(PGAIndividual *ind);
 } PGACOperations;
 
 typedef struct {

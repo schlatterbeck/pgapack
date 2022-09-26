@@ -48,6 +48,12 @@ privately owned rights.
 #include <stdint.h>
 #include "pgapack.h"
 
+/* Helper function to free builtin datatype */
+static void ChromFree (PGAIndividual *ind)
+{
+    free (ind->chrom);
+}
+
 /*U****************************************************************************
   PGACreate - creates an uninitialized context variable.  The Fortran version
   of this function call contains only the last three arguments
@@ -320,6 +326,7 @@ PGAContext *PGACreate
     ctx->cops.Serialize         = NULL;
     ctx->cops.Deserialize       = NULL;
     ctx->cops.SerializeFree     = NULL;
+    ctx->cops.ChromFree         = NULL;
 
     ctx->fops.Mutation          = NULL;
     ctx->fops.Crossover         = NULL;
@@ -497,6 +504,12 @@ void PGASetUp ( PGAContext *ctx )
         PGAErrorPrintf
             ( ctx, PGA_FATAL
             , "PGASetUp: Serialize/Deserialize only with user defined datatype"
+            );
+    }
+    if (ctx->ga.datatype != PGA_DATATYPE_USER && ctx->cops.ChromFree) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetUp: ChromFree only with user defined datatype"
             );
     }
 
@@ -1178,6 +1191,9 @@ void PGASetUp ( PGAContext *ctx )
             if (ctx->cops.SerializeFree == NULL) {
                 ctx->cops.SerializeFree = &free;
             }
+        }
+        if (ctx->cops.ChromFree == NULL) {
+            ctx->cops.ChromFree = &ChromFree;
         }
         if (ctx->cops.BuildDatatype == NULL) {
              PGAError
