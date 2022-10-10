@@ -1138,7 +1138,10 @@ STATIC unsigned int ranking
                 if (cmp && ncmp && ncmp != cmp) {
                     break;
                 }
-                cmp = ncmp;
+                /* Don't allow cmp to get zero again */
+                if (ncmp) {
+                    cmp = ncmp;
+                }
             }
             /* Non-dominated? */
             if (!cmp || k<nfun) {
