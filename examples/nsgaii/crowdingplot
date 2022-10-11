@@ -96,12 +96,14 @@ class Graphics:
             for n, fn in enumerate (args.filename):
                 with open (fn, 'r') as f:
                     self.data.append (Opt_Log (args, f))
-                    if not args.title and self.data [-1].title:
-                        args.title = self.data [-1].title
+                    dt = getattr (self.data [-1], 'title', None)
+                    if not args.title and dt:
+                        args.title = dt
         else:
             self.data.append (Opt_Log (args, sys.stdin))
-            if not args.title and data [-1].title:
-                args.title = self.data [-1].title
+            dt = getattr (self.data [-1], 'title', None)
+            if not args.title and dt:
+                args.title = dt
 
         if not args.x_label:
             args.x_label = 'Objective %d' % args.x_axis
