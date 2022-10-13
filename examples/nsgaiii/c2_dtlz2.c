@@ -20,7 +20,7 @@ static void f (double *x, double *y)
     int i, j;
     double gv = g (x + DIM - K);
     double s1 = 0, s2 = 0;
-    double m;
+    double m = 0;
     double r2 = (NOBJ == 3) ? 0.4 * 0.4 : 0.5 + 0.5;
     double sqm = sqrt (NOBJ);
     for (i=0; i<NOBJ; i++) {
