@@ -48,3 +48,41 @@ struct multi_problem c1_dtlz3 =
 , .f              = f
 , .name           = "C1-DTLZ3"
 };
+
+#ifdef DEBUG_EVAL
+#include <stdio.h>
+int main ()
+{
+    int i, j;
+    static double xx [][DIM] =
+        { { 0.4757814, 0.2537747, 0.5, 0.5, 0.5, 0.5
+          , 0.5,       0.5000003, 0.5, 0.5, 0.5, 0.5
+          }
+        , { 0.5911212, 0.703804,  0.5, 0.5, 0.5, 0.5
+          , 0.5,       0.5000001, 0.5, 0.5, 0.5, 0.5
+          }
+        , { 0.8452794, 0.2859174, 0.5, 0.5, 0.5, 0.5
+          , 0.5,       0.5,       0.5, 0.5, 0.5, 0.5
+          }
+        , { 0.5911212, 0.2872442, 0.5, 0.5, 0.5, 0.5
+          , 0.5,       0.5,       0.5, 0.5, 0.5, 0.5
+          }
+        };
+    double yy [NOBJ + 1];
+    size_t sz = sizeof (xx) / (sizeof (double) * DIM);
+    for (i=0; i<sz; i++) {
+        double s = 0;
+        f (xx [i], yy);
+        printf ("G: %e\n", g (xx [i] + DIM - K));
+        if (yy [NOBJ] <= 0) {
+            for (j=0; j<NOBJ+1; j++) {
+                printf ("F %d %e\n", j, yy [j]);
+                s += yy [j];
+            }
+        } else {
+            printf ("F %d %e\n", NOBJ, yy [NOBJ]);
+        }
+        //printf ("\ns: %e\n", s);
+    }
+}
+#endif /* DEBUG_EVAL */
