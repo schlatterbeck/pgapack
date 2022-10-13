@@ -2901,7 +2901,15 @@ are in the file \verb+./examples/templates/uf_new.c+.
 The functions \verb+PGA_USERFUNCTION_DUPLICATE+ and
 \verb+PGA_USERFUNCTION_HASH+ for user defined data types are needed only
 when duplicate checking is enabled with
-\verb+PGASetNoDuplicatesFlag(ctx, PGA_TRUE)+.
+\verb+PGASetNoDuplicatesFlag(ctx, PGA_TRUE)+. Note that for duplicate
+checking to work, usually \textit{both}, the hashing and the duplicate
+function need to be defined. An example is given in
+\verb+examples/c/namefull.c+ for C and
+\verb+examples/fortran/namefull.f+ for Fortran. These define a hash
+function and a duplicate check (comparison) function that treat all
+non-matching characters alike. When implementing a hash function for
+user defined datatypes the function \verb+PGAUtilHash+ in
+\verb+source/utility.c+ can be used.
 
 \begin{table}
 \centering
