@@ -61,7 +61,7 @@ privately owned rights.
            strings to compare string p against
 
   Outputs:
-    Returns PGA_TRUE if PGAGetNoDuplicates() returns PGA_TRUE and
+    Returns PGA_TRUE if PGAGetNoDuplicatesFlag() returns PGA_TRUE and
     string p in population pop1 is a duplicate of at least one strings
     already inserted into population pop2.  Otherwise returns PGA_FALSE
 
@@ -69,7 +69,7 @@ privately owned rights.
     Check the current to-be-inserted string if it is a copy of any of
     the strings in PGA_NEWPOP. Note that the check relies on all
     individuals in PGA_NEWPOP to also be inserted into the duplicate
-    hash, see PGAHashIndividual below.
+    hash, see PGAHashIndividual.
 
     PGAContext *ctx;
     int p;
@@ -132,7 +132,7 @@ int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
     Check the current to-be-inserted string if it is a copy of any of
     the strings in PGA_NEWPOP. Note that the check relies on all
     individuals in PGA_NEWPOP to also be inserted into the duplicate
-    hash, see PGAHashIndividual below.
+    hash, see PGAHashIndividual.
 
     PGAContext *ctx;
     int p;

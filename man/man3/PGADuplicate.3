@@ -20,14 +20,6 @@ pop1
 pop2
 - symbolic constant of the (possibly partial) population containing
 strings to compare string p against
-.PD 0
-.TP
-n
-- the number of strings in pop2 to compare string p against
-.PD 0
-.TP
-n
--1)
 .PD 1
 .SH OUTPUT PARAMETERS
 .PD 0
@@ -38,41 +30,28 @@ none
 .SH SYNOPSIS
 .nf
 #include "pgapack.h"
-int  PGADuplicate(ctx, p, pop1, pop2, n)
-PGAContext *ctx
-int p
-int pop1
-int pop2
-int n
+int  PGADuplicate(PGAContext *ctx, int p, int pop1, int pop2)
 .fi
 .SH LOCATION
 duplcate.c
 .SH EXAMPLE
 .nf
-0,...,n-1 in population pop2.  Otherwise returns PGA_FALSE
+Returns PGA_TRUE if PGAGetNoDuplicatesFlag() returns PGA_TRUE and string
+p in population pop1 is a duplicate of at least one strings already
+inserted into population pop2.  Otherwise returns PGA_FALSE.
 
 Example:
-Change any string in PGA_NEWPOP that is an exact copy of a string
-in PGA_OLDPOP.
+Check the current to-be-inserted string if it is a copy of any of the
+strings in PGA_NEWPOP. Note that the check relies on all individuals in
+PGA_NEWPOP to also be inserted into the duplicate hash, see
+PGAHashIndividual below.
+
 
 PGAContext *ctx;
-int b, n;
+int p;
 :
-n  = PGAGetPopsize(ctx);
-for (b=0; b<n; b++)
-if (PGADuplicate(ctx, b, PGA_NEWPOP, PGA_OLDPOP, n))
-PGAChange(ctx, b, PGA_NEWPOP);
-
-
-Check if the best string in population PGA_OLDPOP is a duplicate of any
-of the strings in the first half of population PGA_NEWPOP.
-
-PGAContext *ctx;
-int b, n;
-:
-b  = PGAGetBestIndex(ctx, PGA_OLDPOP);
-n  = PGAGetPopsize(ctx) / 2;
-if (PGADuplicate(ctx, b, PGA_OLDPOP, PGA_NEWPOP, n))
-printf("A duplicate!\n");
+while (PGADuplicate (ctx, p, PGA_NEWNEW, PGA_NEWPOP)) {
+    PGAChange (ctx, p, PGA_NEWPOP);
+}
 
 .fi

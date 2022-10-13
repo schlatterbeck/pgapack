@@ -1105,61 +1105,61 @@ void PGASetUp ( PGAContext *ctx )
 	break;
       case PGA_DATATYPE_USER:
         if (ctx->cops.CreateString == NULL) {
-            PGAError ( ctx
-                     , "PGASetUp: User datatype needs CreateString function:"
-                     , PGA_WARNING, PGA_INT, (void *) &err
-                     );
+            PGAError
+                ( ctx, "PGASetUp: User datatype needs CreateString function:"
+                , PGA_FATAL, PGA_INT, (void *) &err
+                );
         }
-        if (ctx->cops.Mutation     == NULL) {
-            PGAError ( ctx
-                     , "PGASetUp: User datatype needs Mutation function:"
-                     , PGA_WARNING, PGA_INT, (void *) &err
-                     );
+        if (ctx->cops.Mutation == NULL) {
+            PGAError
+                ( ctx, "PGASetUp: User datatype needs Mutation function:"
+                , PGA_WARNING, PGA_INT, (void *) &err
+                );
         }
-        if (ctx->cops.Crossover    == NULL) {
-            PGAError ( ctx
-                     , "PGASetUp: User datatype needs Crossover function:"
-                     , PGA_WARNING, PGA_INT, (void *) &err
-                     );
+        if (ctx->cops.Crossover == NULL) {
+            PGAError
+                ( ctx, "PGASetUp: User datatype needs Crossover function:"
+                , PGA_WARNING, PGA_INT, (void *) &err
+                );
         }
-        if (ctx->cops.PrintString  == NULL) {
-            PGAError ( ctx
-                     , "PGASetUp: User datatype needs PrintString function:"
-                     , PGA_WARNING, PGA_INT, (void *) &err
-                     );
+        if (ctx->cops.PrintString == NULL) {
+            PGAError
+                ( ctx, "PGASetUp: User datatype needs PrintString function:"
+                , PGA_WARNING, PGA_INT, (void *) &err
+                );
         }
-	if (ctx->cops.Duplicate    == NULL) {
-            PGAError ( ctx
-                     , "PGASetUp: User datatype needs Duplicate function:"
-                     , PGA_WARNING, PGA_INT, (void *) &err
-                     );
+	if (ctx->cops.Duplicate == NULL && ctx->ga.NoDuplicates) {
+            PGAError
+                ( ctx, "PGASetUp: User datatype needs Duplicate function:"
+                , PGA_FATAL, PGA_INT, (void *) &err
+                );
         }
-	if (ctx->cops.CopyString    == NULL) {
-            PGAError ( ctx
-                     , "PGASetUp: User datatype needs CopyString function:"
-                     , PGA_WARNING, PGA_INT, (void *) &err
-                     );
+	if (ctx->cops.CopyString == NULL) {
+            PGAError
+                ( ctx, "PGASetUp: User datatype needs CopyString function:"
+                , PGA_FATAL, PGA_INT, (void *) &err
+                );
         }
         if (ctx->cops.BuildDatatype == NULL) {
-             PGAError ( ctx
-                      , "PGASetUp: User datatype needs BuildDatatype function:"
-                      , PGA_FATAL, PGA_INT, (void *) &err
-                      );
+             PGAError
+                ( ctx, "PGASetUp: User datatype needs BuildDatatype function:"
+                , PGA_FATAL, PGA_INT, (void *) &err
+                );
         }
         if (  ctx->cops.GeneDistance == NULL
            && ctx->ga.PopReplace == PGA_POPREPL_RTR
            )
         {
-             PGAError ( ctx
-                      , "PGASetUp: User datatype needs GeneDistance function:"
-                      , PGA_FATAL, PGA_INT, (void *) &err
-                      );
+             PGAError
+                ( ctx, "PGASetUp: User datatype needs GeneDistance function:"
+                , PGA_FATAL, PGA_INT, (void *) &err
+                );
         }
 	if (ctx->cops.Hash == NULL && ctx->ga.NoDuplicates) {
-            PGAError ( ctx
-                     , "PGASetUp: User datatype needs Hash function:"
-                     , PGA_FATAL, PGA_INT, (void *) &err
-                     );
+            PGAError
+                ( ctx, "PGASetUp: User datatype needs Hash function:"
+                , PGA_FATAL, PGA_INT, (void *) &err
+                );
         }
         break;
     }
