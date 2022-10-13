@@ -54,87 +54,61 @@ privately owned rights.
   Category: Generation
 
   Inputs:
-     ctx  - context variable
-     p    - string index
-     pop1 - symbolic constant of the population containing string p
-     pop2 - symbolic constant of the (possibly partial) population containing
-            strings to compare string p against
-     n    - the number of strings in pop2 to compare string p against
-            (indexed 0,...,n-1)
+    ctx  - context variable
+    p    - string index
+    pop1 - symbolic constant of the population containing string p
+    pop2 - symbolic constant of the (possibly partial) population containing
+           strings to compare string p against
 
   Outputs:
-     Returns PGA_TRUE if PGAGetNoDuplicates() returns PGA_TRUE and
-     string p in population pop1 is a duplicate of at least one strings
-     0,...,n-1 in population pop2.  Otherwise returns PGA_FALSE
+    Returns PGA_TRUE if PGAGetNoDuplicates() returns PGA_TRUE and
+    string p in population pop1 is a duplicate of at least one strings
+    already inserted into population pop2.  Otherwise returns PGA_FALSE
 
   Example:
-     Change any string in PGA_NEWPOP that is an exact copy of a string
-     in PGA_OLDPOP.
+    Check the current to-be-inserted string if it is a copy of any of
+    the strings in PGA_NEWPOP. Note that the check relies on all
+    individuals in PGA_NEWPOP to also be inserted into the duplicate
+    hash, see PGAHashIndividual below.
 
-     PGAContext *ctx;
-     int b, n;
-     :
-     n  = PGAGetPopsize(ctx);
-     for (b=0; b<n; b++)
-         if (PGADuplicate(ctx, b, PGA_NEWPOP, PGA_OLDPOP, n))
-             PGAChange(ctx, b, PGA_NEWPOP);
+    PGAContext *ctx;
+    int p;
+    :
 
-
-     Check if the best string in population PGA_OLDPOP is a duplicate of any
-     of the strings in the first half of population PGA_NEWPOP.
-
-     PGAContext *ctx;
-     int b, n;
-     :
-     b  = PGAGetBestIndex(ctx, PGA_OLDPOP);
-     n  = PGAGetPopsize(ctx) / 2;
-     if (PGADuplicate(ctx, b, PGA_OLDPOP, PGA_NEWPOP, n))
-         printf("A duplicate!\n");
+    while (PGADuplicate (ctx, p, PGA_NEWNEW, PGA_NEWPOP)) {
+        PGAChange (ctx, p, PGA_NEWPOP);
+    }
 
 ****************************************************************************U*/
-int PGADuplicate(PGAContext *ctx, int p, int pop1, int pop2, int n)
+int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
 {
-    int p2, fp;
     int RetVal = PGA_FALSE;
+    PGADebugEntered ("PGADuplicate");
+
+    if (ctx->ga.NoDuplicates) {
+        int p2, fp;
+        size_t idx = PGAIndividualHashIndex (ctx, p, pop1);
+        PGAIndividual *ind = NULL;
     
-    PGADebugEntered("PGADuplicate");
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGADuplicate", "p = ",
-		  PGA_INT, (void *) &p );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGADuplicate", "pop1 = ",
-		  PGA_INT, (void *) &pop1 );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGADuplicate", "pop2 = ",
-		  PGA_INT, (void *) &pop2 );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGADuplicate", "n  = ",
-		  PGA_INT, (void *) &n );
-    
-#ifdef __GNUC__
-#pragma GCC diagnostic ignored "-Wstrict-overflow"
-#endif
-    if (ctx->ga.NoDuplicates == PGA_TRUE) {
-	if (ctx->fops.Duplicate) {
-	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
-	    for (p2 = 1; p2 <= n; p2++) {
-		if ((*ctx->fops.Duplicate)(&ctx, &fp, &pop1, &p2, &pop2)) {
-		    RetVal = PGA_TRUE;
-		    p2 = n+1;
-		}
+        assert (pop2 == PGA_NEWPOP);
+        for (ind = ctx->scratch.hashed [idx]; ind; ind = ind->next_hash) {
+            p2 = ind - ind->pop;
+
+            if (ctx->fops.Duplicate) {
+                int p2f = p2 + 1;
+                fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
+                if ((*ctx->fops.Duplicate)(&ctx, &fp, &pop1, &p2f, &pop2)) {
+                    return PGA_TRUE;
+                }
+            } else {
+                if ((*ctx->cops.Duplicate)(ctx, p, pop1, p2, pop2)) {
+                    return PGA_TRUE;
+                }
             }
-	} else {
-	    for (p2 = 0; p2 < n; p2++) {
-		if ((*ctx->cops.Duplicate)(ctx, p, pop1, p2, pop2)) {
-		    RetVal = PGA_TRUE;
-		    p2 = n;
-		}
-            }
-	}
+        }
     }
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
-    
-    PGADebugExited("PGADuplicate");
-    
-    return(RetVal);
+    PGADebugExited ("PGADuplicate");
+    return RetVal;
 }
 
 
@@ -147,41 +121,48 @@ int PGADuplicate(PGAContext *ctx, int p, int pop1, int pop2, int n)
   Category: Generation
 
   Inputs:
-     ctx  - context variable
-     p    - string index
-     pop  - symbolic constant of the population containing string p
+    ctx  - context variable
+    p    - string index
+    pop  - symbolic constant of the population containing string p
 
   Outputs:
-     Mutates string p in population pop via side effect.
+    Mutates string p in population pop via side effect.
 
   Example:
-     Change any string in PGA_NEWPOP that is an exact copy of a string
-     in PGA_OLDPOP.  To be complete, we should check the population again
-     if any changes are made; for simplicity, we don't.
+    Check the current to-be-inserted string if it is a copy of any of
+    the strings in PGA_NEWPOP. Note that the check relies on all
+    individuals in PGA_NEWPOP to also be inserted into the duplicate
+    hash, see PGAHashIndividual below.
 
-     PGAContext *ctx;
-     int b, n;
-     :
-     n  = PGAGetPopsize(ctx);
-     for (b=0; b<n; b++)
-         if (PGADuplicate(ctx, b, PGA_NEWPOP, PGA_OLDPOP, n))
-             PGAChange(ctx, b, PGA_NEWPOP);
+    PGAContext *ctx;
+    int p;
+    :
+
+    while (PGADuplicate (ctx, p, PGA_NEWNEW, PGA_NEWPOP)) {
+        PGAChange (ctx, p, PGA_NEWPOP);
+    }
+
 
 ****************************************************************************U*/
-void PGAChange( PGAContext *ctx, int p, int pop )
+void PGAChange (PGAContext *ctx, int p, int pop)
 {
     int    changed = PGA_FALSE;
     int    fp, nflips;
     double mr;
 
-    PGADebugEntered("PGAChange");
+    PGADebugEntered ("PGAChange");
 
     mr = ctx->ga.MutationProb;
+    if (mr == 0) {
+        mr = 1.0 / ctx->ga.StringLen;
+    }
 
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR, "PGAChange", " mr = ",
-                   PGA_DOUBLE, (void *) &mr );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGAChange", " mr = "
+        , PGA_DOUBLE, (void *) &mr
+        );
 
-    while (( changed == PGA_FALSE ) && (mr <= 1.0)) {
+    while (!changed) {
 	if (ctx->fops.Mutation) {
 	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
             nflips = (*ctx->fops.Mutation)(&ctx, &fp, &pop, &mr);
@@ -189,47 +170,83 @@ void PGAChange( PGAContext *ctx, int p, int pop )
 	    nflips = (*ctx->cops.Mutation)( ctx, p, pop, mr );
 	}
 
-        if ( nflips > 0 )
+        if (nflips > 0) {
             changed = PGA_TRUE;
-        else
-            mr = 1.1*mr;
+        } else {
+            if (mr >= 1) {
+                break;
+            }
+            mr = 1.1 * mr;
+            if (mr > 1) {
+                mr = 1;
+            }
+        }
     }
 
-    if (changed == PGA_FALSE) {
-	PGAError(ctx, "Could not change string:", PGA_WARNING, PGA_VOID, NULL);
-	PGAPrintString(ctx, stderr, p, pop);
+    if (changed) {
+	PGASetEvaluationUpToDateFlag (ctx, p, pop, PGA_FALSE);
+    } else {
+	PGAError (ctx, "Could not change string:", PGA_WARNING, PGA_VOID, NULL);
+	PGAPrintString (ctx, stderr, p, pop);
     }
-    if (changed == PGA_TRUE)
-	PGASetEvaluationUpToDateFlag(ctx, p, pop, PGA_FALSE);
 
-    PGADebugExited("PGAChange");
+    PGADebugExited ("PGAChange");
 }
 
 /*U****************************************************************************
-   PGASetNoDuplicatesFlag - A boolean flag to indicate if duplicate strings are
-   allowed in the population. Valid choices are PGA_TRUE and PGA_FALSE.  The
-   default is PGA_FALSE -- allow duplicates.
+  PGAHashIndividual - Compute Hash for this individual and insert into
+  hash-table
 
-   Category: Generation
+  Category: Generation
 
-   Inputs:
-      ctx  - context variable
-      flag - PGA_TRUE or PGA_FALSE
+  Inputs:
+     ctx  - context variable
+     p    - string index
+     pop  - symbolic constant of the population containing string p
 
-   Outputs:
-      None
-
-   Example:
-      Set the NoDuplicates flag to require that all strings are unique.
-
-      PGAContext *ctx;
-      :
-      PGASetNoDuplicatesFlag(ctx,PGA_TRUE);
+  Outputs:
+     Computes hash of given individual and inserts it into hash table.
 
 ****************************************************************************U*/
-void PGASetNoDuplicatesFlag( PGAContext *ctx, int no_dup)
+void PGAHashIndividual (PGAContext *ctx, int p, int pop)
 {
-    PGADebugEntered("PGASetNoDuplicatesFlag");
+    if (ctx->ga.NoDuplicates) {
+        PGAIndividual *ind = PGAGetIndividual (ctx, p, pop);
+        size_t idx = PGAIndividualHashIndex (ctx, p, pop);
+
+        if (ctx->scratch.hashed [idx]) {
+            assert (ind->pop == ctx->scratch.hashed [idx]->pop);
+            ind->next_hash = ctx->scratch.hashed [idx];
+        }
+        ctx->scratch.hashed [idx] = ind;
+    }
+}
+
+/*U****************************************************************************
+  PGASetNoDuplicatesFlag - A boolean flag to indicate if duplicate strings are
+  allowed in the population. Valid choices are PGA_TRUE and PGA_FALSE.  The
+  default is PGA_FALSE -- allow duplicates.
+
+  Category: Generation
+
+  Inputs:
+    ctx  - context variable
+    flag - PGA_TRUE or PGA_FALSE
+
+  Outputs:
+    None
+
+  Example:
+    Set the NoDuplicates flag to require that all strings are unique.
+
+    PGAContext *ctx;
+    :
+    PGASetNoDuplicatesFlag (ctx,PGA_TRUE);
+
+****************************************************************************U*/
+void PGASetNoDuplicatesFlag (PGAContext *ctx, int no_dup)
+{
+    PGADebugEntered ("PGASetNoDuplicatesFlag");
 
     switch (no_dup) {
         case PGA_TRUE:
@@ -237,48 +254,50 @@ void PGASetNoDuplicatesFlag( PGAContext *ctx, int no_dup)
             ctx->ga.NoDuplicates = no_dup;
             break;
         default:
-            PGAError ( ctx, "PGASetNoDuplicatesFlag: Invalid value of no_dup:",
-                       PGA_FATAL, PGA_INT, (void *) &no_dup);
+            PGAError
+                ( ctx, "PGASetNoDuplicatesFlag: Invalid value of no_dup:"
+                , PGA_FATAL, PGA_INT, (void *) &no_dup
+                );
             break;
     }
 
-    PGADebugExited("PGASetNoDuplicatesFlag");
+    PGADebugExited ("PGASetNoDuplicatesFlag");
 }
 
 /*U***************************************************************************
-   PGAGetNoDuplicatesFlag - Returns PGA_TRUE if duplicates are not allowed,
-   else returns PGA_FALSE.
+  PGAGetNoDuplicatesFlag - Returns PGA_TRUE if duplicates are not allowed,
+  else returns PGA_FALSE.
 
-   Category: Generation
+  Category: Generation
 
-   Inputs:
-      ctx - context variable
+  Inputs:
+    ctx - context variable
 
-   Outputs:
-      The value of the NoDuplicates flag.
+  Outputs:
+    The value of the NoDuplicates flag.
 
-   Example:
-      PGAContext *ctx;
-      int nodups;
-      :
-      nodups = PGAGetNoDuplicatesFlag(ctx);
-      switch (nodups) {
-      case PGA_TRUE:
-          printf("Duplicate strings not allowed in population\n");
-          break;
-      case PGA_FALSE:
-          printf("Duplicate strings allowed in population\n");
-          break;
-      }
+  Example:
+    PGAContext *ctx;
+    int nodups;
+    :
+    nodups = PGAGetNoDuplicatesFlag (ctx);
+    switch (nodups) {
+    case PGA_TRUE:
+        printf ("Duplicate strings not allowed in population\n");
+        break;
+    case PGA_FALSE:
+        printf ("Duplicate strings allowed in population\n");
+        break;
+    }
 
 ***************************************************************************U*/
 int PGAGetNoDuplicatesFlag (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetNoDuplicatesFlag");
+    PGADebugEntered ("PGAGetNoDuplicatesFlag");
 
-    PGAFailIfNotSetUp("PGAGetNoDuplicatesFlag");
+    PGAFailIfNotSetUp ("PGAGetNoDuplicatesFlag");
 
-    PGADebugExited("PGAGetNoDuplicatesFlag");
+    PGADebugExited ("PGAGetNoDuplicatesFlag");
 
-    return(ctx->ga.NoDuplicates);
+    return (ctx->ga.NoDuplicates);
 }

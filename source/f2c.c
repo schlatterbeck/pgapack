@@ -313,6 +313,7 @@ privately owned rights.
 #define pgagetbestindex_                 PGAGETBESTINDEX
 #define pgagetbestreport_                PGAGETBESTREPORT
 #define pgagetbestreportindex_           PGAGETBESTREPORTINDEX
+#define pgautilhash_                     PGAUTILHASH
 
 #elif defined(FORTRANTWOUNDERSCORE)
 /* binary.c */
@@ -562,6 +563,7 @@ privately owned rights.
 #define pgagetbestindex_                 _pgagetbestindex_
 #define pgagetbestreport_                _pgagetbestreport_
 #define pgagetbestreportindex_           _pgagetbestreportindex_
+#define pgautilhash_                     _pgautilhash_
 
 #elif !defined(FORTRANUNDERSCORE)
 /* binary.c */
@@ -811,6 +813,7 @@ privately owned rights.
 #define pgagetbestindex_                 pgagetbestindex
 #define pgagetbestreport_                pgagetbestreport
 #define pgagetbestreportindex_           pgagetbestreportindex
+#define pgautilhash_                     pgautilhash
 #endif
 
 /* binary.c */
@@ -867,7 +870,7 @@ void pgacleardebuglevel_(PGAContext **ftx, int *level);
 void pgasetdebuglevelbyname_(PGAContext **ftx, char *name, int len);
 void pgacleardebuglevelbyname_(PGAContext **ftx, char *name, int len);
 /* duplcate.c */
-int pgaduplicate_(PGAContext **ftx, int *j, int *pop1, int *pop2, int *n);
+int pgaduplicate_(PGAContext **ftx, int *j, int *pop1, int *pop2);
 void pgachange_(PGAContext **ftx, int *j, int *popindex);
 void pgasetnoduplicatesflag_(PGAContext **ftx, int *no_dup);
 int pgagetnoduplicatesflag_(PGAContext **ftx);
@@ -1084,6 +1087,7 @@ int pgagetworstindex_ (PGAContext **ftx, int *pop);
 int pgagetbestindex_ (PGAContext **ftx, int *pop);
 double pgagetbestreport_ (PGAContext **ftx, int *pop, int *idx);
 int pgagetbestreportindex_ (PGAContext **ftx, int *pop, int *idx);
+int pgautilhash_ (void *data, size_t *sz);
 
 /* binary.c */
 void pgasetbinaryallele_(PGAContext **ftx, int *p, int *pop, int *i,
@@ -1374,18 +1378,16 @@ void pgacleardebuglevelbyname_(PGAContext **ftx, char *name, int len)
 }
 #endif
 /* duplcate.c */
-int pgaduplicate_(PGAContext **ftx, int *j, int *pop1, int *pop2, int *n)
+int pgaduplicate_(PGAContext **ftx, int *j, int *pop1, int *pop2)
 {
-     return PGADuplicate(*ftx,
-		  *j == PGA_TEMP1 || *j == PGA_TEMP2 ? *j : *j-1,
-		  *pop1, *pop2, *n);
+     int jj = (*j == PGA_TEMP1 || *j == PGA_TEMP2) ? *j : *j - 1;
+     return PGADuplicate (*ftx, jj, *pop1, *pop2);
 }
 
 void pgachange_(PGAContext **ftx, int *j, int *popindex)
 {
-     PGAChange(*ftx,
-	   *j == PGA_TEMP1 || *j == PGA_TEMP2 ? *j : *j-1,
-	   *popindex);
+     int jj = (*j == PGA_TEMP1 || *j == PGA_TEMP2) ? *j : *j - 1;
+     PGAChange (*ftx, jj, *popindex);
 }
 
 void pgasetnoduplicatesflag_(PGAContext **ftx, int *no_dup)
@@ -2516,4 +2518,10 @@ double pgagetbestreport_(PGAContext **ftx, int *pop, int *idx)
 int pgagetbestreportindex_(PGAContext **ftx, int *pop, int *idx)
 {
      return PGAGetBestReportIndex(*ftx, *pop, *idx - 1) + 1;
+}
+
+int pgautilhash_ (void *data, size_t *sz)
+{
+     int value = (int)PGAUtilHash (data, *sz);
+     return value;
 }

@@ -316,6 +316,7 @@ PGAContext *PGACreate
     ctx->cops.EndOfGen          = NULL;
     ctx->cops.GeneDistance      = NULL;
     ctx->cops.PreEval           = NULL;
+    ctx->cops.Hash              = NULL;
 
     ctx->fops.Mutation          = NULL;
     ctx->fops.Crossover         = NULL;
@@ -327,6 +328,7 @@ PGAContext *PGACreate
     ctx->fops.EndOfGen          = NULL;
     ctx->fops.GeneDistance      = NULL;
     ctx->fops.PreEval           = NULL;
+    ctx->fops.Hash              = NULL;
 
     /* Parallel */
     ctx->par.NumIslands        = PGA_UNINITIALIZED_INT;
@@ -467,14 +469,15 @@ void PGASetUp ( PGAContext *ctx )
      *  They allow some (understatement of the yesr!!) cleaning of the
      *  code below.
      */
-    void   (*CreateString)(PGAContext *, int, int, int) = NULL;
-    int    (*Mutation)(PGAContext *, int, int, double) = NULL;
-    void   (*Crossover)(PGAContext *, int, int, int, int, int, int) = NULL;
-    void   (*PrintString)(PGAContext *, FILE *, int, int) = NULL;
-    void   (*CopyString)(PGAContext *, int, int, int, int) = NULL;
-    int    (*Duplicate)(PGAContext *, int, int, int, int) = NULL;
-    void   (*InitString)(PGAContext *, int, int) = NULL;
-    double (*GeneDist)(PGAContext *, int, int, int, int) = NULL;
+    void    (*CreateString)(PGAContext *, int, int, int) = NULL;
+    int     (*Mutation)(PGAContext *, int, int, double) = NULL;
+    void    (*Crossover)(PGAContext *, int, int, int, int, int, int) = NULL;
+    void    (*PrintString)(PGAContext *, FILE *, int, int) = NULL;
+    void    (*CopyString)(PGAContext *, int, int, int, int) = NULL;
+    int     (*Duplicate)(PGAContext *, int, int, int, int) = NULL;
+    PGAHash (*Hash)(PGAContext *, int, int) = NULL;
+    void    (*InitString)(PGAContext *, int, int) = NULL;
+    double  (*GeneDist)(PGAContext *, int, int, int, int) = NULL;
     MPI_Datatype (*BuildDatatype)(PGAContext *, int, int) = NULL;
     int err=0, i;
 
@@ -1023,6 +1026,7 @@ void PGASetUp ( PGAContext *ctx )
 	Duplicate      = PGABinaryDuplicate;
 	InitString     = PGABinaryInitString;
 	GeneDist       = PGABinaryGeneDistance;
+        Hash           = PGABinaryHash;
 	break;
       case PGA_DATATYPE_INTEGER:
         CreateString   = PGAIntegerCreateString;
@@ -1050,6 +1054,7 @@ void PGASetUp ( PGAContext *ctx )
 	Duplicate      = PGAIntegerDuplicate;
 	InitString     = PGAIntegerInitString;
 	GeneDist       = PGAIntegerGeneDistance;
+        Hash           = PGAIntegerHash;
 	break;
       case PGA_DATATYPE_REAL:
 	CreateString   = PGARealCreateString;
@@ -1074,6 +1079,7 @@ void PGASetUp ( PGAContext *ctx )
 	Duplicate     = PGARealDuplicate;
 	InitString    = PGARealInitString;
 	GeneDist      = PGARealGeneDistance;
+	Hash          = PGARealHash;
 	break;
       case PGA_DATATYPE_CHARACTER:
 	CreateString  = PGACharacterCreateString;
@@ -1095,6 +1101,7 @@ void PGASetUp ( PGAContext *ctx )
 	Duplicate   = PGACharacterDuplicate;
 	InitString  = PGACharacterInitString;
 	GeneDist    = PGACharacterGeneDistance;
+	Hash        = PGACharacterHash;
 	break;
       case PGA_DATATYPE_USER:
         if (ctx->cops.CreateString == NULL) {
@@ -1148,6 +1155,12 @@ void PGASetUp ( PGAContext *ctx )
                       , PGA_FATAL, PGA_INT, (void *) &err
                       );
         }
+	if (ctx->cops.Hash == NULL && ctx->ga.NoDuplicates) {
+            PGAError ( ctx
+                     , "PGASetUp: User datatype needs Hash function:"
+                     , PGA_FATAL, PGA_INT, (void *) &err
+                     );
+        }
         break;
     }
     if ((ctx->cops.Mutation     == NULL) && (ctx->fops.Mutation    == NULL)) {
@@ -1179,6 +1192,9 @@ void PGASetUp ( PGAContext *ctx )
     }
     if (ctx->cops.BuildDatatype == NULL) {
 	ctx->cops.BuildDatatype = BuildDatatype;
+    }
+    if ((ctx->cops.Hash == NULL) && (ctx->fops.Hash == NULL)) {
+	ctx->cops.Hash = Hash;
     }
 
 /* par */
@@ -1299,6 +1315,20 @@ void PGASetUp ( PGAContext *ctx )
         }
     } else {
         ctx->scratch.dominance = NULL;
+    }
+
+    if (ctx->ga.NoDuplicates) {
+        size_t hashsize = sizeof (PGAIndividual *) * ctx->ga.PopSize;
+        ctx->scratch.hashed = malloc (hashsize);
+        if (ctx->scratch.hashed == NULL) {
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
+                , "PGASetUp: No room to allocate ctx->scratch.hashed"
+                );
+        }
+        memset (ctx->scratch.hashed, 0, hashsize);
+    } else {
+        ctx->scratch.hashed = NULL;
     }
 
     /* If the crossover type is Edge crossover */
@@ -1566,6 +1596,9 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
     ind->rank             = UINT_MAX;
     ind->crowding         = 0;
     ind->funcidx          = 0;
+    ind->distance         = 0;
+    ind->point_idx        = 0;
+    ind->next_hash        = NULL;
     if (ctx->ga.NumAuxEval) {
         ind->auxeval = malloc (sizeof (double) * ctx->ga.NumAuxEval);
         if (ind->auxeval == NULL) {

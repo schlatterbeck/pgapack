@@ -587,6 +587,25 @@ int PGACharacterDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 }
 
 /*I****************************************************************************
+   PGACharacterHash - Returns hash value of given gene
+
+   Inputs:
+      ctx - context variable
+      p    - string index of the string to hash
+      pop  - symbolic constant of the population string p is in
+
+   Outputs:
+      Hash value for string
+
+****************************************************************************I*/
+PGAHash PGACharacterHash (PGAContext *ctx, int p, int pop)
+{
+    void *a = PGAGetIndividual(ctx, p, pop)->chrom;
+    PGAHash hash = PGAUtilHash (a, sizeof (PGACharacter) * ctx->ga.StringLen);
+    return hash;
+}
+
+/*I****************************************************************************
    PGACharacterInitString - randomly initialize a string of type PGACharacter
 
    Inputs:
