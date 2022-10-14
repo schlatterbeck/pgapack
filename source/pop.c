@@ -714,6 +714,7 @@ typedef void (* crowding_t)
 
 /* Compute crowding distance over the given individuals
  * This is specific to NSGA-II.
+ * For explanation of is_ev see ranking
  */
 STATIC void crowding
     (PGAContext *ctx, PGAIndividual **start, size_t n, unsigned int rank)
@@ -732,6 +733,7 @@ STATIC void crowding
 
     for (i=0; i<n; i++) {
         PGAIndividual *ind = start [i];
+        ind->crowding = 0;
         if (ind->rank == rank) {
             for (k=0; k<nfun; k++) {
                 double e = GETEVAL (ind, k + base, is_ev);
@@ -742,7 +744,6 @@ STATIC void crowding
                     f_max [k] = e;
                 }
             }
-            ind->crowding = 0;
             crowd [nrank++] = ind;
         }
     }
@@ -1019,6 +1020,8 @@ static void niching
     /* Normalize points to hyperplane */
     for (i=0; i<n; i++) {
         PGAIndividual *ind = start [i];
+        /* Init crowding metric for all individuals */
+        ind->crowding = 0;
         for (j=0; j<dim; j++) {
             double e = GETEVAL (start [i], j, 1);
             e  = NORMALIZE (ctx, e, ctx->ga.utopian [j]);
@@ -1099,6 +1102,10 @@ static void niching
  * - Increment the rank counter
  * The is_ev flag decides if we're ranking the evaluation functions or
  * if we're ranking constraint violations, it is 0 for eval functions.
+ * The base specifies which is the first aux evaluation. This is 0 if
+ * ranking eval function (not constraint violations) and is the index of
+ * the first constraint otherwise. The nfun variable is the number of
+ * functions to test in each case.
  */
 STATIC unsigned int ranking
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
@@ -1116,8 +1123,14 @@ STATIC unsigned int ranking
     DECLARE_DYNPTR (PGABinary, dominance, intsforn) =
         (void *)(ctx->scratch.dominance);
 
+    /* Initialize rank, dominance, crowding
+     * We initialize crowding here, too because later we compute
+     * crowding metric only for the last dominance rank but we sort
+     * *all* individuals by crowding.
+     */
     for (i=0; i<n; i++) {
-        (start [i])->rank = UINT_MAX;
+        (start [i])->rank     = UINT_MAX;
+        (start [i])->crowding = 0;
         for (j=0; j<intsforn; j++) {
             DEREF2_DYNPTR (dominance, intsforn, i, j) = 0;
         }
@@ -1254,7 +1267,8 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
     n_con_ind = popsize + numreplace - n_unc_ind;
 
     /* First perform non-dominated sorting on unconstrained individuals
-     * Normal sorting if only one eval function */
+     * Normal sorting if only one eval function
+     */
     if (ctx->ga.NumConstraint == ctx->ga.NumAuxEval) {
         qsort
             ( all_individuals
