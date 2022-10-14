@@ -1087,7 +1087,7 @@ int pgagetworstindex_ (PGAContext **ftx, int *pop);
 int pgagetbestindex_ (PGAContext **ftx, int *pop);
 double pgagetbestreport_ (PGAContext **ftx, int *pop, int *idx);
 int pgagetbestreportindex_ (PGAContext **ftx, int *pop, int *idx);
-int pgautilhash_ (void *data, size_t *sz);
+int pgautilhash_ (void *data, size_t *sz, int *initval);
 
 /* binary.c */
 void pgasetbinaryallele_(PGAContext **ftx, int *p, int *pop, int *i,
@@ -2520,8 +2520,8 @@ int pgagetbestreportindex_(PGAContext **ftx, int *pop, int *idx)
      return PGAGetBestReportIndex(*ftx, *pop, *idx - 1) + 1;
 }
 
-int pgautilhash_ (void *data, size_t *sz)
+int pgautilhash_ (void *data, size_t *sz, int *initval)
 {
-     int value = (int)PGAUtilHash (data, *sz);
+     int value = (int)PGAUtilHash (data, *sz, *initval);
      return value;
 }

@@ -165,7 +165,7 @@ PGAHash N_Hash (PGAContext *ctx, int p, int pop)
             s [i] = 0;
         }
     }
-    return PGAUtilHash (s, ctx->ga.StringLen);
+    return PGAUtilHash (s, ctx->ga.StringLen, PGA_INITIAL_HASH);
 }
 
 /*  Function to muatate a PGA_DATATYPE_CHARACTER string.  This is done

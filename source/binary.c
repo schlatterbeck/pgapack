@@ -717,7 +717,8 @@ int PGABinaryDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 PGAHash PGABinaryHash (PGAContext *ctx, int p, int pop)
 {
      void *a = PGAGetIndividual (ctx, p, pop)->chrom;
-     PGAHash hash = PGAUtilHash (a, sizeof (PGABinary) * ctx->ga.tw);
+     PGAHash hash = PGAUtilHash
+        (a, sizeof (PGABinary) * ctx->ga.tw, PGA_INITIAL_HASH);
      return hash;
 }
 

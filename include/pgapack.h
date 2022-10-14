@@ -1212,7 +1212,8 @@ int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 void PGAEvalSort (PGAContext *ctx, int pop, int *idx);
 int PGAEvalSortHelper (const void *i1, const void *i2);
 void PGAShuffle (PGAContext *ctx, int *list, int n);
-PGAHash PGAUtilHash (const void *data, size_t len);
+#define PGA_INITIAL_HASH 0xfeedbeefu
+PGAHash PGAUtilHash (const void *data, size_t len, PGAHash hashv);
 size_t PGAIndividualHashIndex (PGAContext *ctx, int p, int pop);
 
 #ifdef __cplusplus

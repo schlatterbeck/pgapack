@@ -1190,13 +1190,13 @@ do {                                     \
 
 /* This is Bob Jenkins' hash function as implemented in the uthash project
  * https://github.com/troydhanson/uthash/blob/master/src/uthash.h
+ * The last parameter is the previous hash (if hashing different pieces)
  */
 
-PGAHash PGAUtilHash (const void *data, size_t len)
+PGAHash PGAUtilHash (const void *data, size_t len, PGAHash hashv)
 {
     PGAHash _hj_i,_hj_j,_hj_k;
     unsigned const char *_hj_key = data;
-    PGAHash hashv = 0xfeedbeefu;
     _hj_i = _hj_j = 0x9e3779b9u;
     _hj_k = (PGAHash)(len);
     while (_hj_k >= 12U) {

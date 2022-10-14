@@ -488,3 +488,5 @@ c *** utility
       external PGAEvalCompare
       integer PGAUtilHash
       external PGAUtilHash
+      integer PGA_INITIAL_HASH
+      parameter (PGA_INITIAL_HASH = int (z'feedbeef'))
