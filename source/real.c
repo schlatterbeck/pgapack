@@ -1123,6 +1123,26 @@ int PGARealDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 }
 
 /*I****************************************************************************
+   PGARealHash - Returns hash value of given gene
+
+   Inputs:
+      ctx - context variable
+      p    - string index of the string to hash
+      pop  - symbolic constant of the population string p is in
+
+   Outputs:
+      Hash value for string
+
+****************************************************************************I*/
+PGAHash PGARealHash (PGAContext *ctx, int p, int pop)
+{
+    void *a = PGAGetIndividual (ctx, p, pop)->chrom;
+    PGAHash hash = PGAUtilHash
+        (a, sizeof (PGAReal) * ctx->ga.StringLen, PGA_INITIAL_HASH);
+    return hash;
+}
+
+/*I****************************************************************************
    PGARealInitString - randomly initialize a string of type PGAReal
 
    Inputs:

@@ -22,11 +22,13 @@ c
 
       integer          N_Mutation
       integer          N_Duplicate
+      integer          N_Hash
       integer          N_StopCond
       double precision EvalName
       
       external   N_Mutation
       external   N_Duplicate
+      external   N_Hash
       external   N_StopCond
       external   EvalName
       external   N_Crossover
@@ -62,6 +64,8 @@ c     Also, this is common, sunce we need it in EvalName.
      &     N_Crossover)
       call PGASetUserFunction(ctx, PGA_USERFUNCTION_DUPLICATE,
      &     N_Duplicate)
+      call PGASetUserFunction(ctx, PGA_USERFUNCTION_HASH,
+     &     N_Hash)
       call PGASetUserFunction(ctx, PGA_USERFUNCTION_STOPCOND,
      &     N_StopCond)
       call PGASetUserFunction(ctx, PGA_USERFUNCTION_ENDOFGEN,
@@ -172,6 +176,42 @@ c
       enddo
 
  10   N_Duplicate = match
+      
+      return
+      end
+      
+
+
+c     Hash function: This sets non-matching characters in a string to 0.
+c     This results in two strings with the same pattern of matching and
+c     non-matching characters to hash to the same value, similar in the
+c     semantics of the dupe check above.
+c
+      integer function N_Hash(ctx, p, pop)
+      include          'pgapackf.h'
+      character         Name(70)
+      common /global/   Name
+      character         s(70)
+      integer(8)        ctx
+      integer           p, pop
+      integer           i
+      integer(8)        l
+      character         a, b, c
+      integer(8)        r
+
+      do i=PGAGetStringLength(ctx), 1, -1
+         a = PGAGetCharacterAllele(ctx, p, pop, i)
+         b = Name(i)
+         if ((a .eq. b)) then
+           s(i) = a
+         else
+           s(i) = '@'
+         endif
+      enddo
+
+      l = PGAGetStringLength(ctx)
+      r = PGAUtilHash(s, l, PGA_INITIAL_HASH)
+      N_Duplicate = r
       
       return
       end

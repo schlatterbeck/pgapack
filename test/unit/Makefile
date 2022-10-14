@@ -1,4 +1,4 @@
-OBJS = pop_test.o linalg_test.o integer_test.o
+OBJS = pop_test.o linalg_test.o integer_test.o utility_test.o
 BIN  = $(patsubst %.o,%,$(OBJS))
 DATA = $(patsubst %.o,%.data,$(OBJS))
 VRFY = $(patsubst %.data,%.vrfy,$(DATA))

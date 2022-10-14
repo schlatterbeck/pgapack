@@ -133,10 +133,11 @@ static inline int CMP (const double a, const double b)
 #define PGA_DATATYPE_CHARACTER   4    /* Array of characters : character.c */
 #define PGA_DATATYPE_USER        5    /*  --user defined--                 */
 
-#define PGABinary                unsigned long
-#define PGAInteger               signed long int
-#define PGAReal                  double
-#define PGACharacter             signed char
+typedef unsigned long   PGABinary;
+typedef signed long int PGAInteger;
+typedef double          PGAReal;
+typedef signed char     PGACharacter;
+typedef unsigned int    PGAHash;
 
 #define PGA_INT                   1
 #define PGA_DOUBLE                2
@@ -336,7 +337,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_USERFUNCTION_ENDOFGEN                10
 #define PGA_USERFUNCTION_GEN_DIFFERENCE          11
 #define PGA_USERFUNCTION_PRE_EVAL                12
-#define PGA_NUM_USERFUNCTIONS                    12
+#define PGA_USERFUNCTION_HASH                    13
+#define PGA_NUM_USERFUNCTIONS                    13
 
 /*****************************************
 *           MPI SEND/RECV TAGS           *
@@ -374,6 +376,7 @@ typedef struct PGAIndividual {         /* primary population data structure */
   double               *normalized;    /* Normalized point for NSGA-III     */
   double                distance;      /* Distance to associated point      */
   int                   point_idx;     /* Index of associated point         */
+  struct PGAIndividual *next_hash;     /* Next hash value in chain          */
 } PGAIndividual;
 
 /*****************************************
@@ -505,6 +508,7 @@ typedef struct {
     double       (*GeneDistance)(PGAContext *, int, int, int, int);
     void         (*PreEval)(PGAContext *, int);
     int          (*EvalCompare)(PGAContext *, int, int, int, int);
+    PGAHash      (*Hash)(PGAContext *, int, int);
 } PGACOperations;
 
 typedef struct {
@@ -519,6 +523,7 @@ typedef struct {
     double       (*GeneDistance)(void *, void *, void *, void *, void *);
     void         (*PreEval)(void *, void *);
     int          (*EvalCompare)(void *, void *, void *, void *, void *);
+    PGAHash      (*Hash)(void *, void *, void *);
 } PGAFortranOperations;
 
 typedef struct sample_state_s {
@@ -601,10 +606,11 @@ typedef struct {
 *      SCRATCH DATA STRUCTURES           *
 *****************************************/
 typedef struct {
-    int          *intscratch;            /* integer-scratch space          */
-    double       *dblscratch;            /* double- scratch space          */
-    PGABinary    *dominance;             /* for dominance sorting          */
-    PGAInteger   (*edgemap)[4];          /* For Edge Crossover             */
+    int           *intscratch;            /* integer-scratch space          */
+    double        *dblscratch;            /* double- scratch space          */
+    PGABinary     *dominance;             /* for dominance sorting          */
+    PGAInteger    (*edgemap)[4];          /* For Edge Crossover             */
+    PGAIndividual **hashed;               /* For duplicate checking         */
 } PGAScratch;
 
 /*****************************************
@@ -626,27 +632,28 @@ struct PGAContext {
 *          binary.c
 *****************************************/
 
-void PGASetBinaryAllele ( PGAContext *ctx, int p, int pop, int i, int val );
-int PGAGetBinaryAllele ( PGAContext *ctx, int p, int pop, int i );
-void PGASetBinaryInitProb ( PGAContext *ctx, double probability );
+void PGASetBinaryAllele (PGAContext *ctx, int p, int pop, int i, int val);
+int PGAGetBinaryAllele (PGAContext *ctx, int p, int pop, int i);
+void PGASetBinaryInitProb (PGAContext *ctx, double probability);
 double PGAGetBinaryInitProb (PGAContext *ctx);
-void PGABinaryCreateString(PGAContext *ctx, int p, int pop, int initflag);
-int PGABinaryMutation( PGAContext *ctx, int p, int pop, double mr );
-void PGABinaryOneptCrossover(PGAContext *ctx, int p1, int p2, int pop1, int c1,
-                             int c2, int pop2);
-void PGABinaryTwoptCrossover(PGAContext *ctx, int p1, int p2, int pop1, int c1,
-                             int c2, int pop2);
-void PGABinaryUniformCrossover(PGAContext *ctx, int p1, int p2, int pop1,
-                               int c1, int c2, int pop2);
-void PGABinaryPrintString( PGAContext *ctx, FILE *fp, int p, int pop );
+void PGABinaryCreateString (PGAContext *ctx, int p, int pop, int initflag);
+int PGABinaryMutation (PGAContext *ctx, int p, int pop, double mr);
+void PGABinaryOneptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGABinaryTwoptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGABinaryUniformCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGABinaryPrintString (PGAContext *ctx, FILE *fp, int p, int pop);
 void PGABinaryCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
-int PGABinaryDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2);
-void PGABinaryInitString(PGAContext *ctx, int p, int pop);
-MPI_Datatype PGABinaryBuildDatatype(PGAContext *ctx, int p, int pop);
-int PGABinaryHammingDistance ( PGAContext *ctx, PGABinary *s1, PGABinary *s2 );
-void PGABinaryPrint( PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb );
-double PGABinaryGeneDistance (PGAContext *ctx, int p1, int pop1, int p2,
-                              int pop2);
+int PGABinaryDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+PGAHash PGABinaryHash (PGAContext *ctx, int p, int pop);
+void PGABinaryInitString (PGAContext *ctx, int p, int pop);
+MPI_Datatype PGABinaryBuildDatatype (PGAContext *ctx, int p, int pop);
+int PGABinaryHammingDistance (PGAContext *ctx, PGABinary *s1, PGABinary *s2);
+void PGABinaryPrint (PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb);
+double PGABinaryGeneDistance
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 
 /*****************************************
 *          char.c
@@ -654,23 +661,24 @@ double PGABinaryGeneDistance (PGAContext *ctx, int p1, int pop1, int p2,
 
 void PGASetCharacterAllele (PGAContext *ctx, int p, int pop, int i, char value);
 char PGAGetCharacterAllele (PGAContext *ctx, int p, int pop, int i);
-void PGASetCharacterInitType(PGAContext *ctx, int value);
+void PGASetCharacterInitType (PGAContext *ctx, int value);
 void PGACharacterCreateString (PGAContext *ctx, int p, int pop, int InitFlag);
-int PGACharacterMutation( PGAContext *ctx, int p, int pop, double mr );
-void PGACharacterOneptCrossover(PGAContext *ctx, int p1, int p2, int pop1,
-                                int c1, int c2, int pop2);
-void PGACharacterTwoptCrossover( PGAContext *ctx, int p1, int p2, int pop1,
-                              int c1, int c2, int pop2);
-void PGACharacterUniformCrossover(PGAContext *ctx, int p1, int p2, int pop1,
-                                int c1, int c2, int pop2);
-void PGACharacterPrintString ( PGAContext *ctx, FILE *fp, int p, int pop);
-void PGACharacterCopyString (PGAContext *ctx, int p1, int pop1, int p2,
-                             int pop2);
-int PGACharacterDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2);
-void PGACharacterInitString(PGAContext *ctx, int p, int pop);
-MPI_Datatype PGACharacterBuildDatatype(PGAContext *ctx, int p, int pop);
-double PGACharacterGeneDistance (PGAContext *ctx, int p1, int pop1, int p2,
-                                 int pop2);
+int PGACharacterMutation (PGAContext *ctx, int p, int pop, double mr);
+void PGACharacterOneptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGACharacterTwoptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGACharacterUniformCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGACharacterPrintString (PGAContext *ctx, FILE *fp, int p, int pop);
+void PGACharacterCopyString
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+int PGACharacterDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+PGAHash PGACharacterHash (PGAContext *ctx, int p, int pop);
+void PGACharacterInitString (PGAContext *ctx, int p, int pop);
+MPI_Datatype PGACharacterBuildDatatype (PGAContext *ctx, int p, int pop);
+double PGACharacterGeneDistance
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 
 /*****************************************
 *          cmdline.c
@@ -769,10 +777,11 @@ void PGAPrintDebugOptions(PGAContext *ctx);
 *          duplcate.c
 *****************************************/
 
-int PGADuplicate(PGAContext *ctx, int p, int pop1, int pop2, int n);
-void PGAChange( PGAContext *ctx, int p, int pop );
-void PGASetNoDuplicatesFlag( PGAContext *ctx, int no_dup);
+int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2);
+void PGAChange (PGAContext *ctx, int p, int pop);
+void PGASetNoDuplicatesFlag (PGAContext *ctx, int no_dup);
 int PGAGetNoDuplicatesFlag (PGAContext *ctx);
+void PGAHashIndividual (PGAContext *ctx, int p, int pop);
 
 /*****************************************
 *          evaluate.c
@@ -881,6 +890,7 @@ void PGAIntegerSetFixedEdges
 void PGAIntegerPrintString (PGAContext *ctx, FILE *fp, int p, int pop);
 void PGAIntegerCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 int PGAIntegerDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+PGAHash PGAIntegerHash (PGAContext *ctx, int p, int pop);
 void PGAIntegerInitString (PGAContext *ctx, int p, int pop);
 MPI_Datatype PGAIntegerBuildDatatype (PGAContext *ctx, int p, int pop);
 double PGAIntegerGeneDistance
@@ -1081,6 +1091,7 @@ void PGARealSBXCrossover
 void PGARealPrintString (PGAContext *ctx, FILE *fp, int p, int pop);
 void PGARealCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 int PGARealDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
+PGAHash PGARealHash (PGAContext *ctx, int p, int pop);
 void PGARealInitString (PGAContext *ctx, int p, int pop);
 MPI_Datatype PGARealBuildDatatype (PGAContext *ctx, int p, int pop);
 double PGARealGeneDistance
@@ -1201,6 +1212,9 @@ int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 void PGAEvalSort (PGAContext *ctx, int pop, int *idx);
 int PGAEvalSortHelper (const void *i1, const void *i2);
 void PGAShuffle (PGAContext *ctx, int *list, int n);
+#define PGA_INITIAL_HASH 0xfeedbeefu
+PGAHash PGAUtilHash (const void *data, size_t len, PGAHash hashv);
+size_t PGAIndividualHashIndex (PGAContext *ctx, int p, int pop);
 
 #ifdef __cplusplus
 }

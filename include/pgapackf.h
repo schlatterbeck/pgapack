@@ -223,6 +223,8 @@ c *** SET USER FUNCTION
       parameter ( PGA_USERFUNCTION_GEN_DIFFERENCE =    11)
       integer PGA_USERFUNCTION_PRE_EVAL
       parameter ( PGA_USERFUNCTION_PRE_EVAL =          12)
+      integer PGA_USERFUNCTION_HASH
+      parameter ( PGA_USERFUNCTION_HASH     =          13)
 
 c *** TAGS
       integer PGA_COMM_STRINGTOEVAL
@@ -484,3 +486,7 @@ c *** utility
       external PGAGetBestReportIndex
       integer PGAEvalCompare
       external PGAEvalCompare
+      integer PGAUtilHash
+      external PGAUtilHash
+      integer PGA_INITIAL_HASH
+      parameter (PGA_INITIAL_HASH = int (z'feedbeef'))

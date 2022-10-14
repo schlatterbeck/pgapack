@@ -67,6 +67,7 @@ privately owned rights.
                                             evaluation but after
                                             crossover and mutation
        PGA_USERFUNCTION_EVAL_COMPARE     -- Comparison of Evaluation
+       PGA_USERFUNCTION_HASH             -- Hashing of genes
    It MAY be called when using a native datatype to replace the built-in
    functions PGAPack has for that datatype (For example, if the Integer data
    type is used for a traveling salesperson problem, the user may want to
@@ -183,6 +184,14 @@ void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
 	else
 	    ctx->cops.GeneDistance =
                 (double(*)(PGAContext *, int, int, int, int))f;
+	break;
+      case PGA_USERFUNCTION_HASH:
+	if (ctx->sys.UserFortran)
+	    ctx->fops.Hash =
+                (PGAHash(*)(void *, void *, void *))f;
+	else
+	    ctx->cops.Hash =
+                (PGAHash(*)(PGAContext *, int, int))f;
 	break;
       default:
 	PGAError(ctx, "PGASetUserFunction: Invalid constant:",

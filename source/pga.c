@@ -47,6 +47,20 @@ privately owned rights.
 
 #include "pgapack.h"
 
+/* Utility function to reset the hash for all individuals */
+void reset_hash (PGAContext *ctx, int pop)
+{
+    int i = 0;
+    if (ctx->ga.NoDuplicates) {
+        PGAIndividual *ind = PGAGetIndividual (ctx, 0, pop);
+        size_t hashsize = sizeof (PGAIndividual *) * ctx->ga.PopSize;
+        memset (ctx->scratch.hashed, 0, hashsize);
+        for (i=0; i<ctx->ga.PopSize; i++, ind++) {
+            ind->next_hash = NULL;
+        }
+    }
+}
+
 /*U****************************************************************************
   PGARun - Highest level routine to execute the genetic algorithm.  It
   is called after PGACreate and PGASetup have been called.
@@ -145,7 +159,7 @@ void PGARun (PGAContext *ctx,
      /**********************************************************************/
      PGADebugExited("PGARun");
      return;
- }
+}
 
 
 /*U****************************************************************************
@@ -165,7 +179,7 @@ void PGARun (PGAContext *ctx,
   Example:
      PGAContext *ctx,
     :
-    PGARunMutationAndCrossover(ctx, PGA_OLDPOP, PGA_NEWPOP);
+    PGARunMutationAndCrossover (ctx, PGA_OLDPOP, PGA_NEWPOP);
 
 ****************************************************************************U*/
 void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
@@ -178,6 +192,7 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
 
     popsize = PGAGetPopSize (ctx);
     numreplace = PGAGetNumReplaceValue (ctx);
+    reset_hash (ctx, newpop);
     /*** first, copy n best strings to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
@@ -192,6 +207,7 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
         for (i=0; i < n; i++) {
             j = PGAGetSortedPopIndex (ctx, i);
             PGACopyIndividual (ctx, j, oldpop, i, newpop);
+            PGAHashIndividual (ctx, i, newpop);
         }
     }
     pc = PGAGetCrossoverProb (ctx);
@@ -204,31 +220,42 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
 
             /*** mutate and copy first string to new population ***/
             PGAMutate (ctx, PGA_TEMP1, newpop);
-            while (PGADuplicate (ctx, PGA_TEMP1, newpop, newpop, n))
-                 PGAChange (ctx, PGA_TEMP1, newpop);
+            while (PGADuplicate (ctx, PGA_TEMP1, newpop, newpop)) {
+                PGAChange (ctx, PGA_TEMP1, newpop);
+            }
             PGACopyIndividual (ctx, PGA_TEMP1, newpop, n, newpop);
+            PGAHashIndividual (ctx, n, newpop);
             n++;
 
-            if ( n < popsize ) {
+            if (n < popsize) {
                 /*** mutate and copy second string to new population ***/
                 PGAMutate (ctx, PGA_TEMP2, newpop);
-                while (PGADuplicate (ctx, PGA_TEMP2, newpop, newpop, n))
-                     PGAChange (ctx, PGA_TEMP2, newpop);
+                while (PGADuplicate (ctx, PGA_TEMP2, newpop, newpop)) {
+                    PGAChange (ctx, PGA_TEMP2, newpop);
+                }
                 PGACopyIndividual (ctx, PGA_TEMP2, newpop, n, newpop);
+                PGAHashIndividual (ctx, n, newpop);
                 n++;
             }
-        }
-        else {
+        } else {
             PGACopyIndividual (ctx, m1, oldpop, n, newpop);
             if (ctx->ga.MixingType == PGA_MIX_TRADITIONAL) {
                 PGAMutate (ctx, n, newpop);
             }
+            while (PGADuplicate (ctx, n, newpop, newpop)) {
+                PGAChange (ctx, n, newpop);
+            }
+            PGAHashIndividual (ctx, n, newpop);
             n++;
             if (n < ctx->ga.PopSize) {
                 PGACopyIndividual (ctx, m2, oldpop, n, newpop);
                 if (ctx->ga.MixingType == PGA_MIX_TRADITIONAL) {
                     PGAMutate (ctx, n, newpop);
                 }
+                while (PGADuplicate (ctx, n, newpop, newpop)) {
+                    PGAChange (ctx, n, newpop);
+                }
+                PGAHashIndividual (ctx, n, newpop);
                 n++;
             }
         }
@@ -255,7 +282,7 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
   Example:
     PGAContext *ctx,
     :
-    PGARunMutationOrCrossover(ctx, PGA_OLDPOP, PGA_NEWPOP);
+    PGARunMutationOrCrossover (ctx, PGA_OLDPOP, PGA_NEWPOP);
 
 ****************************************************************************U*/
 void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
@@ -268,6 +295,7 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
 
     popsize = PGAGetPopSize (ctx);
     numreplace = PGAGetNumReplaceValue (ctx);
+    reset_hash (ctx, newpop);
     /*** first, copy n best strings to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
@@ -282,6 +310,7 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
         for (i=0; i < n; i++) {
             j = PGAGetSortedPopIndex (ctx, i);
             PGACopyIndividual (ctx, j, oldpop, i, newpop);
+            PGAHashIndividual (ctx, i, newpop);
         }
     }
     pc = PGAGetCrossoverProb (ctx);
@@ -293,32 +322,40 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
             PGACrossover (ctx, m1, m2, oldpop, PGA_TEMP1, PGA_TEMP2, newpop);
 
             /*** copy first string to new population ***/
-            while (PGADuplicate(ctx, PGA_TEMP1, newpop,  newpop, n))
+            while (PGADuplicate(ctx, PGA_TEMP1, newpop,  newpop)) {
                 PGAChange (ctx, PGA_TEMP1, newpop);
+            }
             PGACopyIndividual (ctx, PGA_TEMP1, newpop, n, newpop);
+            PGAHashIndividual (ctx, n, newpop);
             n++;
 
             if (n < popsize) {
                  /*** copy second string to new population ***/
-                 while (PGADuplicate(ctx, PGA_TEMP2, newpop,  newpop, n))
-                      PGAChange (ctx, PGA_TEMP2, newpop);
+                 while (PGADuplicate(ctx, PGA_TEMP2, newpop,  newpop)) {
+                     PGAChange (ctx, PGA_TEMP2, newpop);
+                 }
                  PGACopyIndividual (ctx, PGA_TEMP2, newpop, n, newpop);
+                 PGAHashIndividual (ctx, n, newpop);
                  n++;
             }
         } else {
              PGACopyIndividual (ctx, m1, oldpop, PGA_TEMP1, newpop);
              PGAMutate (ctx, PGA_TEMP1, newpop);
-             while (PGADuplicate (ctx, PGA_TEMP1, newpop, newpop, n))
-                  PGAChange (ctx, PGA_TEMP1, newpop);
+             while (PGADuplicate (ctx, PGA_TEMP1, newpop, newpop)) {
+                 PGAChange (ctx, PGA_TEMP1, newpop);
+             }
              PGACopyIndividual (ctx, PGA_TEMP1, newpop, n, newpop);
+             PGAHashIndividual (ctx, n, newpop);
              n++;
 
              if (n < popsize) {
                  PGACopyIndividual(ctx, m2, oldpop, PGA_TEMP2, newpop);
                  PGAMutate (ctx, PGA_TEMP2, newpop);
-                 while (PGADuplicate(ctx, PGA_TEMP2, newpop, newpop, n))
+                 while (PGADuplicate(ctx, PGA_TEMP2, newpop, newpop)) {
                      PGAChange (ctx, PGA_TEMP2, newpop);
+                 }
                  PGACopyIndividual (ctx, PGA_TEMP2, newpop, n, newpop);
+                 PGAHashIndividual (ctx, n, newpop);
                  n++;
              }
         }
@@ -345,7 +382,7 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
   Example:
     PGAContext *ctx,
     :
-    PGARunMutationOnly(ctx, PGA_OLDPOP, PGA_NEWPOP);
+    PGARunMutationOnly (ctx, PGA_OLDPOP, PGA_NEWPOP);
 
 ****************************************************************************U*/
 void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
@@ -357,6 +394,7 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
 
     popsize = PGAGetPopSize (ctx);
     numreplace = PGAGetNumReplaceValue (ctx);
+    reset_hash (ctx, newpop);
     /*** first, copy n best strings to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
@@ -371,6 +409,7 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
         for (i=0; i < n; i++) {
             j = PGAGetSortedPopIndex (ctx, i);
             PGACopyIndividual (ctx, j, oldpop, i, newpop);
+            PGAHashIndividual (ctx, i, newpop);
         }
     }
     /*** reproduce with mutation only to create rest of the new population ***/
@@ -378,8 +417,10 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
         m = PGASelectNextIndex (ctx, oldpop);
         PGACopyIndividual (ctx, m, oldpop, n, newpop);
         PGAMutate (ctx, n, newpop);
-        while (PGADuplicate (ctx, n, newpop, newpop, n))
-             PGAChange (ctx, n, newpop);
+        while (PGADuplicate (ctx, n, newpop, newpop)) {
+            PGAChange (ctx, n, newpop);
+        }
+        PGAHashIndividual (ctx, n, newpop);
         n++;
     }
 

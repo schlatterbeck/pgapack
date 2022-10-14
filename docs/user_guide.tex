@@ -2508,13 +2508,23 @@ invoked explicitly with {\tt PGARestart(ctx, oldpop, newpop)}, where the best
 string from population {\tt oldpop} is used to initialize population {\tt
 newpop}.
 
-\begin{sloppypar}
-{\tt PGADuplicate(ctx,p,PGA\_OLDPOP,PGA\_NEWPOP,20)} returns {\tt PGA\_TRUE}
-if string {\tt p} in population {\tt PGA\_OLDPOP} is a duplicate of any of the
-first 20 strings in population {\tt PGA\_NEWPOP}.  {\tt PGAChange(ctx, p,
-PGA\_OLDPOP)} repeatedly applies the mutation operator to string {\tt p} in
-population {\tt PGA\_OLDPOP} until at least one mutation has occurred.
-\end{sloppypar}
+\verb+PGADuplicate(ctx,p,PGA_NEWPOP,PGA_NEWPOP)+ returns \verb+PGA_TRUE+
+if string \verb+p+ in population \verb+PGA_NEWPOP+ is a duplicate of any
+of the strings in population \verb+PGA_NEWPOP+ which were inserted into
+the hash table using \verb+PGAHashIndividual+. Note that this function
+is defined only for population \verb+PGA_NEWPOP+.
+
+\verb+PGAHashIndividual(ctx,p,PGA_NEWPOP)+ hashes individual p in
+population \verb+PGA_NEWPOP+ for duplicate checking.
+
+\verb+PGAChange(ctx, p, PGA_OLDPOP)+ repeatedly applies the mutation
+operator to string \verb+p+ in population \verb+PGA_OLDPOP+ until at
+least one mutation has occurred.
+
+All functions related to duplicate checking do nothing if duplicate
+checking has not been enabled with \verb+PGASetNoDuplicatesFlag+, the
+function \verb+PGAGetNoDuplicatesFlag+ can be used for checking if
+duplicate checking is enabled.
 
 In \pga\ three  values are associated with each string: (1) the user's
 evaluation function value, (2) a Boolean flag to indicate whether the
@@ -2597,6 +2607,7 @@ Initialization       & \verb+PGA_USERFUNCTION_INITSTRING+ \\
 Crossover            & \verb+PGA_USERFUNCTION_CROSSOVER+ \\
 Mutation             & \verb+PGA_USERFUNCTION_MUTATION+ \\
 Duplicate Checking   & \verb+PGA_USERFUNCTION_DUPLICATE+ \\
+Hashing              & \verb+PGA_USERFUNCTION_HASH+ \\
 String Printing      & \verb+PGA_USERFUNCTION_PRINTSTRING+ \\
 Termination Criteria & \verb+PGA_USERFUNCTION_STOPCOND+ \\
 End of generation    & \verb+PGA_USERFUNCTION_ENDOFGEN+ \\
@@ -2709,6 +2720,8 @@ Calling Sequences for Customizable Functions\label{tab:custom-functions}
     \verb+(PGAContext*, int, int, double)+ \\
 \verb+PGA_USERFUNCTION_DUPLICATE+      &\verb+int+    &
     \verb+(PGAContext*, int, int, int, int)+ \\
+\verb+PGA_USERFUNCTION_HASH+      &\verb+PGAHash+    &
+    \verb+(PGAContext*, int, int)+ \\
 \verb+PGA_USERFUNCTION_PRINTSTRING+    &\verb+void+   &
     \verb+(PGAContext*, FILE *, int, int)+ \\
 \verb+PGA_USERFUNCTION_STOPCOND+       &\verb+int+    &
@@ -2860,30 +2873,43 @@ Functions Required for New Data Types\label{tab:new-functions}
 \begin{tabular}{|l|l|} \hline\hline
 \multicolumn{1}{|c|}{Functionality} &
 \multicolumn{1}{c|}{Symbolic Constant} \\ \hline
-Memory allocation & {\tt PGA\_USERFUNCTION\_CREATESTRING} \\
-String packing & {\tt PGA\_USERFUNCTION\_BUILDDATATYPE} \\
-Mutation & {\tt PGA\_USERFUNCTION\_MUTATION} \\
-Crossover & {\tt PGA\_USERFUNCTION\_CROSSOVER} \\
-String printing & {\tt PGA\_USERFUNCTION\_PRINTSTRING} \\
-String copying & {\tt PGA\_USERFUNCTION\_COPYSTRING} \\
-Duplicate checking & {\tt PGA\_USERFUNCTION\_DUPLICATE} \\
+Memory allocation & \verb+PGA_USERFUNCTION_CREATESTRING+ \\
+String packing & \verb+PGA_USERFUNCTION_BUILDDATATYPE+ \\
+Mutation & \verb+PGA_USERFUNCTION_MUTATION+ \\
+Crossover & \verb+PGA_USERFUNCTION_CROSSOVER+ \\
+String printing & \verb+PGA_USERFUNCTION_PRINTSTRING+ \\
+String copying & \verb+PGA_USERFUNCTION_COPYSTRING+ \\
+Duplicate checking & \verb+PGA_USERFUNCTION_DUPLICATE+ \\
+Hashing & \verb+PGA_USERFUNCTION_HASH+ \\
 \hline
 \end{tabular}
 \end{table}
 
-To create a new data type, you must (1) specify {\tt PGA\_DATATYPE\_USER} for
-the datatype in the {\tt PGACreate} call and (2) for {\em each} entry in
-Table~\ref{tab:new-functions}, call {\tt PGASetUserFunction} to specify the
+To create a new data type, you must (1) specify \verb+PGA_DATATYPE_USER+ for
+the datatype in the \verb+PGACreate+ call and (2) for {\em each} entry in
+Table~\ref{tab:new-functions}, call \verb+PGASetUserFunction+ to specify the
 function that will perform the given operation on the new data type.  If the
-data type is {\tt PGA\_DATATYPE\_USER}, the string length specified to {\tt
-PGACreate} can be whatever the user desires.  It will be returned by {\tt
-PGAGetStringLength} but is not otherwise used in the data-structure-neutral
-functions of \pga.
+data type is \verb+PGA_DATATYPE_USER+, the string length specified to
+\verb+PGACreate+ can be whatever the user desires.  It will be returned by
+\verb+PGAGetStringLength+ but is not otherwise used in the
+data-structure-neutral functions of \pga.
 
 The calling sequences for the functions in Table~\ref{tab:new-functions} are
 given in Table~\ref{tab:new-functions1}. Template routines for these functions
-are in the file {\tt ./examples/templates/uf\_new.c}.
+are in the file \verb+./examples/templates/uf_new.c+.
 
+The functions \verb+PGA_USERFUNCTION_DUPLICATE+ and
+\verb+PGA_USERFUNCTION_HASH+ for user defined data types are needed only
+when duplicate checking is enabled with
+\verb+PGASetNoDuplicatesFlag(ctx, PGA_TRUE)+. Note that for duplicate
+checking to work, usually \textit{both}, the hashing and the duplicate
+function need to be defined. An example is given in
+\verb+examples/c/namefull.c+ for C and
+\verb+examples/fortran/namefull.f+ for Fortran. These define a hash
+function and a duplicate check (comparison) function that treat all
+non-matching characters alike. When implementing a hash function for
+user defined datatypes the function \verb+PGAUtilHash+ in
+\verb+source/utility.c+ can be used.
 
 \begin{table}
 \centering
@@ -4124,7 +4150,7 @@ void &  PGADebugPrint(PGAContext *ctx, int level, char *funcname, \\
      &  char *msg, int datatype, void *data) \\ \hline
 void &  PGADestroy(PGAContext *ctx) \\ \hline
 int &  PGADone(PGAContext *ctx, MPI\_Comm comm) \\ \hline
-int &  PGADuplicate(PGAContext *ctx, int p, int pop1, int pop2, int n) \\ \hline
+int &  PGADuplicate(PGAContext *ctx, int p, int pop1, int pop2) \\ \hline
 void &  PGAEncodeIntegerAsBinary(PGAContext *ctx, int p, int pop, int start,
 int end, int val) \\ \hline
 void &  PGAEncodeIntegerAsGrayCode(PGAContext *ctx, int p, int pop, int start,
@@ -4159,6 +4185,7 @@ end) \\ \hline
 int &  PGAGetIntegerFromGrayCode(PGAContext *ctx, int p, int pop, int start,
 int end) \\ \hline
 int &  PGAGetIntegerInitType(PGAContext *ctx) \\ \hline
+void & PGAHashIndividual(PGAContext *ctx, int p, int pop) \\ \hline
 \end{tabular}
 
 

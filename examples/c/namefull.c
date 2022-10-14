@@ -22,15 +22,16 @@
 
 #include "pgapack.h"
 
-void   N_InitString (PGAContext *, int, int);
-int    N_Mutation   (PGAContext *, int, int, double);
-int    N_StopCond   (PGAContext *);
-void   N_Crossover  (PGAContext *ctx, int, int, int, int, int, int);
-int    N_Duplicate  (PGAContext *, int, int, int, int);
-void   N_PrintString(PGAContext *, FILE *, int, int);
-void   N_EndOfGen   (PGAContext *);
-double EvalName     (PGAContext *, int, int, double *);
-void   GetStringParameter(char *, char *);
+void    N_InitString (PGAContext *, int, int);
+int     N_Mutation   (PGAContext *, int, int, double);
+int     N_StopCond   (PGAContext *);
+void    N_Crossover  (PGAContext *ctx, int, int, int, int, int, int);
+int     N_Duplicate  (PGAContext *, int, int, int, int);
+PGAHash N_Hash       (PGAContext *, int, int);
+void    N_PrintString(PGAContext *, FILE *, int, int);
+void    N_EndOfGen   (PGAContext *);
+double  EvalName     (PGAContext *, int, int, double *);
+void    GetStringParameter(char *, char *);
 
 /*  Global, because we use it in EvalName.  */
 char   Name[71];
@@ -55,6 +56,7 @@ int main(int argc, char **argv) {
     PGASetUserFunction(ctx, PGA_USERFUNCTION_MUTATION,   (void *)N_Mutation);
     PGASetUserFunction(ctx, PGA_USERFUNCTION_CROSSOVER,  (void *)N_Crossover);
     PGASetUserFunction(ctx, PGA_USERFUNCTION_DUPLICATE,  (void *)N_Duplicate);
+    PGASetUserFunction(ctx, PGA_USERFUNCTION_HASH,       (void *)N_Hash);
     PGASetUserFunction(ctx, PGA_USERFUNCTION_STOPCOND,   (void *)N_StopCond);
     PGASetUserFunction(ctx, PGA_USERFUNCTION_PRINTSTRING,(void *)N_PrintString);
     PGASetUserFunction(ctx, PGA_USERFUNCTION_ENDOFGEN,   (void *)N_EndOfGen);
@@ -146,6 +148,25 @@ int N_Duplicate(PGAContext *ctx, int p1, int pop1, int p2, int pop2) {
     return(match);
 }
 
+/*
+ * Hash function: This sets non-matching characters in a string to 0.
+ * This results in two strings with the same pattern of matching and
+ * non-matching characters to hash to the same value, similar in the
+ * semantics of the dupe check above.
+ */
+PGAHash N_Hash (PGAContext *ctx, int p, int pop)
+{
+    char s [71];
+    int i;
+    PGAIndividual *ind = PGAGetIndividual (ctx, p, pop);
+    memcpy (s, ind->chrom, ctx->ga.StringLen);
+    for (i=0; i<ctx->ga.StringLen; i++) {
+        if (s [i] != Name [i]) {
+            s [i] = 0;
+        }
+    }
+    return PGAUtilHash (s, ctx->ga.StringLen, PGA_INITIAL_HASH);
+}
 
 /*  Function to muatate a PGA_DATATYPE_CHARACTER string.  This is done
  *  by simply picking allele locations and replacing whatever was there.
