@@ -1,1105 +1,1105 @@
 Example: DTLZ3
 Iter #     Field   Idx Value
-10         Best        0 1.390336e-03
-10         Best        1 4.698435e-04
-10         Best        2 1.103357e+00
-Iter #     Field   Idx Value
-20         Best        0 8.126062e-04
-20         Best        1 2.757442e-04
-20         Best        2 5.810111e-01
-Iter #     Field   Idx Value
-30         Best        0 1.162937e-04
-30         Best        1 9.570559e-05
-30         Best        2 4.791166e-01
-Iter #     Field   Idx Value
-40         Best        0 8.293440e-06
-40         Best        1 7.351572e-05
-40         Best        2 2.004886e-01
-Iter #     Field   Idx Value
-50         Best        0 6.718586e-06
-50         Best        1 6.823576e-05
-50         Best        2 1.467638e-02
-Iter #     Field   Idx Value
-60         Best        0 2.283510e-06
-60         Best        1 5.352547e-05
-60         Best        2 8.820871e-03
-Iter #     Field   Idx Value
-70         Best        0 1.722386e-06
-70         Best        1 8.136967e-09
-70         Best        2 4.393694e-03
-Iter #     Field   Idx Value
-80         Best        0 7.948529e-07
-80         Best        1 2.767247e-09
-80         Best        2 2.491049e-04
-Iter #     Field   Idx Value
-90         Best        0 8.363055e-10
-90         Best        1 9.390791e-10
-90         Best        2 2.283268e-04
-Iter #     Field   Idx Value
-100        Best        0 6.689321e-10
-100        Best        1 3.683821e-11
-100        Best        2 9.818098e-05
-Iter #     Field   Idx Value
-110        Best        0 3.145192e-10
-110        Best        1 2.522158e-11
-110        Best        2 2.835097e-06
-Iter #     Field   Idx Value
-120        Best        0 2.619742e-10
-120        Best        1 1.481047e-11
-120        Best        2 2.221566e-06
-Iter #     Field   Idx Value
-130        Best        0 1.784064e-10
-130        Best        1 1.481047e-11
-130        Best        2 1.469506e-06
-Iter #     Field   Idx Value
-140        Best        0 1.116159e-10
-140        Best        1 1.049368e-11
-140        Best        2 9.498840e-07
-Iter #     Field   Idx Value
-150        Best        0 4.655559e-11
-150        Best        1 8.359237e-12
-150        Best        2 6.842386e-07
-Iter #     Field   Idx Value
-160        Best        0 1.892624e-11
-160        Best        1 7.594247e-12
-160        Best        2 5.076259e-07
-Iter #     Field   Idx Value
-170        Best        0 1.136782e-11
-170        Best        1 5.838055e-12
-170        Best        2 2.860248e-07
-Iter #     Field   Idx Value
-180        Best        0 1.076706e-11
-180        Best        1 4.548312e-12
-180        Best        2 5.099538e-08
-Iter #     Field   Idx Value
-190        Best        0 9.127144e-13
-190        Best        1 2.035673e-12
-190        Best        2 4.381479e-08
-Iter #     Field   Idx Value
-200        Best        0 3.749478e-13
-200        Best        1 1.858342e-12
-200        Best        2 4.320279e-08
-Iter #     Field   Idx Value
-210        Best        0 1.103500e-12
-210        Best        1 3.250241e-10
-210        Best        2 3.376912e-09
-Iter #     Field   Idx Value
-220        Best        0 1.099764e-12
-220        Best        1 3.250200e-10
-220        Best        2 3.372187e-09
-Iter #     Field   Idx Value
-230        Best        0 1.014469e-12
-230        Best        1 3.011610e-10
-230        Best        2 3.345134e-09
-Iter #     Field   Idx Value
-240        Best        0 1.013271e-12
-240        Best        1 3.009396e-10
-240        Best        2 2.173627e-09
-Iter #     Field   Idx Value
-250        Best        0 1.013201e-12
-250        Best        1 3.009115e-10
-250        Best        2 2.147074e-09
-Iter #     Field   Idx Value
-260        Best        0 5.596386e-13
-260        Best        1 1.283735e-11
-260        Best        2 2.141718e-09
-Iter #     Field   Idx Value
-270        Best        0 5.591605e-13
-270        Best        1 1.282077e-11
-270        Best        2 2.139012e-09
-Iter #     Field   Idx Value
-280        Best        0 5.578380e-13
-280        Best        1 1.281951e-11
-280        Best        2 2.136742e-09
-Iter #     Field   Idx Value
-290        Best        0 6.497092e-12
-290        Best        1 1.281951e-11
-290        Best        2 2.136707e-09
-Iter #     Field   Idx Value
-300        Best        0 6.496743e-12
-300        Best        1 1.281950e-11
-300        Best        2 6.320776e-10
-Iter #     Field   Idx Value
-310        Best        0 6.030239e-12
-310        Best        1 1.281652e-11
-310        Best        2 6.320773e-10
-Iter #     Field   Idx Value
-320        Best        0 4.326564e-12
-320        Best        1 1.281651e-11
-320        Best        2 6.747470e-12
-Iter #     Field   Idx Value
-330        Best        0 3.595140e-12
-330        Best        1 1.271468e-11
-330        Best        2 6.747464e-12
-Iter #     Field   Idx Value
-340        Best        0 4.248604e-13
-340        Best        1 1.271468e-11
-340        Best        2 6.254452e-13
-Iter #     Field   Idx Value
-350        Best        0 4.248604e-13
-350        Best        1 1.269480e-11
-350        Best        2 6.254450e-13
-Iter #     Field   Idx Value
-360        Best        0 4.042009e-13
-360        Best        1 1.269478e-11
-360        Best        2 6.216278e-13
-Iter #     Field   Idx Value
-370        Best        0 4.042009e-13
-370        Best        1 1.265967e-11
-370        Best        2 2.935331e-13
-Iter #     Field   Idx Value
-380        Best        0 4.042009e-13
-380        Best        1 2.477829e-13
-380        Best        2 2.933132e-13
-Iter #     Field   Idx Value
-390        Best        0 2.125673e-13
-390        Best        1 2.477829e-13
-390        Best        2 2.930595e-13
-Iter #     Field   Idx Value
-400        Best        0 2.125673e-13
-400        Best        1 2.477829e-13
-400        Best        2 2.701373e-13
-Iter #     Field   Idx Value
-410        Best        0 2.119592e-13
-410        Best        1 2.477829e-13
-410        Best        2 2.701373e-13
-Iter #     Field   Idx Value
-420        Best        0 2.119592e-13
-420        Best        1 2.477829e-13
-420        Best        2 2.694328e-13
-Iter #     Field   Idx Value
-430        Best        0 2.119592e-13
-430        Best        1 2.477829e-13
-430        Best        2 2.694328e-13
-Iter #     Field   Idx Value
-440        Best        0 2.084599e-13
-440        Best        1 2.917741e-12
-440        Best        2 2.683148e-13
-Iter #     Field   Idx Value
-450        Best        0 1.356513e-13
-450        Best        1 2.917741e-12
-450        Best        2 2.683148e-13
-Iter #     Field   Idx Value
-460        Best        0 1.356513e-13
-460        Best        1 2.908118e-12
-460        Best        2 2.680747e-13
-Iter #     Field   Idx Value
-470        Best        0 4.005087e-14
-470        Best        1 2.900587e-12
-470        Best        2 2.680747e-13
-Iter #     Field   Idx Value
-480        Best        0 4.111972e-14
-480        Best        1 2.204425e-12
-480        Best        2 2.676683e-13
-Iter #     Field   Idx Value
-490        Best        0 4.111972e-14
-490        Best        1 1.241834e-12
-490        Best        2 4.180415e-11
-Iter #     Field   Idx Value
-500        Best        0 4.111972e-14
-500        Best        1 1.241834e-12
-500        Best        2 4.154818e-11
-Iter #     Field   Idx Value
-510        Best        0 4.101081e-14
-510        Best        1 1.238037e-12
-510        Best        2 1.691694e-11
-Iter #     Field   Idx Value
-520        Best        0 3.503916e-14
-520        Best        1 3.944517e-13
-520        Best        2 2.726893e-12
-Iter #     Field   Idx Value
-530        Best        0 3.947757e-14
-530        Best        1 3.944517e-13
-530        Best        2 2.716488e-12
-Iter #     Field   Idx Value
-540        Best        0 3.946034e-14
-540        Best        1 3.944517e-13
-540        Best        2 2.716488e-12
-Iter #     Field   Idx Value
-550        Best        0 1.924112e-14
-550        Best        1 3.481530e-13
-550        Best        2 2.500947e-12
-Iter #     Field   Idx Value
-560        Best        0 1.910054e-14
-560        Best        1 3.481530e-13
-560        Best        2 6.156883e-13
-Iter #     Field   Idx Value
-570        Best        0 1.134424e-14
-570        Best        1 3.481530e-13
-570        Best        2 1.880324e-13
-Iter #     Field   Idx Value
-580        Best        0 1.134424e-14
-580        Best        1 3.446249e-13
-580        Best        2 1.880324e-13
-Iter #     Field   Idx Value
-590        Best        0 6.982941e-15
-590        Best        1 3.446249e-13
-590        Best        2 1.880324e-13
-Iter #     Field   Idx Value
-600        Best        0 6.969564e-15
-600        Best        1 3.446249e-13
-600        Best        2 1.880324e-13
-Iter #     Field   Idx Value
-610        Best        0 6.969564e-15
-610        Best        1 3.446249e-13
-610        Best        2 1.880324e-13
-Iter #     Field   Idx Value
-620        Best        0 6.945592e-15
-620        Best        1 3.426480e-13
-620        Best        2 1.852935e-13
-Iter #     Field   Idx Value
-630        Best        0 5.217135e-15
-630        Best        1 1.939910e-13
-630        Best        2 1.852935e-13
-Iter #     Field   Idx Value
-640        Best        0 5.202605e-15
-640        Best        1 1.939910e-13
-640        Best        2 1.848924e-13
-Iter #     Field   Idx Value
-650        Best        0 3.364264e-15
-650        Best        1 1.939910e-13
-650        Best        2 4.745290e-14
-Iter #     Field   Idx Value
-660        Best        0 3.355948e-15
-660        Best        1 6.625490e-14
-660        Best        2 4.745290e-14
-Iter #     Field   Idx Value
-670        Best        0 2.317823e-16
-670        Best        1 3.710661e-14
-670        Best        2 1.040576e-15
-Iter #     Field   Idx Value
-680        Best        0 1.608762e-16
-680        Best        1 3.699349e-14
-680        Best        2 1.040576e-15
-Iter #     Field   Idx Value
-690        Best        0 1.608206e-16
-690        Best        1 3.268217e-14
-690        Best        2 1.040576e-15
-Iter #     Field   Idx Value
-700        Best        0 9.015403e-17
-700        Best        1 3.264849e-14
-700        Best        2 1.040576e-15
-Iter #     Field   Idx Value
-710        Best        0 9.013489e-17
-710        Best        1 3.264849e-14
-710        Best        2 1.040576e-15
-Iter #     Field   Idx Value
-720        Best        0 1.948330e-17
-720        Best        1 3.264849e-14
-720        Best        2 1.035470e-15
-Iter #     Field   Idx Value
-730        Best        0 1.947915e-17
-730        Best        1 3.264849e-14
-730        Best        2 1.035470e-15
-Iter #     Field   Idx Value
-740        Best        0 1.947915e-17
-740        Best        1 3.263586e-14
-740        Best        2 5.564818e-17
-Iter #     Field   Idx Value
-750        Best        0 1.944784e-17
-750        Best        1 3.263586e-14
-750        Best        2 5.564818e-17
-Iter #     Field   Idx Value
-760        Best        0 1.944753e-17
-760        Best        1 3.263586e-14
-760        Best        2 5.564818e-17
-Iter #     Field   Idx Value
-770        Best        0 1.944753e-17
-770        Best        1 3.262814e-14
-770        Best        2 5.563777e-17
-Iter #     Field   Idx Value
-780        Best        0 1.944238e-17
-780        Best        1 3.259540e-14
-780        Best        2 5.561965e-17
-Iter #     Field   Idx Value
-790        Best        0 1.943893e-17
-790        Best        1 3.259540e-14
-790        Best        2 5.561965e-17
-Iter #     Field   Idx Value
-800        Best        0 1.195419e-17
-800        Best        1 1.375630e-14
-800        Best        2 5.557602e-17
-Iter #     Field   Idx Value
-810        Best        0 5.535110e-18
-810        Best        1 4.240010e-15
-810        Best        2 5.557602e-17
-Iter #     Field   Idx Value
-820        Best        0 5.534652e-18
-820        Best        1 4.239773e-15
-820        Best        2 5.557602e-17
-Iter #     Field   Idx Value
-830        Best        0 5.534652e-18
-830        Best        1 4.239761e-15
-830        Best        2 5.339241e-19
-Iter #     Field   Idx Value
-840        Best        0 5.534647e-18
-840        Best        1 4.239761e-15
-840        Best        2 5.339241e-19
-Iter #     Field   Idx Value
-850        Best        0 5.534611e-18
-850        Best        1 4.239741e-15
-850        Best        2 5.339233e-19
-Iter #     Field   Idx Value
-860        Best        0 5.534610e-18
-860        Best        1 4.239741e-15
-860        Best        2 5.339229e-19
-Iter #     Field   Idx Value
-870        Best        0 5.534610e-18
-870        Best        1 4.239733e-15
-870        Best        2 5.339229e-19
-Iter #     Field   Idx Value
-880        Best        0 5.534610e-18
-880        Best        1 4.239733e-15
-880        Best        2 5.339229e-19
-Iter #     Field   Idx Value
-890        Best        0 5.534610e-18
-890        Best        1 4.239733e-15
-890        Best        2 5.339229e-19
-Iter #     Field   Idx Value
-900        Best        0 5.534610e-18
-900        Best        1 4.239733e-15
-900        Best        2 5.339229e-19
-Iter #     Field   Idx Value
-910        Best        0 5.534610e-18
-910        Best        1 1.967491e-25
-910        Best        2 5.339229e-19
-Iter #     Field   Idx Value
-920        Best        0 5.534610e-18
-920        Best        1 1.967491e-25
-920        Best        2 5.339227e-19
-Iter #     Field   Idx Value
-930        Best        0 5.534610e-18
-930        Best        1 1.967491e-25
-930        Best        2 5.339227e-19
-Iter #     Field   Idx Value
-940        Best        0 5.534610e-18
-940        Best        1 1.967491e-25
-940        Best        2 5.339227e-19
-Iter #     Field   Idx Value
-950        Best        0 5.534610e-18
-950        Best        1 1.967491e-25
-950        Best        2 5.339227e-19
-Iter #     Field   Idx Value
-960        Best        0 5.534610e-18
-960        Best        1 1.606405e-25
-960        Best        2 5.339227e-19
-Iter #     Field   Idx Value
-970        Best        0 5.534610e-18
-970        Best        1 1.606405e-25
-970        Best        2 5.339227e-19
-Iter #     Field   Idx Value
-980        Best        0 5.534610e-18
-980        Best        1 1.606405e-25
-980        Best        2 5.339227e-19
-Iter #     Field   Idx Value
-990        Best        0 5.534610e-18
-990        Best        1 1.606405e-25
-990        Best        2 5.339227e-19
-Iter #     Field   Idx Value
-1000       Best        0 5.534610e-18
-1000       Best        1 1.606405e-25
-1000       Best        2 5.339227e-19
-The Best (0) evaluation: 5.534610e-18
-The Best (1) evaluation: 1.606405e-25
-The Best (2) evaluation: 5.339227e-19
+10         Best        0 2.604638e-03
+10         Best        1 6.893142e-03
+10         Best        2 6.629540e+00
+Iter #     Field   Idx Value
+20         Best        0 1.971042e-03
+20         Best        1 4.282307e-04
+20         Best        2 5.258800e-01
+Iter #     Field   Idx Value
+30         Best        0 1.221763e-03
+30         Best        1 8.276192e-06
+30         Best        2 2.270563e-01
+Iter #     Field   Idx Value
+40         Best        0 3.795737e-04
+40         Best        1 3.728973e-06
+40         Best        2 1.456293e-01
+Iter #     Field   Idx Value
+50         Best        0 1.730039e-04
+50         Best        1 1.927064e-08
+50         Best        2 2.184369e-02
+Iter #     Field   Idx Value
+60         Best        0 1.551388e-04
+60         Best        1 1.713118e-08
+60         Best        2 8.452027e-03
+Iter #     Field   Idx Value
+70         Best        0 4.232164e-06
+70         Best        1 4.425343e-11
+70         Best        2 1.705792e-03
+Iter #     Field   Idx Value
+80         Best        0 3.103768e-06
+80         Best        1 3.209272e-11
+80         Best        2 2.137125e-04
+Iter #     Field   Idx Value
+90         Best        0 2.492231e-07
+90         Best        1 1.654441e-11
+90         Best        2 5.219342e-05
+Iter #     Field   Idx Value
+100        Best        0 1.155684e-07
+100        Best        1 1.017056e-11
+100        Best        2 2.323207e-05
+Iter #     Field   Idx Value
+110        Best        0 6.282188e-12
+110        Best        1 4.140909e-12
+110        Best        2 8.434698e-07
+Iter #     Field   Idx Value
+120        Best        0 2.113718e-12
+120        Best        1 3.025207e-12
+120        Best        2 6.889105e-07
+Iter #     Field   Idx Value
+130        Best        0 2.085848e-12
+130        Best        1 1.842296e-12
+130        Best        2 6.001717e-07
+Iter #     Field   Idx Value
+140        Best        0 1.593323e-12
+140        Best        1 1.690628e-12
+140        Best        2 4.990094e-07
+Iter #     Field   Idx Value
+150        Best        0 1.125320e-12
+150        Best        1 1.174950e-12
+150        Best        2 2.654438e-07
+Iter #     Field   Idx Value
+160        Best        0 6.327332e-13
+160        Best        1 3.632672e-10
+160        Best        2 2.044329e-07
+Iter #     Field   Idx Value
+170        Best        0 8.911704e-09
+170        Best        1 3.596448e-11
+170        Best        2 1.619150e-07
+Iter #     Field   Idx Value
+180        Best        0 8.831766e-09
+180        Best        1 3.575015e-11
+180        Best        2 1.588288e-07
+Iter #     Field   Idx Value
+190        Best        0 8.748392e-09
+190        Best        1 3.512282e-11
+190        Best        2 1.555957e-07
+Iter #     Field   Idx Value
+200        Best        0 8.507738e-09
+200        Best        1 3.378844e-11
+200        Best        2 4.118800e-09
+Iter #     Field   Idx Value
+210        Best        0 8.120625e-09
+210        Best        1 3.244734e-11
+210        Best        2 4.002369e-09
+Iter #     Field   Idx Value
+220        Best        0 8.113811e-09
+220        Best        1 3.244661e-11
+220        Best        2 4.000530e-09
+Iter #     Field   Idx Value
+230        Best        0 8.111466e-09
+230        Best        1 3.241687e-11
+230        Best        2 9.387730e-10
+Iter #     Field   Idx Value
+240        Best        0 7.893678e-09
+240        Best        1 3.233264e-11
+240        Best        2 9.387381e-10
+Iter #     Field   Idx Value
+250        Best        0 7.893665e-09
+250        Best        1 3.202725e-11
+250        Best        2 9.387134e-10
+Iter #     Field   Idx Value
+260        Best        0 7.893568e-09
+260        Best        1 3.202701e-11
+260        Best        2 9.387124e-10
+Iter #     Field   Idx Value
+270        Best        0 7.956767e-09
+270        Best        1 3.160026e-11
+270        Best        2 9.387111e-10
+Iter #     Field   Idx Value
+280        Best        0 7.887477e-09
+280        Best        1 3.160026e-11
+280        Best        2 6.937987e-07
+Iter #     Field   Idx Value
+290        Best        0 7.956767e-09
+290        Best        1 2.391294e-12
+290        Best        2 5.465431e-07
+Iter #     Field   Idx Value
+300        Best        0 7.840358e-09
+300        Best        1 2.391292e-12
+300        Best        2 6.673540e-07
+Iter #     Field   Idx Value
+310        Best        0 7.805125e-09
+310        Best        1 7.425440e-13
+310        Best        2 4.851152e-07
+Iter #     Field   Idx Value
+320        Best        0 7.726568e-09
+320        Best        1 7.210563e-13
+320        Best        2 4.850608e-07
+Iter #     Field   Idx Value
+330        Best        0 7.726568e-09
+330        Best        1 1.969916e-13
+330        Best        2 4.797313e-07
+Iter #     Field   Idx Value
+340        Best        0 7.653338e-09
+340        Best        1 7.182576e-13
+340        Best        2 4.797313e-07
+Iter #     Field   Idx Value
+350        Best        0 7.602109e-09
+350        Best        1 7.094415e-13
+350        Best        2 4.794390e-07
+Iter #     Field   Idx Value
+360        Best        0 2.365657e-09
+360        Best        1 7.094415e-13
+360        Best        2 4.794390e-07
+Iter #     Field   Idx Value
+370        Best        0 3.432658e-10
+370        Best        1 7.094415e-13
+370        Best        2 4.682992e-07
+Iter #     Field   Idx Value
+380        Best        0 3.432658e-10
+380        Best        1 7.056797e-13
+380        Best        2 4.682992e-07
+Iter #     Field   Idx Value
+390        Best        0 7.000967e-09
+390        Best        1 6.979493e-13
+390        Best        2 3.918955e-07
+Iter #     Field   Idx Value
+400        Best        0 7.477794e-09
+400        Best        1 4.371684e-13
+400        Best        2 3.918955e-07
+Iter #     Field   Idx Value
+410        Best        0 6.006601e-09
+410        Best        1 4.355378e-13
+410        Best        2 3.914188e-07
+Iter #     Field   Idx Value
+420        Best        0 7.345924e-09
+420        Best        1 4.338369e-13
+420        Best        2 3.914188e-07
+Iter #     Field   Idx Value
+430        Best        0 7.420809e-09
+430        Best        1 4.338369e-13
+430        Best        2 1.774544e-07
+Iter #     Field   Idx Value
+440        Best        0 7.375168e-09
+440        Best        1 4.311687e-13
+440        Best        2 1.774544e-07
+Iter #     Field   Idx Value
+450        Best        0 7.292284e-09
+450        Best        1 4.263231e-13
+450        Best        2 1.750085e-07
+Iter #     Field   Idx Value
+460        Best        0 7.292284e-09
+460        Best        1 4.263231e-13
+460        Best        2 1.749141e-07
+Iter #     Field   Idx Value
+470        Best        0 7.292284e-09
+470        Best        1 4.263231e-13
+470        Best        2 6.139943e-08
+Iter #     Field   Idx Value
+480        Best        0 5.288319e-09
+480        Best        1 4.232720e-13
+480        Best        2 6.110137e-08
+Iter #     Field   Idx Value
+490        Best        0 4.463300e-09
+490        Best        1 4.232720e-13
+490        Best        2 6.110137e-08
+Iter #     Field   Idx Value
+500        Best        0 8.144134e-10
+500        Best        1 4.187127e-13
+500        Best        2 6.045985e-08
+Iter #     Field   Idx Value
+510        Best        0 2.459674e-09
+510        Best        1 4.179808e-13
+510        Best        2 2.342194e-08
+Iter #     Field   Idx Value
+520        Best        0 2.451989e-09
+520        Best        1 4.177673e-13
+520        Best        2 2.342194e-08
+Iter #     Field   Idx Value
+530        Best        0 1.367885e-09
+530        Best        1 4.175794e-13
+530        Best        2 2.332174e-08
+Iter #     Field   Idx Value
+540        Best        0 1.227959e-09
+540        Best        1 4.161069e-13
+540        Best        2 6.197774e-09
+Iter #     Field   Idx Value
+550        Best        0 9.593197e-10
+550        Best        1 4.128516e-13
+550        Best        2 6.197774e-09
+Iter #     Field   Idx Value
+560        Best        0 5.651838e-11
+560        Best        1 4.128516e-13
+560        Best        2 6.181439e-09
+Iter #     Field   Idx Value
+570        Best        0 5.630116e-11
+570        Best        1 4.113944e-13
+570        Best        2 6.173197e-09
+Iter #     Field   Idx Value
+580        Best        0 5.630116e-11
+580        Best        1 4.029415e-13
+580        Best        2 8.057103e-09
+Iter #     Field   Idx Value
+590        Best        0 5.629906e-11
+590        Best        1 4.029415e-13
+590        Best        2 8.029858e-09
+Iter #     Field   Idx Value
+600        Best        0 1.249696e-10
+600        Best        1 4.028128e-13
+600        Best        2 8.029858e-09
+Iter #     Field   Idx Value
+610        Best        0 1.249064e-10
+610        Best        1 4.027776e-13
+610        Best        2 6.169525e-09
+Iter #     Field   Idx Value
+620        Best        0 1.249064e-10
+620        Best        1 4.027577e-13
+620        Best        2 6.169525e-09
+Iter #     Field   Idx Value
+630        Best        0 1.249006e-10
+630        Best        1 4.027577e-13
+630        Best        2 6.169520e-09
+Iter #     Field   Idx Value
+640        Best        0 6.818157e-11
+640        Best        1 4.027561e-13
+640        Best        2 2.756399e-09
+Iter #     Field   Idx Value
+650        Best        0 1.841827e-09
+650        Best        1 4.027559e-13
+650        Best        2 3.132203e-10
+Iter #     Field   Idx Value
+660        Best        0 7.177600e-10
+660        Best        1 4.027559e-13
+660        Best        2 3.132203e-10
+Iter #     Field   Idx Value
+670        Best        0 7.177600e-10
+670        Best        1 1.548862e-13
+670        Best        2 3.735643e-11
+Iter #     Field   Idx Value
+680        Best        0 7.177600e-10
+680        Best        1 1.548862e-13
+680        Best        2 3.735643e-11
+Iter #     Field   Idx Value
+690        Best        0 4.047106e-10
+690        Best        1 1.548862e-13
+690        Best        2 3.735643e-11
+Iter #     Field   Idx Value
+700        Best        0 4.047106e-10
+700        Best        1 1.548862e-13
+700        Best        2 3.735643e-11
+Iter #     Field   Idx Value
+710        Best        0 4.047106e-10
+710        Best        1 1.817333e-14
+710        Best        2 3.735643e-11
+Iter #     Field   Idx Value
+720        Best        0 4.047106e-10
+720        Best        1 1.817333e-14
+720        Best        2 3.735643e-11
+Iter #     Field   Idx Value
+730        Best        0 4.047106e-10
+730        Best        1 8.687946e-15
+730        Best        2 3.735643e-11
+Iter #     Field   Idx Value
+740        Best        0 4.047106e-10
+740        Best        1 8.687946e-15
+740        Best        2 3.735643e-11
+Iter #     Field   Idx Value
+750        Best        0 3.551307e-10
+750        Best        1 8.179862e-15
+750        Best        2 3.735643e-11
+Iter #     Field   Idx Value
+760        Best        0 3.551307e-10
+760        Best        1 6.955332e-15
+760        Best        2 3.735643e-11
+Iter #     Field   Idx Value
+770        Best        0 3.551307e-10
+770        Best        1 4.415735e-16
+770        Best        2 3.735643e-11
+Iter #     Field   Idx Value
+780        Best        0 3.551307e-10
+780        Best        1 4.415735e-16
+780        Best        2 1.958866e-12
+Iter #     Field   Idx Value
+790        Best        0 3.551307e-10
+790        Best        1 4.415735e-16
+790        Best        2 1.958866e-12
+Iter #     Field   Idx Value
+800        Best        0 3.551307e-10
+800        Best        1 4.415735e-16
+800        Best        2 1.958866e-12
+Iter #     Field   Idx Value
+810        Best        0 3.551307e-10
+810        Best        1 4.415735e-16
+810        Best        2 1.521035e-12
+Iter #     Field   Idx Value
+820        Best        0 3.551307e-10
+820        Best        1 4.415735e-16
+820        Best        2 1.521035e-12
+Iter #     Field   Idx Value
+830        Best        0 1.106114e-09
+830        Best        1 4.415735e-16
+830        Best        2 8.203974e-13
+Iter #     Field   Idx Value
+840        Best        0 2.320674e-09
+840        Best        1 4.415735e-16
+840        Best        2 8.203974e-13
+Iter #     Field   Idx Value
+850        Best        0 3.077008e-10
+850        Best        1 4.415735e-16
+850        Best        2 8.203974e-13
+Iter #     Field   Idx Value
+860        Best        0 6.495059e-09
+860        Best        1 4.415735e-16
+860        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+870        Best        0 6.495059e-09
+870        Best        1 4.415735e-16
+870        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+880        Best        0 4.322548e-09
+880        Best        1 4.415735e-16
+880        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+890        Best        0 4.322548e-09
+890        Best        1 4.415735e-16
+890        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+900        Best        0 4.322548e-09
+900        Best        1 4.415735e-16
+900        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+910        Best        0 4.322548e-09
+910        Best        1 4.415735e-16
+910        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+920        Best        0 4.322548e-09
+920        Best        1 4.415735e-16
+920        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+930        Best        0 4.322548e-09
+930        Best        1 4.415735e-16
+930        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+940        Best        0 2.071031e-09
+940        Best        1 1.384545e-16
+940        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+950        Best        0 2.071031e-09
+950        Best        1 1.384545e-16
+950        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+960        Best        0 2.071031e-09
+960        Best        1 1.384545e-16
+960        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+970        Best        0 2.071031e-09
+970        Best        1 1.384545e-16
+970        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+980        Best        0 2.071031e-09
+980        Best        1 1.384545e-16
+980        Best        2 2.471748e-13
+Iter #     Field   Idx Value
+990        Best        0 3.667996e-10
+990        Best        1 1.384545e-16
+990        Best        2 1.994850e-13
+Iter #     Field   Idx Value
+1000       Best        0 3.662782e-10
+1000       Best        1 1.384545e-16
+1000       Best        2 1.994850e-13
+The Best (0) evaluation: 3.662782e-10
+The Best (1) evaluation: 1.384545e-16
+The Best (2) evaluation: 1.994850e-13
 The Nondominated Strings:
-F     0 2.74267499433862e-01
-F     1 6.80240980456765e-01
-F     2 6.79742265319375e-01
-#   0: [  0.4758167], [  0.7560124], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 6.49825864012981e-16
-F     1 8.93395794930819e-01
-F     2 4.49270468203653e-01
-#   0: [  0.2966321], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 6.37628521623095e-15
-F     1 8.14049956275612e-01
-F     2 5.80794859384684e-01
-#   0: [  0.3945163], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 3.79491397446925e-01
-F     1 2.54421554282808e-01
-F     2 8.89525689331573e-01
-#   0: [  0.6979301], [  0.3759888], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.30529199832753e-01
-F     1 3.47216510024703e-01
-F     2 1.16430680771355e-01
-#   0: [ 0.07429057], [   0.227361], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 2.73469190973231e-17
-F     1 4.46609081350853e-01
-F     2 8.94729192803581e-01
-#   0: [   0.705263], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 8.99189136759383e-02
-F     1 9.95949089545335e-01
-F     2 3.47404792805508e-14
-#   0: [2.211648e-14], [  0.9426784], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 3.16973590291997e-01
-F     1 9.48434364127406e-01
-F     2 5.78471483439122e-14
-#   0: [3.682664e-14], [  0.7946667], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 2.67056793480808e-01
-F     1 5.35381816326833e-01
-F     2 8.01278341029533e-01
-#   0: [  0.5916928], [  0.7054363], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 4.31499489476775e-01
-F     1 7.06883078307470e-01
-F     2 5.60468111656531e-01
-#   0: [  0.3787575], [  0.6511005], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 4.47795315580529e-01
-F     1 8.94136094419711e-01
-F     2 1.81368532491116e-11
-#   0: [1.154628e-11], [  0.7044187], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.22682542703198e-01
-F     1 4.93527716495576e-01
-F     2 8.61033905700897e-01
-#   0: [  0.6603652], [  0.8448911], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 5.81046585681324e-17
-F     1 9.48921086611865e-01
-F     2 3.15513504283873e-01
-#   0: [  0.2043535], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 7.72016565188094e-01
-F     1 1.25247647091536e-01
-F     2 6.23139992275581e-01
-#   0: [  0.4282866], [  0.1023896], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 8.60329809223607e-01
-F     1 4.94350001066378e-01
-F     2 1.24300827861059e-01
-#   0: [ 0.07933757], [  0.3320211], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.94337239791130e-17
-F     1 3.17376797826826e-01
-F     2 9.48299513972874e-01
-#   0: [   0.794396], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 2.34566814250206e-01
-F     1 9.42707805696183e-01
-F     2 2.37234910442597e-01
-#   0: [  0.1524822], [  0.8447475], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 3.43293709286946e-01
-F     1 1.14876670432972e-01
-F     2 9.32176367300869e-01
-#   0: [   0.764185], [  0.2055759], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 8.91383997194064e-01
-F     1 3.73866600331722e-01
-F     2 2.56238823566479e-01
-#   0: [  0.1649667], [  0.2528253], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.00000000000266e+00
-F     1 2.02547389118324e-14
-F     2 1.14164454076666e-12
-#   0: [7.267935e-13], [1.289457e-14], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.33658009017903e-01
-F     1 6.36507151851984e-01
-F     2 7.59601331138250e-01
-#   0: [  0.5492118], [  0.8682328], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.42393523928406e-01
-F     1 2.35639953004943e-01
-F     2 2.37420004644996e-01
-#   0: [  0.1526035], [  0.1559847], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 2.00537777830865e-16
-F     1 7.07921281465802e-01
-F     2 7.06291341620309e-01
-#   0: [  0.4992663], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 2.00537777830865e-16
-F     1 7.07921281465802e-01
-F     2 7.06291341620309e-01
-#   0: [  0.4992663], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.79721743840874e-01
-F     1 2.00362932336883e-01
-F     2 6.88580402658117e-13
-#   0: [4.383639e-13], [  0.1284243], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 6.37122735881037e-01
-F     1 1.30692146500725e-01
-F     2 7.59601331138385e-01
-#   0: [  0.5492118], [  0.1288022], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 4.06446885335048e-01
-F     1 4.12072208754408e-01
-F     2 8.15473742173475e-01
-#   0: [   0.607047], [  0.5043751], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 6.35962008895498e-01
-F     1 7.61644029343537e-01
-F     2 1.24300827861059e-01
-#   0: [ 0.07933757], [  0.5570955], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.95638631415029e-01
-F     1 9.32937062936674e-02
-F     2 5.33922721141931e-19
-#   0: [3.399058e-19], [ 0.05947911], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 2.43614168471274e-01
-F     1 2.42196984568523e-01
-F     2 9.39144694701495e-01
-#   0: [  0.7767601], [  0.4981429], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 4.46609081345673e-01
-F     1 8.97606572027158e-15
-F     2 8.94729192807755e-01
-#   0: [   0.705263], [1.279495e-14], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 5.53460959732492e-18
-F     1 9.03870340604056e-02
-F     2 9.95906714544148e-01
-#   0: [  0.9423792], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.95650534784209e-01
-F     1 1.20727005663204e-13
-F     2 9.31665851425113e-02
-#   0: [ 0.05939783], [7.719295e-14], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 5.82076443315920e-01
-F     1 6.86167238805514e-14
-F     2 8.13134069088359e-01
-#   0: [  0.6044809], [7.504644e-14], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 3.57637336520787e-17
-F     1 5.84066094436026e-01
-F     2 8.11706102806141e-01
-#   0: [  0.6029218], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 4.88566129905969e-01
-F     1 8.63709537248157e-01
-F     2 1.23729430516712e-01
-#   0: [ 0.07897098], [  0.6722765], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.15940713726568e-01
-F     1 8.66715425135808e-01
-F     2 4.85141343046478e-01
-#   0: [  0.3224637], [  0.9153418], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 3.56677801966904e-01
-F     1 9.26943818233489e-01
-F     2 1.16430680771479e-01
-#   0: [ 0.07429057], [  0.7661536], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 6.76471831914521e-01
-F     1 6.85834324751366e-01
-F     2 2.68360093193922e-01
-#   0: [  0.1729634], [  0.5043751], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.70017400914988e-01
-F     1 2.18308163048721e-01
-F     2 1.06807246329191e-01
-#   0: [ 0.06812555], [   0.140927], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.94746342871132e-01
-F     1 9.80853639419500e-01
-F     2 3.49666954552761e-15
-#   0: [2.226049e-15], [  0.8752233], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.89999912975732e-01
-F     1 9.80395533491740e-02
-F     2 1.01431840603450e-01
-#   0: [ 0.06468476], [ 0.06283948], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.25820707802585e-01
-F     1 7.70045017298620e-01
-F     2 6.25459687620207e-01
-#   0: [  0.4301771], [  0.8968913], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 5.36572374891311e-01
-F     1 8.00551955500440e-01
-F     2 2.66845747672917e-01
-#   0: [  0.1719628], [  0.6240879], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 7.06163089088565e-01
-F     1 7.08049215527350e-01
-F     2 1.43953601883676e-10
-#   0: [9.164371e-11], [  0.5008491], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 8.14049956277202e-01
-F     1 1.05299440897705e-14
-F     2 5.80794859385819e-01
-#   0: [  0.3945163], [8.234839e-15], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 7.06924941564001e-01
-F     1 5.20699401310902e-12
-F     2 7.07288574142106e-01
-#   0: [  0.5001637], [4.689148e-12], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.07996453366448e-01
-F     1 2.16505772448511e-01
-F     2 9.70289656010150e-01
-#   0: [  0.8444285], [  0.7054363], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 8.87111355911438e-01
-F     1 2.54282474190743e-01
-F     2 3.85193283343719e-01
-#   0: [  0.2517304], [  0.1777164], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 6.00310992262744e-17
-F     1 9.80382250099709e-01
-F     2 1.97105666304729e-01
-#   0: [  0.1263084], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 8.94165820763504e-01
-F     1 4.47735954533342e-01
-F     2 8.64717847315096e-10
-#   0: [5.504965e-10], [  0.2955391], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 5.66924243761480e-01
-F     1 4.22302941953201e-01
-F     2 7.07288574100770e-01
-#   0: [  0.5001637], [  0.4075833], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 6.09816211946948e-17
-F     1 9.95905451876452e-01
-F     2 9.04009453701971e-02
-#   0: [ 0.05762971], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.96804256580065e-12
-F     1 1.60640544154829e-25
-F     2 1.00000000000515e+00
-#   0: [          1], [5.196379e-14], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.30811429349149e-01
-F     1 1.15298309722771e-01
-F     2 3.46837689370787e-01
-#   0: [  0.2254891], [ 0.07845756], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.03769318854863e-02
-F     1 1.35133610113834e-03
-F     2 9.95906714547509e-01
-#   0: [  0.9423792], [0.009518172], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.23246371879136e-01
-F     1 9.29792422561315e-01
-F     2 3.46837689371157e-01
-#   0: [  0.2254891], [  0.9161035], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 3.18537222615563e-01
-F     1 5.74227106680273e-15
-F     2 9.47910353256118e-01
-#   0: [  0.7936168], [1.147635e-14], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 4.75787777939225e-14
-F     1 1.00000000000018e+00
-F     2 2.05316988057274e-13
-#   0: [1.307089e-13], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 8.14792677488722e-01
-F     1 5.79752440886281e-01
-F     2 5.09642728133460e-11
-#   0: [3.244486e-11], [  0.3937015], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 2.66541691531579e-01
-F     1 7.99826412294841e-01
-F     2 5.37804087821101e-01
-#   0: [   0.361492], [  0.7952153], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 5.81046585681324e-17
-F     1 9.48921086611865e-01
-F     2 3.15513504283873e-01
-#   0: [  0.2043535], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.80615383084481e-01
-F     1 2.97917392281712e-15
-F     2 1.95942518250716e-01
-#   0: [  0.1255532], [1.934093e-15], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 2.18857134343353e-01
-F     1 1.03148137114494e-01
-F     2 9.70289656009460e-01
-#   0: [  0.8444285], [  0.2803852], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 6.37628521623095e-15
-F     1 8.14049956275612e-01
-F     2 5.80794859384684e-01
-#   0: [  0.3945163], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 8.95245938711498e-01
-F     1 5.28541615206338e-15
-F     2 4.45572338931540e-01
-#   0: [  0.2939996], [3.758521e-15], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 5.33844232635431e-01
-F     1 2.68321544685926e-01
-F     2 8.01881465025649e-01
-#   0: [   0.592335], [  0.2965009], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.95209014602367e-01
-F     1 2.30117593793351e-14
-F     2 9.80761663515416e-01
-#   0: [   0.874923], [7.504644e-14], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 3.87080972444772e-01
-F     1 8.85725683306898e-01
-F     2 2.56238823566615e-01
-#   0: [  0.1649667], [  0.7377072], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.71630068586517e-01
-F     1 9.62203902205642e-02
-F     2 2.16047787133014e-01
-#   0: [  0.1386334], [ 0.06283948], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 8.63734479320415e-01
-F     1 1.23083063980025e-01
-F     2 4.88685285851258e-01
-#   0: [  0.3250467], [ 0.09011229], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 4.23185089678321e-01
-F     1 5.67811704344178e-01
-F     2 7.06048332827134e-01
-#   0: [  0.4990478], [  0.5922573], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 5.74053537610800e-01
-F     1 5.75586806017625e-01
-F     2 5.82376480204133e-01
-#   0: [  0.3957541], [  0.5008491], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 5.80230781029673e-01
-F     1 8.14452110774904e-01
-F     2 1.52109209730291e-12
-#   0: [9.683573e-13], [  0.6059247], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.01151244011648e-01
-F     1 9.89560802623817e-01
-F     2 1.02654000146680e-01
-#   0: [ 0.06546689], [   0.935151], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.96804256580065e-12
-F     1 1.60640544154829e-25
-F     2 1.00000000000515e+00
-#   0: [          1], [5.196379e-14], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 4.93358472820415e-01
-F     1 1.23361381841186e-01
-F     2 8.61033905700897e-01
-#   0: [  0.6603652], [  0.1559847], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 6.84023235075546e-01
-F     1 2.64693533383928e-01
-F     2 6.79742265319375e-01
-#   0: [  0.4758167], [  0.2350525], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 2.73469190973231e-17
-F     1 4.46609081350853e-01
-F     2 8.94729192803581e-01
-#   0: [   0.705263], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 8.01301585196723e-01
-F     1 2.68140241518728e-01
-F     2 5.34805179896489e-01
-#   0: [    0.35923], [  0.2055759], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.12105369361265e-01
-F     1 3.49488138453697e-01
-F     2 9.30209883435208e-01
-#   0: [  0.7607506], [  0.8023923], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 8.15541110483169e-01
-F     1 4.06951493572227e-01
-F     2 4.11440371140654e-01
-#   0: [  0.2699483], [  0.2946555], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 4.09523994910043e-01
-F     1 8.14252367876723e-01
-F     2 4.11440371138462e-01
-#   0: [  0.2699483], [  0.7033348], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.10610384295444e-01
-F     1 9.70097261392893e-01
-F     2 2.16047787133053e-01
-#   0: [  0.1386334], [  0.9277248], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.48313512026631e-01
-F     1 3.17334969564383e-01
-F     2 2.15643424251223e-10
-#   0: [1.372829e-10], [  0.2055759], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 3.57637336520787e-17
-F     1 5.84066094436026e-01
-F     2 8.11706102806141e-01
-#   0: [  0.6029218], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 7.09134500018187e-01
-F     1 4.27789383576317e-01
-F     2 5.60468111656730e-01
-#   0: [  0.3787575], [  0.3455635], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 5.53460959732492e-18
-F     1 9.03870340604056e-02
-F     2 9.95906714544148e-01
-#   0: [  0.9423792], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 2.60652193399789e-01
-F     1 3.75239233150839e-01
-F     2 8.89525689331258e-01
-#   0: [  0.6979301], [  0.6135002], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 5.63218394448299e-01
-F     1 7.16590441714846e-01
-F     2 4.11440371138973e-01
-#   0: [  0.2699483], [  0.5759303], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.19531047435276e-17
-F     1 1.95209014580364e-01
-F     2 9.80761663518890e-01
-#   0: [   0.874923], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.19531047435276e-17
-F     1 1.95209014580364e-01
-F     2 9.80761663518890e-01
-#   0: [   0.874923], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 2.49318014488511e-01
-F     1 8.83882535009238e-01
-F     2 3.95717313189429e-01
-#   0: [   0.259008], [  0.8249751], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 2.13833176314980e-01
-F     1 9.71074376590790e-01
-F     2 1.06254072094039e-01
-#   0: [ 0.06777138], [  0.8620167], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 8.03243015683895e-01
-F     1 5.33843446641194e-01
-F     2 2.64219288157989e-01
-#   0: [  0.1702285], [  0.3734268], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.70029476696807e-02
-F     1 1.06378677807296e-01
-F     2 9.89582742904406e-01
-#   0: [  0.9080293], [  0.5293269], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 7.03558437606368e-01
-F     1 5.68207572308922e-01
-F     2 4.26785285177920e-01
-#   0: [   0.280708], [  0.4325002], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 1.94337239791130e-17
-F     1 3.17376797826826e-01
-F     2 9.48299513972874e-01
-#   0: [   0.794396], [          1], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 7.70417421288556e-01
-F     1 6.24760888242653e-01
-F     2 1.27007202542603e-01
-#   0: [ 0.08107427], [  0.4337768], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
-
-F     0 9.48669966799316e-01
-F     1 3.13495000490326e-15
-F     2 3.16267756960752e-01
-#   0: [  0.2048596], [2.103757e-15], [        0.5], [        0.5], [        0.5]
-#   5: [        0.5], [        0.5], [        0.5], [        0.5], [        0.5]
-#  10: [        0.5], [        0.5]
+F     0 2.12517432397894e+00
+F     1 1.26009126475980e+00
+F     2 1.69992027013966e+00
+#   0: [  0.3836618], [  0.3407245], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.30689201946818e+00
+F     1 1.87852274619465e+00
+F     2 3.78584640733593e-01
+#   0: [ 0.08058028], [  0.4350693], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.45536434345970e+00
+F     1 1.22129342748125e+00
+F     2 1.21389996808292e+00
+#   0: [  0.2652968], [  0.2938407], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 5.88762119759991e-01
+F     1 5.84642382400822e-12
+F     2 2.94062646284609e+00
+#   0: [  0.8742015], [6.321652e-12], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.03953625779238e+00
+F     1 3.50073454161567e-01
+F     2 2.79118931158053e+00
+#   0: [  0.7616207], [  0.2067937], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.30058013979894e+00
+F     1 4.20014903190983e-01
+F     2 1.87745661177937e+00
+#   0: [  0.4306427], [   0.114961], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.68187299589180e+00
+F     1 1.34219300458623e+00
+F     2 1.70775913198603e-10
+#   0: [3.625201e-11], [  0.2954058], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.43866726989257e+00
+F     1 1.06484177001792e-11
+F     2 1.74551619139145e+00
+#   0: [  0.3954868], [2.779794e-12], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.82976687501893e-07
+F     1 2.12186776111993e+00
+F     2 2.11933999914449e+00
+#   0: [  0.4996206], [  0.9999999], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.78604006462178e+00
+F     1 3.51710968802006e-01
+F     2 1.05271315200321e+00
+#   0: [  0.2283321], [ 0.07994428], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.43225936661776e+00
+F     1 1.75443415412323e+00
+F     2 1.45082267863414e-08
+#   0: [3.079781e-09], [   0.397818], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.67782550880140e+00
+F     1 7.65923559393513e-01
+F     2 1.11199661565737e+00
+#   0: [  0.2418266], [  0.1773536], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.69537883039910e+00
+F     1 1.27593629038237e+00
+F     2 2.11933999914449e+00
+#   0: [  0.4996206], [  0.4107221], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.61108502345675e+00
+F     1 2.40840176822053e+00
+F     2 7.73259851330401e-01
+#   0: [  0.1660217], [  0.6246634], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.22516125909702e+00
+F     1 1.23092752068960e+00
+F     2 2.44493806786015e+00
+#   0: [   0.606806], [  0.5014946], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.05473969826415e+00
+F     1 2.78555734677231e+00
+F     2 3.49455668722599e-01
+#   0: [ 0.07435074], [  0.7695671], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 3.19478432474820e-01
+F     1 6.39234310161590e-01
+F     2 2.91259984473505e+00
+#   0: [  0.8468274], [  0.7049433], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.11782494661881e+00
+F     1 2.12337992905955e+00
+F     2 2.62989448137397e-09
+#   0: [5.582694e-10], [  0.5008338], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.39961774753467e+00
+F     1 8.18590903970713e-01
+F     2 1.60177040343082e+00
+#   0: [  0.3587017], [  0.2092916], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.98655936943500e+00
+F     1 2.72741563561370e-01
+F     2 9.06721195688451e-09
+#   0: [1.924772e-09], [ 0.05797721], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.94136600949708e+00
+F     1 5.85056258687279e-01
+F     2 1.99485027362019e-13
+#   0: [4.234633e-14], [  0.1249963], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 7.76936230450237e-01
+F     1 2.66799924320368e+00
+F     2 1.12786300574730e+00
+#   0: [  0.2454573], [  0.8196016], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 6.38934688852161e-01
+F     1 2.90922120620519e+00
+F     2 3.49455668722620e-01
+#   0: [ 0.07435074], [  0.8623682], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 8.39622061844262e-07
+F     1 2.75173931786442e-01
+F     2 2.98633623942775e+00
+#   0: [  0.9415043], [  0.9999981], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 5.85852211422735e-01
+F     1 2.94120757751387e+00
+F     2 1.12194169750368e-09
+#   0: [2.381638e-10], [  0.8748314], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.78971749640290e+00
+F     1 1.04368666443340e+00
+F     2 3.49455668722620e-01
+#   0: [ 0.07435074], [  0.2279087], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 4.09597354751120e-06
+F     1 1.34239581924061e+00
+F     2 2.68177148394928e+00
+#   0: [  0.7045461], [  0.9999981], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.12801510514433e+00
+F     1 7.47899919840494e-01
+F     2 2.67621980788645e+00
+#   0: [   0.701924], [  0.3727255], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 8.00135871643538e-01
+F     1 1.60096660667669e+00
+F     2 2.40636932719613e+00
+#   0: [  0.5928814], [  0.7049433], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 3.31034979665805e-01
+F     1 2.96752833149844e+00
+F     2 2.79492882998291e-01
+#   0: [ 0.05941648], [  0.9292759], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.66230964087674e-04
+F     1 1.74208661072593e+00
+F     2 2.44111839071879e+00
+#   0: [   0.605408], [  0.9999027], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.91502061288343e+00
+F     1 6.11931687132029e-01
+F     2 3.49455668722599e-01
+#   0: [ 0.07435074], [  0.1317288], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.22130071123957e+00
+F     1 2.44366203878448e+00
+F     2 1.23728139102808e+00
+#   0: [   0.270735], [  0.7049433], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.47858787590776e+00
+F     1 3.67373927811287e-01
+F     2 2.58316455496704e+00
+#   0: [  0.6607556], [  0.1550368], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.41074296355433e+00
+F     1 1.60757966945581e+00
+F     2 7.73259851330401e-01
+#   0: [  0.1660217], [  0.3744104], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.73904004828393e+00
+F     1 2.44328969590561e+00
+F     2 3.56656127186992e-08
+#   0: [7.571034e-09], [  0.6062022], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.84536020843924e+00
+F     1 1.90220722034082e-07
+F     2 9.47549530043423e-01
+#   0: [  0.2046507], [4.255991e-08], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.12805265180621e+00
+F     1 2.66898693228861e+00
+F     2 7.73259851330401e-01
+#   0: [  0.1660217], [  0.7454284], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 8.39622061844262e-07
+F     1 2.75173931786442e-01
+F     2 2.98633623942775e+00
+#   0: [  0.9415043], [  0.9999981], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.94052358669760e+00
+F     1 4.48789412277514e-14
+F     2 5.89275711131943e-01
+#   0: [  0.1259097], [9.716236e-15], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.96716489385662e+00
+F     1 3.32014421598417e-01
+F     2 2.82176795946244e-01
+#   0: [ 0.05998873], [ 0.07094023], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 7.22789055350497e-07
+F     1 2.98678313724871e+00
+F     2 2.70280074554486e-01
+#   0: [ 0.05745254], [  0.9999998], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.66413373272967e-01
+F     1 2.98713051977901e+00
+F     2 3.42264704045639e-09
+#   0: [7.265535e-10], [  0.9433716], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 3.66278240112087e-10
+F     1 9.50586741763334e-01
+F     2 2.84434696794144e+00
+#   0: [  0.7946696], [          1], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.91281058095040e-01
+F     1 2.92659700495998e-01
+F     2 2.97042597493282e+00
+#   0: [  0.9120689], [   0.501503], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 8.94587447919033e-05
+F     1 5.85374740494122e-01
+F     2 2.94130264217124e+00
+#   0: [  0.8749348], [  0.9999027], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.34043507530109e+00
+F     1 2.68275206393687e+00
+F     2 4.89693172505206e-11
+#   0: [1.039512e-11], [  0.7050114], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 3.66278240112087e-10
+F     1 9.50586741763334e-01
+F     2 2.84434696794144e+00
+#   0: [  0.7946696], [          1], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.92208716223584e+00
+F     1 3.57637300395041e-01
+F     2 2.27411550493554e+00
+#   0: [  0.5479341], [  0.1171147], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 6.42232044059522e-01
+F     1 3.19444964009928e-01
+F     2 2.91194398026571e+00
+#   0: [  0.8462442], [  0.2938407], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.59252903859450e+00
+F     1 1.45924353056676e+00
+F     2 3.78584640733593e-01
+#   0: [ 0.08058028], [  0.3263737], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 9.56835806711675e-01
+F     1 2.84225088031465e+00
+F     2 2.81772985515182e-11
+#   0: [5.981428e-12], [  0.7932704], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.10316736353829e+00
+F     1 1.71262794188855e+00
+F     2 1.27965518842617e+00
+#   0: [   0.280645], [  0.4350693], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.68414262334634e+00
+F     1 2.27811560400487e-03
+F     2 1.33764644632976e+00
+#   0: [   0.294327], [0.0005403189], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.01890292387902e+00
+F     1 8.21317073609612e-01
+F     2 2.05995001789001e+00
+#   0: [  0.4820421], [  0.2459684], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.91447971114541e+00
+F     1 3.26119150829716e-01
+F     2 6.27199442313876e-01
+#   0: [   0.134131], [ 0.07094023], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 3.34313197600350e-01
+F     1 1.04471131920920e+00
+F     2 2.79118931158053e+00
+#   0: [  0.7616207], [  0.8028339], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.58198239384115e+00
+F     1 3.79165333697820e-01
+F     2 1.47767567323484e+00
+#   0: [  0.3279982], [ 0.09282445], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 3.77919463187805e-01
+F     1 1.47592770451698e+00
+F     2 2.58316455496704e+00
+#   0: [  0.6607556], [  0.8404186], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.99898730034906e+00
+F     1 1.99588745756092e-13
+F     2 6.07426586299695e-09
+#   0: [1.289435e-09], [4.236835e-14], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 8.19535020841293e-01
+F     1 2.39690577102603e+00
+F     2 1.60534416935801e+00
+#   0: [  0.3595994], [  0.7902637], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.07103095763449e-09
+F     1 1.38454527812583e-16
+F     2 2.99898730034906e+00
+#   0: [          1], [4.255991e-08], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 9.43949073107673e-01
+F     1 8.01034739356214e-04
+F     2 2.84655657477196e+00
+#   0: [  0.7961546], [0.0005402351], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 3.67485898515042e-01
+F     1 1.90722621141203e+00
+F     2 2.28503109837687e+00
+#   0: [  0.5515002], [  0.8788207], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 7.51932769262548e-01
+F     1 1.12533075990631e+00
+F     2 2.67621983756432e+00
+#   0: [   0.701924], [  0.6249958], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.27150635005128e+00
+F     1 1.70046863148874e+00
+F     2 2.11792418720689e+00
+#   0: [  0.4991959], [  0.5912568], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.98653928080419e+00
+F     1 5.21541116087614e-15
+F     2 2.72961447586544e-01
+#   0: [ 0.05802408], [1.111733e-15], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 4.05203117825682e-01
+F     1 2.27367815645704e+00
+F     2 1.91314476760343e+00
+#   0: [  0.4404184], [  0.8877237], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.74622608234304e+00
+F     1 1.17170154319865e-13
+F     2 2.43815899748147e+00
+#   0: [  0.6043278], [4.27166e-14], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 7.03462902518391e-01
+F     1 7.06792414541094e-01
+F     2 2.82834037116867e+00
+#   0: [  0.7842066], [   0.501503], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.82360916529882e+00
+F     1 7.01561541631693e-01
+F     2 7.27301527977812e-01
+#   0: [  0.1559452], [  0.1550368], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 3.73423763867478e-04
+F     1 2.44350442627771e+00
+F     2 1.73873828018219e+00
+#   0: [  0.3937192], [  0.9999027], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.20460924283770e-05
+F     1 2.68414359000953e+00
+F     2 1.33764644632976e+00
+#   0: [   0.294327], [  0.9999948], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.34363752254169e+00
+F     1 2.35754717488596e-13
+F     2 2.68114957353614e+00
+#   0: [  0.7042513], [1.117013e-13], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 4.32254769579109e-09
+F     1 2.99898730034889e+00
+F     2 5.38832998732357e-09
+#   0: [1.143825e-09], [          1], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.26688005541290e+00
+F     1 2.10305231973734e+00
+F     2 1.72224002197671e+00
+#   0: [  0.3894311], [  0.6548357], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.12436693638383e+00
+F     1 2.40119870515532e-12
+F     2 2.11683488899209e+00
+#   0: [  0.4988694], [7.195793e-13], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 3.45243039145349e-01
+F     1 2.80375421283387e+00
+F     2 1.00682390992317e+00
+#   0: [  0.2179601], [  0.9220018], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.66603701424100e+00
+F     1 1.13767062544211e+00
+F     2 7.69335436827186e-01
+#   0: [  0.1651596], [  0.2567696], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 4.01126479300663e-01
+F     1 2.57644903590298e+00
+F     2 1.48153053989864e+00
+#   0: [   0.328939], [  0.9016743], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.04911808906456e+00
+F     1 2.02412172843979e+00
+F     2 8.35446654897982e-01
+#   0: [   0.179725], [  0.4960933], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.48192127701479e+00
+F     1 2.58243746102844e+00
+F     2 3.58958098200670e-01
+#   0: [ 0.07638212], [  0.6683424], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.07103095763449e-09
+F     1 1.38454527812583e-16
+F     2 2.99898730034906e+00
+#   0: [          1], [4.255991e-08], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 7.14478497294713e-01
+F     1 2.82384834558136e+00
+F     2 7.13670670348627e-01
+#   0: [  0.1529644], [   0.842236], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.89788966335208e+00
+F     1 2.29098522980790e+00
+F     2 3.78584640733593e-01
+#   0: [ 0.08058028], [  0.5595677], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 3.73423763867478e-04
+F     1 2.44350442627771e+00
+F     2 1.73873828018219e+00
+#   0: [  0.3937192], [  0.9999027], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 3.25129610217635e-01
+F     1 2.91459026687729e+00
+F     2 6.27199442313876e-01
+#   0: [   0.134131], [  0.9292759], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.66230964087674e-04
+F     1 1.74208661072593e+00
+F     2 2.44111839071879e+00
+#   0: [   0.605408], [  0.9999027], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.48200203469000e-07
+F     1 2.94052358690965e+00
+F     2 5.89275710072873e-01
+#   0: [  0.1259097], [          1], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.84179258705942e+00
+F     1 9.58196075857691e-01
+F     2 2.51453048039717e-09
+#   0: [5.337801e-10], [  0.2070343], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.74392934049776e+00
+F     1 1.72815641355386e+00
+F     2 1.72224002197681e+00
+#   0: [  0.3894311], [   0.497108], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 8.01476699787662e-01
+F     1 2.02550863531470e+00
+F     2 2.06127986833835e+00
+#   0: [  0.4824306], [  0.7601301], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.20460924283770e-05
+F     1 2.68414359000953e+00
+F     2 1.33764644632976e+00
+#   0: [   0.294327], [  0.9999948], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.82976687501893e-07
+F     1 2.12186776111993e+00
+F     2 2.11933999914449e+00
+#   0: [  0.4996206], [  0.9999999], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.09664458839177e-09
+F     1 2.84607626659099e+00
+F     2 9.45396590009398e-01
+#   0: [  0.2041691], [          1], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 8.94587447919033e-05
+F     1 5.85374740494122e-01
+F     2 2.94130264217124e+00
+#   0: [  0.8749348], [  0.9999027], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.69347235392966e+00
+F     1 2.11978372204874e+00
+F     2 1.27772969984541e+00
+#   0: [  0.2801931], [   0.570878], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 4.09597354751120e-06
+F     1 1.34239581924061e+00
+F     2 2.68177148394928e+00
+#   0: [  0.7045461], [  0.9999981], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 2.67570510394014e-01
+F     1 4.54205892970874e-13
+F     2 2.98702709221434e+00
+#   0: [   0.943125], [1.080674e-12], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
+
+F     0 1.60352998506522e+00
+F     1 7.97592681813501e-01
+F     2 2.40550666774553e+00
+#   0: [  0.5925746], [  0.2938407], [        0.5], [        0.5], [        0.5]
+#   5: [  0.4000506], [        0.5], [        0.5], [        0.5], [        0.5]
+#  10: [  0.5999494], [        0.5]
 
