@@ -1238,7 +1238,6 @@ size_t PGAIndividualHashIndex (PGAContext *ctx, int p, int pop)
 {
     PGABinary hash = 0;
     assert (ctx->ga.NoDuplicates);
-    assert (pop == PGA_NEWPOP);
 
     if (ctx->fops.Hash) {
 	int fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p + 1;

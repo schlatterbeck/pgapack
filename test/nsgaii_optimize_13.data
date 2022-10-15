@@ -597,1085 +597,1596 @@ Iter #     Field   Idx Value
 1000       Best        0 -3.000000e-01
 1000       Best        1 1.627242e+00
 1000       Best        2 -6.000000e-01
-1000       Best        3 -1.387011e-08
+1000       Best        3 -2.709888e-09
 1000       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1010       Best        0 -3.000000e-01
 1010       Best        1 1.627242e+00
 1010       Best        2 -6.000000e-01
-1010       Best        3 -1.387011e-08
+1010       Best        3 -2.709888e-09
 1010       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1020       Best        0 -3.000000e-01
 1020       Best        1 1.627242e+00
 1020       Best        2 -6.000000e-01
-1020       Best        3 -1.387011e-08
+1020       Best        3 -2.709888e-09
 1020       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1030       Best        0 -3.000000e-01
 1030       Best        1 1.627242e+00
 1030       Best        2 -6.000000e-01
-1030       Best        3 -1.387011e-08
+1030       Best        3 -2.709888e-09
 1030       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1040       Best        0 -3.000000e-01
 1040       Best        1 1.627242e+00
 1040       Best        2 -6.000000e-01
-1040       Best        3 -1.387011e-08
+1040       Best        3 -2.709888e-09
 1040       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1050       Best        0 -3.000000e-01
 1050       Best        1 1.627242e+00
 1050       Best        2 -6.000000e-01
-1050       Best        3 -1.387011e-08
+1050       Best        3 -2.709888e-09
 1050       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1060       Best        0 -3.000000e-01
 1060       Best        1 1.627242e+00
 1060       Best        2 -6.000000e-01
-1060       Best        3 -1.387011e-08
+1060       Best        3 -2.709888e-09
 1060       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1070       Best        0 -3.000000e-01
 1070       Best        1 1.627242e+00
 1070       Best        2 -6.000000e-01
-1070       Best        3 -6.767449e-09
+1070       Best        3 -2.709888e-09
 1070       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1080       Best        0 -3.000000e-01
 1080       Best        1 1.627242e+00
 1080       Best        2 -6.000000e-01
-1080       Best        3 -6.767449e-09
+1080       Best        3 -2.709888e-09
 1080       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1090       Best        0 -3.000000e-01
 1090       Best        1 1.627242e+00
 1090       Best        2 -6.000000e-01
-1090       Best        3 -6.767449e-09
+1090       Best        3 -2.709888e-09
 1090       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1100       Best        0 -3.000000e-01
 1100       Best        1 1.627242e+00
 1100       Best        2 -6.000000e-01
-1100       Best        3 -6.767449e-09
+1100       Best        3 -2.709888e-09
 1100       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1110       Best        0 -3.000000e-01
 1110       Best        1 1.627242e+00
 1110       Best        2 -6.000000e-01
-1110       Best        3 -6.767449e-09
+1110       Best        3 -2.709888e-09
 1110       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1120       Best        0 -3.000000e-01
 1120       Best        1 1.627242e+00
 1120       Best        2 -6.000000e-01
-1120       Best        3 -6.767449e-09
+1120       Best        3 -2.709888e-09
 1120       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1130       Best        0 -3.000000e-01
 1130       Best        1 1.627242e+00
 1130       Best        2 -6.000000e-01
-1130       Best        3 -6.767449e-09
+1130       Best        3 -2.709888e-09
 1130       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1140       Best        0 -3.000000e-01
 1140       Best        1 1.627242e+00
 1140       Best        2 -6.000000e-01
-1140       Best        3 -6.767449e-09
+1140       Best        3 -2.709888e-09
 1140       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1150       Best        0 -3.000000e-01
 1150       Best        1 1.627242e+00
 1150       Best        2 -6.000000e-01
-1150       Best        3 -6.767449e-09
+1150       Best        3 -2.709888e-09
 1150       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1160       Best        0 -3.000000e-01
 1160       Best        1 1.627242e+00
 1160       Best        2 -6.000000e-01
-1160       Best        3 -6.767449e-09
+1160       Best        3 -2.709888e-09
 1160       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1170       Best        0 -3.000000e-01
 1170       Best        1 1.627242e+00
 1170       Best        2 -6.000000e-01
-1170       Best        3 -6.767449e-09
+1170       Best        3 -2.709888e-09
 1170       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1180       Best        0 -3.000000e-01
 1180       Best        1 1.627242e+00
 1180       Best        2 -6.000000e-01
-1180       Best        3 -6.767449e-09
+1180       Best        3 -2.709888e-09
 1180       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1190       Best        0 -3.000000e-01
 1190       Best        1 1.627242e+00
 1190       Best        2 -6.000000e-01
-1190       Best        3 -6.767449e-09
+1190       Best        3 -2.709888e-09
 1190       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1200       Best        0 -3.000000e-01
 1200       Best        1 1.627242e+00
 1200       Best        2 -6.000000e-01
-1200       Best        3 -6.767449e-09
+1200       Best        3 -2.709888e-09
 1200       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1210       Best        0 -3.000000e-01
 1210       Best        1 1.627242e+00
 1210       Best        2 -6.000000e-01
-1210       Best        3 -6.767449e-09
+1210       Best        3 -2.709888e-09
 1210       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1220       Best        0 -3.000000e-01
 1220       Best        1 1.627242e+00
 1220       Best        2 -6.000000e-01
-1220       Best        3 -6.767449e-09
+1220       Best        3 -2.709888e-09
 1220       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1230       Best        0 -3.000000e-01
-1230       Best        1 1.627242e+00
+1230       Best        1 1.618062e+00
 1230       Best        2 -6.000000e-01
-1230       Best        3 -6.767449e-09
+1230       Best        3 -2.709888e-09
 1230       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1240       Best        0 -3.000000e-01
-1240       Best        1 1.627242e+00
+1240       Best        1 1.618062e+00
 1240       Best        2 -6.000000e-01
-1240       Best        3 -6.767449e-09
+1240       Best        3 -2.709888e-09
 1240       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1250       Best        0 -3.000000e-01
-1250       Best        1 1.627242e+00
-1250       Best        2 -6.000000e-01
-1250       Best        3 -6.767449e-09
+1250       Best        1 1.618062e+00
+1250       Best        2 -5.033221e-01
+1250       Best        3 -9.667791e-02
 1250       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1260       Best        0 -3.000000e-01
-1260       Best        1 1.627242e+00
-1260       Best        2 -6.000000e-01
-1260       Best        3 -6.408116e-09
+1260       Best        1 1.618062e+00
+1260       Best        2 -5.033221e-01
+1260       Best        3 -9.667791e-02
 1260       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1270       Best        0 -3.000000e-01
-1270       Best        1 1.627242e+00
-1270       Best        2 -6.000000e-01
-1270       Best        3 -6.408116e-09
+1270       Best        1 1.618062e+00
+1270       Best        2 -5.033221e-01
+1270       Best        3 -9.667791e-02
 1270       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1280       Best        0 -3.000000e-01
-1280       Best        1 1.627242e+00
-1280       Best        2 -6.000000e-01
-1280       Best        3 -6.408116e-09
+1280       Best        1 1.618062e+00
+1280       Best        2 -5.033221e-01
+1280       Best        3 -9.667791e-02
 1280       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1290       Best        0 -3.000000e-01
-1290       Best        1 1.627242e+00
-1290       Best        2 -6.000000e-01
-1290       Best        3 -6.408116e-09
+1290       Best        1 1.618062e+00
+1290       Best        2 -5.033221e-01
+1290       Best        3 -9.667791e-02
 1290       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1300       Best        0 -3.000000e-01
-1300       Best        1 1.627242e+00
-1300       Best        2 -6.000000e-01
-1300       Best        3 -6.408116e-09
+1300       Best        1 1.618062e+00
+1300       Best        2 -5.033221e-01
+1300       Best        3 -9.667791e-02
 1300       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1310       Best        0 -3.000000e-01
-1310       Best        1 1.627242e+00
-1310       Best        2 -6.000000e-01
-1310       Best        3 -6.408116e-09
+1310       Best        1 1.618062e+00
+1310       Best        2 -5.033221e-01
+1310       Best        3 -9.667791e-02
 1310       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1320       Best        0 -3.000000e-01
-1320       Best        1 1.627242e+00
-1320       Best        2 -5.182429e-01
-1320       Best        3 -8.175710e-02
+1320       Best        1 1.618062e+00
+1320       Best        2 -5.033221e-01
+1320       Best        3 -9.667791e-02
 1320       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1330       Best        0 -3.000000e-01
-1330       Best        1 1.627242e+00
-1330       Best        2 -6.000000e-01
-1330       Best        3 -1.049334e-09
+1330       Best        1 1.618062e+00
+1330       Best        2 -5.033221e-01
+1330       Best        3 -9.667791e-02
 1330       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1340       Best        0 -3.000000e-01
-1340       Best        1 1.627242e+00
-1340       Best        2 -6.000000e-01
-1340       Best        3 -1.049334e-09
+1340       Best        1 1.618062e+00
+1340       Best        2 -5.033221e-01
+1340       Best        3 -9.667791e-02
 1340       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1350       Best        0 -3.000000e-01
-1350       Best        1 1.627242e+00
-1350       Best        2 -6.000000e-01
-1350       Best        3 -1.049334e-09
+1350       Best        1 1.618062e+00
+1350       Best        2 -5.033221e-01
+1350       Best        3 -9.667791e-02
 1350       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1360       Best        0 -3.000000e-01
-1360       Best        1 1.627242e+00
-1360       Best        2 -6.000000e-01
-1360       Best        3 -5.574403e-10
+1360       Best        1 1.618062e+00
+1360       Best        2 -5.033221e-01
+1360       Best        3 -9.667791e-02
 1360       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1370       Best        0 -3.000000e-01
-1370       Best        1 1.627242e+00
-1370       Best        2 -6.000000e-01
-1370       Best        3 -5.574403e-10
+1370       Best        1 1.618062e+00
+1370       Best        2 -5.033221e-01
+1370       Best        3 -9.667791e-02
 1370       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1380       Best        0 -3.000000e-01
-1380       Best        1 1.627242e+00
-1380       Best        2 -6.000000e-01
-1380       Best        3 -5.574403e-10
+1380       Best        1 1.618062e+00
+1380       Best        2 -5.033221e-01
+1380       Best        3 -9.667791e-02
 1380       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1390       Best        0 -3.000000e-01
-1390       Best        1 1.627242e+00
-1390       Best        2 -6.000000e-01
-1390       Best        3 -5.574403e-10
+1390       Best        1 1.618062e+00
+1390       Best        2 -5.033221e-01
+1390       Best        3 -9.667791e-02
 1390       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1400       Best        0 -3.000000e-01
-1400       Best        1 1.627242e+00
+1400       Best        1 1.618062e+00
 1400       Best        2 -6.000000e-01
-1400       Best        3 -5.574403e-10
+1400       Best        3 -1.866183e-08
 1400       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1410       Best        0 -3.000000e-01
-1410       Best        1 1.627242e+00
+1410       Best        1 1.618062e+00
 1410       Best        2 -6.000000e-01
-1410       Best        3 -5.574403e-10
+1410       Best        3 -1.866183e-08
 1410       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1420       Best        0 -3.000000e-01
-1420       Best        1 1.627242e+00
+1420       Best        1 1.618062e+00
 1420       Best        2 -6.000000e-01
-1420       Best        3 -5.574403e-10
+1420       Best        3 -1.866183e-08
 1420       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1430       Best        0 -3.000000e-01
-1430       Best        1 1.623356e+00
+1430       Best        1 1.618062e+00
 1430       Best        2 -6.000000e-01
-1430       Best        3 -5.574403e-10
+1430       Best        3 -1.866183e-08
 1430       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1440       Best        0 -3.000000e-01
-1440       Best        1 1.623356e+00
+1440       Best        1 1.602132e+00
 1440       Best        2 -6.000000e-01
-1440       Best        3 -5.574403e-10
+1440       Best        3 -1.866183e-08
 1440       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1450       Best        0 -3.000000e-01
-1450       Best        1 1.623356e+00
+1450       Best        1 1.602132e+00
 1450       Best        2 -6.000000e-01
-1450       Best        3 -5.574403e-10
+1450       Best        3 -1.866183e-08
 1450       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1460       Best        0 -3.000000e-01
-1460       Best        1 1.623356e+00
+1460       Best        1 1.602132e+00
 1460       Best        2 -6.000000e-01
-1460       Best        3 -5.574403e-10
+1460       Best        3 -1.866183e-08
 1460       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1470       Best        0 -3.000000e-01
-1470       Best        1 1.623356e+00
+1470       Best        1 1.602132e+00
 1470       Best        2 -6.000000e-01
-1470       Best        3 -5.574403e-10
+1470       Best        3 -4.157449e-09
 1470       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1480       Best        0 -3.000000e-01
-1480       Best        1 1.623356e+00
+1480       Best        1 1.602132e+00
 1480       Best        2 -6.000000e-01
-1480       Best        3 -5.574403e-10
+1480       Best        3 -4.157449e-09
 1480       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1490       Best        0 -3.000000e-01
-1490       Best        1 1.623356e+00
+1490       Best        1 1.602132e+00
 1490       Best        2 -6.000000e-01
-1490       Best        3 -5.574403e-10
+1490       Best        3 -4.157449e-09
 1490       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1500       Best        0 -3.000000e-01
-1500       Best        1 1.623356e+00
+1500       Best        1 1.602132e+00
 1500       Best        2 -6.000000e-01
-1500       Best        3 -5.574403e-10
+1500       Best        3 -4.157449e-09
 1500       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1510       Best        0 -3.000000e-01
-1510       Best        1 1.623356e+00
+1510       Best        1 1.602132e+00
 1510       Best        2 -6.000000e-01
-1510       Best        3 -5.574403e-10
+1510       Best        3 -4.157449e-09
 1510       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1520       Best        0 -3.000000e-01
-1520       Best        1 1.623356e+00
+1520       Best        1 1.602132e+00
 1520       Best        2 -6.000000e-01
-1520       Best        3 -5.574403e-10
+1520       Best        3 -4.157449e-09
 1520       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1530       Best        0 -3.000000e-01
-1530       Best        1 1.623356e+00
+1530       Best        1 1.602132e+00
 1530       Best        2 -6.000000e-01
-1530       Best        3 -5.574403e-10
+1530       Best        3 -4.157449e-09
 1530       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1540       Best        0 -3.000000e-01
-1540       Best        1 1.623356e+00
+1540       Best        1 1.602132e+00
 1540       Best        2 -6.000000e-01
-1540       Best        3 -5.574403e-10
+1540       Best        3 -4.157449e-09
 1540       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1550       Best        0 -3.000000e-01
-1550       Best        1 1.623356e+00
+1550       Best        1 1.602132e+00
 1550       Best        2 -6.000000e-01
-1550       Best        3 -5.574403e-10
+1550       Best        3 -4.157449e-09
 1550       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1560       Best        0 -3.000000e-01
-1560       Best        1 1.623356e+00
+1560       Best        1 1.377083e+00
 1560       Best        2 -6.000000e-01
-1560       Best        3 -5.574403e-10
+1560       Best        3 -4.157449e-09
 1560       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1570       Best        0 -3.000000e-01
-1570       Best        1 1.623356e+00
+1570       Best        1 1.377083e+00
 1570       Best        2 -6.000000e-01
-1570       Best        3 -5.574403e-10
+1570       Best        3 -4.157449e-09
 1570       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1580       Best        0 -3.000000e-01
-1580       Best        1 1.623356e+00
+1580       Best        1 1.377083e+00
 1580       Best        2 -6.000000e-01
-1580       Best        3 -5.574403e-10
+1580       Best        3 -4.157449e-09
 1580       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1590       Best        0 -3.000000e-01
-1590       Best        1 1.623356e+00
+1590       Best        1 1.377083e+00
 1590       Best        2 -6.000000e-01
-1590       Best        3 -5.574403e-10
+1590       Best        3 -4.157449e-09
 1590       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1600       Best        0 -3.000000e-01
-1600       Best        1 1.623356e+00
+1600       Best        1 1.377083e+00
 1600       Best        2 -6.000000e-01
-1600       Best        3 -5.574403e-10
+1600       Best        3 -4.157449e-09
 1600       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1610       Best        0 -3.000000e-01
-1610       Best        1 1.623356e+00
+1610       Best        1 1.377083e+00
 1610       Best        2 -6.000000e-01
-1610       Best        3 -5.574403e-10
+1610       Best        3 -4.157449e-09
 1610       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1620       Best        0 -3.000000e-01
-1620       Best        1 1.623356e+00
+1620       Best        1 1.377083e+00
 1620       Best        2 -6.000000e-01
-1620       Best        3 -5.574403e-10
+1620       Best        3 -4.157449e-09
 1620       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1630       Best        0 -3.000000e-01
-1630       Best        1 1.623356e+00
+1630       Best        1 1.377083e+00
 1630       Best        2 -6.000000e-01
-1630       Best        3 -5.574403e-10
+1630       Best        3 -4.157449e-09
 1630       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1640       Best        0 -3.000000e-01
-1640       Best        1 1.623356e+00
+1640       Best        1 1.377083e+00
 1640       Best        2 -6.000000e-01
-1640       Best        3 -5.574403e-10
+1640       Best        3 -4.157449e-09
 1640       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1650       Best        0 -3.000000e-01
-1650       Best        1 1.623356e+00
-1650       Best        2 -5.999999e-01
-1650       Best        3 -7.675477e-08
+1650       Best        1 1.377083e+00
+1650       Best        2 -6.000000e-01
+1650       Best        3 -4.157449e-09
 1650       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1660       Best        0 -3.000000e-01
-1660       Best        1 1.620674e+00
-1660       Best        2 -5.999999e-01
-1660       Best        3 -7.675477e-08
+1660       Best        1 1.377083e+00
+1660       Best        2 -6.000000e-01
+1660       Best        3 -4.157449e-09
 1660       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1670       Best        0 -3.000000e-01
-1670       Best        1 1.620674e+00
-1670       Best        2 -5.999999e-01
-1670       Best        3 -7.675477e-08
+1670       Best        1 1.377083e+00
+1670       Best        2 -6.000000e-01
+1670       Best        3 -4.157449e-09
 1670       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1680       Best        0 -3.000000e-01
-1680       Best        1 1.620674e+00
-1680       Best        2 -5.999999e-01
-1680       Best        3 -7.675477e-08
+1680       Best        1 1.377083e+00
+1680       Best        2 -6.000000e-01
+1680       Best        3 -4.157449e-09
 1680       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1690       Best        0 -3.000000e-01
-1690       Best        1 1.545987e+00
-1690       Best        2 -5.999999e-01
-1690       Best        3 -7.675477e-08
+1690       Best        1 1.377083e+00
+1690       Best        2 -6.000000e-01
+1690       Best        3 -4.157449e-09
 1690       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1700       Best        0 -3.000000e-01
-1700       Best        1 1.545987e+00
-1700       Best        2 -5.999999e-01
-1700       Best        3 -7.675477e-08
+1700       Best        1 1.377083e+00
+1700       Best        2 -6.000000e-01
+1700       Best        3 -4.157449e-09
 1700       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1710       Best        0 -3.000000e-01
-1710       Best        1 1.545987e+00
-1710       Best        2 -5.999999e-01
-1710       Best        3 -7.675477e-08
+1710       Best        1 1.377083e+00
+1710       Best        2 -6.000000e-01
+1710       Best        3 -4.157449e-09
 1710       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1720       Best        0 -3.000000e-01
-1720       Best        1 1.545987e+00
-1720       Best        2 -5.999999e-01
-1720       Best        3 -7.675477e-08
+1720       Best        1 1.377083e+00
+1720       Best        2 -6.000000e-01
+1720       Best        3 -4.157449e-09
 1720       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1730       Best        0 -3.000000e-01
-1730       Best        1 1.545987e+00
-1730       Best        2 -5.999999e-01
-1730       Best        3 -7.675477e-08
+1730       Best        1 1.377083e+00
+1730       Best        2 -6.000000e-01
+1730       Best        3 -4.157449e-09
 1730       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1740       Best        0 -3.000000e-01
-1740       Best        1 1.545987e+00
-1740       Best        2 -4.990018e-01
-1740       Best        3 -1.009982e-01
+1740       Best        1 1.377083e+00
+1740       Best        2 -6.000000e-01
+1740       Best        3 -4.157449e-09
 1740       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1750       Best        0 -3.000000e-01
-1750       Best        1 1.545987e+00
-1750       Best        2 -5.999559e-01
-1750       Best        3 -4.413793e-05
+1750       Best        1 1.377083e+00
+1750       Best        2 -6.000000e-01
+1750       Best        3 -4.157449e-09
 1750       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1760       Best        0 -3.000000e-01
-1760       Best        1 1.545987e+00
-1760       Best        2 -5.999559e-01
-1760       Best        3 -4.413793e-05
+1760       Best        1 1.377083e+00
+1760       Best        2 -6.000000e-01
+1760       Best        3 -4.157449e-09
 1760       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1770       Best        0 -3.000000e-01
-1770       Best        1 1.545987e+00
-1770       Best        2 -5.999997e-01
-1770       Best        3 -2.529953e-07
+1770       Best        1 1.377083e+00
+1770       Best        2 -6.000000e-01
+1770       Best        3 -4.157449e-09
 1770       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1780       Best        0 -3.000000e-01
-1780       Best        1 1.545987e+00
-1780       Best        2 -5.999997e-01
-1780       Best        3 -2.529953e-07
+1780       Best        1 1.377083e+00
+1780       Best        2 -6.000000e-01
+1780       Best        3 -4.157449e-09
 1780       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1790       Best        0 -3.000000e-01
-1790       Best        1 1.545987e+00
-1790       Best        2 -5.999997e-01
-1790       Best        3 -2.529953e-07
+1790       Best        1 1.377083e+00
+1790       Best        2 -6.000000e-01
+1790       Best        3 -4.157449e-09
 1790       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1800       Best        0 -3.000000e-01
-1800       Best        1 1.545987e+00
-1800       Best        2 -5.999997e-01
-1800       Best        3 -2.529953e-07
+1800       Best        1 1.377083e+00
+1800       Best        2 -6.000000e-01
+1800       Best        3 -4.157449e-09
 1800       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1810       Best        0 -3.000000e-01
-1810       Best        1 1.545987e+00
-1810       Best        2 -5.999997e-01
-1810       Best        3 -2.529953e-07
+1810       Best        1 1.338346e+00
+1810       Best        2 -6.000000e-01
+1810       Best        3 -4.157449e-09
 1810       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1820       Best        0 -3.000000e-01
-1820       Best        1 1.545987e+00
-1820       Best        2 -5.999997e-01
-1820       Best        3 -2.529953e-07
+1820       Best        1 1.338346e+00
+1820       Best        2 -6.000000e-01
+1820       Best        3 -4.157449e-09
 1820       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1830       Best        0 -3.000000e-01
-1830       Best        1 1.545987e+00
-1830       Best        2 -5.999997e-01
-1830       Best        3 -2.529953e-07
+1830       Best        1 1.338346e+00
+1830       Best        2 -5.999928e-01
+1830       Best        3 -7.197801e-06
 1830       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1840       Best        0 -3.000000e-01
-1840       Best        1 1.505673e+00
-1840       Best        2 -5.999997e-01
-1840       Best        3 -2.529953e-07
+1840       Best        1 1.338346e+00
+1840       Best        2 -6.000000e-01
+1840       Best        3 -1.477440e-11
 1840       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1850       Best        0 -3.000000e-01
-1850       Best        1 1.505673e+00
-1850       Best        2 -5.999997e-01
-1850       Best        3 -2.529953e-07
+1850       Best        1 1.338346e+00
+1850       Best        2 -6.000000e-01
+1850       Best        3 -1.477440e-11
 1850       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1860       Best        0 -3.000000e-01
-1860       Best        1 1.505673e+00
-1860       Best        2 -5.999997e-01
-1860       Best        3 -2.529953e-07
+1860       Best        1 1.338346e+00
+1860       Best        2 -6.000000e-01
+1860       Best        3 -1.477440e-11
 1860       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1870       Best        0 -3.000000e-01
-1870       Best        1 1.505673e+00
-1870       Best        2 -5.999997e-01
-1870       Best        3 -2.529953e-07
+1870       Best        1 1.338346e+00
+1870       Best        2 -6.000000e-01
+1870       Best        3 -1.477440e-11
 1870       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1880       Best        0 -3.000000e-01
-1880       Best        1 1.505673e+00
-1880       Best        2 -5.999997e-01
-1880       Best        3 -2.529953e-07
+1880       Best        1 1.338346e+00
+1880       Best        2 -6.000000e-01
+1880       Best        3 -1.477440e-11
 1880       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1890       Best        0 -3.000000e-01
-1890       Best        1 1.505673e+00
-1890       Best        2 -5.999997e-01
-1890       Best        3 -2.529953e-07
+1890       Best        1 1.338346e+00
+1890       Best        2 -6.000000e-01
+1890       Best        3 -1.477440e-11
 1890       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1900       Best        0 -3.000000e-01
-1900       Best        1 1.505673e+00
-1900       Best        2 -5.999997e-01
-1900       Best        3 -2.529953e-07
+1900       Best        1 1.338346e+00
+1900       Best        2 -6.000000e-01
+1900       Best        3 -1.477440e-11
 1900       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1910       Best        0 -3.000000e-01
-1910       Best        1 1.505673e+00
-1910       Best        2 -5.999997e-01
-1910       Best        3 -2.529953e-07
+1910       Best        1 9.823034e-01
+1910       Best        2 -6.000000e-01
+1910       Best        3 -1.477440e-11
 1910       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1920       Best        0 -3.000000e-01
-1920       Best        1 1.505673e+00
-1920       Best        2 -5.999997e-01
-1920       Best        3 -2.529953e-07
+1920       Best        1 9.823034e-01
+1920       Best        2 -6.000000e-01
+1920       Best        3 -1.477440e-11
 1920       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1930       Best        0 -3.000000e-01
-1930       Best        1 1.505673e+00
-1930       Best        2 -5.999997e-01
-1930       Best        3 -2.529953e-07
+1930       Best        1 9.823034e-01
+1930       Best        2 -6.000000e-01
+1930       Best        3 -1.477440e-11
 1930       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1940       Best        0 -3.000000e-01
-1940       Best        1 1.505673e+00
-1940       Best        2 -5.999997e-01
-1940       Best        3 -2.529953e-07
+1940       Best        1 9.823034e-01
+1940       Best        2 -6.000000e-01
+1940       Best        3 -1.477440e-11
 1940       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1950       Best        0 -3.000000e-01
-1950       Best        1 1.505673e+00
-1950       Best        2 -5.999997e-01
-1950       Best        3 -2.529953e-07
+1950       Best        1 9.823034e-01
+1950       Best        2 -6.000000e-01
+1950       Best        3 -1.477440e-11
 1950       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1960       Best        0 -3.000000e-01
-1960       Best        1 1.505673e+00
-1960       Best        2 -5.999997e-01
-1960       Best        3 -2.529953e-07
+1960       Best        1 9.823034e-01
+1960       Best        2 -6.000000e-01
+1960       Best        3 -1.477440e-11
 1960       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1970       Best        0 -3.000000e-01
-1970       Best        1 1.505673e+00
-1970       Best        2 -5.999997e-01
-1970       Best        3 -2.529953e-07
+1970       Best        1 9.823034e-01
+1970       Best        2 -6.000000e-01
+1970       Best        3 -1.477440e-11
 1970       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1980       Best        0 -3.000000e-01
-1980       Best        1 1.418643e+00
-1980       Best        2 -5.999997e-01
-1980       Best        3 -2.529953e-07
+1980       Best        1 9.823034e-01
+1980       Best        2 -6.000000e-01
+1980       Best        3 -1.477440e-11
 1980       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 1990       Best        0 -3.000000e-01
-1990       Best        1 1.418643e+00
-1990       Best        2 -5.999997e-01
-1990       Best        3 -2.529953e-07
+1990       Best        1 9.823034e-01
+1990       Best        2 -6.000000e-01
+1990       Best        3 -1.477440e-11
 1990       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2000       Best        0 -3.000000e-01
-2000       Best        1 1.418643e+00
-2000       Best        2 -5.999997e-01
-2000       Best        3 -2.529953e-07
+2000       Best        1 9.823034e-01
+2000       Best        2 -6.000000e-01
+2000       Best        3 -1.477440e-11
 2000       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2010       Best        0 -3.000000e-01
-2010       Best        1 1.418643e+00
-2010       Best        2 -5.999997e-01
-2010       Best        3 -2.529953e-07
+2010       Best        1 9.823034e-01
+2010       Best        2 -6.000000e-01
+2010       Best        3 -1.477440e-11
 2010       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2020       Best        0 -3.000000e-01
-2020       Best        1 1.418643e+00
-2020       Best        2 -5.999997e-01
-2020       Best        3 -2.529953e-07
+2020       Best        1 9.823034e-01
+2020       Best        2 -6.000000e-01
+2020       Best        3 -1.477440e-11
 2020       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2030       Best        0 -3.000000e-01
-2030       Best        1 1.418643e+00
-2030       Best        2 -5.999997e-01
-2030       Best        3 -2.529953e-07
+2030       Best        1 9.823034e-01
+2030       Best        2 -6.000000e-01
+2030       Best        3 -1.477440e-11
 2030       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2040       Best        0 -3.000000e-01
-2040       Best        1 1.415262e+00
-2040       Best        2 -5.999997e-01
-2040       Best        3 -2.529953e-07
+2040       Best        1 9.823034e-01
+2040       Best        2 -6.000000e-01
+2040       Best        3 -1.477440e-11
 2040       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2050       Best        0 -3.000000e-01
-2050       Best        1 1.415262e+00
-2050       Best        2 -5.999997e-01
-2050       Best        3 -2.529953e-07
+2050       Best        1 9.823034e-01
+2050       Best        2 -6.000000e-01
+2050       Best        3 -1.477440e-11
 2050       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2060       Best        0 -3.000000e-01
-2060       Best        1 1.415262e+00
-2060       Best        2 -5.999997e-01
-2060       Best        3 -2.529953e-07
+2060       Best        1 9.823034e-01
+2060       Best        2 -6.000000e-01
+2060       Best        3 -1.477440e-11
 2060       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2070       Best        0 -3.000000e-01
-2070       Best        1 1.415262e+00
-2070       Best        2 -5.999997e-01
-2070       Best        3 -2.529953e-07
+2070       Best        1 9.823034e-01
+2070       Best        2 -6.000000e-01
+2070       Best        3 -1.477440e-11
 2070       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2080       Best        0 -3.000000e-01
-2080       Best        1 1.415262e+00
-2080       Best        2 -5.999997e-01
-2080       Best        3 -2.529953e-07
+2080       Best        1 9.823034e-01
+2080       Best        2 -6.000000e-01
+2080       Best        3 -1.477440e-11
 2080       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2090       Best        0 -3.000000e-01
-2090       Best        1 1.415262e+00
-2090       Best        2 -5.999997e-01
-2090       Best        3 -2.529953e-07
+2090       Best        1 9.823034e-01
+2090       Best        2 -6.000000e-01
+2090       Best        3 -1.477440e-11
 2090       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2100       Best        0 -3.000000e-01
-2100       Best        1 1.415262e+00
-2100       Best        2 -5.999997e-01
-2100       Best        3 -2.529953e-07
+2100       Best        1 9.823034e-01
+2100       Best        2 -6.000000e-01
+2100       Best        3 -1.477440e-11
 2100       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2110       Best        0 -3.000000e-01
-2110       Best        1 1.415262e+00
-2110       Best        2 -5.999997e-01
-2110       Best        3 -2.529953e-07
+2110       Best        1 9.823034e-01
+2110       Best        2 -4.428448e-01
+2110       Best        3 -1.571552e-01
 2110       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2120       Best        0 -3.000000e-01
-2120       Best        1 1.415262e+00
-2120       Best        2 -5.999997e-01
-2120       Best        3 -2.529953e-07
+2120       Best        1 9.823034e-01
+2120       Best        2 -4.428448e-01
+2120       Best        3 -1.571552e-01
 2120       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2130       Best        0 -3.000000e-01
-2130       Best        1 1.415262e+00
-2130       Best        2 -5.999997e-01
-2130       Best        3 -2.529953e-07
+2130       Best        1 9.823034e-01
+2130       Best        2 -4.428448e-01
+2130       Best        3 -1.571552e-01
 2130       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2140       Best        0 -3.000000e-01
-2140       Best        1 1.415262e+00
-2140       Best        2 -5.999997e-01
-2140       Best        3 -2.529953e-07
+2140       Best        1 9.823034e-01
+2140       Best        2 -4.428448e-01
+2140       Best        3 -1.571552e-01
 2140       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2150       Best        0 -3.000000e-01
-2150       Best        1 1.415262e+00
-2150       Best        2 -5.999997e-01
-2150       Best        3 -2.529953e-07
+2150       Best        1 9.823034e-01
+2150       Best        2 -4.428448e-01
+2150       Best        3 -1.571552e-01
 2150       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2160       Best        0 -3.000000e-01
-2160       Best        1 1.415262e+00
-2160       Best        2 -5.999997e-01
-2160       Best        3 -2.529953e-07
+2160       Best        1 9.823034e-01
+2160       Best        2 -6.000000e-01
+2160       Best        3 -8.989212e-10
 2160       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2170       Best        0 -3.000000e-01
-2170       Best        1 1.403296e+00
-2170       Best        2 -5.999997e-01
-2170       Best        3 -2.529953e-07
+2170       Best        1 9.823034e-01
+2170       Best        2 -6.000000e-01
+2170       Best        3 -8.989212e-10
 2170       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2180       Best        0 -3.000000e-01
-2180       Best        1 1.403296e+00
-2180       Best        2 -5.999997e-01
-2180       Best        3 -2.529953e-07
+2180       Best        1 9.823034e-01
+2180       Best        2 -6.000000e-01
+2180       Best        3 -8.989212e-10
 2180       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2190       Best        0 -3.000000e-01
-2190       Best        1 1.403296e+00
-2190       Best        2 -5.999997e-01
-2190       Best        3 -2.529953e-07
+2190       Best        1 8.993471e-01
+2190       Best        2 -6.000000e-01
+2190       Best        3 -8.989212e-10
 2190       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2200       Best        0 -3.000000e-01
-2200       Best        1 1.390358e+00
-2200       Best        2 -5.999997e-01
-2200       Best        3 -2.529953e-07
+2200       Best        1 8.993471e-01
+2200       Best        2 -5.157160e-01
+2200       Best        3 -8.428399e-02
 2200       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2210       Best        0 -3.000000e-01
-2210       Best        1 1.358782e+00
-2210       Best        2 -5.999997e-01
-2210       Best        3 -2.529953e-07
+2210       Best        1 8.993471e-01
+2210       Best        2 -5.157160e-01
+2210       Best        3 -8.428399e-02
 2210       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2220       Best        0 -3.000000e-01
-2220       Best        1 1.358782e+00
-2220       Best        2 -5.999997e-01
-2220       Best        3 -2.529953e-07
+2220       Best        1 8.993471e-01
+2220       Best        2 -5.157160e-01
+2220       Best        3 -8.428399e-02
 2220       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2230       Best        0 -3.000000e-01
-2230       Best        1 1.358782e+00
-2230       Best        2 -5.999997e-01
-2230       Best        3 -2.529953e-07
+2230       Best        1 8.993471e-01
+2230       Best        2 -5.157160e-01
+2230       Best        3 -8.428399e-02
 2230       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2240       Best        0 -3.000000e-01
-2240       Best        1 1.358782e+00
-2240       Best        2 -5.999997e-01
-2240       Best        3 -2.529953e-07
+2240       Best        1 8.445397e-01
+2240       Best        2 -5.211990e-01
+2240       Best        3 -7.880100e-02
 2240       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2250       Best        0 -3.000000e-01
-2250       Best        1 1.358782e+00
-2250       Best        2 -5.999997e-01
-2250       Best        3 -2.529953e-07
+2250       Best        1 8.445397e-01
+2250       Best        2 -5.211990e-01
+2250       Best        3 -7.880100e-02
 2250       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2260       Best        0 -3.000000e-01
-2260       Best        1 1.358782e+00
-2260       Best        2 -5.999997e-01
-2260       Best        3 -2.529953e-07
+2260       Best        1 8.376418e-01
+2260       Best        2 -5.071455e-01
+2260       Best        3 -9.285449e-02
 2260       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2270       Best        0 -3.000000e-01
-2270       Best        1 1.358782e+00
-2270       Best        2 -5.999997e-01
-2270       Best        3 -2.529953e-07
+2270       Best        1 8.376418e-01
+2270       Best        2 -1.540345e-01
+2270       Best        3 -4.459655e-01
 2270       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2280       Best        0 -3.000000e-01
-2280       Best        1 1.358782e+00
-2280       Best        2 -5.999997e-01
-2280       Best        3 -2.529953e-07
+2280       Best        1 8.376418e-01
+2280       Best        2 -2.558674e-01
+2280       Best        3 -3.441326e-01
 2280       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2290       Best        0 -3.000000e-01
-2290       Best        1 1.358782e+00
-2290       Best        2 -5.999997e-01
-2290       Best        3 -2.529953e-07
+2290       Best        1 8.372401e-01
+2290       Best        2 -2.558674e-01
+2290       Best        3 -3.441326e-01
 2290       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2300       Best        0 -3.000000e-01
-2300       Best        1 1.358782e+00
-2300       Best        2 -5.999997e-01
-2300       Best        3 -2.529953e-07
+2300       Best        1 8.372401e-01
+2300       Best        2 -2.558674e-01
+2300       Best        3 -3.441326e-01
 2300       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2310       Best        0 -3.000000e-01
-2310       Best        1 1.358782e+00
-2310       Best        2 -5.999997e-01
-2310       Best        3 -2.529953e-07
+2310       Best        1 8.372401e-01
+2310       Best        2 -2.558674e-01
+2310       Best        3 -3.441326e-01
 2310       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2320       Best        0 -3.000000e-01
-2320       Best        1 1.358782e+00
-2320       Best        2 -5.999997e-01
-2320       Best        3 -2.529953e-07
+2320       Best        1 8.008060e-01
+2320       Best        2 -1.396909e-02
+2320       Best        3 -5.860309e-01
 2320       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2330       Best        0 -3.000000e-01
-2330       Best        1 1.358782e+00
-2330       Best        2 -5.999997e-01
-2330       Best        3 -2.529953e-07
+2330       Best        1 8.008060e-01
+2330       Best        2 -1.396909e-02
+2330       Best        3 -5.860309e-01
 2330       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2340       Best        0 -3.000000e-01
-2340       Best        1 1.358782e+00
-2340       Best        2 -5.999997e-01
-2340       Best        3 -2.529953e-07
+2340       Best        1 7.969860e-01
+2340       Best        2 -1.844986e-01
+2340       Best        3 -4.155014e-01
 2340       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2350       Best        0 -3.000000e-01
-2350       Best        1 1.339249e+00
-2350       Best        2 -5.999997e-01
-2350       Best        3 -2.529953e-07
+2350       Best        1 7.862448e-01
+2350       Best        2 -5.373420e-01
+2350       Best        3 -6.265798e-02
 2350       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2360       Best        0 -3.000000e-01
-2360       Best        1 1.339249e+00
-2360       Best        2 -5.999997e-01
-2360       Best        3 -2.529953e-07
+2360       Best        1 7.862448e-01
+2360       Best        2 -5.373420e-01
+2360       Best        3 -6.265798e-02
 2360       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2370       Best        0 -3.000000e-01
-2370       Best        1 1.339249e+00
-2370       Best        2 -5.999997e-01
-2370       Best        3 -2.529953e-07
+2370       Best        1 7.862448e-01
+2370       Best        2 -5.373420e-01
+2370       Best        3 -6.265798e-02
 2370       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2380       Best        0 -3.000000e-01
-2380       Best        1 1.339249e+00
-2380       Best        2 -5.999997e-01
-2380       Best        3 -2.529953e-07
+2380       Best        1 7.862448e-01
+2380       Best        2 -5.373420e-01
+2380       Best        3 -6.265798e-02
 2380       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2390       Best        0 -3.000000e-01
-2390       Best        1 1.339249e+00
-2390       Best        2 -5.999997e-01
-2390       Best        3 -2.529953e-07
+2390       Best        1 7.862448e-01
+2390       Best        2 -5.373420e-01
+2390       Best        3 -6.265798e-02
 2390       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2400       Best        0 -3.000000e-01
-2400       Best        1 1.339249e+00
-2400       Best        2 -5.999997e-01
-2400       Best        3 -2.529953e-07
+2400       Best        1 7.862448e-01
+2400       Best        2 -4.197843e-01
+2400       Best        3 -1.802157e-01
 2400       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2410       Best        0 -3.000000e-01
-2410       Best        1 1.339249e+00
-2410       Best        2 -5.999997e-01
-2410       Best        3 -2.529953e-07
+2410       Best        1 7.791326e-01
+2410       Best        2 -3.030853e-01
+2410       Best        3 -2.969147e-01
 2410       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2420       Best        0 -3.000000e-01
-2420       Best        1 1.339249e+00
-2420       Best        2 -5.999997e-01
-2420       Best        3 -2.529953e-07
+2420       Best        1 7.791326e-01
+2420       Best        2 -3.030853e-01
+2420       Best        3 -2.969147e-01
 2420       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2430       Best        0 -3.000000e-01
-2430       Best        1 1.339249e+00
-2430       Best        2 -6.000000e-01
-2430       Best        3 -4.523049e-13
+2430       Best        1 7.791326e-01
+2430       Best        2 -3.030853e-01
+2430       Best        3 -2.969147e-01
 2430       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2440       Best        0 -3.000000e-01
-2440       Best        1 1.339249e+00
-2440       Best        2 -6.000000e-01
-2440       Best        3 -3.469447e-14
+2440       Best        1 7.791326e-01
+2440       Best        2 -3.030853e-01
+2440       Best        3 -2.969147e-01
 2440       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2450       Best        0 -3.000000e-01
-2450       Best        1 1.339249e+00
-2450       Best        2 -6.000000e-01
-2450       Best        3 -3.469447e-14
+2450       Best        1 7.791326e-01
+2450       Best        2 -3.030853e-01
+2450       Best        3 -2.969147e-01
 2450       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2460       Best        0 -3.000000e-01
-2460       Best        1 1.339249e+00
-2460       Best        2 -6.000000e-01
-2460       Best        3 -3.469447e-14
+2460       Best        1 7.791326e-01
+2460       Best        2 -4.126685e-01
+2460       Best        3 -1.873315e-01
 2460       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2470       Best        0 -3.000000e-01
-2470       Best        1 1.339249e+00
-2470       Best        2 -6.000000e-01
-2470       Best        3 -3.469447e-14
+2470       Best        1 7.791326e-01
+2470       Best        2 -4.369303e-01
+2470       Best        3 -1.630697e-01
 2470       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2480       Best        0 -3.000000e-01
-2480       Best        1 1.339249e+00
-2480       Best        2 -6.000000e-01
-2480       Best        3 -3.469447e-14
+2480       Best        1 7.552763e-01
+2480       Best        2 -4.369303e-01
+2480       Best        3 -1.630697e-01
 2480       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2490       Best        0 -3.000000e-01
-2490       Best        1 1.339249e+00
-2490       Best        2 -6.000000e-01
-2490       Best        3 -3.469447e-14
+2490       Best        1 7.552763e-01
+2490       Best        2 -4.369303e-01
+2490       Best        3 -1.630697e-01
 2490       MinConstr     0.000000e+00
 Iter #     Field   Idx Value
 2500       Best        0 -3.000000e-01
-2500       Best        1 1.339249e+00
-2500       Best        2 -6.000000e-01
-2500       Best        3 -3.469447e-14
+2500       Best        1 7.552763e-01
+2500       Best        2 -4.369303e-01
+2500       Best        3 -1.630697e-01
 2500       MinConstr     0.000000e+00
 The Best (0) evaluation: -3.000000e-01
-The Best (1) evaluation: 1.339249e+00
-The Best (2) evaluation: -6.000000e-01
-The Best (3) evaluation: -3.469447e-14
+The Best (1) evaluation: 7.552763e-01
+The Best (2) evaluation: -4.369303e-01
+The Best (3) evaluation: -1.630697e-01
 The Nondominated Strings:
-F     0 -2.99999999991758e-01
-F     1 2.21419104776417e+00
-F     2 -5.99999999991758e-01
-F     3 -8.24179613445608e-12
-#   0: [ -0.2620983], [ 0.06044023], [-0.09168152], [-0.09905028], [-0.003504784]
-#   5: [-0.01343347], [0.005137061], [ 0.01639541], [-6.760662e-05], [  -0.008749]
+F     0 -1.36930319329879e-01
+F     1 1.15945306423400e+00
+F     2 -4.36930319329879e-01
+F     3 -1.63069680670121e-01
+#   0: [ -0.1157463], [  0.0205769], [ -0.0502325], [-0.04910534], [-0.003113794]
+#   5: [0.0001576731], [0.000279068], [-0.0001663083], [-0.0003698224], [0.0009622881]
 
-F     0 -2.99909681219331e-01
-F     1 1.41093754750972e+00
-F     2 -5.99909681219331e-01
-F     3 -9.03187806688965e-05
-#   0: [ -0.2532029], [ 0.04893994], [ -0.1057706], [ -0.1109446], [0.0007812229]
-#   5: [-0.002980237], [0.001749038], [0.003344942], [0.0007339434], [-0.0004774039]
+F     0 2.59663927014303e-01
+F     1 7.82843835013786e-01
+F     2 -4.03360729856967e-02
+F     3 -5.59663927014303e-01
+#   0: [  0.2221271], [ -0.0364821], [ 0.09009254], [ 0.09297438], [-0.001031472]
+#   5: [-0.0002884336], [0.001658767], [-0.0005267375], [-0.0002247728], [-0.001964098]
 
-F     0 -2.99989989299989e-01
-F     1 1.56388841064470e+00
-F     2 -5.99989989299989e-01
-F     3 -1.00107000108873e-05
-#   0: [ -0.2557384], [ 0.04409532], [ -0.1063743], [ -0.1064534], [-0.008350094]
-#   5: [0.002178694], [ 0.01127765], [0.007761983], [ 0.00440484], [0.001380104]
+F     0 1.31819574861269e-02
+F     1 1.00852308427053e+00
+F     2 -2.86818042513873e-01
+F     3 -3.13181957486127e-01
+#   0: [ 0.01093275], [-0.002134378], [0.005786528], [0.004219598], [0.002226146]
+#   5: [-0.002243095], [-0.001394593], [-8.491863e-05], [0.003140457], [0.001985656]
 
-F     0 -2.96372509768365e-01
-F     1 1.41051417606354e+00
-F     2 -5.96372509768365e-01
-F     3 -3.62749023163461e-03
-#   0: [ -0.2525287], [ 0.04375305], [ -0.1091257], [ -0.1013611], [-0.005664832]
-#   5: [0.001043476], [0.002352883], [0.003939959], [-0.001460034], [-0.0001600101]
+F     0 2.24215217934270e-01
+F     1 8.20963683368893e-01
+F     2 -7.57847820657301e-02
+F     3 -5.24215217934270e-01
+#   0: [   0.190764], [-0.03530727], [ 0.07908747], [ 0.07991917], [-0.0009062548]
+#   5: [-0.002243095], [-0.001599801], [-4.56029e-05], [0.003140457], [-0.001727475]
 
-F     0 -2.99999999999997e-01
-F     1 3.59632505992118e+01
-F     2 -5.99999999999997e-01
-F     3 -2.60902410786912e-15
-#   0: [ -0.1708869], [  0.1116009], [  -0.178733], [  -0.211011], [ -0.1073415]
-#   5: [ 0.03782776], [-0.09059578], [  0.0458057], [0.007689613], [-0.0001599344]
+F     0 -5.04716208741088e-03
+F     1 1.02679290229681e+00
+F     2 -3.05047162087411e-01
+F     3 -2.94952837912589e-01
+#   0: [-0.004147263], [0.002966028], [-0.001747284], [-0.001287297], [-0.002021071]
+#   5: [-0.0008537937], [-0.001935392], [0.001394746], [-0.001722299], [-0.002964463]
 
-F     0 -2.80265389410322e-01
-F     1 1.34683297495300e+00
-F     2 -5.80265389410322e-01
-F     3 -1.97346105896777e-02
-#   0: [ -0.2389711], [ 0.04392821], [-0.09882392], [-0.09876335], [-0.0009347615]
-#   5: [-0.0003970079], [0.003226891], [-0.001977816], [0.0009624652], [-0.002476237]
+F     0 -2.91544415640406e-01
+F     1 1.37390352361939e+00
+F     2 -5.91544415640406e-01
+F     3 -8.45558435959420e-03
+#   0: [ -0.2489598], [ 0.04012829], [  -0.101701], [ -0.1052474], [0.0002989627]
+#   5: [-0.003610233], [0.0005197988], [-0.00317529], [0.001297123], [0.002961826]
 
-F     0 -2.99999999997876e-01
-F     1 2.97230087912333e+00
-F     2 -5.99999999997876e-01
-F     3 -2.12435624646901e-12
-#   0: [ -0.2646925], [  0.0207635], [ -0.0788749], [ -0.1220284], [-0.004423954]
-#   5: [ 0.01499959], [ 0.01128934], [-0.006964073], [-0.001835722], [0.009447371]
+F     0 2.68948435767419e-01
+F     1 7.79132596655415e-01
+F     2 -3.10515642325809e-02
+F     3 -5.68948435767419e-01
+#   0: [  0.2306908], [-0.03876635], [ 0.09484941], [ 0.09285731], [-0.0006313374]
+#   5: [-2.831341e-05], [-0.003391265], [-0.0007552919], [-6.381422e-05], [0.0005745232]
 
-F     0 -2.99999999999944e-01
-F     1 2.21169159116604e+01
-F     2 -5.99999999999944e-01
-F     3 -5.61217738948017e-14
-#   0: [ -0.2437811], [  0.1022863], [-0.03204756], [ -0.1855726], [-0.05657948]
-#   5: [ 0.05467933], [ 0.05971732], [-0.05779056], [0.002210095], [0.001049165]
+F     0 1.64092229816740e-01
+F     1 8.65520263737495e-01
+F     2 -1.35907770183260e-01
+F     3 -4.64092229816740e-01
+#   0: [  0.1413837], [-0.02320413], [ 0.05703115], [ 0.05614993], [0.001726271]
+#   5: [0.0001325072], [-0.002963066], [-0.0008208687], [0.001134228], [0.0009810145]
 
-F     0 -2.99999999999934e-01
-F     1 6.88090522091517e+00
-F     2 -5.99999999999934e-01
-F     3 -6.61692922676593e-14
-#   0: [ -0.2142525], [ 0.05112446], [ -0.1739194], [  -0.136181], [-0.005251181]
-#   5: [0.002249504], [0.004748618], [-0.003944388], [0.004874049], [0.001299871]
+F     0 1.38461271189915e-01
+F     1 8.99463457792940e-01
+F     2 -1.61538728810085e-01
+F     3 -4.38461271189915e-01
+#   0: [  0.1187921], [-0.01733499], [ 0.05070036], [ 0.04695737], [0.001401467]
+#   5: [0.002164525], [0.0009909324], [0.003123683], [0.0007483418], [0.001640745]
 
-F     0 -2.99999634347541e-01
-F     1 1.60504317149685e+00
-F     2 -5.99999634347541e-01
-F     3 -3.65652458700350e-07
-#   0: [ -0.2559234], [  0.0342754], [ -0.1046554], [ -0.1118206], [-0.006514967]
-#   5: [0.0006310109], [ 0.00646877], [0.006528067], [ 0.00894154], [-0.001326806]
+F     0 2.25860872618587e-01
+F     1 8.07857354029872e-01
+F     2 -7.41391273814129e-02
+F     3 -5.25860872618587e-01
+#   0: [  0.1919481], [-0.03345876], [ 0.08083868], [ 0.08072955], [0.0006481967]
+#   5: [-2.993288e-05], [0.001658767], [-0.001466933], [-0.002163516], [0.0006167578]
 
-F     0 -2.99999999987737e-01
-F     1 1.84744990857147e+00
-F     2 -5.99999999987737e-01
-F     3 -1.22629129073459e-11
-#   0: [ -0.2504321], [ 0.06117829], [ -0.1104968], [ -0.1080939], [-0.003381953]
-#   5: [0.002564665], [0.008459427], [0.005530602], [0.005211562], [-0.01237362]
+F     0 2.47479876250629e-01
+F     1 8.00806020961956e-01
+F     2 -5.25201237493714e-02
+F     3 -5.47479876250629e-01
+#   0: [  0.2120054], [-0.03448732], [ 0.08814679], [ 0.08572056], [0.001151305]
+#   5: [-0.001028426], [-0.0005773444], [0.001783149], [0.002001449], [-0.002977132]
 
-F     0 -2.99999999987813e-01
-F     1 1.93978917630051e+00
-F     2 -5.99999999987813e-01
-F     3 -1.21865850744030e-11
-#   0: [ -0.2529278], [ 0.05474556], [ -0.1072657], [ -0.1079643], [-0.00247789]
-#   5: [0.004751693], [0.005942076], [-0.02194084], [0.007213587], [-0.006751474]
+F     0 2.04881243386434e-01
+F     1 8.45736628833808e-01
+F     2 -9.51187566135658e-02
+F     3 -5.04881243386434e-01
+#   0: [  0.1772183], [-0.02960414], [ 0.06972467], [  0.0696618], [0.001160507]
+#   5: [6.470808e-05], [0.0008158459], [0.003971635], [-0.000832444], [0.0008612947]
 
-F     0 -2.99923639330614e-01
-F     1 1.53195692202624e+00
-F     2 -5.99923639330614e-01
-F     3 -7.63606693860441e-05
-#   0: [ -0.2580373], [ 0.04782672], [-0.09649168], [  -0.109053], [-0.0005809392]
-#   5: [-0.001850179], [-0.00115164], [-0.0005548165], [-0.01078185], [0.0006620665]
+F     0 -2.87549634464732e-01
+F     1 1.36660891371104e+00
+F     2 -5.87549634464732e-01
+F     3 -1.24503655352684e-02
+#   0: [ -0.2439934], [ 0.04382651], [ -0.1015223], [ -0.1045852], [-0.001196342]
+#   5: [-0.000223508], [-0.0003160118], [0.003733119], [-0.003917749], [0.0001348083]
 
-F     0 -2.60686459922437e-01
-F     1 1.33924857079780e+00
-F     2 -5.60686459922437e-01
-F     3 -3.93135400775628e-02
-#   0: [ -0.2211389], [ 0.03980776], [-0.09400438], [-0.09296285], [-0.003982273]
-#   5: [-0.004252932], [0.001926105], [0.001182078], [-0.0009916238], [0.002435689]
+F     0 -2.99998174387973e-01
+F     1 2.00138855569998e+00
+F     2 -5.99998174387973e-01
+F     3 -1.82561202699549e-06
+#   0: [ -0.2693211], [ 0.03714621], [-0.09116567], [-0.09177216], [-0.006372157]
+#   5: [0.005889495], [0.004904851], [-0.004708418], [-0.008704949], [-0.002864904]
 
-F     0 -2.99999987225867e-01
-F     1 1.61729566575689e+00
-F     2 -5.99999987225867e-01
-F     3 -1.27741329736253e-08
-#   0: [ -0.2552801], [ 0.03524669], [-0.09839276], [ -0.1192349], [0.003180096]
-#   5: [-0.00370138], [-0.001964567], [0.001148083], [-5.340375e-05], [-0.004027071]
+F     0 -1.27766570288549e-01
+F     1 1.15477586048542e+00
+F     2 -4.27766570288549e-01
+F     3 -1.72233429711451e-01
+#   0: [ -0.1096734], [ 0.02038097], [-0.04437986], [ -0.0437814], [-0.001075465]
+#   5: [-0.002974402], [0.001057603], [0.002408333], [0.0009631419], [-0.0001020034]
 
-F     0 -2.99999999996367e-01
-F     1 2.85704789703031e+00
-F     2 -5.99999999996367e-01
-F     3 -3.63326035923706e-12
-#   0: [ -0.2478245], [ 0.03020727], [ -0.1031514], [ -0.1345631], [-0.007125829]
-#   5: [ 0.01218053], [  0.0125797], [-0.002505429], [-0.0001460257], [-0.02272454]
+F     0 1.95230406027648e-01
+F     1 8.47658137010332e-01
+F     2 -1.04769593972352e-01
+F     3 -4.95230406027648e-01
+#   0: [  0.1661926], [-0.02609077], [  0.0705017], [  0.0696618], [0.001160507]
+#   5: [6.470808e-05], [0.0009765979], [-0.0005957036], [-0.003136116], [-0.003261228]
 
-F     0 -2.99999999999908e-01
-F     1 4.22431790154488e+00
-F     2 -5.99999999999908e-01
-F     3 -9.22595333463505e-14
-#   0: [ -0.2528089], [  0.0840586], [ -0.1192833], [-0.08409203], [-0.004619451]
-#   5: [-0.006015057], [ 0.03331151], [0.002237437], [-0.01686823], [-0.0009356378]
+F     0 -1.82931926501464e-01
+F     1 1.23303547208710e+00
+F     2 -4.82931926501464e-01
+F     3 -1.17068073498536e-01
+#   0: [ -0.1560459], [ 0.02759261], [-0.06363673], [-0.06561563], [-0.00432355]
+#   5: [0.0004940527], [0.001315751], [-0.0009988567], [-0.001531065], [0.003873202]
 
-F     0 -2.99984399593903e-01
-F     1 1.55064209016631e+00
-F     2 -5.99984399593903e-01
-F     3 -1.56004060969939e-05
-#   0: [ -0.2571104], [ 0.05283593], [ -0.1043241], [ -0.1015551], [-0.008337891]
-#   5: [0.003478166], [0.002613632], [2.095228e-05], [0.007840952], [0.003534268]
+F     0 -2.99168813058346e-01
+F     1 1.39745951303838e+00
+F     2 -5.99168813058346e-01
+F     3 -8.31186941654349e-04
+#   0: [ -0.2528134], [ 0.04718005], [ -0.1060208], [ -0.1102682], [-0.002906893]
+#   5: [0.0006388982], [0.002744094], [-0.0003795943], [0.0007380381], [0.003139081]
 
-F     0 -2.96261622445068e-01
-F     1 1.36454889052782e+00
-F     2 -5.96261622445068e-01
-F     3 -3.73837755493206e-03
-#   0: [ -0.2519898], [  0.0451891], [ -0.1045987], [ -0.1062806], [0.0004942766]
-#   5: [0.004032556], [0.0006645236], [0.001289863], [-0.0003843303], [0.001078392]
+F     0 -2.99999999979961e-01
+F     1 4.49922683441199e+00
+F     2 -5.99999999979961e-01
+F     3 -2.00387484383668e-11
+#   0: [ -0.2236717], [ 0.06672047], [  -0.141568], [ -0.1393325], [-0.004956536]
+#   5: [ 0.01083949], [-0.002154144], [-0.001764834], [-0.003676579], [0.005520473]
 
-F     0 -2.99968064614025e-01
-F     1 1.54600785621836e+00
-F     2 -5.99968064614026e-01
-F     3 -3.19353859745131e-05
-#   0: [ -0.2526597], [ 0.05633621], [ -0.1070603], [ -0.1080678], [-0.003007351]
-#   5: [0.002215365], [0.003816653], [ 0.00751219], [-0.002097843], [0.0005063372]
+F     0 -1.07434966902539e-01
+F     1 1.13852496304652e+00
+F     2 -4.07434966902539e-01
+F     3 -1.92565033097461e-01
+#   0: [-0.09110043], [ 0.01438519], [-0.03962072], [-0.03835682], [-0.002384165]
+#   5: [0.001230594], [-0.002736005], [0.001850197], [-0.002974572], [-2.375114e-05]
 
-F     0 -2.84023220916693e-01
-F     1 1.35878153123726e+00
-F     2 -5.84023220916693e-01
-F     3 -1.59767790833072e-02
-#   0: [ -0.2417104], [ 0.03980741], [ -0.1041316], [-0.09917804], [-0.001839378]
-#   5: [-0.001186609], [-0.0008880461], [-0.002357063], [-0.001906449], [0.002538051]
+F     0 -2.39023372620910e-01
+F     1 1.30251382056681e+00
+F     2 -5.39023372620910e-01
+F     3 -6.09766273790898e-02
+#   0: [ -0.2032958], [ 0.03631939], [-0.08696593], [-0.08325076], [0.002247768]
+#   5: [-0.003166349], [0.003467649], [-0.001755353], [-0.00111578], [-0.001091759]
 
-F     0 -2.99999999998071e-01
-F     1 2.99190383001119e+00
-F     2 -5.99999999998071e-01
-F     3 -1.92912352758867e-12
-#   0: [ -0.2472073], [ 0.04562284], [ -0.1271355], [ -0.1056837], [-0.003165388]
-#   5: [ 0.03205634], [-0.00115164], [ -0.0116154], [ 0.02092451], [0.0006620665]
+F     0 -2.35361883074096e-01
+F     1 1.29839166576346e+00
+F     2 -5.35361883074096e-01
+F     3 -6.46381169259036e-02
+#   0: [  -0.200574], [ 0.03618176], [-0.08152029], [-0.08496814], [0.001149725]
+#   5: [-0.003717393], [-0.002753686], [0.003344432], [-0.0002147146], [0.0004345123]
 
-F     0 -3.00000000000000e-01
-F     1 5.25099606402285e+01
-F     2 -6.00000000000000e-01
-F     3 -1.66533453693773e-16
-#   0: [ -0.1478509], [  0.2030381], [ -0.2317408], [ -0.1757426], [ 0.06905171]
-#   5: [  0.0449597], [ -0.1244841], [0.001860029], [0.0005786981], [ 0.08668877]
+F     0 -2.71441689409609e-01
+F     1 1.32604298646128e+00
+F     2 -5.71441689409609e-01
+F     3 -2.85583105903908e-02
+#   0: [ -0.2308814], [  0.0390774], [-0.09875845], [-0.09541118], [-0.001508935]
+#   5: [0.002461381], [-0.0006321973], [0.0002742782], [1.882288e-05], [0.0008687587]
 
-F     0 -2.99999999999982e-01
-F     1 2.73202039555462e+01
-F     2 -5.99999999999982e-01
-F     3 -1.78190795452338e-14
-#   0: [ -0.2139244], [  0.2069061], [ -0.1711064], [-0.07525914], [-0.04971442]
-#   5: [-0.001186609], [ 0.02712028], [-0.002357063], [-0.03899533], [ 0.03334617]
+F     0 1.19388423643644e-01
+F     1 9.12178708512490e-01
+F     2 -1.80611576356356e-01
+F     3 -4.19388423643644e-01
+#   0: [  0.1024934], [ -0.0175732], [ 0.04037594], [ 0.04258545], [0.003899531]
+#   5: [2.795621e-05], [0.0009897787], [-0.003042848], [0.001365517], [-0.0005471668]
 
-F     0 -2.94943640758314e-01
-F     1 1.36145746944067e+00
-F     2 -5.94943640758314e-01
-F     3 -5.05635924168624e-03
-#   0: [  -0.250856], [ 0.04279734], [ -0.1045987], [ -0.1062806], [0.0004942766]
-#   5: [-0.002033484], [ 0.00324234], [ -0.0018433], [0.0002002339], [0.001078392]
+F     0 -2.74979120427272e-01
+F     1 1.34777254206477e+00
+F     2 -5.74979120427272e-01
+F     3 -2.50208795727277e-02
+#   0: [ -0.2354928], [ 0.03946358], [-0.09576028], [-0.09712193], [ 0.00157412]
+#   5: [-0.003066519], [-0.002091604], [0.002962403], [-0.0006207867], [0.003543237]
+
+F     0 -1.71791245395586e-01
+F     1 1.20499592263762e+00
+F     2 -4.71791245395586e-01
+F     3 -1.28208754604414e-01
+#   0: [ -0.1473437], [ 0.02446778], [-0.05975375], [-0.06029132], [0.0003680042]
+#   5: [0.000414542], [-0.00213324], [0.001457763], [0.002615469], [0.002572183]
+
+F     0 -2.26750171255515e-01
+F     1 1.28014368062411e+00
+F     2 -5.26750171255515e-01
+F     3 -7.32498287444847e-02
+#   0: [ -0.1949522], [ 0.03059671], [-0.08031024], [ -0.0777062], [0.001160507]
+#   5: [-0.00177552], [0.0008158459], [-0.002375619], [-0.0005447732], [ 0.00272162]
+
+F     0 -2.99962759403009e-01
+F     1 1.40589041372258e+00
+F     2 -5.99962759403009e-01
+F     3 -3.72405969908951e-05
+#   0: [ -0.2572163], [ 0.04269518], [ -0.1058466], [ -0.1039163], [-0.003123389]
+#   5: [-0.005075542], [0.002016944], [-0.001550368], [-0.00145397], [-0.004816302]
+
+F     0 7.81336664999509e-02
+F     1 9.43820122080021e-01
+F     2 -2.21866333500049e-01
+F     3 -3.78133666499951e-01
+#   0: [ 0.06688534], [-0.008630135], [ 0.02888411], [ 0.02706107], [-0.001499642]
+#   5: [-0.00263621], [0.001713906], [0.001048489], [-0.0009641356], [-0.000248277]
+
+F     0 -2.03971770620131e-01
+F     1 1.25698903361834e+00
+F     2 -5.03971770620131e-01
+F     3 -9.60282293798690e-02
+#   0: [ -0.1763021], [ 0.02664741], [ -0.0722644], [-0.06798615], [ -0.0013148]
+#   5: [-6.090493e-05], [0.001658767], [-0.001466933], [0.0008877847], [0.0002552492]
+
+F     0 5.28534387295363e-02
+F     1 9.67160696158404e-01
+F     2 -2.47146561270464e-01
+F     3 -3.52853438729536e-01
+#   0: [ 0.04512254], [-0.007642837], [ 0.01900123], [ 0.01838965], [-0.002394085]
+#   5: [-0.0007951445], [-0.0004483774], [-0.002834924], [0.002928673], [-0.0004878671]
+
+F     0 -1.45309103421156e-01
+F     1 1.17939296963750e+00
+F     2 -4.45309103421156e-01
+F     3 -1.54690896578844e-01
+#   0: [ -0.1234446], [ 0.01892357], [ -0.0516047], [-0.05353148], [-0.002432725]
+#   5: [-0.0007953173], [-4.898078e-05], [0.001850197], [-0.002974572], [-2.375114e-05]
+
+F     0 1.69846669421243e-02
+F     1 1.00774263445961e+00
+F     2 -2.83015333057876e-01
+F     3 -3.16984666942124e-01
+#   0: [ 0.01652805], [-0.002292311], [0.001937686], [0.005250466], [-0.001521692]
+#   5: [-0.0006563582], [0.001610137], [-0.001762863], [-0.0005466503], [0.001041925]
+
+F     0 -2.99996716061421e-01
+F     1 1.70682160914361e+00
+F     2 -5.99996716061421e-01
+F     3 -3.28393857895737e-06
+#   0: [ -0.2499964], [ 0.04172366], [ -0.1106997], [ -0.1169919], [0.008469648]
+#   5: [0.0005578459], [-0.006648431], [0.005920716], [-0.0004574727], [-0.01167749]
+
+F     0 4.77407073734294e-02
+F     1 9.73703141029811e-01
+F     2 -2.52259292626571e-01
+F     3 -3.47740707373429e-01
+#   0: [ 0.03944661], [-0.007989433], [ 0.02076349], [ 0.01572576], [-0.0002537584]
+#   5: [-0.00215692], [0.0006110284], [0.0001362297], [0.0009702264], [-0.0007588474]
+
+F     0 -2.99999999416570e-01
+F     1 4.04342759483979e+00
+F     2 -5.99999999416570e-01
+F     3 -5.83430248557448e-10
+#   0: [ -0.2596011], [ 0.01906706], [  -0.107717], [ -0.1061809], [0.006963535]
+#   5: [-0.02516175], [-0.0001612158], [0.007688421], [ 0.02401359], [ 0.03933646]
+
+F     0 -1.02559829427697e-01
+F     1 1.12152041605861e+00
+F     2 -4.02559829427697e-01
+F     3 -1.97440170572303e-01
+#   0: [-0.08796726], [ 0.01529662], [-0.03645891], [-0.03491627], [-0.002078498]
+#   5: [-0.001614048], [0.002364594], [ 0.00156651], [-0.0002810449], [-0.0001982581]
+
+F     0 1.52306434725008e-01
+F     1 8.66099053525289e-01
+F     2 -1.47693565274992e-01
+F     3 -4.52306434725008e-01
+#   0: [  0.1294426], [-0.02306336], [ 0.05387604], [  0.0548563], [-0.0001299029]
+#   5: [-0.001967331], [0.0003255643], [-0.001581569], [-0.0008175101], [-0.000598696]
+
+F     0 1.08545306526305e-01
+F     1 9.28348608895326e-01
+F     2 -1.91454693473695e-01
+F     3 -4.08545306526305e-01
+#   0: [ 0.09320005], [-0.01371365], [ 0.03956928], [   0.036758], [0.003963243]
+#   5: [0.0005083507], [-0.002024259], [-0.002291811], [ 0.00121309], [-0.001948876]
+
+F     0 -2.99999999995577e-01
+F     1 8.36327731772022e+00
+F     2 -5.99999999995577e-01
+F     3 -4.42262892974554e-12
+#   0: [ -0.2168568], [ 0.04998244], [ -0.1705358], [ -0.1337504], [ 0.00108969]
+#   5: [-0.03400758], [0.002558249], [ 0.03806325], [ 0.01198776], [-0.001964458]
+
+F     0 6.59077889074452e-02
+F     1 9.57176145798444e-01
+F     2 -2.34092211092555e-01
+F     3 -3.65907788907445e-01
+#   0: [ 0.05692935], [-0.007954988], [ 0.02457074], [ 0.02110996], [-0.001804263]
+#   5: [0.002269572], [-0.001026963], [-0.002156421], [0.001645453], [-2.375114e-05]
+
+F     0 -6.61221878082266e-02
+F     1 1.08598287028900e+00
+F     2 -3.66122187808227e-01
+F     3 -2.33877812191773e-01
+#   0: [-0.05669827], [0.009813269], [-0.02458625], [-0.02148902], [0.000100954]
+#   5: [0.003387783], [0.001658767], [-0.0007714945], [ 0.00109604], [-0.001095391]
+
+F     0 -1.81876412672396e-01
+F     1 1.22794064327267e+00
+F     2 -4.81876412672396e-01
+F     3 -1.18123587327604e-01
+#   0: [ -0.1564033], [ 0.02560967], [-0.06345944], [-0.06276583], [-0.001800103]
+#   5: [-0.00263621], [0.0004267876], [0.002847843], [-0.002988146], [-0.001948876]
+
+F     0 -2.99994655761270e-01
+F     1 1.68776702441815e+00
+F     2 -5.99994655761270e-01
+F     3 -5.34423872972090e-06
+#   0: [ -0.2521399], [ 0.04216418], [ -0.1010391], [ -0.1212893], [0.002758503]
+#   5: [-0.001741475], [0.001727828], [0.007957897], [0.005393585], [0.008013396]
+
+F     0 4.46249156147446e-02
+F     1 9.89806119121689e-01
+F     2 -2.55375084385255e-01
+F     3 -3.44624915614745e-01
+#   0: [ 0.04017989], [-0.005126549], [ 0.01217884], [ 0.01491316], [0.0008851786]
+#   5: [-0.0008940364], [-0.002642588], [0.003093361], [0.002007062], [-0.0003812912]
+
+F     0 -2.99999966606760e-01
+F     1 2.08173111642023e+00
+F     2 -5.99999966606760e-01
+F     3 -3.33932402840631e-08
+#   0: [ -0.2676887], [ 0.03667126], [-0.08851024], [ -0.0985705], [0.006664866]
+#   5: [-0.01087862], [-0.007530174], [-0.008012302], [0.009282195], [-0.005944211]
+
+F     0 1.45521306534968e-01
+F     1 8.98633972720348e-01
+F     2 -1.54478693465032e-01
+F     3 -4.45521306534968e-01
+#   0: [   0.124407], [-0.02052012], [ 0.05482788], [ 0.04792386], [-0.00056461]
+#   5: [-0.000249839], [-0.003640928], [-0.0009937082], [0.0006033824], [-0.002000121]
+
+F     0 2.94745052142099e-01
+F     1 7.55276336850644e-01
+F     2 -5.25494785790126e-03
+F     3 -5.94745052142099e-01
+#   0: [  0.2523102], [-0.04200062], [  0.1034246], [  0.1037125], [-0.0003317348]
+#   5: [-0.000955764], [-0.002109229], [0.0002028856], [-0.002309256], [-0.0004996676]
+
+F     0 -7.98283144183010e-02
+F     1 1.09788262383669e+00
+F     2 -3.79828314418301e-01
+F     3 -2.20171685581699e-01
+#   0: [-0.06793945], [ 0.01245997], [-0.03012221], [-0.02648493], [0.0007204607]
+#   5: [-0.002079368], [0.0004938903], [-0.001795485], [-0.0005497546], [0.001699591]
+
+F     0 -8.69028715030228e-02
+F     1 1.11785870793577e+00
+F     2 -3.86902871503023e-01
+F     3 -2.13097128496977e-01
+#   0: [-0.07332422], [ 0.01355211], [-0.03014466], [   -0.03302], [0.003657126]
+#   5: [-0.00215692], [0.002875826], [0.0003689906], [0.0006600736], [0.0007040539]
+
+F     0 2.40327032439869e-02
+F     1 9.91284988202674e-01
+F     2 -2.75967296756013e-01
+F     3 -3.24032703243987e-01
+#   0: [ 0.01855935], [-0.005154065], [ 0.01031812], [ 0.01071551], [0.0002949904]
+#   5: [6.470808e-05], [0.001658767], [-0.0007714945], [0.0008877847], [0.0002552492]
+
+F     0 1.88251935087544e-01
+F     1 8.55598449891627e-01
+F     2 -1.11748064912456e-01
+F     3 -4.88251935087544e-01
+#   0: [  0.1617913], [-0.02502294], [ 0.06688851], [  0.0646048], [0.003899531]
+#   5: [2.795621e-05], [0.0006892723], [0.002391673], [0.001378242], [-1.978466e-05]
+
+F     0 2.10666476955826e-01
+F     1 8.31009759558474e-01
+F     2 -8.93335230441740e-02
+F     3 -5.10666476955826e-01
+#   0: [  0.1790503], [-0.02937315], [ 0.07671074], [ 0.07471151], [0.002247768]
+#   5: [-0.0004590861], [0.0004267876], [0.0007703044], [0.003066893], [-0.001948876]
+
+F     0 -2.99999976896158e-01
+F     1 2.24099704190853e+00
+F     2 -5.99999976896158e-01
+F     3 -2.31038423392782e-08
+#   0: [ -0.2568278], [ 0.02759392], [ -0.1100049], [ -0.1070563], [-0.002238943]
+#   5: [-0.006266074], [ -0.0241716], [-0.007293567], [ 0.01400204], [-0.001707637]
+
+F     0 -2.03624007940909e-01
+F     1 1.25037006121251e+00
+F     2 -5.03624007940909e-01
+F     3 -9.63759920590907e-02
+#   0: [ -0.1736656], [ 0.03059213], [-0.07134935], [-0.07264889], [0.001160507]
+#   5: [-0.001985856], [-0.001935392], [-0.003989556], [-0.001759834], [0.001503958]
+
+F     0 -1.17484452908073e-01
+F     1 1.14062264947455e+00
+F     2 -4.17484452908073e-01
+F     3 -1.82515547091927e-01
+#   0: [ -0.0991395], [ 0.01858717], [-0.04064304], [-0.04461018], [0.001223333]
+#   5: [-0.0003585692], [-0.001973615], [0.001048709], [-0.0001234746], [0.0005003752]
+
+F     0 -2.66463333512904e-01
+F     1 1.31296950538482e+00
+F     2 -5.66463333512904e-01
+F     3 -3.35366664870956e-02
+#   0: [ -0.2279397], [ 0.03986517], [-0.09349398], [-0.09337024], [0.0008234029]
+#   5: [-0.00108631], [-0.0003928246], [0.0002715416], [0.002359312], [-0.0004996676]
+
+F     0 -2.83455616491888e-01
+F     1 1.36082106257022e+00
+F     2 -5.83455616491888e-01
+F     3 -1.65443835081122e-02
+#   0: [ -0.2422656], [ 0.04120315], [ -0.1014552], [-0.09833067], [-0.002739839]
+#   5: [-0.0001627027], [-0.005336874], [-0.001066844], [-0.0007605877], [-0.0009654919]
+
+F     0 1.87811419223590e-01
+F     1 8.55994181018124e-01
+F     2 -1.12188580776410e-01
+F     3 -4.87811419223590e-01
+#   0: [  0.1606384], [-0.02942215], [ 0.06712489], [ 0.06408355], [-0.002069751]
+#   5: [-0.0005599331], [0.003581221], [-0.001809692], [0.001551978], [-0.001476272]
+
+F     0 -2.99999999999815e-01
+F     1 3.87675384995443e+01
+F     2 -5.99999999999815e-01
+F     3 -1.84741111297626e-13
+#   0: [ -0.1975449], [  0.1993412], [    -0.1712], [ -0.1178428], [ 0.02920582]
+#   5: [ 0.02797026], [  0.1289866], [-0.07407452], [-0.01784674], [0.003138065]
+
+F     0 8.71868536655419e-04
+F     1 1.01862882321055e+00
+F     2 -2.99128131463345e-01
+F     3 -3.00871868536655e-01
+#   0: [0.0002319009], [-0.001026857], [0.001739901], [-0.0002590808], [0.002231156]
+#   5: [-0.001865811], [0.0002280784], [-8.491863e-05], [-0.003554835], [0.0002666359]
+
+F     0 3.22966935554564e-02
+F     1 9.90734354722751e-01
+F     2 -2.67703306444544e-01
+F     3 -3.32296693555456e-01
+#   0: [ 0.02952107], [-0.003414484], [0.009987796], [0.008676555], [0.0001635209]
+#   5: [0.002017911], [0.001020698], [0.002780675], [0.000620433], [0.0003527615]
+
+F     0 9.00661602766005e-02
+F     1 9.31767408521636e-01
+F     2 -2.09933839723399e-01
+F     3 -3.90066160276601e-01
+#   0: [ 0.07712088], [-0.01370079], [ 0.03132359], [ 0.03156066], [-0.003504325]
+#   5: [-0.001091838], [-0.000639568], [0.001838515], [-0.001760489], [-0.001301466]
+
+F     0 1.25229789048276e-01
+F     1 9.00683645735508e-01
+F     2 -1.74770210951724e-01
+F     3 -4.25229789048276e-01
+#   0: [  0.1058293], [-0.02052918], [ 0.04414653], [ 0.04605879], [-0.001508935]
+#   5: [0.002862121], [0.001268854], [0.0002742782], [-0.001345346], [0.0005895852]
+
+F     0 -2.80407845513755e-01
+F     1 1.35912493599172e+00
+F     2 -5.80407845513755e-01
+F     3 -1.95921544862452e-02
+#   0: [ -0.2406928], [ 0.04038662], [-0.09988607], [ -0.0954145], [0.001113708]
+#   5: [7.420786e-05], [-0.002096591], [-0.0005008263], [0.004178211], [0.002634111]
+
+F     0 -3.17085889486064e-02
+F     1 1.05222264900659e+00
+F     2 -3.31708588948606e-01
+F     3 -2.68291411051394e-01
+#   0: [-0.02636237], [ 0.00341566], [-0.01261741], [-0.01200883], [0.004074813]
+#   5: [0.001254479], [-0.0006051697], [0.0006107744], [0.001308789], [0.0002738055]
+
+F     0 -3.18135473627419e-02
+F     1 1.06250042846862e+00
+F     2 -3.31813547362742e-01
+F     3 -2.68186452637258e-01
+#   0: [ -0.0271439], [0.001249817], [-0.01044852], [-0.01348493], [-0.0007731076]
+#   5: [-0.003775022], [0.0005387338], [0.001172985], [-0.002092717], [-0.0001823882]
+
+F     0 1.01475417747628e-02
+F     1 1.01845594712049e+00
+F     2 -2.89852458225237e-01
+F     3 -3.10147541774763e-01
+#   0: [0.009657575], [-0.0004812456], [0.001589082], [0.003597713], [-0.002394085]
+#   5: [-0.0002852469], [-0.003327501], [-0.002370254], [  0.0025284], [-0.001108431]
+
+F     0 1.51252343584861e-01
+F     1 8.71637705762294e-01
+F     2 -1.48747656415139e-01
+F     3 -4.51252343584860e-01
+#   0: [  0.1294254], [-0.02106664], [ 0.05373681], [ 0.05288277], [0.001860271]
+#   5: [-0.0002773757], [0.0002009952], [0.002660355], [0.001419156], [0.0009885631]
+
+F     0 -1.99074853980164e-01
+F     1 1.24820576530661e+00
+F     2 -4.99074853980164e-01
+F     3 -1.00925146019836e-01
+#   0: [ -0.1718682], [ 0.03002152], [-0.06728274], [-0.06842409], [-0.0002611932]
+#   5: [-0.003052918], [-0.0004231045], [0.002847843], [-0.0005878429], [0.0003274647]
+
+F     0 -1.42509629910716e-01
+F     1 1.17263279837128e+00
+F     2 -4.42509629910716e-01
+F     3 -1.57490370089284e-01
+#   0: [ -0.1235022], [ 0.02022695], [-0.04876327], [ -0.0477758], [-0.001521692]
+#   5: [-0.001231008], [-0.001375032], [-0.001762863], [-0.001506251], [0.0006950071]
+
+F     0 -2.99999111650700e-01
+F     1 2.03314319813362e+00
+F     2 -5.99999111650700e-01
+F     3 -8.88349299954516e-07
+#   0: [ -0.2650597], [ 0.03942348], [ -0.1042237], [-0.08806145], [-0.001497585]
+#   5: [ 0.02041289], [-0.002755737], [-0.006247306], [-0.00105324], [0.0009137086]
+
+F     0 -2.17301609301682e-01
+F     1 1.26360991870165e+00
+F     2 -5.17301609301682e-01
+F     3 -8.26983906983177e-02
+#   0: [ -0.1857707], [ 0.02842699], [-0.07570633], [-0.07865034], [-0.0002087471]
+#   5: [0.001580119], [0.001490794], [1.503123e-05], [-0.0007102089], [-0.002384771]
+
+F     0 -1.98469071961752e-01
+F     1 1.23405290499213e+00
+F     2 -4.98469071961752e-01
+F     3 -1.01530928038248e-01
+#   0: [ -0.1696356], [ 0.02864217], [-0.06971942], [-0.07023532], [-0.002686353]
+#   5: [-0.0008027658], [0.001872055], [0.0008489722], [0.002322316], [0.0009291227]
+
+F     0 -2.06204317224364e-02
+F     1 1.04028493137369e+00
+F     2 -3.20620431722436e-01
+F     3 -2.79379568277564e-01
+#   0: [-0.01752692], [0.003141285], [-0.005840669], [-0.00886783], [-0.00234537]
+#   5: [6.470808e-05], [0.001658767], [0.003214999], [-0.001174899], [0.0001646687]
+
+F     0 1.14115520656956e-01
+F     1 9.18737317216380e-01
+F     2 -1.85884479343044e-01
+F     3 -4.14115520656956e-01
+#   0: [ 0.09652925], [-0.01411433], [ 0.04247377], [  0.0414051], [0.0001440395]
+#   5: [-0.00126615], [-0.002481879], [-0.0006781432], [0.002052978], [-0.002864904]
+
+F     0 7.33449870094569e-02
+F     1 9.56337679296209e-01
+F     2 -2.26655012990543e-01
+F     3 -3.73344987009457e-01
+#   0: [ 0.06280789], [-0.00901503], [ 0.02707105], [ 0.02501409], [-0.003787658]
+#   5: [-0.0007010262], [0.0008798457], [-0.0003220489], [0.001365517], [-0.003402074]
+
+F     0 -2.99999999714952e-01
+F     1 4.37113119486146e+00
+F     2 -5.99999999714952e-01
+F     3 -2.85048207260274e-10
+#   0: [ -0.2545129], [ 0.05079764], [ -0.1060927], [ -0.1069459], [ 0.02269976]
+#   5: [-0.01666435], [0.002580639], [0.004735412], [ -0.0114035], [ 0.05466445]
+
+F     0 5.27045044349598e-02
+F     1 9.67934226851701e-01
+F     2 -2.47295495565040e-01
+F     3 -3.52704504434960e-01
+#   0: [ 0.04622992], [-0.007285702], [  0.0157706], [ 0.01867351], [-0.001975063]
+#   5: [-0.0009049479], [0.002084601], [0.001134955], [0.0007541798], [-0.001886097]
+
+F     0 -1.64000290481603e-01
+F     1 1.19877222422031e+00
+F     2 -4.64000290481603e-01
+F     3 -1.35999709518397e-01
+#   0: [ -0.1401623], [ 0.02155405], [-0.05953431], [-0.05701876], [-0.002238943]
+#   5: [-0.001967331], [-0.00121074], [-0.001581569], [0.002012676], [0.000234691]
+
+F     0 -2.97984111414781e-01
+F     1 1.37807369894127e+00
+F     2 -5.97984111414781e-01
+F     3 -2.01588858521923e-03
+#   0: [ -0.2541284], [ 0.04236651], [ -0.1040473], [ -0.1077101], [-0.001075465]
+#   5: [-0.0001510598], [-0.0002220443], [0.001447341], [0.004710148], [0.002619998]
+
+F     0 1.47822229424092e-01
+F     1 8.92405456817918e-01
+F     2 -1.52177770575908e-01
+F     3 -4.47822229424092e-01
+#   0: [  0.1251346], [-0.02195948], [  0.0508558], [ 0.05605104], [0.001160507]
+#   5: [0.0005525417], [-0.0009996507], [0.003971635], [-0.001248919], [0.0007760983]
+
+F     0 -4.30009542727618e-02
+F     1 1.06476007619905e+00
+F     2 -3.43000954272762e-01
+F     3 -2.56999045727238e-01
+#   0: [-0.03709316], [0.004734549], [-0.01308673], [ -0.0170264], [-0.00118761]
+#   5: [-9.540687e-05], [0.000642112], [-0.002972703], [0.001551978], [0.001699591]
+
+F     0 -2.36353969889722e-01
+F     1 1.30201577958309e+00
+F     2 -5.36353969889722e-01
+F     3 -6.36460301102779e-02
+#   0: [ -0.2004409], [ 0.03212467], [-0.08405523], [-0.08724104], [0.001195251]
+#   5: [-0.00263621], [0.001713906], [0.002847843], [-0.002145562], [-0.0007450432]
+
+F     0 -2.33271372159465e-01
+F     1 1.28901153951082e+00
+F     2 -5.33271372159465e-01
+F     3 -6.67286278405350e-02
+#   0: [  -0.200574], [ 0.03414923], [-0.08131838], [-0.08009909], [0.001149725]
+#   5: [0.001253045], [-0.002360141], [0.003885419], [0.0004360631], [-0.001203334]
+
+F     0 -8.34958937956458e-02
+F     1 1.11071388492784e+00
+F     2 -3.83495893795646e-01
+F     3 -2.16504106204354e-01
+#   0: [-0.07233832], [ 0.01079331], [-0.02755082], [-0.02950035], [0.001858844]
+#   5: [-0.003170899], [-0.001879333], [0.001444129], [-7.986884e-05], [-0.001946519]
+
+F     0 -5.94008840423208e-02
+F     1 1.07988851859140e+00
+F     2 -3.59400884042321e-01
+F     3 -2.40599115957679e-01
+#   0: [-0.05210074], [ 0.01039998], [-0.01869299], [-0.01922795], [0.001117511]
+#   5: [0.001255316], [-0.002094136], [0.001275506], [-0.0001093224], [0.001228898]
+
+F     0 -1.57204482879460e-01
+F     1 1.18840870882188e+00
+F     2 -4.57204482879460e-01
+F     3 -1.42795517120540e-01
+#   0: [ -0.1348029], [ 0.02140497], [-0.05416771], [ -0.0561645], [0.001160507]
+#   5: [-0.0002657719], [0.0007985101], [0.001340488], [-0.001865507], [-0.003261228]
+
+F     0 -2.53583082380747e-01
+F     1 1.31225652167773e+00
+F     2 -5.53583082380747e-01
+F     3 -4.64169176192530e-02
+#   0: [ -0.2160885], [ 0.03653791], [-0.08957377], [-0.09084917], [-0.001389539]
+#   5: [ 0.00120612], [-0.0003248059], [0.001783149], [0.003685612], [-0.002977132]
+
+F     0 -2.76508101390382e-01
+F     1 1.35503490463448e+00
+F     2 -5.76508101390382e-01
+F     3 -2.34918986096175e-02
+#   0: [ -0.2359614], [ 0.04126266], [-0.09576584], [-0.09956442], [0.003680235]
+#   5: [-0.004338951], [-0.0002114064], [-0.001120823], [0.001220151], [0.002312697]
+
+F     0 -1.80423712105194e-01
+F     1 1.21733879354597e+00
+F     2 -4.80423712105194e-01
+F     3 -1.19576287894806e-01
+#   0: [ -0.1554003], [ 0.02499771], [-0.06378638], [-0.06100504], [-0.001576548]
+#   5: [0.001175979], [-0.0008576706], [0.002578109], [0.0008498252], [-0.001246716]
+
+F     0 -2.99978204523505e-01
+F     1 1.65225545582438e+00
+F     2 -5.99978204523505e-01
+F     3 -2.17954764945016e-05
+#   0: [ -0.2497323], [ 0.05048379], [ -0.1059051], [ -0.1187432], [0.005074991]
+#   5: [0.000414542], [-0.005336874], [0.008524034], [  0.0053654], [0.0002722996]
+
+F     0 -2.42833449640183e-01
+F     1 1.30659783092326e+00
+F     2 -5.42833449640183e-01
+F     3 -5.71665503598170e-02
+#   0: [ -0.2062805], [ 0.03847312], [-0.08366184], [ -0.0892337], [0.003319499]
+#   5: [-0.001028426], [-0.0007741767], [-0.0007960984], [0.001565312], [-0.0003297186]
+
+F     0 -8.61858277869750e-03
+F     1 1.03881793770340e+00
+F     2 -3.08618582778697e-01
+F     3 -2.91381417221303e-01
+#   0: [-0.008206832], [0.001545193], [-0.001972431], [-0.001951517], [-0.001865958]
+#   5: [-0.001806743], [-0.0004268545], [0.003971635], [0.0009729166], [0.003369231]
+
+F     0 -7.41193122543764e-02
+F     1 1.09289907320541e+00
+F     2 -3.74119312254376e-01
+F     3 -2.25880687745624e-01
+#   0: [-0.06338742], [ 0.01081414], [-0.02617378], [-0.02595715], [0.0007204607]
+#   5: [-9.540687e-05], [0.000642112], [0.003733119], [0.001551978], [0.001699591]
+
+F     0 -2.84914396503043e-01
+F     1 1.36280392709856e+00
+F     2 -5.84914396503043e-01
+F     3 -1.50856034969570e-02
+#   0: [ -0.2419194], [ 0.04215393], [ -0.1000278], [  -0.104326], [-0.001026214]
+#   5: [0.001015985], [-0.002214669], [-0.002994277], [0.003585648], [0.0001036326]
+
+F     0 -5.13028777548209e-02
+F     1 1.06851438911839e+00
+F     2 -3.51302877754821e-01
+F     3 -2.48697122245179e-01
+#   0: [-0.04484577], [0.006935693], [-0.01736444], [-0.01660189], [ 0.00190012]
+#   5: [-0.001448874], [-0.002024259], [0.001444129], [-7.986884e-05], [-0.001948876]
+
+F     0 -2.99999999997645e-01
+F     1 1.89287772355300e+01
+F     2 -5.99999999997645e-01
+F     3 -2.35528263559104e-12
+#   0: [ -0.1960218], [ 0.09792037], [ -0.1842326], [  -0.150497], [ 0.02698997]
+#   5: [0.005772232], [-0.03394163], [ 0.05818872], [0.0006088023], [-0.06583105]
 
