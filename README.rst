@@ -1,5 +1,11 @@
 .. |--| unicode:: U+2013   .. en dash
 
+.. |examples/c/namefull.c| replace:: ``examples/c/namefull.c``
+.. |examples/c/udtstr.c| replace:: ``examples/c/udtstr.c``
+.. |examples/fortran/namefull.f| replace:: ``examples/fortran/namefull.f``
+.. |examples/fortran/constr.f| replace:: ``examples/fortran/constr.f``
+.. |examples/nsgaii/crowdingplot| replace:: ``examples/nsgaii/crowdingplot``
+
 PGAPack
 +++++++
 
@@ -8,17 +14,69 @@ algorithm library originally developed by David Levine at Argonne
 National Laboratory. It has libraries for C and Fortran. There are
 companion projects:
 
-- PGAPy, a Python wrapper for PGApack https://github.com/schlatterbeck/pgapy
-- debian-pgapack, a project for building debian packages (for all MPI
+- PGAPy_, a Python wrapper for PGApack https://github.com/schlatterbeck/pgapy
+- `debian-pgapack`_, a project for building debian packages (for all MPI
   libraries supported by Debian):
   https://github.com/schlatterbeck/debian-pgapack
 
 Updates 
 =======
 
+Update Oct 2022:
+
+- Use hashing for comparing individuals when the NoDuplicates flag is
+  turned on. Previously the comparison operations were O(n²) in the
+  population size. Now the effort is linear. The downside is that when
+  you have a custom comparison function with PGA_USERFUNCTION_DUPLICATE
+  you also need a hash function with PGA_USERFUNCTION_HASH. This always
+  applies when you have user-defined datatypes (and want to use the
+  NoDuplicates flag). Examples for C are in |examples/c/namefull.c|_ and
+  in |examples/c/udtstr.c|_ (for a user defined datatype) and for Fortran
+  in |examples/fortran/namefull.f|_ (there are no user-defined datatypes
+  in Fortran). The good news is that there is a utility function
+  ``PGAUtilHash`` that you can use when implementing a custom hashing
+  function.
+- Factor MPI serialization: When serializing an Individual, pgapack needs
+  certain fields to be sent together with the gene, this is now in its
+  own function. This function can also be used for MPI serialization
+  when using user-defined datatypes with MPI: In that case a user
+  function PGA_USERFUNCTION_BUILDDATATYPE has to be written. The new
+  code substantially reduces the boilerplate code for writing a function
+  for building an MPI datatype and will probably need no updates when
+  the pgapack internal information changes. An example is in
+  |examples/c/udtstr.c|_ and in the user guide.
+- Add a new serialization API for MPI serialization that can be used
+  instead of PGA_USERFUNCTION_BUILDDATATYPE. This is especially useful
+  when the user-defined datatype is variable length. We send the length
+  of the serialization in a first MPI message before sending the
+  (variable length) individual. Since we're not using multicast, this
+  works fine for transferring variable-size information with MPI.
+  This new API will be used in the companion-project PGAPy_ for user
+  defined datatypes in python.
+- Bug-fix in multi-objective optimization: When evaluations are exactly
+  equal the ranking would not correctly compute the dominance relation
+- Bug-fix in multi-objective optimization: The crowding metric was not
+  properly initialized resulting sometimes in different optimization
+  paths when compiled with/without optimization (-O2 and -O3 in gcc)
+- Fix feature interaction between multi-objective optimization and the
+  NoDuplicates flag: When combining two populations in the multi
+  objective optimization algorithms (NSGA-II and NSGA-III) where both
+  populations contain instances of the same indidivual, duplicates would
+  result.
+- The script for plotting the pareto front for 3-dimensional problems
+  used to be in ``examples/nsgaiii/crowdingplot3`` (this was already a
+  symbolic link in the latest releases) and is now gone, use the ``-3``
+  option for |examples/nsgaii/crowdingplot|_.
+
+The bug-fixes in multi-objective optization will result in different
+optimization paths being taken compared to previous versions (because of
+different sorting).
+
 Update Aug 2022:
+
 - Add a crossover method for permutations (e.g. traveling salesman)
-- Add Epsilon-Constrained optimization
+- Add Epsilon-Constrained optimization, see `blogpost on epsilon
+  constrained optimization`_
 
 Update Mar 2022:
 
@@ -63,8 +121,8 @@ Second Update December 2021:
   meaningful output, in particular the optimization result prints all
   non-dominated solutions.
 - A Fortran example with constraints *and* multi-objective optimization
-  can be found in ``examples/fortran/constr.f``
-- There is a small plotting-utility ``examples/nsgaii/crowdingplot``
+  can be found in |examples/fortran/constr.f|_
+- There is a small plotting-utility |examples/nsgaii/crowdingplot|_
   written in python that can plot one function value (in the objective
   space) against a second function value, similar to the graphics in the
   NSGA-II paper.
@@ -421,3 +479,18 @@ implementations (or against the serial version without MPI). There are
 currently no plans to incorporate automake again |--| computer
 architectures have become more similar in recent years so that the effort
 of maintaining a working automake environment seems not justified.
+
+.. _PGAPy: https://github.com/schlatterbeck/pgapy
+.. _`blogpost on epsilon constrained optimization`:
+    https://blog.runtux.com/posts/2022/08/29/
+.. _`debian-pgapack`: https://github.com/schlatterbeck/debian-pgapack
+.. _`examples/c/namefull.c`:
+    https://github.com/schlatterbeck/pgapack/blob/master/examples/c/namefull.c
+.. _`examples/fortran/namefull.f`:
+    https://github.com/schlatterbeck/pgapack/blob/master/examples/fortran/namefull.f
+.. _`examples/fortran/constr.f`:
+    https://github.com/schlatterbeck/pgapack/blob/master/examples/fortran/constr.f
+.. _`examples/c/udtstr.c`:
+    https://github.com/schlatterbeck/pgapack/blob/master/examples/c/udtstr.c
+.. _`examples/nsgaii/crowdingplot`:
+    https://github.com/schlatterbeck/pgapack/blob/master/examples/nsgaii/crowdingplot
