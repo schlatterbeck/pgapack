@@ -1441,7 +1441,14 @@ The type of crossover may be specified by setting \verb+PGASetCrossoverType+
 to \verb+PGA_CROSSOVER_ONEPT+, \verb+PGA_CROSSOVER_TWOPT+,
 \verb+PGA_CROSSOVER_UNIFORM+, or \verb+PGA_CROSSOVER_SBX+ for one-point,
 two-point, uniform, or simulated binary (SBX) crossover,
-respectively.  The default is two-point crossover.  By default the crossover
+respectively. For integer alleles there is \verb+PGA_CROSSOVER_EDGE+ for
+Edge Recombination crossover \cite{WSS91}. If the integer gene is
+initialized to be a permutation, this variant preserves this property.
+In addition some edges can be defined to be fixed (unmutable). This is
+done with the \verb+PGAIntegerSetFixedEdges+. An example is given in
+\verb+examples/sequence+.
+
+The default is two-point crossover.  By default the crossover
 rate is 0.85.  It may be set to 0.6 by {\tt PGASetCrossoverProb(ctx, 0.6)},
 for example. Simulated binary crossover is available only for integer
 and real genes.
