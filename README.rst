@@ -133,7 +133,7 @@ First Update December 2021:
 - If you're upgrading: The signature of your evaluation function has
   changed, it has grown a new parameter at the end. If you're not using
   constrained optimization you will only have to change your objective
-  function to add this paramter, it is unused in that configuration.
+  function to add this parameter, it is unused in that configuration.
   In Fortran you can get away without any changes.
 - This release probably changes the path an optimization takes because we
   use a new (stable) sort for sorting populations during copying of

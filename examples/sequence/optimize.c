@@ -2,7 +2,7 @@
 
 #include <pgapack.h>
 #include <unistd.h>
-#include "optimize.h"
+#include <math.h>
 
 double distance [36][36];
 
