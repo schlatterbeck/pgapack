@@ -1175,12 +1175,12 @@ void PGARealInitString ( PGAContext *ctx, int p, int pop)
 ****************************************************************************I*/
 MPI_Datatype PGARealBuildDatatype(PGAContext *ctx, int p, int pop)
 {
-    int            n = 6;
-    int            counts[7];      /* Number of elements in each
+    int            n = 7;
+    int            counts[8];      /* Number of elements in each
                                       block (array of integer) */
-    MPI_Aint       displs[7];      /* byte displacement of each
+    MPI_Aint       displs[8];      /* byte displacement of each
                                       block (array of integer) */
-    MPI_Datatype   types[7];       /* type of elements in each block (array
+    MPI_Datatype   types[8];       /* type of elements in each block (array
                                       of handles to datatype objects) */
     MPI_Datatype   individualtype; /* new datatype (handle) */
     PGAIndividual *traveller;      /* address of individual in question */
@@ -1218,6 +1218,19 @@ MPI_Datatype PGARealBuildDatatype(PGAContext *ctx, int p, int pop)
         types[6]  = MPI_DOUBLE;
         n += 1;
     }
+ 
+    if (ctx->ga.NumAuxEval){
+        MPI_Get_address(&traveller->index, &displs[7]);
+        counts[7] = 1;
+        types[7]  = MPI_INT;
+    }
+    else
+    {
+        MPI_Get_address(&traveller->index, &displs[6]);
+        counts[6] = 1;
+        types[6]  = MPI_INT;
+    }
+
 
     MPI_Type_create_struct(n, counts, displs, types, &individualtype);
     MPI_Type_commit(&individualtype);

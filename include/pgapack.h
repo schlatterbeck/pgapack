@@ -357,6 +357,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 *****************************************/
 
 typedef struct PGAIndividual {         /* primary population data structure */
+  int                   index;         /* index of this indiv of the pop    */
   double                evalue;        /* evaluation function value         */
   double                fitness;       /* fitness    function value         */
   int                   evaluptodate;  /* flag whether evalue is current    */

@@ -1557,6 +1557,7 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
     PGADebugEntered("PGACreateIndividual");
 
     ind->ctx              = ctx;
+    ind->index            = p;
     ind->pop              = pop == PGA_OLDPOP ? ctx->ga.oldpop : ctx->ga.newpop;
     ind->evalue           = 0.0;
     ind->fitness          = 0.0;
