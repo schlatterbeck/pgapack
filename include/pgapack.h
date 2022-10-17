@@ -358,7 +358,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 *        Max. size of common part        *
 *       When sending PGAIndividual       *
 *****************************************/
-#define PGA_MPI_HEADER_ELEMENTS      6
+#define PGA_MPI_HEADER_ELEMENTS      7
 
 /*****************************************
 *           EPSILON CONSTRAINTS          *
@@ -372,6 +372,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 *****************************************/
 
 typedef struct PGAIndividual {         /* primary population data structure */
+  int                   index;         /* index of this indiv of the pop    */
   double                evalue;        /* evaluation function value         */
   double                fitness;       /* fitness    function value         */
   int                   evaluptodate;  /* flag whether evalue is current    */

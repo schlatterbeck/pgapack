@@ -211,7 +211,7 @@ c
 
       l = PGAGetStringLength(ctx)
       r = PGAUtilHash(s, l, PGA_INITIAL_HASH)
-      N_Duplicate = r
+      N_Hash = r
       
       return
       end
