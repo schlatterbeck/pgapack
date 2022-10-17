@@ -197,7 +197,7 @@ Updated Sept 2017: new installation instructions, availability:
   postscript is still available. Notably documentation bugs reported via
   the debian project were fixed. The user guide can be built from source
   again (after probably a *very* long time).
-- Make fortran compile again
+- Make Fortran compile again
 
 Updated March 2008:
 
@@ -404,17 +404,18 @@ installation steps are as follows.
     parallel computer.  If the MPICH implementation was used the ``mpirun``
     command can be used to execute a parallel program on most systems.
 
+Compiling without Fortran
+-------------------------
 
+Note that Fortran is used only for the Fortran examples in
+``examples/fortran`` and ``examples/mgh``. But these are also used in
+the tests. If you can live without all test tests passing you can simply
+override the ``FC`` (Fortran Compiler) Makefile variable like so::
 
-PGAPack on PCs 
-===================
+    make FC=
 
-PGAPack has not been ported to MS-DOS, Windows 3.1, Windows 95, or Apple OS.
-As mentioned earlier, however, PGAPack is written in ANSI standard C and
-should compile in these environments.  Be aware, however, that PGAPack's
-random number generator, PGARandom01, assumes certain machine characteristics
-for ints and floats that may not correspond with what your PC and/or compiler
-support, resulting in erroneous values.
+This will set the Fortran compiler to an empty string and no attempt to
+compile fortran code is made.
 
 
 Structure of the Distribution Directory
