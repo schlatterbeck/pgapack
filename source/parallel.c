@@ -803,7 +803,7 @@ int PGABuildDatatypeHeader
     , int *counts, MPI_Aint *displs, MPI_Datatype *types
     )
 {
-    int n = 5;
+    int n = 6;
     PGAIndividual *traveller = PGAGetIndividual (ctx, p, pop);
     MPI_Get_address (&traveller->evalue, &displs [0]);
     counts [0] = 1;
@@ -820,10 +820,13 @@ int PGABuildDatatypeHeader
     MPI_Get_address (&traveller->auxtotalok, &displs [4]);
     counts [4] = 1;
     types  [4] = MPI_INT;
+    MPI_Get_address (&traveller->index, &displs [5]);
+    counts [5] = 1;
+    types  [5] = MPI_INT;
     if (ctx->ga.NumAuxEval) {
-        MPI_Get_address (traveller->auxeval, &displs [5]);
-        counts [5] = ctx->ga.NumAuxEval;
-        types  [5] = MPI_DOUBLE;
+        MPI_Get_address (traveller->auxeval, &displs [6]);
+        counts [6] = ctx->ga.NumAuxEval;
+        types  [6] = MPI_DOUBLE;
         n += 1;
     }
     assert (n <= PGA_MPI_HEADER_ELEMENTS);
