@@ -1227,20 +1227,56 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
     PGAIndividual *oldpop = ctx->ga.oldpop;
     PGAIndividual *newpop = ctx->ga.newpop;
     PGAIndividual *temp;
+    size_t         n_dupes = 0;
 
     PGADebugEntered("PGA_NSGA_Replacement");
 
     /* We keep two pointers into the all_individuals array. One with
      * constrained individuals starts from the end. The other with
      * unconstrained individuals starts from the start.
+     * Note that with the NSGA algorithms it does not make much sense to
+     * have numreplace < popsize: The algorithm is elitist and will keep
+     * the good individuals anyway. If numreplace < popsize we do not
+     * use the individuals that were copied to the new population,
+     * otherwise we would produce duplicates.
      */
+
+    /* Before we put constrained and unconstrained individuals into the
+     * start array, if the NoDuplicates flag is set, we sort all the
+     * duplicates to the end of the array.
+     * A precondition is that neither the individuals in oldpop nor the
+     * individuals in newpop contain duplicates. And all the individuals
+     * in newpop are already in the hash. So we just loop over oldpop
+     * and put all duplicates at the end of the array.
+     * if numreplace < popsize we rely on the fact that the first
+     * popsize-numreplace individuals are the same in oldpop and newpop.
+     * The individuals from newpop are not used in that case, so we do
+     * *not* mark the first popsize-numreplace individuals as
+     * duplicates.
+     */
+    if (ctx->ga.NoDuplicates) {
+        for (i=popsize - numreplace; i<popsize; i++) {
+            if (PGADuplicate (ctx, i, PGA_OLDPOP, PGA_NEWPOP)) {
+                constrained--;
+                *constrained = oldpop + i;
+                n_dupes++;
+            }
+        }
+    }
 
     /* First loop over all old individuals and put them into the
      * all_individuals array. Note that we compare using the current
      * Epsilon, so this uses Epsilon-Constrained optimization if
      * enabled.
+     * Dupes are already handled above, skip those.
      */
     for (i=0; i<popsize; i++) {
+        /* Dupes are handled above */
+        if (ctx->ga.NoDuplicates && i >= popsize - numreplace) {
+            if (PGADuplicate (ctx, i, PGA_OLDPOP, PGA_NEWPOP)) {
+                continue;
+            }
+        }
         if (INDGetAuxTotal (oldpop + i) - ctx->ga.Epsilon > 0) {
             constrained--;
             *constrained = oldpop + i;
@@ -1264,7 +1300,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
      */
     assert (constrained == unconstrained);
     n_unc_ind = unconstrained - all_individuals;
-    n_con_ind = popsize + numreplace - n_unc_ind;
+    n_con_ind = popsize + numreplace - n_unc_ind - n_dupes;
 
     /* First perform non-dominated sorting on unconstrained individuals
      * Normal sorting if only one eval function

@@ -35,6 +35,7 @@
 % 65 rotate /Times-Roman findfont 216 scalefont setfont
 % 0 0 moveto 0.95 setgray (DRAFT) show grestore}def end}
 
+\input{userguide_date}
 \begin{document}
 
 \ANLTitle{Users Guide to the PGAPack Parallel \\Genetic Algorithm
@@ -42,7 +43,7 @@ Library}
 {\em David Levine\\[.1in]
 Mathematics and Computer Science Division\\[.1in]
 and contributors
-}{-95/18}{January 31, 1996, last updated May 31, 2020}
+}{-95/18}{January 31, 1996, last updated \updated}
 
 
 
@@ -492,7 +493,7 @@ given in section~\ref{sec:selection}.
 
 For the population replacement strategy the
 pairwise-best replacement type is introduced for DE, which can also be
-used in other EA variants due to the mudular nature of \pga, more
+used in other EA variants due to the modular nature of \pga, more
 details are given in section~\ref{sec:population-replacement}. Typical
 settings for Differential Evolution are given in
 figure~\ref{example:de-settings}. In that example the population size
@@ -1102,6 +1103,7 @@ and then mutation.  Some practitioners \cite{Da91} have argued that these two
 operators should be separate.  By default, \pga\ applies mutation only to
 strings that did {\em not} undergo crossover.
 
+\begin{sloppypar}
 This is equivalent to setting \verb+PGASetMixingType+ to
 \verb+PGA_MIX_MUTATE_OR_CROSS+ which is also the default.
 To have strings undergo {\em both} crossover and mutation, one should
@@ -1109,6 +1111,7 @@ set \verb+PGASetMixingType+ to \verb+PGA_MIX_TRADITIONAL+. Note that
 there is also a mode that will not mutate strings that are not also
 crossed over. This can be enabled by setting \verb+PGASetMixingType+ to
 \verb+PGA_MIX_MUTATE_AND_CROSS+.
+\end{sloppypar}
 
 If an evolutionary algorithm variant without crossover is used or if
 special crossover techniques with more that two parents should be
@@ -1116,11 +1119,11 @@ applied, all the logic can be implemented in a custom crossover operator
 and the \verb+PGASetMixingType+ can be set to \verb+PGA_MIX_MUTATE_ONLY+.
 In this mode no crossover is performed at all.
 
-There is also a legacy interface that uses the functions
+There is also a legacy interface which should \textit{not} be used for
+new code. Functions used in that interface are:
 \verb+PGASetMutationOrCrossoverFlag+,
 \verb+PGASetMutationAndCrossoverFlag+, and
-\verb+PGASetMutationOnlyFlag+. The legacy interface should not be used
-for new code.
+\verb+PGASetMutationOnlyFlag+.
 
 By default, \pga\ allows duplicate strings in the population.  Some
 practitioners advocate not allowing duplicate strings in the population in
@@ -1439,7 +1442,14 @@ The type of crossover may be specified by setting \verb+PGASetCrossoverType+
 to \verb+PGA_CROSSOVER_ONEPT+, \verb+PGA_CROSSOVER_TWOPT+,
 \verb+PGA_CROSSOVER_UNIFORM+, or \verb+PGA_CROSSOVER_SBX+ for one-point,
 two-point, uniform, or simulated binary (SBX) crossover,
-respectively.  The default is two-point crossover.  By default the crossover
+respectively. For integer alleles there is \verb+PGA_CROSSOVER_EDGE+ for
+Edge Recombination crossover \cite{WSS91}. If the integer gene is
+initialized to be a permutation, this variant preserves this property.
+In addition some edges can be defined to be fixed (unmutable). This is
+done with the \verb+PGAIntegerSetFixedEdges+. An example is given in
+\verb+examples/sequence+.
+
+The default is two-point crossover.  By default the crossover
 rate is 0.85.  It may be set to 0.6 by {\tt PGASetCrossoverProb(ctx, 0.6)},
 for example. Simulated binary crossover is available only for integer
 and real genes.
@@ -2611,7 +2621,7 @@ Hashing              & \verb+PGA_USERFUNCTION_HASH+ \\
 String Printing      & \verb+PGA_USERFUNCTION_PRINTSTRING+ \\
 Termination Criteria & \verb+PGA_USERFUNCTION_STOPCOND+ \\
 End of generation    & \verb+PGA_USERFUNCTION_ENDOFGEN+ \\
-Genetic difference   & \verb+PGA_USERFUNCTION_GEN_DIFFERENCE+ \\
+Genetic distance     & \verb+PGA_USERFUNCTION_GEN_DISTANCE+ \\
 Pre-Evaluate Hook    & \verb+PGA_USERFUNCTION_PRE_EVAL+ \\
 \hline
 \end{tabular}
@@ -2728,7 +2738,7 @@ Calling Sequences for Customizable Functions\label{tab:custom-functions}
     \verb+(PGAContext*)+ \\
 \verb+PGA_USERFUNCTION_ENDOFGEN+       &\verb+void+   &
     \verb+(PGAContext*)+ \\
-\verb+PGA_USERFUNCTION_GEN_DIFFERENCE+ &\verb+double+ &
+\verb+PGA_USERFUNCTION_GEN_DISTANCE+   &\verb+double+ &
     \verb+(PGAContext*, int, int, int, int)+ \\
 \verb+PGA_USERFUNCTION_PRE_EVAL+       &\verb+void+ &
     \verb+(PGAContext*, int)+ \\
@@ -2874,6 +2884,7 @@ Functions Required for New Data Types\label{tab:new-functions}
 \multicolumn{1}{|c|}{Functionality} &
 \multicolumn{1}{c|}{Symbolic Constant} \\ \hline
 Memory allocation & \verb+PGA_USERFUNCTION_CREATESTRING+ \\
+Memory free & \verb+PGA_USERFUNCTION_CHROM_FREE+ \\
 String packing & \verb+PGA_USERFUNCTION_BUILDDATATYPE+ \\
 Mutation & \verb+PGA_USERFUNCTION_MUTATION+ \\
 Crossover & \verb+PGA_USERFUNCTION_CROSSOVER+ \\
@@ -2881,6 +2892,22 @@ String printing & \verb+PGA_USERFUNCTION_PRINTSTRING+ \\
 String copying & \verb+PGA_USERFUNCTION_COPYSTRING+ \\
 Duplicate checking & \verb+PGA_USERFUNCTION_DUPLICATE+ \\
 Hashing & \verb+PGA_USERFUNCTION_HASH+ \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\caption
+{
+Serialization API\label{tab:serialization-functions}
+}
+\begin{tabular}{|l|l|} \hline\hline
+\multicolumn{1}{|c|}{Functionality} &
+\multicolumn{1}{c|}{Symbolic Constant} \\ \hline
+Serialization & \verb+PGA_USERFUNCTION_SERIALIZE+ \\
+Free serialization & \verb+PGA_USERFUNCTION_SERIALIZE_FREE+ \\
+Deserialization & \verb+PGA_USERFUNCTION_DESERIALIZE+ \\
 \hline
 \end{tabular}
 \end{table}
@@ -2893,6 +2920,28 @@ data type is \verb+PGA_DATATYPE_USER+, the string length specified to
 \verb+PGACreate+ can be whatever the user desires.  It will be returned by
 \verb+PGAGetStringLength+ but is not otherwise used in the
 data-structure-neutral functions of \pga.
+
+When specifying a user function for string creation (with
+\verb+PGA_USERFUNCTION_CREATESTRING+, by default the string is freed
+using the \verb+free+ function. If memory allocation uses different
+mechanisms, a user function for freeing a chromosome can be specified
+with \verb+PGA_USERFUNCTION_CHROM_FREE+.
+
+Instead of specifying a user function for building an \verb+MPI+ data
+type, you can \textit{instead} specify user functions for a
+serialization API summarized in table~\ref{tab:serialization-functions}.
+The user function for serialization \verb+PGA_USERFUNCTION_SERIALIZE+
+is used on the sending side. The function for deserialization
+\verb+PGA_USERFUNCTION_DESERIALIZE+ is used at the receiving side.
+With the serialization API it is possible to send/receive
+variable-length data types. The serialization must reserve memory for
+the serialized representation. If it uses memory allocation with
+\verb+malloc+, the default is to call \verb+free+ when the serialized
+value is no longer needed. If a memory allocation system not compatible
+with \verb+free+ is used, the user function
+\verb+PGA_USERFUNCTION_SERIALIZE_FREE+ must be defined.
+When using the serialization API a user function
+\verb+PGA_USERFUNCTION_BUILDDATATYPE+ \textit{must not} be defined.
 
 The calling sequences for the functions in Table~\ref{tab:new-functions} are
 given in Table~\ref{tab:new-functions1}. Template routines for these functions
@@ -2921,14 +2970,26 @@ Calling Sequences for New Data Type Functions\label{tab:new-functions1}
 \multicolumn{1}{|c|}{Symbolic Constant} &
 \multicolumn{1}{|c|}{Return} &
 \multicolumn{1}{c|}{Function Prototype} \\ \hline
-{\tt PGA\_USERFUNCTION\_CREATESTRING}&{\tt void}&{\tt (PGAContext*, int, int, int)}\\
-{\tt PGA\_USERFUNCTION\_BUILDDATATYPE}&{\tt int}&{\tt (PGAContext*, int, int)}\\
-{\tt PGA\_USERFUNCTION\_MUTATION}&{\tt int}&{\tt (PGAContext*, int, int, double)}\\
-{\tt PGA\_USERFUNCTION\_CROSSOVER}&{\tt void}&{\tt (PGAContext*, int, int, int, int, int, int)}\\
-{\tt PGA\_USERFUNCTION\_PRINTSTRING}&{\tt void}&{\tt (PGAContext*, FILE *, int, int)}\\
-{\tt PGA\_USERFUNCTION\_COPYSTRING}&{\tt int}&{\tt (PGAContext*, int, int,
-int, int)}\\
-{\tt PGA\_USERFUNCTION\_DUPLICATE}&{\tt int}&{\tt (PGAContext*, int, int, int, int)}\\
+\verb+PGA_USERFUNCTION_CREATESTRING+   & \verb+void+       &
+    \verb+(PGAContext*, int, int, int)+                   \\
+\verb+PGA_USERFUNCTION_BUILDDATATYPE+  & \verb+int+        &
+    \verb+(PGAContext*, int, int)+                        \\
+\verb+PGA_USERFUNCTION_SERIALIZE+      & \verb+size_t+     &
+    \verb+(PGAContext*, int, int, const void **)+         \\
+\verb+PGA_USERFUNCTION_DESERIALIZE+    & \verb+void+       &
+    \verb+(PGAContext*, int, int, const void *, size_t)+  \\
+\verb+PGA_USERFUNCTION_SERIALIZE_FREE+ & \verb+void+       &
+    \verb+(void *)+                                       \\
+\verb+PGA_USERFUNCTION_MUTATION+       & \verb+int+        &
+    \verb+(PGAContext*, int, int, double)+                \\
+\verb+PGA_USERFUNCTION_CROSSOVER+      & \verb+void+       &
+    \verb+(PGAContext*, int, int, int, int, int, int)+    \\
+\verb+PGA_USERFUNCTION_PRINTSTRING+    & \verb+void+       &
+    \verb+(PGAContext*, FILE *, int, int)+                \\
+\verb+PGA_USERFUNCTION_COPYSTRING+     & \verb+int+        &
+    \verb+(PGAContext*, int, int, int, int)+              \\
+\verb+PGA_USERFUNCTION_DUPLICATE+      & \verb+int+        &
+    \verb+(PGAContext*, int, int, int, int)+              \\
 \hline
 \end{tabular}
 \end{table}
@@ -3104,8 +3165,9 @@ and adds or subtracts one to an {\tt int}.
 
 \begin{figure}
 \begin{verbatim}
-void Crossover(PGAContext *ctx, int p1, int p2, int pop1, int t1, int t2,
-               int pop2) {
+void Crossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int t1, int t2, int pop2)
+{
     int i;
     ligand *parent1, *parent2, *child1, *child2;
     double pu;
@@ -3159,25 +3221,43 @@ the {\tt ligand} data type.
 
 \begin{figure}
 \begin{verbatim}
-int DuplicateString(PGAContext *ctx, int p1, int pop1, int p2, int pop2) {
+int DuplicateString(PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+{
     void *a, *b;
 
-     a = PGAGetIndividual(ctx, p1, pop1)->chrom;
-     b = PGAGetIndividual(ctx, p2, pop2)->chrom;
-     return (!memcmp(a, b, sizeof(ligand)));
+    a = PGAGetIndividual(ctx, p1, pop1)->chrom;
+    b = PGAGetIndividual(ctx, p2, pop2)->chrom;
+    return (!memcmp(a, b, sizeof(ligand)));
 }
 \end{verbatim}
 \caption{Duplicate Testing for Structure Data Type}
 \label{example1:new-datatype-duplicate}
 \end{figure}
 
-Figure~\ref{example1:new-datatype-duplicate} contains the code for {\tt
-DuplicateString}, which checks for duplicate ligand structures.  It uses the
-ANSI C {\tt memcmp} function for this purpose.
+\begin{figure}
+\begin{verbatim}
+PGAHash HashString (PGAContext *ctx, int p, int pop)
+{
+    void *lig = PGAGetIndividual (ctx, p, pop)->chrom;
+    return PGAUtilHash (lig, sizeof (ligand), PGA_INITIAL_HASH);
+}
+
+\end{verbatim}
+\caption{Hashing for Structure Data Type}
+\label{example1:new-datatype-hash}
+\end{figure}
+
+Figure~\ref{example1:new-datatype-duplicate} contains the code for
+\verb+DuplicateString+, which checks for duplicate ligand structures.
+It uses the ANSI C \verb+memcmp+ function for this purpose. In
+figure~\ref{example1:new-datatype-hash} the code for the hashing
+function is shown. It uses the utility function \verb+PGAUtilHash+ for
+computing the hash over the user-defined data structure.
 
 \begin{figure}
 \begin{verbatim}
-double Evaluate(PGAContext *ctx, int p, int pop, double *aux) {
+double Evaluate(PGAContext *ctx, int p, int pop, double *aux)
+{
     int i, j;
     double x[6];
     int sc[40];
@@ -3197,57 +3277,52 @@ double Evaluate(PGAContext *ctx, int p, int pop, double *aux) {
 \end{figure}
 
 Figure~\ref{example1:new-datatype-evaluate} contains the evaluation function
-for this example.  It again uses {\tt PGAGetIndividual} to map {\tt (p, pop)}
+for this example.  It again uses \verb+PGAGetIndividual+ to map \verb+(p, pop)+
 into a pointer to the string of interest.  For user data types, \pga\ does
-{\em not} provide a {\tt PGAGetUserAllele} function, so access to the allele
+{\em not} provide a \verb+PGAGetUserAllele+ function, so access to the allele
 values is made directly through the pointer.
 
 \begin{figure}
 \begin{verbatim}
-MPI_Datatype BuildDT(PGAContext *ctx, int p, int pop) {
-  int             counts[5];
-  MPI_Aint        displs[5];
-  MPI_Datatype    types[5];
+MPI_Datatype BuildDT (PGAContext *ctx, int p, int pop)
+{
+  int             idx = 0;
+  int             counts [PGA_MPI_HEADER_ELEMENTS + 2];
+  MPI_Aint        displs [PGA_MPI_HEADER_ELEMENTS + 2];
+  MPI_Datatype    types  [PGA_MPI_HEADER_ELEMENTS + 2];
   MPI_Datatype    DT_PGAIndividual;
   PGAIndividual  *P;
   ligand         *S;
 
-  P = PGAGetIndividual(ctx, p, pop);
+  P = PGAGetIndividual (ctx, p, pop);
   S = (ligand *)P->chrom;
+  idx = PGABuildDatatypeHeader (ctx, p, pop, counts, displs, types);
 
-  /*  Build the MPI datatype.  Every user defined function needs these.
-   *  The first two calls are stuff that is internal to PGAPack, but 
-   *  the user still must include it.  See pgapack.h for details one the
-   *  fields (under PGAIndividual)
+  /*  Finish the MPI datatype.  Every user defined function needs these.
+   *  The stuff internal to PGAPack is already handled by
+   *  PGABuildDatatypeHeader above.
    */
-  MPI_Address(&P->evalfunc, &displs[0]);
-  counts[0] = 2;
-  types[0]  = MPI_DOUBLE;
 
-  /*  Next, we have an integer, evaluptodate.  */  
-  MPI_Address(&P->evaluptodate, &displs[1]);
-  counts[1] = 1;
-  types[1]  = MPI_INT;
+  MPI_Get_address (S->t, &displs [idx]);
+  counts [idx] = 6;
+  types  [idx] = MPI_DOUBLE;
+  idx++;
 
-  /*  Finally, we have the actual user-defined string.  */
-  MPI_Address(S->t, &displs[2]);
-  counts[2] = 6;
-  types[2]  = MPI_DOUBLE;
+  MPI_Get_address (S->sc, &displs [idx]);
+  counts [idx] = 40;
+  types  [idx] = MPI_INT;
+  idx++;
 
-  MPI_Address(S->sc, &displs[3]);
-  counts[3] = 40;
-  types[3]  = MPI_INT;
-
-  MPI_Type_struct(4, counts, displs, types, &DT_PGAIndividual);
-  MPI_Type_commit(&DT_PGAIndividual);
-  return(DT_PGAIndividual);
+  MPI_Type_struct (idx, counts, displs, types, &DT_PGAIndividual);
+  MPI_Type_commit (&DT_PGAIndividual);
+  return DT_PGAIndividual;
 }
 \end{verbatim}
 \caption{Message Packing Function for Structure Data Type}
 \label{example1:new-datatype-build}
 \end{figure}
 
-Figure~\ref{example1:new-datatype-build} contains the function {\tt BuildDT}
+Figure~\ref{example1:new-datatype-build} contains the function \verb+BuildDT+
 that builds an MPI datatype for sending strings to other processors.  Consult
 an MPI manual for further information.
 
@@ -4118,8 +4193,13 @@ Fortran and C.
 \item \verb+PGA_USERFUNCTION_BUILDDATATYPE+
 \item \verb+PGA_USERFUNCTION_STOPCOND+
 \item \verb+PGA_USERFUNCTION_ENDOFGEN+
-\item \verb+PGA_USERFUNCTION_GEN_DIFFERENCE+
+\item \verb+PGA_USERFUNCTION_GEN_DISTANCE+
 \item \verb+PGA_USERFUNCTION_PRE_EVAL+
+\item \verb+PGA_USERFUNCTION_HASH+
+\item \verb+PGA_USERFUNCTION_SERIALIZE+
+\item \verb+PGA_USERFUNCTION_DESERIALIZE+
+\item \verb+PGA_USERFUNCTION_SERIALIZE_FREE+
+\item \verb+PGA_USERFUNCTION_CHROM_FREE+
 \end{itemize}
 
 \end{itemize}

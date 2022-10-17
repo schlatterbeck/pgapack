@@ -221,10 +221,21 @@ c *** SET USER FUNCTION
       parameter ( PGA_USERFUNCTION_ENDOFGEN =          10)
       integer PGA_USERFUNCTION_GEN_DIFFERENCE
       parameter ( PGA_USERFUNCTION_GEN_DIFFERENCE =    11)
+c *** Yes, this is the same as DIFFERENCE above
+      integer PGA_USERFUNCTION_GEN_DISTANCE
+      parameter ( PGA_USERFUNCTION_GEN_DISTANCE =      11)
       integer PGA_USERFUNCTION_PRE_EVAL
       parameter ( PGA_USERFUNCTION_PRE_EVAL =          12)
       integer PGA_USERFUNCTION_HASH
-      parameter ( PGA_USERFUNCTION_HASH     =          13)
+      parameter ( PGA_USERFUNCTION_HASH =              13)
+      integer PGA_USERFUNCTION_SERIALIZE
+      parameter ( PGA_USERFUNCTION_SERIALIZE =         14)
+      integer PGA_USERFUNCTION_DESERIALIZE
+      parameter ( PGA_USERFUNCTION_DESERIALIZE =       15)
+      integer PGA_USERFUNCTION_SERIALIZE_FREE
+      parameter ( PGA_USERFUNCTION_SERIALIZE_FREE =    16)
+      integer PGA_USERFUNCTION_CHROM_FREE
+      parameter ( PGA_USERFUNCTION_CHROM_FREE =        17)
 
 c *** TAGS
       integer PGA_COMM_STRINGTOEVAL

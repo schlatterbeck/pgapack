@@ -645,11 +645,15 @@ void PGAEvaluateSlave(PGAContext *ctx, int pop,
     PGADebugEntered("PGAEvaluateSlave");
 
     k = PGA_TEMP1;
-    MPI_Probe(0, MPI_ANY_TAG, comm, &stat);
-    while (stat.MPI_TAG == PGA_COMM_STRINGTOEVAL) {
+
+    MPI_Probe (0, MPI_ANY_TAG, comm, &stat);
+    while (  stat.MPI_TAG == PGA_COMM_STRINGTOEVAL
+          || stat.MPI_TAG == PGA_COMM_SERIALIZE_SIZE
+          )
+    {
         double *aux;
-	PGAReceiveIndividual(ctx, PGA_TEMP1, pop, 0, PGA_COMM_STRINGTOEVAL,
-			     comm, &stat);
+	PGAReceiveIndividual
+            (ctx, PGA_TEMP1, pop, 0, PGA_COMM_STRINGTOEVAL, comm, &stat);
 
         aux = PGAGetAuxEvaluation (ctx, PGA_TEMP1, pop);
 	if (ctx->sys.UserFortran == PGA_TRUE)
@@ -760,6 +764,115 @@ MPI_Datatype PGABuildDatatype(PGAContext *ctx, int p, int pop)
 
 
 /*U****************************************************************************
+  PGABuildDatatypeHeader - Common part for building an MPI datatype
+                           for an individual
+
+  Category: Parallel
+
+  Inputs:
+    ctx      - context variable
+    counts   - Number of elements in each block
+    displs   - byte displacement array pointer
+    types    - type elements
+
+
+  Outputs:
+    A partially filled array of counts, displs, types
+    The index of the next-to-be-filled counts, displs, types
+    The returned index will be max PGA_MPI_HEADER_ELEMENTS.
+    This means callers may use a statically allocated buffer.
+
+  Example:
+    PGAContext *ctx;
+    int idx = 0;
+    int counts [7];
+    int displs [7];
+    MPI_Datatype types [7];
+    :
+    idx = PGABuildDatatypeHeader (ctx, counts, displs, types);
+    // Fill rest of counts, displs, types here and build datatype
+    counts [idx] =
+    displs [idx] =
+    types  [idx] =
+    idx++;
+    ...
+
+****************************************************************************U*/
+int PGABuildDatatypeHeader
+    ( PGAContext *ctx, int p, int pop
+    , int *counts, MPI_Aint *displs, MPI_Datatype *types
+    )
+{
+    int n = 5;
+    PGAIndividual *traveller = PGAGetIndividual (ctx, p, pop);
+    MPI_Get_address (&traveller->evalue, &displs [0]);
+    counts [0] = 1;
+    types  [0] = MPI_DOUBLE;
+    MPI_Get_address (&traveller->fitness, &displs [1]);
+    counts [1] = 1;
+    types  [1] = MPI_DOUBLE;
+    MPI_Get_address (&traveller->evaluptodate, &displs [2]);
+    counts [2] = 1;
+    types  [2] = MPI_INT;
+    MPI_Get_address (&traveller->auxtotal, &displs [3]);
+    counts [3] = 1;
+    types  [3] = MPI_DOUBLE;
+    MPI_Get_address (&traveller->auxtotalok, &displs [4]);
+    counts [4] = 1;
+    types  [4] = MPI_INT;
+    if (ctx->ga.NumAuxEval) {
+        MPI_Get_address (traveller->auxeval, &displs [5]);
+        counts [5] = ctx->ga.NumAuxEval;
+        types  [5] = MPI_DOUBLE;
+        n += 1;
+    }
+    assert (n <= PGA_MPI_HEADER_ELEMENTS);
+    return n;
+}
+
+
+/*U****************************************************************************
+  PGASerializedBuildDatatype - Build datatype from serialized data
+
+  Category: Parallel
+
+  Inputs:
+    ctx - context variable
+    p   - index of string
+    pop - symbolic constant of the population string p is in
+
+
+  Outputs:
+
+  Example:
+
+****************************************************************************U*/
+MPI_Datatype PGASerializedBuildDatatype (PGAContext *ctx, int p, int pop)
+{
+    int            idx = 0;
+    /* Number of elements in each block (array of integer) */
+    int            counts [PGA_MPI_HEADER_ELEMENTS + 1];
+    /* byte displacement of each block (array of integer) */
+    MPI_Aint       displs [PGA_MPI_HEADER_ELEMENTS + 1];
+    /* type of elements in each block (array of handles to datatype objects) */
+    MPI_Datatype   types  [PGA_MPI_HEADER_ELEMENTS + 1];
+    MPI_Datatype   individualtype; /* new datatype (handle) */
+
+    idx = PGABuildDatatypeHeader (ctx, p, pop, counts, displs, types);
+
+    MPI_Get_address (ctx->scratch.serialized, &displs [idx]);
+    counts [idx] = ctx->scratch.serialization_size;
+    types  [idx] = MPI_BYTE;
+    idx++;
+
+    MPI_Type_create_struct (idx, counts, displs, types, &individualtype);
+    MPI_Type_commit (&individualtype);
+
+    return individualtype;
+}
+
+
+/*U****************************************************************************
   PGASendIndividual - transmit an individual to another process
 
   Category: Parallel
@@ -787,13 +900,36 @@ void PGASendIndividual(PGAContext *ctx, int p, int pop, int dest, int tag,
 {
     MPI_Datatype individualtype;
 
-    PGADebugEntered("PGASendIndividual");
+    PGADebugEntered ("PGASendIndividual");
 
-    individualtype = PGABuildDatatype(ctx, p, pop);
-    MPI_Send(MPI_BOTTOM, 1, individualtype, dest, tag, comm);
-    MPI_Type_free(&individualtype);
+    /* If we do serialization of user defined type we must first send
+     * the size
+     */
+    if (ctx->cops.Serialize) {
+        unsigned long size = 0;
+        assert (ctx->ga.datatype == PGA_DATATYPE_USER);
+        assert (ctx->scratch.serialized == NULL);
+        ctx->scratch.serialization_size = ctx->cops.Serialize
+            (ctx, p, pop, (const void **)&ctx->scratch.serialized);
+        assert (ctx->scratch.serialization_size != 0);
+        size = (unsigned long)ctx->scratch.serialization_size;
+        MPI_Send
+            ( &size, 1, MPI_UNSIGNED_LONG
+            , dest, PGA_COMM_SERIALIZE_SIZE, comm
+            );
+    }
 
-    PGADebugExited("PGASendIndividual");
+    individualtype = PGABuildDatatype (ctx, p, pop);
+    MPI_Send (MPI_BOTTOM, 1, individualtype, dest, tag, comm);
+    MPI_Type_free (&individualtype);
+
+    if (ctx->cops.Serialize) {
+        ctx->cops.SerializeFree (ctx->scratch.serialized);
+        ctx->scratch.serialized = NULL;
+        ctx->scratch.serialization_size = 0;
+    }
+
+    PGADebugExited ("PGASendIndividual");
 }
 
 /*U****************************************************************************
@@ -828,15 +964,45 @@ void PGASendIndividual(PGAContext *ctx, int p, int pop, int dest, int tag,
 void PGAReceiveIndividual(PGAContext *ctx, int p, int pop, int source, int tag,
                           MPI_Comm comm, MPI_Status *status)
 {
-     MPI_Datatype individualtype;
+    MPI_Datatype individualtype;
 
-    PGADebugEntered("PGAReceiveIndividual");
+    PGADebugEntered ("PGAReceiveIndividual");
 
-     individualtype = PGABuildDatatype(ctx, p, pop);
-     MPI_Recv(MPI_BOTTOM, 1, individualtype, source, tag, comm, status);
-     MPI_Type_free(&individualtype);
+    /* If we do serialization of user defined type we must first receive
+     * the size
+     */
+    if (ctx->cops.Serialize) {
+        unsigned long size = 0;
+        assert (ctx->ga.datatype == PGA_DATATYPE_USER);
+        assert (ctx->scratch.serialized == NULL);
+        MPI_Recv
+            ( &size, 1, MPI_UNSIGNED_LONG, source
+            , PGA_COMM_SERIALIZE_SIZE, comm, status
+            );
+        ctx->scratch.serialization_size = size;
+        assert (ctx->scratch.serialization_size != 0);
+        ctx->scratch.serialized = malloc (ctx->scratch.serialization_size);
+        if (ctx->scratch.serialized == NULL) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Cannot allocate serialization buffer");
+        }
+    }
 
-    PGADebugExited("PGAReceiveIndividual");
+    individualtype = PGABuildDatatype (ctx, p, pop);
+    MPI_Recv (MPI_BOTTOM, 1, individualtype, source, tag, comm, status);
+    MPI_Type_free (&individualtype);
+
+    if (ctx->cops.Serialize) {
+        ctx->cops.Deserialize
+            ( ctx, p, pop
+            , ctx->scratch.serialized, ctx->scratch.serialization_size
+            );
+        free (ctx->scratch.serialized);
+        ctx->scratch.serialized = NULL;
+        ctx->scratch.serialization_size = 0;
+    }
+
+    PGADebugExited ("PGAReceiveIndividual");
 }
 
 /*U****************************************************************************
