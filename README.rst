@@ -436,7 +436,9 @@ lib           The directory the library will be installed in.
 man           The directory containing the PGAPack man pages.
 source        The source code for the PGAPack system.
 test          A directory containing programs to verify the installation.
-              Note that the verification is known to fail.
+              This now runs all the examples including the Fortran
+              examples. With no Fortran compiler the tests currently
+              fail.
 ============= ============================================================
 
 
