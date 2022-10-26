@@ -412,10 +412,16 @@ Note that Fortran is used only for the Fortran examples in
 the tests. If you can live without all test tests passing you can simply
 override the ``FC`` (Fortran Compiler) Makefile variable like so::
 
-    make FC=
+    make MPI=serial FC=
 
 This will set the Fortran compiler to an empty string and no attempt to
-compile fortran code is made.
+compile fortran code is made. Of course you may chose a different
+setting for the MPI variable (e.g. ``MPI=openmpi``).
+If you add the ``test`` target::
+
+    make MPI=serial FC= test
+
+Only the tests that do not need a Fortran compiler are run.
 
 
 Structure of the Distribution Directory
