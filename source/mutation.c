@@ -171,19 +171,19 @@ void PGASetMutationType( PGAContext *ctx, int mutation_type)
       mutatetype = PGAGetMutationType(ctx);
       switch (mutatetype) {
       case PGA_MUTATION_CONSTANT:
-          printf("Mutation Type = PGA_MUTATION_CONSTANT\n");
+          printf ("Mutation Type = PGA_MUTATION_CONSTANT\n");
           break;
       case PGA_MUTATION_RANGE:
-          printf("Mutation Type = PGA_MUTATION_RANGE\n");
+          printf ("Mutation Type = PGA_MUTATION_RANGE\n");
           break;
       case PGA_MUTATION_UNIFORM:
-          printf("Mutation Type = PGA_MUTATION_UNIFORM\n");
+          printf ("Mutation Type = PGA_MUTATION_UNIFORM\n");
           break;
       case PGA_MUTATION_GAUSSIAN:
-          printf("Mutation Type = PGA_MUTATION_GAUSSIAN\n");
+          printf ("Mutation Type = PGA_MUTATION_GAUSSIAN\n");
           break;
       case PGA_MUTATION_PERMUTE:
-          printf("Mutation Type = PGA_MUTATION_PERMUTE\n");
+          printf ("Mutation Type = PGA_MUTATION_PERMUTE\n");
           break;
       }
 
@@ -694,10 +694,10 @@ void PGASetDEVariant (PGAContext *ctx, int variant)
       variant = PGAGetDEVariant(ctx);
       switch (variant) {
       case PGA_DE_VARIANT_RAND:
-          printf("DE Variant = PGA_DE_VARIANT_RAND\n");
+          printf ("DE Variant = PGA_DE_VARIANT_RAND\n");
           break;
       case PGA_DE_VARIANT_BEST:
-          printf("DE Variant = PGA_DE_VARIANT_BEST\n");
+          printf ("DE Variant = PGA_DE_VARIANT_BEST\n");
           break;
       }
 

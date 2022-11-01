@@ -480,7 +480,7 @@ void PGACharacterUniformCrossover(PGAContext *ctx, int p1, int p2, int pop1,
       PGAContext *ctx;
       int p;
       :
-      PGACharacterPrintString( ctx, stdout, p, PGA_NEWPOP );
+      PGACharacterPrintString (ctx, stdout, p, PGA_NEWPOP);
 
 ****************************************************************************I*/
 void PGACharacterPrintString ( PGAContext *ctx, FILE *fp, int p, int pop)
@@ -566,8 +566,9 @@ void PGACharacterCopyString (PGAContext *ctx, int p1, int pop1, int p2,
       PGAContext *ctx;
       int x, y;
       :
-      if ( PGACharacterDuplicate( ctx, x, PGA_NEWPOP, y, PGA_NEWPOP ) )
-          printf("strings are duplicates\n");
+      if (PGACharacterDuplicate (ctx, x, PGA_NEWPOP, y, PGA_NEWPOP)) {
+          printf ("strings are duplicates\n");
+      }
 
 ****************************************************************************I*/
 int PGACharacterDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)

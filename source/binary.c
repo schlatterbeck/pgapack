@@ -590,7 +590,7 @@ void PGABinaryUniformCrossover (PGAContext *ctx, int p1, int p2, int pop1,
       PGAContext *ctx;
       int s;
       :
-      PGABinaryPrintString( ctx, stdout, s, PGA_NEWPOP );
+      PGABinaryPrintString (ctx, stdout, s, PGA_NEWPOP);
 
 ****************************************************************************I*/
 void PGABinaryPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
@@ -679,8 +679,9 @@ void PGABinaryCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
       PGAContext *ctx;
       int x, y;
       :
-      if ( PGABinaryDuplicate( ctx, x, PGA_NEWPOP, y, PGA_NEWPOP ) )
-          printf("strings are duplicates\n");
+      if (PGABinaryDuplicate (ctx, x, PGA_NEWPOP, y, PGA_NEWPOP)) {
+          printf ("strings are duplicates\n");
+      }
 
 ****************************************************************************I*/
 int PGABinaryDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)

@@ -201,8 +201,9 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
 	 */
 	if (!Restarted) {
 	    PGAUpdateGeneration(ctx, comm);
-	    if (rank == 0)
-		PGAPrintReport(ctx, stdout, PGA_OLDPOP);
+	    if (rank == 0) {
+		PGAPrintReport (ctx, ctx->ga.OutputFile, PGA_OLDPOP);
+            }
 	}
     }
 
@@ -212,16 +213,20 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
         int numcon = PGAGetNumConstraint (ctx);
         if (numaux == numcon) {
             int best_p = PGAGetBestIndex (ctx, pop);
-            printf
-                ( "The Best Evaluation: %e"
+            fprintf
+                ( ctx->ga.OutputFile
+                , "The Best Evaluation: %e"
                 , _PGAGetEvaluation (ctx, best_p, pop, NULL)
                 );
             if (numaux) {
-                printf (" Constraints: %e", PGAGetAuxTotal (ctx, best_p, pop));
+                fprintf
+                    ( ctx->ga.OutputFile
+                    , " Constraints: %e", PGAGetAuxTotal (ctx, best_p, pop)
+                    );
             }
-            printf (".\n");
-            printf ("The Best String:\n");
-            PGAPrintString (ctx, stdout, best_p, pop);
+            fprintf (ctx->ga.OutputFile, ".\n");
+            fprintf (ctx->ga.OutputFile, "The Best String:\n");
+            PGAPrintString (ctx, ctx->ga.OutputFile, best_p, pop);
         } else {
             int i, k;
             char s [34];
@@ -229,9 +234,12 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
             sprintf (s, "F %%5d %%%d.%de\n", p, ctx->rep.MOPrecision);
             PGAIndividual *ind = PGAGetIndividual (ctx, 0, pop);
             for (k=0; k<numaux+1; k++) {
-                printf ("The Best (%d) evaluation: %e\n", k, ctx->rep.Best [k]);
+                fprintf
+                    ( ctx->ga.OutputFile
+                    , "The Best (%d) evaluation: %e\n", k, ctx->rep.Best [k]
+                    );
             }
-            printf ("The Nondominated Strings:\n");
+            fprintf (ctx->ga.OutputFile, "The Nondominated Strings:\n");
             for (i=0; i<ctx->ga.PopSize; i++, ind++) {
                 int j;
                 if (ind->rank == 0) {
@@ -245,13 +253,13 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
                     }
                     for (k=0; k<numaux+1; k++) {
                         double e = (k==0) ? ind->evalue : ind->auxeval [k-1];
-                        printf (s, k, e);
+                        fprintf (ctx->ga.OutputFile, s, k, e);
                     }
-                    PGAPrintString (ctx, stdout, i, pop);
+                    PGAPrintString (ctx, ctx->ga.OutputFile, i, pop);
                 }
             }
         }
-	fflush (stdout);
+	fflush (ctx->ga.OutputFile);
     }
     PGADebugExited ("PGARunGM");
 }
@@ -478,8 +486,8 @@ void PGAEvaluateCoop(PGAContext *ctx, int pop,
 	    PGASetEvaluation (ctx, p, pop, e, aux);
             ctx->rep.nevals++;
 #if DEBUG_EVAL
-	    printf ("%4d: %10.8e Local\n", p, e);
-            fflush (stdout);
+            fprintf (stdout, "%4d: %10.8e Local\n", p, e);
+            fflush  (stdout);
 #endif
 	}
 	
@@ -489,8 +497,8 @@ void PGAEvaluateCoop(PGAContext *ctx, int pop,
             PGASetEvaluationUpToDateFlag (ctx, q, pop, PGA_TRUE);
             ctx->rep.nevals++;
 #if DEBUG_EVAL
-	    printf ("%4d: %10.8e Slave %d\n", p, e, 1);
-            fflush (stdout);
+            fprintf (stdout, "%4d: %10.8e Slave %d\n", p, e, 1);
+            fflush  (stdout);
 #endif
 	    q = -1;
 	}
@@ -552,7 +560,8 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
 	    work[s] = k;
 	    PGASendIndividual(ctx, k, pop, s, PGA_COMM_STRINGTOEVAL, comm);
 #if DEBUG_EVAL
-	    printf("%4d: Sent to slave %d.\n", k, s); fflush(stdout);
+            fprintf (stdout, "%4d: Sent to slave %d.\n", k, s);
+            fflush  (stdout);
 #endif
 	    sentout++;
 	    s++;
@@ -573,17 +582,21 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
      *  will return an evaluation and get a new one immediately.
      */
     while(k<ctx->ga.PopSize) {
-	/*  Receive the next evaluated string.  */
+        /*  Receive the next evaluated string.  */
         PGAReceiveEvaluation
             ( ctx, PGA_TEMP1, pop
             , MPI_ANY_SOURCE, PGA_COMM_EVALOFSTRING, comm, &stat
             );
-	p = work [stat.MPI_SOURCE];
+        p = work [stat.MPI_SOURCE];
         PGASetEvaluation (ctx, p, pop, tmp1->evalue, tmp1->auxeval);
         ctx->rep.nevals++;
 #if DEBUG_EVAL
-	printf("%4d: %10.8e Slave %d  Sent %d\n", work[stat.MPI_SOURCE],
-	       e, stat.MPI_SOURCE, k); fflush(stdout);
+        fprintf
+            ( stdout
+            , "%4d: %10.8e Slave %d  Sent %d\n"
+            , work[stat.MPI_SOURCE], e, stat.MPI_SOURCE, k
+            );
+        fflush (stdout);
 #endif
 	/*  Immediately send another string to be evaluated.  */
 	work [stat.MPI_SOURCE] = k;
@@ -606,8 +619,12 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
         ctx->rep.nevals++;
 	sentout--;
 #if DEBUG_EVAL
-	printf("%4d: %10.8e Slave %d\n",
-	       work[stat.MPI_SOURCE], e, stat.MPI_SOURCE); fflush(stdout);
+        fprintf
+            ( stdout
+            , "%4d: %10.8e Slave %d\n"
+            , work [stat.MPI_SOURCE], e, stat.MPI_SOURCE
+            );
+        fflush (stdout);
 #endif
     }
     free(work);
@@ -1202,9 +1219,9 @@ int PGAGetRank (PGAContext *ctx, MPI_Comm comm)
   Example:
       PGAContext  *ctx;
       :
-      if (PGAGetNumProcs(ctx, MPI_COMM_WORLD) < 4) {
-          printf("Too few processors for decent performance!\n");
-	  exit(-1);
+      if (PGAGetNumProcs (ctx, MPI_COMM_WORLD) < 4) {
+          printf ("Too few processors for decent performance!\n");
+          exit (-1);
       }
 
 ****************************************************************************U*/

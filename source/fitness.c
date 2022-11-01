@@ -319,13 +319,13 @@ double PGAGetFitness ( PGAContext *ctx, int p, int pop )
       fittype = PGAGetFitnessType(ctx);
       switch (fittype) {
       case PGA_FITNESS_RAW:
-          printf("Fitness Type = PGA_FITNESS_RAW\n");
+          printf ("Fitness Type = PGA_FITNESS_RAW\n");
           break;
       case PGA_FITNESS_NORMAL:
-          printf("Fitness Type = PGA_FITNESS_NORMAL\n");
+          printf ("Fitness Type = PGA_FITNESS_NORMAL\n");
           break;
       case PGA_FITNESS_RANKING:
-          printf("Fitness Type = PGA_FITNESS_RANKING\n");
+          printf ("Fitness Type = PGA_FITNESS_RANKING\n");
           break;
       }
 
@@ -361,10 +361,10 @@ int PGAGetFitnessType (PGAContext *ctx)
       fitmintype = PGAGetFitnessMinType(ctx);
       switch (fitmintype) {
       case PGA_FITNESSMIN_RECIPROCAL:
-          printf("Fitness Minimization Type = PGA_FITNESSMIN_RECIPROCAL\n");
+          printf ("Fitness Minimization Type = PGA_FITNESSMIN_RECIPROCAL\n");
           break;
       case PGA_FITNESSMIN_CMAX:
-          printf("Fitness Minimization Type = PGA_FITNESSMIN_CMAX\n");
+          printf ("Fitness Minimization Type = PGA_FITNESSMIN_CMAX\n");
           break;
       }
 

@@ -311,19 +311,19 @@ void PGASetSelectType( PGAContext *ctx, int select_type)
       selecttype = PGAGetSelectType(ctx);
       switch (selecttype) {
       case PGA_SELECT_PROPORTIONAL:
-          printf("Selection Type = PGA_SELECT_PROPORTIONAL\n");
+          printf ("Selection Type = PGA_SELECT_PROPORTIONAL\n");
           break;
       case PGA_SELECT_SUS:
-          printf("Selection Type = PGA_SELECT_SUS\n");
+          printf ("Selection Type = PGA_SELECT_SUS\n");
           break;
       case PGA_SELECT_TOURNAMENT:
-          printf("Selection Type = PGA_SELECT_TOURNAMENT\n");
+          printf ("Selection Type = PGA_SELECT_TOURNAMENT\n");
           break;
       case PGA_SELECT_PTOURNAMENT:
-          printf("Selection Type = PGA_SELECT_PTOURNAMENT\n");
+          printf ("Selection Type = PGA_SELECT_PTOURNAMENT\n");
           break;
       case PGA_SELECT_TRUNCATION:
-          printf("Selection Type = PGA_SELECT_TRUNCATION\n");
+          printf ("Selection Type = PGA_SELECT_TRUNCATION\n");
           break;
       }
 

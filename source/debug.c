@@ -460,7 +460,7 @@ void PGASortFuncNameIndex(PGAContext *ctx)
                  datatype parameter (or NULL, if PGA_VOID).
 
   Outputs:
-     The debugging information is printed to stderr.
+     The debugging information is printed to stdout.
 
   Example:
      If the debugging level includes printing variables (level 82), print the
@@ -470,69 +470,81 @@ void PGASortFuncNameIndex(PGAContext *ctx)
      PGAContext *ctx;
      int num;
      :
-     PGADebugPrint(ctx, PGA_DEBUG_PRINTVAR, "Add2Nums", "num = ", PGA_INT,
-                   (void *) &num);
+     PGADebugPrint
+        (ctx, PGA_DEBUG_PRINTVAR, "Add2Nums", "num = ", PGA_INT, (void *) &num);
 
 ****************************************************************************U*/
-void PGADebugPrint( PGAContext *ctx, int level, char *funcname,
-                   char *msg, int datatype, void *data )
+void PGADebugPrint
+    ( PGAContext *ctx, int level
+    , char *funcname, char *msg, int datatype, void *data
+    )
 {
-     int rank;
+    int rank;
+    FILE *fout = stdout;
 
-     /*  Added check if level > 10 so that PGAGetDebugFlag is only called
-      *  if it is _not_ a user debug level.
-      */
+    /*  Added check if level > 10 so that PGAGetDebugFlag is only called
+     *  if it is _not_ a user debug level.
+     */
 
-     if (ctx->debug.PGADebugFlags[0]     ||
-         ctx->debug.PGADebugFlags[level] ||
-         ((level > 10) && PGAGetDebugFlag (ctx, funcname)))
-     {
-          MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-          switch (datatype)
-          {
-          case PGA_VOID:
-               fprintf(stdout, "%4d: %-32s: %s\n", rank, funcname, msg);
-               break;
-          case PGA_INT:
-               switch (*(int *) data)
-               {
-               case PGA_TEMP1:
-                    fprintf(stdout, "%4d: %-32s: %s PGA_TEMP1\n", rank,
-                            funcname, msg);
-                    break;
-               case PGA_TEMP2:
-                    fprintf(stdout, "%4d: %-32s: %s PGA_TEMP2\n", rank,
-                            funcname, msg);
-                    break;
-               case PGA_OLDPOP:
-                    fprintf(stdout, "%4d: %-32s: %s PGA_OLDPOP\n", rank,
-                            funcname, msg);
-                    break;
-               case PGA_NEWPOP:
-                    fprintf(stdout, "%4d: %-32s: %s PGA_NEWPOP\n", rank,
-                            funcname, msg);
-                    break;
-               default:
-                    fprintf(stdout, "%4d: %-32s: %s %d\n", rank, funcname, msg,
-                            *(int *) data);
-                    break;
-               }
-               break;
-          case PGA_DOUBLE:
-               fprintf(stdout, "%4d: %-32s: %s %e\n", rank,
-                       funcname, msg, *(double *) data);
-               break;
-          case PGA_CHAR:
-               fprintf(stdout, "%4d: %-32s: %s %s\n", rank,
-                       funcname, msg,  (char *) data);
-               break;
-          default:
-               fprintf(stderr, "PGADebugPrint: Invalid value of datatype: %d",
-                       datatype);
-               exit(-1);
-               break;
-          }
-     }
+    if (  ctx->debug.PGADebugFlags[0]
+       || ctx->debug.PGADebugFlags[level]
+       || ((level > 10) && PGAGetDebugFlag (ctx, funcname))
+       )
+    {
+        MPI_Comm_rank (MPI_COMM_WORLD, &rank);
+        switch (datatype)
+        {
+        case PGA_VOID:
+            fprintf (fout, "%4d: %-32s: %s\n", rank, funcname, msg);
+            break;
+        case PGA_INT:
+            switch (*(int *) data)
+            {
+            case PGA_TEMP1:
+                fprintf
+                    (fout, "%4d: %-32s: %s PGA_TEMP1\n" , rank, funcname, msg);
+                break;
+            case PGA_TEMP2:
+                fprintf
+                    (fout, "%4d: %-32s: %s PGA_TEMP2\n", rank, funcname, msg);
+                break;
+            case PGA_OLDPOP:
+                fprintf
+                    (fout, "%4d: %-32s: %s PGA_OLDPOP\n", rank, funcname, msg);
+                break;
+            case PGA_NEWPOP:
+                fprintf
+                    (fout, "%4d: %-32s: %s PGA_NEWPOP\n" , rank, funcname, msg);
+                break;
+            default:
+                fprintf
+                    ( fout, "%4d: %-32s: %s %d\n"
+                    , rank, funcname, msg, *(int *) data
+                    );
+                break;
+            }
+            break;
+        case PGA_DOUBLE:
+            fprintf
+                ( fout, "%4d: %-32s: %s %e\n"
+                , rank, funcname, msg, *(double *) data
+                );
+            break;
+        case PGA_CHAR:
+            fprintf
+                ( fout, "%4d: %-32s: %s %s\n"
+                , rank, funcname, msg,  (char *) data
+                );
+            break;
+        default:
+            fprintf
+                ( stderr, "PGADebugPrint: Invalid value of datatype: %d"
+                , datatype
+                );
+            exit (-1);
+            break;
+        }
+    }
 }
 
 /*U****************************************************************************

@@ -51,6 +51,7 @@
 #include <stdarg.h>
 #include <mpi.h>
 #include <assert.h>
+#include <errno.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -498,6 +499,8 @@ typedef struct {
     int symmetric;           /* Fixed edges are symmetric?                */
     PGAFixedEdge *edges;     /* Fixed edges for edge crossover            */
     PGAInteger (*r_edge)[2]; /* Right node + index into edges             */
+    FILE *OutputFile;        /* Output file                               */
+    char *OutFileName;       /* Output filename                           */
     PGAIndividual *oldpop;   /* pointer to population (old)               */
     PGAIndividual *newpop;   /* pointer to population (new)               */
 } PGAAlgorithm;
@@ -729,6 +732,7 @@ void PGASetEpsilonExponent (PGAContext *ctx, double exponent);
 double PGAGetEpsilonExponent (PGAContext *ctx);
 void PGASetEpsilonTheta (PGAContext *ctx, int theta);
 int PGAGetEpsilonTheta (PGAContext *ctx);
+void PGASetOutputFile (PGAContext *ctx, char *filename);
 
 /*****************************************
 *          cross.c

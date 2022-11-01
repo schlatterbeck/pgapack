@@ -285,6 +285,8 @@ PGAContext *PGACreate
     ctx->ga.restart            = PGA_UNINITIALIZED_INT;
     ctx->ga.restartFreq        = PGA_UNINITIALIZED_INT;
     ctx->ga.restartAlleleProb  = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.OutputFile         = stdout;
+    ctx->ga.OutFileName        = NULL;
 
     /* Fixed edges for Edge Crossover */
     ctx->ga.n_edges            = 0;
@@ -1458,6 +1460,16 @@ void PGASetUp ( PGAContext *ctx )
     }
     memset (ctx->rep.BestIdx, 0, sizeof (int) * (1 + ctx->ga.NumAuxEval));
 
+    if (ctx->ga.OutFileName != NULL && PGAGetRank (ctx, MPI_COMM_WORLD) == 0) {
+        ctx->ga.OutputFile = fopen (ctx->ga.OutFileName, "w");
+        if (ctx->ga.OutputFile == NULL) {
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
+                , "Cannot open output file: %s", strerror (errno)
+                );
+        }
+    }
+
     ctx->rep.starttime = time (NULL);
 
     /* This is done at the end to avoid trying to free unallocated memory */
@@ -1526,10 +1538,10 @@ void PGASetRandomInitFlag(PGAContext *ctx, int RandomBoolean)
       raninit = PGAGetRandomInitFlag(ctx);
       switch (raninit) {
       case PGA_TRUE:
-          printf("Population is randomly initialized\n");
+          printf ("Population is randomly initialized\n");
           break;
       case PGA_FALSE:
-          printf("Population initialized to zero\n");
+          printf ("Population initialized to zero\n");
           break;
       }
 
@@ -1993,3 +2005,36 @@ int PGAGetEpsilonTheta (PGAContext *ctx)
 {
     return ctx->ga.EpsilonTheta;
 }
+
+/*I****************************************************************************
+  PGASetOutputFile - Set output file name for printing statistics etc.
+    Note that the file is not immediately opened, instead it is later
+    opened in the rank 0 individual.
+
+  Inputs:
+     ctx      - context variable
+     name     - output filename
+
+  Outputs:
+     None
+
+  Example:
+     PGAContext *ctx;
+     char *name = "output.file";
+     :
+     PGASetOutputFile (ctx, name);
+
+****************************************************************************I*/
+void PGASetOutputFile (PGAContext *ctx, char *name)
+{
+    char *n = malloc (strlen (name) + 1);
+    if (n == NULL) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetOutputFile: Cannot allocate name"
+            );
+    }
+    strcpy (n, name);
+    ctx->ga.OutFileName = n;
+}
+

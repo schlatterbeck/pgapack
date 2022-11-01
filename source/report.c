@@ -65,7 +65,7 @@ privately owned rights.
       PGAContext *ctx;
       int p;
       :
-      PGAPrintReport(ctx, stdout, PGA_NEWPOP);
+      PGAPrintReport (ctx, stdout, PGA_NEWPOP);
 
 ****************************************************************************U*/
 void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop)
@@ -405,7 +405,7 @@ int PGAGetMultiObjPrecision (PGAContext *ctx)
    Example:
       PGAContext *ctx;
       :
-      PGAPrintPopulation(ctx, stdout, PGA_NEWPOP);
+      PGAPrintPopulation (ctx, stdout, PGA_NEWPOP);
 
 ****************************************************************************U*/
 void PGAPrintPopulation ( PGAContext *ctx, FILE *fp, int pop )
@@ -441,7 +441,7 @@ void PGAPrintPopulation ( PGAContext *ctx, FILE *fp, int pop )
       PGAContext *ctx;
       int p;
       :
-      PGAPrintIndividual(ctx, stdout, p, PGA_NEWPOP);
+      PGAPrintIndividual (ctx, stdout, p, PGA_NEWPOP);
 
 ****************************************************************************U*/
 void PGAPrintIndividual ( PGAContext *ctx, FILE *fp, int p, int pop )
@@ -480,7 +480,7 @@ void PGAPrintIndividual ( PGAContext *ctx, FILE *fp, int p, int pop )
       PGAContext *ctx;
       int p;
       :
-      PGAPrintString(ctx, stdout, p, PGA_OLDPOP);
+      PGAPrintString (ctx, stdout, p, PGA_OLDPOP);
 
 ****************************************************************************U*/
 void PGAPrintString ( PGAContext *ctx, FILE *file, int p, int pop )
@@ -520,7 +520,7 @@ void PGAPrintString ( PGAContext *ctx, FILE *file, int p, int pop )
    Example:
       PGAContext *ctx;
       :
-      PGAPrintContextVariable(ctx, stdout);
+      PGAPrintContextVariable (ctx, stdout);
 
 ****************************************************************************U*/
 void PGAPrintContextVariable ( PGAContext *ctx, FILE *fp )

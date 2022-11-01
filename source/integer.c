@@ -375,10 +375,10 @@ void PGASetIntegerInitRange (PGAContext *ctx, const int *min, const int *max)
       inittype = PGAGetIntegerInitType(ctx);
       switch (inittype) {
       case PGA_IINIT_PERMUTE:
-          printf("Data Type = PGA_IINIT_PERMUTE\n");
+          printf ("Data Type = PGA_IINIT_PERMUTE\n");
           break;
       case PGA_IINIT_RANGE:
-          printf("Data Type = PGA_IINIT_RANGE\n");
+          printf ("Data Type = PGA_IINIT_RANGE\n");
           break;
       }
 
@@ -1350,7 +1350,7 @@ void PGAIntegerSetFixedEdges
       PGAContext *ctx;
       int  p;
       :
-      PGAIntegerPrintString(ctx, stdout, p, PGA_NEWPOP);
+      PGAIntegerPrintString (ctx, stdout, p, PGA_NEWPOP);
 
 ****************************************************************************I*/
 void PGAIntegerPrintString ( PGAContext *ctx, FILE *fp, int p, int pop)

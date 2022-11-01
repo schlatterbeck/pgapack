@@ -579,19 +579,19 @@ void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm)
       datatype = PGAGetDataType(ctx);
       switch (datatype) {
       case PGA_DATATYPE_BINARY:
-          printf("Data Type = PGA_DATATYPE_BINARY\n");
+          printf ("Data Type = PGA_DATATYPE_BINARY\n");
           break;
       case PGA_DATATYPE_CHARACTER:
-          printf("Data Type = PGA_DATATYPE_CHARACTER\n");
+          printf ("Data Type = PGA_DATATYPE_CHARACTER\n");
           break;
       case PGA_DATATYPE_INTEGER:
-          printf("Data Type = PGA_DATATYPE_INTEGER\n");
+          printf ("Data Type = PGA_DATATYPE_INTEGER\n");
           break;
       case PGA_DATATYPE_REAL:
-          printf("Data Type = PGA_DATATYPE_REAL\n");
+          printf ("Data Type = PGA_DATATYPE_REAL\n");
           break;
       case PGA_DATATYPE_USER:
-          printf("Data Type = PGA_DATATYPE_USER\n");
+          printf ("Data Type = PGA_DATATYPE_USER\n");
           break;
       }
 
@@ -625,10 +625,10 @@ int PGAGetDataType (PGAContext *ctx)
       optdir = PGAGetOptDirFlag(ctx);
       switch (optdir) {
       case PGA_MAXIMIZE:
-          printf("Optimization direction = PGA_MAXIMIZE\n");
+          printf ("Optimization direction = PGA_MAXIMIZE\n");
           break;
       case PGA_MINIMIZE:
-          printf("Optimization direction = PGA_MINIMIZE\n");
+          printf ("Optimization direction = PGA_MINIMIZE\n");
           break;
       }
 

@@ -212,13 +212,13 @@ int PGAGetNumReplaceValue (PGAContext *ctx)
       popreplace = PGAGetPopReplaceType(ctx);
       switch (popreplace) {
       case PGA_POPREPL_BEST:
-          printf("Replacement Strategy = PGA_POPREPL_BEST\n");
+          printf ("Replacement Strategy = PGA_POPREPL_BEST\n");
           break;
       case PGA_POPREPL_RANDOM_REP:
-          printf("Replacement Strategy = PGA_POPREPL_RANDOM_REP\n");
+          printf ("Replacement Strategy = PGA_POPREPL_RANDOM_REP\n");
           break;
       case PGA_POPREPL_RANDOM_NOREP:
-          printf("Replacement Strategy = PGA_POPREPL_RANDOM_NOREP\n");
+          printf ("Replacement Strategy = PGA_POPREPL_RANDOM_NOREP\n");
           break;
       }
 

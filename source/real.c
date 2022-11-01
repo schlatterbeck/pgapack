@@ -362,10 +362,10 @@ double PGAGetMaxRealInitValue (PGAContext *ctx, int i)
       inittype = PGAGetRealInitType(ctx);
       switch (inittype) {
       case PGA_RINIT_PERCENT:
-          printf("Data Type = PGA_RINIT_PERCENT\n");
+          printf ("Data Type = PGA_RINIT_PERCENT\n");
           break;
       case PGA_RINIT_RANGE:
-          printf("Data Type = PGA_RINIT_RANGE\n");
+          printf ("Data Type = PGA_RINIT_RANGE\n");
           break;
       }
 
@@ -1006,7 +1006,7 @@ void PGARealSBXCrossover
       PGAContext *ctx;
       int s;
       :
-      PGARealPrintString( ctx, stdout, s, PGA_NEWPOP );
+      PGARealPrintString (ctx, stdout, s, PGA_NEWPOP);
 
 ****************************************************************************I*/
 void PGARealPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
@@ -1099,8 +1099,9 @@ void PGARealCopyString ( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
       PGAContext *ctx;
       int x, y;
       :
-      if ( PGARealDuplicate( ctx, x, PGA_OLDPOP, y, PGA_OLDPOP ) )
-          printf("strings are duplicates\n");
+      if (PGARealDuplicate (ctx, x, PGA_OLDPOP, y, PGA_OLDPOP)) {
+          printf ("strings are duplicates\n");
+      }
 
 ****************************************************************************I*/
 int PGARealDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)

@@ -214,11 +214,11 @@ void PGASetStoppingRuleType (PGAContext *ctx, int stoprule)
       :
       stop = PGAGetStoppingRuleType(ctx);
       if (stop & PGA_STOP_MAXITER)
-          printf("Stopping Rule = PGA_STOP_MAXITER\n");
+          printf ("Stopping Rule = PGA_STOP_MAXITER\n");
       if (stop & PGA_STOP_NOCHANGE)
-          printf("Stopping Rule = PGA_STOP_NOCHANGE\n");
+          printf ("Stopping Rule = PGA_STOP_NOCHANGE\n");
       if (stop & PGA_STOP_TOOSIMILAR)
-          printf("Stopping Rule = PGA_STOP_TOOSIMILAR\n");
+          printf ("Stopping Rule = PGA_STOP_TOOSIMILAR\n");
 
 ***************************************************************************U*/
 int PGAGetStoppingRuleType (PGAContext *ctx)

@@ -163,9 +163,10 @@ void PGAParseDebugArg (PGAContext *ctx, char *st)
             num1ch [num1index] = '\0';
             num1 = atoi (num1ch);
             if (num1 < 0 || num1 > PGA_DEBUG_MAXFLAGS) {
-                PGAError (ctx,
-                          "PGASetDebugLevel: Lower Limit Out of Range:",
-                          PGA_FATAL, PGA_INT, (void *) &num1);
+                PGAError
+                    ( ctx, "PGASetDebugLevel: Lower Limit Out of Range:"
+                    , PGA_FATAL, PGA_INT, (void *) &num1
+                    );
             }
             num1index = 0;
         } else {
@@ -181,23 +182,28 @@ void PGAParseDebugArg (PGAContext *ctx, char *st)
                     num2ch [num2index] = '\0';
                     num2 = atoi (num2ch);
                     if (num2 < 0 || num2 > PGA_DEBUG_MAXFLAGS) {
-                        PGAError (ctx,
-                                  "PGASetDebugLevel: Upper Limit Out of"
-                                  " Range:",
-                                  PGA_FATAL, PGA_INT, (void *) &num2);
+                        PGAError
+                            ( ctx
+                            , "PGASetDebugLevel: Upper Limit Out of Range:"
+                            , PGA_FATAL, PGA_INT, (void *) &num2
+                            );
                     }
                     if (num1 <= num2) {
                         for (x = num1; x <= num2; x++) {
                             if (x == 212) {
-                                 printf("%s %s\n", num1ch, num2ch);
+                                fprintf
+                                    ( stdout
+                                    , "%s %s\n", num1ch, num2ch
+                                    );
                             }
                             PGASetDebugLevel (ctx, x);
                         }
                     } else {
-                        PGAError (ctx,
-                                  "PGASetDebugLevel: Lower Limit Exceeds"
-                                  "Upper:", PGA_FATAL, PGA_INT,
-                                  (void *) &num1);
+                        PGAError
+                            ( ctx
+                            , "PGASetDebugLevel: Lower Limit Exceeds Upper:"
+                            , PGA_FATAL, PGA_INT, (void *) &num1
+                            );
                     }
                     num2index = 0;
                     range = 0;
@@ -205,12 +211,14 @@ void PGAParseDebugArg (PGAContext *ctx, char *st)
                     num1ch [num1index] = '\0';
                     num1 = atoi (num1ch);
                     if (num1 < 0 || num1 > PGA_DEBUG_MAXFLAGS) {
-                        PGAError (ctx, "PGASetDebugLevel: Debug Number"
-                                  "Out of Range:", PGA_FATAL, PGA_INT,
-                                  (void *) &num1);
+                        PGAError
+                            ( ctx
+                            , "PGASetDebugLevel: Debug Number Out of Range:"
+                            , PGA_FATAL, PGA_INT, (void *) &num1
+                            );
                     }
                     if (num1 == 212) {
-                        printf ("%s\n", num1ch);
+                        fprintf (stdout, "%s\n", num1ch);
                     }
 
                     PGASetDebugLevel (ctx, num1);
