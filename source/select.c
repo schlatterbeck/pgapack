@@ -795,12 +795,12 @@ static void _shuffle (PGAContext *ctx, int k, int init)
     PGAShuffle (ctx, ctx->scratch.permute, k);
 }
 #define NEXT_IDX(ctx, k, init)                        \
-    ((ctx)->scratch.perm_idx >= (k))                  \
+    ((ctx)->ga.perm_idx >= (k))                       \
     ? ( _shuffle((ctx), (k), (init))                  \
-      , (ctx)->scratch.perm_idx = 1                   \
+      , (ctx)->ga.perm_idx = 1                        \
       , (ctx)->scratch.permute [0]                    \
       )                                               \
-    : ctx->scratch.permute [ctx->scratch.perm_idx++]
+    : ctx->scratch.permute [ctx->ga.perm_idx++]
 
 static
 int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
@@ -847,16 +847,14 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
 ****************************************************************************I*/
 int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
 {
-    static int perm_idx = 0;
-    static int last_generation = -1;
     int numreplace = PGAGetNumReplaceValue (ctx);
     int popsize = PGAGetPopSize (ctx);
 
-    if (last_generation != ctx->ga.iter || perm_idx >= popsize) {
-        perm_idx = popsize - numreplace;
-        last_generation = ctx->ga.iter;
+    if (ctx->ga.last_iter != ctx->ga.iter || ctx->ga.perm_idx >= popsize) {
+        ctx->ga.perm_idx  = popsize - numreplace;
+        ctx->ga.last_iter = ctx->ga.iter;
     }
-    return perm_idx++;
+    return ctx->ga.perm_idx++;
 }
 
 /*I****************************************************************************
@@ -882,7 +880,6 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
 {
     int m = -1;
     int k = (int)(ctx->ga.PopSize * ctx->ga.TruncProportion + 0.5);
-    static int last_generation = -1;
 
     if (k < 1) {
         k = 1;
@@ -891,7 +888,7 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
         k = ctx->ga.PopSize;
     }
 
-    if (last_generation != ctx->ga.iter) {
+    if (ctx->ga.last_iter != ctx->ga.iter) {
         int i;
         DECLARE_DYNARRAY (int, bestidx, ctx->ga.PopSize);
         /* Returns sorted list of indeces in bestidx, no need to initialize */
@@ -900,8 +897,8 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
         for (i=0; i<k; i++) {
             ctx->scratch.permute [i] = bestidx [i];
         }
-        last_generation = ctx->ga.iter;
-        ctx->scratch.perm_idx = k;
+        ctx->ga.last_iter = ctx->ga.iter;
+        ctx->ga.perm_idx  = k;
     }
 
     m = NEXT_IDX(ctx, k, 0);

@@ -278,6 +278,8 @@ PGAContext *PGACreate
     ctx->ga.FitnessCmaxValue   = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.PopReplace         = PGA_UNINITIALIZED_INT;
     ctx->ga.iter               = 0;
+    ctx->ga.last_iter          = -1;
+    ctx->ga.perm_idx           = 0;
     ctx->ga.ItersOfSame        = 0;
     ctx->ga.PercentSame        = 0;
     ctx->ga.selected           = NULL;
@@ -1351,7 +1353,7 @@ void PGASetUp ( PGAContext *ctx )
             );
     }
     ctx->scratch.permute = NULL;
-    ctx->scratch.perm_idx = 0;
+    ctx->ga.perm_idx = 0;
     if (  ctx->ga.SelectType == PGA_SELECT_TOURNAMENT
        || ctx->ga.SelectType == PGA_SELECT_TRUNCATION
        )
@@ -1364,7 +1366,7 @@ void PGASetUp ( PGAContext *ctx )
                 );
         }
         /* This forces a first shuffle */
-        ctx->scratch.perm_idx = ctx->ga.PopSize;
+        ctx->ga.perm_idx = ctx->ga.PopSize;
     }
 
     ctx->scratch.dblscratch = malloc (sizeof (double) * ctx->ga.PopSize);

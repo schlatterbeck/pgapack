@@ -434,6 +434,8 @@ typedef struct {
     int NumReplace;          /* Number of string to replace each gen      */
     int PopReplace;          /* Method of choosing ind.s to copy to newpop*/
     int iter;                /* iteration (generation) counter            */
+    int last_iter;           /* Used by selection methods internally      */
+    int perm_idx;            /* Index into scratch permute array          */
     int ItersOfSame;         /* # iters with no change in best            */
     int PercentSame;         /* % of pop that is homogeneous              */
     int NoDuplicates;        /* Don't allow duplicate strings             */
@@ -627,7 +629,6 @@ typedef struct {
 typedef struct {
     int           *intscratch;         /* integer-scratch space           */
     int           *permute;            /* For tournament w/o replacement  */
-    int            perm_idx;           /* Index into array above          */
     double        *dblscratch;         /* double- scratch space           */
     PGABinary     *dominance;          /* for dominance sorting           */
     PGAInteger    (*edgemap)[4];       /* For Edge Crossover              */
