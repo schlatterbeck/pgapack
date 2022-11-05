@@ -626,6 +626,8 @@ typedef struct {
 *****************************************/
 typedef struct {
     int           *intscratch;         /* integer-scratch space           */
+    int           *permute;            /* For tournament w/o replacement  */
+    int            perm_idx;           /* Index into array above          */
     double        *dblscratch;         /* double- scratch space           */
     PGABinary     *dominance;          /* for dominance sorting           */
     PGAInteger    (*edgemap)[4];       /* For Edge Crossover              */

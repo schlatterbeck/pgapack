@@ -784,44 +784,40 @@ int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
 
 
 /* Helper function to compute permuted list */
-static void _shuffle (PGAContext *ctx, int *list, int n)
+static void _shuffle (PGAContext *ctx, int k, int init)
 {
-    int i = 0;
-    for (i=0; i<n; i++)
-	list [i] = i;
-    PGAShuffle (ctx, list, n);
+    if (init) {
+        int i = 0;
+        for (i=0; i<k; i++) {
+            ctx->scratch.permute [i] = i;
+        }
+    }
+    PGAShuffle (ctx, ctx->scratch.permute, k);
 }
-#define NEXT_IDX(ctx, perm, idx, n)                           \
-    ((idx) >= (n))                                            \
-      ? (_shuffle((ctx), (perm), (n)), (idx) = 1, (perm) [0]) \
-      : (perm) [(idx)++]
+#define NEXT_IDX(ctx, k, init)                        \
+    ((ctx)->scratch.perm_idx >= (k))                  \
+    ? ( _shuffle((ctx), (k), (init))                  \
+      , (ctx)->scratch.perm_idx = 1                   \
+      , (ctx)->scratch.permute [0]                    \
+      )                                               \
+    : ctx->scratch.permute [ctx->scratch.perm_idx++]
 
 static
 int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
 {
     int m;
     int i;
-    static int *permutation = NULL;
-    static int perm_idx = 0;
     int t = (int)ctx->ga.TournamentSize;
 
     if (ctx->ga.TournamentSize - t) {
         t += PGARandomFlip (ctx, ctx->ga.TournamentSize - t);
     }
 
-    if (permutation == NULL) {
-        permutation  = (int *) malloc(sizeof (int) * ctx->ga.PopSize);
-        if (permutation == NULL) {
-            PGAError (ctx, "PGASelectTournamentWithoutReplacement: malloc:",
-                     PGA_FATAL, PGA_INT, (void *) &ctx->ga.PopSize );
-            return 0;
-        }
-        perm_idx = ctx->ga.PopSize;
-    }
-
-    m = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
+    m = NEXT_IDX(ctx, ctx->ga.PopSize, 1);
+    assert (0 <= m && m < ctx->ga.PopSize);
     for (i=1; i<t; i++) {
-        int mn = NEXT_IDX(ctx, permutation, perm_idx, ctx->ga.PopSize);
+        int mn = NEXT_IDX(ctx, ctx->ga.PopSize, 1);
+        assert (0 <= mn && mn < ctx->ga.PopSize);
         if (PGAEvalCompare (ctx, mn, pop, m, pop) <= 0) {
             m = mn;
         }
@@ -886,8 +882,6 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
 {
     int m = -1;
     int k = (int)(ctx->ga.PopSize * ctx->ga.TruncProportion + 0.5);
-    static int *kbest = NULL;
-    static int perm_idx = 0;
     static int last_generation = -1;
 
     if (k < 1) {
@@ -897,15 +891,6 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
         k = ctx->ga.PopSize;
     }
 
-    if (kbest == NULL) {
-        kbest  = (int *) malloc(sizeof (int) * k);
-        if (kbest == NULL) {
-            PGAError (ctx, "PGASelectTruncation: malloc:",
-                     PGA_FATAL, PGA_INT, (void *) &k);
-            return 0;
-        }
-        perm_idx = k;
-    }
     if (last_generation != ctx->ga.iter) {
         int i;
         DECLARE_DYNARRAY (int, bestidx, ctx->ga.PopSize);
@@ -913,13 +898,14 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
         PGAEvalSort (ctx, pop, bestidx);
         /* Copy the k first indeces */
         for (i=0; i<k; i++) {
-            kbest [i] = bestidx [i];
+            ctx->scratch.permute [i] = bestidx [i];
         }
         last_generation = ctx->ga.iter;
-        perm_idx = k;
+        ctx->scratch.perm_idx = k;
     }
 
-    m = NEXT_IDX(ctx, kbest, perm_idx, k);
+    m = NEXT_IDX(ctx, k, 0);
+    assert (0 <= m && m < ctx->ga.PopSize);
     return m;
 }
 

@@ -183,6 +183,9 @@ void PGADestroy (PGAContext *ctx)
 
         /*  Free the scratch space.  */
         free (ctx->scratch.intscratch);
+        if (ctx->scratch.permute != NULL) {
+            free (ctx->scratch.permute);
+        }
         free (ctx->scratch.dblscratch);
         free (ctx->ga.selected);
         free (ctx->ga.sorted);

@@ -1343,20 +1343,37 @@ void PGASetUp ( PGAContext *ctx )
                  );
     }
 
-    ctx->scratch.intscratch = (int *)malloc( sizeof(int) * ctx->ga.PopSize );
+    ctx->scratch.intscratch = malloc( sizeof(int) * ctx->ga.PopSize );
     if (ctx->scratch.intscratch == NULL) {
-        PGAError( ctx, "PGASetUp: No room to allocate ctx->scratch.intscratch"
+        PGAError
+            ( ctx, "PGASetUp: No room to allocate ctx->scratch.intscratch"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
+    }
+    ctx->scratch.permute = NULL;
+    ctx->scratch.perm_idx = 0;
+    if (  ctx->ga.SelectType == PGA_SELECT_TOURNAMENT
+       || ctx->ga.SelectType == PGA_SELECT_TRUNCATION
+       )
+    {
+        ctx->scratch.permute = malloc (sizeof (int) * ctx->ga.PopSize);
+        if (ctx->scratch.permute == NULL) {
+            PGAError
+                ( ctx, "PGASetUp: No room to allocate ctx->scratch.permute"
                 , PGA_FATAL, PGA_VOID, NULL
                 );
+        }
+        /* This forces a first shuffle */
+        ctx->scratch.perm_idx = ctx->ga.PopSize;
     }
 
-    ctx->scratch.dblscratch =
-        (double *)malloc(sizeof(double) * ctx->ga.PopSize);
+    ctx->scratch.dblscratch = malloc (sizeof (double) * ctx->ga.PopSize);
 
     if (ctx->scratch.dblscratch == NULL) {
-        PGAError ( ctx, "PGASetUp: No room to allocate ctx->scratch.dblscratch"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAError
+            ( ctx, "PGASetUp: No room to allocate ctx->scratch.dblscratch"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
     }
 
     /* If we're doing non-dominated sorting */
