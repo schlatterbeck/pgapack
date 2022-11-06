@@ -963,7 +963,11 @@ void remove_edge_from_right (PGAContext *ctx, PGAInteger cidx)
 {
     int i, j;
     for (j=0; j<4; j++) {
-        PGAInteger v = labs (ctx->scratch.edgemap [cidx][j]) - 1;
+        PGAInteger v = labs (ctx->scratch.edgemap [cidx][j]);
+        if (v == 0) {
+            continue;
+        }
+        v -= 1;
         for (i=0; i<4; i++) {
             if (labs (ctx->scratch.edgemap [v][i]) - 1 == cidx) {
                 ctx->scratch.edgemap [v][i] = 0;
