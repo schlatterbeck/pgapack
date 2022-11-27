@@ -259,12 +259,6 @@ void PGASetRTRWindowSize( PGAContext *ctx, int windowsize)
 {
     PGADebugEntered("PGASetRTRWindowSize");
 
-    if (windowsize > ctx->ga.PopSize) {
-        PGAError ( ctx,
-                  "PGASetRTRWindowSize: Invalid value of windowsize:",
-                   PGA_FATAL, PGA_INT, (void *) &windowsize);
-    }
-
     ctx->ga.RTRWindowSize = windowsize;
 
     PGADebugExited("PGASetRTRWindowSize");

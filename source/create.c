@@ -808,6 +808,14 @@ void PGASetUp ( PGAContext *ctx )
             v = 1;
         }
         ctx->ga.RTRWindowSize = v;
+    } else if (  ctx->ga.RTRWindowSize > ctx->ga.PopSize
+              || ctx->ga.RTRWindowSize <= 0
+              )
+    {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetUp: required: 0 < RTR window size <= popsize"
+            );
     }
 
     if ( ctx->ga.NumAuxEval > 0
