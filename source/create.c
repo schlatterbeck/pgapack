@@ -743,7 +743,7 @@ void PGASetUp ( PGAContext *ctx )
     }
 
     if (ctx->ga.EpsilonTheta >= ctx->ga.PopSize - 1) {
-        PGAError ( ctx, "PGASetUp: EpsilonTheta > PopSize - 1"
+        PGAError ( ctx, "PGASetUp: EpsilonTheta >= PopSize - 1"
                  , PGA_FATAL, PGA_VOID, NULL
                  );
     }
@@ -2003,8 +2003,8 @@ double PGAGetEpsilonExponent (PGAContext *ctx)
 ****************************************************************************I*/
 void PGASetEpsilonTheta (PGAContext *ctx, int n)
 {
-    if (ctx->ga.EpsilonTheta < 1) {
-        PGAError ( ctx, "PGASetUp: EpsilonTheta < 1"
+    if (n < 1) {
+        PGAError ( ctx, "PGASetUp: EpsilonTheta must be >= 1"
                  , PGA_FATAL, PGA_VOID, NULL
                  );
     }
