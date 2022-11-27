@@ -289,6 +289,7 @@ PGAContext *PGACreate
     ctx->ga.restartAlleleProb  = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.OutputFile         = stdout;
     ctx->ga.OutFileName        = NULL;
+    ctx->ga.CustomData         = NULL;
 
     /* Fixed edges for Edge Crossover */
     ctx->ga.n_edges            = 0;

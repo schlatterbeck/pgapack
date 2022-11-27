@@ -503,6 +503,7 @@ typedef struct {
     PGAInteger (*r_edge)[2]; /* Right node + index into edges             */
     FILE *OutputFile;        /* Output file                               */
     char *OutFileName;       /* Output filename                           */
+    void *CustomData;        /* For the user, not sent via MPI            */
     PGAIndividual *oldpop;   /* pointer to population (old)               */
     PGAIndividual *newpop;   /* pointer to population (new)               */
 } PGAAlgorithm;
