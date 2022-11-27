@@ -293,6 +293,7 @@ privately owned rights.
 #define pgagetmaxgaitervalue_            PGAGETMAXGAITERVALUE
 #define pgasetmaxnochangevalue_          PGASETMAXNOCHANGEVALUE
 #define pgasetmaxsimilarityvalue_        PGASETMAXSIMILARITYVALUE
+#define pgagetmaxsimilarityvalue_        PGAGETMAXSIMILARITYVALUE
 /* system.c */
 #define pgaerror_                        PGAERROR
 #define pgadestroy_                      PGADESTROY
@@ -544,6 +545,7 @@ privately owned rights.
 #define pgagetmaxgaitervalue_            _pgagetmaxgaitervalue_
 #define pgasetmaxnochangevalue_          _pgasetmaxnochangevalue_
 #define pgasetmaxsimilarityvalue_        _pgasetmaxsimilarityvalue_
+#define pgagetmaxsimilarityvalue_        _pgagetmaxsimilarityvalue_
 /* system.c */
 #define pgaerror_                        _pgaerror_
 #define pgadestroy_                      _pgadestroy_
@@ -795,6 +797,7 @@ privately owned rights.
 #define pgagetmaxgaitervalue_            pgagetmaxgaitervalue
 #define pgasetmaxnochangevalue_          pgasetmaxnochangevalue
 #define pgasetmaxsimilarityvalue_        pgasetmaxsimilarityvalue
+#define pgagetmaxsimilarityvalue_        pgagetmaxsimilarityvalue
 /* system.c */
 #define pgaerror_                        pgaerror
 #define pgadestroy_                      pgadestroy
@@ -1069,6 +1072,7 @@ void pgasetmaxgaitervalue_(PGAContext **ftx, int *maxiter);
 int pgagetmaxgaitervalue_(PGAContext **ftx);
 void pgasetmaxnochangevalue_(PGAContext **ftx, int *max_no_change);
 void pgasetmaxsimilarityvalue_(PGAContext **ftx, int *max_similarity);
+int pgagetmaxsimilarityvalue_(PGAContext **ftx);
 /* system.c */
 void pgaerror_(PGAContext **ftx, char *msg, int *level, int *datatype,
      void **data, int len);
@@ -2454,6 +2458,11 @@ void pgasetmaxnochangevalue_(PGAContext **ftx, int *max_no_change)
 void pgasetmaxsimilarityvalue_(PGAContext **ftx, int *max_similarity)
 {
      PGASetMaxSimilarityValue  (*ftx, *max_similarity);
+}
+
+int pgagetmaxsimilarityvalue_ (PGAContext **ftx)
+{
+     return PGAGetMaxSimilarityValue  (*ftx);
 }
 
 /* system.c */

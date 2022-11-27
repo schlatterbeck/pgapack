@@ -1209,14 +1209,15 @@ double PGAGetAuxTotal (PGAContext *ctx, int p, int pop);
 *          stop.c
 *****************************************/
 
-int PGADone(PGAContext *ctx, MPI_Comm comm);
-int PGACheckStoppingConditions( PGAContext *ctx);
+int PGADone (PGAContext *ctx, MPI_Comm comm);
+int PGACheckStoppingConditions (PGAContext *ctx);
 void PGASetStoppingRuleType (PGAContext *ctx, int stoprule);
 int PGAGetStoppingRuleType (PGAContext *ctx);
-void PGASetMaxGAIterValue(PGAContext *ctx, int maxiter);
+void PGASetMaxGAIterValue (PGAContext *ctx, int maxiter);
 int PGAGetMaxGAIterValue (PGAContext *ctx);
-void PGASetMaxNoChangeValue(PGAContext *ctx, int max_no_change);
-void PGASetMaxSimilarityValue(PGAContext *ctx, int max_similarity);
+void PGASetMaxNoChangeValue (PGAContext *ctx, int max_no_change);
+void PGASetMaxSimilarityValue (PGAContext *ctx, int max_similarity);
+int PGAGetMaxSimilarityValue (PGAContext *ctx);
 
 /*****************************************
 *          system.c
