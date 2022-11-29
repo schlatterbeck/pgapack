@@ -639,9 +639,9 @@ void PGASetUp ( PGAContext *ctx )
             int npart = ctx->ga.ndir_npart;
             size_t lb = LIN_binom (dim + npart - 1, npart);
             size_t n = lb * ctx->ga.nrefdirs;
-            /* Check that there was no overflow */
-            assert (lb < n);
-            assert (lb < SIZE_MAX / (sizeof (double) * dim));
+            /* Check that there is/was no overflow */
+            assert (lb <= n);
+            assert (n < SIZE_MAX / (sizeof (double) * dim));
             ctx->ga.normdirs = malloc (sizeof (double) * dim * n);
             if (ctx->ga.normdirs == NULL) {
                 PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normdirs");
@@ -649,8 +649,8 @@ void PGASetUp ( PGAContext *ctx )
             ctx->ga.ndpoints = lb;
             if (ctx->ga.nrefpoints == 0) {
                 assert (ctx->ga.refpoints == NULL);
-                (void)LIN_dasdennis (dim, 1, &ctx->ga.refpoints, 0, 1, NULL);
-                ctx->ga.nrefpoints = LIN_binom (dim + 1 - 1, 1);
+                ctx->ga.nrefpoints = LIN_dasdennis
+                    (dim, 1, &ctx->ga.refpoints, 0, 1, NULL);
                 if (ctx->ga.refpoints == NULL) {
                     PGAErrorPrintf
                         (ctx, PGA_FATAL, "Cannot allocate ref points");
