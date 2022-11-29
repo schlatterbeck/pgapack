@@ -48,7 +48,8 @@ int main (int argc, char **argv)
     int seed = 1;
     int direction;
     int refdir = 0;
-    double directions [][3] = {{0.5, 5, 50}, {0.5, 5, 50}};
+    double directions [][3] = {{0.5, 5, 50}, {0.8, 2, 20}};
+    #define NDIR (sizeof (directions) / (3 * sizeof (double)))
     MPI_Comm comm;
 
     if (argc > 1) {
@@ -100,7 +101,7 @@ int main (int argc, char **argv)
     PGASetNoDuplicatesFlag        (ctx, PGA_TRUE);
     PGASetMutationBounceBackFlag  (ctx, PGA_TRUE);
     if (refdir) {
-        PGASetReferenceDirections (ctx, 2, directions, 7, 0.05);
+        PGASetReferenceDirections (ctx, NDIR, directions, 7, 0.05);
     } else {
         PGASetReferencePoints     (ctx, np, p);
     }
