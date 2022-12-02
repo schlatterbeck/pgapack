@@ -128,19 +128,19 @@ void PGACrossover ( PGAContext *ctx, int p1, int p2, int pop1,
       crosstype = PGAGetCrossoverType(ctx);
       switch (crosstype) {
       case PGA_CROSSOVER_ONEPT:
-          printf("Crossover Type = PGA_CROSSOVER_ONEPT\n");
+          printf ("Crossover Type = PGA_CROSSOVER_ONEPT\n");
           break;
       case PGA_CROSSOVER_TWOPT:
-          printf("Crossover Type = PGA_CROSSOVER_TWOPT\n");
+          printf ("Crossover Type = PGA_CROSSOVER_TWOPT\n");
           break;
       case PGA_CROSSOVER_UNIFORM:
-          printf("Crossover Type = PGA_CROSSOVER_UNIFORM\n");
+          printf ("Crossover Type = PGA_CROSSOVER_UNIFORM\n");
           break;
       case PGA_CROSSOVER_SBX:
-          printf("Crossover Type = PGA_CROSSOVER_SBX\n");
+          printf ("Crossover Type = PGA_CROSSOVER_SBX\n");
           break;
       case PGA_CROSSOVER_EDGE:
-          printf("Crossover Type = PGA_CROSSOVER_EDGE\n");
+          printf ("Crossover Type = PGA_CROSSOVER_EDGE\n");
           break;
       }
 

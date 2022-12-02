@@ -47,6 +47,9 @@ int main (int argc, char **argv)
     int np = LIN_dasdennis (3, 12, &p, 0, 1, NULL);
     int seed = 1;
     int direction;
+    int refdir = 0;
+    double directions [][3] = {{0.5, 5, 50}, {0.8, 2, 20}};
+    #define NDIR (sizeof (directions) / (3 * sizeof (double)))
     MPI_Comm comm;
 
     if (argc > 1) {
@@ -62,6 +65,9 @@ int main (int argc, char **argv)
     if (argc > 2) {
         seed = atoi (argv [2]);
     }
+    if (argc > 3) {
+        refdir = 1;
+    }
     problem = problems [fidx];
     if (problem->generations != 0) {
         maxiter = problem->generations;
@@ -75,62 +81,36 @@ int main (int argc, char **argv)
     
     PGASetRandomSeed                (ctx, seed);
     PGASetPopSize                   (ctx, popsize);
-# if 0
-    PGASetNumReplaceValue           (ctx, 60);
-    //PGASetSelectType                (ctx, PGA_SELECT_TOURNAMENT);
-    PGASetSelectType             (ctx, PGA_SELECT_LINEAR);
-    //PGASetTournamentWithReplacement (ctx, PGA_FALSE);
-    //PGASetTournamentSize            (ctx, 1.5);
-    PGASetPopReplaceType            (ctx, PGA_POPREPL_NSGA_II);
-    PGASetMutationOnlyFlag          (ctx, PGA_FALSE);
-    //PGASetMutationAndCrossoverFlag  (ctx, PGA_TRUE);
-    PGASetMutationType              (ctx, PGA_MUTATION_POLY);
-    PGASetMutationProb              (ctx, 1.0 / problem->dimension);
-    PGASetMutationPolyEta           (ctx, 20);
-    PGASetMutationBounceBackFlag    (ctx, PGA_TRUE);
-    PGASetCrossoverType             (ctx, PGA_CROSSOVER_SBX);
-    PGASetCrossoverProb             (ctx, 1.0);
-    PGASetUniformCrossoverProb      (ctx, 1.0 / problem->dimension);
-    PGASetUniformCrossoverProb      (ctx, 0.2);
-    PGASetCrossoverBounceBackFlag   (ctx, PGA_TRUE);
-    PGASetCrossoverSBXEta           (ctx, 30);
-    PGASetCrossoverSBXEta           (ctx, 15);
-    //PGASetCrossoverSBXOncePerString (ctx, PGA_TRUE);
-    PGASetRealInitRange             (ctx, problem->lower, problem->upper);
-    PGASetMaxGAIterValue            (ctx, maxiter);
-    PGASetNumAuxEval                (ctx, problem->nfunc - 1);
-    PGASetNumConstraint             (ctx, problem->nconstraint);
-    PGASetNoDuplicatesFlag          (ctx, PGA_TRUE);
-    PGASetReferencePoints           (ctx, np, p);
-# endif
 
-# if 1
-    PGASetNumReplaceValue        (ctx, popsize);
-    PGASetSelectType             (ctx, PGA_SELECT_LINEAR);
-    PGASetPopReplaceType         (ctx, PGA_POPREPL_NSGA_II);
-    PGASetPopReplaceType         (ctx, PGA_POPREPL_NSGA_III);
-    PGASetMutationOnlyFlag       (ctx, PGA_TRUE);
-    PGASetMutationType           (ctx, PGA_MUTATION_DE);
-    PGASetDECrossoverProb        (ctx, 0.0);
-    PGASetDECrossoverType        (ctx, PGA_DE_CROSSOVER_BIN);
-    PGASetDEVariant              (ctx, PGA_DE_VARIANT_RAND);
-    PGASetDEScaleFactor          (ctx, 0.40);
-    PGASetDEJitter               (ctx, 0.30);
+    PGASetNumReplaceValue         (ctx, popsize);
+    PGASetSelectType              (ctx, PGA_SELECT_LINEAR);
+    PGASetPopReplaceType          (ctx, PGA_POPREPL_NSGA_II);
+    PGASetPopReplaceType          (ctx, PGA_POPREPL_NSGA_III);
+    PGASetMutationOnlyFlag        (ctx, PGA_TRUE);
+    PGASetMutationType            (ctx, PGA_MUTATION_DE);
+    PGASetDECrossoverProb         (ctx, 0.0);
+    PGASetDECrossoverType         (ctx, PGA_DE_CROSSOVER_BIN);
+    PGASetDEVariant               (ctx, PGA_DE_VARIANT_RAND);
+    PGASetDEScaleFactor           (ctx, 0.40);
+    PGASetDEJitter                (ctx, 0.30);
     /* DOES NOT WORK! PGASetDEDither (ctx, 0.01); */
-    PGASetRealInitRange          (ctx, problem->lower, problem->upper);
-    PGASetMaxGAIterValue         (ctx, maxiter);
-    PGASetNumAuxEval             (ctx, problem->nfunc - 1);
-    PGASetNumConstraint          (ctx, problem->nconstraint);
-    PGASetNoDuplicatesFlag       (ctx, PGA_TRUE);
-    PGASetMutationBounceBackFlag (ctx, PGA_TRUE);
-    PGASetReferencePoints        (ctx, np, p);
+    PGASetRealInitRange           (ctx, problem->lower, problem->upper);
+    PGASetMaxGAIterValue          (ctx, maxiter);
+    PGASetNumAuxEval              (ctx, problem->nfunc - 1);
+    PGASetNumConstraint           (ctx, problem->nconstraint);
+    PGASetNoDuplicatesFlag        (ctx, PGA_TRUE);
+    PGASetMutationBounceBackFlag  (ctx, PGA_TRUE);
+    if (refdir) {
+        PGASetReferenceDirections (ctx, NDIR, directions, 7, 0.05);
+    } else {
+        PGASetReferencePoints     (ctx, np, p);
+    }
     if (fidx == 11) {
         /* Avoid regression test failing due to rounding error on different
          * architectures. We reduce the precision printed by one.
          */
         PGASetMultiObjPrecision (ctx, 13);
     }
-# endif
     
     PGASetUp   (ctx);
     comm = PGAGetCommunicator (ctx);

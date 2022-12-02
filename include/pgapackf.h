@@ -469,6 +469,8 @@ c *** stop
       external PGAGetStoppingRuleType
       integer PGAGetMaxGAIterValue
       external PGAGetMaxGAIterValue
+      integer PGAGetMaxSimilarityValue
+      external PGAGetMaxSimilarityValue
 c *** system
       integer PGAGetMaxMachineIntValue
       external PGAGetMaxMachineIntValue

@@ -183,9 +183,25 @@ void PGADestroy (PGAContext *ctx)
 
         /*  Free the scratch space.  */
         free (ctx->scratch.intscratch);
+        if (ctx->scratch.permute != NULL) {
+            free (ctx->scratch.permute);
+        }
         free (ctx->scratch.dblscratch);
         free (ctx->ga.selected);
         free (ctx->ga.sorted);
+        /* Need to close output file if we opened it */
+        if (  ctx->ga.OutFileName != NULL
+           && PGAGetRank (ctx, MPI_COMM_WORLD) == 0
+           )
+        {
+            int err = fclose (ctx->ga.OutputFile);
+            if (err != 0) {
+                fprintf
+                    ( stderr, "Warning: Closing output file returned: %s"
+                    , strerror (errno)
+                    );
+            }
+        }
     }
 
     /*  These are allocated by PGACreate  */

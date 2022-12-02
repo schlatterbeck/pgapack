@@ -212,13 +212,13 @@ int PGAGetNumReplaceValue (PGAContext *ctx)
       popreplace = PGAGetPopReplaceType(ctx);
       switch (popreplace) {
       case PGA_POPREPL_BEST:
-          printf("Replacement Strategy = PGA_POPREPL_BEST\n");
+          printf ("Replacement Strategy = PGA_POPREPL_BEST\n");
           break;
       case PGA_POPREPL_RANDOM_REP:
-          printf("Replacement Strategy = PGA_POPREPL_RANDOM_REP\n");
+          printf ("Replacement Strategy = PGA_POPREPL_RANDOM_REP\n");
           break;
       case PGA_POPREPL_RANDOM_NOREP:
-          printf("Replacement Strategy = PGA_POPREPL_RANDOM_NOREP\n");
+          printf ("Replacement Strategy = PGA_POPREPL_RANDOM_NOREP\n");
           break;
       }
 
@@ -258,12 +258,6 @@ int PGAGetPopReplaceType (PGAContext *ctx)
 void PGASetRTRWindowSize( PGAContext *ctx, int windowsize)
 {
     PGADebugEntered("PGASetRTRWindowSize");
-
-    if (windowsize > ctx->ga.PopSize) {
-        PGAError ( ctx,
-                  "PGASetRTRWindowSize: Invalid value of windowsize:",
-                   PGA_FATAL, PGA_INT, (void *) &windowsize);
-    }
 
     ctx->ga.RTRWindowSize = windowsize;
 
@@ -977,8 +971,8 @@ static double *get_point (PGAContext *ctx, size_t idx)
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
     DECLARE_DYNPTR (double, normdirs,  dim) = ctx->ga.normdirs;
     DECLARE_DYNPTR (double, refpoints, dim) = ctx->ga.refpoints;
-    assert (idx < ctx->ga.ndpoints + ctx->ga.nrefpoints);
-    if (idx > ctx->ga.nrefpoints) {
+    assert (idx < ctx->ga.ndpoints * ctx->ga.nrefdirs + ctx->ga.nrefpoints);
+    if (idx >= ctx->ga.nrefpoints) {
         return DEREF1_DYNPTR (normdirs, dim, idx - ctx->ga.nrefpoints);
     }
     return DEREF1_DYNPTR (refpoints, dim, idx);
@@ -1011,7 +1005,7 @@ static void niching
 {
     size_t i, j;
     size_t dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
-    size_t npoints = ctx->ga.ndpoints + ctx->ga.nrefpoints;
+    size_t npoints = ctx->ga.ndpoints * ctx->ga.nrefdirs + ctx->ga.nrefpoints;
     DECLARE_DYNARRAY (double, point, dim);
 
     compute_utopian (ctx, start, n);
@@ -1035,8 +1029,8 @@ static void niching
      */
     for (i=0; i<ctx->ga.nrefdirs; i++) {
         size_t sz = ctx->ga.ndpoints * sizeof (double) * dim;
-        double (*refdirs)[3] = ctx->ga.refdirs;
-        memcpy (point, refdirs [i], sizeof (double) * dim);
+        DECLARE_DYNPTR (double, refdirs, dim) = ctx->ga.refdirs;
+        memcpy (point, DEREF1_DYNPTR (refdirs, dim, i), sizeof (double) * dim);
         for (j=0; j<dim; j++) {
             point [j]  = NORMALIZE (ctx, point [j], ctx->ga.utopian [j]);
             point [j] /= NORMALIZE

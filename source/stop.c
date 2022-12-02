@@ -214,11 +214,11 @@ void PGASetStoppingRuleType (PGAContext *ctx, int stoprule)
       :
       stop = PGAGetStoppingRuleType(ctx);
       if (stop & PGA_STOP_MAXITER)
-          printf("Stopping Rule = PGA_STOP_MAXITER\n");
+          printf ("Stopping Rule = PGA_STOP_MAXITER\n");
       if (stop & PGA_STOP_NOCHANGE)
-          printf("Stopping Rule = PGA_STOP_NOCHANGE\n");
+          printf ("Stopping Rule = PGA_STOP_NOCHANGE\n");
       if (stop & PGA_STOP_TOOSIMILAR)
-          printf("Stopping Rule = PGA_STOP_TOOSIMILAR\n");
+          printf ("Stopping Rule = PGA_STOP_TOOSIMILAR\n");
 
 ***************************************************************************U*/
 int PGAGetStoppingRuleType (PGAContext *ctx)
@@ -350,19 +350,43 @@ void PGASetMaxNoChangeValue(PGAContext *ctx, int max_no_change)
    Example:
       PGAContext *ctx;
       :
-      PGASetMaxSimilarityValue(ctx,99);
+      PGASetMaxSimilarityValue (ctx, 99);
 
 ****************************************************************************U*/
 void PGASetMaxSimilarityValue(PGAContext *ctx, int max_similarity)
 {
-    PGADebugEntered("PGASetMaxSimilarityValue");
-    PGAFailIfSetUp("PGASetMaxSimilarityValue");
+    PGADebugEntered ("PGASetMaxSimilarityValue");
+    PGAFailIfSetUp ("PGASetMaxSimilarityValue");
 
     if ((max_similarity <= 0) || (max_similarity > 100))
-        PGAError(ctx, "PGASetMaxSimilarityValue: max_similarity invalid",
-                 PGA_FATAL, PGA_INT, (void *) &max_similarity);
+        PGAError (ctx, "PGASetMaxSimilarityValue: max_similarity invalid",
+                  PGA_FATAL, PGA_INT, (void *) &max_similarity);
     
     ctx->ga.MaxSimilarity = max_similarity;
 
-    PGADebugExited("PGASetMaxSimilarityValue");
+    PGADebugExited ("PGASetMaxSimilarityValue");
+}
+/*U****************************************************************************
+   PGAGetMaxSimilarityValue - Get the maximum percent of homogeneity of
+   the population before stopping.
+
+   Category: Generation
+
+   Inputs:
+      ctx            - context variable
+
+   Outputs:
+      max_similarity - the maximum percent of the population that can share
+                       the same evaluation function value
+
+   Example:
+      PGAContext *ctx;
+      int max_similarity;
+      :
+      max_similarity = PGAGetMaxSimilarityValue (ctx);
+
+****************************************************************************U*/
+int PGAGetMaxSimilarityValue (PGAContext *ctx)
+{
+    return ctx->ga.MaxSimilarity;
 }

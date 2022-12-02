@@ -51,6 +51,7 @@
 #include <stdarg.h>
 #include <mpi.h>
 #include <assert.h>
+#include <errno.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -433,6 +434,8 @@ typedef struct {
     int NumReplace;          /* Number of string to replace each gen      */
     int PopReplace;          /* Method of choosing ind.s to copy to newpop*/
     int iter;                /* iteration (generation) counter            */
+    int last_iter;           /* Used by selection methods internally      */
+    int perm_idx;            /* Index into scratch permute array          */
     int ItersOfSame;         /* # iters with no change in best            */
     int PercentSame;         /* % of pop that is homogeneous              */
     int NoDuplicates;        /* Don't allow duplicate strings             */
@@ -498,6 +501,9 @@ typedef struct {
     int symmetric;           /* Fixed edges are symmetric?                */
     PGAFixedEdge *edges;     /* Fixed edges for edge crossover            */
     PGAInteger (*r_edge)[2]; /* Right node + index into edges             */
+    FILE *OutputFile;        /* Output file                               */
+    char *OutFileName;       /* Output filename                           */
+    void *CustomData;        /* For the user, not sent via MPI            */
     PGAIndividual *oldpop;   /* pointer to population (old)               */
     PGAIndividual *newpop;   /* pointer to population (new)               */
 } PGAAlgorithm;
@@ -623,6 +629,7 @@ typedef struct {
 *****************************************/
 typedef struct {
     int           *intscratch;         /* integer-scratch space           */
+    int           *permute;            /* For tournament w/o replacement  */
     double        *dblscratch;         /* double- scratch space           */
     PGABinary     *dominance;          /* for dominance sorting           */
     PGAInteger    (*edgemap)[4];       /* For Edge Crossover              */
@@ -729,6 +736,7 @@ void PGASetEpsilonExponent (PGAContext *ctx, double exponent);
 double PGAGetEpsilonExponent (PGAContext *ctx);
 void PGASetEpsilonTheta (PGAContext *ctx, int theta);
 int PGAGetEpsilonTheta (PGAContext *ctx);
+void PGASetOutputFile (PGAContext *ctx, char *filename);
 
 /*****************************************
 *          cross.c
@@ -1202,14 +1210,15 @@ double PGAGetAuxTotal (PGAContext *ctx, int p, int pop);
 *          stop.c
 *****************************************/
 
-int PGADone(PGAContext *ctx, MPI_Comm comm);
-int PGACheckStoppingConditions( PGAContext *ctx);
+int PGADone (PGAContext *ctx, MPI_Comm comm);
+int PGACheckStoppingConditions (PGAContext *ctx);
 void PGASetStoppingRuleType (PGAContext *ctx, int stoprule);
 int PGAGetStoppingRuleType (PGAContext *ctx);
-void PGASetMaxGAIterValue(PGAContext *ctx, int maxiter);
+void PGASetMaxGAIterValue (PGAContext *ctx, int maxiter);
 int PGAGetMaxGAIterValue (PGAContext *ctx);
-void PGASetMaxNoChangeValue(PGAContext *ctx, int max_no_change);
-void PGASetMaxSimilarityValue(PGAContext *ctx, int max_similarity);
+void PGASetMaxNoChangeValue (PGAContext *ctx, int max_no_change);
+void PGASetMaxSimilarityValue (PGAContext *ctx, int max_similarity);
+int PGAGetMaxSimilarityValue (PGAContext *ctx);
 
 /*****************************************
 *          system.c

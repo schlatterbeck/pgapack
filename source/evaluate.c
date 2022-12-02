@@ -291,10 +291,10 @@ void PGASetEvaluationUpToDateFlag ( PGAContext *ctx, int p, int pop,
       uptodate = PGAGetEvaluationUpToDateFlag(ctx);
       switch (uptodate) {
       case PGA_TRUE:
-          printf("Evaluation function value current\n");
+          printf ("Evaluation function value current\n");
           break;
       case PGA_FALSE:
-          printf("Evaluation function value out-of-date\n");
+          printf ("Evaluation function value out-of-date\n");
           break;
       }
 

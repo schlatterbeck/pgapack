@@ -2,4 +2,5 @@
 *.a
 lib
 .*.swp
+.coverage*
 README.html

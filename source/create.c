@@ -278,6 +278,8 @@ PGAContext *PGACreate
     ctx->ga.FitnessCmaxValue   = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.PopReplace         = PGA_UNINITIALIZED_INT;
     ctx->ga.iter               = 0;
+    ctx->ga.last_iter          = -1;
+    ctx->ga.perm_idx           = 0;
     ctx->ga.ItersOfSame        = 0;
     ctx->ga.PercentSame        = 0;
     ctx->ga.selected           = NULL;
@@ -285,6 +287,9 @@ PGAContext *PGACreate
     ctx->ga.restart            = PGA_UNINITIALIZED_INT;
     ctx->ga.restartFreq        = PGA_UNINITIALIZED_INT;
     ctx->ga.restartAlleleProb  = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.OutputFile         = stdout;
+    ctx->ga.OutFileName        = NULL;
+    ctx->ga.CustomData         = NULL;
 
     /* Fixed edges for Edge Crossover */
     ctx->ga.n_edges            = 0;
@@ -634,9 +639,9 @@ void PGASetUp ( PGAContext *ctx )
             int npart = ctx->ga.ndir_npart;
             size_t lb = LIN_binom (dim + npart - 1, npart);
             size_t n = lb * ctx->ga.nrefdirs;
-            /* Check that there was no overflow */
-            assert (lb < n);
-            assert (lb < SIZE_MAX / (sizeof (double) * dim));
+            /* Check that there is/was no overflow */
+            assert (lb <= n);
+            assert (n < SIZE_MAX / (sizeof (double) * dim));
             ctx->ga.normdirs = malloc (sizeof (double) * dim * n);
             if (ctx->ga.normdirs == NULL) {
                 PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normdirs");
@@ -644,8 +649,8 @@ void PGASetUp ( PGAContext *ctx )
             ctx->ga.ndpoints = lb;
             if (ctx->ga.nrefpoints == 0) {
                 assert (ctx->ga.refpoints == NULL);
-                (void)LIN_dasdennis (dim, 1, &ctx->ga.refpoints, 0, 1, NULL);
-                ctx->ga.nrefpoints = LIN_binom (dim + 1 - 1, 1);
+                ctx->ga.nrefpoints = LIN_dasdennis
+                    (dim, 1, &ctx->ga.refpoints, 0, 1, NULL);
                 if (ctx->ga.refpoints == NULL) {
                     PGAErrorPrintf
                         (ctx, PGA_FATAL, "Cannot allocate ref points");
@@ -739,7 +744,7 @@ void PGASetUp ( PGAContext *ctx )
     }
 
     if (ctx->ga.EpsilonTheta >= ctx->ga.PopSize - 1) {
-        PGAError ( ctx, "PGASetUp: EpsilonTheta > PopSize - 1"
+        PGAError ( ctx, "PGASetUp: EpsilonTheta >= PopSize - 1"
                  , PGA_FATAL, PGA_VOID, NULL
                  );
     }
@@ -804,6 +809,14 @@ void PGASetUp ( PGAContext *ctx )
             v = 1;
         }
         ctx->ga.RTRWindowSize = v;
+    } else if (  ctx->ga.RTRWindowSize > ctx->ga.PopSize
+              || ctx->ga.RTRWindowSize <= 0
+              )
+    {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetUp: required: 0 < RTR window size <= popsize"
+            );
     }
 
     if ( ctx->ga.NumAuxEval > 0
@@ -1341,20 +1354,37 @@ void PGASetUp ( PGAContext *ctx )
                  );
     }
 
-    ctx->scratch.intscratch = (int *)malloc( sizeof(int) * ctx->ga.PopSize );
+    ctx->scratch.intscratch = malloc( sizeof(int) * ctx->ga.PopSize );
     if (ctx->scratch.intscratch == NULL) {
-        PGAError( ctx, "PGASetUp: No room to allocate ctx->scratch.intscratch"
+        PGAError
+            ( ctx, "PGASetUp: No room to allocate ctx->scratch.intscratch"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
+    }
+    ctx->scratch.permute = NULL;
+    ctx->ga.perm_idx = 0;
+    if (  ctx->ga.SelectType == PGA_SELECT_TOURNAMENT
+       || ctx->ga.SelectType == PGA_SELECT_TRUNCATION
+       )
+    {
+        ctx->scratch.permute = malloc (sizeof (int) * ctx->ga.PopSize);
+        if (ctx->scratch.permute == NULL) {
+            PGAError
+                ( ctx, "PGASetUp: No room to allocate ctx->scratch.permute"
                 , PGA_FATAL, PGA_VOID, NULL
                 );
+        }
+        /* This forces a first shuffle */
+        ctx->ga.perm_idx = ctx->ga.PopSize;
     }
 
-    ctx->scratch.dblscratch =
-        (double *)malloc(sizeof(double) * ctx->ga.PopSize);
+    ctx->scratch.dblscratch = malloc (sizeof (double) * ctx->ga.PopSize);
 
     if (ctx->scratch.dblscratch == NULL) {
-        PGAError ( ctx, "PGASetUp: No room to allocate ctx->scratch.dblscratch"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAError
+            ( ctx, "PGASetUp: No room to allocate ctx->scratch.dblscratch"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
     }
 
     /* If we're doing non-dominated sorting */
@@ -1458,6 +1488,16 @@ void PGASetUp ( PGAContext *ctx )
     }
     memset (ctx->rep.BestIdx, 0, sizeof (int) * (1 + ctx->ga.NumAuxEval));
 
+    if (ctx->ga.OutFileName != NULL && PGAGetRank (ctx, MPI_COMM_WORLD) == 0) {
+        ctx->ga.OutputFile = fopen (ctx->ga.OutFileName, "w");
+        if (ctx->ga.OutputFile == NULL) {
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
+                , "Cannot open output file: %s", strerror (errno)
+                );
+        }
+    }
+
     ctx->rep.starttime = time (NULL);
 
     /* This is done at the end to avoid trying to free unallocated memory */
@@ -1526,10 +1566,10 @@ void PGASetRandomInitFlag(PGAContext *ctx, int RandomBoolean)
       raninit = PGAGetRandomInitFlag(ctx);
       switch (raninit) {
       case PGA_TRUE:
-          printf("Population is randomly initialized\n");
+          printf ("Population is randomly initialized\n");
           break;
       case PGA_FALSE:
-          printf("Population initialized to zero\n");
+          printf ("Population initialized to zero\n");
           break;
       }
 
@@ -1964,8 +2004,8 @@ double PGAGetEpsilonExponent (PGAContext *ctx)
 ****************************************************************************I*/
 void PGASetEpsilonTheta (PGAContext *ctx, int n)
 {
-    if (ctx->ga.EpsilonTheta < 1) {
-        PGAError ( ctx, "PGASetUp: EpsilonTheta < 1"
+    if (n < 1) {
+        PGAError ( ctx, "PGASetUp: EpsilonTheta must be >= 1"
                  , PGA_FATAL, PGA_VOID, NULL
                  );
     }
@@ -1993,3 +2033,36 @@ int PGAGetEpsilonTheta (PGAContext *ctx)
 {
     return ctx->ga.EpsilonTheta;
 }
+
+/*I****************************************************************************
+  PGASetOutputFile - Set output file name for printing statistics etc.
+    Note that the file is not immediately opened, instead it is later
+    opened in the rank 0 individual.
+
+  Inputs:
+     ctx      - context variable
+     name     - output filename
+
+  Outputs:
+     None
+
+  Example:
+     PGAContext *ctx;
+     char *name = "output.file";
+     :
+     PGASetOutputFile (ctx, name);
+
+****************************************************************************I*/
+void PGASetOutputFile (PGAContext *ctx, char *name)
+{
+    char *n = malloc (strlen (name) + 1);
+    if (n == NULL) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetOutputFile: Cannot allocate name"
+            );
+    }
+    strcpy (n, name);
+    ctx->ga.OutFileName = n;
+}
+

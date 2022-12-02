@@ -375,10 +375,10 @@ void PGASetIntegerInitRange (PGAContext *ctx, const int *min, const int *max)
       inittype = PGAGetIntegerInitType(ctx);
       switch (inittype) {
       case PGA_IINIT_PERMUTE:
-          printf("Data Type = PGA_IINIT_PERMUTE\n");
+          printf ("Data Type = PGA_IINIT_PERMUTE\n");
           break;
       case PGA_IINIT_RANGE:
-          printf("Data Type = PGA_IINIT_RANGE\n");
+          printf ("Data Type = PGA_IINIT_RANGE\n");
           break;
       }
 
@@ -963,7 +963,11 @@ void remove_edge_from_right (PGAContext *ctx, PGAInteger cidx)
 {
     int i, j;
     for (j=0; j<4; j++) {
-        PGAInteger v = labs (ctx->scratch.edgemap [cidx][j]) - 1;
+        PGAInteger v = labs (ctx->scratch.edgemap [cidx][j]);
+        if (v == 0) {
+            continue;
+        }
+        v -= 1;
         for (i=0; i<4; i++) {
             if (labs (ctx->scratch.edgemap [v][i]) - 1 == cidx) {
                 ctx->scratch.edgemap [v][i] = 0;
@@ -1350,7 +1354,7 @@ void PGAIntegerSetFixedEdges
       PGAContext *ctx;
       int  p;
       :
-      PGAIntegerPrintString(ctx, stdout, p, PGA_NEWPOP);
+      PGAIntegerPrintString (ctx, stdout, p, PGA_NEWPOP);
 
 ****************************************************************************I*/
 void PGAIntegerPrintString ( PGAContext *ctx, FILE *fp, int p, int pop)

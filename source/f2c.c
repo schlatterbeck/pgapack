@@ -91,6 +91,7 @@ privately owned rights.
 #define pgagetepsilonexponent_           PGAGETEPSILONEXPONENT
 #define pgasetepsilontheta_              PGASETEPSILONTHETA
 #define pgagetepsilontheta_              PGAGETEPSILONTHETA
+#define pgasetoutputfile_                PGASETOUTPUTFILE
 
 /* cross.c */
 #define pgacrossover_                    PGACROSSOVER
@@ -292,6 +293,7 @@ privately owned rights.
 #define pgagetmaxgaitervalue_            PGAGETMAXGAITERVALUE
 #define pgasetmaxnochangevalue_          PGASETMAXNOCHANGEVALUE
 #define pgasetmaxsimilarityvalue_        PGASETMAXSIMILARITYVALUE
+#define pgagetmaxsimilarityvalue_        PGAGETMAXSIMILARITYVALUE
 /* system.c */
 #define pgaerror_                        PGAERROR
 #define pgadestroy_                      PGADESTROY
@@ -342,6 +344,7 @@ privately owned rights.
 #define pgagetepsilonexponent_           _pgagetepsilonexponent_
 #define pgasetepsilontheta_              _pgasetepsilontheta_
 #define pgagetepsilontheta_              _pgagetepsilontheta_
+#define pgasetoutputfile_                _pgasetoutputfile_
 /* cross.c */
 #define pgacrossover_                    _pgacrossover_
 #define pgagetcrossovertype_             _pgagetcrossovertype_
@@ -542,6 +545,7 @@ privately owned rights.
 #define pgagetmaxgaitervalue_            _pgagetmaxgaitervalue_
 #define pgasetmaxnochangevalue_          _pgasetmaxnochangevalue_
 #define pgasetmaxsimilarityvalue_        _pgasetmaxsimilarityvalue_
+#define pgagetmaxsimilarityvalue_        _pgagetmaxsimilarityvalue_
 /* system.c */
 #define pgaerror_                        _pgaerror_
 #define pgadestroy_                      _pgadestroy_
@@ -592,6 +596,7 @@ privately owned rights.
 #define pgagetepsilonexponent_           pgagetepsilonexponent
 #define pgasetepsilontheta_              pgasetepsilontheta
 #define pgagetepsilontheta_              pgagetepsilontheta
+#define pgasetoutputfile_                pgasetoutputfile
 /* cross.c */
 #define pgacrossover_                    pgacrossover
 #define pgagetcrossovertype_             pgagetcrossovertype
@@ -792,6 +797,7 @@ privately owned rights.
 #define pgagetmaxgaitervalue_            pgagetmaxgaitervalue
 #define pgasetmaxnochangevalue_          pgasetmaxnochangevalue
 #define pgasetmaxsimilarityvalue_        pgasetmaxsimilarityvalue
+#define pgagetmaxsimilarityvalue_        pgagetmaxsimilarityvalue
 /* system.c */
 #define pgaerror_                        pgaerror
 #define pgadestroy_                      pgadestroy
@@ -845,6 +851,7 @@ void pgasetepsilonexponent_ (PGAContext **ftx, float *n);
 float pgagetepsilonexponent_ (PGAContext **ftx);
 void pgasetepsilontheta_ (PGAContext **ftx, int *n);
 int pgagetepsilontheta_ (PGAContext **ftx);
+void pgasetoutputfile_ (PGAContext **ftx, char *name);
 /* cross.c */
 void pgacrossover_(PGAContext **ftx, int *m1, int *m2, int *oldpop, int *t1,
      int *t2, int *newpop);
@@ -1065,6 +1072,7 @@ void pgasetmaxgaitervalue_(PGAContext **ftx, int *maxiter);
 int pgagetmaxgaitervalue_(PGAContext **ftx);
 void pgasetmaxnochangevalue_(PGAContext **ftx, int *max_no_change);
 void pgasetmaxsimilarityvalue_(PGAContext **ftx, int *max_similarity);
+int pgagetmaxsimilarityvalue_(PGAContext **ftx);
 /* system.c */
 void pgaerror_(PGAContext **ftx, char *msg, int *level, int *datatype,
      void **data, int len);
@@ -1228,6 +1236,11 @@ int pgagetepsilontheta_ (PGAContext **ftx)
     return PGAGetEpsilonTheta (*ftx);
 }
 
+void pgasetoutputfile_ (PGAContext **ftx, char *name)
+{
+    PGASetOutputFile (*ftx, name);
+}
+
 /* cross.c */
 void pgacrossover_(PGAContext **ftx, int *m1, int *m2, int *oldpop, int *t1,
      int *t2, int *newpop)
@@ -1314,67 +1327,95 @@ int pgagetcrossoversbxonceperstring_ (PGAContext **ftx)
 
 #if OPTIMIZE==0
 /* debug.c */
-void pgadebugprint_(PGAContext **ftx, int *level, char *funcname, char *msg,
-     int *datatype, void *data, int len1, int len2)
+void pgadebugprint_
+    ( PGAContext **ftx, int *level, char *funcname
+    , char *msg, int *datatype, void *data, int len1, int len2
+    )
 /* FORTRAN implicitly passes the lengths of funcname and msg into len1
    and len2, respectively */
 {
-     if (funcname[len1] != 0 || msg[len2] != 0)
-	  funcname[len1] = msg[len2] = 0;
-     PGADebugPrint(*ftx, *level, funcname, msg, *datatype, data );
+     if (funcname [len1] != 0 || msg [len2] != 0)
+	  funcname [len1] = msg [len2] = 0;
+     PGADebugPrint (*ftx, *level, funcname, msg, *datatype, data );
 }
 #else
-void pgadebugprint_(PGAContext **ftx, int *level, char *funcname, char *msg,
-		    int *datatype, void *data, int len1, int len2)
+void pgadebugprint_
+    ( PGAContext **ftx, int *level, char *funcname
+    , char *msg, int *datatype, void *data, int len1, int len2
+    )
 {
-     printf("PGADebugPrint is not supported in the optimized version of PGAPack.\n");
+     fprintf
+        ( stderr
+        , "PGADebugPrint is not supported in the optimized version "
+          "of PGAPack.\n"
+        );
 }
 #endif
 
 #if OPTIMIZE==0
-void pgasetdebuglevel_(PGAContext **ftx, int *level)
+void pgasetdebuglevel_ (PGAContext **ftx, int *level)
 {
-    PGASetDebugLevel(*ftx, *level);
+    PGASetDebugLevel (*ftx, *level);
 }
 #else
-void pgasetdebuglevel_(PGAContext **ftx, int *level)
+void pgasetdebuglevel_ (PGAContext **ftx, int *level)
 {
-    printf("PGASetDebugLevel is not supported in the optimized version of PGAPack.\n");
+    fprintf
+        ( stderr
+        , "PGASetDebugLevel is not supported in the optimized version "
+          "of PGAPack.\n"
+        );
 }
 #endif
 #if OPTIMIZE==0
-void pgacleardebuglevel_(PGAContext **ftx, int *level)
+void pgacleardebuglevel_ (PGAContext **ftx, int *level)
 {
-    PGAClearDebugLevel(*ftx, *level);
+    PGAClearDebugLevel (*ftx, *level);
 }
 #else
-void pgacleardebuglevel_(PGAContext **ftx, int *level)
+void pgacleardebuglevel_ (PGAContext **ftx, int *level)
 {
-    printf("PGAClearDebugLevel is not supported in the optimized version of PGAPack.\n");
+    fprintf
+        ( stderr
+        , "PGAClearDebugLevel is not supported in the optimized version "
+          "of PGAPack.\n"
+        );
 }
 #endif
 #if OPTIMIZE==0
-void pgasetdebuglevelbyname_(PGAContext **ftx, char *name, int len)
+void pgasetdebuglevelbyname_ (PGAContext **ftx, char *name, int len)
 {
-    if (name[len] != 0)  name[len] = 0;
-    PGASetDebugLevelByName(*ftx, name);
+    if (name [len] != 0) {
+        name [len] = 0;
+    }
+    PGASetDebugLevelByName (*ftx, name);
 }
 #else
-void pgasetdebuglevelbyname_(PGAContext **ftx, char *name, int len)
+void pgasetdebuglevelbyname_ (PGAContext **ftx, char *name, int len)
 {
-    printf("PGASetDebugLevelByName is not supported in the optimized version of PGAPack.\n");
+    fprintf
+        ( stderr
+        , "PGASetDebugLevelByName is not supported in the "
+          "optimized version of PGAPack.\n"
+        );
 }
 #endif
 #if OPTIMIZE==0
-void pgacleardebuglevelbyname_(PGAContext **ftx, char *name, int len)
+void pgacleardebuglevelbyname_ (PGAContext **ftx, char *name, int len)
 {
-    if (name[len] != 0)  name[len] = 0;
-    PGAClearDebugLevelByName(*ftx, name);
+    if (name [len] != 0) {
+        name [len] = 0;
+    }
+    PGAClearDebugLevelByName (*ftx, name);
 }
 #else
-void pgacleardebuglevelbyname_(PGAContext **ftx, char *name, int len)
+void pgacleardebuglevelbyname_ (PGAContext **ftx, char *name, int len)
 {
-    printf("PGAClearDebugLevelByName is not supported in the optimized version of PGAPack.\n");
+    fprintf
+        ( stderr
+        , "PGAClearDebugLevelByName is not supported in the "
+          "optimized version of PGAPack.\n"
+        );
 }
 #endif
 /* duplcate.c */
@@ -2417,6 +2458,11 @@ void pgasetmaxnochangevalue_(PGAContext **ftx, int *max_no_change)
 void pgasetmaxsimilarityvalue_(PGAContext **ftx, int *max_similarity)
 {
      PGASetMaxSimilarityValue  (*ftx, *max_similarity);
+}
+
+int pgagetmaxsimilarityvalue_ (PGAContext **ftx)
+{
+     return PGAGetMaxSimilarityValue  (*ftx);
 }
 
 /* system.c */

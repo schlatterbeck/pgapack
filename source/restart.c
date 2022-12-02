@@ -88,8 +88,8 @@ void PGARestart(PGAContext *ctx, int source_pop, int dest_pop)
     
     PGADebugEntered("PGARestart");
     
-    printf("Restarting the algorithm . . . \n");
-    fflush(stdout);
+    fprintf (ctx->ga.OutputFile, "Restarting the algorithm . . . \n");
+    fflush (ctx->ga.OutputFile);
     source_p = PGAGetBestIndex(ctx, source_pop);
     if (source_p != 0 || source_pop != dest_pop)
 	PGACopyIndividual(ctx, source_p, source_pop, 0, dest_pop);
