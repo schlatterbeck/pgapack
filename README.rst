@@ -22,6 +22,12 @@ companion projects:
 Updates 
 =======
 
+Update Dez 2022:
+- Bug fixes discovered during implementation of a regression test for
+  the python wrapper
+- Output of string printing and result printing can now be redirected to
+  a file
+
 Update Oct 2022:
 
 - Use hashing for comparing individuals when the NoDuplicates flag is
