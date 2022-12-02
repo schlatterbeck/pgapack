@@ -173,7 +173,6 @@ all:
 	mkdir -p $(PGA_LIB_DIR)
 	$(MAKE) -C source
 	$(MAKE) -C examples
-	$(MAKE) -C test
 	$(MAKE) -C docs
 
 test: all
