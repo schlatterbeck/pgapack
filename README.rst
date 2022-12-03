@@ -23,6 +23,7 @@ Updates
 =======
 
 Update Dez 2022:
+
 - Bug fixes discovered during implementation of a regression test for
   the python wrapper
 - Output of string printing and result printing can now be redirected to
