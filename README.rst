@@ -473,8 +473,7 @@ man           The directory containing the PGAPack man pages.
 source        The source code for the PGAPack system.
 test          A directory containing programs to verify the installation.
               This now runs all the examples including the Fortran
-              examples. With no Fortran compiler the tests currently
-              fail.
+              examples. With no Fortran compiler only the C-Tests are run.
 ============= ============================================================
 
 
