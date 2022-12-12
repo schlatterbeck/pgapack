@@ -4,9 +4,9 @@ PGA_DIR = ${CURDIR}
 # Defaults for various compiler settings.
 # We leave CC and FC settings to the make defaults.
 CPPFLAGS = -DFORTRANUNDERSCORE -D_REENTRANT
-CFLAGS = -fPIC -Wall -Wsign-compare
-FFLAGS =
-LDFLAGS =
+CFLAGS = -fPIC -Wall -Wsign-compare $(ADD_CFLAGS)
+FFLAGS = $(ADD_FFLAGS)
+LDFLAGS = $(ADD_LDFLAGS)
 LIBS = -lm
 INCLUDES =
 RANLIB = ranlib

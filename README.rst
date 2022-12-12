@@ -344,23 +344,40 @@ installation steps are as follows.
     The full make options are ``ARCH_TYPE``, ``CC``,
     ``CFLAGS``, ``FC``, ``FFLAGS``, ``DEBUG``, ``MPI_INC``, ``MPI_LIB``
 
-    where all parameters are optional and do the following:
+    In addition it is now possible to *add* C-compiler options with
+    ADD_CFLAGS and Fortran compiler options with ADD_FFLAGS. The latter
+    may be needed with Gnu Fortran compilers prior to major version 10
+    because of a `bug in constant declarations`_. Use::
+
+    make MPI=$MPIVERSION ADD_FFLAGS=-fno-range-check
+
+    All parameters are optional and do the following:
 
     =========== =============================================================
     Parameter   Description
     =========== =============================================================
     CC          The name of the ANSI C compiler, cc by default.
     CPPFLAGS    C Preprocessor flags (later appended to ``CFLAGS``)
-    CFLAGS      Options passed to the C compiler.
+    CFLAGS      Options passed to the C compiler including necessary
+                options for include file location.
+    ADD_CFLAGS  Additional options passed to C compiler.
+                This is easier to use than FFLAGS because no knowledge
+                of include directives is necessary.
     DEBUG       If specified, enables the debugging features
                 and compiles the source code with the ``-g`` flag.
     FC          The name of the Fortran 77 compiler, f77 by default.
                 (The Fortran compiler is used only to compile the Fortran
                 examples in the ``./examples/`` directory.)
-    FFLAGS      Options passed to the Fortran compiler.
+    FFLAGS      Options passed to the Fortran compiler including
+                necessary options for include file location.
+    ADD_FFLAGS  Additional options passed to the Fortran compiler.
+                This is easier to use than FFLAGS because no knowledge
+                of include directives is necessary.
     INCLUDES    Include options (usually ``-I directory``) but see the
                 ``MPI_INC`` below
     LDFLAGS     Linker options
+    ADD_LDFLAGS Additional linker options (in addition to to the
+                defaults computed for the current architecture)
     LIBS        Additional libraries, note that you probably have to
                 include the math library with ``-lm``
     MPI         Specify one of the known MPI types, one of ``openmpi``,
@@ -510,3 +527,4 @@ of maintaining a working automake environment seems not justified.
     https://github.com/schlatterbeck/pgapack/blob/master/examples/c/udtstr.c
 .. _`examples/nsgaii/crowdingplot`:
     https://github.com/schlatterbeck/pgapack/blob/master/examples/nsgaii/crowdingplot
+.. _`bug in constant declarations`: https://godbolt.org/z/ahMrv4r1E
