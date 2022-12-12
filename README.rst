@@ -228,6 +228,11 @@ Key features are:
 - Object-oriented data structure neutral design.
 - Parameterized population replacement.
 - Multiple choices for selection, crossover, and mutation operators.
+- An implementation of Differential Evolution
+- Optimization with constraints
+- Epsilon-constrained optimization
+- Multi-objective optimization with NSGA-II
+- Many-objective optimization with NSGA-III
 - Easy integration of hill-climbing heuristics.
 - Easy-to-use interface for novice and application users.
 - Fully extensible to support custom operators and new data types.
@@ -235,6 +240,7 @@ Key features are:
 - A large set of example problems.
 - It is released under the MPICH2 license (also used by the MPICH2 MPI
   implementation from Argonne National Laboratory).
+- A separate package with Python bindings PGAPy_
 
 
 Availability
@@ -349,7 +355,7 @@ installation steps are as follows.
     may be needed with Gnu Fortran compilers prior to major version 10
     because of a `bug in constant declarations`_. Use::
 
-    make MPI=$MPIVERSION ADD_FFLAGS=-fno-range-check
+        make MPI=$MPIVERSION ADD_FFLAGS=-fno-range-check
 
     All parameters are optional and do the following:
 
