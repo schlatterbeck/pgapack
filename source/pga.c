@@ -48,7 +48,7 @@ privately owned rights.
 #include "pgapack.h"
 
 /* Utility function to reset the hash for all individuals */
-void reset_hash (PGAContext *ctx, int pop)
+static void reset_hash (PGAContext *ctx, int pop)
 {
     int i = 0;
     if (ctx->ga.NoDuplicates) {

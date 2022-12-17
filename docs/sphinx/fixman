@@ -1,0 +1,62 @@
+#!/usr/bin/python3
+
+import sys
+
+class Man_Fixer:
+
+    def __init__ (self, f_in, f_out):
+        self.f_in       = f_in
+        self.f_out      = f_out
+        self.saved      = None
+        self.sourcefile = None
+    # end def __init__
+
+    def output_saved (self):
+        if self.saved:
+            print (self.saved, file = self.f_out)
+        self.saved = None
+    # end def output_saved
+
+    def fixdoc (self):
+        for line in self.f_in:
+            line = line.rstrip ('\n')
+            if line.startswith ('.INDENT'):
+                self.saved = None
+                continue
+            elif line.startswith ('.UNINDENT'):
+                self.saved = None
+                continue
+            elif line == '.SH FUNCTION DOCUMENTATION':
+                self.output_saved ()
+                line = '.SH SYNOPSIS'
+            elif line == '.SS Example':
+                self.output_saved ()
+                line = '.SH EXAMPLE'
+            elif line.startswith ('.TP'):
+                self.saved = line
+                continue
+            elif line == '.B Parameters':
+                self.saved = None
+                line = '.SH PARAMETERS'
+            elif line == '.B Returns':
+                self.saved = None
+                line = '.SH RETURNS'
+            elif line == '.IP \\(bu 2':
+                self.saved = line
+                continue
+            elif line.startswith ('Defined in '):
+                self.saved = None
+                self.sourcefile = line [11:]
+                continue
+            elif line == '.SH COPYRIGHT' and self.sourcefile:
+                print ('.SH LOCATION', file = self.f_out)
+                print (self.sourcefile)
+            else:
+                self.output_saved ()
+            print (line, file = self.f_out)
+    # end def fixdoc
+# end class Man_Fixer
+
+if __name__ == '__main__':
+    mf = Man_Fixer (sys.stdin, sys.stdout)
+    mf.fixdoc ()

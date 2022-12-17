@@ -416,7 +416,7 @@ PGAFuncRec PGAFuncIndex[] =
         { NULL }
 };
 
-int func_compare (const void *f1, const void *f2)
+static int func_compare (const void *f1, const void *f2)
 {
     const PGAFuncRec *pf1 = f1;
     const PGAFuncRec *pf2 = f2;

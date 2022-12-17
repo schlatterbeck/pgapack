@@ -306,18 +306,20 @@ void PGASetCrossoverType (PGAContext *ctx, int crossover_type)
     \endrst
 
 ******************************************************************************/
-void PGASetCrossoverProb (PGAContext *ctx, double crossover_prob)
+void PGASetCrossoverProb (PGAContext *ctx, double p)
 {
-    PGADebugEntered("PGASetCrossoverProb");
+    PGADebugEntered ("PGASetCrossoverProb");
 
-    if ((crossover_prob < 0.0) || (crossover_prob > 1.0))
-        PGAError ( ctx,
-                  "PGASetCrossoverProb: Invalid value of crossover_prob:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &crossover_prob);
-    else
-        ctx->ga.CrossoverProb = crossover_prob;
+    if ((p < 0.0) || (p > 1.0)) {
+        PGAError
+            ( ctx, "PGASetCrossoverProb: Invalid value of p:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &p
+            );
+    } else {
+        ctx->ga.CrossoverProb = p;
+    }
 
-    PGADebugExited("PGASetCrossoverProb");
+    PGADebugExited ("PGASetCrossoverProb");
 }
 
 /*!****************************************************************************
@@ -344,31 +346,32 @@ void PGASetCrossoverProb (PGAContext *ctx, double crossover_prob)
     \endrst
 
 ******************************************************************************/
-void PGASetUniformCrossoverProb (PGAContext *ctx, double uniform_cross_prob)
+void PGASetUniformCrossoverProb (PGAContext *ctx, double p)
 {
-    PGADebugEntered("PGASetUniformCrossoverProb");
+    PGADebugEntered ("PGASetUniformCrossoverProb");
 
-    if ((uniform_cross_prob < 0.0) || (uniform_cross_prob > 1.0))
-        PGAError ( ctx,
-                  "PGASetUniformCrossoverProb: Invalid value of "
-                  "uniform_cross_prob:", PGA_FATAL, PGA_DOUBLE,
-                  (void *) &uniform_cross_prob);
-    else
-        ctx->ga.UniformCrossProb = uniform_cross_prob;
+    if ((p < 0.0) || (p > 1.0)) {
+        PGAError
+            ( ctx, "PGASetUniformCrossoverProb: Invalid value of p:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &p
+            );
+    } else {
+        ctx->ga.UniformCrossProb = p;
+    }
 
-    PGADebugExited("PGASetUniformCrossoverProb");
+    PGADebugExited ("PGASetUniformCrossoverProb");
 }
 
 /*!****************************************************************************
-    If this flag is set to PGA_TRUE, then for
-    Integer and Real strings with simulated binary crossover (SBX)
-    crossed over values that exceed the bounds are confined to the
-    bounds by setting them to the boundary.
+    If this flag is set to PGA_TRUE, then for Integer and Real strings
+    with simulated binary crossover (SBX) crossed over values that
+    exceed the bounds are confined to the bounds by setting them to the
+    boundary.
    
     Category: Operators
    
-    \param  ctx  - context variable
-    \param  flag - either PGA_TRUE or PGA_FALSE
+    \param  ctx   context variable
+    \param  flag  either PGA_TRUE or PGA_FALSE
     \return  None
     \rst
    
@@ -383,17 +386,17 @@ void PGASetUniformCrossoverProb (PGAContext *ctx, double uniform_cross_prob)
     \endrst
 
 ******************************************************************************/
-void PGASetCrossoverBoundedFlag (PGAContext *ctx, int val)
+void PGASetCrossoverBoundedFlag (PGAContext *ctx, int flag)
 {
-    switch (val)
+    switch (flag)
     {
     case PGA_TRUE:
     case PGA_FALSE:
-         ctx->ga.CrossBoundedFlag = val;
+         ctx->ga.CrossBoundedFlag = flag;
          break;
     default:
          PGAError(ctx, "PGASetCrossoverBoundedFlag: Invalid value:",
-                  PGA_FATAL, PGA_INT, (void *) &val);
+                  PGA_FATAL, PGA_INT, (void *) &flag);
          break;
     }
 }
@@ -427,11 +430,10 @@ int PGAGetCrossoverBoundedFlag (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    If this flag is set to PGA_TRUE, then
-    for Integer and Real strings with simulated binary crossover (SBX)
-    crossed over values that exceed the bounds are confined to the
-    bounds by bouncing them back to a random value between the boundary
-    and the neares parent.
+    If this flag is set to PGA_TRUE, then for Integer and Real strings
+    with simulated binary crossover (SBX) crossed over values that
+    exceed the bounds are confined to the bounds by bouncing them back
+    to a random value between the boundary and the neares parent.
    
     Category: Operators
    
@@ -451,17 +453,17 @@ int PGAGetCrossoverBoundedFlag (PGAContext *ctx)
     \endrst
 
 ******************************************************************************/
-void PGASetCrossoverBounceBackFlag (PGAContext *ctx, int val)
+void PGASetCrossoverBounceBackFlag (PGAContext *ctx, int flag)
 {
-    switch (val)
+    switch (flag)
     {
     case PGA_TRUE:
     case PGA_FALSE:
-         ctx->ga.CrossBounceFlag = val;
+         ctx->ga.CrossBounceFlag = flag;
          break;
     default:
          PGAError(ctx, "PGASetCrossoverBounceBackFlag: Invalid value:",
-                  PGA_FATAL, PGA_INT, (void *) &val);
+                  PGA_FATAL, PGA_INT, (void *) &flag);
          break;
     }
 }
@@ -503,6 +505,7 @@ int PGAGetCrossoverBounceBackFlag (PGAContext *ctx)
     \param  ctx   context variable
     \param  eta   eta >= 0
     \return  None
+    \rst
    
     Example
     -------

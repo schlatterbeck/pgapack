@@ -74,7 +74,7 @@ static void bouncheck
     }
 }
 /* Helper for sorting / searching */
-int intcmp (const void *v1, const void *v2)
+static int intcmp (const void *v1, const void *v2)
 {
     const PGAInteger *i1 = v1;
     const PGAInteger *i2 = v2;
@@ -959,7 +959,7 @@ static void build_edge_map (PGAContext *ctx, PGAInteger **parent)
 /* Remove new edge from all right sides, note that only the edges in
  * the edge table for the new edge have this edge on the right side
  */
-void remove_edge_from_right (PGAContext *ctx, PGAInteger cidx)
+static void remove_edge_from_right (PGAContext *ctx, PGAInteger cidx)
 {
     int i, j;
     for (j=0; j<4; j++) {
@@ -1034,7 +1034,7 @@ static void fix_edge_map (PGAContext *ctx)
     }
 }
 
-int count_edges (PGAContext *ctx, PGAInteger idx)
+static int count_edges (PGAContext *ctx, PGAInteger idx)
 {
     int j;
     int c = 0;

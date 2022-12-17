@@ -266,6 +266,7 @@ static int dasdennis (int dim, int npart, int depth, int sum, void *p)
  * centroid of the shifted points to the reference direction on the
  * reference plane.
  */
+STATIC
 void dasdennisscale (int dim, int npoints, double scale, double *dir, void *v)
 {
     int i, j;

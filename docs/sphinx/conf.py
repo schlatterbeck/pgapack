@@ -20,7 +20,7 @@ from xml.etree import ElementTree
 
 # -- Project information -----------------------------------------------------
 
-project = 'pgapack'
+project = 'PGAPack'
 copyright = '1996-2022, David M. Levine, Philip L. Hallstrom, David M. Noelle, Brian P. Walenz, Dirk Eddelbuettel, Ralf Schlatterbeck'
 author = 'David M. Levine, Philip L. Hallstrom, David M. Noelle, Brian P. Walenz, Dirk Eddelbuettel, Ralf Schlatterbeck'
 
@@ -36,9 +36,9 @@ extensions = [
 ]
 
 breathe_projects = {
-    "pgapack": "./_doxygen/xml"
+    "PGAPack": "./_doxygen/xml"
 }
-breathe_default_project = "pgapack"
+breathe_default_project = "PGAPack"
 breathe_implementation_filename_extensions = []
 breathe_order_parameters_first = True
 
@@ -61,14 +61,17 @@ exhale_args = {
         OPTIMIZE_OUTPUT_FOR_C  = YES
         EXTRACT_ALL            = NO
         EXTRACT_LOCAL_CLASSES  = NO
+        EXTRACT_STATIC         = NO
         SHOW_INCLUDE_FILES     = NO
         SHOW_NAMESPACES        = NO
+        QT_AUTOBRIEF           = YES
         JAVADOC_AUTOBRIEF      = YES
         SKIP_FUNCTION_MACROS   = YES
         GENERATE_MAN           = YES
         GENERATE_HTML          = YES
         EXPAND_ONLY_PREDEF     = YES
-        EXCLUDE = ../../include/pgapackf.h
+        EXCLUDE = ../../include/pgapackf.h ../../source/mpi_stub.c
+        PREDEFINED += STATIC=static
     """
 }
 
@@ -115,6 +118,8 @@ for fn in ldir:
         for memb in root.findall ('.//memberdef'):
             if memb.get ('kind') != 'function':
                 continue
+            if memb.get ('static') == 'yes':
+                continue
             id    = memb.get ('id')
             name  = memb.find ('name').text
             kind  = memb.get ('kind')
@@ -122,7 +127,10 @@ for fn in ldir:
                 brief = memb.find ('briefdescription') [0].text
             except IndexError:
                 brief = ''
+            # Only create manpage if brief description exists
+            #if not brief:
+            #    continue
             man_pages.append \
-                (('api/%s_%s' % (kind, id), name, brief, authors, '3'))
+                (('api/%s_%s' % (kind, id), name, brief, authors, '3a'))
 
 man_make_section_directory = True
