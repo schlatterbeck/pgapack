@@ -37,44 +37,45 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     File: binary.c: This file contains routines specific to the binary
-*                     datatype.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains routines specific to the binary datatype.
+* \authors David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
 
-/*U****************************************************************************
-   PGASetBinaryAllele - sets a binary allele to the specified value.
+/*!****************************************************************************
+   Sets a binary allele to the specified value.
 
    Category: Fitness & Evaluation
 
    Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
-      i   - allele index
-      val - binary value (either 1 or 0) to set the allele to
+      \param ctx context variable
+      \param p   string index
+      \param pop symbolic constant of the population the string is in
+      \param i   allele index
+      \param val binary value (either 1 or 0) to set the allele to
 
-   Outputs:
-      The allele is changed by side-effect.
+      \return The allele is changed by side-effect.
 
-   Example:
-      Copies the alleles from member p in PGA_OLDPOP to member q PGA_NEWPOP.
-      Assumes strings are of the same length.
+   Example
+   -------
+
+   Copies the alleles from member p in PGA_OLDPOP to member q PGA_NEWPOP.
 
       PGAContext *ctx;
       int p, q, i;
-      :
-      for (i=PGAGetStringLength(ctx)-1; i>=0; i--)
-          PGASetBinaryAllele(ctx, q, PGA_NEWPOP, i,
-                             PGAGetBinaryAllele(ctx, p, PGA_OLDPOP, i))
+      int l = PGAGetStringLength (ctx);
 
-****************************************************************************U*/
-void PGASetBinaryAllele ( PGAContext *ctx, int p, int pop, int i, int val )
+      for (i=0 i<l; i++) {
+          PGASetBinaryAllele
+            (ctx, q, PGA_NEWPOP, i, PGAGetBinaryAllele (ctx, p, PGA_OLDPOP, i));
+      }
+
+******************************************************************************/
+void PGASetBinaryAllele (PGAContext *ctx, int p, int pop, int i, int val)
 {
     int windex;        /* index of the computer word allele i is in      */
     int bix;           /* bit position in word chrom[windex] of allele i */

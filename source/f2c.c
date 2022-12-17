@@ -63,6 +63,7 @@ privately owned rights.
 *****************************************************************************/
 
 #include "pgapack.h"
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 #if defined(FORTRANCAP)
 /* binary.c */
@@ -2571,3 +2572,4 @@ int pgautilhash_ (void *data, size_t *sz, int *initval)
      int value = (int)PGAUtilHash (data, *sz, *initval);
      return value;
 }
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

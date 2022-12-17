@@ -653,6 +653,8 @@ struct PGAContext {
     PGAScratch             scratch;
 };
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+
 /*****************************************
 *          binary.c
 *****************************************/
@@ -1269,6 +1271,8 @@ void PGAShuffle (PGAContext *ctx, int *list, int n);
 #define PGA_INITIAL_HASH 0xfeedbeefu
 PGAHash PGAUtilHash (const void *data, size_t len, PGAHash hashv);
 size_t PGAIndividualHashIndex (PGAContext *ctx, int p, int pop);
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 #ifdef __cplusplus
 }
