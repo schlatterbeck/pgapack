@@ -29,6 +29,9 @@ class Man_Fixer:
             elif line == '.SH FUNCTION DOCUMENTATION':
                 self.output_saved ()
                 line = '.SH SYNOPSIS'
+            elif line.startswith ('.SS '):
+                self.output_saved ()
+                line = '.SH ' + line.split (None, 1) [-1].upper ()
             elif line == '.SS Example':
                 self.output_saved ()
                 line = '.SH EXAMPLE'

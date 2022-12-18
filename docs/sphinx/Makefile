@@ -13,7 +13,7 @@ MAN_STAGE1    := ${wildcard $(MAN_PATH1)/*.3a}
 MAN_STAGE1_3  := ${patsubst %.3a,%.3,$(MAN_STAGE1)}
 MAN_STAGE2    := ${subst $(MAN_PATH1),$(MAN_PATH2),$(MAN_STAGE1_3)}
 
-all: man $(MAN_STAGE2)
+all: man stage2 html
 	@echo Done
 
 stage2: $(MAN_STAGE2)
@@ -22,11 +22,14 @@ stage2: $(MAN_STAGE2)
 man/man3:
 	mkdir man/man3
 
+$(MAN_STAGE1): man
+	@echo Stage1 done
+
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-.PHONY: help Makefile clean $(MAN_STAGE1)
+.PHONY: help Makefile clean
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
