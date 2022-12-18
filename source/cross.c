@@ -40,7 +40,8 @@ privately owned rights.
 /*!***************************************************************************
  *  \file
  *  This file contains the data structure neutral crossover routines.
- *  \authors David M. Levine, Philip L. Hallstrom, David M. Noelle,
+ *  \authors Authors:
+ *           David M. Levine, Philip L. Hallstrom, David M. Noelle,
  *           Brian P. Walenz, Ralf Schlatterbeck
  *****************************************************************************/
 
@@ -54,7 +55,7 @@ privately owned rights.
 /*!***************************************************************************
     \brief Perform crossover on two parent strings to create two child strings
            (via side-effect).
-    \ingroup Operators
+    \ingroup explicit
 
     \param ctx  the context variable
     \param p1   the first parent string
@@ -639,7 +640,7 @@ int PGAGetCrossoverSBXOncePerString (PGAContext *ctx)
 
 /*!****************************************************************************
     \brief Cross over two parent alleles with simulated binary crossover.
-    \ingroup Operators
+    \ingroup explicit
 
     \param   ctx context variable
     \param   p1  (double) Allele of first string

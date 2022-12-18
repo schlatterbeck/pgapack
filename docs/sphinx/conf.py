@@ -114,6 +114,17 @@ try:
     ldir = os.listdir (dir)
 except FileNotFoundError:
     ldir = []
+group_remove = {}
+# Compute functions in group internal and explicit
+# For these we do not create manpages
+if ldir:
+    for g in 'internal', 'explicit':
+        tree = ElementTree.parse (os.path.join (dir, 'group__%s.xml' % g))
+        root = tree.getroot ()
+        for memb in root.findall ('.//memberdef'):
+            if memb.get ('kind') != 'function':
+                continue
+            group_remove [memb.get ('id')] = True
 for fn in ldir:
     if fn.endswith ('8c.xml'):
         tree = ElementTree.parse (os.path.join (dir, fn))
@@ -123,7 +134,9 @@ for fn in ldir:
                 continue
             if memb.get ('static') == 'yes':
                 continue
-            id    = memb.get ('id')
+            id = memb.get ('id')
+            if id in group_remove:
+                continue
             name  = memb.find ('name').text
             kind  = memb.get ('kind')
             try:

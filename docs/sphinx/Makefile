@@ -22,7 +22,8 @@ fixedman: .stamp-xml man man/man3
 fixedman2: $(MAN_STAGE2)
 	@echo Stage2 done
 
-.stamp-xml: xml
+.stamp-xml:
+	make xml
 	touch .stamp-xml
 
 man/man3:

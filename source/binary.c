@@ -40,21 +40,34 @@ privately owned rights.
 /*!***************************************************************************
 * \file
 * This file contains routines specific to the binary datatype.
-* \authors David M. Levine, Philip L. Hallstrom, David M. Noelle,
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
 *          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
 
 /*!***************************************************************************
- *  \defgroup fitness Fitness & Evaluation
- *  \brief Functions for computing fitness and evaluation
+ *  \defgroup allele Allele Values
+ *  \brief Functions for getting and setting allele values
+ *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup init Initialization
+ *  \brief Functions used to change initialization
+ *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup explicit Functions for explicit usage
+ *  \brief See description of explicit usage in user guide
+ *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup internal Functions for internal usage
+ *  \brief These functions are only used internally
  *****************************************************************************/
 
 
 /*!****************************************************************************
     \brief Sets a binary allele to the specified value.
-    \ingroup fitness
+    \ingroup allele
 
     \param ctx context variable
     \param p   string index
@@ -109,7 +122,7 @@ void PGASetBinaryAllele (PGAContext *ctx, int p, int pop, int i, int val)
     \brief Return the value of a (binary) allele in a
            PGA_DATATYPE_BINARY string.
 
-    \ingroup fitness
+    \ingroup allele
 
     \param  ctx  context variable
     \param  p    string index
@@ -160,7 +173,7 @@ int PGAGetBinaryAllele (PGAContext *ctx, int p, int pop, int i)
     \brief Specify the probability of initializing an allele to "1" when
            creating a PGA_DATATYPE_BINARY string.
 
-    \ingroup fitness
+    \ingroup init
 
     \param   ctx  context variable
     \param   p    the binary initialization probability
@@ -207,7 +220,7 @@ void PGASetBinaryInitProb (PGAContext *ctx, double p)
 /*!***************************************************************************
     \brief Returns the probability that an allele will be randomly
            initialized to "1" in a PGA_DATATYPE_BINARY string.
-    \ingroup fitness
+    \ingroup init
 
     \param  ctx - context variable
     \return The probability that a bit will be randomly initialized to one
@@ -240,6 +253,7 @@ double PGAGetBinaryInitProb (PGAContext *ctx)
 /*!****************************************************************************
     \brief Allocate a PGA_DATATYPE_BINARY string for member p of
            population pop.
+    \ingroup explicit
 
     \param   ctx       context variable
     \param   p         string index
@@ -301,6 +315,7 @@ void PGABinaryCreateString (PGAContext *ctx, int p, int pop, int initflag)
 
 /*!****************************************************************************
     \brief Randomly mutates a bit with a specified probability.
+    \ingroup explicit
 
     \param   ctx  context variable
     \param   p    string index
@@ -366,6 +381,7 @@ int PGABinaryMutation (PGAContext *ctx, int p, int pop, double mr)
 /*!****************************************************************************
     \brief Performs one-point crossover on two parent strings to create
            two children via side-effect.
+    \ingroup explicit
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -452,6 +468,7 @@ void PGABinaryOneptCrossover
 /*!****************************************************************************
     \brief Perform two-point crossover on two parent strings producing
            two children via side-effect
+    \ingroup explicit
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -573,6 +590,7 @@ void PGABinaryTwoptCrossover
 /*!****************************************************************************
     \brief Perform uniform crossover on two parent strings producing two
            children via side-effect.
+    \ingroup explicit
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -724,6 +742,7 @@ void PGABinaryPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 
 /*!****************************************************************************
     \brief Copy one bit string to another.
+    \ingroup explicit
 
     \param   ctx   context variable
     \param   p1    string to copy
@@ -766,6 +785,7 @@ void PGABinaryCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 /*!****************************************************************************
     \brief Return true if bit string a is a duplicate of bit string b,
            else returns false.
+    \ingroup explicit
 
     \param   ctx   context variable
     \param   p1    string index of the first string to compare
@@ -813,6 +833,7 @@ int PGABinaryDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 
 /*!****************************************************************************
     \brief Return hash value of given gene.
+    \ingroup explicit
 
     \param   ctx  - context variable
     \param   p    - string index of the string to hash
@@ -830,6 +851,7 @@ PGAHash PGABinaryHash (PGAContext *ctx, int p, int pop)
 
 /*!****************************************************************************
     \brief Randomly initialize a string of type PGABinary.
+    \ingroup explicit
 
     \param   ctx  context variable
     \param   p    index of string to randomly initialize
@@ -874,6 +896,7 @@ void PGABinaryInitString (PGAContext *ctx, int p, int pop)
 
 /*!****************************************************************************
     \brief Build an MPI_Datatype for a binary string datatype.
+    \ingroup internal
 
     \param    ctx   context variable
     \param    p     index of the string to build a datatype from
@@ -922,6 +945,7 @@ MPI_Datatype PGABinaryBuildDatatype (PGAContext *ctx, int p, int pop)
 
 /*!****************************************************************************
     \brief Returns the Hamming distance between two strings.
+    \ingroup explicit
 
     \param   ctx  context variable
     \param   s1   the first string to compare
@@ -976,6 +1000,7 @@ int PGABinaryHammingDistance (PGAContext *ctx, PGABinary *s1, PGABinary *s2)
 
 /*!****************************************************************************
     \brief Compute genetic difference of two strings.
+    \ingroup internal
 
     \param   ctx    context variable
     \param   p1     first string index

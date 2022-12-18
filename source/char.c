@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -38,83 +38,92 @@ privately owned rights.
 */
 
 /*****************************************************************************
- *     FILE: char.c: This file contains the routines specific to the
- *                    character datatype.
- *
- *     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
- *              Brian P. Walenz
+ *    \file
+ * This file contains the routines specific to the character datatype.
+ * \authors Authors:
+ *          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+ *          Brian P. Walenz, Ralf Schlatterbeck
  *****************************************************************************/
 
 #include <pgapack.h>
 
-/*U****************************************************************************
-   PGASetCharacterAllele - sets the value of an allele in a
-   PGA_DATATYPE_CHARACTER string.
+/*!****************************************************************************
+    \brief Sets the value of an allele in a PGA_DATATYPE_CHARACTER string.
+    \ingroup allele
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant of the population the string is in
+    \param   i    allele index
+    \param   val  character value to set the allele to
+    \return  The allele is changed by side-effect.
+    \rst
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
-      i   - allele index
-      val - character value to set the allele to
+    Example
+    -------
 
-   Outputs:
-      The allele is changed by side-effect.
+    Copies the alleles from member p in PGA_OLDPOP to member q in PGA_NEWPOP.
+    Assumes the strings are of the same length.
 
-   Example:
-      Copies the alleles from member p in PGA_OLDPOP to member q in PGA_NEWPOP.
-      Assumes the strings are of the same length.
-      
-      PGAContext *ctx;
-      int p, q, i;
-      :
-      for (i=PGAGetStringLength(ctx)-1; i>=0; i--)
-          PGASetCharacterAllele(ctx, q, PGA_NEWPOP, i,
-                                PGAGetCharacterAllele(ctx, p, PGA_OLDPOP, i))
+    .. code-block:: c
 
-****************************************************************************U*/
-void PGASetCharacterAllele (PGAContext *ctx, int p, int pop, int i, char value)
+        PGAContext *ctx;
+        int p, q, i;
+        int l = PGAGetStringLength (ctx);
+
+        for (i=0; i<l; i++) {
+            char a = PGAGetCharacterAllele (ctx, p, PGA_OLDPOP, i);
+            PGASetCharacterAllele (ctx, q, PGA_NEWPOP, i, a);
+        }
+
+    \endrst
+
+******************************************************************************/
+void PGASetCharacterAllele (PGAContext *ctx, int p, int pop, int i, char val)
 {
     PGAIndividual *ind;
 
     PGADebugEntered("PGASetCharacterAllele");
     PGACheckDataType("PGASetCharacterAllele", PGA_DATATYPE_CHARACTER);
- 
+
     ind = PGAGetIndividual ( ctx, p, pop );
-    ((PGACharacter *)ind->chrom)[i] = value;
-    
+    ((PGACharacter *)ind->chrom)[i] = val;
+
     PGADebugExited("PGASetCharacterAllele");
 }
 
-/*U****************************************************************************
-   PGAGetCharacterAllele: returns the value of character allele in a
-   PGA_DATATYPE_CHARACTER string
+/*!****************************************************************************
+    \brief Return the value of character allele in a
+           PGA_DATATYPE_CHARACTER string.
+    \ingroup allele
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant of the population the string is in
+    \param   i    allele index
+    \return  The value of allele i in string p
+    \rst
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
-      i   - allele index
+    Example
+    -------
 
-   Outputs:
-      The value of allele i in string p.
+    Copies the alleles from member p in PGA_OLDPOP to member q in PGA_NEWPOP.
+    Assumes the strings are of the same length.
 
-   Example:
-      Copies the alleles from member p in PGA_OLDPOP to member q in PGA_NEWPOP.
-      Assumes the strings are of the same length.
+    .. code-block:: c
 
-      PGAContext *ctx;
-      int p, q, i;
-      :
-      for (i=PGAGetStringLength(ctx, p, PGA_NEWPOP)-1; i>=0; i--)
-          PGASetCharacterAllele(ctx, q, PGA_NEWPOP, i,
-                                PGAGetCharacterAllele(ctx, p, PGA_OLDPOP, i))
+        PGAContext *ctx;
+        int p, q, i;
+        int l = PGAGetStringLength (ctx);
 
-****************************************************************************U*/
+        for (i=0; i<l; i++) {
+            char a = PGAGetCharacterAllele (ctx, p, PGA_OLDPOP, i);
+            PGASetCharacterAllele (ctx, q, PGA_NEWPOP, i, a);
+        }
+
+    \endrst
+
+******************************************************************************/
 char PGAGetCharacterAllele (PGAContext *ctx, int p, int pop, int i)
 {
      PGAIndividual *ind;
@@ -130,87 +139,104 @@ char PGAGetCharacterAllele (PGAContext *ctx, int p, int pop, int i)
 }
 
 
-/*U****************************************************************************
-  PGASetCharacterInitType - sets a flag to specify whether the character
-  strings will be exclusively lowercase, exclusively uppercase, or a mixure
-  of both cases.  Legal flags are PGA_CINIT_UPPER, PGA_CINIT_LOWER, and
-  PGA_CINIT_MIXED.  Default is PGA_CINIT_LOWER.
+/*!****************************************************************************
+    \brief Sets a flag to specify whether the character strings will be
+           exclusively lowercase, exclusively uppercase, or a mixure of
+           both cases.
+    \ingroup init
 
-  Category: Initialization
+    \param   ctx    context variable
+    \param   value  symbolic constant specifying which case
+    \return  None
+    \rst
 
-  Inputs:
-     ctx   - context variable
-     value - symbolic constant specifying which case
+    Description
+    -----------
 
-  Outputs:
+    Legal flags are PGA_CINIT_UPPER, PGA_CINIT_LOWER, and
+    PGA_CINIT_MIXED.  Default is PGA_CINIT_LOWER.
 
-  Example:
-     Set program to generate exclusively uppercase letters
+    Example
+    -------
 
-     PGAContext *ctx;
-     :
-     PGASetCharacterInitType(ctx, PGA_CINIT_UPPER);
+    Set program to generate exclusively uppercase letters.
 
-****************************************************************************U*/
-void PGASetCharacterInitType(PGAContext *ctx, int value)
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetCharacterInitType (ctx, PGA_CINIT_UPPER);
+
+    \endrst
+
+******************************************************************************/
+void PGASetCharacterInitType (PGAContext *ctx, int value)
 {
-    PGADebugEntered("PGASetCharacterInitType");
-     PGACheckDataType("PGASetCharacterInitType", PGA_DATATYPE_CHARACTER);
+    PGADebugEntered  ("PGASetCharacterInitType");
+    PGACheckDataType ("PGASetCharacterInitType", PGA_DATATYPE_CHARACTER);
 
-     switch (value)
-     {
-     case PGA_CINIT_UPPER:
-     case PGA_CINIT_LOWER:
-     case PGA_CINIT_MIXED:
-          ctx->init.CharacterType = value;
-          break;
-     default:
-          PGAError(ctx, "PGASetCharacterInitType: Invalid case type:",
-                   PGA_FATAL, PGA_INT, (void *)&value);
-          break;
-     }
+    switch (value)
+    {
+    case PGA_CINIT_UPPER:
+    case PGA_CINIT_LOWER:
+    case PGA_CINIT_MIXED:
+         ctx->init.CharacterType = value;
+         break;
+    default:
+         PGAError
+            ( ctx, "PGASetCharacterInitType: Invalid case type:"
+            , PGA_FATAL, PGA_INT, (void *)&value
+            );
+         break;
+    }
 
-    PGADebugExited("PGASetCharacterInitType");
+    PGADebugExited ("PGASetCharacterInitType");
 }
 
-/*I****************************************************************************
-   PGACharacterCreateString - Allocate memory for a string of type PGACharacter
+/*!****************************************************************************
+    \brief Allocate memory for a string of type PGACharacter
+    \ingroup explicit
 
-   Inputs:
-      ctx      - context variable
-      p        - string index
-      pop      - symbolic constant of the population string p is in
-      initflag - A true/false flag used in conjunction with ctx->ga.RandomInit
-                 to initialize the string either randomly or set to zero
+    \param   ctx       context variable
+    \param   p         string index
+    \param   pop       symbolic constant of the population string p is in
+    \param   initflag  A true/false flag used in conjunction with
+                       ctx->ga.RandomInit to initialize the string
+                       either randomly or set to zero
+    \return  Member p in population pop is allocated and initialized.
+    \rst
 
-   Outputs:
-      Member p in population pop is allocated and initialized.
+    Example
+    -------
 
-   Example:
-      Allocates memory and assigns the address of the allocated memory to
-      the string field (ind->chrom) of the individual.  Additionally, the
-      string is initialized to zero.
+    Allocates memory and assigns the address of the allocated memory to
+    the string field (ind->chrom) of the individual.  Additionally, the
+    string is initialized to zero.
 
-      PGAContext *ctx;
-      int p;
-      :
-      PGACharacterCreateString( ctx, p, PGA_NEWPOP, PGA_FALSE );
+    .. code-block:: c
 
-****************************************************************************I*/
-void PGACharacterCreateString (PGAContext *ctx, int p, int pop, int InitFlag)
+        PGAContext *ctx;
+        int p;
+
+        PGACharacterCreateString (ctx, p, PGA_NEWPOP, PGA_FALSE);
+
+    \endrst
+
+******************************************************************************/
+void PGACharacterCreateString (PGAContext *ctx, int p, int pop, int initflag)
 {
     int i, fp;
     PGACharacter *c;
     PGAIndividual *new = PGAGetIndividual(ctx, p, pop);
-    
+
     PGADebugEntered("PGACharacterCreateString");
-    
+
     new->chrom = (void *)malloc(ctx->ga.StringLen * sizeof(PGACharacter));
     if (new->chrom == NULL)
 	PGAError(ctx, "PGACharacterCreateString: No room to allocate "
 		 "new->chrom", PGA_FATAL, PGA_VOID, NULL);
     c = (PGACharacter *)new->chrom;
-    if (InitFlag)
+    if (initflag)
 	if (ctx->fops.InitString) {
 	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
 	    (*ctx->fops.InitString)(&ctx, &fp, &pop);
@@ -220,385 +246,422 @@ void PGACharacterCreateString (PGAContext *ctx, int p, int pop, int InitFlag)
     else
 	for (i=0; i<ctx->ga.StringLen; i++)
 	    c[i] = 0;
-    
+
     PGADebugExited("PGACharacterCreateString");
 }
 
-/*I****************************************************************************
-   PGACharacterMutation - randomly mutates a character-valued gene with a
-   specified probability. This routine is called from PGAMutation.
+/*!****************************************************************************
+    \brief Randomly mutates a character-valued gene with a specified
+           probability.
+    \ingroup explicit
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population string p is in
-      mr  - probability of mutating an character-valued gene
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant of the population string p is in
+    \param   mr   probability of mutating an character-valued gene
+    \return  Returns the number of mutations
+    \rst
 
-   Outputs:
-      Returns the number of mutations
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      int p;
-      int NumMutations;
-      :
-      NumMutations = PGACharacterMutation(ctx, p, PGA_NEWPOP, 0.01);
-****************************************************************************I*/
-int PGACharacterMutation( PGAContext *ctx, int p, int pop, double mr )
+    This routine is called from PGAMutation.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int p;
+       int NumMutations;
+
+       NumMutations = PGACharacterMutation (ctx, p, PGA_NEWPOP, 0.01);
+
+    \endrst
+******************************************************************************/
+int PGACharacterMutation (PGAContext *ctx, int p, int pop, double mr)
 {
-     PGACharacter *c;
-     int i, j;
-     int count = 0;
+    PGACharacter *c;
+    int i, j;
+    int count = 0;
 
     PGADebugEntered("PGACharacterMutation");
 
-     c = (PGACharacter *)PGAGetIndividual(ctx, p, pop)->chrom;
-     for(i=0; i<ctx->ga.StringLen; i++)
-          if ( PGARandomFlip(ctx, mr) )       /* randomly choose an allele   */
-          {
-               switch (ctx->init.CharacterType)
-               {
-               case PGA_CINIT_LOWER:
-                    c[i] = PGARandomInterval(ctx, 'a', 'z');
-                    break;
-               case PGA_CINIT_UPPER:
-                    c[i] = PGARandomInterval(ctx, 'A', 'Z');
-                    break;
-               case PGA_CINIT_MIXED:
-                    j = PGARandomInterval(ctx, 0, 51);
-                    if (j < 26)
-                         c[i] = 'A' + j;
-                    else
-                         c[i] = 'a' + j - 26;
-                    break;
-               }
-               count++;
-          }
+    c = (PGACharacter *)PGAGetIndividual(ctx, p, pop)->chrom;
+    for (i=0; i<ctx->ga.StringLen; i++) {
+        /* randomly choose an allele */
+        if (PGARandomFlip(ctx, mr)) {
+             switch (ctx->init.CharacterType) {
+             case PGA_CINIT_LOWER:
+                  c [i] = PGARandomInterval (ctx, 'a', 'z');
+                  break;
+             case PGA_CINIT_UPPER:
+                  c [i] = PGARandomInterval (ctx, 'A', 'Z');
+                  break;
+             case PGA_CINIT_MIXED:
+                  j = PGARandomInterval (ctx, 0, 51);
+                  if (j < 26) {
+                       c [i] = 'A' + j;
+                  } else {
+                       c [i] = 'a' + j - 26;
+                  }
+                  break;
+             }
+             count++;
+        }
+    }
 
-    PGADebugExited("PGACharacterMutation");
-
-     return (count);
+    PGADebugExited ("PGACharacterMutation");
+    return (count);
 }
 
-/*I****************************************************************************
-   PGACharacterOneptCrossover - performs one-point crossover on two parent
-   strings producing two children via side-effect
+/*!****************************************************************************
+    \brief Perform one-point crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup explicit
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  None
+    \rst
 
-   Outputs:
+    Example
+    -------
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGACharacterOneptCrossover( ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP );
+    .. code-block:: c
 
-****************************************************************************I*/
-void PGACharacterOneptCrossover(PGAContext *ctx, int p1, int p2, int pop1,
-                                int c1, int c2, int pop2)
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       PGACharacterOneptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGACharacterOneptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
-     PGACharacter *parent1, *parent2, *child1, *child2;
-     int i, xsite;
+    PGACharacter *parent1, *parent2, *child1, *child2;
+    int i, xsite;
 
-    PGADebugEntered("PGACharacterOneptCrossover");
+    PGADebugEntered ("PGACharacterOneptCrossover");
 
-     parent1 = (PGACharacter *)PGAGetIndividual(ctx, p1, pop1)->chrom;
-     parent2 = (PGACharacter *)PGAGetIndividual(ctx, p2, pop1)->chrom;
-     child1  = (PGACharacter *)PGAGetIndividual(ctx, c1, pop2)->chrom;
-     child2  = (PGACharacter *)PGAGetIndividual(ctx, c2, pop2)->chrom;
-     xsite = PGARandomInterval(ctx, 1,ctx->ga.StringLen-1);
+    parent1 = (PGACharacter *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent2 = (PGACharacter *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child1  = (PGACharacter *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child2  = (PGACharacter *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    xsite = PGARandomInterval (ctx, 1,ctx->ga.StringLen-1);
 
-     for(i=0;i<xsite;i++)
-     {
-          child1[i] = parent1[i];
-          child2[i] = parent2[i];
-     }
+    for(i=0; i<xsite; i++) {
+        child1 [i] = parent1 [i];
+        child2 [i] = parent2 [i];
+    }
 
-     for(i=xsite;i<ctx->ga.StringLen;i++)
-     {
-          child1[i] = parent2[i];
-          child2[i] = parent1[i];
-     }
+    for(i=xsite; i<ctx->ga.StringLen; i++) {
+        child1 [i] = parent2 [i];
+        child2 [i] = parent1 [i];
+    }
 
-    PGADebugExited("PGACharacterOneptCrossover");
+    PGADebugExited ("PGACharacterOneptCrossover");
 }
 
-/*I****************************************************************************
-   PGACharacterTwoptCrossover - performs two-point crossover on two parent
-   strings producing two children via side-effect
+/*!****************************************************************************
+    \brief Perform two-point crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup explicit
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  None
+    \rst
 
-   Outputs:
+    Example
+    -------
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGACharacterTwoptCrossover( ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP );
+    .. code-block:: c
 
-****************************************************************************I*/
-void PGACharacterTwoptCrossover( PGAContext *ctx, int p1, int p2, int pop1,
-                              int c1, int c2, int pop2)
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       PGACharacterTwoptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGACharacterTwoptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
-     PGACharacter *parent1, *parent2, *child1, *child2;
-     int i, temp, xsite1, xsite2;
+    PGACharacter *parent1, *parent2, *child1, *child2;
+    int i, temp, xsite1, xsite2;
 
-    PGADebugEntered("PGACharacterTwoptCrossover");
+    PGADebugEntered ("PGACharacterTwoptCrossover");
 
-     parent1 = (PGACharacter *)PGAGetIndividual(ctx, p1, pop1)->chrom;
-     parent2 = (PGACharacter *)PGAGetIndividual(ctx, p2, pop1)->chrom;
-     child1  = (PGACharacter *)PGAGetIndividual(ctx, c1, pop2)->chrom;
-     child2  = (PGACharacter *)PGAGetIndividual(ctx, c2, pop2)->chrom;
-     /* pick two cross sites such that xsite2 > xsite1 */
-     xsite1 = PGARandomInterval(ctx, 1,ctx->ga.StringLen-1);
-     xsite2 = xsite1;
-     while ( xsite2 == xsite1 )
-          xsite2 = PGARandomInterval(ctx, 1,ctx->ga.StringLen-1);
-     if ( xsite1 > xsite2 )
-     {
-          temp   = xsite1;
-          xsite1 = xsite2;
-          xsite2 = temp;
-     }
+    parent1 = (PGACharacter *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent2 = (PGACharacter *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child1  = (PGACharacter *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child2  = (PGACharacter *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    /* pick two cross sites such that xsite2 > xsite1 */
+    xsite1 = PGARandomInterval (ctx, 1,ctx->ga.StringLen-1);
+    xsite2 = xsite1;
+    while (xsite2 == xsite1) {
+        xsite2 = PGARandomInterval (ctx, 1,ctx->ga.StringLen-1);
+    }
+    if (xsite1 > xsite2) {
+        temp   = xsite1;
+        xsite1 = xsite2;
+        xsite2 = temp;
+    }
+    for (i=0; i<xsite1; i++) {
+        child1 [i] = parent1 [i];
+        child2 [i] = parent2 [i];
+    }
+    for (i=xsite1; i<xsite2; i++) {
+        child1 [i] = parent2 [i];
+        child2 [i] = parent1 [i];
+    }
+    for (i=xsite2; i<ctx->ga.StringLen; i++) {
+        child1 [i] = parent1 [i];
+        child2 [i] = parent2 [i];
+    }
 
-     for(i=0;i<xsite1;i++)
-     {
-          child1[i] = parent1[i];
-          child2[i] = parent2[i];
-     }
-
-     for(i=xsite1;i<xsite2;i++)
-     {
-          child1[i] = parent2[i];
-          child2[i] = parent1[i];
-     }
-
-     for(i=xsite2;i<ctx->ga.StringLen;i++)
-     {
-          child1[i] = parent1[i];
-          child2[i] = parent2[i];
-     }
-
-    PGADebugExited("PGACharacterTwoptCrossover");
+    PGADebugExited ("PGACharacterTwoptCrossover");
 }
 
 
-/*I****************************************************************************
-   PGACharacterUniformCrossover - performs uniform crossover on two parent
-   strings producing two children via side-effect
+/*!****************************************************************************
+    \brief Perform uniform crossover on two parent strings producing two
+           children via side-effect
+    \ingroup explicit
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  None
+    \rst
 
-   Outputs:
+    Example
+    -------
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGACharacterUniformCrossover( ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP );
+    .. code-block:: c
 
-****************************************************************************I*/
-void PGACharacterUniformCrossover(PGAContext *ctx, int p1, int p2, int pop1,
-                                int c1, int c2, int pop2)
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       PGACharacterUniformCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGACharacterUniformCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
-     PGACharacter *parent1, *parent2, *child1, *child2;
-     int i;
+    PGACharacter *parent1, *parent2, *child1, *child2;
+    int i;
 
-    PGADebugEntered("PGACharacterUniformCrossover");
+    PGADebugEntered ("PGACharacterUniformCrossover");
 
-     parent1 = (PGACharacter *)PGAGetIndividual(ctx, p1, pop1)->chrom;
-     parent2 = (PGACharacter *)PGAGetIndividual(ctx, p2, pop1)->chrom;
-     child1  = (PGACharacter *)PGAGetIndividual(ctx, c1, pop2)->chrom;
-     child2  = (PGACharacter *)PGAGetIndividual(ctx, c2, pop2)->chrom;
+    parent1 = (PGACharacter *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent2 = (PGACharacter *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child1  = (PGACharacter *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child2  = (PGACharacter *)PGAGetIndividual (ctx, c2, pop2)->chrom;
 
-     for(i=0;i<ctx->ga.StringLen;i++)
-          if ( parent1[i] == parent2[i] )
-          {
-               child1[i] = parent1[i];
-               child2[i] = parent2[i];
-          }
-          else if (PGARandomFlip(ctx, ctx->ga.UniformCrossProb))
-          {
-               child1[i] = parent1[i];
-               child2[i] = parent2[i];
-          }
-          else
-          {
-               child1[i] = parent2[i];
-               child2[i] = parent1[i];
-          }
+    for (i=0; i<ctx->ga.StringLen; i++) {
+        if (parent1 [i] == parent2 [i]) {
+             child1 [i] = parent1 [i];
+             child2 [i] = parent2 [i];
+        } else if (PGARandomFlip (ctx, ctx->ga.UniformCrossProb)) {
+             child1 [i] = parent1 [i];
+             child2 [i] = parent2 [i];
+        } else {
+             child1 [i] = parent2 [i];
+             child2 [i] = parent1 [i];
+        }
+    }
 
-    PGADebugExited("PGACharacterUniformCrossover");
+    PGADebugExited ("PGACharacterUniformCrossover");
 }
 
-/*I****************************************************************************
-   PGACharacterPrintString - writes a character-valued string to a file.
+/*!****************************************************************************
+    \brief Write a character-valued string to a file.
 
-   Inputs:
-      ctx - context variable
-      fp  - file pointer to file to write the string to
-      p   - index of the string to write out
-      pop - symbolic constant of the population string p is in
+    \param   ctx  context variable
+    \param   fp   file pointer to file to write the string to
+    \param   p    index of the string to write out
+    \param   pop  symbolic constant of the population string p is in
+    \return  None
+    \rst
 
-   Outputs:
+    Example
+    -------
 
-   Example:
-      Write string s to stdout.
+    Write string s to stdout.
 
-      PGAContext *ctx;
-      int p;
-      :
-      PGACharacterPrintString (ctx, stdout, p, PGA_NEWPOP);
+    .. code-block:: c
 
-****************************************************************************I*/
-void PGACharacterPrintString ( PGAContext *ctx, FILE *fp, int p, int pop)
+       PGAContext *ctx;
+       int p;
+
+       PGACharacterPrintString (ctx, stdout, p, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGACharacterPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 {
     PGACharacter *c;
     int           i, pos, len;
 
-    PGADebugEntered("PGACharacterPrintString");
+    PGADebugEntered ("PGACharacterPrintString");
 
     c = (PGACharacter *)PGAGetIndividual(ctx, p, pop)->chrom;
     len = PGAGetStringLength(ctx);
 
     pos = 0;
     while (len > 0) {
-      fprintf(fp, "#%5d: [", pos);
-      for (i=0; i<50 && len>0; i++,len--,c++)
-	fputc(*c, fp);
-      pos+=50;
-      fprintf(fp, "]\n");
+        fprintf (fp, "#%5d: [", pos);
+        for (i=0; i<50 && len>0; i++,len--,c++) {
+            fputc (*c, fp);
+        }
+        pos+=50;
+        fprintf (fp, "]\n");
     }
-    fprintf(fp, "\n");
-    
-    PGADebugExited("PGACharacterPrintString");
+    fprintf (fp, "\n");
+
+    PGADebugExited ("PGACharacterPrintString");
 }
 
-/*I****************************************************************************
-   PGACharacterCopyString - Copy one character-valued string to another
-   Assumes the strings are of the same length.
+/*!****************************************************************************
+    \brief Copy one character-valued string to another, assumes the
+           strings are of the same length.
+    \ingroup explicit
 
-   Inputs:
-      ctx - context variable
-      p1   - string to copy
-      pop1 - symbolic constant of population containing string p1
-      p2   - string to copy p1 to
-      pop2 - symbolic constant of population containing string p2
+    \param   ctx   context variable
+    \param   p1    string to copy
+    \param   pop1  symbolic constant of population containing string p1
+    \param   p2    string to copy p1 to
+    \param   pop2  symbolic constant of population containing string p2
+    \return  None
+    \rst
 
-   Outputs:
+    Example
+    -------
 
-   Example:
-      Copy character string x to y (both are implicitly assumed to be the same
-      length)
+    Copy character string x to y (both are implicitly assumed to be the same
+    length)
 
-      PGAContext *ctx;
-      int x, y;
-      :
-      PGACharacterCopyString ( ctx, x, PGA_OLDPOP, y, PGA_NEWPOP );
+    .. code-block:: c
 
-****************************************************************************I*/
-void PGACharacterCopyString (PGAContext *ctx, int p1, int pop1, int p2,
-                             int pop2)
+       PGAContext *ctx;
+       int x, y;
+
+       PGACharacterCopyString (ctx, x, PGA_OLDPOP, y, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGACharacterCopyString
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
-     void *source, *dest;
-     int len;
+    void *source, *dest;
+    int len;
 
-    PGADebugEntered("PGACharacterCopyString");
+    PGADebugEntered ("PGACharacterCopyString");
 
-     source = PGAGetIndividual(ctx, p1, pop1)->chrom;
-     dest   = PGAGetIndividual(ctx, p2, pop2)->chrom;
-     len    = PGAGetStringLength(ctx);
-     memcpy(dest, source, len * sizeof(PGACharacter));
+    source = PGAGetIndividual (ctx, p1, pop1)->chrom;
+    dest   = PGAGetIndividual (ctx, p2, pop2)->chrom;
+    len    = PGAGetStringLength (ctx);
+    memcpy (dest, source, len * sizeof (PGACharacter));
 
-    PGADebugExited("PGACharacterCopyString");
+    PGADebugExited ("PGACharacterCopyString");
 }
 
-/*I****************************************************************************
-   PGACharacterDuplicate - Returns true if string p1 in pop1 is a dublicate
-   of string p2 in pop2, else returns false.
-   Assumes the strings are the same length.
+/*!****************************************************************************
+    \brief Return true if string p1 in pop1 is a duplicate of string p2
+           in pop2, else returns false, assumes the strings are the same
+           length.
+    \ingroup explicit
 
-   Inputs:
-      ctx - context variable
-      p1   - string index of the first string to compare
-      pop1 - symbolic constant of the population string p1 is in
-      p2   - string index of the second string to compare
-      pop2 - symbolic constant of the population string p2 is in
+    \param   ctx   context variable
+    \param   p1    string index of the first string to compare
+    \param   pop1  symbolic constant of the population string p1 is in
+    \param   p2    string index of the second string to compare
+    \param   pop2  symbolic constant of the population string p2 is in
+    \return  Returns true if strings are duplicates
+    \rst
 
-   Outputs:
-      Returns true if strings are duplicates.
+    Example
+    -------
 
-   Example:
-      Compare string x with y to see if they are duplicates
+    Compare string x with y to see if they are duplicates
 
-      PGAContext *ctx;
-      int x, y;
-      :
-      if (PGACharacterDuplicate (ctx, x, PGA_NEWPOP, y, PGA_NEWPOP)) {
-          printf ("strings are duplicates\n");
-      }
+    .. code-block:: c
 
-****************************************************************************I*/
-int PGACharacterDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+       PGAContext *ctx;
+       int x, y;
+
+       if (PGACharacterDuplicate (ctx, x, PGA_NEWPOP, y, PGA_NEWPOP)) {
+           printf ("strings are duplicates\n");
+       }
+
+    \endrst
+
+******************************************************************************/
+int PGACharacterDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
-     void *a, *b;
-     int len;
+    void *a, *b;
+    int len;
 
-    PGADebugEntered("PGACharacterDuplicate");
+    PGADebugEntered ("PGACharacterDuplicate");
 
-     a = PGAGetIndividual(ctx, p1, pop1)->chrom;
-     b = PGAGetIndividual(ctx, p2, pop2)->chrom;
-     len = PGAGetStringLength(ctx);
+    a = PGAGetIndividual (ctx, p1, pop1)->chrom;
+    b = PGAGetIndividual (ctx, p2, pop2)->chrom;
+    len = PGAGetStringLength (ctx);
 
-    PGADebugExited("PGACharacterDuplicate");
+    PGADebugExited ("PGACharacterDuplicate");
 
-     return (!memcmp(a, b, len * sizeof(PGACharacter)));
+    return (!memcmp (a, b, len * sizeof (PGACharacter)));
 }
 
-/*I****************************************************************************
-   PGACharacterHash - Returns hash value of given gene
+/*!****************************************************************************
+    \brief Return hash value of given gene.
+    \ingroup explicit
 
-   Inputs:
-      ctx - context variable
-      p    - string index of the string to hash
-      pop  - symbolic constant of the population string p is in
+    \param   ctx   context variable
+    \param   p     string index of the string to hash
+    \param   pop   symbolic constant of the population string p is in
+    \return  Hash value for string
 
-   Outputs:
-      Hash value for string
-
-****************************************************************************I*/
+******************************************************************************/
 PGAHash PGACharacterHash (PGAContext *ctx, int p, int pop)
 {
     void *a = PGAGetIndividual(ctx, p, pop)->chrom;
@@ -607,71 +670,81 @@ PGAHash PGACharacterHash (PGAContext *ctx, int p, int pop)
     return hash;
 }
 
-/*I****************************************************************************
-   PGACharacterInitString - randomly initialize a string of type PGACharacter
+/*!****************************************************************************
+    \brief Randomly initialize a string of type PGACharacter
+    \ingroup explicit
 
-   Inputs:
-      ctx   - context variable
-      p   - index of string to randomly initialize
-      pop - symbolic constant of the population string p is in
+    \param   ctx  context variable
+    \param   p    index of string to randomly initialize
+    \param   pop  symbolic constant of the population string p is in
+    \return  None
+    \rst
 
-   Outputs:
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int p;
-      :
-      PGACharacterInitString ( ctx, p, PGA_NEWPOP );
+    .. code-block:: c
 
-****************************************************************************I*/
-void PGACharacterInitString(PGAContext *ctx, int p, int pop)
+       PGAContext *ctx;
+       int p;
+
+       PGACharacterInitString (ctx, p, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGACharacterInitString (PGAContext *ctx, int p, int pop)
 {
-     int len, i, j;
-     PGACharacter *c;
+    int len, i, j;
+    PGACharacter *c;
 
-    PGADebugEntered("PGACharacterInitString");
+    PGADebugEntered ("PGACharacterInitString");
 
-     len = ctx->ga.StringLen;
-     c = (PGACharacter *)PGAGetIndividual(ctx, p, pop)->chrom;
-     switch (ctx->init.CharacterType)
-     {
-     case PGA_CINIT_LOWER:
-          for (i = 0; i < len; i++)
-               c[i] = PGARandomInterval(ctx, 'a', 'z');
-          break;
-     case PGA_CINIT_UPPER:
-          for (i = 0; i < len; i++)
-               c[i] = PGARandomInterval(ctx, 'A', 'Z');
-          break;
-     case PGA_CINIT_MIXED:
-          for (i = 0; i < len; i++)
-          {
-               j = PGARandomInterval(ctx, 0, 51);
-               if (j < 26)
-                    c[i] = 'A' + j;
-               else
-                    c[i] = 'a' + j - 26;
-          }
-          break;
-     }
-    PGADebugExited("PGACharacterInitString");
+    len = ctx->ga.StringLen;
+    c = (PGACharacter *)PGAGetIndividual (ctx, p, pop)->chrom;
+    switch (ctx->init.CharacterType) {
+    case PGA_CINIT_LOWER:
+        for (i = 0; i < len; i++) {
+            c [i] = PGARandomInterval (ctx, 'a', 'z');
+        }
+        break;
+    case PGA_CINIT_UPPER:
+        for (i = 0; i < len; i++) {
+            c [i] = PGARandomInterval (ctx, 'A', 'Z');
+        }
+        break;
+    case PGA_CINIT_MIXED:
+        for (i = 0; i < len; i++) {
+            j = PGARandomInterval (ctx, 0, 51);
+            if (j < 26) {
+                c [i] = 'A' + j;
+            } else {
+                c [i] = 'a' + j - 26;
+            }
+        }
+        break;
+    }
+    PGADebugExited ("PGACharacterInitString");
 }
 
-/*I****************************************************************************
-  PGACharacterBuildDatatype - Build an MPI_Datatype for a character string.
+/*!****************************************************************************
+    \brief Build an MPI_Datatype for a character string.
+    \ingroup internal
 
-  Inputs:
-      ctx  - context variable
-      p    - index of the string to build a datatype from
-      pop  - symbolic constant of the population string p is in
+    \param    ctx   context variable
+    \param    p     index of the string to build a datatype from
+    \param    pop   symbolic constant of the population string p is in
+    \return   MPI_Datatype
+    \rst
 
-  Outputs:
-      MPI_Datatype
+    Description
+    -----------
 
-  Example:
-      Called only by MPI routines.  Not for user consumption.
+    Called only by MPI routines.  Not for user consumption.
 
-****************************************************************************I*/
+    \endrst
+
+******************************************************************************/
 MPI_Datatype PGACharacterBuildDatatype (PGAContext *ctx, int p, int pop)
 {
     int idx = 0;
@@ -703,38 +776,42 @@ MPI_Datatype PGACharacterBuildDatatype (PGAContext *ctx, int p, int pop)
     return individualtype;
 }
 
-/*I****************************************************************************
-   PGACharacterGeneDistance - Compute genetic difference of two strings.
-   Sum of the absolute values of the differences of each allele.
+/*!****************************************************************************
+    \brief Compute genetic difference of two strings.
+    \ingroup internal
 
-   Inputs:
-      ctx   - context variable
-      p1    - first string index
-      pop1  - symbolic constant of the population the first string is in
-      p2    - second string index
-      pop2  - symbolic constant of the population the second string is in
+    \param   ctx    context variable
+    \param   p1     first string index
+    \param   pop1   symbolic constant of the population the first string is in
+    \param   p2     second string index
+    \param   pop2   symbolic constant of the population the second string is in
+    \return  genetic distance of the two strings
+    \rst
 
-   Outputs:
-      genetic distance of the two strings
+    Description
+    -----------
 
-   Example:
-      Internal function.  Use PGAGeneDistance.
+    Return sum of the absolute values of the differences of each allele.
+    Internal function.  Use PGAGeneDistance.
 
-****************************************************************************I*/
-double PGACharacterGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+    \endrst
+
+******************************************************************************/
+double PGACharacterGeneDistance
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
     PGACharacter *c1 = (PGACharacter *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     PGACharacter *c2 = (PGACharacter *)PGAGetIndividual (ctx, p2, pop2)->chrom;
     int ret = 0;
     int i;
 
-    PGADebugEntered("PGACharacterGeneDistance");
+    PGADebugEntered ("PGACharacterGeneDistance");
     for (i=0; i<ctx->ga.StringLen; i++) {
         if (c1 [i] != c2 [i]) {
             ret++;
         }
     }
-    PGADebugExited("PGACharacterGeneDistance");
+    PGADebugExited ("PGACharacterGeneDistance");
     return ret;
 }
 
