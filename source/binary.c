@@ -63,6 +63,10 @@ privately owned rights.
  *  \defgroup internal Functions for internal usage
  *  \brief These functions are only used internally
  *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup output Output
+ *  \brief Output printing
+ *****************************************************************************/
 
 
 /*!****************************************************************************
@@ -650,6 +654,7 @@ void PGABinaryUniformCrossover
 
 /*!****************************************************************************
     \brief Write a bit string to a file.
+    \ingroup internal
 
     \param   ctx    context variable
     \param   fp     file to write the bit string to
@@ -688,6 +693,7 @@ void PGABinaryPrint (PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb)
 
 /*!****************************************************************************
     \brief Write a bit string to a file.
+    \ingroup internal
 
     \param   ctx  context variable
     \param   fp   file pointer to file to write bit string to

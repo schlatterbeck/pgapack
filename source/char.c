@@ -513,6 +513,7 @@ void PGACharacterUniformCrossover
 
 /*!****************************************************************************
     \brief Write a character-valued string to a file.
+    \ingroup internal
 
     \param   ctx  context variable
     \param   fp   file pointer to file to write the string to
