@@ -633,6 +633,44 @@ void PGABinaryUniformCrossover
 /*!****************************************************************************
     \brief Write a bit string to a file.
 
+    \param   ctx    context variable
+    \param   fp     file to write the bit string to
+    \param   chrom  pointer to the bit string to write
+    \param   nb     number of bits to write out
+    \return  None
+    \rst
+
+    Description
+    -----------
+
+    Puts the binary
+    representation of the bit string pointed to by chrom into a character
+    string and writes that out. Assumes the maximum length of string to
+    print is WL, and that all bits are in the same word.
+
+    Internal function.  Use PGABinaryPrintString to print a binary string.
+    \endrst
+
+******************************************************************************/
+static
+void PGABinaryPrint (PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb)
+{
+     char *s, string[WL+1];
+     PGABinary mask;
+     int i;
+
+     mask = ((PGABinary)1)<<(WL-1);
+     s = string;
+     for(i=0; i<nb; mask>>=1,i++)              /* mask each bit and set the  */
+          *s++ = (mask&(*chrom)?'1':'0');      /* appropriate character      */
+     *s=0;                                     /* string terminator          */
+     fprintf(fp, "%s", string);                /* print out character string */
+}
+
+
+/*!****************************************************************************
+    \brief Write a bit string to a file.
+
     \param   ctx  context variable
     \param   fp   file pointer to file to write bit string to
     \param   p    index of the string to write out
@@ -935,47 +973,6 @@ int PGABinaryHammingDistance (PGAContext *ctx, PGABinary *s1, PGABinary *s2)
 
     return (distance);
 }
-
-/*!****************************************************************************
-    \brief Write a bit string to a file.
-
-    \param   ctx    context variable
-    \param   fp     file to write the bit string to
-    \param   chrom  pointer to the bit string to write
-    \param   nb     number of bits to write out
-    \return  None
-    \rst
-
-    Description
-    -----------
-
-    Puts the binary
-    representation of the bit string pointed to by chrom into a character
-    string and writes that out. Assumes the maximum length of string to
-    print is WL, and that all bits are in the same word.
-
-    Internal function.  Use PGABinaryPrintString to print a binary string.
-    \endrst
-
-******************************************************************************/
-void PGABinaryPrint (PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb)
-{
-     char *s, string[WL+1];
-     PGABinary mask;
-     int i;
-
-     PGADebugEntered("PGABinaryPrint");
-
-     mask = ((PGABinary)1)<<(WL-1);
-     s = string;
-     for(i=0; i<nb; mask>>=1,i++)              /* mask each bit and set the  */
-          *s++ = (mask&(*chrom)?'1':'0');      /* appropriate character      */
-     *s=0;                                     /* string terminator          */
-     fprintf(fp, "%s", string);                /* print out character string */
-
-     PGADebugExited("PGABinaryPrint");
-}
-
 
 /*!****************************************************************************
     \brief Compute genetic difference of two strings.

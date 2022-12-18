@@ -124,7 +124,6 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGASetBinaryAllele",             110 },
         { "PGAGetBinaryAllele",             111 },
         { "PGABinaryHammingDistance",       120 },
-        { "PGABinaryPrint",                 121 },
         { "PGAGetBinaryInitProb",           122 },
         { "PGASetBinaryInitProb",           123 },
         { "PGABinaryGeneDistance",          124 },
@@ -1002,7 +1001,6 @@ void PGASetDebugFlag30(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[110] = Flag; /*PGASetBinaryAllele*/
    ctx->debug.PGADebugFlags[111] = Flag; /*PGAGetBinaryAllele*/
    ctx->debug.PGADebugFlags[120] = Flag; /*PGABinaryHammingDistance*/
-   ctx->debug.PGADebugFlags[121] = Flag; /*PGABinaryPrint*/
    ctx->debug.PGADebugFlags[122] = Flag; /*PGAGetBinaryInitProb*/
    ctx->debug.PGADebugFlags[123] = Flag; /*PGASetBinaryInitProb*/
    ctx->debug.PGADebugFlags[124] = Flag; /*PGABinaryGeneDistance*/
@@ -1380,7 +1378,6 @@ void PGASetDebugFlag54(PGAContext *ctx, int Flag)
 void PGASetDebugFlag56(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[105] = Flag; /*PGABinaryPrintString*/
-   ctx->debug.PGADebugFlags[121] = Flag; /*PGABinaryPrint*/
    ctx->debug.PGADebugFlags[155] = Flag; /*PGAIntegerPrintString*/
    ctx->debug.PGADebugFlags[205] = Flag; /*PGARealPrintString*/
    ctx->debug.PGADebugFlags[255] = Flag; /*PGACharacterPrintString*/

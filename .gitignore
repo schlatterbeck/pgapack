@@ -3,5 +3,4 @@
 lib
 .*.swp
 .coverage*
-.xml-stamp
 README.html

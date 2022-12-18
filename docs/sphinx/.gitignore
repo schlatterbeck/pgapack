@@ -3,3 +3,4 @@ _build
 _doxygen
 api
 man
+.stamp-xml

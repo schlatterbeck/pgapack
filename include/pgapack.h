@@ -796,7 +796,6 @@ PGAHash PGABinaryHash (PGAContext *ctx, int p, int pop);
 void PGABinaryInitString (PGAContext *ctx, int p, int pop);
 MPI_Datatype PGABinaryBuildDatatype (PGAContext *ctx, int p, int pop);
 int PGABinaryHammingDistance (PGAContext *ctx, PGABinary *s1, PGABinary *s2);
-void PGABinaryPrint (PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb);
 double PGABinaryGeneDistance
     (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 
