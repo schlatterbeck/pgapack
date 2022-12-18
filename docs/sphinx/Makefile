@@ -16,14 +16,8 @@ MAN_STAGE2     = ${subst $(MAN_PATH1),$(MAN_PATH2),$(MAN_STAGE1_3)}
 all: man fixedman html
 	@echo Done
 
-fixedman: man/man3 $(MAN_STAGE2)
+fixedman: man man/man3 $(MAN_STAGE2)
 	@echo Stage2 done
-
-man: .xml-stamp
-
-.xml-stamp:
-	make xml
-	touch .xml-stamp
 
 man/man3:
 	mkdir man/man3
@@ -43,7 +37,7 @@ help:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 clean:
-	rm -rf _doxygen api _static  _templates man.py .xml-stamp man/man3
+	rm -rf _doxygen api _static  _templates man.py man/man3
 	@$(SPHINXBUILD) -M clean "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 $(MAN_PATH2)/%.3: $(MAN_PATH1)/%.3a

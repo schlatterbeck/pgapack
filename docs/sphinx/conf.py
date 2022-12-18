@@ -71,6 +71,10 @@ exhale_args = {
         EXPAND_ONLY_PREDEF     = YES
         EXCLUDE = ../../include/pgapackf.h ../../source/mpi_stub.c
         PREDEFINED += STATIC=static
+        PREDEFINED += PGADebugEntered(a)
+        PREDEFINED += PGADebugExited(a)
+        PREDEFINED += PGACheckDataType(a,b)
+        PREDEFINED += INDEX(a,b,c,d)
     """
 }
 
