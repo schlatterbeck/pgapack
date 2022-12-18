@@ -1,10 +1,11 @@
-/******************************************************************************
-*     FILE: pgapack.h: This file contains all constant and structure
-*                      definitions definitions for PGAPack as well as all
-*                      function declarations.
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!****************************************************************************
+* \file
+* \brief This file contains all constant and structure definitions definitions
+*        for PGAPack as well as all function declarations.
+* \authors David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 ******************************************************************************/
+
 /* Microsoft choses to arbitrarily deprecate some standard C-Library functions
  * (CRT stands for C runtime library) Disable deprecation warning
  * And Microsoft ist stuck in the 1980s with their C Compiler (well
@@ -15,6 +16,8 @@
  * but throws an exception if allocation fails). We do not bother to
  * catch the exception in the error-case.
  */
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS
 #define USE_ALLOCA
@@ -39,6 +42,8 @@
 #define DEREF1_DYNPTR(name, size, idx) name[idx]
 #define DEREF2_DYNPTR(name, size, idx1, idx2) name[idx1][idx2]
 #endif /* !USE_ALLOCA */
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -72,19 +77,25 @@ extern "C" {
  *  PGACheckDataType(a, D)  - Fail fatally if the datatype is not D
  */
 #ifndef OPTIMIZE
+/** Optimization of debugging instrumentation */
 #define OPTIMIZE 0
+/** Debug message when entering a function */
 #define PGADebugEntered(a) \
   PGADebugPrint(ctx, PGA_DEBUG_ENTERED, a, "Entered", PGA_VOID, NULL)
+/** Debug message when exiting a function */
 #define PGADebugExited(a) \
   PGADebugPrint(ctx, PGA_DEBUG_EXIT, a, "Exited", PGA_VOID, NULL)
+/** Check that when this is called everything is set up */
 #define PGAFailIfNotSetUp(Name)  \
   if (ctx->sys.SetUpCalled == PGA_FALSE) \
      PGAError(ctx, "PGASetUp must be called before " Name, \
               PGA_FATAL, PGA_VOID, NULL)
+/** Check that when this is called set up is still pending */
 #define PGAFailIfSetUp(Name)  \
   if (ctx->sys.SetUpCalled == PGA_TRUE) \
      PGAError(ctx, Name " must be called before PGASetUp", PGA_FATAL, \
 	      PGA_VOID, NULL)
+/** Ensure right GA data type */
 #define PGACheckDataType(Name, DataType) \
   if (ctx->ga.datatype != DataType) \
      PGAError(ctx, "DataType is incorrect for " Name,PGA_FATAL,PGA_VOID,NULL)
@@ -100,59 +111,85 @@ extern "C" {
 #endif
 
 /*****************************************
-*           BINARY   MACROS              *
-*****************************************/
-/* Note: WL used to be a macro defined on the command-line.
+ *           BINARY   MACROS
+ *****************************************/
+/** \brief Word length
+ * Note: WL used to be a macro defined on the command-line.
  *       Since it is used only to represent the size of the PGABinary
  *       data type (an unsigned long) we can safely use sizeof here.
+ *       This can still be set from outside should we have an unusual
+ *       architecture where a byte is not 8 bit.
  */
 #ifndef WL
 #define WL (sizeof(PGABinary) * 8)
 #endif
 
+/** Constant 1 */
 #define ONEL        ((PGABinary)1)
-#define BIT(x,y)    (y&(ONEL<<((WL-1)-(x))))    /* true if bit is 1,         */
-#define SET(x,y)    (y|=(ONEL<<((WL-1)-(x))))   /* set a bit to 1            */
-#define UNSET(x,y)  (y&=(~(ONEL<<((WL-1)-(x)))))/* set a bit to 0, clear     */
-#define TOGGLE(x,y) (y^=(ONEL<<((WL-1)-(x))))   /* complement a bits value   */
-#define INDEX(ix,bx,bit,WL) ix=bit/WL;bx=bit%WL /* map global column (bit)   */
-                                                /* to word (ix) and bit (bx) */
+/** true if bit is 1 */
+#define BIT(x,y)    (y&(ONEL<<((WL-1)-(x))))
+/** set a bit to 1 */
+#define SET(x,y)    (y|=(ONEL<<((WL-1)-(x))))
+/** set a bit to 0, clear */
+#define UNSET(x,y)  (y&=(~(ONEL<<((WL-1)-(x)))))
+/** complement a bits value */
+#define TOGGLE(x,y) (y^=(ONEL<<((WL-1)-(x))))
+/** map global column (bit) to word (ix) and bit (bx) */
+#define INDEX(ix,bx,bit,WL) ix=bit/WL;bx=bit%WL
 
-/* Used in PGAEvalCompare and others */
+/** Used in PGAEvalCompare and others */
 static inline int CMP (const double a, const double b)
 {
     return (a < b ? -1 : (a > b ? 1 : 0));
 }
 
-/*****************************************
-*       ABSTRACT DATA TYPES              *
-*****************************************/
-#define PGA_DATATYPE_BINARY      1    /* Array of unsigned ints            */
-                                      /* parsed into bits    : binary.c    */
-#define PGA_DATATYPE_INTEGER     2    /* Array of ints       : integer.c   */
-#define PGA_DATATYPE_REAL        3    /* Array of doubles    : real.c      */
-#define PGA_DATATYPE_CHARACTER   4    /* Array of characters : character.c */
-#define PGA_DATATYPE_USER        5    /*  --user defined--                 */
+/*!***********************************************
+ *  \defgroup const_datatype Abstract Data Types
+ *  @{
+ ************************************************/
+/** Array of unsigned ints parsed into bits */
+#define PGA_DATATYPE_BINARY      1
+/** Array of ints */
+#define PGA_DATATYPE_INTEGER     2
+/** Array of doubles */
+#define PGA_DATATYPE_REAL        3
+/** Array of characters */
+#define PGA_DATATYPE_CHARACTER   4
+/** user defined data type */
+#define PGA_DATATYPE_USER        5
 
+/** Allele data type binary (bit) */
 typedef unsigned long   PGABinary;
+/** Allele data type int */
 typedef signed long int PGAInteger;
+/** Allele data type real */
 typedef double          PGAReal;
+/** Allele data type char */
 typedef signed char     PGACharacter;
+/** Result of hashing */
 typedef unsigned int    PGAHash;
 
-#define PGA_INT                   1
-#define PGA_DOUBLE                2
-#define PGA_CHAR                  3
-#define PGA_VOID                  4
+#define PGA_INT                   1 /**< integer value for printing   */
+#define PGA_DOUBLE                2 /**< double value for printing    */
+#define PGA_CHAR                  3 /**< char value for printing      */
+#define PGA_VOID                  4 /**< void (no) value for printing */
+/*! @} */
 
+/*!***************************************
+ * \defgroup const_bool Booleans
+ * @{
+ ****************************************/
+#define PGA_TRUE                   1 /**< True value  */
+#define PGA_FALSE                  0 /**< False value */
+/*! @} */
 
-/*****************************************
-*              BOOLEANS                  *
-*****************************************/
-#define PGA_TRUE                   1
-#define PGA_FALSE                  0
+/*!********************************************
+ * \defgroup fun_bit Bit arrays
+ * Some functions for manipulating bit arrays
+ * @{
+ **********************************************/
 
-/* And some functions for manipulating bit arrays */
+/** Bit array: Set a bit */
 static inline void SET_BIT (PGABinary *bitptr, int idx)
 {
     int iidx   = idx / WL;
@@ -160,6 +197,7 @@ static inline void SET_BIT (PGABinary *bitptr, int idx)
     bitptr [iidx] |= ishift;
 }
 
+/** Bit array: Get a bit */
 static inline int GET_BIT (PGABinary *bitptr, int idx)
 {
     int iidx   = idx / WL;
@@ -167,103 +205,125 @@ static inline int GET_BIT (PGABinary *bitptr, int idx)
     return bitptr [iidx] & ishift;
 }
 
+/** Bit array: Clear a bit */
 static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 {
     int iidx   = idx / WL;
     PGABinary ishift = 1lu << (idx % WL);
     bitptr [iidx] &= ~ishift;
 }
+/*! @} */
 
 
-/*****************************************
-*                FLAGS                   *
-*****************************************/
-#define PGA_FATAL                 1
-#define PGA_WARNING               2
+/*!*******************************************
+ * \defgroup const_printflags Printing flags
+ * @{
+ ********************************************/
+#define PGA_FATAL                 1 /**< Fatal error */
+#define PGA_WARNING               2 /**< Warning     */
+/*! @} */
 
-/*****************************************
-*             MISC CONSTANT              *
-*****************************************/
-#define PGA_TEMP1                -1138
-#define PGA_TEMP2                -4239
+/*!*****************************************
+ * \defgroup const_misc Misc Constants
+ * @{
+ ******************************************/
+#define PGA_TEMP1                -1138 /**< temporary individual 1 */
+#define PGA_TEMP2                -4239 /**< temporary individual 2 */
 
-#define PGA_OLDPOP               -6728
-#define PGA_NEWPOP               -8376
+#define PGA_OLDPOP               -6728 /**< Old population */
+#define PGA_NEWPOP               -8376 /**< New population */
 
-#define PGA_UNINITIALIZED_INT    -3827
-#define PGA_UNINITIALIZED_DOUBLE -968.3827
+#define PGA_UNINITIALIZED_INT    -3827     /**< Un-initialized integer */
+#define PGA_UNINITIALIZED_DOUBLE -968.3827 /**< Un-initialized double  */
+/*! @} */
 
-/*****************************************
-*        DEBUG LEVELS                    *
-*****************************************/
-#define PGA_DEBUG_ENTERED        12
-#define PGA_DEBUG_EXIT           13
-#define PGA_DEBUG_MALLOC         80
-#define PGA_DEBUG_PRINTVAR       82
-#define PGA_DEBUG_SEND           22
-#define PGA_DEBUG_RECV           23
-#define PGA_DEBUG_MAXFLAGS       1000
+/*!**************************************
+ * \defgroup const_debug Debug Levels
+ * @{
+ ****************************************/
+#define PGA_DEBUG_ENTERED        12     /**< Entering a function */
+#define PGA_DEBUG_EXIT           13     /**< Exiting a function  */
+#define PGA_DEBUG_MALLOC         80     /**< Memory management   */
+#define PGA_DEBUG_PRINTVAR       82     /**< Variables           */
+#define PGA_DEBUG_SEND           22     /**< Sending             */
+#define PGA_DEBUG_RECV           23     /**< Receiving           */
+#define PGA_DEBUG_MAXFLAGS       1000   /**< All debug flags     */
+/*! @} */
 
-/*****************************************
-*           DIRECTION                    *
-*****************************************/
-#define PGA_MAXIMIZE            1    /* specify direction for fitness calc  */
-#define PGA_MINIMIZE            2    /* specify direction for fitness calc  */
+/*!********************************************************************
+ *  \defgroup const_opt_dir Optimization Direction (Maximize/Minimize)
+ *  @{
+ **********************************************************************/
+#define PGA_MAXIMIZE            1    /**< specify direction for fitness calc */
+#define PGA_MINIMIZE            2    /**< specify direction for fitness calc */
+/*! @} */
 
-/*****************************************
-*         STOPPING CRITERIA              *
-*****************************************/
-#define PGA_STOP_MAXITER        1    /* Stop: for maximum iterations      */
-#define PGA_STOP_NOCHANGE       2    /* Stop: no change in best string    */
-#define PGA_STOP_TOOSIMILAR     4    /* Stop: homogeneous population      */
+/*!***************************************
+ * \defgroup const_stop Stopping Criteria
+ *  @{
+ *****************************************/
+#define PGA_STOP_MAXITER        1    /**< Stop: for maximum iterations    */
+#define PGA_STOP_NOCHANGE       2    /**< Stop: no change in best string  */
+#define PGA_STOP_TOOSIMILAR     4    /**< Stop: homogeneous population    */
+/*! @} */
 
-/*****************************************
-*            CROSSOVER                   *
-*****************************************/
-#define PGA_CROSSOVER_ONEPT     1    /* One point crossover                */
-#define PGA_CROSSOVER_TWOPT     2    /* Two point crossover                */
-#define PGA_CROSSOVER_UNIFORM   3    /* Uniform   crossover                */
-#define PGA_CROSSOVER_SBX       4    /* Simulated binary crossover (SBX)   */
-#define PGA_CROSSOVER_EDGE      5    /* Edge Recombination                 */
+/*!***************************************
+ * \defgroup const_crossover Crossover
+ *  @{
+ *****************************************/
+#define PGA_CROSSOVER_ONEPT     1    /**< One point crossover              */
+#define PGA_CROSSOVER_TWOPT     2    /**< Two point crossover              */
+#define PGA_CROSSOVER_UNIFORM   3    /**< Uniform   crossover              */
+#define PGA_CROSSOVER_SBX       4    /**< Simulated binary crossover (SBX) */
+#define PGA_CROSSOVER_EDGE      5    /**< Edge Recombination               */
+/*! @} */
 
-/*****************************************
-*            SELECTION                   *
-*****************************************/
-#define PGA_SELECT_PROPORTIONAL 1    /* proportional selection              */
-#define PGA_SELECT_SUS          2    /* stochastic universal selection      */
-#define PGA_SELECT_TOURNAMENT   3    /* tournament selection                */
-#define PGA_SELECT_PTOURNAMENT  4    /* probabilistic tournament selection  */
-#define PGA_SELECT_TRUNCATION   5    /* truncation selection                */
-#define PGA_SELECT_LINEAR       6    /* linear selection                    */
+/*!***************************************
+ *  \defgroup const_selection Selection
+ *  @{
+ *****************************************/
+#define PGA_SELECT_PROPORTIONAL 1    /**< proportional selection             */
+#define PGA_SELECT_SUS          2    /**< stochastic universal selection     */
+#define PGA_SELECT_TOURNAMENT   3    /**< tournament selection               */
+#define PGA_SELECT_PTOURNAMENT  4    /**< probabilistic tournament selection */
+#define PGA_SELECT_TRUNCATION   5    /**< truncation selection               */
+#define PGA_SELECT_LINEAR       6    /**< linear selection                   */
+/*! @} */
 
-/*****************************************
-*            FITNESS                     *
-*****************************************/
-#define PGA_FITNESS_RAW         1    /* use raw fitness (evaluation)        */
-#define PGA_FITNESS_NORMAL      2    /* linear normalization fitness        */
-#define PGA_FITNESS_RANKING     3    /* linear ranking fitness              */
+/*!***************************************
+ *  \defgroup const_fitness Fitness
+ *  @{
+ *****************************************/
+#define PGA_FITNESS_RAW         1    /**< use raw fitness (evaluation)  */
+#define PGA_FITNESS_NORMAL      2    /**< linear normalization fitness  */
+#define PGA_FITNESS_RANKING     3    /**< linear ranking fitness        */
+/*! @} */
 
-/*****************************************
-*            FITNESS (MINIMIZATION)      *
-*****************************************/
-#define PGA_FITNESSMIN_RECIPROCAL  1 /* reciprocal fitness                  */
-#define PGA_FITNESSMIN_CMAX        2 /* cmax fitness                        */
+/*!*********************************************
+ *  \defgroup const_fitmin Fitness Minimization
+ *  @{
+ ***********************************************/
+#define PGA_FITNESSMIN_RECIPROCAL  1 /**< reciprocal fitness */
+#define PGA_FITNESSMIN_CMAX        2 /**< cmax fitness       */
+/*! @} */
 
-/*****************************************
-*               MUTATION                 *
-*****************************************/
-#define PGA_MUTATION_CONSTANT   1    /* Real/Integer: Fixed value           */
-#define PGA_MUTATION_RANGE      2    /* Real/Integer: Uniform range         */
-#define PGA_MUTATION_UNIFORM    3    /* Real: +- Uniform random no.         */
-#define PGA_MUTATION_GAUSSIAN   4    /* Real: +- Gaussian random no.        */
-#define PGA_MUTATION_PERMUTE    5    /* Integer: Permutation (swap)         */
-#define PGA_MUTATION_DE         6    /* Differential Evolution (only real)  */
-#define PGA_MUTATION_POLY       7    /* Polynomial mutation                 */
+/*!***************************************
+ *  \defgroup const_mutation Mutation
+ *  @{
+ *****************************************/
+#define PGA_MUTATION_CONSTANT   1    /**< Real/Integer: Fixed value          */
+#define PGA_MUTATION_RANGE      2    /**< Real/Integer: Uniform range        */
+#define PGA_MUTATION_UNIFORM    3    /**< Real: +- Uniform random no.        */
+#define PGA_MUTATION_GAUSSIAN   4    /**< Real: +- Gaussian random no.       */
+#define PGA_MUTATION_PERMUTE    5    /**< Integer: Permutation (swap)        */
+#define PGA_MUTATION_DE         6    /**< Differential Evolution (only real) */
+#define PGA_MUTATION_POLY       7    /**< Polynomial mutation                */
+/*! @} */
 
-/*****************************************
-*               MIXING                   *
-*****************************************/
-/* This defines how mutation/crossover are combined (or not)
+/*!****************************************
+ *  \defgroup const_mixing Mixing
+ *
+ * This defines how mutation/crossover are combined (or not)
  * The MUTATE_AND_CROSS variant performs mutation only if crossover was
  * also performed. The TRADITIONAL variant performs mutation with the
  * configured probability and then mutates with the given probability
@@ -272,392 +332,450 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  * Note: This replaces the previous flags (PGASetMutationOrCrossoverFlag
  * and friends) which are still supported for legacy reasons.
  * The default is PGA_MIX_MUTATE_OR_CROSS also for legacy reasons.
+ *  @{
  */
-#define PGA_MIX_MUTATE_OR_CROSS   1    /* Either mutation or crossover      */
-#define PGA_MIX_MUTATE_AND_CROSS  2    /* Mutation only if crossover        */
-#define PGA_MIX_MUTATE_ONLY       3    /* Only mutation                     */
-#define PGA_MIX_TRADITIONAL       4    /* Mutation after crossover          */
+#define PGA_MIX_MUTATE_OR_CROSS   1    /**< Either mutation or crossover */
+#define PGA_MIX_MUTATE_AND_CROSS  2    /**< Mutation only if crossover   */
+#define PGA_MIX_MUTATE_ONLY       3    /**< Only mutation                */
+#define PGA_MIX_TRADITIONAL       4    /**< Mutation after crossover     */
+/*! @} */
 
-/*****************************************
-* Differential Evolution Variant         *
-*****************************************/
-#define PGA_DE_VARIANT_RAND      1   /* Standard DE */
-#define PGA_DE_VARIANT_BEST      2   /* Derive from best string */
-#define PGA_DE_VARIANT_EITHER_OR 3   /* Either-or variant */
+/*!***********************************************************
+ *  \defgroup const_de_variant Differential Evolution Variant
+ *  @{
+ *************************************************************/
+#define PGA_DE_VARIANT_RAND      1   /**< Standard DE */
+#define PGA_DE_VARIANT_BEST      2   /**< Derive from best string */
+#define PGA_DE_VARIANT_EITHER_OR 3   /**< Either-or variant */
+/*! @} */
 
-/*******************************************
-* Differential Evolution Crossover Variant *
-*******************************************/
-#define PGA_DE_CROSSOVER_BIN      1  /* Standard DE binomial crossover */
-#define PGA_DE_CROSSOVER_EXP      2  /* Exponential crossover */
+/*!*******************************************************************
+ *  \defgroup const_de_cross Differential Evolution Crossover Variant
+ *  @{
+ *********************************************************************/
+#define PGA_DE_CROSSOVER_BIN      1  /**< Standard DE binomial crossover */
+#define PGA_DE_CROSSOVER_EXP      2  /**< Exponential crossover          */
+/*! @} */
 
-/*****************************************
-*        POPULATION REPLACEMENT          *
-*****************************************/
-#define PGA_POPREPL_BEST          1  /* Select best   string                */
-#define PGA_POPREPL_RANDOM_NOREP  2  /* Select random string w/o replacement*/
-#define PGA_POPREPL_RANDOM_REP    3  /* Select random string w/  replacement*/
-#define PGA_POPREPL_RTR           4  /* Restricted tournament replacement   */
-#define PGA_POPREPL_PAIRWISE_BEST 5  /* Pairwise compare old/newpop         */
-#define PGA_POPREPL_NSGA_II       6  /* NSGA-II non-dominated sorting       */
-#define PGA_POPREPL_NSGA_III      7  /* NSGA-III non-dominated sorting      */
+/*!***********************************************
+ *  \defgroup const_poprep Population Replacement
+ *  @{
+ *************************************************/
+#define PGA_POPREPL_BEST          1  /**< Select best   string                */
+#define PGA_POPREPL_RANDOM_NOREP  2  /**< Select random string w/o replacement*/
+#define PGA_POPREPL_RANDOM_REP    3  /**< Select random string w/  replacement*/
+#define PGA_POPREPL_RTR           4  /**< Restricted tournament replacement   */
+#define PGA_POPREPL_PAIRWISE_BEST 5  /**< Pairwise compare old/newpop         */
+#define PGA_POPREPL_NSGA_II       6  /**< NSGA-II non-dominated sorting       */
+#define PGA_POPREPL_NSGA_III      7  /**< NSGA-III non-dominated sorting      */
+/*! @} */
 
-/****************************************
- *       REPORT OPTIONS                 *
+/*!**************************************
+ *  \defgroup const_rep Report Options
+ *  @{
  ****************************************/
-#define PGA_REPORT_ONLINE        1    /* Print the online analysis           */
-#define PGA_REPORT_OFFLINE       2    /* Print the offline analysis          */
-#define PGA_REPORT_HAMMING       4    /* Print the Hamming distance          */
-#define PGA_REPORT_STRING        8    /* Print the string                    */
-#define PGA_REPORT_WORST         16   /* Print the worst individual          */
-#define PGA_REPORT_AVERAGE       32   /* Print the average of the population */
+#define PGA_REPORT_ONLINE        1    /**< Print the online analysis       */
+#define PGA_REPORT_OFFLINE       2    /**< Print the offline analysis      */
+#define PGA_REPORT_HAMMING       4    /**< Print the Hamming distance      */
+#define PGA_REPORT_STRING        8    /**< Print the string                */
+#define PGA_REPORT_WORST         16   /**< Print the worst individual      */
+#define PGA_REPORT_AVERAGE       32   /**< Print average of the population */
+/*! @} */
 
-/*****************************************
-*            RANDOMIZER                  *
-*****************************************/
-#define PGA_RINIT_PERCENT        1  /* real percent offset                   */
-#define PGA_RINIT_RANGE          2  /* real range                            */
-#define PGA_IINIT_PERMUTE        1  /* integer permutation                   */
-#define PGA_IINIT_RANGE          2  /* integer range (nonunique)             */
-#define PGA_CINIT_LOWER          1  /* all lowercase letters                 */
-#define PGA_CINIT_UPPER          2  /* all uppercase letters                 */
-#define PGA_CINIT_MIXED          3  /* both upper and lower case letters     */
+/*!************************************************
+ *  \defgroup const_randinit Random initialization
+ *  @{
+ **************************************************/
+#define PGA_RINIT_PERCENT        1  /**< real percent offset               */
+#define PGA_RINIT_RANGE          2  /**< real range                        */
+#define PGA_IINIT_PERMUTE        1  /**< integer permutation               */
+#define PGA_IINIT_RANGE          2  /**< integer range (nonunique)         */
+#define PGA_CINIT_LOWER          1  /**< all lowercase letters             */
+#define PGA_CINIT_UPPER          2  /**< all uppercase letters             */
+#define PGA_CINIT_MIXED          3  /**< both upper and lower case letters */
+/*! @} */
 
-/*****************************************
-*         SET USER FUNCTION              *
-*****************************************/
-#define PGA_USERFUNCTION_CREATESTRING            1
-#define PGA_USERFUNCTION_MUTATION                2
-#define PGA_USERFUNCTION_CROSSOVER               3
-#define PGA_USERFUNCTION_PRINTSTRING             4
-#define PGA_USERFUNCTION_COPYSTRING              5
-#define PGA_USERFUNCTION_DUPLICATE               6
-#define PGA_USERFUNCTION_INITSTRING              7
-#define PGA_USERFUNCTION_BUILDDATATYPE           8
-#define PGA_USERFUNCTION_STOPCOND                9
-#define PGA_USERFUNCTION_ENDOFGEN                10
-#define PGA_USERFUNCTION_GEN_DISTANCE            11
-/* For backward compat */
+/*!***************************************
+ *  \defgroup const_ufun User Functions
+ *  @{
+ *****************************************/
+#define PGA_USERFUNCTION_CREATESTRING            1  /**< String create       */
+#define PGA_USERFUNCTION_MUTATION                2  /**< Custom Mutation     */
+#define PGA_USERFUNCTION_CROSSOVER               3  /**< Custom Crossover    */
+#define PGA_USERFUNCTION_PRINTSTRING             4  /**< Gene printing       */
+#define PGA_USERFUNCTION_COPYSTRING              5  /**< Gene copy           */
+#define PGA_USERFUNCTION_DUPLICATE               6  /**< Dupe checking       */
+#define PGA_USERFUNCTION_INITSTRING              7  /**< Gene init           */
+#define PGA_USERFUNCTION_BUILDDATATYPE           8  /**< Build MPI datatype  */
+#define PGA_USERFUNCTION_STOPCOND                9  /**< Stopping check      */
+#define PGA_USERFUNCTION_ENDOFGEN                10 /**< End of generation   */
+#define PGA_USERFUNCTION_GEN_DISTANCE            11 /**< Distance of genes   */
+/** Only used for backward compatibility */
 #define PGA_USERFUNCTION_GEN_DIFFERENCE PGA_USERFUNCTION_GEN_DISTANCE
-#define PGA_USERFUNCTION_PRE_EVAL                12
-#define PGA_USERFUNCTION_HASH                    13
-#define PGA_USERFUNCTION_SERIALIZE               14
-#define PGA_USERFUNCTION_DESERIALIZE             15
-#define PGA_USERFUNCTION_SERIALIZE_FREE          16
-#define PGA_USERFUNCTION_CHROM_FREE              17
-#define PGA_NUM_USERFUNCTIONS                    17
+#define PGA_USERFUNCTION_PRE_EVAL                12 /**< Start of generation */
+#define PGA_USERFUNCTION_HASH                    13 /**< Gene hasing         */
+#define PGA_USERFUNCTION_SERIALIZE               14 /**< Serialization       */
+#define PGA_USERFUNCTION_DESERIALIZE             15 /**< De-serialization    */
+#define PGA_USERFUNCTION_SERIALIZE_FREE          16 /**< Free serialization  */
+#define PGA_USERFUNCTION_CHROM_FREE              17 /**< Free chromosome     */
+#define PGA_NUM_USERFUNCTIONS                    17 /**< Count               */
+/*! @} */
 
-/*****************************************
-*           MPI SEND/RECV TAGS           *
-*****************************************/
-#define PGA_COMM_STRINGTOEVAL        1  /* MPI tag for sending string       */
-#define PGA_COMM_EVALOFSTRING        2  /* MPI tag for returning evaluation */
-#define PGA_COMM_DONEWITHEVALS       3  /* MPI tag for ending parallel eval */
-#define PGA_COMM_SERIALIZE_SIZE      4  /* MPI tag for serialized data size */
+/*!*******************************************
+ *  \defgroup const_mpitag MPI Send/Recv Tags
+ *  @{
+ *********************************************/
+#define PGA_COMM_STRINGTOEVAL        1 /**< MPI tag for sending string       */
+#define PGA_COMM_EVALOFSTRING        2 /**< MPI tag for returning evaluation */
+#define PGA_COMM_DONEWITHEVALS       3 /**< MPI tag for ending parallel eval */
+#define PGA_COMM_SERIALIZE_SIZE      4 /**< MPI tag for serialized data size */
+/*! @} */
 
-/*****************************************
-*        Max. size of common part        *
-*       When sending PGAIndividual       *
-*****************************************/
+/*!***************************************
+ *        Max. size of common part
+ *       when sending PGAIndividual
+ *****************************************/
 #define PGA_MPI_HEADER_ELEMENTS      7
 
-/*****************************************
-*           EPSILON CONSTRAINTS          *
-*****************************************/
-#define PGA_EPSILON_EXPONENT_MIN   3.0  /* minimum exponent cp from paper   */
-#define PGA_EPSILON_EXPONENT_MAX  10.0  /* maximum exponent cp from paper   */
+/*!****************************************
+ * \defgroup const_eps Epsilon Constraints
+ *  @{
+ ******************************************/
+#define PGA_EPSILON_EXPONENT_MIN   3.0 /**< minimum exponent cp from paper */
+#define PGA_EPSILON_EXPONENT_MAX  10.0 /**< maximum exponent cp from paper */
+/*! @} */
 
 
-/*****************************************
-*       INDIVIDUAL STRUCTURE             *
-*****************************************/
+/*!***************************************
+ * \brief Individual Structure
+ *****************************************/
 
-typedef struct PGAIndividual {         /* primary population data structure */
-  int                   index;         /* index of this indiv of the pop    */
-  double                evalue;        /* evaluation function value         */
-  double                fitness;       /* fitness    function value         */
-  int                   evaluptodate;  /* flag whether evalue is current    */
-  void                 *chrom;         /* pointer to the GA string          */
-  double               *auxeval;       /* Auxiliary evaluations             */
-  double                auxtotal;      /* Total aux evaluation              */
-  int                   auxtotalok;    /* flag wether auxtotal is current*/
-  unsigned int          rank;          /* Rank for dominance-sorting        */
+typedef struct PGAIndividual {         /**< primary population data structure */
+  int                   index;         /**< index of this indiv of the pop    */
+  double                evalue;        /**< evaluation function value         */
+  double                fitness;       /**< fitness    function value         */
+  int                   evaluptodate;  /**< flag whether evalue is current    */
+  void                 *chrom;         /**< pointer to the GA string          */
+  double               *auxeval;       /**< Auxiliary evaluations             */
+  double                auxtotal;      /**< Total aux evaluation              */
+  int                   auxtotalok;    /**< flag wether auxtotal is current*/
+  unsigned int          rank;          /**< Rank for dominance-sorting        */
   /* The following are not transmitted via MPI */
-  struct PGAContext    *ctx;           /* Pointer to our PGAContext         */
-  struct PGAIndividual *pop;           /* The population of this indiv.     */
-  double                crowding;      /* Crowding metric for NSGA-II,-III  */
-  int                   funcidx;       /* Temporary function index          */
+  struct PGAContext    *ctx;           /**< Pointer to our PGAContext         */
+  struct PGAIndividual *pop;           /**< The population of this indiv.     */
+  double                crowding;      /**< Crowding metric for NSGA-II,-III  */
+  int                   funcidx;       /**< Temporary function index          */
   /* The following are for NSGA-III only */
-  double               *normalized;    /* Normalized point for NSGA-III     */
-  double                distance;      /* Distance to associated point      */
-  int                   point_idx;     /* Index of associated point         */
-  struct PGAIndividual *next_hash;     /* Next hash value in chain          */
+  double               *normalized;    /**< Normalized point for NSGA-III     */
+  double                distance;      /**< Distance to associated point      */
+  int                   point_idx;     /**< Index of associated point         */
+  struct PGAIndividual *next_hash;     /**< Next hash value in chain          */
 } PGAIndividual;
 
-/*****************************************
-*      Fixed edges data structure        *
-*****************************************/
+/*!***************************************
+ * \brief Fixed edges data structure
+ *****************************************/
 typedef struct PGAFixedEdge_s {
-    PGAInteger             lhs;
-    PGAInteger             rhs;
-    struct PGAFixedEdge_s *next;
-    struct PGAFixedEdge_s *prev;
+    PGAInteger             lhs;  /**< Left hand side           */
+    PGAInteger             rhs;  /**< Right hand side          */
+    struct PGAFixedEdge_s *next; /**< Pointer to next edge     */
+    struct PGAFixedEdge_s *prev; /**< Pointer to previous edge */
 } PGAFixedEdge;
 
 
-/*****************************************
-*          GA ALGORITHM STRUCTURE        *
-*****************************************/
+/*!***************************************
+ * \brief GA Algorithm Structure
+ *****************************************/
 typedef struct {
-    int datatype;            /* data type: binary, integer, or real       */
-    int optdir;              /* direction of optimization                 */
-    int tw;                  /* total number of words, full + partial     */
-    int fw;                  /* number of full (WL length) words          */
-    int eb;                  /* number of extra bits in last NOT full word*/
-    int PopSize;             /* Number of strings to use                  */
-    int NumAuxEval;          /* Number of auxiliary evaluation values     */
-    int NumConstraint;       /* Number of constraints                     */
-    int SumConstraints;      /* PGA_TRUE if no dominance-sorting for
-                                constraints                               */
-    double Epsilon;          /* Current epsilon for eps constraints       */
-    double Epsilon_0;        /* Initial Epsilon for eps constraints       */
-    int EpsilonGeneration;   /* Max Generation for epsilon constraints    */
-    double EpsilonExponent;  /* Exponent for tightening epsilon           */
-    double EffEpsExponent;   /* Effective Exponent for tightening epsilon */
-    int EpsTLambda;          /* Generation lambda for dynamic exponent    */
-    int EpsilonTheta;        /* Theta best individual of epsilon init     */
-    int StringLen;           /* string lengths                            */
-    int StoppingRule;        /* Termination Criteria                      */
-    int MaxIter;             /* Maximum number of iterations to run       */
-    int MaxNoChange;         /* # of iters with no change before stopping */
-    int MaxSimilarity;       /* % of pop the same before stopping         */
-    int NumReplace;          /* Number of string to replace each gen      */
-    int PopReplace;          /* Method of choosing ind.s to copy to newpop*/
-    int iter;                /* iteration (generation) counter            */
-    int last_iter;           /* Used by selection methods internally      */
-    int perm_idx;            /* Index into scratch permute array          */
-    int ItersOfSame;         /* # iters with no change in best            */
-    int PercentSame;         /* % of pop that is homogeneous              */
-    int NoDuplicates;        /* Don't allow duplicate strings             */
-    int CrossoverType;       /* Type of crossover for genetic algorithm   */
-    int CrossBoundedFlag;    /* Confine alleles to given range (bound)    */
-    int CrossBounceFlag;     /* Confine alleles to given range (bounce)   */
-    double CrossSBXEta;      /* eta value for SBX                         */
-    int CrossSBXOnce;        /* SBX probability once for whole string     */
-    int SelectType;          /* Type of selection for genetic algorithm   */
-    int SelectIndex;         /* index of Select for next two individuals  */
-    int FitnessType;         /* Type of fitness transformation used       */
-    int FitnessMinType;      /* Transformation for minimization problems  */
-    int MixingType;          /* Combination of crossover/mutation         */
-    int MutationType;        /* Type of mutation used                     */
-    int MutateIntegerValue;  /* Multiplier to mutate Integer strings with */
-    int MutateBoundedFlag;   /* Confine alleles to given range (bound)    */
-    int MutateBounceFlag;    /* Confine alleles to given range (random)   */
-    double MutatePolyEta;    /* Eta for polynomial mutation               */
-    double MutatePolyValue;  /* Value for polynomial mutation             */
-    double TournamentSize;   /* Number of participants in tournament      */
-    int RTRWindowSize;       /* Window for restricted tournament select   */
-    int TournamentWithRepl;  /* Tournament with / without replacement     */
-    int RandomizeSelect;     /* Additional randomisation during select    */
-    int DEVariant;           /* Differential evolution (DE) variant       */
-    int DENumDiffs;          /* Number of differences for DE (1 or 2)     */
-    int DECrossoverType;     /* Crossover type DE                         */
-    int DEDitherPerIndividual; /* Per indidivual or per generation        */
-    double DEDither;         /* Dither value centered around F            */
-    double DEScaleFactor;    /* Scale Factor F for DE                     */
-    double DEAuxFactor;      /* Auxiliary Factor K for DE                 */
-    double DECrossoverProb;  /* Crossover probability Cr for DE           */
-    double DEJitter;         /* Jitter interval DE (uniform dist)         */
-    double DEProbabilityEO;  /* Either-Or-Probability for DE              */
-    double MutateRealValue;  /* Multiplier to mutate Real strings with    */
-    double MutationProb;     /* Starting mutation probability             */
-    double CrossoverProb;    /* Crossover probability                     */
-    double UniformCrossProb; /* Prob of bit select in uniform crossover   */
-    double PTournamentProb;  /* Prob of selection in Prob. Tournament     */
-    double FitnessRankMax;   /* MAX value for use in ranking              */
-    double FitnessCmaxValue; /* Cmax value used to convert minimizations  */
-    double restartAlleleProb;/* prob of changing an allele in a restart   */
-    double TruncProportion;  /* proportion for truncation selection       */
-    int restart;             /* whether to use the restart operator       */
-    int restartFreq;         /* frequency with which to restart           */
-    int *selected;           /* array of indices for selection            */
-    int *sorted;             /* array of sorted individual indices        */
-    size_t nrefdirs;         /* Number of reference directions            */
-    void *refdirs;           /* Reference directions for NSGA-III         */
-    void *normdirs;          /* normalized reference directions           */
-    size_t ndpoints;         /* Number of points in refdir point cloud    */
-    double dirscale;         /* Scale factor for reference directions     */
-    int ndir_npart;          /* Number Das Dennis partitions for refdir   */
-    size_t nrefpoints;       /* Number of reference points                */
-    void *refpoints;         /* Ref points on normalized hyperplane       */
-    void *extreme;           /* Extreme vector for NSGA-III               */
-    int extreme_valid;       /* PGA_TRUE of above is valid                */
-    double *utopian;         /* Utopian vector for NSGA-III               */
-    int utopian_valid;       /* PGA_TRUE of above is valid                */
-    double *nadir;           /* nadir point for NSGA-III                  */
-    double *worst;           /* Worst point discovered so far             */
-    int worst_valid;         /* PGA_TRUE of above is valid                */
-    size_t n_edges;          /* Number of fixed edges                     */
-    int symmetric;           /* Fixed edges are symmetric?                */
-    PGAFixedEdge *edges;     /* Fixed edges for edge crossover            */
-    PGAInteger (*r_edge)[2]; /* Right node + index into edges             */
-    FILE *OutputFile;        /* Output file                               */
-    char *OutFileName;       /* Output filename                           */
-    void *CustomData;        /* For the user, not sent via MPI            */
-    PGAIndividual *oldpop;   /* pointer to population (old)               */
-    PGAIndividual *newpop;   /* pointer to population (new)               */
+    int datatype;            /**< data type: binary, integer, or real       */
+    int optdir;              /**< direction of optimization                 */
+    int tw;                  /**< total number of words, full + partial     */
+    int fw;                  /**< number of full (WL length) words          */
+    int eb;                  /**< number of extra bits in last NOT full word*/
+    int PopSize;             /**< Number of strings to use                  */
+    int NumAuxEval;          /**< Number of auxiliary evaluation values     */
+    int NumConstraint;       /**< Number of constraints                     */
+    int SumConstraints;      /**< PGA_TRUE if no dominance-sorting for
+                                  constraints                               */
+    double Epsilon;          /**< Current epsilon for eps constraints       */
+    double Epsilon_0;        /**< Initial Epsilon for eps constraints       */
+    int EpsilonGeneration;   /**< Max Generation for epsilon constraints    */
+    double EpsilonExponent;  /**< Exponent for tightening epsilon           */
+    double EffEpsExponent;   /**< Effective Exponent for tightening epsilon */
+    int EpsTLambda;          /**< Generation lambda for dynamic exponent    */
+    int EpsilonTheta;        /**< Theta best individual of epsilon init     */
+    int StringLen;           /**< string lengths                            */
+    int StoppingRule;        /**< Termination Criteria                      */
+    int MaxIter;             /**< Maximum number of iterations to run       */
+    int MaxNoChange;         /**< Number of iters with no change before
+                                  stopping                                  */
+    int MaxSimilarity;       /**< Percentage of pop the same before stopping */
+    int NumReplace;          /**< Number of string to replace each gen      */
+    int PopReplace;          /**< Method of choosing ind.s to copy to newpop*/
+    int iter;                /**< iteration (generation) counter            */
+    int last_iter;           /**< Used by selection methods internally      */
+    int perm_idx;            /**< Index into scratch permute array          */
+    int ItersOfSame;         /**< Number of iterations with no change in
+                                  best                                      */
+    int PercentSame;         /**< Percentage of pop that is homogeneous     */
+    int NoDuplicates;        /**< Don't allow duplicate strings             */
+    int CrossoverType;       /**< Type of crossover for genetic algorithm   */
+    int CrossBoundedFlag;    /**< Confine alleles to given range (bound)    */
+    int CrossBounceFlag;     /**< Confine alleles to given range (bounce)   */
+    double CrossSBXEta;      /**< eta value for SBX                         */
+    int CrossSBXOnce;        /**< SBX probability once for whole string     */
+    int SelectType;          /**< Type of selection for genetic algorithm   */
+    int SelectIndex;         /**< index of Select for next two individuals  */
+    int FitnessType;         /**< Type of fitness transformation used       */
+    int FitnessMinType;      /**< Transformation for minimization problems  */
+    int MixingType;          /**< Combination of crossover/mutation         */
+    int MutationType;        /**< Type of mutation used                     */
+    int MutateIntegerValue;  /**< Multiplier to mutate Integer strings with */
+    int MutateBoundedFlag;   /**< Confine alleles to given range (bound)    */
+    int MutateBounceFlag;    /**< Confine alleles to given range (random)   */
+    double MutatePolyEta;    /**< Eta for polynomial mutation               */
+    double MutatePolyValue;  /**< Value for polynomial mutation             */
+    double TournamentSize;   /**< Number of participants in tournament      */
+    int RTRWindowSize;       /**< Window for restricted tournament select   */
+    int TournamentWithRepl;  /**< Tournament with / without replacement     */
+    int RandomizeSelect;     /**< Additional randomisation during select    */
+    int DEVariant;           /**< Differential evolution (DE) variant       */
+    int DENumDiffs;          /**< Number of differences for DE (1 or 2)     */
+    int DECrossoverType;     /**< Crossover type DE                         */
+    int DEDitherPerIndividual; /**< Per indidivual or per generation        */
+    double DEDither;         /**< Dither value centered around F            */
+    double DEScaleFactor;    /**< Scale Factor F for DE                     */
+    double DEAuxFactor;      /**< Auxiliary Factor K for DE                 */
+    double DECrossoverProb;  /**< Crossover probability Cr for DE           */
+    double DEJitter;         /**< Jitter interval DE (uniform dist)         */
+    double DEProbabilityEO;  /**< Either-Or-Probability for DE              */
+    double MutateRealValue;  /**< Multiplier to mutate Real strings with    */
+    double MutationProb;     /**< Starting mutation probability             */
+    double CrossoverProb;    /**< Crossover probability                     */
+    double UniformCrossProb; /**< Prob of bit select in uniform crossover   */
+    double PTournamentProb;  /**< Prob of selection in Prob. Tournament     */
+    double FitnessRankMax;   /**< MAX value for use in ranking              */
+    double FitnessCmaxValue; /**< Cmax value used to convert minimizations  */
+    double restartAlleleProb;/**< prob of changing an allele in a restart   */
+    double TruncProportion;  /**< proportion for truncation selection       */
+    int restart;             /**< whether to use the restart operator       */
+    int restartFreq;         /**< frequency with which to restart           */
+    int *selected;           /**< array of indices for selection            */
+    int *sorted;             /**< array of sorted individual indices        */
+    size_t nrefdirs;         /**< Number of reference directions            */
+    void *refdirs;           /**< Reference directions for NSGA-III         */
+    void *normdirs;          /**< normalized reference directions           */
+    size_t ndpoints;         /**< Number of points in refdir point cloud    */
+    double dirscale;         /**< Scale factor for reference directions     */
+    int ndir_npart;          /**< Number Das Dennis partitions for refdir   */
+    size_t nrefpoints;       /**< Number of reference points                */
+    void *refpoints;         /**< Ref points on normalized hyperplane       */
+    void *extreme;           /**< Extreme vector for NSGA-III               */
+    int extreme_valid;       /**< PGA_TRUE of above is valid                */
+    double *utopian;         /**< Utopian vector for NSGA-III               */
+    int utopian_valid;       /**< PGA_TRUE of above is valid                */
+    double *nadir;           /**< nadir point for NSGA-III                  */
+    double *worst;           /**< Worst point discovered so far             */
+    int worst_valid;         /**< PGA_TRUE of above is valid                */
+    size_t n_edges;          /**< Number of fixed edges                     */
+    int symmetric;           /**< Fixed edges are symmetric?                */
+    PGAFixedEdge *edges;     /**< Fixed edges for edge crossover            */
+    PGAInteger (*r_edge)[2]; /**< Right node + index into edges             */
+    FILE *OutputFile;        /**< Output file                               */
+    char *OutFileName;       /**< Output filename                           */
+    void *CustomData;        /**< For the user, not sent via MPI            */
+    PGAIndividual *oldpop;   /**< pointer to population (old)               */
+    PGAIndividual *newpop;   /**< pointer to population (new)               */
 } PGAAlgorithm;
 
-
-
-/*****************************************
-*        OPERATIONS STRUCTURES           *
-*****************************************/
+/** Typedef for the context, think of this as "self" in OO terms */
 typedef struct PGAContext PGAContext;
+
+/*!***************************************
+ * \brief Operations Structures for C
+ *****************************************/
 typedef struct {
+    /** String creation */
     void         (*CreateString)(PGAContext *, int, int, int);
+    /** Mutation operation */
     int          (*Mutation)(PGAContext *, int, int, double);
+    /** Crossover operation */
     void         (*Crossover)(PGAContext *, int, int, int, int, int, int);
+    /** String (gene) printing */
     void         (*PrintString)(PGAContext *, FILE *, int, int);
+    /** String (gene) copying */
     void         (*CopyString)(PGAContext *, int, int, int, int);
+    /** Duplicate checking */
     int          (*Duplicate)(PGAContext *, int, int, int, int);
+    /** String (gene) initialization */
     void         (*InitString)(PGAContext *, int, int);
+    /** Build MPI Datatype */
     MPI_Datatype (*BuildDatatype)(PGAContext *, int, int);
+    /** Stopping condition checking */
     int          (*StopCond)(PGAContext *);
+    /** End-of-Gene (after Generation) hook */
     void         (*EndOfGen)(PGAContext *);
+    /** Compute genetic distance of two individuals */
     double       (*GeneDistance)(PGAContext *, int, int, int, int);
+    /** Pre-evaluation (start of Generation) hook */
     void         (*PreEval)(PGAContext *, int);
+    /** Hash of an Individual, needed for duplicate checking */
     PGAHash      (*Hash)(PGAContext *, int, int);
+    /** Serialization */
     size_t       (*Serialize)(PGAContext *, int, int, const void **);
+    /** De-serialization */
     void         (*Deserialize)(PGAContext *, int, int, const void *, size_t);
+    /** Freeing a serialized data structure */
     void         (*SerializeFree)(void *);
+    /** Freeing a chromosome */
     void         (*ChromFree)(PGAIndividual *ind);
 } PGACOperations;
 
+/*!*****************************************
+ * \brief Operations Structures for Fortran
+ *******************************************/
 typedef struct {
+    /** Mutation operation */
     int          (*Mutation)(void *, void *, void *, void *);
+    /** Crossover operation */
     void         (*Crossover)(void *, void *, void *, void *, void *, void *, void *);
+    /** String (gene) printing */
     void         (*PrintString)(void *, void *, void *, void *);
+    /** String (gene) copying */
     void         (*CopyString)(void *, void *, void *, void *, void *);
+    /** Duplicate checking */
     int          (*Duplicate)(void *, void *, void *, void *, void *);
+    /** String (gene) initialization */
     void         (*InitString)(void *, void *, void *);
+    /** Stopping condition checking */
     int          (*StopCond)(void *);
+    /** End-of-Gene (after Generation) hook */
     void         (*EndOfGen)(void *);
+    /** Compute genetic distance of two individuals */
     double       (*GeneDistance)(void *, void *, void *, void *, void *);
+    /** Pre-evaluation (start of Generation) hook */
     void         (*PreEval)(void *, void *);
+    /** Hash of an Individual, needed for duplicate checking */
     PGAHash      (*Hash)(void *, void *, void *);
 } PGAFortranOperations;
 
+/** Status during random sampling of k out of n without replacement.
+  */
 typedef struct sample_state_s {
-    int         n;
-    int         k;
-    int         idx;
-    PGAContext *ctx;
+    int         n;   /**< The n in k out of n */
+    int         k;   /**< The k in k out of n */
+    int         idx; /**< Index               */
+    PGAContext *ctx; /**< The context         */
 } PGASampleState;
 
 
-/*****************************************
-*          PARALLEL STRUCTURE            *
-*****************************************/
+/*!***************************************
+ * \brief   Parallel Structure
+ *****************************************/
 typedef struct {
-    int      MPIAlreadyInit;   /* Flag whether MPI was previously initialized*/
-    int      NumIslands;       /* Number of islands in island model          */
-    int      NumDemes;         /* Number of demes in neighborhood model      */
-    MPI_Comm DefaultComm;      /* Default communicator for PGARun            */
-    int      MPIStubLibrary;   /* Boolean: real or stub version of MPI       */
+    int      MPIAlreadyInit;   /**< Flag whether MPI was previously
+                                    initialized                           */
+    int      NumIslands;       /**< Number of islands in island model     */
+    int      NumDemes;         /**< Number of demes in neighborhood model */
+    MPI_Comm DefaultComm;      /**< Default communicator for PGARun       */
+    int      MPIStubLibrary;   /**< Boolean: real or stub version of MPI  */
 } PGAParallel;
 
-/*****************************************
-*          REPORT STRUCTURE              *
-*****************************************/
+/*!***************************************
+ * \brief   Report Structure
+ *****************************************/
 typedef struct {
-     int             PrintFreq;    /* How often to print statistics reports */
-     int             PrintOptions;
-     int             MOPrecision;  /* Precision of multi objective eval     */
-     double         *Offline;      /* One value for each function           */
-     double         *Online;       /* One value for each function           */
-     double         *Average;      /* One value for each function           */
-     double         *Best;         /* One value for each function           */
-     double          MinSumConstr; /* Min Sum of violated constraints       */
-     int            *BestIdx;      /* Indices of best individuals           */
-     int             validcount;   /* # indivs w/o constraint-violations    */
-     int             validonline;  /* cumulated validcount                  */
-     int             validoffline; /* cumulated best indiv valid count      */
-     int             nevals;       /* Number of evaluations                 */
-     time_t          starttime;
+     int             PrintFreq;    /**< How often to print statistics reports */
+     int             PrintOptions; /**< What statistics to print              */
+     int             MOPrecision;  /**< Precision of multi objective eval     */
+     double         *Offline;      /**< One value for each function           */
+     double         *Online;       /**< One value for each function           */
+     double         *Average;      /**< One value for each function           */
+     double         *Best;         /**< One value for each function           */
+     double          MinSumConstr; /**< Min Sum of violated constraints       */
+     int            *BestIdx;      /**< Indices of best individuals           */
+     int             validcount;   /**< Number of individuals without
+                                        constraint-violations                 */
+     int             validonline;  /**< cumulated validcount                  */
+     int             validoffline; /**< cumulated best individual valid count */
+     int             nevals;       /**< Number of evaluations                 */
+     time_t          starttime;    /**< Start time                            */
 } PGAReport;
 
 
-/*****************************************
-*          SYSTEM STRUCTURE              *
-*****************************************/
+/*!***************************************
+ * \brief   System Structure
+ *****************************************/
 typedef struct {
-    int    UserFortran;             /* user routines in Fortran or C?        */
-    int    SetUpCalled;             /* has PGASetUp been called?             */
-    int    PGAMaxInt;               /* largest  int     of machine           */
-    int    PGAMinInt;               /* smallest int     of machine           */
-    double PGAMaxDouble;            /* largest  double  of machine           */
-    double PGAMinDouble;            /* smallest double  of machine           */
+    int    UserFortran;             /**< user routines in Fortran or C? */
+    int    SetUpCalled;             /**< has PGASetUp been called?      */
+    int    PGAMaxInt;               /**< largest  int     of machine    */
+    int    PGAMinInt;               /**< smallest int     of machine    */
+    double PGAMaxDouble;            /**< largest  double  of machine    */
+    double PGAMinDouble;            /**< smallest double  of machine    */
 } PGASystem;
 
 
-/*****************************************
-*          DEBUG STRUCTURE               *
-*****************************************/
+/*!***************************************
+ * \brief   Debug Structure
+ *****************************************/
 typedef struct {
-    int PGADebugFlags[PGA_DEBUG_MAXFLAGS];
+    int PGADebugFlags [PGA_DEBUG_MAXFLAGS]; /**< What debugging to print */
 } PGADebug;
 
-/*****************************************
-*      INITIALIZATION STRUCTURE          *
-*****************************************/
+/*!***************************************
+ * \brief Initialization Structure
+ *****************************************/
 typedef struct {
-    int    RandomInit;             /* flag whether to randomize strings    */
-    double BinaryProbability;      /* probability that a Bit will be 1     */
-    int    RealType;               /* type of real      initialization     */
-    int    IntegerType;            /* type of integer   initialization     */
-    int    CharacterType;          /* type of character initialization     */
-    int    *IntegerMin;            /* minimum of range of integers         */
-    int    *IntegerMax;            /* maximum of range of integers         */
-    double *RealMin;               /* minimum of range of reals            */
-    double *RealMax;               /* maximum of range of reals            */
-    int    RandomSeed;             /* integer to seed random numbers with  */
+    int    RandomInit;             /**< flag whether to randomize strings    */
+    double BinaryProbability;      /**< probability that a Bit will be 1     */
+    int    RealType;               /**< type of real      initialization     */
+    int    IntegerType;            /**< type of integer   initialization     */
+    int    CharacterType;          /**< type of character initialization     */
+    int    *IntegerMin;            /**< minimum of range of integers         */
+    int    *IntegerMax;            /**< maximum of range of integers         */
+    double *RealMin;               /**< minimum of range of reals            */
+    double *RealMax;               /**< maximum of range of reals            */
+    int    RandomSeed;             /**< integer to seed random numbers with  */
 } PGAInitialize;
 
-/*****************************************
-*      SCRATCH DATA STRUCTURES           *
-*****************************************/
+/*!***************************************
+ * \brief Scratch Data Structures.
+ * Used for temporary storage.
+ *****************************************/
 typedef struct {
-    int           *intscratch;         /* integer-scratch space           */
-    int           *permute;            /* For tournament w/o replacement  */
-    double        *dblscratch;         /* double- scratch space           */
-    PGABinary     *dominance;          /* for dominance sorting           */
-    PGAInteger    (*edgemap)[4];       /* For Edge Crossover              */
-    PGAIndividual **hashed;            /* For duplicate checking          */
-    size_t         serialization_size; /* Size for Serialize/Deserialize  */
-    void          *serialized;         /* tmp pointer for serialized data */
+    int           *intscratch;         /**< integer-scratch space           */
+    int           *permute;            /**< For tournament w/o replacement  */
+    double        *dblscratch;         /**< double- scratch space           */
+    PGABinary     *dominance;          /**< for dominance sorting           */
+    PGAInteger    (*edgemap)[4];       /**< For Edge Crossover              */
+    PGAIndividual **hashed;            /**< For duplicate checking          */
+    size_t         serialization_size; /**< Size for Serialize/Deserialize  */
+    void          *serialized;         /**< tmp pointer for serialized data */
 } PGAScratch;
 
-/*****************************************
-*          CONTEXT STRUCTURE             *
-*****************************************/
+/*!****************************************
+ * \brief   Context Structure.
+ * This is the central data structure,
+ * think of it as "self" in OO programming
+ ******************************************/
 struct PGAContext {
-    PGAAlgorithm           ga;
-    PGACOperations         cops;
-    PGAFortranOperations   fops;
-    PGAParallel            par;
-    PGAReport              rep;
-    PGASystem              sys;
-    PGADebug               debug;
-    PGAInitialize          init;
-    PGAScratch             scratch;
+    PGAAlgorithm           ga;        /**< Pointer to algorithm data */
+    PGACOperations         cops;      /**< C-Operations              */
+    PGAFortranOperations   fops;      /**< Fortran-Operations        */
+    PGAParallel            par;       /**< Parallel settings         */
+    PGAReport              rep;       /**< Reporting                 */
+    PGASystem              sys;       /**< System settings           */
+    PGADebug               debug;     /**< Debug printing            */
+    PGAInitialize          init;      /**< Initialization            */
+    PGAScratch             scratch;   /**< Scratch space             */
 };
 
 #if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 /*****************************************
-*          binary.c
-*****************************************/
+ *          binary.c
+ *****************************************/
 
 void PGASetBinaryAllele (PGAContext *ctx, int p, int pop, int i, int val);
 int PGAGetBinaryAllele (PGAContext *ctx, int p, int pop, int i);
@@ -683,8 +801,8 @@ double PGABinaryGeneDistance
     (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 
 /*****************************************
-*          char.c
-*****************************************/
+ *          char.c
+ *****************************************/
 
 void PGASetCharacterAllele (PGAContext *ctx, int p, int pop, int i, char value);
 char PGAGetCharacterAllele (PGAContext *ctx, int p, int pop, int i);
@@ -708,16 +826,16 @@ double PGACharacterGeneDistance
     (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 
 /*****************************************
-*          cmdline.c
-*****************************************/
+ *          cmdline.c
+ *****************************************/
 
 void PGAReadCmdLine( PGAContext *ctx, int *argc, char **argv );
 void PGAParseDebugArg(PGAContext *ctx, char *st);
 void PGAStripArgs(char **argv, int *argc, int *c, int num);
 
 /*****************************************
-*          create.c
-*****************************************/
+ *          create.c
+ *****************************************/
 
 PGAContext *PGACreate ( int *argc, char **argv,
                         int datatype, int len, int maxormin );
@@ -741,8 +859,8 @@ int PGAGetEpsilonTheta (PGAContext *ctx);
 void PGASetOutputFile (PGAContext *ctx, char *filename);
 
 /*****************************************
-*          cross.c
-*****************************************/
+ *          cross.c
+ *****************************************/
 
 void PGACrossover ( PGAContext *ctx, int p1, int p2, int pop1,
                     int c1, int c2, int pop2 );
@@ -764,8 +882,8 @@ void PGACrossoverSBX
     (PGAContext *ctx, double p1, double p2, double u, double *c1, double *c2);
 
 /*****************************************
-*          debug.c
-*****************************************/
+ *          debug.c
+ *****************************************/
 
 void PGASortFuncNameIndex(PGAContext *ctx);
 #if OPTIMIZE==0
@@ -802,8 +920,8 @@ void PGASetDebugFlag66(PGAContext *ctx, int Flag);
 void PGAPrintDebugOptions(PGAContext *ctx);
 
 /*****************************************
-*          duplcate.c
-*****************************************/
+ *          duplcate.c
+ *****************************************/
 
 int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2);
 void PGAChange (PGAContext *ctx, int p, int pop);
@@ -812,8 +930,8 @@ int PGAGetNoDuplicatesFlag (PGAContext *ctx);
 void PGAHashIndividual (PGAContext *ctx, int p, int pop);
 
 /*****************************************
-*          evaluate.c
-*****************************************/
+ *          evaluate.c
+ *****************************************/
 
 /* Macro trickery for optional aux argument */
 /* See https://stackoverflow.com/questions/1472138/c-default-arguments */
@@ -869,8 +987,8 @@ int PGAMapRealToInteger
     (PGAContext *ctx, double r, double l, double u, int a, int b);
 
 /*****************************************
-*          fitness.c
-*****************************************/
+ *          fitness.c
+ *****************************************/
 
 void PGAFitness (PGAContext *ctx, int popindex);
 int PGARank (PGAContext *ctx, int p, int *order, int n);
@@ -885,14 +1003,14 @@ void PGASetFitnessCmaxValue (PGAContext *ctx, double val);
 double PGAGetFitnessCmaxValue (PGAContext *ctx);
 
 /*****************************************
-*          hamming.c
-*****************************************/
+ *          hamming.c
+ *****************************************/
 
 double PGAHammingDistance( PGAContext *ctx, int popindex);
 
 /*****************************************
-*          integer.c
-*****************************************/
+ *          integer.c
+ *****************************************/
 
 void PGASetIntegerAllele (PGAContext *ctx, int p, int pop, int i, int value);
 int PGAGetIntegerAllele (PGAContext *ctx, int p, int pop, int i);
@@ -927,8 +1045,8 @@ double PGAIntegerEuclidianDistance
     (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 
 /*****************************************
-*          linalg.c
-*****************************************/
+ *          linalg.c
+ *****************************************/
 
 int LIN_solve (int n, void *a, double *b);
 void LIN_print_matrix (int n, void *a);
@@ -944,13 +1062,13 @@ double LIN_euclidian_distance (int dim, double *v1, double *v2);
 double LIN_2norm (int dim, double *v);
 
 /*****************************************
-*          mpi_stub.c
-*****************************************/
+ *          mpi_stub.c
+ *****************************************/
 
 
 /*****************************************
-*          mutation.c
-*****************************************/
+ *          mutation.c
+ *****************************************/
 
 int PGAMutate(PGAContext *ctx, int p, int pop);
 void PGASetMutationType( PGAContext *ctx, int mutation_type);
@@ -991,8 +1109,8 @@ void PGASetMutationPolyValue (PGAContext *ctx, double c);
 double PGAGetMutationPolyValue (PGAContext *ctx);
 
 /*****************************************
-*          parallel.c
-*****************************************/
+ *          parallel.c
+ *****************************************/
 
 void PGARunGM
     ( PGAContext *ctx
@@ -1060,8 +1178,8 @@ void PGASetCommunicator (PGAContext *ctx, MPI_Comm comm);
 MPI_Comm PGAGetCommunicator (PGAContext *ctx);
 
 /*****************************************
-*          pga.c
-*****************************************/
+ *          pga.c
+ *****************************************/
 
 void PGARun (PGAContext *ctx,
     double (*evaluate)(PGAContext *c, int p, int pop, double *auxeval));
@@ -1085,8 +1203,8 @@ int PGAGetMutationOnlyFlag (PGAContext *ctx);
 int PGAGetMixingType (PGAContext *ctx);
 
 /*****************************************
-*          pop.c
-*****************************************/
+ *          pop.c
+ *****************************************/
 
 void PGASortPop ( PGAContext *ctx, int pop );
 int PGAGetPopSize (PGAContext *ctx);
@@ -1108,8 +1226,8 @@ void PGASetReferenceDirections
 
 
 /*****************************************
-*          random.c
-*****************************************/
+ *          random.c
+ *****************************************/
 
 int PGARandomFlip ( PGAContext *ctx, double p );
 int PGARandomInterval( PGAContext *ctx, int start, int end);
@@ -1122,8 +1240,8 @@ void PGARandomSampleInit(PGAContext *ctx, PGASampleState *state, int k, int n);
 int PGARandomNextSample(PGASampleState *state);
 
 /*****************************************
-*          real.c
-*****************************************/
+ *          real.c
+ *****************************************/
 
 void PGASetRealAllele (PGAContext *ctx, int p, int pop, int i, double value);
 double PGAGetRealAllele (PGAContext *ctx, int p, int pop, int i);
@@ -1155,8 +1273,8 @@ double PGARealEuclidianDistance
     (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 
 /*****************************************
-*          report.c
-*****************************************/
+ *          report.c
+ *****************************************/
 
 void PGAPrintReport(PGAContext *ctx, FILE *fp, int pop);
 void PGASetPrintOptions (PGAContext *ctx, int option);
@@ -1170,8 +1288,8 @@ void PGAPrintString ( PGAContext *ctx, FILE *file, int p, int pop );
 void PGAPrintContextVariable ( PGAContext *ctx, FILE *fp );
 
 /*****************************************
-*          restart.c
-*****************************************/
+ *          restart.c
+ *****************************************/
 
 void PGARestart(PGAContext *ctx, int source_pop, int dest_pop);
 void PGASetRestartFlag(PGAContext *ctx, int val);
@@ -1182,8 +1300,8 @@ void PGASetRestartAlleleChangeProb(PGAContext *ctx, double prob);
 double PGAGetRestartAlleleChangeProb(PGAContext *ctx);
 
 /*****************************************
-*          select.c
-*****************************************/
+ *          select.c
+ *****************************************/
 
 void PGASelect (PGAContext *ctx, int popix);
 int PGASelectNextIndex (PGAContext *ctx, int popix);
@@ -1209,8 +1327,8 @@ double INDGetAuxTotal (PGAIndividual *ind);
 double PGAGetAuxTotal (PGAContext *ctx, int p, int pop);
 
 /*****************************************
-*          stop.c
-*****************************************/
+ *          stop.c
+ *****************************************/
 
 int PGADone (PGAContext *ctx, MPI_Comm comm);
 int PGACheckStoppingConditions (PGAContext *ctx);
@@ -1223,8 +1341,8 @@ void PGASetMaxSimilarityValue (PGAContext *ctx, int max_similarity);
 int PGAGetMaxSimilarityValue (PGAContext *ctx);
 
 /*****************************************
-*          system.c
-*****************************************/
+ *          system.c
+ *****************************************/
 
 void PGAError (PGAContext *ctx, char *msg,
                int level, int datatype, void *data);
@@ -1238,14 +1356,14 @@ void PGAUsage (PGAContext *ctx);
 void PGAPrintVersionNumber (PGAContext *ctx);
 
 /*****************************************
-*          user.c
-*****************************************/
+ *          user.c
+ *****************************************/
 
 void PGASetUserFunction(PGAContext *ctx, int constant, void *f);
 
 /*****************************************
-*          utility.c
-*****************************************/
+ *          utility.c
+ *****************************************/
 
 double PGAMean (PGAContext *ctx, double *a, int n);
 double PGAStddev (PGAContext *ctx, double *a, int n, double mean);

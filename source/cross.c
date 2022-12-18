@@ -47,7 +47,7 @@ privately owned rights.
 #include "pgapack.h"
 
 /*!***************************************************************************
- *  \defgroup Operators
+ *  \defgroup operators Operators
  *  \brief Genetic Operators used during genetic search
  *****************************************************************************/
 
