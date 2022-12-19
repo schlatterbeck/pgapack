@@ -181,7 +181,7 @@ static void assert_has_edges (PGAContext *ctx, PGAInteger *a)
 
        PGAContext *ctx;
        int p, i;
-       :
+
        PGASetIntegerAllele (ctx, p, PGA_NEWPOP, i, 64)
 
     \endrst
@@ -224,7 +224,7 @@ void PGASetIntegerAllele (PGAContext *ctx, int p, int pop, int i, int val)
 
        PGAContext *ctx;
        int p, i, k;
-       :
+
        k =  PGAGetIntegerAllele (ctx, p, PGA_NEWPOP, i)
 
     \endrst

@@ -75,6 +75,8 @@ exhale_args = {
         PREDEFINED += PGADebugExited(a)
         PREDEFINED += PGACheckDataType(a,b)
         PREDEFINED += INDEX(a,b,c,d)
+        ALIASES  = "rst=\\verbatim embed:rst"
+        ALIASES += "endrst=\\endverbatim"
     """
 }
 
