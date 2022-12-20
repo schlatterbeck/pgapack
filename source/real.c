@@ -1059,7 +1059,7 @@ void PGARealSBXCrossover
 
 /*!****************************************************************************
     \brief Write a real-valued string to a file.
-    \ingroup intern
+    \ingroup internal
 
     \param   ctx  context variable
     \param   fp   file pointer to file to write the string to
@@ -1261,7 +1261,7 @@ void PGARealInitString (PGAContext *ctx, int p, int pop)
 
 /*!****************************************************************************
     \brief Build an MPI datatype for a string.
-    \ingroup intern
+    \ingroup internal
 
     \param   ctx    context variable
     \param   p      index of string
@@ -1314,7 +1314,7 @@ MPI_Datatype PGARealBuildDatatype (PGAContext *ctx, int p, int pop)
 
 /*!****************************************************************************
     \brief Compute genetic difference of two strings.
-    \ingroup intern
+    \ingroup internal
 
     \param   ctx    context variable
     \param   p1     first string index

@@ -374,8 +374,6 @@ PGAFuncRec PGAFuncIndex[] =
 
         /* cmdline.c */
         { "PGAReadCmdLine",                 730 },
-        { "PGAParseDebugArg",               731 },
-        { "PGAStripArgs",                   732 },
 
         /* debug.c */
         { "PGADebugPrint",                  740 },
@@ -1481,8 +1479,6 @@ void PGASetDebugFlag64(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[707] = Flag; /*PGAGetMinMachineDoubleValue*/
    ctx->debug.PGADebugFlags[708] = Flag; /*PGADestroy*/
    ctx->debug.PGADebugFlags[730] = Flag; /*PGAReadCmdLine*/
-   ctx->debug.PGADebugFlags[731] = Flag; /*PGAParseDebugArg*/
-   ctx->debug.PGADebugFlags[732] = Flag; /*PGAStripArgs*/
 }
 
 /*I****************************************************************************

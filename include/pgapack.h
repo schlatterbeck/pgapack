@@ -828,9 +828,7 @@ double PGACharacterGeneDistance
  *          cmdline.c
  *****************************************/
 
-void PGAReadCmdLine( PGAContext *ctx, int *argc, char **argv );
-void PGAParseDebugArg(PGAContext *ctx, char *st);
-void PGAStripArgs(char **argv, int *argc, int *c, int num);
+void PGAReadCmdLine (PGAContext *ctx, int *argc, char **argv);
 
 /*****************************************
  *          create.c

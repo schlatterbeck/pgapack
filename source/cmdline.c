@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -38,45 +38,184 @@ privately owned rights.
 */
 
 /*****************************************************************************
-*     FILE: cmdline.c: This file contains routines needed to parse the
-*                      command line.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+* \file
+* This file contains routines needed to parse the command line.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup cmdline Functions for command line parsing
+ *****************************************************************************/
 
 #include "pgapack.h"
 
 extern char PGAProgram[100];
 #define bad_arg(a)    ( ((a)==NULL) || ((*(a)) == '-') )
 
-/*I****************************************************************************
-   PGAReadCmdLin - Code that looks at the arguments, recognizes any that
-   are for PGAPack, uses the arguments, and removes them from the command
-   line args.
+#if OPTIMIZE==0
+/*!****************************************************************************
+    \brief Routine to parse debug command line options, and set the
+           appropriate debug level (via PGASetDebugLevel).
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      argc - address of the count of the number of command line argumen
-      argv - array of command line arguments
+    \param   ctx  context variable
+    \param   st   debug command line options
+    \return  None
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      void main(int argc, char **argv) {
-          PGAContext *ctx;
-          :
-          PGAReadCmdLine(ctx, &argc, argv);
-      }
+    Internal function.  Called only by PGAReadCmdLine.
 
-****************************************************************************I*/
-void PGAReadCmdLine( PGAContext *ctx, int *argc, char **argv )
+    \endrst
+
+******************************************************************************/
+static void PGAParseDebugArg (PGAContext *ctx, char *st)
+{
+    size_t        index, length = strlen (st);
+    int           num2index = 0, num1index = 0, num1 = 0, num2 = 0, x;
+    char          range = 0, num1ch[4], num2ch[4];
+
+    for (index=0; index<length; index++) {
+        if (!isdigit (st [index]) && st [index] != ',' && st [index] != '-') {
+            PGAError
+                ( ctx, "PGASetDebugLevel: Invalid Debug Value:"
+                , PGA_FATAL, PGA_CHAR, (void *) st
+                );
+        }
+        if (st [index] == '-') {
+            range = 1;
+            num1ch [num1index] = '\0';
+            num1 = atoi (num1ch);
+            if (num1 < 0 || num1 > PGA_DEBUG_MAXFLAGS) {
+                PGAError
+                    ( ctx, "PGASetDebugLevel: Lower Limit Out of Range:"
+                    , PGA_FATAL, PGA_INT, (void *) &num1
+                    );
+            }
+            num1index = 0;
+        } else {
+            if (isdigit(st[index])) {
+                if (range) {
+                    num2ch [num2index++] = st [index];
+                } else {
+                    num1ch [num1index++] = st [index];
+                }
+            }
+            if (st[index] == ',' || index == length) {
+                if (range) {
+                    num2ch [num2index] = '\0';
+                    num2 = atoi (num2ch);
+                    if (num2 < 0 || num2 > PGA_DEBUG_MAXFLAGS) {
+                        PGAError
+                            ( ctx
+                            , "PGASetDebugLevel: Upper Limit Out of Range:"
+                            , PGA_FATAL, PGA_INT, (void *) &num2
+                            );
+                    }
+                    if (num1 <= num2) {
+                        for (x = num1; x <= num2; x++) {
+                            if (x == 212) {
+                                fprintf (stdout, "%s %s\n", num1ch, num2ch);
+                            }
+                            PGASetDebugLevel (ctx, x);
+                        }
+                    } else {
+                        PGAError
+                            ( ctx
+                            , "PGASetDebugLevel: Lower Limit Exceeds Upper:"
+                            , PGA_FATAL, PGA_INT, (void *) &num1
+                            );
+                    }
+                    num2index = 0;
+                    range = 0;
+                } else {
+                    num1ch [num1index] = '\0';
+                    num1 = atoi (num1ch);
+                    if (num1 < 0 || num1 > PGA_DEBUG_MAXFLAGS) {
+                        PGAError
+                            ( ctx
+                            , "PGASetDebugLevel: Debug Number Out of Range:"
+                            , PGA_FATAL, PGA_INT, (void *) &num1
+                            );
+                    }
+                    if (num1 == 212) {
+                        fprintf (stdout, "%s\n", num1ch);
+                    }
+
+                    PGASetDebugLevel (ctx, num1);
+                    num1index = 0;
+                }
+            }
+        }
+    }
+}
+#endif
+
+/*!****************************************************************************
+    \brief Code to strip arguments out of command list.
+    \ingroup internal
+
+    \param   argc  address of the count of the number of command line arguments
+    \param   argv  array of command line arguments
+    \param   c     current command-line index
+    \param   num   number of args to strip
+    \return  None
+    \rst
+
+    Description
+    -----------
+
+    Internal function.  Called only by PGAReadCmdLine.
+
+    \endrst
+
+******************************************************************************/
+static void PGAStripArgs (char **argv, int *argc, int *c, int num)
+{
+    char **a;
+    int i;
+
+    /* Strip out the argument. */
+    for (a = argv, i = (*c); i <= *argc; i++, a++)
+        *a = (*(a + num));
+    (*argc) -= num;
+}
+
+/*!****************************************************************************
+    \brief Code that looks at the arguments, recognizes any that are for
+           PGAPack, uses the arguments, and removes them from the
+           command line args.
+    \ingroup cmdline
+
+    \param   ctx   context variable
+    \param   argc  address of the count of the number of command line argumen
+    \param   argv  array of command line arguments
+    \return  None
+    \rst
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       int main (int argc, char **argv)
+       {
+           PGAContext *ctx;
+
+           PGAReadCmdLine (ctx, &argc, argv);
+       }
+
+    \endrst
+
+******************************************************************************/
+void PGAReadCmdLine (PGAContext *ctx, int *argc, char **argv)
 {
     int c;
     char *s, **a;
 
-     
     /* Put name of called program (according to the args) into PGAProgram */
     s = strrchr (*argv, '/');
     if (s) {
@@ -129,130 +268,4 @@ void PGAReadCmdLine( PGAContext *ctx, int *argc, char **argv )
             }
         }
     }
-}
-
-#if OPTIMIZE==0
-/*I****************************************************************************
-   PGAParseDebugArg - routine to parse debug command line options, and set
-   the appropriate debug level (via PGASetDebugLevel).
-
-   Inputs:
-      ctx - context variable
-      st  - debug command line options
-
-   Outputs:
-      None
-
-   Example:
-      Internal function.  Called only by PGAReadCmdLine.
-
-****************************************************************************I*/
-void PGAParseDebugArg (PGAContext *ctx, char *st)
-{
-    size_t        index, length = strlen (st);
-    int           num2index = 0, num1index = 0, num1 = 0, num2 = 0, x;
-    char          range = 0, num1ch[4], num2ch[4];
-
-    for (index=0; index<length; index++) {
-        if (!isdigit (st [index]) && st [index] != ',' && st [index] != '-') {
-            PGAError (ctx, "PGASetDebugLevel: Invalid Debug Value:",
-                      PGA_FATAL, PGA_CHAR, (void *) st);
-        }
-        if (st [index] == '-') {
-            range = 1;
-            num1ch [num1index] = '\0';
-            num1 = atoi (num1ch);
-            if (num1 < 0 || num1 > PGA_DEBUG_MAXFLAGS) {
-                PGAError
-                    ( ctx, "PGASetDebugLevel: Lower Limit Out of Range:"
-                    , PGA_FATAL, PGA_INT, (void *) &num1
-                    );
-            }
-            num1index = 0;
-        } else {
-            if (isdigit(st[index])) {
-                if (range) {
-                    num2ch [num2index++] = st [index];
-                } else {
-                    num1ch [num1index++] = st [index];
-                }
-            }
-            if (st[index] == ',' || index == length) {
-                if (range) {
-                    num2ch [num2index] = '\0';
-                    num2 = atoi (num2ch);
-                    if (num2 < 0 || num2 > PGA_DEBUG_MAXFLAGS) {
-                        PGAError
-                            ( ctx
-                            , "PGASetDebugLevel: Upper Limit Out of Range:"
-                            , PGA_FATAL, PGA_INT, (void *) &num2
-                            );
-                    }
-                    if (num1 <= num2) {
-                        for (x = num1; x <= num2; x++) {
-                            if (x == 212) {
-                                fprintf
-                                    ( stdout
-                                    , "%s %s\n", num1ch, num2ch
-                                    );
-                            }
-                            PGASetDebugLevel (ctx, x);
-                        }
-                    } else {
-                        PGAError
-                            ( ctx
-                            , "PGASetDebugLevel: Lower Limit Exceeds Upper:"
-                            , PGA_FATAL, PGA_INT, (void *) &num1
-                            );
-                    }
-                    num2index = 0;
-                    range = 0;
-                } else {
-                    num1ch [num1index] = '\0';
-                    num1 = atoi (num1ch);
-                    if (num1 < 0 || num1 > PGA_DEBUG_MAXFLAGS) {
-                        PGAError
-                            ( ctx
-                            , "PGASetDebugLevel: Debug Number Out of Range:"
-                            , PGA_FATAL, PGA_INT, (void *) &num1
-                            );
-                    }
-                    if (num1 == 212) {
-                        fprintf (stdout, "%s\n", num1ch);
-                    }
-
-                    PGASetDebugLevel (ctx, num1);
-                    num1index = 0;
-                }
-            }
-        }
-    }
-}
-#endif
-
-/*I****************************************************************************
-   PGAStripArgs - code to strip arguments out of command list
-
-   Inputs:
-      argc - address of the count of the number of command line arguments
-      argv - array of command line arguments
-      c    -
-      num  -
-
-   Outputs:
-      None
-
-   Example:
-      Internal function.  Called only by PGAReadCmdLine.
-
-****************************************************************************I*/
-void PGAStripArgs(char **argv, int *argc, int *c, int num)
-{
-    char **a;
-    int i;
-
-    /* Strip out the argument. */
-    for (a = argv, i = (*c); i <= *argc; i++, a++)
-        *a = (*(a + num));
-    (*argc) -= num;
 }
