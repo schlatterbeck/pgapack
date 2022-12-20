@@ -38,11 +38,12 @@ privately owned rights.
 */
 
 /*****************************************************************************
-*     FILE: create.c: This file contains functions to create and initialize
-*                     data structures and populations.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+* \file
+* This file contains functions to create and initialize data structures
+* and populations.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include <stdint.h>
@@ -54,60 +55,66 @@ static void ChromFree (PGAIndividual *ind)
     free (ind->chrom);
 }
 
-/*U****************************************************************************
-  PGACreate - creates an uninitialized context variable.  The Fortran version
-  of this function call contains only the last three arguments
+/*!****************************************************************************
+    \brief Create an uninitialized context variable.
+    \ingroup init
 
-  Category: Generation
+    \param   argc      Address of the count of the number of command
+                       line arguments
+    \param   argv      Array of command line arguments
+    \param   datatype  The data type used for the strings.  Must be one
+                       of PGA_DATATYPE_BINARY, PGA_DATATYPE_CHARACTER,
+                       PGA_DATATYPE_INTEGER, PGA_DATATYPE_REAL, or
+                       PGA_DATATYPE_USER to specify binary-valued,
+                       character-valued, integer-valued, real-valued,
+                       or a user-defined datatype, respectively
+    \param   len       The string length (number of genes)
+    \param   maxormin  The direction of optimization. Must be one of
+                       PGA_MAXIMIZE or PGA_MINIMIZE for maximization or
+                       minimization, respectively.
+    \return  A pointer to the context variable
+    \rst
 
-  Inputs:
-     argc     - address of the count of the number of command line arguments.
-     argv     - array of command line arguments.
-     datatype - the data type used for the strings.  Must be one of
-                PGA_DATATYPE_BINARY, PGA_DATATYPE_CHARACTER,
-                PGA_DATATYPE_INTEGER, PGA_DATATYPE_REAL, or PGA_DATATYPE_USER
-                to specify binary-valued, character-valued, integer-valued,
-                real-valued, or a user-defined datatype, respectively.
-     len      - the string length (number of genes).
-     maxormin - the direction of optimization. Must be one of PGA_MAXIMIZE or
-                PGA_MINIMIZE for maximization or minimization, respectively.
+    Description
+    -----------
 
-  Outputs:
-     A pointer to the context variable.
+    The Fortran version of this function call contains only the last
+    three arguments.
 
-  Example:
+    Example
+    -------
 
-     In C:
-     void main(int argc, char **argv) {
-         PGAContext *ctx;
-         :
-         ctx = PGACreate(&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
-         :
-         //  Set options here
-         :
-         PGASetUp(ctx);
-         :
-         //  Run the GA here
-         :
-         PGADestroy(ctx);
-     }
+    In C:
 
-     In FORTRAN:
-             integer ctx
-             :
-             ctx = PGACreate(PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE)
-             :
-     c       Set options here
-             :
-             call PGASetUp(ctx)
-             :
-     c       Run the GA here
-             :
-             call PGADestroy(ctx)
-             stop
-             end
+    .. code-block:: c
 
-****************************************************************************U*/
+      void main (int argc, char **argv) {
+          PGAContext *ctx;
+
+          ctx = PGACreate (&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
+          //  Set options here
+          PGASetUp (ctx);
+          //  Run the GA here
+          PGADestroy (ctx);
+      }
+
+    In Fortran:
+
+    .. code-block:: fortran
+
+               integer ctx
+
+               ctx = PGACreate(PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE)
+       c       Set options here
+               call PGASetUp(ctx)
+       c       Run the GA here
+               call PGADestroy(ctx)
+               stop
+               end
+
+    \endrst
+
+******************************************************************************/
 PGAContext *PGACreate
     (int *argc, char **argv, int datatype, int len, int maxormin)
 {
@@ -453,32 +460,36 @@ PGAContext *PGACreate
     return (ctx);
 }
 
+/*!****************************************************************************
+    \brief Set all uninitialized variables to default values and
+           initialize some internal arrays.
+    \ingroup init
 
-/*U****************************************************************************
-  PGASetUp - set all uninitialized variables to default values and initialize
-  some internal arrays.  Must be called after PGACreate() and before the GA
-  is started.
+    \param   ctx  context variable
+    \return  Uninitialized values in the context variable are set to
+             defaults, and set values are checked for legality
+    \rst
 
-  Category: Generation
+    Description
+    -----------
 
-  Inputs:
-     ctx - context variable
+    Must be called after PGACreate() and before the GA is started.
 
-  Outputs:
-     Uninitialized values in the context variable are set to defaults, and
-     set values are checked for legality.
+    Example
+    -------
 
-  Example:
-     PGAContext *ctx;
-     :
-     PGACreate(ctx, ...);
-     :
-     //  Set options here
-     :
-     PGASetUp(ctx);
+    .. code-block:: c
 
-****************************************************************************U*/
-void PGASetUp ( PGAContext *ctx )
+       PGAContext *ctx;
+
+       PGACreate (ctx, ...);
+       //  Set options here
+       PGASetUp (ctx);
+
+    \endrst
+
+******************************************************************************/
+void PGASetUp (PGAContext *ctx)
 {
     /*  These are for temporary storage of datatype specific functions.
      *  They allow some (understatement of the year!!) cleaning of the
@@ -689,7 +700,7 @@ void PGASetUp ( PGAContext *ctx )
     }
 
     if (ctx->ga.SumConstraints == PGA_UNINITIALIZED_INT) {
-        ctx->ga.SumConstraints = PGA_FALSE;
+        ctx->ga.SumConstraints = PGA_TRUE;
     }
 
     if (ctx->ga.MaxIter == PGA_UNINITIALIZED_INT) {
@@ -1506,28 +1517,35 @@ void PGASetUp ( PGAContext *ctx )
     PGADebugExited ("PGASetUp");
 }
 
-/*U****************************************************************************
-   PGASetRandomInitFlag - A boolean flag to indicate whether to randomly
-   initialize alleles.  Legal values are PGA_TRUE and PGA_FALSE.  Default
-   is PGA_TRUE -- randomly initialize alleles.
+/*!****************************************************************************
+    \brief A boolean flag to indicate whether to randomly initialize
+           alleles.
+    \ingroup init
 
-   Category: Initialization
+    \param   ctx   context variable
+    \param   flag  either PGA_TRUE or PGA_FALSE
+    \return  None
+    \rst
 
-   Inputs:
-      ctx  - context variable
-      flag - either PGA_TRUE or PGA_FALSE
+    Description
+    -----------
 
-   Outputs:
-      None
+    Legal values are PGA_TRUE and PGA_FALSE.  Default
+    is PGA_TRUE: randomly initialize alleles.
 
-   Example:
-      Set the initialization routine to initialize all alleles to zero
+    Example
+    -------
 
-      PGAContext *ctx;
-      :
-      PGASetRandomInitFlag(ctx,PGA_FALSE);
+    Set the initialization routine to initialize all alleles to zero:
 
-****************************************************************************U*/
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetRandomInitFlag (ctx,PGA_FALSE);
+    \endrst
+
+******************************************************************************/
 void PGASetRandomInitFlag(PGAContext *ctx, int RandomBoolean)
 {
     PGADebugEntered("PGASetRandomInitFlag");
@@ -1546,34 +1564,37 @@ void PGASetRandomInitFlag(PGAContext *ctx, int RandomBoolean)
     PGADebugExited("PGASetRandomInitFlag");
 }
 
-/*U***************************************************************************
-   PGAGetRandomInitFlag - returns true/false to indicate whether or not
-   alleles are randomly initialized.
+/*!***************************************************************************
+    \brief Return true/false to indicate whether or not alleles are
+           randomly initialized.
+    \ingroup query
 
-   Category: Initialization
+    \param   ctx  context variable
+    \return  Return PGA_TRUE if alleles are randomly initialized,
+             otherwise return PGA_FALSE
+    \rst
 
-   Inputs:
-      ctx - context variable
+    Example
+    -------
 
-   Outputs:
-      Returns PGA_TRUE if alleles are randomly initialized.
-      Otherwise, returns PGA_FALSE
+    .. code-block:: c
 
-   Example:
-      PGAContext *ctx;
-      int raninit;
-      :
-      raninit = PGAGetRandomInitFlag(ctx);
-      switch (raninit) {
-      case PGA_TRUE:
-          printf ("Population is randomly initialized\n");
-          break;
-      case PGA_FALSE:
-          printf ("Population initialized to zero\n");
-          break;
-      }
+       PGAContext *ctx;
+       int raninit;
 
-***************************************************************************U*/
+       raninit = PGAGetRandomInitFlag (ctx);
+       switch (raninit) {
+       case PGA_TRUE:
+           printf ("Population is randomly initialized\n");
+           break;
+       case PGA_FALSE:
+           printf ("Population initialized to zero\n");
+           break;
+       }
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetRandomInitFlag (PGAContext *ctx)
 {
     PGADebugEntered("PGAGetRandomInitFlag");
@@ -1586,23 +1607,28 @@ int PGAGetRandomInitFlag (PGAContext *ctx)
 }
 
 
-/*I****************************************************************************
-  PGACreatePop - allocates a population of individuals and calls
-  PGACreateIndividual to set up each one
+/*!****************************************************************************
+    \brief Allocate a population of individuals and calls
+           PGACreateIndividual to set up each one
+    \ingroup internal
 
-  Inputs:
-     ctx - context variable
-     pop - symbolic constant of the population to create
+    \param   ctx  context variable
+    \param   pop  symbolic constant of the population to create
+    \return  None
+    \rst
 
-  Outputs:
-     None
+    Example
+    -------
 
-  Example:
-     PGAContext *ctx;
-     :
-     PGACreatePop(ctx, PGA_NEWPOP);
+    .. code-block:: c
 
-****************************************************************************I*/
+       PGAContext *ctx;
+
+       PGACreatePop (ctx, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
 void PGACreatePop (PGAContext *ctx, int pop)
 {
     int p, flag = 0;
@@ -1654,29 +1680,32 @@ void PGACreatePop (PGAContext *ctx, int pop)
     PGADebugExited("PGACreatePop");
 }
 
+/*!****************************************************************************
+    \brief Initialize to zero various data structures of an individual
+           and call the appropriate function to create and initialize
+           the string for the specific data type
+    \ingroup internal
 
-/*I****************************************************************************
-  PGACreateIndividual - initialize to zero various data structures of an
-  individual and call the appropriate function to create and initialize the
-  string for the specific data type
+    \param   ctx       Context variable
+    \param   p         String index
+    \param   pop       Symbolic constant of the population string p is in
+    \param   initflag  If the value is PGA_TRUE, the string is randomly
+                       initialized, otherwise it is set to zero
+    \return  None
+    \rst
 
-  Inputs:
-     ctx      - context variable
-     p        - string index
-     pop      - symbolic constant of the population string p is in
-     initflag - if the value is PGA_TRUE, the string is randomly initialized.
-                Otherwise it is set to zero.
+    Example
+    -------
 
-  Outputs:
-     None
+    .. code-block:: c
 
-  Example:
-     PGAContext *ctx;
-     int p;
-     :
-     PGACreateIndividual(ctx, p, PGA_NEWPOP, PGA_TRUE);
+       PGAContext *ctx;
+       int p;
 
-****************************************************************************I*/
+       PGACreateIndividual (ctx, p, PGA_NEWPOP, PGA_TRUE);
+    \endrst
+
+******************************************************************************/
 void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
 {
     PGAIndividual *ind = PGAGetIndividual(ctx, p, pop);
@@ -1722,22 +1751,26 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
     PGADebugExited("PGACreateIndividual");
 }
 
-/*I****************************************************************************
-  PGASetNumAuxEval - initialize the number of auxiliary evaluations
+/*!****************************************************************************
+    \brief Initialize the number of auxiliary evaluations
+    \ingroup init
 
-  Inputs:
-     ctx      - context variable
-     n        - Number of auxiliary evaluations.
+    \param   ctx       context variable
+    \param   n         Number of auxiliary evaluations
+    \return  None
+    \rst
 
-  Outputs:
-     None
+    Example
+    -------
 
-  Example:
-     PGAContext *ctx;
-     :
-     PGASetNumAuxEval(ctx, 5);
+    .. code-block:: c
 
-****************************************************************************I*/
+       PGAContext *ctx;
+
+       PGASetNumAuxEval (ctx, 5);
+    \endrst
+
+******************************************************************************/
 void PGASetNumAuxEval (PGAContext *ctx, int n)
 {
     PGADebugEntered("PGASetNumAuxEval");
@@ -1752,45 +1785,59 @@ void PGASetNumAuxEval (PGAContext *ctx, int n)
     PGADebugExited("PGASetNumAuxEval");
 }
 
-/*I****************************************************************************
-  PGAGetNumAuxEval - Get the number of auxiliary evaluations
+/*!****************************************************************************
+    \brief Get the number of auxiliary evaluations
+    \ingroup query
 
-  Inputs:
-     ctx      - context variable
+    \param   ctx       context variable
+    \return  Number of auxiliary evaluations
+    \rst
 
-  Outputs:
-     Number of auxiliary evaluations
+    Example
+    -------
 
-  Example:
-     PGAContext *ctx;
-     int num;
-     :
-     num = PGAGetNumAuxEval(ctx);
+    .. code-block:: c
 
-****************************************************************************I*/
+       PGAContext *ctx;
+       int num;
+
+       num = PGAGetNumAuxEval (ctx);
+
+    \endrst
+
+******************************************************************************/
 int PGAGetNumAuxEval (PGAContext *ctx)
 {
     return ctx->ga.NumAuxEval;
 }
 
-/*I****************************************************************************
-  PGASetNumConstraint - initialize the number of constraints
-  The maximum number of constraints (and the default) is the number of
-  Auxiliary evaluations, see PGASetNumAuxEval above.
+/*!****************************************************************************
+    \brief Initialize the number of constraints.
+    \ingroup init
 
-  Inputs:
-     ctx      - context variable
-     n        - Number of constraints
+    \param   ctx       context variable
+    \param   n         Number of constraints
+    \return  None
+    \rst
 
-  Outputs:
-     None
+    Description
+    -----------
 
-  Example:
-     PGAContext *ctx;
-     :
-     PGASetNumConstraint (ctx, 5);
+    The maximum number of constraints (and the default) is the number of
+    Auxiliary evaluations, see PGASetNumAuxEval above.
 
-****************************************************************************I*/
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetNumConstraint (ctx, 5);
+
+    \endrst
+
+******************************************************************************/
 void PGASetNumConstraint (PGAContext *ctx, int n)
 {
     PGADebugEntered("PGASetNumConstraint");
@@ -1805,49 +1852,66 @@ void PGASetNumConstraint (PGAContext *ctx, int n)
     PGADebugExited("PGASetNumConstraint");
 }
 
-/*I****************************************************************************
-  PGAGetNumConstraint - Get the number of constraints
+/*!****************************************************************************
+    \brief Get the number of constraints.
+    \ingroup query
 
-  Inputs:
-     ctx      - context variable
+    \param   ctx       context variable
+    \return  Number of constraints
+    \rst
 
-  Outputs:
-     Number of constraints
+    Example
+    -------
 
-  Example:
-     PGAContext *ctx;
-     int num;
-     :
-     num = PGAGetNumConstraint (ctx);
+    .. code-block:: c
 
-****************************************************************************I*/
+       PGAContext *ctx;
+       int num;
+
+       num = PGAGetNumConstraint (ctx);
+
+    \endrst
+
+******************************************************************************/
 int PGAGetNumConstraint (PGAContext *ctx)
 {
     return ctx->ga.NumConstraint;
 }
 
-/*I****************************************************************************
-  PGASetSumConstraintsFlag - Configure if constraints are summed for
-  minimization or use NSGA-II for optimization. This only has an effect
-  if the NSGA-II replacement scheme is configured. In that case, using
-  NSGA-II nondominated sorting for constraint optimization is the
-  default. If the default is turned off by setting this configuration to
-  PGA_TRUE, constraints are summed and the sum in minimized. The latter
-  is also used when NSGA-II replacement is not in use.
+/*!****************************************************************************
+    \brief Configure if constraints are summed for minimization or use
+           nondominated sorting for optimization.
+    \ingroup init
 
-  Inputs:
-     ctx      - context variable
-     n        - PGA_TRUE or PGA_FALSE
+    \param   ctx       context variable
+    \param   n         PGA_TRUE or PGA_FALSE
+    \return  None
+    \rst
 
-  Outputs:
-     None
+    Description
+    -----------
 
-  Example:
-     PGAContext *ctx;
-     :
-     PGASetSumConstraintsFlag (ctx, PGA_FALSE);
+    This only has an effect if the NSGA-II or NSGA-III replacement
+    scheme is configured. In that case, using nondominated sorting for
+    constraint optimization can be turned on by this option. By default
+    constraints are summed and the sum in minimized. This is also done
+    if no NSGA replacement scheme is in use. If summing is disabled by
+    setting this configuration to PGA_FALSE, constraints are minimized
+    using nondominated sorting. Note that nondominated sorting for
+    constrains may not work very well on many problems.
 
-****************************************************************************I*/
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetSumConstraintsFlag (ctx, PGA_FALSE);
+
+    \endrst
+
+******************************************************************************/
 void PGASetSumConstraintsFlag (PGAContext *ctx, int n)
 {
     PGADebugEntered("PGASetSumConstraintsFlag");
@@ -1863,91 +1927,115 @@ void PGASetSumConstraintsFlag (PGAContext *ctx, int n)
     PGADebugExited("PGASetSumConstraintsFlag");
 }
 
-/*I****************************************************************************
-  PGAGetSumConstraintsFlag - Query if constraints are summed or optimized by
-  NSGA-II nondominated sorting
+/*!****************************************************************************
+    \brief Query if constraints are summed or optimized by NSGA-II
+           nondominated sorting
+    \ingroup query
 
-  Inputs:
-     ctx      - context variable
+    \param   ctx       context variable
+    \return  sum constraints flag
+    \rst
 
-  Outputs:
-     PGAGetSumConstraintsFlag
+    Example
+    -------
 
-  Example:
-     PGAContext *ctx;
-     int n;
-     :
-     n = PGAGetSumConstraintsFlag (ctx);
+    .. code-block:: c
 
-****************************************************************************I*/
+       PGAContext *ctx;
+       int n;
+
+       n = PGAGetSumConstraintsFlag (ctx);
+
+    \endrst
+
+******************************************************************************/
 int PGAGetSumConstraintsFlag (PGAContext *ctx)
 {
     return ctx->ga.SumConstraints;
 }
 
-/*I****************************************************************************
-  PGASetEpsilonGeneration - Configure the generation until which
-  constraints are relaxed via the Epsilon Contraint method. The default
-  is 0 (no Epsilon Contraint method is used).
+/*!****************************************************************************
+    \brief Configure the generation until which constraints are relaxed
+           via the Epsilon Contraint method.
+    \ingroup init
 
-  Inputs:
-     ctx      - context variable
-     gen      - Epsilon contraint generation, must be below the value
-                set with PGASetMaxGAIterValue
 
-  Outputs:
-     None
+    \param   ctx       context variable
+    \param   gen       Epsilon contraint generation, must be below the value
+                       set with PGASetMaxGAIterValue
+    \return  None
+    \rst
 
-  Example:
-     PGAContext *ctx;
-     :
-     PGASetEpsilonGeneration (ctx, 50);
+    Description
+    -----------
 
-****************************************************************************I*/
+    The default is 0 (no Epsilon Contraint method is used).
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetEpsilonGeneration (ctx, 50);
+
+    \endrst
+
+******************************************************************************/
 void PGASetEpsilonGeneration (PGAContext *ctx, int gen)
 {
     ctx->ga.EpsilonGeneration = gen;
 }
 
-/*I****************************************************************************
-  PGAGetEpsilonGeneration - Get value of the generation until which
-  constraints are relaxed via the Epsilon Contraint method.
+/*!****************************************************************************
+    \brief Get value of the generation until which constraints are
+           relaxed via the Epsilon Contraint method.
+    \ingroup query
 
-  Inputs:
-     ctx      - context variable
+    \param   ctx       context variable
+    \return  The epsilon generation
+    \rst
 
-  Outputs:
-     PGAGetEpsilonGeneration
+    Example
+    -------
 
-  Example:
-     PGAContext *ctx;
-     int n;
-     :
-     n = PGAGetEpsilonGeneration (ctx);
+    .. code-block:: c
 
-****************************************************************************I*/
+       PGAContext *ctx;
+       int n;
+
+       n = PGAGetEpsilonGeneration (ctx);
+
+    \endrst
+
+******************************************************************************/
 int PGAGetEpsilonGeneration (PGAContext *ctx)
 {
     return ctx->ga.EpsilonGeneration;
 }
 
-/*I****************************************************************************
-  PGASetEpsilonExponent - Configure the exponent of the term computing
-  the expsilon value in each generation.
+/*!****************************************************************************
+    \brief Configure the exponent of the term computing the epsilon
+           value in each generation.
+    \ingroup init
 
-  Inputs:
-     ctx      - context variable
-     e        - Exponent
+    \param   ctx       context variable
+    \param   e         Exponent
+    \return  None
+    \rst
 
-  Outputs:
-     None
+    Example
+    -------
 
-  Example:
-     PGAContext *ctx;
-     :
-     PGASetEpsilonExponent (ctx, 5);
+    .. code-block:: c
 
-****************************************************************************I*/
+       PGAContext *ctx;
+
+       PGASetEpsilonExponent (ctx, 5);
+    \endrst
+
+******************************************************************************/
 void PGASetEpsilonExponent (PGAContext *ctx, double e)
 {
     /* Note that in some papers the recommended minimum is 3 while in
@@ -1962,46 +2050,60 @@ void PGASetEpsilonExponent (PGAContext *ctx, double e)
     ctx->ga.EpsilonExponent = e;
 }
 
-/*I****************************************************************************
-  PGAGetEpsilonExponent - Get the exponent used for epsilon constraints
+/*!****************************************************************************
+    \brief Get the exponent used for epsilon constraints
+    \ingroup query
 
-  Inputs:
-     ctx      - context variable
+    \param   ctx       context variable
+    \return  The epsilon exponent
+    \rst
 
-  Outputs:
-     PGAGetEpsilonExponent
+    Example
+    -------
 
-  Example:
-     PGAContext *ctx;
-     double e;
-     :
-     e = PGAGetEpsilonExponent (ctx);
+    .. code-block:: c
 
-****************************************************************************I*/
+       PGAContext *ctx;
+       double e;
+
+       e = PGAGetEpsilonExponent (ctx);
+    \endrst
+
+******************************************************************************/
 double PGAGetEpsilonExponent (PGAContext *ctx)
 {
     return ctx->ga.EpsilonExponent;
 }
 
-/*I****************************************************************************
-  PGASetEpsilonTheta - Set the theta generation value that is used for
-  initializing the epsilon constraint. The initial population is sorted
-  by constraint violation and the individual with index theta is used
-  for initializing the epsilon_0 for the epsilon constraint method.
+/*!****************************************************************************
+    \brief Set the theta generation value that is used for initializing
+           the epsilon constraint.
+    \ingroup init
 
-  Inputs:
-     ctx      - context variable
-     n        - population index theta
+    Inputs:
+    \param   ctx       context variable
+    \param   n         population index theta
+    \return  None
+    \rst
 
-  Outputs:
-     None
+    Description
+    -----------
 
-  Example:
-     PGAContext *ctx;
-     :
-     PGASetEpsilonTheta (ctx, n);
+    The initial population is sorted by constraint violation and the
+    individual with index theta is used for initializing the epsilon_0
+    for the epsilon constraint method.
 
-****************************************************************************I*/
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetEpsilonTheta (ctx, n);
+    \endrst
+
+******************************************************************************/
 void PGASetEpsilonTheta (PGAContext *ctx, int n)
 {
     if (n < 1) {
@@ -2012,47 +2114,59 @@ void PGASetEpsilonTheta (PGAContext *ctx, int n)
     ctx->ga.EpsilonTheta = n;
 }
 
-/*I****************************************************************************
-  PGAGetEpsilonTheta - Query the population index for initializing
-  epsilon for the epsilon constraint method.
+/*!****************************************************************************
+    \brief Query the population index for initializing epsilon for the
+           epsilon constraint method.
+    \ingroup query
 
-  Inputs:
-     ctx      - context variable
+    \param   ctx       context variable
+    \return  The epsilon theta
+    \rst
 
-  Outputs:
-     PGAGetEpsilonTheta
+    Example
+    -------
 
-  Example:
-     PGAContext *ctx;
-     int n;
-     :
-     n = PGAGetEpsilonTheta (ctx);
+    .. code-block:: c
 
-****************************************************************************I*/
+       PGAContext *ctx;
+       int n;
+
+       n = PGAGetEpsilonTheta (ctx);
+    \endrst
+
+******************************************************************************/
 int PGAGetEpsilonTheta (PGAContext *ctx)
 {
     return ctx->ga.EpsilonTheta;
 }
 
-/*I****************************************************************************
-  PGASetOutputFile - Set output file name for printing statistics etc.
+/*!****************************************************************************
+    \brief Set output file name for printing statistics etc.
+    \ingroup init
+
+    \param   ctx       context variable
+    \param   name      output filename
+    \return  None
+    \rst
+
+    Description
+    -----------
+
     Note that the file is not immediately opened, instead it is later
     opened in the rank 0 individual.
 
-  Inputs:
-     ctx      - context variable
-     name     - output filename
+    Example
+    -------
 
-  Outputs:
-     None
+    .. code-block:: c
 
-  Example:
-     PGAContext *ctx;
-     char *name = "output.file";
-     :
-     PGASetOutputFile (ctx, name);
+       PGAContext *ctx;
+       char *name = "output.file";
 
-****************************************************************************I*/
+       PGASetOutputFile (ctx, name);
+    \endrst
+
+******************************************************************************/
 void PGASetOutputFile (PGAContext *ctx, char *name)
 {
     char *n = malloc (strlen (name) + 1);
@@ -2065,4 +2179,3 @@ void PGASetOutputFile (PGAContext *ctx, char *name)
     strcpy (n, name);
     ctx->ga.OutFileName = n;
 }
-

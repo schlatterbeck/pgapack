@@ -299,7 +299,7 @@ void PGASetRealInitRange (PGAContext *ctx, const double *min, const double *max)
 /*!***************************************************************************
     \brief Returns the minimum value used to randomly initialize allele
            i in a real string.
-    \ingroup init
+    \ingroup query
 
     \param   ctx  context variable
     \param   i    an allele position
@@ -339,7 +339,7 @@ double PGAGetMinRealInitValue (PGAContext *ctx, int i)
 /*!***************************************************************************
     \brief Return the maximum value used to randomly initialize allele i
            in a real string.
-    \ingroup init
+    \ingroup query
 
     \param   ctx  context variable
     \param   i    an allele position
@@ -379,7 +379,7 @@ double PGAGetMaxRealInitValue (PGAContext *ctx, int i)
 /*!***************************************************************************
     \brief Return the type of scheme used to randomly initialize strings
            of data type PGA_DATATYPE_REAL.
-    \ingroup init
+    \ingroup query
 
     \param  ctx  context variable
     \return Returns the integer corresponding to the symbolic constant

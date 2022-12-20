@@ -380,7 +380,7 @@ void PGASetIntegerInitRange (PGAContext *ctx, const int *min, const int *max)
 /*!***************************************************************************
     \brief Return the type of scheme used to randomly initialize strings
            of data type PGA_DATATYPE_INTEGER.
-    \ingroup init
+    \ingroup query
 
     \param    ctx  context variable
     \return Returns the integer corresponding to the symbolic constant
@@ -422,7 +422,7 @@ int PGAGetIntegerInitType (PGAContext *ctx)
 /*!***************************************************************************
     \brief Return the minimum of the range of integers used to randomly
            initialize integer strings.
-    \ingroup init
+    \ingroup query
 
     \param   ctx  context variable
     \param   i    Index of the initialization range
@@ -464,7 +464,7 @@ int PGAGetMinIntegerInitValue (PGAContext *ctx, int i)
 /*!***************************************************************************
     \brief return the maximum of the range of integers used to randomly
            initialize integer strings.
-    \ingroup init
+    \ingroup query
 
     \param   ctx  context variable
     \param   i    Index of the initialization range

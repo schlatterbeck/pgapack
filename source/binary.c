@@ -56,6 +56,10 @@ privately owned rights.
  *  \brief Functions used to change initialization
  *****************************************************************************/
 /*!***************************************************************************
+ *  \defgroup query Query parameters
+ *  \brief Functions to query PGA parameters
+ *****************************************************************************/
+/*!***************************************************************************
  *  \defgroup explicit Functions for explicit usage
  *  \brief See description of explicit usage in user guide
  *****************************************************************************/
@@ -224,7 +228,7 @@ void PGASetBinaryInitProb (PGAContext *ctx, double p)
 /*!***************************************************************************
     \brief Returns the probability that an allele will be randomly
            initialized to "1" in a PGA_DATATYPE_BINARY string.
-    \ingroup init
+    \ingroup query
 
     \param  ctx - context variable
     \return The probability that a bit will be randomly initialized to one

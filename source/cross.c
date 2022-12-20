@@ -129,7 +129,7 @@ void PGACrossover ( PGAContext *ctx, int p1, int p2, int pop1,
 
 /*!***************************************************************************
     \brief Returns the type of crossover selected.
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx context variable
     \return Returns the integer corresponding to the symbolic constant
@@ -180,7 +180,7 @@ int PGAGetCrossoverType (PGAContext *ctx)
 
 /*!***************************************************************************
     \brief Returns the crossover probability.
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx context variable
     \return The crossover probability
@@ -214,7 +214,7 @@ double PGAGetCrossoverProb (PGAContext *ctx)
     \brief Returns the probability of an allele being selected from the
            first child string in uniform crossover.
 
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx context variable
     \return The uniform crossover probability
@@ -247,7 +247,7 @@ double PGAGetUniformCrossoverProb (PGAContext *ctx)
 /*!****************************************************************************
     \brief Specify the type of crossover to use.
            The default is PGA_CROSSOVER_TWOPT.
-    \ingroup Operators
+    \ingroup operators
 
     \param ctx            context variable
     \param crossover_type symbolic constant to specify crossover type
@@ -295,7 +295,7 @@ void PGASetCrossoverType (PGAContext *ctx, int crossover_type)
     \brief Set Probability that a selected string will undergo crossover.
            The default is 0.85.
 
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx  context variable
     \param  p    the crossover probability
@@ -337,7 +337,7 @@ void PGASetCrossoverProb (PGAContext *ctx, double p)
            allele value value be selected from a particular parent. The
            default is 0.6.
 
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx  context variable
     \param  p    the crossover probability
@@ -383,7 +383,7 @@ void PGASetUniformCrossoverProb (PGAContext *ctx, double p)
            strings with simulated binary crossover (SBX) crossed over
            values that exceed the bounds are confined to the bounds by
            setting them to the boundary.
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx   context variable
     \param  flag  either PGA_TRUE or PGA_FALSE
@@ -420,7 +420,7 @@ void PGASetCrossoverBoundedFlag (PGAContext *ctx, int flag)
 /*!****************************************************************************
     \brief Returns PGA_TRUE or PGA_FALSE to indicate whether crossed
            over strings remain in the range specified.
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx  context variable
     \returns  PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
@@ -451,7 +451,7 @@ int PGAGetCrossoverBoundedFlag (PGAContext *ctx)
            values that exceed the bounds are confined to the bounds by
            bouncing them back to a random value between the boundary and
            the neares parent.
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx   context variable
     \param  flag  either PGA_TRUE or PGA_FALSE
@@ -488,7 +488,7 @@ void PGASetCrossoverBounceBackFlag (PGAContext *ctx, int flag)
 /*!****************************************************************************
     \brief Returns PGA_TRUE or PGA_FALSE to indicate whether crossed
            over strings are bounced back when exceeding the bounds.
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx  context variable
     \return  PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
@@ -516,7 +516,7 @@ int PGAGetCrossoverBounceBackFlag (PGAContext *ctx)
 /*!****************************************************************************
     \brief Set the eta parameter for simulated binary crossover (SBX).
 
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx   context variable
     \param  eta   eta >= 0
@@ -547,7 +547,7 @@ void PGASetCrossoverSBXEta (PGAContext *ctx, double eta)
 /*!****************************************************************************
     \brief Return SBX eta value.
 
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx  context variable
     \return  The SBX eta value
@@ -575,7 +575,7 @@ double PGAGetCrossoverSBXEta (PGAContext *ctx)
 /*!****************************************************************************
     \brief Compute random number for SBX polynomial distribution only
            once per string/individual.
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx   context variable
     \param  val   PGA_TRUE or PGA_FALSE, default is PGA_FALSE
@@ -612,7 +612,7 @@ void PGASetCrossoverSBXOncePerString (PGAContext *ctx, int val)
 /*!****************************************************************************
     \brief Return SBX setting if random number for SBX polynomial
            distribution is computed once per string.
-    \ingroup Operators
+    \ingroup operators
 
     \param  ctx  context variable
     \return The SBX once-per-string value

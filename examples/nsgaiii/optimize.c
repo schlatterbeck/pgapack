@@ -98,6 +98,7 @@ int main (int argc, char **argv)
     PGASetMaxGAIterValue          (ctx, maxiter);
     PGASetNumAuxEval              (ctx, problem->nfunc - 1);
     PGASetNumConstraint           (ctx, problem->nconstraint);
+    PGASetSumConstraintsFlag      (ctx, PGA_FALSE);
     PGASetNoDuplicatesFlag        (ctx, PGA_TRUE);
     PGASetMutationBounceBackFlag  (ctx, PGA_TRUE);
     if (refdir) {
