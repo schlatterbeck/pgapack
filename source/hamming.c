@@ -38,42 +38,51 @@ privately owned rights.
 */
 
 /*****************************************************************************
-*     FILE: hamming.c: This file contains the routines that have to do with
-*                      Hamming distances.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle
+* \file
+* This file contains the routines that have to do with Hamming distances.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle
 *****************************************************************************/
 
 #include "pgapack.h"
 
-/*U****************************************************************************
-  PGAHammingDistance - Calculates the mean Hamming distance for a population
-  of binary strings.  For all other data types returns a value of 0.0 and
-  prints a warning message.
+/*!****************************************************************************
+    \brief Calculates the mean Hamming distance for a population of
+           binary strings.
+    \ingroup explicit
 
-  Category: Utility
+    \param  ctx       context variable
+    \param  popindex  symbolic constant of the population for which the
+                      Hamming distance is to be calculated
+    \return The mean Hamming distance in the population
+    \rst
 
-  Inputs:
-      ctx      - context variable
-      popindex - symbolic constant of the population for which the
-                 Hamming distance is to be calculated
-  Output:
-      The mean Hamming distance in the population
+    Description
+    -----------
 
-  Example:
-      PGAContext *ctx;
-      double hd;
-      :
-      hd = PGAHammingDistance(ctx, PGA_NEWPOP);
+    For all other data types except binary strings returns a value of
+    0.0 and prints a warning message.
 
-****************************************************************************U*/
-double PGAHammingDistance( PGAContext *ctx, int popindex)
+    Example
+    -------
+
+    .. code-block:: c
+
+        PGAContext *ctx;
+        double hd;
+
+        hd = PGAHammingDistance (ctx, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+double PGAHammingDistance (PGAContext *ctx, int popindex)
 {
     int i, j, hd, count=0;
     double avg_hd = 0.;
     PGAIndividual *pop = NULL; /* pointer to appropriate population          */
 
-    PGADebugEntered("PGAHammingDistance");
+    PGADebugEntered ("PGAHammingDistance");
 
     switch (popindex) {
     case PGA_OLDPOP:
@@ -83,64 +92,69 @@ double PGAHammingDistance( PGAContext *ctx, int popindex)
         pop = ctx->ga.newpop;
         break;
     default:
-        PGAError( ctx, "PGAHammingDistance: Invalid value of popindex:",
-                  PGA_FATAL, PGA_INT, (void *) &popindex );
+        PGAError
+            ( ctx, "PGAHammingDistance: Invalid value of popindex:"
+            , PGA_FATAL, PGA_INT, (void *) &popindex
+            );
         break;
     }
 
     switch (ctx->ga.datatype) {
     case PGA_DATATYPE_BINARY:
-        for(i=0; i<ctx->ga.PopSize-1; ++i)
-            for ( j = i+1; j<ctx->ga.PopSize; ++j ) {
+        for (i=0; i<ctx->ga.PopSize-1; ++i) {
+            for (j = i+1; j<ctx->ga.PopSize; ++j) {
                 count++;
-                hd = PGABinaryHammingDistance( ctx,
-                                            (pop+i)->chrom, (pop+j)->chrom );
+                hd = PGABinaryHammingDistance
+                    (ctx, (pop+i)->chrom, (pop+j)->chrom);
                 avg_hd += (double) hd;
             }
+        }
         avg_hd /= (double) count;
         break;
     case PGA_DATATYPE_INTEGER:
         avg_hd = 0.0;
-        PGAError( ctx,
-        "PGAHammingDistance: No Hamming Distance for PGA_DATATYPE_INTEGER ",
-                  PGA_WARNING,
-                  PGA_DOUBLE,
-                  (void *) &avg_hd );
+        PGAError
+            ( ctx
+            , "PGAHammingDistance: "
+              "No Hamming Distance for PGA_DATATYPE_INTEGER "
+            , PGA_WARNING, PGA_DOUBLE, (void *) &avg_hd
+            );
         break;
     case PGA_DATATYPE_REAL:
         avg_hd = 0;
-        PGAError( ctx,
-        "PGAHammingDistance: No Hamming Distance for PGA_DATATYPE_REAL ",
-                  PGA_WARNING,
-                  PGA_DOUBLE,
-                  (void *) &avg_hd );
+        PGAError
+            ( ctx
+            , "PGAHammingDistance: No Hamming Distance for PGA_DATATYPE_REAL "
+            , PGA_WARNING, PGA_DOUBLE, (void *) &avg_hd
+            );
         break;
     case PGA_DATATYPE_CHARACTER:
         avg_hd = 0;
-        PGAError( ctx,
-        "PGAHammingDistance: No Hamming Distance for PGA_DATATYPE_CHARACTER ",
-                  PGA_WARNING,
-                  PGA_DOUBLE,
-                  (void *) &avg_hd );
+        PGAError
+            ( ctx
+            , "PGAHammingDistance: "
+              "No Hamming Distance for PGA_DATATYPE_CHARACTER "
+            , PGA_WARNING, PGA_DOUBLE, (void *) &avg_hd
+            );
         break;
     case PGA_DATATYPE_USER:
         avg_hd = 0;
-        PGAError( ctx,
-        "PGAHammingDistance: No Hamming Distance for PGA_DATATYPE_USER ",
-                  PGA_WARNING,
-                  PGA_DOUBLE,
-                  (void *) &avg_hd );
+        PGAError
+            ( ctx
+            , "PGAHammingDistance: No Hamming Distance for PGA_DATATYPE_USER "
+            , PGA_WARNING, PGA_DOUBLE, (void *) &avg_hd
+            );
         break;
     default:
-        PGAError( ctx,
-                 "PGAHammingDistance: Invalid value of datatype:",
-                  PGA_FATAL,
-                  PGA_INT,
-                  (void *) &(ctx->ga.datatype) );
+        PGAError
+            ( ctx
+            , "PGAHammingDistance: Invalid value of datatype:"
+            , PGA_FATAL, PGA_INT, (void *) &(ctx->ga.datatype)
+            );
         break;
     }
 
-    PGADebugExited("PGAHammingDistance");
+    PGADebugExited ("PGAHammingDistance");
 
-    return(avg_hd);
+    return avg_hd;
 }
