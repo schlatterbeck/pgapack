@@ -102,12 +102,17 @@ extern "C" {
 #else
 #undef OPTIMIZE
 #define OPTIMIZE 1
-#define PGADebugPrint(a,b,c,x,y,z) ;
-#define PGADebugEntered(a) ;
-#define PGADebugExited(a) ;
-#define PGAFailIfNotSetUp(Name)  ;
-#define PGAFailIfSetUp(Name)  ;
-#define PGACheckDataType(Name, DataType) ;
+#define PGADebugPrint(a,b,c,x,y,z)
+#define PGADebugEntered(a)
+#define PGADebugExited(a)
+#define PGAFailIfNotSetUp(Name)
+#define PGAFailIfSetUp(Name)
+#define PGACheckDataType(Name, DataType)
+#define PGASortFuncNameIndex(ctx)
+#define PGASetDebugLevel(ctx,l)
+#define PGAClearDebugLevel(ctx,l)
+#define PGASetDebugLevelByName(ctx,l)
+#define PGAClearDebugLevelByName(ctx,l)
 #endif
 
 /*****************************************
@@ -834,10 +839,10 @@ void PGAReadCmdLine (PGAContext *ctx, int *argc, char **argv);
  *          create.c
  *****************************************/
 
-PGAContext *PGACreate ( int *argc, char **argv,
-                        int datatype, int len, int maxormin );
-void PGASetUp ( PGAContext *ctx );
-void PGASetRandomInitFlag(PGAContext *ctx, int RandomBoolean);
+PGAContext *PGACreate
+    (int *argc, char **argv, int datatype, int len, int maxormin);
+void PGASetUp (PGAContext *ctx);
+void PGASetRandomInitFlag (PGAContext *ctx, int RandomBoolean);
 int PGAGetRandomInitFlag (PGAContext *ctx);
 void PGASetNumAuxEval (PGAContext *ctx, int n);
 int PGAGetNumAuxEval (PGAContext *ctx);
@@ -880,39 +885,18 @@ void PGACrossoverSBX
  *          debug.c
  *****************************************/
 
-void PGASortFuncNameIndex(PGAContext *ctx);
 #if OPTIMIZE==0
-void PGADebugPrint( PGAContext *ctx, int level, char *funcname,
-                   char *msg, int datatype, void *data );
+void PGASortFuncNameIndex (PGAContext *ctx);
+void PGADebugPrint
+    ( PGAContext *ctx, int level
+    , char *funcname, char *msg, int datatype, void *data
+    );
+void PGASetDebugLevel (PGAContext *ctx, int level);
+void PGAClearDebugLevel (PGAContext *ctx, int level);
+void PGASetDebugLevelByName (PGAContext *ctx, char *funcname);
+void PGAClearDebugLevelByName (PGAContext *ctx, char *funcname);
 #endif
-void PGASetDebugLevel(PGAContext *ctx, int level);
-void PGAClearDebugLevel(PGAContext *ctx, int level);
-void PGASetDebugLevelByName(PGAContext *ctx, char *funcname);
-void PGAClearDebugLevelByName(PGAContext *ctx, char *funcname);
-int PGAGetDebugLevelOfName(PGAContext *ctx, char *funcname);
-int PGAGetDebugFlag(PGAContext *ctx, char *funcname);
-void PGASetDebugFlag11(PGAContext *ctx, int Flag);
-void PGASetDebugFlag20(PGAContext *ctx, int Flag);
-void PGASetDebugFlag21(PGAContext *ctx, int Flag);
-void PGASetDebugFlag30(PGAContext *ctx, int Flag);
-void PGASetDebugFlag32(PGAContext *ctx, int Flag);
-void PGASetDebugFlag34(PGAContext *ctx, int Flag);
-void PGASetDebugFlag36(PGAContext *ctx, int Flag);
-void PGASetDebugFlag40(PGAContext *ctx, int Flag);
-void PGASetDebugFlag42(PGAContext *ctx, int Flag);
-void PGASetDebugFlag44(PGAContext *ctx, int Flag);
-void PGASetDebugFlag46(PGAContext *ctx, int Flag);
-void PGASetDebugFlag48(PGAContext *ctx, int Flag);
-void PGASetDebugFlag50(PGAContext *ctx, int Flag);
-void PGASetDebugFlag52(PGAContext *ctx, int Flag);
-void PGASetDebugFlag54(PGAContext *ctx, int Flag);
-void PGASetDebugFlag56(PGAContext *ctx, int Flag);
-void PGASetDebugFlag58(PGAContext *ctx, int Flag);
-void PGASetDebugFlag60(PGAContext *ctx, int Flag);
-void PGASetDebugFlag62(PGAContext *ctx, int Flag);
-void PGASetDebugFlag64(PGAContext *ctx, int Flag);
-void PGASetDebugFlag66(PGAContext *ctx, int Flag);
-void PGAPrintDebugOptions(PGAContext *ctx);
+void PGAPrintDebugOptions (PGAContext *ctx);
 
 /*****************************************
  *          duplcate.c

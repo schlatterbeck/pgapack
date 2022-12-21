@@ -144,12 +144,10 @@ PGAContext *PGACreate
     }
 
 
-#if OPTIMIZE==0
     /*  Sort the FuncNameIndex.  This allows us to use a binary search
      *  for finding the function names.
      */
     PGASortFuncNameIndex (ctx);
-#endif
 
     /* Initialize debug flags, then parse command line arguments.  */
     for (i=0; i<PGA_DEBUG_MAXFLAGS; i++) {
