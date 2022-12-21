@@ -46,7 +46,7 @@ privately owned rights.
 *****************************************************************************/
 /*!***************************************************************************
  *  \defgroup evaluation Evaluation
- *  \brief Functions used during evaluation
+ *  \brief Functions used during evaluation and fitness computation
  *****************************************************************************/
 
 #include "pgapack.h"

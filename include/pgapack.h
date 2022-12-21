@@ -1,6 +1,6 @@
 /*!****************************************************************************
 * \file
-* \brief This file contains all constant and structure definitions definitions
+* \brief This file contains all constant and structure definitions
 *        for PGAPack as well as all function declarations.
 * \authors David M. Levine, Philip L. Hallstrom, David M. Noelle,
 *          Brian P. Walenz, Ralf Schlatterbeck
