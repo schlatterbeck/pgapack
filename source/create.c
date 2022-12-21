@@ -1681,22 +1681,24 @@ void PGASetUp (PGAContext *ctx)
     \endrst
 
 ******************************************************************************/
-void PGASetRandomInitFlag(PGAContext *ctx, int RandomBoolean)
+void PGASetRandomInitFlag (PGAContext *ctx, int flag)
 {
-    PGADebugEntered("PGASetRandomInitFlag");
-    PGAFailIfSetUp("PGASetRandomInitFlag");
+    PGADebugEntered ("PGASetRandomInitFlag");
+    PGAFailIfSetUp  ("PGASetRandomInitFlag");
 
-  switch (RandomBoolean) {
+    switch (flag) {
     case PGA_TRUE:
     case PGA_FALSE:
-      ctx->init.RandomInit = RandomBoolean;
+      ctx->init.RandomInit = flag;
       break;
     default:
-      PGAError(ctx, "PGASetRandomInitFlag: Invalid value of RandomBoolean:",
-               PGA_FATAL, PGA_INT, (void *) &RandomBoolean);
+      PGAError
+        ( ctx, "PGASetRandomInitFlag: Invalid value of flag:"
+        , PGA_FATAL, PGA_INT, (void *) &flag
+        );
       break;
     }
-    PGADebugExited("PGASetRandomInitFlag");
+    PGADebugExited ("PGASetRandomInitFlag");
 }
 
 /*!***************************************************************************

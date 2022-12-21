@@ -82,7 +82,7 @@ privately owned rights.
     \param pop symbolic constant of the population the string is in
     \param i   allele index
     \param val binary value (either 1 or 0) to set the allele to
-    \return The allele is changed by side-effect.
+    \return The allele is changed by side-effect
     \rst
 
     Example
