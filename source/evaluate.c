@@ -907,10 +907,6 @@ void PGAEncodeIntegerAsGrayCode
 double PGAMapIntegerToReal (PGAContext *ctx, int v, int a, int b, double l,
                             double u)
 {
-    PGADebugEntered("PGAMapIntegerToReal");
-
-    PGADebugExited("PGAMapIntegerToReal");
-
     double retval = ((v-a) * (u-l) / (b-a) + l);
     /* This may exceed the upper bound due to imprecision */
     if (retval > u)
@@ -948,10 +944,6 @@ double PGAMapIntegerToReal (PGAContext *ctx, int v, int a, int b, double l,
 int PGAMapRealToInteger(PGAContext *ctx, double r, double l, double u, int a,
                         int b)
 {
-    PGADebugEntered("PGAMapRealToInteger");
-
-    PGADebugExited("PGAMapRealToInteger");
-
      return PGARound(ctx, (b - a) * (r - l) / (u - l) + a);
 }
 

@@ -187,8 +187,6 @@ PGAFuncRec PGAFuncIndex[] =
         /* create.c */
         { "PGACreate",                      300 },
         { "PGASetUp",                       301 },
-        { "PGACreatePop",                   302 },
-        { "PGACreateIndividual",            303 },
         { "PGAGetRandomInitFlag",           304 },
         { "PGASetRandomInitFlag",           305 },
         { "PGASetNumAuxEval",               306 },
@@ -1128,8 +1126,6 @@ void PGASetDebugFlag40(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[270] = Flag; /*PGASetCharacterInitType*/
    ctx->debug.PGADebugFlags[300] = Flag; /*PGACreate*/
    ctx->debug.PGADebugFlags[301] = Flag; /*PGASetUp*/
-   ctx->debug.PGADebugFlags[302] = Flag; /*PGACreatePop*/
-   ctx->debug.PGADebugFlags[303] = Flag; /*PGACreateIndividual*/
    ctx->debug.PGADebugFlags[304] = Flag; /*PGAGetRandomInitFlag*/
    ctx->debug.PGADebugFlags[305] = Flag; /*PGASetRandomInitFlag*/
    ctx->debug.PGADebugFlags[150] = Flag; /*PGAIntegerCreateString*/

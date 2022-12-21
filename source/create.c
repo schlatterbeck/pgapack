@@ -461,6 +461,143 @@ PGAContext *PGACreate
 }
 
 /*!****************************************************************************
+    \brief Initialize to zero various data structures of an individual
+           and call the appropriate function to create and initialize
+           the string for the specific data type
+    \ingroup internal
+
+    \param   ctx       Context variable
+    \param   p         String index
+    \param   pop       Symbolic constant of the population string p is in
+    \param   initflag  If the value is PGA_TRUE, the string is randomly
+                       initialized, otherwise it is set to zero
+    \return  None
+    \rst
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int p;
+
+       PGACreateIndividual (ctx, p, PGA_NEWPOP, PGA_TRUE);
+    \endrst
+
+******************************************************************************/
+static
+void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
+{
+    PGAIndividual *ind = PGAGetIndividual(ctx, p, pop);
+
+    ind->ctx              = ctx;
+    ind->index            = p;
+    ind->pop              = pop == PGA_OLDPOP ? ctx->ga.oldpop : ctx->ga.newpop;
+    ind->evalue           = 0.0;
+    ind->fitness          = 0.0;
+    ind->evaluptodate     = PGA_FALSE;
+    ind->auxtotal         = 0.0;
+    ind->auxtotalok       = PGA_FALSE;
+    ind->rank             = UINT_MAX;
+    ind->crowding         = 0;
+    ind->funcidx          = 0;
+    ind->distance         = 0;
+    ind->point_idx        = 0;
+    ind->next_hash        = NULL;
+    if (ctx->ga.NumAuxEval) {
+        ind->auxeval = malloc (sizeof (double) * ctx->ga.NumAuxEval);
+        if (ind->auxeval == NULL) {
+            PGAError(ctx, "PGACreateIndividual: Failed to allocate auxeval",
+                     PGA_FATAL, PGA_VOID, NULL);
+        }
+    } else {
+        ind->auxeval = NULL;
+    }
+    if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_III) {
+        int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
+        ind->normalized = malloc (sizeof (double) * dim);
+        if (ind->normalized == NULL) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normalized point");
+        }
+        memset (ind->normalized, 0, sizeof (double) * dim);
+    } else {
+        ind->normalized = NULL;
+    }
+
+    (*ctx->cops.CreateString)(ctx, p, pop, initflag);
+}
+
+/*!****************************************************************************
+    \brief Allocate a population of individuals and calls
+           PGACreateIndividual to set up each one
+    \ingroup internal
+
+    \param   ctx  context variable
+    \param   pop  symbolic constant of the population to create
+    \return  None
+    \rst
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGACreatePop (ctx, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+static
+void PGACreatePop (PGAContext *ctx, int pop)
+{
+    int p, flag = 0;
+
+    switch (pop) {
+    case PGA_OLDPOP:
+        ctx->ga.oldpop = (PGAIndividual *)malloc
+            (sizeof(PGAIndividual) *
+                                                   (ctx->ga.PopSize + 2));
+        if (ctx->ga.oldpop == NULL) {
+            PGAError
+                ( ctx, "PGACreatePop: No room to allocate ctx->ga.oldpop"
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+        }
+        memset
+            (ctx->ga.oldpop, 0, sizeof(PGAIndividual) * (ctx->ga.PopSize + 2));
+        flag = ctx->init.RandomInit;
+        break;
+    case PGA_NEWPOP:
+        ctx->ga.newpop = (PGAIndividual *)malloc
+            (sizeof (PGAIndividual) * (ctx->ga.PopSize + 2));
+        if (ctx->ga.newpop == NULL) {
+            PGAError
+                ( ctx, "PGACreatePop: No room to allocate ctx->ga.newpop"
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+        }
+        memset
+            (ctx->ga.newpop, 0, sizeof(PGAIndividual) * (ctx->ga.PopSize + 2));
+        flag = PGA_FALSE;
+        break;
+    default:
+        PGAError
+            ( ctx, "PGACreatePop: Invalid value of pop:"
+            , PGA_FATAL, PGA_INT, (void *) &pop
+            );
+        break;
+    };
+    for (p=0; p<ctx->ga.PopSize; p++) {
+        PGACreateIndividual (ctx, p, pop, flag);
+    }
+    PGACreateIndividual (ctx, PGA_TEMP1, pop, PGA_FALSE);
+    PGACreateIndividual (ctx, PGA_TEMP2, pop, PGA_FALSE);
+}
+
+/*!****************************************************************************
     \brief Set all uninitialized variables to default values and
            initialize some internal arrays.
     \ingroup init
@@ -1604,151 +1741,6 @@ int PGAGetRandomInitFlag (PGAContext *ctx)
     PGADebugExited("PGAGetRandomInitFlag");
 
     return(ctx->init.RandomInit);
-}
-
-
-/*!****************************************************************************
-    \brief Allocate a population of individuals and calls
-           PGACreateIndividual to set up each one
-    \ingroup internal
-
-    \param   ctx  context variable
-    \param   pop  symbolic constant of the population to create
-    \return  None
-    \rst
-
-    Example
-    -------
-
-    .. code-block:: c
-
-       PGAContext *ctx;
-
-       PGACreatePop (ctx, PGA_NEWPOP);
-
-    \endrst
-
-******************************************************************************/
-void PGACreatePop (PGAContext *ctx, int pop)
-{
-    int p, flag = 0;
-
-    PGADebugEntered("PGACreatePop");
-
-    switch (pop)
-    {
-    case PGA_OLDPOP:
-        ctx->ga.oldpop = (PGAIndividual *)malloc
-            (sizeof(PGAIndividual) *
-                                                   (ctx->ga.PopSize + 2));
-        if (ctx->ga.oldpop == NULL) {
-            PGAError
-                ( ctx, "PGACreatePop: No room to allocate ctx->ga.oldpop"
-                , PGA_FATAL, PGA_VOID, NULL
-                );
-        }
-        memset
-            (ctx->ga.oldpop, 0, sizeof(PGAIndividual) * (ctx->ga.PopSize + 2));
-        flag = ctx->init.RandomInit;
-        break;
-    case PGA_NEWPOP:
-        ctx->ga.newpop = (PGAIndividual *)malloc
-            (sizeof (PGAIndividual) * (ctx->ga.PopSize + 2));
-        if (ctx->ga.newpop == NULL) {
-            PGAError
-                ( ctx, "PGACreatePop: No room to allocate ctx->ga.newpop"
-                , PGA_FATAL, PGA_VOID, NULL
-                );
-        }
-        memset
-            (ctx->ga.newpop, 0, sizeof(PGAIndividual) * (ctx->ga.PopSize + 2));
-        flag = PGA_FALSE;
-        break;
-    default:
-        PGAError
-            ( ctx, "PGACreatePop: Invalid value of pop:"
-            , PGA_FATAL, PGA_INT, (void *) &pop
-            );
-        break;
-    };
-    for (p=0; p<ctx->ga.PopSize; p++) {
-        PGACreateIndividual (ctx, p, pop, flag);
-    }
-    PGACreateIndividual (ctx, PGA_TEMP1, pop, PGA_FALSE);
-    PGACreateIndividual (ctx, PGA_TEMP2, pop, PGA_FALSE);
-
-    PGADebugExited("PGACreatePop");
-}
-
-/*!****************************************************************************
-    \brief Initialize to zero various data structures of an individual
-           and call the appropriate function to create and initialize
-           the string for the specific data type
-    \ingroup internal
-
-    \param   ctx       Context variable
-    \param   p         String index
-    \param   pop       Symbolic constant of the population string p is in
-    \param   initflag  If the value is PGA_TRUE, the string is randomly
-                       initialized, otherwise it is set to zero
-    \return  None
-    \rst
-
-    Example
-    -------
-
-    .. code-block:: c
-
-       PGAContext *ctx;
-       int p;
-
-       PGACreateIndividual (ctx, p, PGA_NEWPOP, PGA_TRUE);
-    \endrst
-
-******************************************************************************/
-void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
-{
-    PGAIndividual *ind = PGAGetIndividual(ctx, p, pop);
-
-    PGADebugEntered("PGACreateIndividual");
-
-    ind->ctx              = ctx;
-    ind->index            = p;
-    ind->pop              = pop == PGA_OLDPOP ? ctx->ga.oldpop : ctx->ga.newpop;
-    ind->evalue           = 0.0;
-    ind->fitness          = 0.0;
-    ind->evaluptodate     = PGA_FALSE;
-    ind->auxtotal         = 0.0;
-    ind->auxtotalok       = PGA_FALSE;
-    ind->rank             = UINT_MAX;
-    ind->crowding         = 0;
-    ind->funcidx          = 0;
-    ind->distance         = 0;
-    ind->point_idx        = 0;
-    ind->next_hash        = NULL;
-    if (ctx->ga.NumAuxEval) {
-        ind->auxeval = malloc (sizeof (double) * ctx->ga.NumAuxEval);
-        if (ind->auxeval == NULL) {
-            PGAError(ctx, "PGACreateIndividual: Failed to allocate auxeval",
-                     PGA_FATAL, PGA_VOID, NULL);
-        }
-    } else {
-        ind->auxeval = NULL;
-    }
-    if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_III) {
-        int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
-        ind->normalized = malloc (sizeof (double) * dim);
-        if (ind->normalized == NULL) {
-            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normalized point");
-        }
-        memset (ind->normalized, 0, sizeof (double) * dim);
-    } else {
-        ind->normalized = NULL;
-    }
-
-    (*ctx->cops.CreateString)(ctx, p, pop, initflag);
-
-    PGADebugExited("PGACreateIndividual");
 }
 
 /*!****************************************************************************

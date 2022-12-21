@@ -839,8 +839,6 @@ PGAContext *PGACreate ( int *argc, char **argv,
 void PGASetUp ( PGAContext *ctx );
 void PGASetRandomInitFlag(PGAContext *ctx, int RandomBoolean);
 int PGAGetRandomInitFlag (PGAContext *ctx);
-void PGACreatePop (PGAContext *ctx, int pop);
-void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag);
 void PGASetNumAuxEval (PGAContext *ctx, int n);
 int PGAGetNumAuxEval (PGAContext *ctx);
 void PGASetNumConstraint (PGAContext *ctx, int n);
