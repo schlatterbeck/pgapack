@@ -960,10 +960,6 @@ void PGAEncodeIntegerAsBinary
     (PGAContext *ctx, int p, int pop, int start, int end, unsigned int val);
 void PGAEncodeIntegerAsGrayCode
     (PGAContext *ctx, int p, int pop, int start, int end, unsigned int val);
-double PGAMapIntegerToReal
-    (PGAContext *ctx, int v, int a, int b, double l, double u);
-int PGAMapRealToInteger
-    (PGAContext *ctx, double r, double l, double u, int a, int b);
 
 /*****************************************
  *          fitness.c

@@ -300,8 +300,6 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGAGetRealFromGrayCode",         501 },
         { "PGAEncodeRealAsBinary",          502 },
         { "PGAEncodeRealAsGrayCode",        503 },
-        { "PGAMapIntegerToReal",            504 },
-        { "PGAMapRealToInteger",            505 },
         { "PGAEncodeIntegerAsBinary",       506 },
         { "PGAEncodeIntegerAsGrayCode",     507 },
         { "PGAGetIntegerFromBinary",        508 },
@@ -908,8 +906,6 @@ void PGASetDebugFlag48(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[501] = Flag; /*PGAGetRealFromGrayCode*/
    ctx->debug.PGADebugFlags[502] = Flag; /*PGAEncodeRealAsBinary*/
    ctx->debug.PGADebugFlags[503] = Flag; /*PGAEncodeRealAsGrayCode*/
-   ctx->debug.PGADebugFlags[504] = Flag; /*PGAMapIntegerToReal*/
-   ctx->debug.PGADebugFlags[505] = Flag; /*PGAMapRealToInteger*/
    ctx->debug.PGADebugFlags[506] = Flag; /*PGAEncodeIntegerAsBinary*/
    ctx->debug.PGADebugFlags[507] = Flag; /*PGAEncodeIntegerAsGrayCode*/
    ctx->debug.PGADebugFlags[508] = Flag; /*PGAGetIntegerFromBinary*/
