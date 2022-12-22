@@ -15,23 +15,33 @@ Open Source Consulting
 */
 
 /*****************************************************************************
-*     File: linalg.c: Linear Algebra Algorithms
-*
-*     Authors: Ralf Schlatterbeck
+* \file
+* Linear Algebra Algorithms
+* \authors Authors: Ralf Schlatterbeck
 *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup linalg Linear Algebra Algorithms
+ *****************************************************************************/
 
 #include <stdlib.h>
 #include "pgapack.h"
 #define LIN_ERROR_SINGULAR 1
 
-/*
- * LIN_solve:
- * Solve a linear matrix equation, or system of linear scalar equations.
- * Linear matrix equation ax = b
- * Where a is an n * n matrix and b is a vector of length n.
- * Returns the solution in b, a and b are modified in-place.
- * Returns 0 if no error, a positive error-code otherwise.
- */
+/*!***************************************************************
+    \brief Solve a linear matrix equation, or system of linear scalar equations.
+    \ingroup linalg
+    \param n  size of the matrix
+    \param a  n * n matrix
+    \param b  vector of lenth n
+    \return 0 if no error, a positive error-code otherwise, returns the
+            solution in b, a and b are modified in-place
+    \rst
+    Description
+    -----------
+  
+    Linear matrix equation :math:`ax = b`
+    \endrst
+******************************************************************/
 int LIN_solve (int n, void *a, double *b)
 {
     int col, row, row2;
@@ -88,6 +98,19 @@ int LIN_solve (int n, void *a, double *b)
     return 0;
 }
 
+/*!***************************************************************
+    \brief Print matrix.
+    \ingroup linalg
+    \param n  size of the matrix
+    \param a  n * n matrix
+    \return None
+    \rst
+    Description
+    -----------
+  
+    Print matrix :math:`a`. Mainly used for testing.
+    \endrst
+******************************************************************/
 void LIN_print_matrix (int n, void *a)
 {
     DECLARE_DYNPTR (double, m, n) = a;
@@ -101,6 +124,19 @@ void LIN_print_matrix (int n, void *a)
     printf ("\n");
 }
 
+/*!***************************************************************
+    \brief Print vector.
+    \ingroup linalg
+    \param n  size of the vector
+    \param v  vector of length n
+    \return None
+    \rst
+    Description
+    -----------
+  
+    Print vector :math:`v`. Mainly used for testing.
+    \endrst
+******************************************************************/
 void LIN_print_vector (int n, double *v)
 {
     int col;
@@ -110,6 +146,14 @@ void LIN_print_vector (int n, double *v)
     printf ("\n\n");
 }
 
+/*!***************************************************************
+    \brief Dot product of two vectors.
+    \ingroup linalg
+    \param dim  size of the vectors
+    \param v1   first vector of length n
+    \param v2   second vector of length n
+    \return The dot product of v1 and v2
+******************************************************************/
 double LIN_dot (int dim, double *v1, double *v2)
 {
     int i;
@@ -120,6 +164,14 @@ double LIN_dot (int dim, double *v1, double *v2)
     return ret;
 }
 
+/*!***************************************************************
+    \brief Euclidian distance of two vectors.
+    \ingroup linalg
+    \param dim  size of the vectors
+    \param v1   first vector of length n
+    \param v2   second vector of length n
+    \return The euclidian distance of v1 and v2
+******************************************************************/
 double LIN_euclidian_distance (int dim, double *v1, double *v2)
 {
     int i;
@@ -130,14 +182,25 @@ double LIN_euclidian_distance (int dim, double *v1, double *v2)
     return sqrt (ret);
 }
 
+/*!***************************************************************
+    \brief Euclidian norm (2-norm) of a vector.
+    \ingroup linalg
+    \param dim  size of the vectors
+    \param v    vector of length n
+    \return The euclidian norm of v
+******************************************************************/
 double LIN_2norm (int dim, double *v)
 {
     return sqrt (LIN_dot (dim, v, v));
 }
 
-/*
- * LIN_gcd: Greates common divisor of two integers
- */
+/*!***************************************************************
+    \brief Greates common divisor of two integers
+    \ingroup linalg
+    \param a  first integer
+    \param b  second integer
+    \return The greatest common divisor (gcd) of a and b
+******************************************************************/
 int LIN_gcd (int a, int b)
 {
     int m;
@@ -157,6 +220,19 @@ int LIN_gcd (int a, int b)
  *                                           ( b )
  * Will return 0 on overflow
  */
+/*!***************************************************************
+    \brief Compute binomial coefficient of two integers
+    \ingroup linalg
+    \param a  first integer
+    \param b  second integer
+    \return Binomial coefficient
+    \rst
+    Description
+    -----------
+
+    Computes :math:`\binom{a}{b}`
+    \endrst
+******************************************************************/
 size_t LIN_binom (int a, int b)
 {
     int i, j;
@@ -213,12 +289,22 @@ size_t LIN_binom (int a, int b)
     return r;
 }
 
-/*
- * LIN_normalize_to_refplane
- * Normalize a vector with dimension dim to the n-dimensional reference
- * hyperplane. And, yes, hyperplane is probably a misnomer, it's a
- * 3-dimensional tetraeder for dimension 4.
- */
+/*!***************************************************************
+    \brief Normalize a vector with dimension dim to the n-dimensional
+           reference hyperplane.
+    \ingroup linalg
+    \param dim  dimension
+    \param v    vector of dimension dim
+    \return The vector v is modified in-place
+    \rst
+    Description
+    -----------
+
+    Hyperplane is probably a misnomer, it's a 3-dimensional tetraeder
+    for dimension 4. It *is* a plane for the 3-dimensional case going
+    through the point 1 on each axis.
+    \endrst
+******************************************************************/
 void LIN_normalize_to_refplane (int dim, double *v)
 {
     int j;
@@ -234,7 +320,16 @@ void LIN_normalize_to_refplane (int dim, double *v)
     }
 }
 
-/* Static recursive function for LIN_dasdennis, see below */
+/*!***************************************************************
+    \brief Static recursive function for \ref function::LIN_dasdennis.
+    \ingroup internal
+    \param dim   dimension
+    \param npart Number of partitions
+    \param depth Recursion depth
+    \param sum   Number of points so far
+    \param p     Pointer to created points, memory must be already allocated
+    \return The number of points allocated
+******************************************************************/
 static int dasdennis (int dim, int npart, int depth, int sum, void *p)
 {
     DECLARE_DYNPTR(double, vec, dim) = p;
@@ -261,11 +356,24 @@ static int dasdennis (int dim, int npart, int depth, int sum, void *p)
     return offset;
 }
 
-/* Static function for LIN_dasdennis scaling of points
- * Note that when scaling we translate the scaled-down points from the
- * centroid of the shifted points to the reference direction on the
- * reference plane.
- */
+/*!***************************************************************
+    \brief Static function for \ref function::LIN_dasdennis scaling of points
+    \ingroup internal
+    \param dim     dimension
+    \param npoints Number of points
+    \param scale   Scaling factor
+    \param dir     Direction vector
+    \param v       Pointer to points, points must have been created
+    \return None
+    \rst
+    Description
+    -----------
+
+    When scaling we translate the scaled-down points from the
+    centroid of the shifted points to the reference direction on the
+    reference plane.
+    \endrst
+******************************************************************/
 STATIC
 void dasdennisscale (int dim, int npoints, double scale, double *dir, void *v)
 {
@@ -296,11 +404,26 @@ void dasdennisscale (int dim, int npoints, double scale, double *dir, void *v)
     }
 }
 
-/*
- * Compute Das & Dennis points
- * This is the case where the memory is already allocated
- * For details see below.
- */
+/*!***************************************************************
+    \brief Compute Das & Dennis points to allocated memory.
+    \ingroup linalg
+    \param dim     dimension
+    \param npart   Number of partitions
+    \param scale   Scaling factor
+    \param dir     Direction vector
+    \param npoints Number of points
+    \param mem     Memory for points, memory must have been allocated
+    \return None
+    \rst
+
+    Description
+    -----------
+
+    This is the case where the memory is already allocated
+    For more details see :c:func:`LIN_dasdennis`.
+
+    \endrst
+******************************************************************/
 void LIN_dasdennis_allocated
     (int dim, int npart, double scale, double *dir, int npoints, void *mem)
 {
@@ -310,21 +433,31 @@ void LIN_dasdennis_allocated
     }
 }
 
-/*
- * Compute Das & Dennis points
- * This gets the dimension of the problem, the number of partitions,
- * a list of existing points to extend, and the number of existing
- * points. It will re-alloc the exiting array pointer pointed to by
- * result (this must be a NULL pointer if no pre-existing points are
- * given) and return the new number of points. Note that if there are no
- * pre-existing points, the pointer pointed to by result must be NULL
- * and exiting must be 0.
- * Optionally the points can be scaled (with 0 < scale <= 1) and shifted
- * in the direction of a given point back onto the reference hyperplane.
- * This is not done if dir == NULL or scale == 1.
- * Will return -1 on error. A previously allocated result will be
- * de-allocated in case of error.
- */
+/*!***************************************************************
+    \brief Allocate memory and compute Das & Dennis points.
+    \ingroup linalg
+    \param dim     dimension
+    \param npart   Number of partitions
+    \param result  List of existing points to extend
+    \param nexist  Number of existing points
+    \param scale   Scaling factor
+    \param dir     Direction vector
+    \return Number of points allocated, -1 on error
+    \rst
+    Description
+    -----------
+
+    It will re-alloc the exiting array pointer pointed to by
+    result (this must be a NULL pointer if no pre-existing points are
+    given) and return the new number of points. Note that if there are no
+    pre-existing points, the pointer pointed to by result must be NULL
+    and nexist must be 0.
+    Optionally the points can be scaled (with 0 < scale <= 1) and shifted
+    in the direction of a given point back onto the reference hyperplane.
+    This is not done if dir == NULL or scale == 1.
+    A previously allocated result will be de-allocated in case of error.
+    \endrst
+******************************************************************/
 int LIN_dasdennis
     (int dim, int npart, void *result, int nexist, double scale, double *dir)
 {
