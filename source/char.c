@@ -195,7 +195,7 @@ void PGASetCharacterInitType (PGAContext *ctx, int value)
 
 /*!****************************************************************************
     \brief Allocate memory for a string of type PGACharacter
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx       context variable
     \param   p         string index
@@ -205,6 +205,12 @@ void PGASetCharacterInitType (PGAContext *ctx, int value)
                        either randomly or set to zero
     \return  Member p in population pop is allocated and initialized.
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the create
+    string user function for the char datatype by default.
 
     Example
     -------
@@ -253,7 +259,7 @@ void PGACharacterCreateString (PGAContext *ctx, int p, int pop, int initflag)
 /*!****************************************************************************
     \brief Randomly mutates a character-valued gene with a specified
            probability.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx  context variable
     \param   p    string index
@@ -266,6 +272,10 @@ void PGACharacterCreateString (PGAContext *ctx, int p, int pop, int initflag)
     -----------
 
     This routine is called from PGAMutation.
+
+    Note that this function is set in :c:func:`PGASetUp` as the mutation
+    user function for the char datatype by default.
+
 
     Example
     -------
@@ -319,7 +329,7 @@ int PGACharacterMutation (PGAContext *ctx, int p, int pop, double mr)
 /*!****************************************************************************
     \brief Perform one-point crossover on two parent strings producing
            two children via side-effect.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -332,6 +342,13 @@ int PGACharacterMutation (PGAContext *ctx, int p, int pop, double mr)
                    string c1 and c2
     \return  None
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the char datatype when selecting
+    one-point crossover.
 
     Example
     -------
@@ -379,7 +396,7 @@ void PGACharacterOneptCrossover
 /*!****************************************************************************
     \brief Perform two-point crossover on two parent strings producing
            two children via side-effect.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -392,6 +409,13 @@ void PGACharacterOneptCrossover
                    string c1 and c2
     \return  None
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the char datatype when selecting
+    two-point crossover.
 
     Example
     -------
@@ -452,7 +476,7 @@ void PGACharacterTwoptCrossover
 /*!****************************************************************************
     \brief Perform uniform crossover on two parent strings producing two
            children via side-effect
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -465,6 +489,13 @@ void PGACharacterTwoptCrossover
                    string c1 and c2
     \return  None
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the char datatype when selecting
+    uniform crossover.
 
     Example
     -------
@@ -564,7 +595,7 @@ void PGACharacterPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 /*!****************************************************************************
     \brief Copy one character-valued string to another, assumes the
            strings are of the same length.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    string to copy
@@ -573,6 +604,12 @@ void PGACharacterPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
     \param   pop2  symbolic constant of population containing string p2
     \return  None
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the copy
+    string user function for the char datatype by default.
 
     Example
     -------
@@ -610,7 +647,7 @@ void PGACharacterCopyString
     \brief Return true if string p1 in pop1 is a duplicate of string p2
            in pop2, else returns false, assumes the strings are the same
            length.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    string index of the first string to compare
@@ -619,6 +656,12 @@ void PGACharacterCopyString
     \param   pop2  symbolic constant of the population string p2 is in
     \return  Returns true if strings are duplicates
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    duplicate checking user function for the char datatype by default.
 
     Example
     -------
@@ -655,12 +698,21 @@ int PGACharacterDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 
 /*!****************************************************************************
     \brief Return hash value of given gene.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p     string index of the string to hash
     \param   pop   symbolic constant of the population string p is in
     \return  Hash value for string
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    hash user function for the char datatype by default.
+
+    \endrst
 
 ******************************************************************************/
 PGAHash PGACharacterHash (PGAContext *ctx, int p, int pop)
@@ -673,13 +725,19 @@ PGAHash PGACharacterHash (PGAContext *ctx, int p, int pop)
 
 /*!****************************************************************************
     \brief Randomly initialize a string of type PGACharacter
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx  context variable
     \param   p    index of string to randomly initialize
     \param   pop  symbolic constant of the population string p is in
     \return  None
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    init string user function for the char datatype by default.
 
     Example
     -------

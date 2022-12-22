@@ -640,7 +640,7 @@ int PGAGetCrossoverSBXOncePerString (PGAContext *ctx)
 
 /*!****************************************************************************
     \brief Cross over two parent alleles with simulated binary crossover.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx context variable
     \param   p1  (double) Allele of first string
@@ -655,7 +655,9 @@ int PGAGetCrossoverSBXOncePerString (PGAContext *ctx)
     -----------
 
     This uses double for both parent alleles but is re-used in
-    both, integer and real SBX crossover. The probability is used to
+    both, integer and real SBX crossover in
+    :c:func:`PGAIntegerSBXCrossover` and :c:func:`PGARealSBXCrossover`,
+    respectively. The probability is used to
     compute the new alleles from the polynomial distribution.
 
     Example

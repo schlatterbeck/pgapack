@@ -120,7 +120,7 @@ group_remove = {}
 # Compute functions in group internal and explicit
 # For these we do not create manpages
 if ldir:
-    for g in 'internal', 'explicit':
+    for g in ('internal',):
         tree = ElementTree.parse (os.path.join (dir, 'group__%s.xml' % g))
         root = tree.getroot ()
         for memb in root.findall ('.//memberdef'):

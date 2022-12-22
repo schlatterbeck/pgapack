@@ -419,6 +419,7 @@ int PGAGetRealInitType (PGAContext *ctx)
 
 /*!****************************************************************************
     \brief Allocate memory for a string of type PGAReal.
+    \ingroup internal
 
     \param   ctx       context variable
     \param   p         string index
@@ -428,6 +429,12 @@ int PGAGetRealInitType (PGAContext *ctx)
                        either randomly or set to zero
     \return  None
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the create
+    string user function for the real datatype by default.
 
     Example
     -------
@@ -479,7 +486,7 @@ void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
 
 /*!****************************************************************************
     \brief Randomly mutates a floating point string with probability mr.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx  context variable
     \param   p    string index
@@ -505,6 +512,9 @@ void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
     randomly selected.  The value set by the routine
     PGASetMutationRealValue is used as p, UB, and sigma in cases 1,2,
     and 3, respectively.
+
+    Note that this function is set in :c:func:`PGASetUp` as the mutation
+    user function for the real datatype by default.
 
     Example
     -------
@@ -792,7 +802,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
     \brief This routine performs one point crossover on two parent
            strings, producing (via side effect) the crossed children
            child1 and child2.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -805,6 +815,13 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the real datatype when selecting
+    one-point crossover.
 
     Example
     -------
@@ -851,7 +868,7 @@ void PGARealOneptCrossover
 /*!****************************************************************************
     \brief Perform two-point crossover on two parent strings producing
            two children via side-effect.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -864,6 +881,13 @@ void PGARealOneptCrossover
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the real datatype when selecting
+    two-point crossover.
 
     Example
     -------
@@ -925,7 +949,7 @@ void PGARealTwoptCrossover
 /*!****************************************************************************
     \brief Perform uniform crossover on two parent strings producing two
            children via side-effect
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -938,6 +962,13 @@ void PGARealTwoptCrossover
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the real datatype when selecting
+    uniform crossover.
 
     Example
     -------
@@ -986,7 +1017,7 @@ void PGARealUniformCrossover
 /*!****************************************************************************
     \brief Perform simulated binary crossover (SBX) on two parent
            strings producing two children via side-effect.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -999,6 +1030,13 @@ void PGARealUniformCrossover
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the real datatype when selecting
+    simulated binary crossover.
 
     Example
     -------
@@ -1115,7 +1153,7 @@ void PGARealPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 
 /*!****************************************************************************
     \brief Copy one real-valued string string to another
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    string to copy
@@ -1125,6 +1163,12 @@ void PGARealPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
     \return  String p2 in population pop2 is modified to be a copy of
              string p1 in population pop1.
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the copy
+    string user function for the real datatype by default.
 
     Example
     -------
@@ -1158,7 +1202,7 @@ void PGARealCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 /*!****************************************************************************
     \brief Returns true if real-valued string a is a duplicate of
            real-valued string b, else returns false.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    string index of the first string to compare
@@ -1167,6 +1211,12 @@ void PGARealCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \param   pop2  symbolic constant of the population string p2 is in
     \return  Returns true/false if strings are duplicates
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    duplicate checking user function for the real datatype by default.
 
     Example
     -------
@@ -1205,12 +1255,21 @@ int PGARealDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 
 /*!****************************************************************************
     \brief Return hash value of given gene.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p     string index of the string to hash
     \param   pop   symbolic constant of the population string p is in
     \return  Hash value for string
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    hash user function for the real datatype by default.
+
+    \endrst
 
 ******************************************************************************/
 PGAHash PGARealHash (PGAContext *ctx, int p, int pop)
@@ -1223,13 +1282,19 @@ PGAHash PGARealHash (PGAContext *ctx, int p, int pop)
 
 /*!****************************************************************************
     PGARealInitString - randomly initialize a string of type PGAReal
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx  context variable
     \param   p    index of string to randomly initialize
     \param   pop  symbolic constant of the population string p is in
     \return  String p in population pop is randomly initialized by side-effect
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    init string user function for the real datatype by default.
 
     Example
     -------

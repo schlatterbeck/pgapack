@@ -71,7 +71,7 @@ privately owned rights.
     Check the current to-be-inserted string if it is a copy of any of
     the strings in PGA_NEWPOP. Note that the check relies on all
     individuals in PGA_NEWPOP to also be inserted into the duplicate
-    hash, see PGAHashIndividual.
+    hash, see :c:func:`PGAHashIndividual`.
 
     .. code-block:: c
 
@@ -211,6 +211,15 @@ void PGAChange (PGAContext *ctx, int p, int pop)
     \param   p     string index
     \param   pop   symbolic constant of the population containing string p
     \return  Computes hash of given individual and inserts it into hash table
+    \rst
+
+    Description
+    -----------
+
+    Calls :c:func:`PGAIndividualHashIndex` for the hash value and puts
+    it into the correct hash bucket.
+
+    \endrst
 
 ******************************************************************************/
 void PGAHashIndividual (PGAContext *ctx, int p, int pop)

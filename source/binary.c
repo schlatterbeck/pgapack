@@ -261,7 +261,7 @@ double PGAGetBinaryInitProb (PGAContext *ctx)
 /*!****************************************************************************
     \brief Allocate a PGA_DATATYPE_BINARY string for member p of
            population pop.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx       context variable
     \param   p         string index
@@ -274,6 +274,9 @@ double PGAGetBinaryInitProb (PGAContext *ctx)
     -----------
     If initflag is PGA_TRUE, randomly initialize all alleles, otherwise
     clear all alleles.
+
+    Note that this function is set in :c:func:`PGASetUp` as the create
+    string user function for the binary datatype by default.
 
     Example
     -------
@@ -323,7 +326,7 @@ void PGABinaryCreateString (PGAContext *ctx, int p, int pop, int initflag)
 
 /*!****************************************************************************
     \brief Randomly mutates a bit with a specified probability.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx  context variable
     \param   p    string index
@@ -336,6 +339,9 @@ void PGABinaryCreateString (PGAContext *ctx, int p, int pop, int initflag)
     -----------
 
     This routine is called from PGAMutation.
+
+    Note that this function is set in :c:func:`PGASetUp` as the mutation
+    user function for the binary datatype by default.
 
     Example
     -------
@@ -389,7 +395,7 @@ int PGABinaryMutation (PGAContext *ctx, int p, int pop, double mr)
 /*!****************************************************************************
     \brief Performs one-point crossover on two parent strings to create
            two children via side-effect.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -400,6 +406,13 @@ int PGABinaryMutation (PGAContext *ctx, int p, int pop, double mr)
     \param   pop2  symbolic constant of the population containing c1 and c2
     \return  None
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the binary datatype when selecting
+    one-point crossover.
 
     Example
     -------
@@ -476,7 +489,7 @@ void PGABinaryOneptCrossover
 /*!****************************************************************************
     \brief Perform two-point crossover on two parent strings producing
            two children via side-effect
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -489,6 +502,13 @@ void PGABinaryOneptCrossover
                    string c1 and c2
     \return  None
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the binary datatype when selecting
+    two-point crossover.
 
     Example
     -------
@@ -598,7 +618,7 @@ void PGABinaryTwoptCrossover
 /*!****************************************************************************
     \brief Perform uniform crossover on two parent strings producing two
            children via side-effect.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -610,6 +630,13 @@ void PGABinaryTwoptCrossover
     \param   pop2  symbolic constant of the population to contain string
                    c1 and c2
     \return  None
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the binary datatype when selecting
+    uniform crossover.
 
     Example
     -------
@@ -752,7 +779,7 @@ void PGABinaryPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 
 /*!****************************************************************************
     \brief Copy one bit string to another.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    string to copy
@@ -761,6 +788,12 @@ void PGABinaryPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
     \param   pop2  symbolic constant of population containing string p2
     \return  None
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the copy
+    string user function for the binary datatype by default.
 
     Example
     -------
@@ -795,7 +828,7 @@ void PGABinaryCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 /*!****************************************************************************
     \brief Return true if bit string a is a duplicate of bit string b,
            else returns false.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    string index of the first string to compare
@@ -804,6 +837,12 @@ void PGABinaryCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \param   pop2  symbolic constant of the population string p2 is in
     \return  Returns true/false if strings are duplicates
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    duplicate checking user function for the binary datatype by default.
 
     Example
     -------
@@ -843,12 +882,21 @@ int PGABinaryDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 
 /*!****************************************************************************
     \brief Return hash value of given gene.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx  - context variable
     \param   p    - string index of the string to hash
     \param   pop  - symbolic constant of the population string p is in
     \return  Hash value for string
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    hash user function for the binary datatype by default.
+
+    \endrst
 
 ******************************************************************************/
 PGAHash PGABinaryHash (PGAContext *ctx, int p, int pop)
@@ -861,13 +909,19 @@ PGAHash PGABinaryHash (PGAContext *ctx, int p, int pop)
 
 /*!****************************************************************************
     \brief Randomly initialize a string of type PGABinary.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx  context variable
     \param   p    index of string to randomly initialize
     \param   pop  symbolic constant of the population string p is in
     \return  None
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    init string user function for the binary datatype by default.
 
     Example
     -------
@@ -955,13 +1009,20 @@ MPI_Datatype PGABinaryBuildDatatype (PGAContext *ctx, int p, int pop)
 
 /*!****************************************************************************
     \brief Returns the Hamming distance between two strings.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx  context variable
     \param   s1   the first string to compare
     \param   s2   the second string to compare
     \return  The Hamming distance between two strings
     \rst
+
+    Description
+    -----------
+
+    Note that this function is used in c:func:`PGAHammingDistance`
+    for implementing a generic hamming distance function.
+
 
     Example
     -------

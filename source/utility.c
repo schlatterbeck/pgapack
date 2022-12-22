@@ -1234,6 +1234,25 @@ PGAHash PGAUtilHash (const void *data, size_t len, PGAHash hashv)
     return hashv;
 }
 
+/*!****************************************************************************
+    \brief Compute Hash for individual in given population
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p     string index
+    \param   pop   symbolic constant of the population containing string p
+    \return  Hash of given individual
+    \rst
+
+    Description
+    -----------
+
+    Call the hash user function, by default :c:func:`PGACreate` makes
+    sure the correct one is set for the data type.
+
+    \endrst
+
+******************************************************************************/
 size_t PGAIndividualHashIndex (PGAContext *ctx, int p, int pop)
 {
     PGABinary hash = 0;

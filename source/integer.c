@@ -507,7 +507,7 @@ int PGAGetMaxIntegerInitValue (PGAContext *ctx, int i)
 /*!****************************************************************************
     \brief Allocate memory for a string of type PGAInteger, and
            initializes or clears the string according to initflag.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx       context variable
     \param   p         string index
@@ -517,6 +517,12 @@ int PGAGetMaxIntegerInitValue (PGAContext *ctx, int i)
                        either randomly or set to zero
     \return  None
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    create string user function for the integer datatype.
 
     Example
     -------
@@ -571,7 +577,7 @@ initflag)
 /*!****************************************************************************
     \brief Randomly mutates an integer-valued gene with a specified
            probability.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx       context variable
     \param   p         string index
@@ -583,7 +589,10 @@ initflag)
     Description
     -----------
 
-    This routine is called from PGAMutation.
+    This routine is called from :c:func`PGAMutation`.
+
+    Note that this function is set in :c:func:`PGASetUp` as the mutation
+    user function for the integer datatype by default.
 
     \endrst
 
@@ -687,7 +696,7 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
 /*!****************************************************************************
     \brief Perform one-point crossover on two parent strings producing
            two children via side-effect.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -698,8 +707,15 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
     \param   c2    the second child string
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
-    \return  None
+    \return  c1 and c2 in population pop2 are modified by side-effect
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    one-point crossover.
 
     Example
     -------
@@ -751,7 +767,7 @@ void PGAIntegerOneptCrossover
 /*!****************************************************************************
     \brief Perform two-point crossover on two parent strings producing
            two children via side-effect.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -762,8 +778,15 @@ void PGAIntegerOneptCrossover
     \param   c2    the second child string
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
-    \return  None
+    \return  c1 and c2 in population pop2 are modified by side-effect
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    two-point crossover.
 
     Example
     -------
@@ -830,7 +853,7 @@ void PGAIntegerTwoptCrossover
 /*!****************************************************************************
     \brief Perform uniform crossover on two parent strings producing two
            children via side-effect.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -841,8 +864,15 @@ void PGAIntegerTwoptCrossover
     \param   c2    the second child string
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
-    \return  None
+    \return  c1 and c2 in population pop2 are modified by side-effect
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    uniform crossover.
 
     Example
     -------
@@ -895,7 +925,7 @@ void PGAIntegerUniformCrossover
 /*!****************************************************************************
     \brief Performs simulated binary crossover (SBX) on two parent
            strings producing two children via side-effect.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -908,6 +938,13 @@ void PGAIntegerUniformCrossover
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect.
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    simulated binary crossover.
 
     Example
     -------
@@ -1197,7 +1234,7 @@ static void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
 /*!****************************************************************************
     \brief Perform Edge Recombination on two parent strings producing
            two children via side-effect.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    the first parent string
@@ -1210,6 +1247,13 @@ static void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect.
     \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    edge crossover.
 
     Example
     -------
@@ -1500,7 +1544,7 @@ void PGAIntegerPrintString ( PGAContext *ctx, FILE *fp, int p, int pop)
 
 /*!****************************************************************************
     \brief Copy one integer-valued string to another.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    string to copy
@@ -1508,6 +1552,15 @@ void PGAIntegerPrintString ( PGAContext *ctx, FILE *fp, int p, int pop)
     \param   p2    string to copy p1 to
     \param   pop2  symbolic constant of population containing string p2
     \return  None
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the copy
+    string user function for the integer datatype by default.
+
+    \endrst
 
 ******************************************************************************/
 void PGAIntegerCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
@@ -1528,7 +1581,7 @@ void PGAIntegerCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 /*!****************************************************************************
     \brief Return true if string a is a duplicate of string b, else
            returns false.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p1    string index of the first string to compare
@@ -1536,6 +1589,15 @@ void PGAIntegerCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \param   p2    string index of the second string to compare
     \param   pop2  symbolic constant of the population string p2 is in
     \return  Returns true/false if strings are duplicates
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the duplicate
+    checking user function for the integer datatype by default.
+
+    \endrst
 
 ******************************************************************************/
 int PGAIntegerDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
@@ -1559,12 +1621,21 @@ int PGAIntegerDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 
 /*!****************************************************************************
     \brief Return hash value of given gene.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx   context variable
     \param   p     string index of the string to hash
     \param   pop   symbolic constant of the population string p is in
     \return  Hash value for string
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    hash user function for the integer datatype by default.
+
+    \endrst
 
 ******************************************************************************/
 PGAHash PGAIntegerHash (PGAContext *ctx, int p, int pop)
@@ -1602,12 +1673,21 @@ static void compute_idx
 
 /*!****************************************************************************
     \brief Randomly initialize a string of type PGAInteger.
-    \ingroup explicit
+    \ingroup internal
 
     \param   ctx - context variable
     \param   p   - index of string to randomly initialize
     \param   pop - symbolic constant of the population string p is in
     \return  None
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    init string user function for the integer datatype by default.
+
+    \endrst
 
 ******************************************************************************/
 
