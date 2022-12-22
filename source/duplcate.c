@@ -140,7 +140,7 @@ int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
     Check the current to-be-inserted string if it is a copy of any of
     the strings in PGA_NEWPOP. Note that the check relies on all
     individuals in PGA_NEWPOP to also be inserted into the duplicate
-    hash, see PGAHashIndividual.
+    hash, see :c:func:`PGAHashIndividual`.
 
     .. code-block:: c
 

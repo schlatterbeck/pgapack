@@ -608,7 +608,7 @@ void PGACreatePop (PGAContext *ctx, int pop)
     Description
     -----------
 
-    Must be called after PGACreate() and before the GA is started.
+    Must be called after :c:func:`PGACreate` and before the GA is started.
 
     Example
     -------
