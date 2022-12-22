@@ -57,6 +57,7 @@ privately owned rights.
     \param   i    allele index
     \param   val  character value to set the allele to
     \return  The allele is changed by side-effect.
+
     \rst
 
     Example
@@ -102,6 +103,7 @@ void PGASetCharacterAllele (PGAContext *ctx, int p, int pop, int i, char val)
     \param   pop  symbolic constant of the population the string is in
     \param   i    allele index
     \return  The value of allele i in string p
+
     \rst
 
     Example
@@ -148,6 +150,7 @@ char PGAGetCharacterAllele (PGAContext *ctx, int p, int pop, int i)
     \param   ctx    context variable
     \param   value  symbolic constant specifying which case
     \return  None
+
     \rst
 
     Description
@@ -204,6 +207,7 @@ void PGASetCharacterInitType (PGAContext *ctx, int value)
                        ctx->ga.RandomInit to initialize the string
                        either randomly or set to zero
     \return  Member p in population pop is allocated and initialized.
+
     \rst
 
     Description
@@ -235,23 +239,28 @@ void PGACharacterCreateString (PGAContext *ctx, int p, int pop, int initflag)
     PGACharacter *c;
     PGAIndividual *new = PGAGetIndividual(ctx, p, pop);
 
-    PGADebugEntered("PGACharacterCreateString");
+    PGADebugEntered ("PGACharacterCreateString");
 
-    new->chrom = (void *)malloc(ctx->ga.StringLen * sizeof(PGACharacter));
-    if (new->chrom == NULL)
-	PGAError(ctx, "PGACharacterCreateString: No room to allocate "
-		 "new->chrom", PGA_FATAL, PGA_VOID, NULL);
+    new->chrom = (void *)malloc (ctx->ga.StringLen * sizeof(PGACharacter));
+    if (new->chrom == NULL) {
+        PGAError
+            ( ctx, "PGACharacterCreateString: No room to allocate new->chrom"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
+    }
     c = (PGACharacter *)new->chrom;
-    if (initflag)
-	if (ctx->fops.InitString) {
-	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
-	    (*ctx->fops.InitString)(&ctx, &fp, &pop);
-	} else {
-	    (*ctx->cops.InitString)(ctx, p, pop);
-	}
-    else
-	for (i=0; i<ctx->ga.StringLen; i++)
-	    c[i] = 0;
+    if (initflag) {
+        if (ctx->fops.InitString) {
+            fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
+            (*ctx->fops.InitString)(&ctx, &fp, &pop);
+        } else {
+            (*ctx->cops.InitString)(ctx, p, pop);
+        }
+    } else {
+        for (i=0; i<ctx->ga.StringLen; i++) {
+            c[i] = 0;
+        }
+    }
 
     PGADebugExited("PGACharacterCreateString");
 }
@@ -266,6 +275,7 @@ void PGACharacterCreateString (PGAContext *ctx, int p, int pop, int initflag)
     \param   pop  symbolic constant of the population string p is in
     \param   mr   probability of mutating an character-valued gene
     \return  Returns the number of mutations
+
     \rst
 
     Description
@@ -341,6 +351,7 @@ int PGACharacterMutation (PGAContext *ctx, int p, int pop, double mr)
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  None
+
     \rst
 
     Description
@@ -408,6 +419,7 @@ void PGACharacterOneptCrossover
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  None
+
     \rst
 
     Description
@@ -488,6 +500,7 @@ void PGACharacterTwoptCrossover
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  None
+
     \rst
 
     Description
@@ -551,6 +564,7 @@ void PGACharacterUniformCrossover
     \param   p    index of the string to write out
     \param   pop  symbolic constant of the population string p is in
     \return  None
+
     \rst
 
     Example
@@ -603,6 +617,7 @@ void PGACharacterPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
     \param   p2    string to copy p1 to
     \param   pop2  symbolic constant of population containing string p2
     \return  None
+
     \rst
 
     Description
@@ -655,6 +670,7 @@ void PGACharacterCopyString
     \param   p2    string index of the second string to compare
     \param   pop2  symbolic constant of the population string p2 is in
     \return  Returns true if strings are duplicates
+
     \rst
 
     Description
@@ -704,6 +720,7 @@ int PGACharacterDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \param   p     string index of the string to hash
     \param   pop   symbolic constant of the population string p is in
     \return  Hash value for string
+
     \rst
 
     Description
@@ -731,6 +748,7 @@ PGAHash PGACharacterHash (PGAContext *ctx, int p, int pop)
     \param   p    index of string to randomly initialize
     \param   pop  symbolic constant of the population string p is in
     \return  None
+
     \rst
 
     Description
@@ -794,6 +812,7 @@ void PGACharacterInitString (PGAContext *ctx, int p, int pop)
     \param    p     index of the string to build a datatype from
     \param    pop   symbolic constant of the population string p is in
     \return   MPI_Datatype
+
     \rst
 
     Description
@@ -845,6 +864,7 @@ MPI_Datatype PGACharacterBuildDatatype (PGAContext *ctx, int p, int pop)
     \param   p2     second string index
     \param   pop2   symbolic constant of the population the second string is in
     \return  genetic distance of the two strings
+
     \rst
 
     Description

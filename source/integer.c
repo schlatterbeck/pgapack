@@ -169,6 +169,7 @@ static void assert_has_edges (PGAContext *ctx, PGAInteger *a)
     \param   i    allele index
     \param   val  integer value to set the allele to
     \return  None
+
     \rst
 
     Example
@@ -212,6 +213,7 @@ void PGASetIntegerAllele (PGAContext *ctx, int p, int pop, int i, int val)
     \param   pop  symbolic constant of the population the string is in
     \param   i    allele index
     \return  The value of allele i in string p
+
     \rst
 
     Example
@@ -257,6 +259,7 @@ int PGAGetIntegerAllele (PGAContext *ctx, int p, int pop, int i)
     \param   min  the lower bound of numbers used in the permutation
     \param   max  the upper bound of numbers used in the permutation
     \return  None
+
     \rst
 
     Description
@@ -324,6 +327,7 @@ void PGASetIntegerInitPermute (PGAContext *ctx, int min, int max)
     \param   max  array of upper bounds that define the interval the gene is
                   initialized from
     \return  None
+
     \rst
 
     Example
@@ -385,6 +389,7 @@ void PGASetIntegerInitRange (PGAContext *ctx, const int *min, const int *max)
     \param    ctx  context variable
     \return Returns the integer corresponding to the symbolic constant
             used to specify the scheme used to initialize integer strings.
+
     \rst
 
     Example
@@ -428,6 +433,7 @@ int PGAGetIntegerInitType (PGAContext *ctx)
     \param   i    Index of the initialization range
     \return The minimum of the range of integers used to randomly initialize
             integer strings
+
     \rst
 
     Example
@@ -470,6 +476,7 @@ int PGAGetMinIntegerInitValue (PGAContext *ctx, int i)
     \param   i    Index of the initialization range
     \return  The maximum of the range of integers used to randomly initialize
              integer strings
+
     \rst
 
     Example
@@ -516,6 +523,7 @@ int PGAGetMaxIntegerInitValue (PGAContext *ctx, int i)
                        ctx->ga.RandomInit to initialize the string
                        either randomly or set to zero
     \return  None
+
     \rst
 
     Description
@@ -559,15 +567,15 @@ initflag)
     }
     c = (PGAInteger *)new->chrom;
     if (initflag) {
-	if (ctx->fops.InitString) {
-	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
-	    (*ctx->fops.InitString)(&ctx, &fp, &pop);
-	} else {
-	    (*ctx->cops.InitString)(ctx, p, pop);
-	}
+        if (ctx->fops.InitString) {
+            fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
+            (*ctx->fops.InitString)(&ctx, &fp, &pop);
+        } else {
+            (*ctx->cops.InitString)(ctx, p, pop);
+        }
     } else {
         for (i=0; i<ctx->ga.StringLen; i++) {
-	    c[i] = 0;
+            c[i] = 0;
         }
     }
 
@@ -584,6 +592,7 @@ initflag)
     \param   pop       symbolic constant of the population string p is in
     \param   mr        probability of mutating an integer-valued gene
     \return  Returns the number of mutations
+
     \rst
 
     Description
@@ -631,9 +640,9 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
             case PGA_MUTATION_PERMUTE:
             {
                 /* could check for j == i if we were noble */
-	        /* edd: 16 Jun 2007  applying patch from Debian bug
+                /* edd: 16 Jun 2007  applying patch from Debian bug
                  * report #333381 correcting an 'off-by-one' here
-		 * bu reducing StringLen by 1
+                 * bu reducing StringLen by 1
                  */
                 j = PGARandomInterval (ctx, 0, ctx->ga.StringLen - 1);
                 if (ctx->ga.n_edges) {
@@ -652,25 +661,25 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
                 break;
             case PGA_MUTATION_POLY:
               {
-		double u = PGARandom01 (ctx, 0);
-		double eta = PGAGetMutationPolyEta (ctx) + 1;
+                double u = PGARandom01 (ctx, 0);
+                double eta = PGAGetMutationPolyEta (ctx) + 1;
                 double delta, val;
-		if (u < 0.5) {
-		    delta = pow (2 * u, 1.0 / eta) - 1.0;
-		} else {
-		    delta = 1.0 - pow (2 * (1 - u), 1.0 / eta);
-		}
-		if (ctx->ga.MutatePolyValue >= 0) {
-		    c [i] += (int)round (delta * ctx->ga.MutatePolyValue);
-		} else {
-		    if (delta < 0) {
-			val = fabs (c [i] - ctx->init.IntegerMin [i] + 0.4999);
-		    } else {
-			val = fabs (ctx->init.IntegerMax [i] - c [i] + 0.4999);
-		    }
-		    c [i] += (int)round (delta * val);
-		}
-		break;
+                if (u < 0.5) {
+                    delta = pow (2 * u, 1.0 / eta) - 1.0;
+                } else {
+                    delta = 1.0 - pow (2 * (1 - u), 1.0 / eta);
+                }
+                if (ctx->ga.MutatePolyValue >= 0) {
+                    c [i] += (int)round (delta * ctx->ga.MutatePolyValue);
+                } else {
+                    if (delta < 0) {
+                        val = fabs (c [i] - ctx->init.IntegerMin [i] + 0.4999);
+                    } else {
+                        val = fabs (ctx->init.IntegerMax [i] - c [i] + 0.4999);
+                    }
+                    c [i] += (int)round (delta * val);
+                }
+                break;
               }
             default:
                 PGAError
@@ -682,7 +691,7 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
             }
 
             /* reset to min/max or bounce if outside range */
-	    bouncheck
+            bouncheck
                 ( ctx, i, ctx->ga.MutateBoundedFlag, ctx->ga.MutateBounceFlag
                 , c, old_value, old_value
                 );
@@ -708,6 +717,7 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect
+
     \rst
 
     Description
@@ -779,6 +789,7 @@ void PGAIntegerOneptCrossover
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect
+
     \rst
 
     Description
@@ -865,6 +876,7 @@ void PGAIntegerTwoptCrossover
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect
+
     \rst
 
     Description
@@ -937,6 +949,7 @@ void PGAIntegerUniformCrossover
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect.
+
     \rst
 
     Description
@@ -1246,6 +1259,7 @@ static void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect.
+
     \rst
 
     Description
@@ -1385,6 +1399,7 @@ void PGAIntegerEdgeCrossover
     \param   symmetric  Flag that indicates if edges are allowed in reverse
                         direction
     \return  None
+
     \rst
 
     Description
@@ -1494,6 +1509,7 @@ void PGAIntegerSetFixedEdges
     \param   p    index of the string to write out
     \param   pop  symbolic constant of the population string p is in
     \return  None
+
     \rst
 
     Example
@@ -1552,6 +1568,7 @@ void PGAIntegerPrintString ( PGAContext *ctx, FILE *fp, int p, int pop)
     \param   p2    string to copy p1 to
     \param   pop2  symbolic constant of population containing string p2
     \return  None
+
     \rst
 
     Description
@@ -1589,6 +1606,7 @@ void PGAIntegerCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \param   p2    string index of the second string to compare
     \param   pop2  symbolic constant of the population string p2 is in
     \return  Returns true/false if strings are duplicates
+
     \rst
 
     Description
@@ -1627,6 +1645,7 @@ int PGAIntegerDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \param   p     string index of the string to hash
     \param   pop   symbolic constant of the population string p is in
     \return  Hash value for string
+
     \rst
 
     Description
@@ -1679,6 +1698,7 @@ static void compute_idx
     \param   p   - index of string to randomly initialize
     \param   pop - symbolic constant of the population string p is in
     \return  None
+
     \rst
 
     Description
@@ -1796,6 +1816,7 @@ void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
     \param    p    index of string
     \param    pop  symbolic constant of the population string p is in
     \return   MPI_Datatype
+
     \rst
 
     Description
@@ -1846,6 +1867,7 @@ MPI_Datatype PGAIntegerBuildDatatype (PGAContext *ctx, int p, int pop)
     \param   p2     second string index
     \param   pop2   symbolic constant of the population the second string is in
     \return  genetic distance of the two strings
+
     \rst
 
     Description
@@ -1882,6 +1904,7 @@ double PGAIntegerGeneDistance
     \param   p2     second string index
     \param   pop2   symbolic constant of the population the second string is in
     \return  genetic euclidian distance of the two strings
+
     \rst
 
     Description

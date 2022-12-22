@@ -83,6 +83,7 @@ privately owned rights.
     \param i   allele index
     \param val binary value (either 1 or 0) to set the allele to
     \return The allele is changed by side-effect
+
     \rst
 
     Example
@@ -137,6 +138,7 @@ void PGASetBinaryAllele (PGAContext *ctx, int p, int pop, int i, int val)
     \param  pop  symbolic constant of the population the string is in
     \param  i    allele index
     \return The value of the ith allele of string p in population pop
+
     \rst
 
     Example
@@ -186,6 +188,7 @@ int PGAGetBinaryAllele (PGAContext *ctx, int p, int pop, int i)
     \param   ctx  context variable
     \param   p    the binary initialization probability
     \return  None
+
     \rst
 
     Description
@@ -232,6 +235,7 @@ void PGASetBinaryInitProb (PGAContext *ctx, double p)
 
     \param  ctx - context variable
     \return The probability that a bit will be randomly initialized to one
+
     \rst
 
     Example
@@ -268,6 +272,7 @@ double PGAGetBinaryInitProb (PGAContext *ctx)
     \param   pop       symbolic constant of the population string p is in
     \param   initflag  a flag, if set, randomly initialize, else clear alleles
     \return  Member p in population pop is allocated and initialized.
+
     \rst
 
     Description
@@ -300,26 +305,32 @@ void PGABinaryCreateString (PGAContext *ctx, int p, int pop, int initflag)
     PGABinary *s;
     PGAIndividual *new = PGAGetIndividual(ctx, p, pop);
 
-    PGADebugEntered("PGABinaryCreateString");
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR, "PGABinaryCreateString",
-		  "initflag = ", PGA_INT, (void *) &initflag );
+    PGADebugEntered ("PGABinaryCreateString");
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGABinaryCreateString"
+        , "initflag = ", PGA_INT, (void *) &initflag
+        );
 
     new->chrom = (void *)malloc(ctx->ga.tw * sizeof(PGABinary));
     if (new->chrom == NULL)
-	PGAError(ctx, "PGABinaryCreateString: No room to allocate "
-		 "new->chrom", PGA_FATAL, PGA_VOID, NULL);
+        PGAError
+            ( ctx, "PGABinaryCreateString: No room to allocate new->chrom"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
 
     s = (PGABinary *)new->chrom;
-    if (initflag)
-	if (ctx->fops.InitString) {
-	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
+    if (initflag) {
+        if (ctx->fops.InitString) {
+            fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
             (*ctx->fops.InitString)(&ctx, &fp, &pop);
-	} else {
-	    (*ctx->cops.InitString)(ctx, p, pop);
-	}
-    else
-	for ( i=0; i<ctx->ga.tw; i++ )
-	    s[i] = 0;
+        } else {
+            (*ctx->cops.InitString)(ctx, p, pop);
+        }
+    } else {
+        for (i=0; i<ctx->ga.tw; i++) {
+            s[i] = 0;
+        }
+    }
 
     PGADebugExited("PGABinaryCreateString");
 }
@@ -333,6 +344,7 @@ void PGABinaryCreateString (PGAContext *ctx, int p, int pop, int initflag)
     \param   pop  symbolic constant for the population string p is in
     \param   mr   probability of mutating (toggling) a bit
     \return  Returns the number of mutations
+
     \rst
 
     Description
@@ -405,6 +417,7 @@ int PGABinaryMutation (PGAContext *ctx, int p, int pop, double mr)
     \param   c2    the second child string
     \param   pop2  symbolic constant of the population containing c1 and c2
     \return  None
+
     \rst
 
     Description
@@ -501,6 +514,7 @@ void PGABinaryOneptCrossover
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  None
+
     \rst
 
     Description
@@ -631,6 +645,8 @@ void PGABinaryTwoptCrossover
                    c1 and c2
     \return  None
 
+    \rst
+
     Description
     -----------
 
@@ -650,6 +666,8 @@ void PGABinaryTwoptCrossover
        int m, d, s, b;
 
        PGABinaryUniformCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
 
 ******************************************************************************/
 void PGABinaryUniformCrossover
@@ -692,6 +710,7 @@ void PGABinaryUniformCrossover
     \param   chrom  pointer to the bit string to write
     \param   nb     number of bits to write out
     \return  None
+
     \rst
 
     Description
@@ -731,6 +750,7 @@ void PGABinaryPrint (PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb)
     \param   p    index of the string to write out
     \param   pop  symbolic constant of the population string p is in
     \return  None
+
     \rst
 
     Example
@@ -787,6 +807,7 @@ void PGABinaryPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
     \param   p2    string to copy p1 to
     \param   pop2  symbolic constant of population containing string p2
     \return  None
+
     \rst
 
     Description
@@ -836,6 +857,7 @@ void PGABinaryCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \param   p2    string index of the second string to compare
     \param   pop2  symbolic constant of the population string p2 is in
     \return  Returns true/false if strings are duplicates
+
     \rst
 
     Description
@@ -888,6 +910,7 @@ int PGABinaryDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \param   p    - string index of the string to hash
     \param   pop  - symbolic constant of the population string p is in
     \return  Hash value for string
+
     \rst
 
     Description
@@ -915,6 +938,7 @@ PGAHash PGABinaryHash (PGAContext *ctx, int p, int pop)
     \param   p    index of string to randomly initialize
     \param   pop  symbolic constant of the population string p is in
     \return  None
+
     \rst
 
     Description
@@ -966,6 +990,7 @@ void PGABinaryInitString (PGAContext *ctx, int p, int pop)
     \param    p     index of the string to build a datatype from
     \param    pop   symbolic constant of the population string p is in
     \return   MPI_Datatype.
+
     \rst
 
     Description
@@ -1015,6 +1040,7 @@ MPI_Datatype PGABinaryBuildDatatype (PGAContext *ctx, int p, int pop)
     \param   s1   the first string to compare
     \param   s2   the second string to compare
     \return  The Hamming distance between two strings
+
     \rst
 
     Description
@@ -1079,6 +1105,7 @@ int PGABinaryHammingDistance (PGAContext *ctx, PGABinary *s1, PGABinary *s2)
     \param   p2     second string index
     \param   pop2   symbolic constant of the population the second string is in
     \return  genetic distance of the two strings
+
     \rst
 
     Description

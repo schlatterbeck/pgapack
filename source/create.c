@@ -73,6 +73,7 @@ static void ChromFree (PGAIndividual *ind)
                        PGA_MAXIMIZE or PGA_MINIMIZE for maximization or
                        minimization, respectively.
     \return  A pointer to the context variable
+
     \rst
 
     Description
@@ -127,8 +128,8 @@ PGAContext *PGACreate
      *  so we just manually print the (rather severe) error message.
      */
     if (ctx == NULL) {
-	fprintf (stderr, "PGACreate: No room to allocate ctx\n");
-	exit (-1);
+        fprintf (stderr, "PGACreate: No room to allocate ctx\n");
+        exit (-1);
     }
     memset (ctx, 0, sizeof (*ctx));
 
@@ -470,6 +471,7 @@ PGAContext *PGACreate
     \param   initflag  If the value is PGA_TRUE, the string is randomly
                        initialized, otherwise it is set to zero
     \return  None
+
     \rst
 
     Example
@@ -534,6 +536,7 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
     \param   ctx  context variable
     \param   pop  symbolic constant of the population to create
     \return  None
+
     \rst
 
     Example
@@ -603,6 +606,7 @@ void PGACreatePop (PGAContext *ctx, int pop)
     \param   ctx  context variable
     \return  Uninitialized values in the context variable are set to
              defaults, and set values are checked for legality
+
     \rst
 
     Description
@@ -1187,110 +1191,110 @@ void PGASetUp (PGAContext *ctx)
     {
         PGAError ( ctx
                  , "PGASetUp: Using PGADone as the user stopping condition will"
-		   " result in an infinite loop!"
+                   " result in an infinite loop!"
                  , PGA_FATAL, PGA_VOID, NULL
                  );
     }
 
     switch (ctx->ga.datatype) {
     case PGA_DATATYPE_BINARY:
-	CreateString  = PGABinaryCreateString;
-	BuildDatatype = PGABinaryBuildDatatype;
-	Mutation      = PGABinaryMutation;
+        CreateString  = PGABinaryCreateString;
+        BuildDatatype = PGABinaryBuildDatatype;
+        Mutation      = PGABinaryMutation;
 
         switch (ctx->ga.CrossoverType) {
-	  case PGA_CROSSOVER_ONEPT:
-	    Crossover  = PGABinaryOneptCrossover;
+          case PGA_CROSSOVER_ONEPT:
+            Crossover  = PGABinaryOneptCrossover;
             break;
-	  case PGA_CROSSOVER_TWOPT:
-	    Crossover  = PGABinaryTwoptCrossover;
+          case PGA_CROSSOVER_TWOPT:
+            Crossover  = PGABinaryTwoptCrossover;
             break;
-	  case PGA_CROSSOVER_UNIFORM:
-	    Crossover  = PGABinaryUniformCrossover;
+          case PGA_CROSSOVER_UNIFORM:
+            Crossover  = PGABinaryUniformCrossover;
             break;
         }
-	PrintString    = PGABinaryPrintString;
-	CopyString     = PGABinaryCopyString;
-	Duplicate      = PGABinaryDuplicate;
-	InitString     = PGABinaryInitString;
-	GeneDist       = PGABinaryGeneDistance;
+        PrintString    = PGABinaryPrintString;
+        CopyString     = PGABinaryCopyString;
+        Duplicate      = PGABinaryDuplicate;
+        InitString     = PGABinaryInitString;
+        GeneDist       = PGABinaryGeneDistance;
         Hash           = PGABinaryHash;
-	break;
+        break;
       case PGA_DATATYPE_INTEGER:
         CreateString   = PGAIntegerCreateString;
         BuildDatatype  = PGAIntegerBuildDatatype;
         Mutation       = PGAIntegerMutation;
         switch (ctx->ga.CrossoverType) {
-	  case PGA_CROSSOVER_ONEPT:
-	    Crossover  = PGAIntegerOneptCrossover;
+          case PGA_CROSSOVER_ONEPT:
+            Crossover  = PGAIntegerOneptCrossover;
             break;
-	  case PGA_CROSSOVER_TWOPT:
-	    Crossover  = PGAIntegerTwoptCrossover;
+          case PGA_CROSSOVER_TWOPT:
+            Crossover  = PGAIntegerTwoptCrossover;
             break;
-	  case PGA_CROSSOVER_UNIFORM:
-	    Crossover  = PGAIntegerUniformCrossover;
+          case PGA_CROSSOVER_UNIFORM:
+            Crossover  = PGAIntegerUniformCrossover;
             break;
-	  case PGA_CROSSOVER_SBX:
-	    Crossover  = PGAIntegerSBXCrossover;
+          case PGA_CROSSOVER_SBX:
+            Crossover  = PGAIntegerSBXCrossover;
             break;
-	  case PGA_CROSSOVER_EDGE:
-	    Crossover  = PGAIntegerEdgeCrossover;
+          case PGA_CROSSOVER_EDGE:
+            Crossover  = PGAIntegerEdgeCrossover;
             break;
         }
-	PrintString    = PGAIntegerPrintString;
-	CopyString     = PGAIntegerCopyString;
-	Duplicate      = PGAIntegerDuplicate;
-	InitString     = PGAIntegerInitString;
-	GeneDist       = PGAIntegerGeneDistance;
+        PrintString    = PGAIntegerPrintString;
+        CopyString     = PGAIntegerCopyString;
+        Duplicate      = PGAIntegerDuplicate;
+        InitString     = PGAIntegerInitString;
+        GeneDist       = PGAIntegerGeneDistance;
         Hash           = PGAIntegerHash;
-	break;
+        break;
       case PGA_DATATYPE_REAL:
-	CreateString   = PGARealCreateString;
-	BuildDatatype  = PGARealBuildDatatype;
-	Mutation       = PGARealMutation;
+        CreateString   = PGARealCreateString;
+        BuildDatatype  = PGARealBuildDatatype;
+        Mutation       = PGARealMutation;
         switch (ctx->ga.CrossoverType) {
-	  case PGA_CROSSOVER_ONEPT:
-	    Crossover  = PGARealOneptCrossover;
+          case PGA_CROSSOVER_ONEPT:
+            Crossover  = PGARealOneptCrossover;
             break;
-	  case PGA_CROSSOVER_TWOPT:
-	    Crossover  = PGARealTwoptCrossover;
+          case PGA_CROSSOVER_TWOPT:
+            Crossover  = PGARealTwoptCrossover;
             break;
-	  case PGA_CROSSOVER_UNIFORM:
-	    Crossover  = PGARealUniformCrossover;
+          case PGA_CROSSOVER_UNIFORM:
+            Crossover  = PGARealUniformCrossover;
             break;
-	  case PGA_CROSSOVER_SBX:
-	    Crossover  = PGARealSBXCrossover;
+          case PGA_CROSSOVER_SBX:
+            Crossover  = PGARealSBXCrossover;
             break;
         }
-	PrintString   = PGARealPrintString;
-	CopyString    = PGARealCopyString;
-	Duplicate     = PGARealDuplicate;
-	InitString    = PGARealInitString;
-	GeneDist      = PGARealGeneDistance;
-	Hash          = PGARealHash;
-	break;
+        PrintString   = PGARealPrintString;
+        CopyString    = PGARealCopyString;
+        Duplicate     = PGARealDuplicate;
+        InitString    = PGARealInitString;
+        GeneDist      = PGARealGeneDistance;
+        Hash          = PGARealHash;
+        break;
       case PGA_DATATYPE_CHARACTER:
-	CreateString  = PGACharacterCreateString;
-	BuildDatatype = PGACharacterBuildDatatype;
-	Mutation      = PGACharacterMutation;
+        CreateString  = PGACharacterCreateString;
+        BuildDatatype = PGACharacterBuildDatatype;
+        Mutation      = PGACharacterMutation;
         switch (ctx->ga.CrossoverType) {
-	  case PGA_CROSSOVER_ONEPT:
-	    Crossover  = PGACharacterOneptCrossover;
+          case PGA_CROSSOVER_ONEPT:
+            Crossover  = PGACharacterOneptCrossover;
             break;
-	  case PGA_CROSSOVER_TWOPT:
-	    Crossover  = PGACharacterTwoptCrossover;
+          case PGA_CROSSOVER_TWOPT:
+            Crossover  = PGACharacterTwoptCrossover;
             break;
-	  case PGA_CROSSOVER_UNIFORM:
-	    Crossover  = PGACharacterUniformCrossover;
+          case PGA_CROSSOVER_UNIFORM:
+            Crossover  = PGACharacterUniformCrossover;
             break;
-	}
-	PrintString = PGACharacterPrintString;
-	CopyString  = PGACharacterCopyString;
-	Duplicate   = PGACharacterDuplicate;
-	InitString  = PGACharacterInitString;
-	GeneDist    = PGACharacterGeneDistance;
-	Hash        = PGACharacterHash;
-	break;
+        }
+        PrintString = PGACharacterPrintString;
+        CopyString  = PGACharacterCopyString;
+        Duplicate   = PGACharacterDuplicate;
+        InitString  = PGACharacterInitString;
+        GeneDist    = PGACharacterGeneDistance;
+        Hash        = PGACharacterHash;
+        break;
       case PGA_DATATYPE_USER:
         if (ctx->cops.CreateString == NULL) {
             PGAError
@@ -1316,13 +1320,13 @@ void PGASetUp (PGAContext *ctx)
                 , PGA_WARNING, PGA_INT, (void *) &err
                 );
         }
-	if (ctx->cops.Duplicate == NULL && ctx->ga.NoDuplicates) {
+        if (ctx->cops.Duplicate == NULL && ctx->ga.NoDuplicates) {
             PGAError
                 ( ctx, "PGASetUp: User datatype needs Duplicate function:"
                 , PGA_FATAL, PGA_INT, (void *) &err
                 );
         }
-	if (ctx->cops.CopyString == NULL) {
+        if (ctx->cops.CopyString == NULL) {
             PGAError
                 ( ctx, "PGASetUp: User datatype needs CopyString function:"
                 , PGA_FATAL, PGA_INT, (void *) &err
@@ -1366,7 +1370,7 @@ void PGASetUp (PGAContext *ctx)
                 , PGA_FATAL, PGA_INT, (void *) &err
                 );
         }
-	if (ctx->cops.Hash == NULL && ctx->ga.NoDuplicates) {
+        if (ctx->cops.Hash == NULL && ctx->ga.NoDuplicates) {
             PGAError
                 ( ctx, "PGASetUp: User datatype needs Hash function:"
                 , PGA_FATAL, PGA_INT, (void *) &err
@@ -1378,37 +1382,37 @@ void PGASetUp (PGAContext *ctx)
         ctx->cops.ChromFree = &ChromFree;
     }
     if ((ctx->cops.Mutation     == NULL) && (ctx->fops.Mutation    == NULL)) {
-	ctx->cops.Mutation      = Mutation;
+        ctx->cops.Mutation      = Mutation;
     }
     if ((ctx->cops.Crossover    == NULL) && (ctx->fops.Crossover   == NULL)) {
-	ctx->cops.Crossover     = Crossover;
+        ctx->cops.Crossover     = Crossover;
         if (Crossover == NULL) {
             PGAErrorPrintf (ctx, PGA_FATAL, "PGASetUp: No crossover specified");
         }
     }
     if ((ctx->cops.PrintString  == NULL) && (ctx->fops.PrintString == NULL)) {
-	ctx->cops.PrintString   = PrintString;
+        ctx->cops.PrintString   = PrintString;
     }
     if ((ctx->cops.Duplicate    == NULL) && (ctx->fops.Duplicate   == NULL)) {
-	ctx->cops.Duplicate     = Duplicate;
+        ctx->cops.Duplicate     = Duplicate;
     }
     if ((ctx->cops.InitString   == NULL) && (ctx->fops.InitString  == NULL)) {
-	ctx->cops.InitString    = InitString;
+        ctx->cops.InitString    = InitString;
     }
     if ((ctx->cops.GeneDistance == NULL) && (ctx->fops.GeneDistance == NULL)) {
-	ctx->cops.GeneDistance  = GeneDist;
+        ctx->cops.GeneDistance  = GeneDist;
     }
     if (ctx->cops.CreateString  == NULL) {
-	ctx->cops.CreateString  = CreateString;
+        ctx->cops.CreateString  = CreateString;
     }
     if (ctx->cops.CopyString    == NULL) {
-	ctx->cops.CopyString    = CopyString;
+        ctx->cops.CopyString    = CopyString;
     }
     if (ctx->cops.BuildDatatype == NULL) {
-	ctx->cops.BuildDatatype = BuildDatatype;
+        ctx->cops.BuildDatatype = BuildDatatype;
     }
     if ((ctx->cops.Hash == NULL) && (ctx->fops.Hash == NULL)) {
-	ctx->cops.Hash = Hash;
+        ctx->cops.Hash = Hash;
     }
 
 /* par */
@@ -1660,6 +1664,7 @@ void PGASetUp (PGAContext *ctx)
     \param   ctx   context variable
     \param   flag  either PGA_TRUE or PGA_FALSE
     \return  None
+
     \rst
 
     Description
@@ -1709,6 +1714,7 @@ void PGASetRandomInitFlag (PGAContext *ctx, int flag)
     \param   ctx  context variable
     \return  Return PGA_TRUE if alleles are randomly initialized,
              otherwise return PGA_FALSE
+
     \rst
 
     Example
@@ -1750,6 +1756,7 @@ int PGAGetRandomInitFlag (PGAContext *ctx)
     \param   ctx       context variable
     \param   n         Number of auxiliary evaluations
     \return  None
+
     \rst
 
     Example
@@ -1783,6 +1790,7 @@ void PGASetNumAuxEval (PGAContext *ctx, int n)
 
     \param   ctx       context variable
     \return  Number of auxiliary evaluations
+
     \rst
 
     Example
@@ -1810,6 +1818,7 @@ int PGAGetNumAuxEval (PGAContext *ctx)
     \param   ctx       context variable
     \param   n         Number of constraints
     \return  None
+
     \rst
 
     Description
@@ -1850,6 +1859,7 @@ void PGASetNumConstraint (PGAContext *ctx, int n)
 
     \param   ctx       context variable
     \return  Number of constraints
+
     \rst
 
     Example
@@ -1878,6 +1888,7 @@ int PGAGetNumConstraint (PGAContext *ctx)
     \param   ctx       context variable
     \param   n         PGA_TRUE or PGA_FALSE
     \return  None
+
     \rst
 
     Description
@@ -1926,6 +1937,7 @@ void PGASetSumConstraintsFlag (PGAContext *ctx, int n)
 
     \param   ctx       context variable
     \return  sum constraints flag
+
     \rst
 
     Example
@@ -1956,6 +1968,7 @@ int PGAGetSumConstraintsFlag (PGAContext *ctx)
     \param   gen       Epsilon contraint generation, must be below the value
                        set with PGASetMaxGAIterValue
     \return  None
+
     \rst
 
     Description
@@ -1987,6 +2000,7 @@ void PGASetEpsilonGeneration (PGAContext *ctx, int gen)
 
     \param   ctx       context variable
     \return  The epsilon generation
+
     \rst
 
     Example
@@ -2015,6 +2029,7 @@ int PGAGetEpsilonGeneration (PGAContext *ctx)
     \param   ctx       context variable
     \param   e         Exponent
     \return  None
+
     \rst
 
     Example
@@ -2048,6 +2063,7 @@ void PGASetEpsilonExponent (PGAContext *ctx, double e)
 
     \param   ctx       context variable
     \return  The epsilon exponent
+
     \rst
 
     Example
@@ -2076,6 +2092,7 @@ double PGAGetEpsilonExponent (PGAContext *ctx)
     \param   ctx       context variable
     \param   n         population index theta
     \return  None
+
     \rst
 
     Description
@@ -2113,6 +2130,7 @@ void PGASetEpsilonTheta (PGAContext *ctx, int n)
 
     \param   ctx       context variable
     \return  The epsilon theta
+
     \rst
 
     Example
@@ -2139,6 +2157,7 @@ int PGAGetEpsilonTheta (PGAContext *ctx)
     \param   ctx       context variable
     \param   name      output filename
     \return  None
+
     \rst
 
     Description

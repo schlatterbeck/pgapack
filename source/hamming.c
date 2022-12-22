@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -55,6 +55,7 @@ privately owned rights.
     \param  popindex  symbolic constant of the population for which the
                       Hamming distance is to be calculated
     \return The mean Hamming distance in the population
+
     \rst
 
     Description

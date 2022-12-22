@@ -62,6 +62,7 @@ extern char PGAProgram[100];
     \param   ctx  context variable
     \param   st   debug command line options
     \return  None
+
     \rst
 
     Description
@@ -163,6 +164,7 @@ static void PGAParseDebugArg (PGAContext *ctx, char *st)
     \param   c     current command-line index
     \param   num   number of args to strip
     \return  None
+
     \rst
 
     Description
@@ -194,6 +196,7 @@ static void PGAStripArgs (char **argv, int *argc, int *c, int num)
     \param   argc  address of the count of the number of command line argumen
     \param   argv  array of command line arguments
     \return  None
+
     \rst
 
     Example
@@ -252,8 +255,8 @@ void PGAReadCmdLine (PGAContext *ctx, int *argc, char **argv)
         if (!strcmp (*a, "-pgaversion")) {
             PGAStripArgs (a, argc, &c, 1);
             PGAPrintVersionNumber (ctx);
-	    PGADestroy (ctx);
-	    exit (-1);
+            PGADestroy (ctx);
+            exit (-1);
         }
 
         if (!strcmp (*a, "-pgahelp")) {

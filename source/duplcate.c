@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -63,6 +63,7 @@ privately owned rights.
             PGA_TRUE and string p in population pop1 is a duplicate of
             at least one strings already inserted into population pop2,
             otherwise returns PGA_FALSE
+
     \rst
 
     Example
@@ -94,7 +95,7 @@ int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
         int p2, fp;
         size_t idx = PGAIndividualHashIndex (ctx, p, pop1);
         PGAIndividual *ind = NULL;
-    
+
         assert (pop2 == PGA_NEWPOP);
         for (ind = ctx->scratch.hashed [idx]; ind; ind = ind->next_hash) {
             p2 = ind - ind->pop;
@@ -126,6 +127,7 @@ int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
     \param  p     string index
     \param  pop   symbolic constant of the population containing string p
     \return Mutates string p in population pop via side effect
+
     \rst
 
     Description
@@ -173,12 +175,12 @@ void PGAChange (PGAContext *ctx, int p, int pop)
         );
 
     while (!changed) {
-	if (ctx->fops.Mutation) {
-	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
+        if (ctx->fops.Mutation) {
+            fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
             nflips = (*ctx->fops.Mutation)(&ctx, &fp, &pop, &mr);
-	} else {
-	    nflips = (*ctx->cops.Mutation)( ctx, p, pop, mr );
-	}
+        } else {
+            nflips = (*ctx->cops.Mutation)( ctx, p, pop, mr );
+        }
 
         if (nflips > 0) {
             changed = PGA_TRUE;
@@ -194,10 +196,10 @@ void PGAChange (PGAContext *ctx, int p, int pop)
     }
 
     if (changed) {
-	PGASetEvaluationUpToDateFlag (ctx, p, pop, PGA_FALSE);
+        PGASetEvaluationUpToDateFlag (ctx, p, pop, PGA_FALSE);
     } else {
-	PGAError (ctx, "Could not change string:", PGA_WARNING, PGA_VOID, NULL);
-	PGAPrintString (ctx, stderr, p, pop);
+        PGAError (ctx, "Could not change string:", PGA_WARNING, PGA_VOID, NULL);
+        PGAPrintString (ctx, stderr, p, pop);
     }
 
     PGADebugExited ("PGAChange");
@@ -211,6 +213,7 @@ void PGAChange (PGAContext *ctx, int p, int pop)
     \param   p     string index
     \param   pop   symbolic constant of the population containing string p
     \return  Computes hash of given individual and inserts it into hash table
+
     \rst
 
     Description
@@ -244,6 +247,7 @@ void PGAHashIndividual (PGAContext *ctx, int p, int pop)
     \param  ctx     context variable
     \param  no_dup  PGA_TRUE or PGA_FALSE
     \return None
+
     \rst
 
     Description
@@ -293,6 +297,7 @@ void PGASetNoDuplicatesFlag (PGAContext *ctx, int no_dup)
 
     \param  ctx  context variable
     \return The value of the NoDuplicates flag
+
     \rst
 
     Example

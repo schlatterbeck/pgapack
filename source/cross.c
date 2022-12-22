@@ -69,6 +69,7 @@ privately owned rights.
 
     \return c1 and c2 in pop2 are children of p1 and p2 in pop1.  p1 and
             p2 are not modified.
+
     \rst
 
     Description
@@ -101,24 +102,32 @@ void PGACrossover ( PGAContext *ctx, int p1, int p2, int pop1,
 {
     int fp1, fp2, fc1, fc2;
 
-    PGADebugEntered("PGACrossover");
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " p1 = ",
-		  PGA_INT, (void *) &p1 );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " p2 = ",
-		  PGA_INT, (void *) &p2 );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " c1 = ",
-		  PGA_INT, (void *) &c1 );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " c2 = ",
-		  PGA_INT, (void *) &c2 );
+    PGADebugEntered ("PGACrossover");
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " p1 = "
+        , PGA_INT, (void *) &p1
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " p2 = "
+        , PGA_INT, (void *) &p2
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " c1 = "
+        , PGA_INT, (void *) &c1
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " c2 = "
+        , PGA_INT, (void *) &c2
+        );
 
     if (ctx->fops.Crossover) {
-	fp1 = ((p1 == PGA_TEMP1) || (p1 == PGA_TEMP2)) ? p1 : p1+1;
-	fp2 = ((p2 == PGA_TEMP1) || (p2 == PGA_TEMP2)) ? p2 : p2+1;
-	fc1 = ((c1 == PGA_TEMP1) || (c1 == PGA_TEMP2)) ? c1 : c1+1;
-	fc2 = ((c2 == PGA_TEMP1) || (c2 == PGA_TEMP2)) ? c2 : c2+1;
-	(*ctx->fops.Crossover)(&ctx, &fp1, &fp2, &pop1, &fc1, &fc2, &pop2);
+        fp1 = ((p1 == PGA_TEMP1) || (p1 == PGA_TEMP2)) ? p1 : p1+1;
+        fp2 = ((p2 == PGA_TEMP1) || (p2 == PGA_TEMP2)) ? p2 : p2+1;
+        fc1 = ((c1 == PGA_TEMP1) || (c1 == PGA_TEMP2)) ? c1 : c1+1;
+        fc2 = ((c2 == PGA_TEMP1) || (c2 == PGA_TEMP2)) ? c2 : c2+1;
+        (*ctx->fops.Crossover)(&ctx, &fp1, &fp2, &pop1, &fc1, &fc2, &pop2);
     } else {
-	(*ctx->cops.Crossover)(ctx, p1, p2, pop1, c1, c2, pop2);
+        (*ctx->cops.Crossover)(ctx, p1, p2, pop1, c1, c2, pop2);
     }
 
     PGASetEvaluationUpToDateFlag(ctx, c1, pop2, PGA_FALSE);
@@ -134,6 +143,7 @@ void PGACrossover ( PGAContext *ctx, int p1, int p2, int pop1,
     \param  ctx context variable
     \return Returns the integer corresponding to the symbolic constant
             used to specify the crossover type.
+
     \rst
 
     Example
@@ -184,6 +194,7 @@ int PGAGetCrossoverType (PGAContext *ctx)
 
     \param  ctx context variable
     \return The crossover probability
+
     \rst
 
     Example
@@ -218,6 +229,7 @@ double PGAGetCrossoverProb (PGAContext *ctx)
 
     \param  ctx context variable
     \return The uniform crossover probability
+
     \rst
 
     Example
@@ -252,6 +264,7 @@ double PGAGetUniformCrossoverProb (PGAContext *ctx)
     \param ctx            context variable
     \param crossover_type symbolic constant to specify crossover type
     \return None
+
     \rst
 
     Example
@@ -300,6 +313,7 @@ void PGASetCrossoverType (PGAContext *ctx, int crossover_type)
     \param  ctx  context variable
     \param  p    the crossover probability
     \return  None
+
     \rst
 
     Example
@@ -342,6 +356,7 @@ void PGASetCrossoverProb (PGAContext *ctx, double p)
     \param  ctx  context variable
     \param  p    the crossover probability
     \return  None
+
     \rst
 
     Description
@@ -388,6 +403,7 @@ void PGASetUniformCrossoverProb (PGAContext *ctx, double p)
     \param  ctx   context variable
     \param  flag  either PGA_TRUE or PGA_FALSE
     \return  None
+
     \rst
 
     Example
@@ -424,6 +440,7 @@ void PGASetCrossoverBoundedFlag (PGAContext *ctx, int flag)
 
     \param  ctx  context variable
     \returns  PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+
     \rst
 
     Example
@@ -456,6 +473,7 @@ int PGAGetCrossoverBoundedFlag (PGAContext *ctx)
     \param  ctx   context variable
     \param  flag  either PGA_TRUE or PGA_FALSE
     \return  None
+
     \rst
 
     Example
@@ -492,6 +510,7 @@ void PGASetCrossoverBounceBackFlag (PGAContext *ctx, int flag)
 
     \param  ctx  context variable
     \return  PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+
     \rst
 
     Example
@@ -521,6 +540,7 @@ int PGAGetCrossoverBounceBackFlag (PGAContext *ctx)
     \param  ctx   context variable
     \param  eta   eta >= 0
     \return  None
+
     \rst
 
     Example
@@ -551,6 +571,7 @@ void PGASetCrossoverSBXEta (PGAContext *ctx, double eta)
 
     \param  ctx  context variable
     \return  The SBX eta value
+
     \rst
 
     Example
@@ -580,6 +601,7 @@ double PGAGetCrossoverSBXEta (PGAContext *ctx)
     \param  ctx   context variable
     \param  val   PGA_TRUE or PGA_FALSE, default is PGA_FALSE
     \return  None
+
     \rst
 
     Description
@@ -616,6 +638,7 @@ void PGASetCrossoverSBXOncePerString (PGAContext *ctx, int val)
 
     \param  ctx  context variable
     \return The SBX once-per-string value
+
     \rst
 
     Example
@@ -649,6 +672,7 @@ int PGAGetCrossoverSBXOncePerString (PGAContext *ctx)
     \param   c1  pointer to new first child allele
     \param   c2  pointer to new second child allele
     \return  None
+
     \rst
 
     Description

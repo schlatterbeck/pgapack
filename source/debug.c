@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -292,7 +292,7 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGACheckStoppingConditions",     394 },
         { "PGASetMaxNoChangeValue",         395 },
         { "PGASetMaxSimilarityValue",       396 },
-	{ "PGADone",                        397 },
+        { "PGADone",                        397 },
 
 /* Fitness and Evaluation Routines 500 - 599 */
         /* evaluate.c */
@@ -309,9 +309,9 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGASetEvaluationUpToDateFlag",   512 },
         { "PGAGetEvaluation",               513 },
         { "PGAGetEvaluationUpToDateFlag",   514 },
-	{ "PGAEvaluateSeq",                 515 },
-	{ "PGAEvaluateCoop",                516 },
-	{ "PGAEvaluateSlave",               517 },
+        { "PGAEvaluateSeq",                 515 },
+        { "PGAEvaluateCoop",                516 },
+        { "PGAEvaluateSlave",               517 },
         { "PGAGetAuxEvaluation",            518 },
 
         /* fitness.c */
@@ -430,6 +430,7 @@ static int func_compare (const void *f1, const void *f2)
     \param   funcname   the name of the function
     \return  The debug level value of the function, that is, PGAFuncNum
              associated with funcname in PGAFuncIndex
+
     \rst
 
     Description
@@ -453,7 +454,7 @@ int PGAGetDebugLevelOfName (PGAContext *ctx, char *funcname)
             , "PGAGetDebugFlag: Function missing from PGAFuncIndex: '%s'\n"
             , funcname
             );
-    } 
+    }
     return rec->PGAFuncNum;
 }
 
@@ -465,6 +466,7 @@ int PGAGetDebugLevelOfName (PGAContext *ctx, char *funcname)
     \param   ctx       context variable
     \param   funcname  name of the function in question
     \return  None
+
     \rst
 
     Description
@@ -1082,6 +1084,7 @@ void PGASetDebugFlag66(PGAContext *ctx, int Flag)
 
     \param  ctx        context variable
     \return None
+
     \rst
 
     Description
@@ -1119,6 +1122,7 @@ void PGASortFuncNameIndex(PGAContext *ctx)
                         based upon the datatype parameter (or NULL, if
                         PGA_VOID).
     \return  The debugging information is printed to stdout
+
     \rst
 
     Example
@@ -1221,6 +1225,7 @@ void PGADebugPrint
     \param   ctx    context variable
     \param   level  the debug level to set to PGA_TRUE.
     \return  None
+
     \rst
 
     Description
@@ -1279,6 +1284,7 @@ void PGASetDebugLevel (PGAContext *ctx, int level)
     \param   ctx    context variable
     \param   level  the debug level to set to PGA_FALSE.
     \return  None
+
     \rst
 
     Description
@@ -1337,6 +1343,7 @@ void PGAClearDebugLevel (PGAContext *ctx, int level)
     \param    ctx         context variable
     \param    funcname    name of the function to turn on debugging output
     \return   None
+
     \rst
 
     Example
@@ -1365,6 +1372,7 @@ void PGASetDebugLevelByName (PGAContext *ctx, char *funcname)
     \param    ctx         context variable
     \param    funcname    name of the function to turn off debugging output
     \return   None
+
     \rst
 
     Example
@@ -1393,6 +1401,7 @@ void PGAClearDebugLevelByName (PGAContext *ctx, char *funcname)
 
     \param   ctx  context variable
     \return  list of available debug options
+
     \rst
 
     Example
@@ -1404,12 +1413,12 @@ void PGAClearDebugLevelByName (PGAContext *ctx, char *funcname)
 
        PGAPrintDebugOptions (ctx);
     \endrst
-      
+
 ******************************************************************************/
 void PGAPrintDebugOptions (PGAContext *ctx)
 {
     PGADebugEntered ("PGAPrintDebugOptions");
-    
+
 #if OPTIMIZE==0
     fprintf (stderr, "  0 Trace all debug prints\n");
     fprintf (stderr, "\n");

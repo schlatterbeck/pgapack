@@ -63,6 +63,7 @@ privately owned rights.
     \param  l     lower bound of real interval
     \param  u     upper bound of real interval
     \return Scaled value of v defined on [l,u]
+
     \rst
 
     Description
@@ -112,6 +113,7 @@ static double PGAMapIntegerToReal
     \param   a         lower bound of integer interval
     \param   b         upper bound of integer interval
     \return Scaled value of r defined on [a,b]
+
     \rst
 
     Description
@@ -156,6 +158,7 @@ static int PGAMapRealToInteger
     \param   aux   Auxiliary evaluations
     \return  Sets the evaluation function value of string p and the
              EvalUpToDate flag (to PGA_TRUE) via side effect
+
     \rst
 
     Description
@@ -234,6 +237,7 @@ void _PGASetEvaluation
     \param   pop  symbolic constant of the population the string is in
     \param   aux  Pointer to Auxiliary evaluations
     \return  The evaluation function value for string p in population pop
+
     \rst
 
     Description
@@ -305,6 +309,7 @@ double _PGAGetEvaluation (PGAContext *ctx, int p, int pop, const double **aux)
     \param   p    string index
     \param   pop  symbolic constant of the population the string is in
     \return  The evaluation function value for string p in population pop
+
     \rst
 
     Description
@@ -369,6 +374,7 @@ double *PGAGetAuxEvaluation (PGAContext *ctx, int p, int pop)
     \param  status boolean for whether up-to-date
     \return Sets the EvalUpToDate associated with the evaluation
             function value of string p via side effect
+
     \rst
 
     Description
@@ -440,6 +446,7 @@ void PGASetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop, int status)
     \param   pop  symbolic constant of the population the string is in
     \return  Return PGA_TRUE if the evaluate function value is up to date,
              otherwise, return PGA_FALSE
+
     \rst
 
     Example
@@ -496,6 +503,7 @@ int PGAGetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop)
     \param    lower  lower bound of the interval the real number is defined on
     \param    upper  lower bound of the interval the real number is defined on
     \return  The real value encoded by the binary string
+
     \rst
 
     Example
@@ -579,6 +587,7 @@ double PGAGetRealFromBinary
     \param  lower  lower bound of the interval the real number is defined on
     \param  upper  lower bound of the interval the real number is defined on
     \return The real value encoded by the binary reflected Gray code sequence
+
     \rst
 
     Example
@@ -661,6 +670,7 @@ double PGAGetRealFromGrayCode
     \param high   lower bound of the interval the val is defined on
     \param val    the real number to be represented as a binary string
     \return The string is modified by side-effect
+
     \rst
 
     Example
@@ -745,6 +755,7 @@ void PGAEncodeRealAsBinary
     \param  high   lower bound of the interval the val is defined on
     \param  val    the real number to be represented as a binary string
     \return The string is modified by side-effect
+
     \rst
 
     Example
@@ -828,6 +839,7 @@ void PGAEncodeRealAsGrayCode
     \param  start  starting bit position in the binary representation
     \param  end    ending bit position in the binary representation
     \return The integer value encoded by the binary string
+
     \rst
 
     Example
@@ -907,6 +919,7 @@ unsigned int PGAGetIntegerFromBinary
     \param  start  starting bit position in the binary representation
     \param  end    ending bit position in the binary representation
     \return The integer value encoded by the binary reflected Gray code sequence
+
     \rst
 
     Example
@@ -1002,6 +1015,7 @@ unsigned int PGAGetIntegerFromGrayCode
     \param  end    ending bit position in p to encode val in
     \param  val    the integer value to be represented as a binary string
     \return The string is modified by side-effect
+
     \rst
 
     Example
@@ -1091,6 +1105,7 @@ void PGAEncodeIntegerAsBinary
     \param  val    the integer value to be represented as a binary reflected
                    Gray code sequence
     \return The string is modified by side-effect
+
     \rst
 
     Example

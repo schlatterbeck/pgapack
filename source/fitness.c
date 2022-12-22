@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -100,6 +100,7 @@ static void remap_to_positive (PGAContext *ctx, PGAIndividual *pop)
                      fitness for
     \return Calculate the fitness for each string in the population via
             side effect
+
     \rst
 
     Description
@@ -226,6 +227,7 @@ void PGAFitness (PGAContext *ctx, int popindex)
     \param  order  an array containing a unique rank for each string
     \param  n      the size of the array order
     \return The rank of string p
+
     \rst
 
     Description
@@ -274,8 +276,8 @@ int PGARank (PGAContext *ctx, int p, int *order, int n)
      */
     for (i=0; i<n; i++) {
         if (order[i] == p) {
-	    PGADebugExited ("PGARank");
-	    return i+1;
+            PGADebugExited ("PGARank");
+            return i+1;
         }
     }
 
@@ -298,6 +300,7 @@ int PGARank (PGAContext *ctx, int p, int *order, int n)
     \param   p    string index
     \param   pop  symbolic constant of the population the string is in
     \return  The fitness value for string p in population pop
+
     \rst
 
     Example
@@ -342,6 +345,7 @@ double PGAGetFitness (PGAContext *ctx, int p, int pop)
     \param   ctx  context variable
     \return  Returns the integer corresponding to the symbolic constant
              to specify the type of fitness transformation used
+
     \rst
 
     Example
@@ -387,6 +391,7 @@ int PGAGetFitnessType (PGAContext *ctx)
     \return  Returns the integer corresponding to the symbolic constant
              used to specify the type of fitness transformation used for
              minimization problems
+
     \rst
 
     Example
@@ -426,6 +431,7 @@ int PGAGetFitnessMinType (PGAContext *ctx)
 
     \param   ctx  context variable
     \return  The value of MAX used in rank-based fitness
+
     \rst
 
     Example
@@ -458,6 +464,7 @@ double PGAGetMaxFitnessRank (PGAContext *ctx)
     \param   ctx           context variable
     \param   fitness_type  symbolic constant to specify fitness type
     \return  None
+
     \rst
 
     Description
@@ -510,6 +517,7 @@ void PGASetFitnessType (PGAContext *ctx, int fitness_type)
     \param ctx          context variable
     \param fitness_type symbolic constant to specify fitness minimization type
     \return None
+
     \rst
 
     Description
@@ -561,6 +569,7 @@ void PGASetFitnessMinType (PGAContext *ctx, int fitness_type)
     \param   ctx  context variable
     \param   max  the value of the parameter Max when using linear ranking
     \return None
+
     \rst
 
     Description
@@ -606,6 +615,7 @@ void PGASetMaxFitnessRank (PGAContext *ctx, double max)
     \param  popindex population index to calculate fitness for
     \return Calculates the fitness for each string in the population via
             side effect
+
     \rst
 
     Description
@@ -665,6 +675,7 @@ static void PGAFitnessLinearNormal (PGAContext *ctx, int popindex)
     \param  popindex population index to calculate fitness for
     \return Calculates the fitness for each string in the population via
             side effect
+
     \rst
 
     Description
@@ -726,6 +737,7 @@ static void PGAFitnessLinearRank (PGAContext *ctx, int popindex)
     \param  pop   population pointer to calculate fitness for
     \return Calculates the fitness for each string in the population via
             side effect
+
     \rst
 
     Description
@@ -768,6 +780,7 @@ static void PGAFitnessMinReciprocal (PGAContext *ctx, PGAIndividual *pop)
     \param  pop   population pointer to calculate fitness for
     \return Calculates the fitness for each string in the population via
             side effect
+
     \rst
 
     Description
@@ -824,6 +837,7 @@ static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop)
     \param   ctx  context variable
     \param   val  the value of the multiplier
     \return  None
+
     \rst
 
     Description
@@ -856,6 +870,7 @@ void PGASetFitnessCmaxValue (PGAContext *ctx, double val)
 
     \param  ctx  context variable
     \return The value of Cmax used
+
     \rst
 
     Example

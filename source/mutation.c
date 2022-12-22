@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -81,21 +81,22 @@ int PGAMutate(PGAContext *ctx, int p, int pop)
     double mr;
     int count;
     int fp;
-    PGADebugEntered("PGAMutate");
-    
+    PGADebugEntered ("PGAMutate");
+
     mr    = ctx->ga.MutationProb;
     if (ctx->fops.Mutation) {
-	fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
+        fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
         count = (*ctx->fops.Mutation)(&ctx, &fp, &pop, &mr);
     } else {
-	count = (*ctx->cops.Mutation)( ctx, p, pop, mr );
+        count = (*ctx->cops.Mutation)( ctx, p, pop, mr );
     }
-    
-    if ( count > 0 )
-	PGASetEvaluationUpToDateFlag(ctx, p, pop, PGA_FALSE);
-    
-    PGADebugExited("PGAMutate");
-    
+
+    if (count > 0) {
+        PGASetEvaluationUpToDateFlag (ctx, p, pop, PGA_FALSE);
+    }
+
+    PGADebugExited ("PGAMutate");
+
     return(count);
 }
 
@@ -1137,7 +1138,7 @@ double PGAGetDEDither (PGAContext *ctx)
    PGASetDEDitherPerIndividual - If this is set to PGA_TRUE, then for
    Differential Evolution if the Dither value is non-zero we produce a
    new random value to add to the scale factor F *for each individual*.
-   Otherwise if the flag is not set (PGA_FALSE), the we produce a new 
+   Otherwise if the flag is not set (PGA_FALSE), the we produce a new
    value in each generation, the same value for *all* individuals.
 
    Category: Operators

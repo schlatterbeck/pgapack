@@ -35,10 +35,11 @@ Open Source Consulting
     \param b  vector of lenth n
     \return 0 if no error, a positive error-code otherwise, returns the
             solution in b, a and b are modified in-place
+
     \rst
     Description
     -----------
-  
+
     Linear matrix equation :math:`ax = b`
     \endrst
 ******************************************************************/
@@ -104,10 +105,11 @@ int LIN_solve (int n, void *a, double *b)
     \param n  size of the matrix
     \param a  n * n matrix
     \return None
+
     \rst
     Description
     -----------
-  
+
     Print matrix :math:`a`. Mainly used for testing.
     \endrst
 ******************************************************************/
@@ -130,10 +132,11 @@ void LIN_print_matrix (int n, void *a)
     \param n  size of the vector
     \param v  vector of length n
     \return None
+
     \rst
     Description
     -----------
-  
+
     Print vector :math:`v`. Mainly used for testing.
     \endrst
 ******************************************************************/
@@ -153,6 +156,7 @@ void LIN_print_vector (int n, double *v)
     \param v1   first vector of length n
     \param v2   second vector of length n
     \return The dot product of v1 and v2
+
 ******************************************************************/
 double LIN_dot (int dim, double *v1, double *v2)
 {
@@ -171,6 +175,7 @@ double LIN_dot (int dim, double *v1, double *v2)
     \param v1   first vector of length n
     \param v2   second vector of length n
     \return The euclidian distance of v1 and v2
+
 ******************************************************************/
 double LIN_euclidian_distance (int dim, double *v1, double *v2)
 {
@@ -188,6 +193,7 @@ double LIN_euclidian_distance (int dim, double *v1, double *v2)
     \param dim  size of the vectors
     \param v    vector of length n
     \return The euclidian norm of v
+
 ******************************************************************/
 double LIN_2norm (int dim, double *v)
 {
@@ -195,11 +201,12 @@ double LIN_2norm (int dim, double *v)
 }
 
 /*!***************************************************************
-    \brief Greates common divisor of two integers
+    \brief Greatest common divisor of two integers
     \ingroup linalg
     \param a  first integer
     \param b  second integer
     \return The greatest common divisor (gcd) of a and b
+
 ******************************************************************/
 int LIN_gcd (int a, int b)
 {
@@ -226,6 +233,7 @@ int LIN_gcd (int a, int b)
     \param a  first integer
     \param b  second integer
     \return Binomial coefficient
+
     \rst
     Description
     -----------
@@ -296,6 +304,7 @@ size_t LIN_binom (int a, int b)
     \param dim  dimension
     \param v    vector of dimension dim
     \return The vector v is modified in-place
+
     \rst
     Description
     -----------
@@ -329,6 +338,7 @@ void LIN_normalize_to_refplane (int dim, double *v)
     \param sum   Number of points so far
     \param p     Pointer to created points, memory must be already allocated
     \return The number of points allocated
+
 ******************************************************************/
 static int dasdennis (int dim, int npart, int depth, int sum, void *p)
 {
@@ -365,6 +375,7 @@ static int dasdennis (int dim, int npart, int depth, int sum, void *p)
     \param dir     Direction vector
     \param v       Pointer to points, points must have been created
     \return None
+
     \rst
     Description
     -----------
@@ -414,12 +425,13 @@ void dasdennisscale (int dim, int npoints, double scale, double *dir, void *v)
     \param npoints Number of points
     \param mem     Memory for points, memory must have been allocated
     \return None
+
     \rst
 
     Description
     -----------
 
-    This is the case where the memory is already allocated
+    This is the case where the memory is already allocated.
     For more details see :c:func:`LIN_dasdennis`.
 
     \endrst
@@ -443,6 +455,7 @@ void LIN_dasdennis_allocated
     \param scale   Scaling factor
     \param dir     Direction vector
     \return Number of points allocated, -1 on error
+
     \rst
     Description
     -----------
