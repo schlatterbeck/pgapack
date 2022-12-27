@@ -38,138 +38,144 @@ privately owned rights.
 */
 
 /*****************************************************************************
-*     FILE: random.c: This file contains routines to generate randomness.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+* \file
+* This file contains routines to generate randomness.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup random Functions for randomness
+ *****************************************************************************/
 
 #include "pgapack.h"
 
-/*U****************************************************************************
-   PGARandomFlip - flip a biased coin and return PGA_TRUE if the coin is
-   a "winner."  Otherwise, return PGA_FALSE.
+/*!****************************************************************************
+    \brief Flip a biased coin and return PGA_TRUE if the coin is a "winner",
+           otherwise, return PGA_FALSE.
+    \ingroup random
 
-   Category: Utility
+    \param   ctx  context variable
+    \param   p    biased probability (.5 is a fair coin)
+    \return  PGA_TRUE or PGA_FALSE
 
-   Inputs:
-      ctx - context variable
-      p   - biased probability (.5 is a fair coin)
+    \rst
 
-   Outputs:
-      PGA_TRUE or PGA_FALSE
+    Example
+    -------
 
-   Example:
-      To return PGA_TRUE approximately seventy percent of the time, use
+    To return PGA_TRUE approximately seventy percent of the time, use
 
-      PGAContext *ctx;
-      int p;
-      :
-      PGARandomFlip(ctx, 0.7)
+    .. code-block:: c
 
-****************************************************************************U*/
-int PGARandomFlip ( PGAContext *ctx, double p )
+       PGAContext *ctx;
+       int bit;
+
+       bit = PGARandomFlip (ctx, 0.7)
+
+    \endrst
+
+******************************************************************************/
+int PGARandomFlip (PGAContext *ctx, double p)
 {
-    PGADebugEntered("PGARandomFlip");
+    PGADebugEntered ("PGARandomFlip");
+    PGADebugExited  ("PGARandomFlip");
 
-    PGADebugExited("PGARandomFlip");
-
-    return( (PGARandom01(ctx, 0) < p) ? PGA_TRUE : PGA_FALSE);
+    return (PGARandom01 (ctx, 0) < p) ? PGA_TRUE : PGA_FALSE;
 }
 
 
-/*U****************************************************************************
-   PGARandomInterval - returns a uniform random number on the specified
-   interval
+/*!****************************************************************************
+    \brief Return a uniform random number on the specified interval.
+    \ingroup random
 
-   Category: Utility
+    \param   ctx    context variable
+    \param   start  starting (integer) value of the interval
+    \param   end    ending   (integer) value of the interval
+    \return  A uniformly distributed random number in the interval [start, end]
 
-   Inputs:
-      ctx - context variable
-      start - starting (integer) value of the interval
-      end   - ending   (integer) value of the interval
+    \rst
 
-   Outputs:
-      A uniformly distributed random number in the interval [start, end].
+    Example
+    -------
 
-   Example:
-      Generate a value uniformly random from the interval [0,99]
+    Generate a value uniformly random from the interval [0,99]
 
-      PGAContext *ctx;
-      :
-      PGARandomInterval(ctx, 0, 99);
+    .. code-block:: c
 
-****************************************************************************U*/
-int PGARandomInterval( PGAContext *ctx, int start, int end)
+       PGAContext *ctx;
+       int r;
+
+       r = PGARandomInterval (ctx, 0, 99);
+
+    \endrst
+
+******************************************************************************/
+int PGARandomInterval (PGAContext *ctx, int start, int end)
 {
-    PGADebugEntered("PGARandomInterval");
-    
-    PGADebugExited("PGARandomInterval");
+    PGADebugEntered ("PGARandomInterval");
+    PGADebugExited  ("PGARandomInterval");
 
-    return( (int)floor(PGARandom01(ctx, 0) * (double)(end-start+1) ) + start );
-    
-/*
-   The original call...
-
-   return(ceil( (double)(end-start+1) * PGARandom01(ctx, 0) )+start-1);
-*/
+    return (int)floor (PGARandom01 (ctx, 0) * (double)(end-start+1)) + start;
 }
 
+/*!****************************************************************************
+    \brief Generate a uniform random number on the interval [0,1).
+    \ingroup random
 
-/*****************************************************************************
-*  This is a C language implementation of the universal random number        *
-*  generator proposed by G. Marsaglia and A. Zaman and translated from       *
-*  F. James' version.                                                        *
-*                                                                            *
-*  F. James                                                                  *
-*  A review of pseudorandom number generators                                *
-*  Computer Physics Communication                                            *
-*  60 (1990) 329-344                                                         *
-*                                                                            *
-*  G. Marsaglia, A. Zaman, W. Tseng                                          *
-*  Stat Prob. Letter                                                         *
-*  9 (1990) 35.                                                              *
-*                                                                            *
-*  G. Marsaglia, A. Zaman                                                    *
-*  FSU-SCRI-87-50                                                            *
-*                                                                            *
-*  This algorithm is a combination of a lagged Fibonacci and arithmetic      *
-*  sequence (F. James) generator with period of 2^144.  It provides 32-bit   *
-*  floating point numbers in the range from zero to one.  It is claimed to   *
-*  be portable and provides bit-identical results on all machines with at    *
-*  least 24-bit mantissas.                                                   *
-*                                                                            *
-*  PGARandom01 should be initialized with a 32-bit integer seed such that    *
-*  0 <= seed <= 900,000,000.  Each of these 900,000,000 values gives rise    *
-*  to an independent sequence of ~ 10^30.                                    *
-*                                                                            *
-*  warning on use of static storage class on thread shared memory machines   *
-*****************************************************************************/
-/*U****************************************************************************
-   PGARandom01 - generates a uniform random number on the interval [0,1)
-   If the second argument is 0 it returns the next random number in the
-   sequence.  Otherwise, the second argument is used as a new seed for the
-   population
+    \param   ctx      context variable
+    \param   newseed  either 0 to get the next random number, or nonzero
+                      to reseed
+    \return  A random number on the interval [0,1)
 
-   Category: Utility
+    \rst
 
-   Inputs:
-      ctx     - context variable
-      newseed - either 0 to get the next random number, or nonzero
-                to reseed
-   Outputs:
-      A random number on the interval [0,1)
+    Description
+    -----------
 
-   Example:
-      To get the next random number use
+    If the second argument is 0 it returns the next random number in the
+    sequence.  Otherwise, the second argument is used as a new seed for the
+    population.
 
-      PGAContext *ctx;
-      double r;
-      :
-      r = PGARandom01(ctx,0);
+    This is a C language implementation of the universal random number
+    generator proposed by G. Marsaglia and A. Zaman [1]_, [2]_ and
+    translated from F. James' version [3]_.
 
-****************************************************************************U*/
-double PGARandom01( PGAContext *ctx, int newseed )
+    This algorithm is a combination of a lagged Fibonacci and arithmetic
+    sequence (F. James) generator with period of 2^144.  It provides 32-bit
+    floating point numbers in the range from zero to one.  It is claimed to
+    be portable and provides bit-identical results on all machines with at
+    least 24-bit mantissas.
+
+    PGARandom01 should be initialized with a 32-bit integer seed such that
+    :math:`0 \le seed \le 900,000,000`.
+    Each of these 900,000,000 values gives rise to an independent
+    sequence of :math:`\approx 10^{30}`.
+
+    Warning on use of static storage class on thread shared memory
+    machines.
+
+    .. [1] G. Marsaglia, A. Zaman, W. Tseng. Stat Prob. Letter 9 (1990) 35.
+    .. [2] G. Marsaglia, A. Zaman FSU-SCRI-87-50
+    .. [3] F. James.  A review of pseudorandom number generators.
+           Computer Physics Communication 60 (1990) 329--344
+
+    Example
+    -------
+
+    To get the next random number use
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       double r;
+
+       r = PGARandom01 (ctx, 0);
+
+    \endrst
+
+******************************************************************************/
+double PGARandom01 (PGAContext *ctx, int newseed)
 {
 
     /* initialization variables */
@@ -179,42 +185,42 @@ double PGARandom01( PGAContext *ctx, int newseed )
     /* random number variables */
     static int seed=1;      /* default seed if none specified */
     static int i96, j96;
-    static float u[97], uni, c, cd, cm;
+    static float u [97], uni, c, cd, cm;
 
 
-    PGADebugEntered("PGARandom01");
+    PGADebugEntered ("PGARandom01");
 
     /* initialization */
-/*     printf("i96 = %d\tj96 = %d\n", i96, j96); */
 
-    if ( newseed != 0 ) {
+    if (newseed != 0) {
 
         seed = newseed % 900000000;
         ij   = seed / 30082;
         kl   = seed - 30082 * ij;
-        i    = ( (ij/177) % 177 ) + 2;
-        j    = (  ij      % 177 ) + 2;
-        k    = ( (kl/169) % 178 ) + 1;
-        l    = (  kl      % 169 );
+        i    = ((ij/177) % 177) + 2;
+        j    = ( ij      % 177) + 2;
+        k    = ((kl/169) % 178) + 1;
+        l    = ( kl      % 169);
 
-        for ( ii=0; ii<97; ii++ ) {
+        for (ii=0; ii<97; ii++) {
 
             s = 0.0;
             t = 0.5;
 
-            for ( jj=0; jj<24; jj++ ) {
+            for (jj=0; jj<24; jj++) {
 
-                m = ( ((i*j) % 179) * k ) % 179;
+                m = (((i*j) % 179) * k) % 179;
                 i = j;
                 j = k;
                 k = m;
-                l = ( (53*l) + 1 ) % 169;
-                if ( ( (l*m) % 64 ) >= 32 )
+                l = ((53*l) + 1) % 169;
+                if (((l*m) % 64) >= 32) {
                     s += t;
+                }
                 t *= .5;
             }
 
-            u[ii] = s;
+            u [ii] = s;
         }
 
         c   = 362436.  /16777216.;
@@ -225,221 +231,317 @@ double PGARandom01( PGAContext *ctx, int newseed )
     }
 
     /* random number generation */
-    uni = u[i96] - u[j96];
-    if ( uni < 0. ) uni += 1.0;
-    u[i96] = uni;
+    uni = u [i96] - u [j96];
+    if (uni < 0.) {
+        uni += 1.0;
+    }
+    u [i96] = uni;
     i96--;
-    if ( i96 < 0  ) i96 = 96;
+    if (i96 < 0) {
+        i96 = 96;
+    }
     j96--;
-    if ( j96 < 0  ) j96 = 96;
+    if (j96 < 0) {
+        j96 = 96;
+    }
     c   -= cd;
-    if ( c   < 0. ) c += cm;
+    if (c < 0.) {
+        c += cm;
+    }
     uni -= c;
-    if ( uni < 0. ) uni += 1.0;
+    if (uni < 0.) {
+        uni += 1.0;
+    }
 
-    PGADebugExited("PGARandom01");
-    return( (double) uni);
+    PGADebugExited ("PGARandom01");
+    return (double) uni;
 }
 
-/*U****************************************************************************
-   PGARandomUniform - returns a uniform random number on the interval
-   [start,end]
+/*!****************************************************************************
+    \brief Return a uniform random number on the interval [start,end]
+    \ingroup random
 
-   Category: Utility
+    \param   ctx    context variable
+    \param   start  starting (double) value of the interval
+    \param   end    ending   (double) value of the interval
+    \return  A random number on the interval [start,end]
 
-   Inputs:
-      ctx - context variable
-      start - starting (double) value of the interval
-      end   - ending   (double) value of the interval
+    \rst
 
-   Outputs:
-      A random number on the interval [start,end]
+    Example
+    -------
 
-   Example:
-      Generate a uniform random number on the interval [-0.5, 1.5]
+    Generate a uniform random number on the interval [-0.5, 1.5]
 
-      PGAContext *ctx;
-      double r;
-      :
-      r = PGARandomUniform(ctx, -0.5, 1.5);
+    .. code-block:: c
 
-****************************************************************************U*/
-double PGARandomUniform( PGAContext *ctx, double start, double end)
+       PGAContext *ctx;
+       double r;
+
+       r = PGARandomUniform (ctx, -0.5, 1.5);
+
+    \endrst
+
+******************************************************************************/
+double PGARandomUniform (PGAContext *ctx, double start, double end)
 {
     double val, r;
 
-    PGADebugEntered("PGARandomUniform");
+    PGADebugEntered ("PGARandomUniform");
 
-    r = PGARandom01(ctx, 0);
+    r = PGARandom01 (ctx, 0);
     val = (end-start) * r + start;
 
-    PGADebugExited("PGARandomUniform");
+    PGADebugExited ("PGARandomUniform");
 
-    return(val);
+    return val;
 }
 
 
-/*U****************************************************************************
-   PGARandomGaussian - returns an approximation to a Gaussian random number
+/*!****************************************************************************
+    \brief Return an approximation to a Gaussian random number
+    \ingroup random
 
-   Category: Utility
+    \param   ctx    context variable
+    \param   mean   the mean of the Gaussian distribution
+    \param   sigma  the standard deviation of the Gaussian distribution
+    \return  A random number selected from a Gaussian distribution with
+             given mean and standard deviation
 
-   Inputs:
-       mean  - the mean of the Gaussian distribution
-       sigma - the standard deviation of the Gaussian distribution
+    \rst
 
-   Outputs:
-      A random number selected from a Gaussian distribution with given
-      mean and standard deviation
+    Example
+    -------
 
-   Example:
-      To generate a Gaussian random number with mean 0.0 and standard
-      deviation 1.0 use
+    To generate a Gaussian random number with mean 0.0 and standard
+    deviation 1.0 use
 
-      PGAContext *ctx;
-      :
-      r = PGARandomGaussian(ctx, 0.0, 1.0);
+    .. code-block:: c
 
-****************************************************************************U*/
-double PGARandomGaussian( PGAContext *ctx, double mean, double sigma)
+       PGAContext *ctx;
+       double r;
+
+       r = PGARandomGaussian (ctx, 0.0, 1.0);
+
+    \endrst
+
+******************************************************************************/
+double PGARandomGaussian (PGAContext *ctx, double mean, double sigma)
 {
     int i;
     double sum = 0.;
 
-    PGADebugEntered("PGARandomGaussian");
+    PGADebugEntered ("PGARandomGaussian");
 
-    for (i=11;i>=0; i--)
-        sum += PGARandom01(ctx, 0);
+    for (i=11; i>=0; i--) {
+        sum += PGARandom01 (ctx, 0);
+    }
 
-    PGADebugExited("PGARandomGaussian");
+    PGADebugExited ("PGARandomGaussian");
 
-    return ( (sum-6.0) * sigma + mean );
+    return (sum - 6.0) * sigma + mean;
 }
 
-/*U***************************************************************************
-   PGAGetRandomSeed - returns the integer to seed random numbers with
+/*!***************************************************************************
+    \brief Return the integer the random number generator was seeded with.
+    \ingroup query
 
-   Category: Utility
+    \param   ctx  context variable
+    \return  The seed for the random number generator
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The seed for the random number generator
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int seed;
-      :
-      seed = PGAGetRandomSeed(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
-int PGAGetRandomSeed(PGAContext *ctx)
+       PGAContext *ctx;
+       int seed;
+
+       seed = PGAGetRandomSeed (ctx);
+
+    \endrst
+
+*****************************************************************************/
+int PGAGetRandomSeed (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetRandomSeed");
+    PGADebugEntered ("PGAGetRandomSeed");
 
-    PGADebugExited("PGAGetRandomSeed");
+    PGADebugExited  ("PGAGetRandomSeed");
 
     /* When initializing random number generator, seed is modulo 900000000 */
     /* Larger numbers today happen when using time(0) to init seed */
-    return(ctx->init.RandomSeed % 900000000);
+    return ctx->init.RandomSeed % 900000000;
 }
 
-/*U****************************************************************************
-   PGASetRandomSeed - set a seed for the random number generator.  The
-   default is to use a random seed.  Specifying a seed exlicitly allows
-   for reproducibility of runs.
+/*!****************************************************************************
+    \brief Set a seed for the random number generator.
+    \ingroup init
 
-   Category: Utility
+    \param   ctx   context variable
+    \param   seed  seed  for the random number generator
+    \return  None
 
-   Inputs:
-      ctx  - context variable
-      seed - seed  for the random number generator
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetRandomSeed(ctx,1);
+    The default is to initialize the seed randomly (from the time).
+    Specifying a seed exlicitly allows for reproducibility of runs.
 
-****************************************************************************U*/
-void PGASetRandomSeed(PGAContext *ctx, int seed)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetRandomSeed (ctx, 1);
+
+    \endrst
+
+******************************************************************************/
+void PGASetRandomSeed (PGAContext *ctx, int seed)
 {
 #define MAX_PROCESSORS 2048
 
-    PGADebugEntered("PGASetRandomSeed");
-    PGAFailIfSetUp("PGASetRandomSeed");
+    PGADebugEntered ("PGASetRandomSeed");
+    PGAFailIfSetUp  ("PGASetRandomSeed");
 
-    if ((seed < 1) || (seed + MAX_PROCESSORS > 900000000))
-	PGAError ( ctx, "PGASetRandomSeed: Invalid value of seed:",
-		  PGA_FATAL, PGA_INT, (void *) &seed);
-    else
+    if ((seed < 1) || (seed + MAX_PROCESSORS > 900000000)) {
+        PGAError
+            ( ctx, "PGASetRandomSeed: Invalid value of seed:"
+            , PGA_FATAL, PGA_INT, (void *) &seed
+            );
+    } else {
 	ctx->init.RandomSeed = seed;
+    }
     
-    PGADebugExited("PGASetRandomSeed");
+    PGADebugExited ("PGASetRandomSeed");
 }
-
-/*
- * Random Sampling of k out of n without replacement
- * Algorithm from: Jeffrey Scott Vitter. An efficient algorithm for
- * sequential random sampling. ACM Transactions on Mathematical
- * Software, 13(1):58-67, March 1987.
- * This is implemented as an iterator, i.e., an init method
- * PGARandomSampleInit that initializes n, k and PGARandomNextSample
- * that returns the next sample index. The algorithm guarantees that
- * sample indexes are returned sorted in index order.
- * Note that the CUTOFF is arbitrary and no measurements were performed
- * -- modern CPUs can probably iterate a lot when not accessing memory,
- * so this can probably be set a lot higher.
- */
 
 #define CUTOFF 13
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 static int sample_a1 (PGASampleState *state);
 static int sample_a2 (PGASampleState *state);
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+/*!****************************************************************************
+    \brief Init random sampling of k out of n without replacement.
+    \ingroup random
+
+    \param   ctx   context variable
+    \param   state pointer to PGASampleState, needs to be allocated by caller
+    \param   k     k of the k out of n
+    \param   n     n of the k out of n
+    \return  None
+
+    \rst
+
+    Description
+    -----------
+
+    Algorithm from [1]_.
+    This is implemented as an iterator, i.e., this init method
+    that initializes n and k and a function
+    :c:func:`PGARandomNextSample`
+    that returns the next sample index. The algorithm guarantees that
+    sample indexes are returned sorted in index order.
+    Note that the CUTOFF is arbitrary and no measurements were performed
+    -- modern CPUs can probably iterate a lot when not accessing memory,
+    so this can probably be set a lot higher.
+
+    .. [1] Jeffrey Scott Vitter. An efficient algorithm for sequential
+           random sampling. ACM Transactions on Mathematical Software,
+           13(1):58-67, March 1987.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       PGASampleState state;
+       int s;
+
+       PGARandomSampleInit (ctx, &state, 3, 6);
+       s = PGARandomNextSample (&state);
+
+    \endrst
+
+******************************************************************************/
 
 void PGARandomSampleInit (PGAContext *ctx, PGASampleState *state, int k, int n)
 {
-    PGADebugEntered("PGARandomSampleInit");
+    PGADebugEntered ("PGARandomSampleInit");
     if (k <= 0) {
-	PGAError ( ctx, "PGARandomSampleInit: Invalid value of k:",
-		  PGA_FATAL, PGA_INT, (void *) &k);
+	PGAError
+            ( ctx, "PGARandomSampleInit: Invalid value of k:"
+            , PGA_FATAL, PGA_INT, (void *) &k
+            );
     }
     if (n <= 0) {
-	PGAError ( ctx, "PGARandomSampleInit: Invalid value of n:",
-		  PGA_FATAL, PGA_INT, (void *) &n);
+	PGAError
+            ( ctx, "PGARandomSampleInit: Invalid value of n:"
+            , PGA_FATAL, PGA_INT, (void *) &n
+            );
     }
     if (k > n) {
-	PGAError ( ctx, "PGARandomSampleInit: Invalid value of k:",
-		  PGA_FATAL, PGA_INT, (void *) &k);
+	PGAError
+            ( ctx, "PGARandomSampleInit: Invalid value of k:"
+            , PGA_FATAL, PGA_INT, (void *) &k
+            );
     }
     memset (state, 0, sizeof (*state));
     state->n   = n;
     state->k   = k;
     state->idx = 0;
     state->ctx = ctx;
-    PGADebugExited("PGARandomSampleInit");
+    PGADebugExited ("PGARandomSampleInit");
 }
+
+/*!****************************************************************************
+    \brief Get next sample index for k out of n.
+    \ingroup random
+
+    \param   state pointer to PGASampleState, needs to be allocated by caller
+                   and initialized by \ref function::PGARandomSampleInit
+    \return  next sample
+
+    \rst
+
+    Description
+    -----------
+
+    See :c:func:`PGARandomSampleInit` for documentation and example.
+
+    \endrst
+******************************************************************************/
 
 int PGARandomNextSample (PGASampleState *state)
 {
     int ret = 0;
     PGAContext *ctx = state->ctx; /* Needed for debug below */
-    PGADebugEntered("PGARandomNextSample");
+    PGADebugEntered ("PGARandomNextSample");
     if (state->k <= 0) {
-	PGAError ( state->ctx, "PGARandomNextSample: Invalid value of k:",
-		  PGA_FATAL, PGA_INT, (void *) &(state->k));
+	PGAError
+            ( state->ctx, "PGARandomNextSample: Invalid value of k:"
+            , PGA_FATAL, PGA_INT, (void *) &(state->k)
+            );
     }
     if (state->k > 1 && state->n - state->k > CUTOFF) {
         ret = sample_a2 (state);
     } else {
         ret = sample_a1 (state);
     }
-    PGADebugExited("PGARandomNextSample");
+    PGADebugExited ("PGARandomNextSample");
     return ret;
 }
+
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 /* This is algorithm A1 from paper above */
 static int sample_a1 (PGASampleState *state)
@@ -523,3 +625,4 @@ static int sample_a2 (PGASampleState *state)
     state->n = n;
     return state->idx - 1;
 }
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
