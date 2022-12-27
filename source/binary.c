@@ -71,6 +71,10 @@ privately owned rights.
  *  \defgroup output Output
  *  \brief Output printing
  *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup not_implemented Not yet implemented
+ *  \brief Not yet implemented, mainly used for island/multiple demes.
+ *****************************************************************************/
 
 
 /*!****************************************************************************

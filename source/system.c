@@ -360,7 +360,7 @@ double PGAGetMinMachineDoubleValue (PGAContext *ctx)
 void PGAUsage( PGAContext *ctx )
 {
     /*  Print the usage info out if MPI isn't running (thus, only one process
-     *  is probably running), or if we actually are the master.
+     *  is probably running), or if we actually are the rank-0 process.
      */
     if (!ctx->par.MPIAlreadyInit || (PGAGetRank(ctx, MPI_COMM_WORLD) == 0)) {
 	PGAPrintVersionNumber( ctx );

@@ -1092,25 +1092,6 @@ void PGARunGM
     , double (*f)(PGAContext *, int, int, double *)
     , MPI_Comm comm
     );
-void PGAEvaluateSeq
-    ( PGAContext *ctx, int pop
-    , double (*f)(PGAContext *, int, int, double *)
-    );
-void PGAEvaluateCoop
-    ( PGAContext *ctx, int pop
-    , double (*f)(PGAContext *, int, int, double *)
-    , MPI_Comm comm
-    );
-void PGAEvaluateMS
-    ( PGAContext *ctx, int pop
-    , double (*f)(PGAContext *c, int p, int pop, double *)
-    , MPI_Comm comm
-    );
-void PGAEvaluateSlave
-    ( PGAContext *ctx, int pop
-    , double (*f)(PGAContext *, int, int, double *)
-    , MPI_Comm comm
-    );
 void PGAEvaluate
     ( PGAContext *ctx, int pop
     , double (*f)(PGAContext *, int, int, double *)

@@ -152,7 +152,7 @@ int MPI_Comm_free(MPI_Comm *comm) {
 
 
 /*  Returns the rank of the current process in rank.  We return
- *  0 -- we are the master.
+ *  0 -- we are the rank-0 process.
  */
 int MPI_Comm_rank(MPI_Comm comm, int *rank) {
     *rank = 0;

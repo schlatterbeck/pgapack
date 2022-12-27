@@ -311,7 +311,7 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGAGetEvaluationUpToDateFlag",   514 },
         { "PGAEvaluateSeq",                 515 },
         { "PGAEvaluateCoop",                516 },
-        { "PGAEvaluateSlave",               517 },
+        { "PGAEvaluateWorker",              517 },
         { "PGAGetAuxEvaluation",            518 },
 
         /* fitness.c */
@@ -336,7 +336,7 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGASendIndividual",              601 },
         { "PGAReceiveIndividual",           602 },
         { "PGASendReceiveIndividual",       603 },
-        { "PGAEvaluateMS",                  605 },
+        { "PGAEvaluateMP",                  605 },
         { "PGAGetRank",                     607 },
         { "PGAGetNumProcs",                 608 },
         { "PGASetCommunicator",             609 },
@@ -601,8 +601,7 @@ void PGASetDebugFlag11(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[534] = Flag; /*PGAGetFitnessCmaxValue*/
 
    ctx->debug.PGADebugFlags[604] = Flag; /*PGARunMS*/
-   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMS*/
-   ctx->debug.PGADebugFlags[606] = Flag; /*PGAEvaluateDoneMS*/
+   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMP*/
    ctx->debug.PGADebugFlags[607] = Flag; /*PGAGetRank*/
    ctx->debug.PGADebugFlags[608] = Flag; /*PGAGetNumProcs*/
    ctx->debug.PGADebugFlags[609] = Flag; /*PGASetCommunicator*/
@@ -647,8 +646,7 @@ static
 void PGASetDebugFlag20(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[604] = Flag; /*PGARunMS*/
-   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMS*/
-   ctx->debug.PGADebugFlags[606] = Flag; /*PGAEvaluateDoneMS*/
+   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMP*/
    ctx->debug.PGADebugFlags[607] = Flag; /*PGAGetRank*/
    ctx->debug.PGADebugFlags[608] = Flag; /*PGAGetNumProcs*/
    ctx->debug.PGADebugFlags[609] = Flag; /*PGASetCommunicator*/
@@ -672,8 +670,7 @@ void PGASetDebugFlag21(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[602] = Flag; /*PGAReceiveIndividual*/
    ctx->debug.PGADebugFlags[603] = Flag; /*PGASendReceiveIndividual*/
    ctx->debug.PGADebugFlags[604] = Flag; /*PGARunMS*/
-   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMS*/
-   ctx->debug.PGADebugFlags[606] = Flag; /*PGAEvaluateDoneMS*/
+   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMP*/
    ctx->debug.PGADebugFlags[607] = Flag; /*PGAGetRank*/
    ctx->debug.PGADebugFlags[608] = Flag; /*PGAGetNumProcs*/
    ctx->debug.PGADebugFlags[609] = Flag; /*PGASetCommunicator*/
@@ -917,7 +914,7 @@ void PGASetDebugFlag48(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[512] = Flag; /*PGASetEvaluationUpToDateFlag*/
    ctx->debug.PGADebugFlags[513] = Flag; /*PGAGetEvaluation*/
    ctx->debug.PGADebugFlags[514] = Flag; /*PGAGetEvaluationUpToDateFlag*/
-   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMS*/
+   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMP*/
    ctx->debug.PGADebugFlags[715] = Flag; /*PGAGetWorstIndex*/
    ctx->debug.PGADebugFlags[716] = Flag; /*PGAGetBestIndex*/
 }

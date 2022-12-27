@@ -1422,7 +1422,7 @@ void PGASetUp (PGAContext *ctx)
     if (ctx->par.NumDemes == PGA_UNINITIALIZED_INT) {
         ctx->par.NumDemes = 1;
     }
-    if (ctx->par.DefaultComm == MPI_COMM_NULL ) {
+    if (ctx->par.DefaultComm == MPI_COMM_NULL) {
         ctx->par.DefaultComm = MPI_COMM_WORLD;
     }
 

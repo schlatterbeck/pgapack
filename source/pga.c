@@ -432,7 +432,7 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
   PGAUpdateGeneration - updates internal data structures for the next
   genetic algorithm iteration, and checks if the termination conditions, both
   user and PGAPack, have been met.  This routine must be called by both
-  master and slave processes at the end of each GA generation.
+  rank-0 and worker processes at the end of each GA generation.
 
   Category: Generation
 

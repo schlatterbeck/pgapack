@@ -65,15 +65,14 @@ privately owned rights.
       Perform an unspecified test to determine if the current evolution is
       not evolving fast enough, and if so, restart the evolution.
 
-      PGAContext *ctx;	    PGAEvaluateMS(ctx, PGA_OLDPOP, f, comm);
-	    PGAFitness   (ctx, PGA_OLDPOP);
-	    }
+      PGAContext *ctx;
+      PGAEvaluate (ctx, PGA_OLDPOP, f, comm);
+      PGAFitness  (ctx, PGA_OLDPOP);
 
-      :
-      if (StagnantEvolution()) {
-          PGARestart(ctx, PGA_OLDPOP, PGA_NEWPOP);
-          PGAEvaluate(ctx, PGA_NEWPOP, EvalFunc);
-          PGAUpdateGeneration(ctx);
+      if (StagnantEvolution ()) {
+          PGARestart  (ctx, PGA_OLDPOP, PGA_NEWPOP);
+          PGAEvaluate (ctx, PGA_NEWPOP, EvalFunc);
+          PGAUpdateGeneration (ctx);
       }
 
 ****************************************************************************U*/
