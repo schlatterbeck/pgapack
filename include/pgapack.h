@@ -1146,7 +1146,6 @@ void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm);
 int PGAGetDataType (PGAContext *ctx);
 int PGAGetOptDirFlag (PGAContext *ctx);
 int PGAGetStringLength (PGAContext *ctx);
-int PGAGetVariableStringLength (PGAContext *ctx, int p, int pop);
 int PGAGetGAIterValue (PGAContext *ctx);
 int PGAGetEvalCount (PGAContext *ctx);
 void PGASetMutationOrCrossoverFlag (PGAContext *ctx, int flag);

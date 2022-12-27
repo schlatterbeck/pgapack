@@ -75,6 +75,10 @@ privately owned rights.
  *  \defgroup not_implemented Not yet implemented
  *  \brief Not yet implemented, mainly used for island/multiple demes.
  *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup standard_api Standard API
+ *  \brief The standard API
+ *****************************************************************************/
 
 
 /*!****************************************************************************
@@ -93,7 +97,7 @@ privately owned rights.
     Example
     -------
 
-    Copies the alleles from member p in PGA_OLDPOP to member q PGA_NEWPOP.
+    Copies the alleles from member p in PGA_OLDPOP to member q in PGA_NEWPOP.
 
     .. code-block:: c
 
