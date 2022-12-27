@@ -38,11 +38,11 @@ privately owned rights.
 */
 
 /*****************************************************************************
-*     FILE: pop.c: This file contains systme routines that act on entire
-*                  populations.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+* \file
+* This file contains systme routines that act on entire populations.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
@@ -54,57 +54,67 @@ privately owned rights.
 #define DENORMALIZE(ctx, e, u) \
     (ctx->ga.optdir == PGA_MAXIMIZE ? ((u) - (e)) : ((e) + (u)))
 
-/*U****************************************************************************
-   PGASortPop - Creates an (internal) array of indices according to one of
-   three criteria.  If PGA_POPREPL_BEST is used (the default) the array is
-   sorted from most fit to least fit.  If PGA_POPREPL_RANDOM_REP is
-   used the indices in the array are selected randomly with replacement.
-   If PGA_POPREPL_RANDOM_NOREP is used the indices in the array are selected
-   randomly without replacement.  The function PGASetPopReplaceType() is used
-   to specify which strategy is used.  The indices of the sorted population
-   members may then be accessed from the internal array via
-   PGAGetSortedPopIndex().  This routine is typically used during population
-   replacement.
+/*!****************************************************************************
+    \brief Creates an (internal) array of indices according to one of
+           three criteria.
+    \ingroup explicit
 
-   Category: Generation
+    \param   ctx  context variable
+    \param   pop  symbolic constant of the population from which to
+                  create the sorted array
+    \return  An inteneral array of indices sorted according to one of
+             three criteria is created
 
-   Inputs:
-       ctx      - context variable
-       popindex - symbolic constant of the population from which to create
-                  the srted array.
+    \rst
 
-   Output:
-      An inteneral array of indices sorted according to one of three
-      criteria is created.
+    Description
+    -----------
 
-   Example:
-      Copy the five best strings from the old population into the new
-      population.  The rest of the new population will be created by
-      recombination, and is not shown.
+    If PGA_POPREPL_BEST is used (the default) the array is
+    sorted from most fit to least fit.  If PGA_POPREPL_RANDOM_REP is
+    used the indices in the array are selected randomly with replacement.
+    If PGA_POPREPL_RANDOM_NOREP is used the indices in the array are selected
+    randomly without replacement.  The function
+    :c:func:`PGASetPopReplaceType` is used
+    to specify which strategy is used.  The indices of the sorted population
+    members may then be accessed from the internal array via
+    :c:func:`PGAGetSortedPopIndex`.
+    This routine is typically used during population replacement.
 
-      PGAContext *ctx;
-      int i,j;
-      :
-      PGASetPopReplaceType(ctx,PGA_POPREPL_BEST)
-      :
-      PGASortPop(ctx, PGA_OLDPOP);
-      for ( i=0; i < 5; i++) {
-          j = PGAGetSortedPopIndex(ctx, i);
-      PGACopyIndividual (ctx, j, PGA_OLDPOP, i, PGA_NEWPOP);
-      :
+    Example
+    -------
 
-****************************************************************************U*/
+    Copy the five best strings from the old population into the new
+    population.  The rest of the new population will be created by
+    recombination, and is not shown.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int i, j;
+
+       ...
+       PGASetPopReplaceType (ctx, PGA_POPREPL_BEST)
+       ...
+       PGASortPop (ctx, PGA_OLDPOP);
+       for (i=0; i<5; i++) {
+           j = PGAGetSortedPopIndex (ctx, i);
+           PGACopyIndividual (ctx, j, PGA_OLDPOP, i, PGA_NEWPOP);
+       }
+
+    \endrst
+
+******************************************************************************/
 void PGASortPop (PGAContext *ctx, int pop)
 {
     int i,j;
 
     PGADebugEntered ("PGASortPop");
     if (pop != PGA_OLDPOP && pop != PGA_NEWPOP) {
-        PGAError(ctx,
-                 "PGASort: Invalid value of pop:",
-                 PGA_FATAL,
-                 PGA_INT,
-                 (void *) &pop);
+        PGAError
+            (ctx, "PGASort: Invalid value of pop:"
+            , PGA_FATAL, PGA_INT, (void *) &pop
+            );
     }
     switch (ctx->ga.PopReplace) {
     case PGA_POPREPL_BEST:
@@ -136,310 +146,368 @@ void PGASortPop (PGAContext *ctx, int pop)
 }
 
 
-/*U***************************************************************************
-   PGAGetPopSize - Returns the population size
+/*!***************************************************************************
+    \brief Return the population size
+    \ingroup query
+    \param   ctx  context variable
+    \return  The population size
 
-   Category: Generation
+    \rst
 
-   Inputs:
-      ctx - context variable
+    Example
+    -------
 
-   Outputs:
-      The population size
+    .. code-block:: c
 
-   Example:
-      PGAContext *ctx;
-      int popsize;
-      :
-      popsize = PGAGetPopSize(ctx);
+       PGAContext *ctx;
+       int popsize;
 
-***************************************************************************U*/
+       popsize = PGAGetPopSize (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetPopSize (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetPopSize");
-    PGAFailIfNotSetUp("PGAGetPopSize");
+    PGADebugEntered   ("PGAGetPopSize");
+    PGAFailIfNotSetUp ("PGAGetPopSize");
 
-    PGADebugExited("PGAGetPopSize");
+    PGADebugExited ("PGAGetPopSize");
 
-    return(ctx->ga.PopSize);
+    return ctx->ga.PopSize;
 }
 
-/*U***************************************************************************
-   PGAGetNumReplaceValue - Returns the maximum number of strings to replace
-   each generation.
+/*!***************************************************************************
+    \brief Return the maximum number of strings to replace in each generation.
+    \ingroup query
 
-   Category: Generation
+    \param   ctx  context variable
+    \return The maximum number number of strings to replace each generation
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The maximum number number of strings to replace each generation
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int numreplace;
-      :
-      numreplace = PGAGetNumReplaceValue(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int numreplace;
+
+       numreplace = PGAGetNumReplaceValue (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetNumReplaceValue (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetNumReplaceValue");
-    PGAFailIfNotSetUp("PGAGetNumReplaceValue");
+    PGADebugEntered   ("PGAGetNumReplaceValue");
+    PGAFailIfNotSetUp ("PGAGetNumReplaceValue");
 
-    PGADebugExited("PGAGetNumReplaceValue");
+    PGADebugExited ("PGAGetNumReplaceValue");
 
-    return(ctx->ga.NumReplace);
+    return ctx->ga.NumReplace;
 }
 
-/*U***************************************************************************
-   PGAGetPopReplaceType - returns the symbolic constant used to determine
-   which strings to copy from the old population to the new population.
+/*!***************************************************************************
+    \brief Return the symbolic constant used to determine which strings
+           to copy from the old population to the new population.
+    \ingroup query
 
-   Category: Generation
+    \param   ctx  context variable
+    \return  The symbolic constant of the replacement strategy
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The symbolic constant of the replacement strategy.
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int popreplace;
-      :
-      popreplace = PGAGetPopReplaceType(ctx);
-      switch (popreplace) {
-      case PGA_POPREPL_BEST:
-          printf ("Replacement Strategy = PGA_POPREPL_BEST\n");
-          break;
-      case PGA_POPREPL_RANDOM_REP:
-          printf ("Replacement Strategy = PGA_POPREPL_RANDOM_REP\n");
-          break;
-      case PGA_POPREPL_RANDOM_NOREP:
-          printf ("Replacement Strategy = PGA_POPREPL_RANDOM_NOREP\n");
-          break;
-      }
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+       int popreplace;
+
+       popreplace = PGAGetPopReplaceType (ctx);
+       switch (popreplace) {
+       case PGA_POPREPL_BEST:
+           printf ("Replacement Strategy = PGA_POPREPL_BEST\n");
+           break;
+       case PGA_POPREPL_RANDOM_REP:
+           printf ("Replacement Strategy = PGA_POPREPL_RANDOM_REP\n");
+           break;
+       case PGA_POPREPL_RANDOM_NOREP:
+           printf ("Replacement Strategy = PGA_POPREPL_RANDOM_NOREP\n");
+           break;
+       default:
+           printf ("Another Replacement Strategy\n");
+           break;
+       }
+
+    \endrst
+
+******************************************************************************/
 int PGAGetPopReplaceType (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetPopReplaceType");
-    PGAFailIfNotSetUp("PGAGetPopRelaceType");
+    PGADebugEntered   ("PGAGetPopReplaceType");
+    PGAFailIfNotSetUp ("PGAGetPopRelaceType");
 
-    PGADebugExited("PGAGetPopReplaceType");
+    PGADebugExited ("PGAGetPopReplaceType");
 
-    return(ctx->ga.PopReplace);
+    return ctx->ga.PopReplace;
 }
 
-/*U****************************************************************************
-   PGASetRTRWindowSize - Set window size used for restricted tournament
-   selection. The window size must be smaller than the population size.
-   The default is min (n, N/20) where n is the string length and N is
-   the population size.
+/*!****************************************************************************
+    \brief Set window size used for restricted tournament selection.
+    \ingroup init
 
-   Category: Generation
+    The window size must be smaller than the population size.
+    The default is min (n, N/20) where n is the string length and N is
+    the population size.
 
-   Inputs:
-      ctx         - context variable
-      windowsize  - size of the window for restricted tournament
-                    selection
+    \param   ctx         context variable
+    \param   windowsize  size of the window for restricted tournament selection
+    \return  None
 
-   Outputs:
-      None
+    \rst
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetRTRWindowSize(ctx, windowsize);
+    Example
+    -------
 
-****************************************************************************U*/
-void PGASetRTRWindowSize( PGAContext *ctx, int windowsize)
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetRTRWindowSize (ctx, windowsize);
+
+    \endrst
+
+******************************************************************************/
+void PGASetRTRWindowSize (PGAContext *ctx, int windowsize)
 {
-    PGADebugEntered("PGASetRTRWindowSize");
+    PGADebugEntered ("PGASetRTRWindowSize");
 
     ctx->ga.RTRWindowSize = windowsize;
 
-    PGADebugExited("PGASetRTRWindowSize");
+    PGADebugExited ("PGASetRTRWindowSize");
 }
 
-/*U***************************************************************************
-   PGAGetRTRWindowSize - Returns the window size for restricted
-   tournamen replacement.
+/*!***************************************************************************
+    \brief Return the window size for restricted tournament replacement.
+    \ingroup query
+    \param   ctx  context variable
+    \return  The size of the window for restricted tournament selection
 
-   Category: Generation
+    \rst
 
-   Inputs:
-      ctx - context variable
+    Example
+    -------
 
-   Outputs:
-      The size of the window for restricted tournament selection
+    .. code-block:: c
 
-   Example:
-      PGAContext *ctx;
-      int windowsize;
-      :
-      windowsize = PGAGetRTRWindowSize(ctx);
+       PGAContext *ctx;
+       int windowsize;
 
-***************************************************************************U*/
+       windowsize = PGAGetRTRWindowSize (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetRTRWindowSize (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetRTRWindowSize");
+    PGADebugEntered ("PGAGetRTRWindowSize");
 
-    PGADebugExited("PGAGetRTRWindowSize");
+    PGADebugExited ("PGAGetRTRWindowSize");
 
-    return(ctx->ga.RTRWindowSize);
+    return ctx->ga.RTRWindowSize;
 }
 
-/*U****************************************************************************
-   PGAGetSortedPopIndex - returns a population string index from the array
-   created by PGASortPop().
+/*!****************************************************************************
+    \brief Return a population string index from the array created by
+           \ref function::PGASortPop.
+    \ingroup query
 
-   Category: Generation
+    \param   ctx       context variable
+    \param   n         specified which index element is to be returned.
+    \return  A population string index from the array created by
+             \ref function::PGASortPop
 
-   Inputs:
-       ctx      - context variable
-       n        - specified which index element is to be returned.
+    \rst
 
-   Output:
-       A population string index from the array created by PGASortPop
+    Example
+    -------
 
-   Example:
-      Copy the five best strings from the old population into the new
-      population.  The rest of the new population will be created by
-      recombination, and is not shown.
+    Copy the five best strings from the old population into the new
+    population.  The rest of the new population will be created by
+    recombination, and is not shown.
 
-      PGAContext *ctx;
-      int i,j;
-      :
-      PGASetPopReplaceType(ctx,PGA_POPREPL_BEST)
-      PGASortPop(ctx, PGA_OLDPOP);
-      for ( i=0; i < 5; i++) {
-          j = PGAGetSortedPopIndex(ctx, i);
-      PGACopyIndividual (ctx, j, PGA_OLDPOP, i, PGA_NEWPOP);
-      :
+    .. code-block:: c
 
-****************************************************************************U*/
-int PGAGetSortedPopIndex ( PGAContext *ctx, int n )
+       PGAContext *ctx;
+       int i,j;
+
+       PGASetPopReplaceType (ctx,PGA_POPREPL_BEST)
+       PGASortPop (ctx, PGA_OLDPOP);
+       for (i=0; i<5; i++) {
+           j = PGAGetSortedPopIndex (ctx, i);
+           PGACopyIndividual (ctx, j, PGA_OLDPOP, i, PGA_NEWPOP);
+       }
+
+    \endrst
+
+******************************************************************************/
+int PGAGetSortedPopIndex (PGAContext *ctx, int n)
 {
-     int temp = 0;
+    int temp = 0;
 
-    PGADebugEntered("PGAGetSortedPopIndex");
-     if (n >= 0 && n < ctx->ga.PopSize )
-          temp = ctx->ga.sorted[n];
-     else
-          PGAError( ctx, "PGAGetSorted: Invalid value of n:",
-                   PGA_FATAL, PGA_INT, (void *) &n );
+    PGADebugEntered ("PGAGetSortedPopIndex");
+    if (n >= 0 && n < ctx->ga.PopSize) {
+        temp = ctx->ga.sorted [n];
+    } else {
+        PGAError
+            ( ctx, "PGAGetSorted: Invalid value of n:"
+            , PGA_FATAL, PGA_INT, (void *) &n
+            );
+    }
 
-    PGADebugExited("PGAGetSortedPopIndex");
+    PGADebugExited ("PGAGetSortedPopIndex");
 
-     return (temp);
+    return temp;
 }
 
-/*U****************************************************************************
-   PGASetPopSize - Specifies the size of the genetic algorithm population.
-   The default population size is 100.
+/*!****************************************************************************
+    \brief Specify the size of the genetic algorithm population.
+    \ingroup init
 
-   Category: Generation
+    \param   ctx      context variable
+    \param   popsize  the genetic algorithm population size to use
+    \return  None
 
-   Inputs:
-      ctx     - context variable
-      popsize - the genetic algorithm population size to use
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetPopSize(ctx, 200);
+    The default population size is 100.
 
-****************************************************************************U*/
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetPopSize (ctx, 200);
+
+    \endrst
+
+******************************************************************************/
 void PGASetPopSize (PGAContext *ctx, int popsize)
 {
 
-    PGADebugEntered("PGASetPopSize");
-    PGAFailIfSetUp("PGASetPopSize");
+    PGADebugEntered ("PGASetPopSize");
+    PGAFailIfSetUp  ("PGASetPopSize");
 
-    if (popsize < 1 || popsize % 2)
-        PGAError( ctx, "PGASetPopSize: Invalid value of popsize:",
-                  PGA_FATAL, PGA_INT, (void *) &popsize );
-    else
+    if (popsize < 1 || popsize % 2) {
+        PGAError
+            ( ctx, "PGASetPopSize: Invalid value of popsize:"
+            , PGA_FATAL, PGA_INT, (void *) &popsize
+            );
+    } else {
         ctx->ga.PopSize = popsize;
+    }
 
-    PGADebugExited("PGASetPopSize");
+    PGADebugExited ("PGASetPopSize");
 }
 
 
 
-/*U****************************************************************************
-   PGASetNumReplaceValue - specifies the number of new strings to create each
-   generation.  The default is ten percent of the population size
+/*!****************************************************************************
+    \brief Specify the number of new strings to create each generation.
+    \ingroup init
 
-   Category: Generation
+    \param   ctx          context variable
+    \param   pop_replace  the number of population members to create
+                          each generation
+    \return  None
 
-   Inputs:
-      ctx         - context variable
-      pop_replace - the genetic algorithm population size to use
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetNumReplaceValue(ctx, 35);
+    The default is ten percent of the population size
 
-****************************************************************************U*/
-void PGASetNumReplaceValue( PGAContext *ctx, int pop_replace)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetNumReplaceValue (ctx, 35);
+
+    \endrst
+
+******************************************************************************/
+void PGASetNumReplaceValue (PGAContext *ctx, int pop_replace)
 {
-    PGADebugEntered("PGASetNumReplaceValue");
+    PGADebugEntered ("PGASetNumReplaceValue");
 
-    if (pop_replace < 0)
-      PGAError( ctx,
-               "PGASetNumReplaceValue: Invalid value of pop_replace:",
-                PGA_FATAL, PGA_INT, (void *) &pop_replace );
-    else
+    if (pop_replace < 0) {
+        PGAError
+            ( ctx, "PGASetNumReplaceValue: Invalid value of pop_replace:"
+            , PGA_FATAL, PGA_INT, (void *) &pop_replace
+            );
+    } else {
         ctx->ga.NumReplace = pop_replace;
+    }
 
-    PGADebugExited("PGASetNumReplaceValue");
+    PGADebugExited ("PGASetNumReplaceValue");
 }
 
 
 
 
-/*U****************************************************************************
-   PGASetPopReplaceType - Choose method of sorting strings to copy from old
-   population to new population.  Valid choices are PGA_POPREPL_BEST,
-   PGA_POPREPL_RANDOM_NOREP, or PGA_POPREPL_RANDOM_REP for copying the best
-   strings, or  random string, with or without replacement, respectively,
-   from the old population into the new population. Additional
-   replacement types are PGA_POPREPL_RTR for restricted tournament
-   replacement, PGA_POPREPL_PAIRWISE_BEST for pairwise comparison of
-   each individual in the old/new population, and PGA_POPREPL_NSGA_II
-   for multiobjective optimization using the Nondominated Sorting
-   Genetic Algorithm (NSGA-II). The default is PGA_POPREPL_BEST.
+/*!****************************************************************************
+    \brief Choose method of replacing strings in the new population.
+    \ingroup init
+    \param   ctx          context variable
+    \param   pop_replace  symbolic constant to specify the population
+                          replacement strategy
+    \return  None
 
-   Category: Generation
+    \rst
 
-   Inputs:
-      ctx         - context variable
-      pop_replace - symbolic constant to specify the population replacement
-                    strategy
+    Description
+    -----------
 
-   Outputs:
-      None
+    Valid choices are PGA_POPREPL_BEST,
+    PGA_POPREPL_RANDOM_NOREP, or PGA_POPREPL_RANDOM_REP for copying the best
+    strings, or  random string, with or without replacement, respectively,
+    from the old population into the new population. Additional
+    replacement types are PGA_POPREPL_RTR for restricted tournament
+    replacement, PGA_POPREPL_PAIRWISE_BEST for pairwise comparison of
+    each individual in the old/new population, and PGA_POPREPL_NSGA_II
+    and PGA_POPREPL_NSGA_III
+    for multiobjective optimization using the Nondominated Sorting
+    Genetic Algorithm (NSGA-II or NSGA-III).
+    The default is PGA_POPREPL_BEST.
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetPopReplaceType(ctx, PGA_POPREPL_RANDOM_NOREP);
+    Example
+    -------
 
-****************************************************************************U*/
-void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetPopReplaceType (ctx, PGA_POPREPL_RANDOM_NOREP);
+
+    \endrst
+
+******************************************************************************/
+void PGASetPopReplaceType (PGAContext *ctx, int pop_replace)
 {
-    PGADebugEntered("PGASetPopReplaceType");
+    PGADebugEntered ("PGASetPopReplaceType");
 
     switch (pop_replace) {
     case PGA_POPREPL_BEST:
@@ -452,40 +520,43 @@ void PGASetPopReplaceType( PGAContext *ctx, int pop_replace)
         ctx->ga.PopReplace = pop_replace;
         break;
     default:
-        PGAError ( ctx,
-                  "PGASetPopReplaceType: Invalid value of pop_replace:",
-                   PGA_FATAL, PGA_INT, (void *) &pop_replace);
+        PGAError
+            ( ctx, "PGASetPopReplaceType: Invalid value of pop_replace:"
+            , PGA_FATAL, PGA_INT, (void *) &pop_replace
+            );
         break;
     }
 
-    PGADebugExited("PGASetPopReplaceType");
+    PGADebugExited ("PGASetPopReplaceType");
 }
 
-/*U****************************************************************************
-   PGASetReferencePoints - Set reference points on reference hyperplane
-   for NSGA-III
+/*!****************************************************************************
+    \brief Set reference points on reference hyperplane for NSGA-III.
+    \ingroup init
 
-   Category: Generation
+    \param   ctx      context variable
+    \param   npoints  Number of points
+    \param   points   Pointer to points
+    \return  None
 
-   Inputs:
-      ctx     - context variable
-      npoints - Number of points
-      points  - Pointer to points
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int dim = PGAGetNumAuxEval (ctx) - PGAGetNumConstraint (ctx) + 1;
-      void *p = NULL;
-      int np  = 0;
-      :
-      np = LIN_dasdennis (dim, 3, &p, 0, 1, NULL);
-      PGASetReferencePoints (ctx, np, p);
+    .. code-block:: c
 
+       PGAContext *ctx;
+       int dim = PGAGetNumAuxEval (ctx) - PGAGetNumConstraint (ctx) + 1;
+       void *p = NULL;
+       int np  = 0;
 
-****************************************************************************U*/
+       np = LIN_dasdennis (dim, 3, &p, 0, 1, NULL);
+       PGASetReferencePoints (ctx, np, p);
+
+    \endrst
+
+******************************************************************************/
 void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points)
 {
     if (ctx->ga.nrefpoints) {
@@ -498,38 +569,45 @@ void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points)
     ctx->ga.refpoints  = points;
 }
 
-/*U****************************************************************************
-   PGASetReferenceDirections - Set reference directions for NSGA-III
-   A direction is a point in objective space and can be seen as a vector
-   from the origin to that point. During optimization the reference
-   directions are mapped to the reference hyperplane and a scaled
-   Das/Dennis hyperplane is constructed around that point.
-   Each direction consists of dimension double variables.
+/*!****************************************************************************
+    \brief Set reference directions for NSGA-III.
 
-   Category: Generation
+    \param   ctx    context variable
+    \param   ndirs  Number of directions
+    \param   dirs   Pointer to directions
+    \param   npart  Number of Das / Dennis partitions
+    \param   scale  Scale factor for constructed Das / Dennis points,
+                    must be 0 < scale <= 1 but will typically be < 0.5
+    \return  None
 
-   Inputs:
-      ctx   - context variable
-      ndirs - Number of directions
-      dirs  - Pointer to directions
-      npart - Number of Das / Dennis partitions
-      scale - Scale factor for constructed Das / Dennis points
-              Must be 0 < scale <= 1 but will typically be < 0.5
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      Asume 3 dimensions, i.e. 3 evaluation functions
-      dim = PGAGetNumAuxEval (ctx) - PGAGetNumConstraint (ctx) + 1;
+    A direction is a point in objective space and can be seen as a vector
+    from the origin to that point. During optimization the reference
+    directions are mapped to the reference hyperplane and a scaled
+    Das/Dennis hyperplane is constructed around that point.
+    Each direction consists of dimension double variables.
 
-      PGAContext *ctx;
-      double dirs [][3] = {{1, 2, 3}, {4, 5, 6}};
-      :
-      PGASetReferenceDirections (ctx, 2, dirs, 5, 0.1);
+    Example
+    -------
 
+    Asume 3 dimensions, i.e. 3 evaluation functions
 
-****************************************************************************U*/
+    .. code-block:: c
+
+       dim = PGAGetNumAuxEval (ctx) - PGAGetNumConstraint (ctx) + 1;
+
+       PGAContext *ctx;
+       double dirs [][3] = {{1, 2, 3}, {4, 5, 6}};
+
+       PGASetReferenceDirections (ctx, 2, dirs, 5, 0.1);
+
+    \endrst
+
+******************************************************************************/
 void PGASetReferenceDirections
     (PGAContext *ctx, size_t ndirs, void *dirs, int npart, double scale)
 {
@@ -545,30 +623,38 @@ void PGASetReferenceDirections
     ctx->ga.dirscale   = scale;
 }
 
-/*U****************************************************************************
-   PGARestrictedTournamentReplacement - Perform restricted tournament
-   replacement: for each individual in PGA_NEWPOP we select a window of
+/*!****************************************************************************
+   \brief Perform restricted tournament replacement.
+   \ingroup explicit
+
+   \param   ctx          context variable
+   \return  None
+
+   \rst
+
+   Description
+   -----------
+
+   For each individual in PGA_NEWPOP we select a window of
    individuals from PGA_OLDPOP, find the one genetically most like the
    new candidate and replace the individual if the new candidate has
    better evalutation. Note that we may not use the fitness here:
    Fitness from two different populations are uncompareable!
-   After this populations are swapped (echange of PGA_NEWPOP and
+   After this populations are swapped (exchange of PGA_NEWPOP and
    PGA_OLDPOP) for further processing.
 
-   Category: Generation
+   Example
+   -------
 
-   Inputs:
-      ctx         - context variable
+    .. code-block:: c
 
-   Outputs:
-      None
-
-   Example:
       PGAContext *ctx;
-      :
-      PGARestrictedTournamentReplacement(ctx);
 
-****************************************************************************U*/
+      PGARestrictedTournamentReplacement (ctx);
+
+    \endrst
+
+******************************************************************************/
 void PGARestrictedTournamentReplacement (PGAContext *ctx)
 {
     int i, j;
@@ -579,7 +665,7 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
     int oldpop = PGA_OLDPOP;
     int newpop = PGA_NEWPOP;
 
-    PGADebugEntered("PGARestrictedTournamentReplacement");
+    PGADebugEntered ("PGARestrictedTournamentReplacement");
     for (i=popsize - numreplace; i<popsize; i++) {
         double dist = -1.0;
         int closest = 0;
@@ -616,33 +702,42 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
     ctx->ga.newpop = temp;
     PGADebugExited("PGARestrictedTournamentReplacement");
 }
-/*U****************************************************************************
 
-   PGAPairwiseBestReplacement - Perform pairwise best replacement:
-   Compare individuals with same index in PGA_OLDPOP and PGA_NEWPOP and
-   select the one with better evalutation. Note that we may not use the
-   fitness here: Fitness from two different populations are
-   uncompareable!
-   This replacement strategy is used in evolutionary algorithms that
-   modify a single individual and replace the parent if the offspring is
-   better. A popular example is Differential Evolution (DE).
-   After this populations are swapped (echange of PGA_NEWPOP and
-   PGA_OLDPOP) for further processing.
+/*!****************************************************************************
 
-   Category: Generation
+    \brief Perform pairwise best replacement.
+    \ingroup explicit
 
-   Inputs:
-      ctx         - context variable
+    \param   ctx          context variable
+    \return  None
 
-   Outputs:
-      None
+    \rst
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGAPairwiseBestReplacement(ctx);
+    Description
+    -----------
 
-****************************************************************************U*/
+    Compare individuals with same index in PGA_OLDPOP and PGA_NEWPOP and
+    select the one with better evalutation. Note that we may not use the
+    fitness here: Fitness from two different populations are
+    uncompareable!
+    This replacement strategy is used in evolutionary algorithms that
+    modify a single individual and replace the parent if the offspring is
+    better. A popular example is Differential Evolution (DE).
+    After this populations are swapped (exchange of PGA_NEWPOP and
+    PGA_OLDPOP) for further processing.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGAPairwiseBestReplacement (ctx);
+
+    \endrst
+
+******************************************************************************/
 void PGAPairwiseBestReplacement (PGAContext *ctx)
 {
     int i;
@@ -650,7 +745,7 @@ void PGAPairwiseBestReplacement (PGAContext *ctx)
     int numreplace = PGAGetNumReplaceValue(ctx);
     PGAIndividual *temp;
 
-    PGADebugEntered("PGAPairwiseBestReplacement");
+    PGADebugEntered ("PGAPairwiseBestReplacement");
     for (i=popsize - numreplace; i<popsize; i++) {
         /* Note the '<=' comparison, differential evolution can walk across
          * areas with equal evaluation this way
@@ -667,10 +762,11 @@ void PGAPairwiseBestReplacement (PGAContext *ctx)
     temp           = ctx->ga.oldpop;
     ctx->ga.oldpop = ctx->ga.newpop;
     ctx->ga.newpop = temp;
-    PGADebugExited("PGAPairwiseBestReplacement");
+    PGADebugExited ("PGAPairwiseBestReplacement");
 }
 
 /* Helper functions for PGA_NSGA_II_Replacement */
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 #define NONNEGEVAL(v, is_ev) ((is_ev) ? (v) : (((v) < 0) ? 0 : (v)))
 #define GETEVAL(ind, fidx, is_ev)                       \
@@ -1202,13 +1298,30 @@ STATIC unsigned int ranking
     return rank;
 }
 
-/*
- * PGA_NSGA_Replacement - Perform NSGA Replacement
- * - Perform dominance computation (ranking)
- * - Perform crowding computation specific to the NSGA-Variant given as
- *   the parameter crowding_method
- * - Sort individuals and replace into next generation
- */
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+/*!****************************************************************************
+    \brief Perform NSGA Replacement
+    \ingroup internal
+    \param   ctx             context variable
+    \param   crowding_method Method used for crowding sort
+    \return  None
+
+    \rst
+
+    Description
+    -----------
+
+    - Perform dominance computation (ranking)
+    - Perform crowding computation specific to the NSGA-Variant given as
+      the parameter crowding_method
+    - Sort individuals and replace into next generation
+
+    Note that the crowding_method makes the difference between NSGA-II
+    and NSGA-III.
+
+    \endrst
+******************************************************************************/
 static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
 {
     int i;
@@ -1223,7 +1336,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
     PGAIndividual *temp;
     size_t         n_dupes = 0;
 
-    PGADebugEntered("PGA_NSGA_Replacement");
+    PGADebugEntered ("PGA_NSGA_Replacement");
 
     /* We keep two pointers into the all_individuals array. One with
      * constrained individuals starts from the end. The other with
@@ -1389,52 +1502,66 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
     PGADebugExited ("PGA_NSGA_Replacement");
 }
 
-/*U****************************************************************************
+/*!****************************************************************************
+    \brief Perform NSGA-II Replacement.
+    \ingroup explicit
+    \param   ctx          context variable
+    \return  None
 
-   PGA_NSGA_II_Replacement - Perform NSGA-II Replacement
-   - Perform dominance computation (ranking)
-   - Perform crowding computation specific to NSGA-II
-   - Sort individuals and replace into next generation
+    \rst
 
-   Category: Generation
+    Description
+    -----------
 
-   Inputs:
-      ctx         - context variable
+    - Perform dominance computation (ranking)
+    - Perform crowding computation specific to NSGA-II
+    - Sort individuals and replace into next generation
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGA_NSGA_II_Replacement(ctx);
-****************************************************************************U*/
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGA_NSGA_II_Replacement (ctx);
+
+    \endrst
+
+******************************************************************************/
 
 void PGA_NSGA_II_Replacement (PGAContext *ctx)
 {
     PGA_NSGA_Replacement (ctx, crowding);
 }
 
-/*U****************************************************************************
+/*!****************************************************************************
+    \brief Perform NSGA-III Replacement.
+    \ingroup explicit
+    \param   ctx          context variable
+    \return  None
 
-   PGA_NSGA_III_Replacement - Perform NSGA-III Replacement
-   - Perform dominance computation (ranking)
-   - Perform crowding computation specific to NSGA-III
-   - Sort individuals and replace into next generation
+    \rst
 
-   Category: Generation
+    Description
+    -----------
 
-   Inputs:
-      ctx         - context variable
+    - Perform dominance computation (ranking)
+    - Perform crowding computation specific to NSGA-III
+    - Sort individuals and replace into next generation
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGA_NSGA_II_Replacement(ctx);
-****************************************************************************U*/
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGA_NSGA_II_Replacement (ctx);
+
+    \endrst
+
+******************************************************************************/
 
 void PGA_NSGA_III_Replacement (PGAContext *ctx)
 {
