@@ -38,203 +38,255 @@ privately owned rights.
 */
 
 /*****************************************************************************
-*     FILE: user.c: This file contains a function to set user functions.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+* \file
+* This file contains a function to set user functions.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
 
-/*U****************************************************************************
-   PGASetUserFunction - specifies the name of a user-written function
-   call to provide a specific GA capability (e.g., crossover,
-   mutation, etc.).  This function MUST be used when using a non-native
-   datatype and must be called once for each of:
-       PGA_USERFUNCTION_CREATESTRING     -- String creation
-       PGA_USERFUNCTION_MUTATION         -- Mutation
-       PGA_USERFUNCTION_CROSSOVER        -- Crossover
-       PGA_USERFUNCTION_PRINTSTRING      -- String Output
-       PGA_USERFUNCTION_COPYSTRING       -- Duplication
-       PGA_USERFUNCTION_DUPLICATE        -- Duplicate Checking
-       PGA_USERFUNCTION_GEN_DISTANCE     -- Genetic Distance
-       PGA_USERFUNCTION_INITSTRING       -- Initialization
-       PGA_USERFUNCTION_BUILDDATATYPE    -- MPI Datatype creation
-       PGA_USERFUNCTION_STOPCOND         -- Stopping conditions
-       PGA_USERFUNCTION_ENDOFGEN         -- Auxiliary functions at the end
-                                            of each generation
-       PGA_USERFUNCTION_PRE_EVAL         -- Auxiliary functions before
-                                            evaluation but after
-                                            crossover and mutation
-       PGA_USERFUNCTION_HASH             -- Hashing of genes
-       PGA_USERFUNCTION_SERIALIZE        -- Serialize userdefined gene
-       PGA_USERFUNCTION_DESERIALIZE      -- Deserialize userdefined gene
-       PGA_USERFUNCTION_SERIALIZE_FREE   -- Free serialized version
-       PGA_USERFUNCTION_CHROM_FREE       -- Free chromosome
-   It MAY be called when using a native datatype to replace the built-in
-   functions PGAPack has for that datatype (For example, if the Integer data
-   type is used for a traveling salesperson problem, the user may want to
-   provide their own custom crossover operator).  See the user guide and the
-   examples in the examples directory for more details.
+/*!****************************************************************************
+    \brief Specify the name of a user-written function to provide a
+           specific GA capability (e.g., crossover, mutation, etc.).
+    \ingroup init
 
-   Category: Generation
+    \param   ctx       context variable
+    \param   constant  symbolic constant of the user function to set
+    \param   f         name of the function to use
+    \return  None
 
-   Inputs:
-      ctx      - context variable
-      constant - symbolic constant of the user function to set
-      f        - name of the function to use
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      void MyStringInit(PGAContext *, void *);
-      PGAContext *ctx;
-      :
-      PGASetUserFunction(ctx, PGA_USERFUNCTION_INITSTRING, MyStringInit);
+    This function *must* be used when using a non-native
+    datatype and must be called once for each of:
 
-****************************************************************************U*/
-void PGASetUserFunction(PGAContext *ctx, int constant, void *f)
+    -   PGA_USERFUNCTION_CREATESTRING     -- String creation
+    -   PGA_USERFUNCTION_MUTATION         -- Mutation
+    -   PGA_USERFUNCTION_CROSSOVER        -- Crossover
+    -   PGA_USERFUNCTION_PRINTSTRING      -- String Output
+    -   PGA_USERFUNCTION_COPYSTRING       -- Duplication
+    -   PGA_USERFUNCTION_DUPLICATE        -- Duplicate Checking
+    -   PGA_USERFUNCTION_GEN_DISTANCE     -- Genetic Distance
+    -   PGA_USERFUNCTION_INITSTRING       -- Initialization
+    -   PGA_USERFUNCTION_BUILDDATATYPE    -- MPI Datatype creation
+    -   PGA_USERFUNCTION_STOPCOND         -- Stopping conditions
+    -   PGA_USERFUNCTION_ENDOFGEN         --
+        Auxiliary functions at the end of each generation
+    -   PGA_USERFUNCTION_PRE_EVAL         --
+        Auxiliary functions before evaluation but after crossover and
+        mutation
+    -   PGA_USERFUNCTION_HASH             -- Hashing of genes
+    -   PGA_USERFUNCTION_SERIALIZE        -- Serialize userdefined gene
+    -   PGA_USERFUNCTION_DESERIALIZE      -- Deserialize userdefined gene
+    -   PGA_USERFUNCTION_SERIALIZE_FREE   -- Free serialized version
+    -   PGA_USERFUNCTION_CHROM_FREE       -- Free chromosome
+
+    It *may* be called when using a native datatype to replace the built-in
+    functions PGAPack has for that datatype (For example, if the Integer data
+    type is used for a traveling salesperson problem, the user may want to
+    provide their own custom crossover operator).  See the user guide and the
+    examples in the examples directory for more details.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       void MyStringInit (PGAContext *, void *);
+       PGAContext *ctx;
+
+       PGASetUserFunction (ctx, PGA_USERFUNCTION_INITSTRING, MyStringInit);
+
+    \endrst
+
+******************************************************************************/
+void PGASetUserFunction (PGAContext *ctx, int constant, void *f)
 {
-    PGADebugEntered("PGASetUserFunction");
+    PGADebugEntered ("PGASetUserFunction");
 
-    if (f == NULL)
-	PGAError ( ctx, "PGASetUserFunction: Invalid function",
-		  PGA_FATAL, PGA_VOID, NULL);
+    if (f == NULL) {
+	PGAError
+            ( ctx, "PGASetUserFunction: Invalid function"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
+    }
 
     switch (constant) {
       case PGA_USERFUNCTION_CREATESTRING:
-	if (ctx->sys.UserFortran)
-	    PGAError(ctx, "PGASetUserFunction: Cannot call "
-		     "PGA_USERFUNCTION_CREATESTRING from Fortran.",
-		     PGA_FATAL, PGA_VOID, NULL);
-	else
+	if (ctx->sys.UserFortran) {
+	    PGAError
+                ( ctx
+                , "PGASetUserFunction: Cannot call "
+                  "PGA_USERFUNCTION_CREATESTRING from Fortran."
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+	} else {
 	    ctx->cops.CreateString = (void(*)(PGAContext *, int, int, int))f;
+        }
 	break;
       case PGA_USERFUNCTION_SERIALIZE:
-	if (ctx->sys.UserFortran)
-	    PGAError(ctx, "PGASetUserFunction: Cannot call "
-		     "PGA_USERFUNCTION_SERIALIZE from Fortran.",
-		     PGA_FATAL, PGA_VOID, NULL);
-	else
+	if (ctx->sys.UserFortran) {
+	    PGAError
+                ( ctx
+                , "PGASetUserFunction: Cannot call "
+		  "PGA_USERFUNCTION_SERIALIZE from Fortran."
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+	} else {
 	    ctx->cops.Serialize =
                 (size_t(*)(PGAContext *, int, int, const void **))f;
+        }
 	break;
       case PGA_USERFUNCTION_DESERIALIZE:
-	if (ctx->sys.UserFortran)
-	    PGAError(ctx, "PGASetUserFunction: Cannot call "
-		     "PGA_USERFUNCTION_DESERIALIZE from Fortran.",
-		     PGA_FATAL, PGA_VOID, NULL);
-	else
+	if (ctx->sys.UserFortran) {
+	    PGAError
+                ( ctx
+                , "PGASetUserFunction: Cannot call "
+                  "PGA_USERFUNCTION_DESERIALIZE from Fortran."
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+	} else {
 	    ctx->cops.Deserialize =
                 (void(*)(PGAContext *, int, int, const void *, size_t))f;
+        }
 	break;
       case PGA_USERFUNCTION_SERIALIZE_FREE:
-	if (ctx->sys.UserFortran)
-	    PGAError(ctx, "PGASetUserFunction: Cannot call "
-		     "PGA_USERFUNCTION_SERIALIZE_FREE from Fortran.",
-		     PGA_FATAL, PGA_VOID, NULL);
-	else
+	if (ctx->sys.UserFortran) {
+	    PGAError
+                ( ctx
+                , "PGASetUserFunction: Cannot call "
+                  "PGA_USERFUNCTION_SERIALIZE_FREE from Fortran."
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+	} else {
 	    ctx->cops.SerializeFree = (void(*)(void *))f;
+        }
 	break;
       case PGA_USERFUNCTION_CHROM_FREE:
-	if (ctx->sys.UserFortran)
-	    PGAError(ctx, "PGASetUserFunction: Cannot call "
-		     "PGA_USERFUNCTION_CHROM_FREE from Fortran.",
-		     PGA_FATAL, PGA_VOID, NULL);
-	else
+	if (ctx->sys.UserFortran) {
+	    PGAError
+                ( ctx
+                , "PGASetUserFunction: Cannot call "
+                  "PGA_USERFUNCTION_CHROM_FREE from Fortran."
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+	} else {
 	    ctx->cops.ChromFree = (void(*)(PGAIndividual *))f;
+        }
 	break;
       case PGA_USERFUNCTION_MUTATION:
-	if (ctx->sys.UserFortran)
+	if (ctx->sys.UserFortran) {
 	    ctx->fops.Mutation = (int(*)(void *, void *, void *, void *))f;
-	else
+	} else {
 	    ctx->cops.Mutation = (int(*)(PGAContext *, int, int, double))f;
+        }
 	break;
       case PGA_USERFUNCTION_CROSSOVER:
-	if (ctx->sys.UserFortran)
+	if (ctx->sys.UserFortran) {
 	    ctx->fops.Crossover =
                 (void(*)( void *, void *, void *, void *, void *, void *
                         , void *))f;
-	else
+	} else {
 	    ctx->cops.Crossover =
                 (void(*)(PGAContext *, int, int, int, int, int, int))f;
+        }
 	break;
       case PGA_USERFUNCTION_PRINTSTRING:
-	if (ctx->sys.UserFortran)
+	if (ctx->sys.UserFortran) {
 	    ctx->fops.PrintString = (void(*)(void *, void *, void *, void *))f;
-	else
+	} else {
 	    ctx->cops.PrintString =  (void(*)(PGAContext *, FILE *, int, int))f;
+        }
 	break;
       case PGA_USERFUNCTION_COPYSTRING:
-	if (ctx->sys.UserFortran)
-	    PGAError(ctx, "PGASetUserFunction: Cannot call "
-		     "PGA_USERFUNCTION_COPYSTRING from Fortran.",
-		     PGA_FATAL, PGA_VOID, NULL);
-	else
+	if (ctx->sys.UserFortran) {
+	    PGAError
+                ( ctx
+                , "PGASetUserFunction: Cannot call "
+                  "PGA_USERFUNCTION_COPYSTRING from Fortran."
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+	} else {
 	    ctx->cops.CopyString = (void(*)(PGAContext *, int, int, int, int))f;
+        }
 	break;
       case PGA_USERFUNCTION_DUPLICATE:
-	if (ctx->sys.UserFortran)
+	if (ctx->sys.UserFortran) {
 	    ctx->fops.Duplicate =
                 (int(*)(void *, void *, void *, void *, void *))f;
-	else
+	} else {
 	    ctx->cops.Duplicate = (int(*)(PGAContext *, int, int, int, int))f;
+        }
 	break;
       case PGA_USERFUNCTION_INITSTRING:
-	if (ctx->sys.UserFortran)
+	if (ctx->sys.UserFortran) {
 	    ctx->fops.InitString = (void(*)(void *, void *, void *))f;
-	else
+	} else {
 	    ctx->cops.InitString = (void(*)(PGAContext *, int, int))f;
+        }
 	break;
       case PGA_USERFUNCTION_BUILDDATATYPE:
-	if (ctx->sys.UserFortran)
-	    PGAError(ctx, "PGASetUserFunction: Cannot call "
-		     "PGA_USERFUNCTION_BUILDDATATYPE from Fortran.",
-		     PGA_FATAL, PGA_VOID, NULL);
-	else
+	if (ctx->sys.UserFortran) {
+	    PGAError
+                ( ctx
+                , "PGASetUserFunction: Cannot call "
+                  "PGA_USERFUNCTION_BUILDDATATYPE from Fortran."
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+	} else {
 	    ctx->cops.BuildDatatype =
                 (MPI_Datatype(*)(PGAContext *, int, int))f;
+        }
 	break;
       case PGA_USERFUNCTION_STOPCOND:
-	if (ctx->sys.UserFortran)
+	if (ctx->sys.UserFortran) {
 	    ctx->fops.StopCond = (int(*)(void *))f;
-	else
+	} else {
 	    ctx->cops.StopCond = (int(*)(PGAContext *))f;
+        }
 	break;
       case PGA_USERFUNCTION_ENDOFGEN:
-	if (ctx->sys.UserFortran)
+	if (ctx->sys.UserFortran) {
 	    ctx->fops.EndOfGen = (void(*)(void *))f;
-	else
+	} else {
 	    ctx->cops.EndOfGen = (void(*)(PGAContext *))f;
+        }
 	break;
       case PGA_USERFUNCTION_PRE_EVAL:
-	if (ctx->sys.UserFortran)
+	if (ctx->sys.UserFortran) {
 	    ctx->fops.PreEval = (void(*)(void *, void *))f;
-	else
+	} else {
 	    ctx->cops.PreEval = (void(*)(PGAContext *, int))f;
+        }
 	break;
       case PGA_USERFUNCTION_GEN_DISTANCE:
-	if (ctx->sys.UserFortran)
+	if (ctx->sys.UserFortran) {
 	    ctx->fops.GeneDistance =
                 (double(*)(void *, void *, void *, void *, void *))f;
-	else
+	} else {
 	    ctx->cops.GeneDistance =
                 (double(*)(PGAContext *, int, int, int, int))f;
+        }
 	break;
       case PGA_USERFUNCTION_HASH:
-	if (ctx->sys.UserFortran)
-	    ctx->fops.Hash =
-                (PGAHash(*)(void *, void *, void *))f;
-	else
-	    ctx->cops.Hash =
-                (PGAHash(*)(PGAContext *, int, int))f;
+	if (ctx->sys.UserFortran) {
+	    ctx->fops.Hash = (PGAHash(*)(void *, void *, void *))f;
+	} else {
+	    ctx->cops.Hash = (PGAHash(*)(PGAContext *, int, int))f;
+        }
 	break;
       default:
-	PGAError(ctx, "PGASetUserFunction: Invalid constant:",
-		 PGA_FATAL, PGA_INT, (void *) &constant);
+	PGAError
+            ( ctx, "PGASetUserFunction: Invalid constant:"
+            , PGA_FATAL, PGA_INT, (void *) &constant
+            );
 	break;
     }
 
-    PGADebugExited("PGASetUserFunction");
+    PGADebugExited ("PGASetUserFunction");
 }
