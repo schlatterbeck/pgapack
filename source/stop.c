@@ -109,7 +109,7 @@ int PGADone (PGAContext *ctx, MPI_Comm comm)
     \brief Return boolean to indicate if the PGAPack termination
            conditions, PGA_STOP_MAXITER, PGA_STOP_TOOSIMILAR,
            PGA_STOP_NOCHANGE, have been met.
-    \ingroup explicit
+    \ingroup standard_api
 
     \param   ctx   context variable
     \return  return PGA_TRUE if at least one of the termination
