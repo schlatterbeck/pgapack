@@ -68,8 +68,8 @@ privately owned rights.
  *  \brief These functions are only used internally
  *****************************************************************************/
 /*!***************************************************************************
- *  \defgroup output Output
- *  \brief Output printing
+ *  \defgroup reporting Reporting of algorithm progress
+ *  \brief Reporting, output printing
  *****************************************************************************/
 /*!***************************************************************************
  *  \defgroup not_implemented Not yet implemented
