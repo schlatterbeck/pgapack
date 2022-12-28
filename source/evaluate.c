@@ -37,7 +37,7 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
 * This file contains routines specific to the evaluation of the strings.
 * \authors Authors:

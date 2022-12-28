@@ -37,7 +37,7 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
 * This file contains routines needed to parse the command line.
 * \authors Authors:
@@ -50,8 +50,10 @@ privately owned rights.
 
 #include "pgapack.h"
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 extern char PGAProgram[100];
 #define bad_arg(a)    ( ((a)==NULL) || ((*(a)) == '-') )
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 #if OPTIMIZE==0
 /*!****************************************************************************

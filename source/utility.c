@@ -37,7 +37,7 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
 * This file contains routines that perform utility functions.
 * \authors Authors:
@@ -64,9 +64,9 @@ privately owned rights.
 
     Description
     -----------
- 
+
     We're using Durstenfeld's version of the Fisher-Yates shuffle.
- 
+
     Example
     -------
 
@@ -101,7 +101,7 @@ void PGAShuffle (PGAContext *ctx, int *list, int n)
     \param  a     array to take the mean of
     \param  n     number of elements in array a
     \return The mean of the n elements in array a
-    
+
     \rst
 
     Example
@@ -428,8 +428,8 @@ int PGAGetWorstIndex (PGAContext *ctx, int pop)
     PGADebugEntered ("PGAGetWorstIndex");
 
     for (p=0; p<ctx->ga.PopSize; p++) {
-	if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
-	    PGAError
+        if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
+            PGAError
                 ( ctx, "PGAGetWorstIndex: Evaluate function not up to date:"
                 , PGA_FATAL, PGA_INT, (void *) &p
                 );
@@ -494,7 +494,7 @@ int PGAGetBestIndex (PGAContext *ctx, int popidx)
 
     for (p=0; p<ctx->ga.PopSize; p++) {
         if (!PGAGetEvaluationUpToDateFlag (ctx, p, popidx)) {
-	    PGAError
+            PGAError
                 ( ctx, "PGAGetBestIndex: Evaluate function not up to date:"
                 , PGA_FATAL, PGA_INT, (void *) &p
                 );
@@ -751,8 +751,8 @@ void PGAUpdateBest (PGAContext *ctx, int popix)
     ctx->rep.MinSumConstr = ind->auxtotal;
     ind++;
     for (p=1; p<ctx->ga.PopSize; p++) {
-	if (!PGAGetEvaluationUpToDateFlag (ctx, p, popix)) {
-	    PGAError
+        if (!PGAGetEvaluationUpToDateFlag (ctx, p, popix)) {
+            PGAError
                 ( ctx, "PGAUpdateBest: Evaluate function not up to date:"
                 , PGA_FATAL, PGA_INT, (void *) &p
                 );
@@ -851,8 +851,8 @@ void PGAUpdateAverage (PGAContext *ctx, int pop)
         ctx->rep.Average [k] = 0;
     }
     for (p=0; p<ctx->ga.PopSize; p++) {
-	if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
-	    PGAError
+        if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
+            PGAError
                 ( ctx, "PGAUpdateAverage: Evaluate function not up to date:"
                 , PGA_FATAL, PGA_INT, (void *) &p
                 );
@@ -1451,10 +1451,10 @@ size_t PGAIndividualHashIndex (PGAContext *ctx, int p, int pop)
     assert (ctx->ga.NoDuplicates);
 
     if (ctx->fops.Hash) {
-	int fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p + 1;
-	hash = (*ctx->fops.Hash)(&ctx, &fp, &pop);
+        int fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p + 1;
+        hash = (*ctx->fops.Hash)(&ctx, &fp, &pop);
     } else {
-	hash = (*ctx->cops.Hash)(ctx, p, pop);
+        hash = (*ctx->cops.Hash)(ctx, p, pop);
     }
     return (size_t)(hash % ctx->ga.PopSize);
 }

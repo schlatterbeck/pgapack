@@ -37,9 +37,9 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/******************************************************************************
+/*!****************************************************************************
 * \file
-* This file contains all the parallel functions
+* This file contains all the parallel functions.
 * \authors Authors:
 *          David M. Levine, Philip L. Hallstrom, David M. Noelle,
 *          Brian P. Walenz, Ralf Schlatterbeck
@@ -52,7 +52,9 @@ privately owned rights.
 
 #include "pgapack.h"
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 #define DEBUG_EVAL 0
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*!****************************************************************************
     \brief High-level routine to execute the genetic algorithm using the
@@ -122,8 +124,8 @@ void PGARunGM
             int idx;
             PGAIndividual *ind;
             /* Sort population by auxiliary eval */
-	    /* No need to init the indeces, filled in by PGAEvalSort */
-	    PGAEvalSort (ctx, PGA_OLDPOP, ctx->scratch.intscratch);
+            /* No need to init the indeces, filled in by PGAEvalSort */
+            PGAEvalSort (ctx, PGA_OLDPOP, ctx->scratch.intscratch);
             idx = ctx->scratch.intscratch [ctx->ga.EpsilonTheta];
             ind = PGAGetIndividual (ctx, idx, PGA_OLDPOP);
             assert (ind->auxtotalok);
@@ -149,32 +151,32 @@ void PGARunGM
 
     switch (PGAGetMixingType (ctx)) {
     case PGA_MIX_MUTATE_OR_CROSS:
-	CreateNewGeneration = PGARunMutationOrCrossover;
+        CreateNewGeneration = PGARunMutationOrCrossover;
         break;
     case PGA_MIX_MUTATE_AND_CROSS:
-	CreateNewGeneration = PGARunMutationAndCrossover;
+        CreateNewGeneration = PGARunMutationAndCrossover;
         break;
     case PGA_MIX_MUTATE_ONLY:
-	CreateNewGeneration = PGARunMutationOnly;
+        CreateNewGeneration = PGARunMutationOnly;
         break;
     case PGA_MIX_TRADITIONAL:
-	CreateNewGeneration = PGARunMutationAndCrossover;
+        CreateNewGeneration = PGARunMutationAndCrossover;
         break;
     default:
         assert (0);
     }
 
     while (!PGADone(ctx, comm)) {
-	if (rank == 0) {
-	    Restarted = PGA_FALSE;
-	    if ((ctx->ga.restart == PGA_TRUE) &&
-		(ctx->ga.ItersOfSame % ctx->ga.restartFreq == 0)) {
-		ctx->ga.ItersOfSame++;
-		Restarted = PGA_TRUE;
-		PGARestart(ctx, PGA_OLDPOP, PGA_NEWPOP);
-	    } else {
-		PGASelect(ctx, PGA_OLDPOP);
-		CreateNewGeneration(ctx, PGA_OLDPOP, PGA_NEWPOP);
+        if (rank == 0) {
+            Restarted = PGA_FALSE;
+            if ((ctx->ga.restart == PGA_TRUE) &&
+                (ctx->ga.ItersOfSame % ctx->ga.restartFreq == 0)) {
+                ctx->ga.ItersOfSame++;
+                Restarted = PGA_TRUE;
+                PGARestart(ctx, PGA_OLDPOP, PGA_NEWPOP);
+            } else {
+                PGASelect(ctx, PGA_OLDPOP);
+                CreateNewGeneration(ctx, PGA_OLDPOP, PGA_NEWPOP);
                 if (ctx->fops.PreEval) {
                     int pop = PGA_NEWPOP;
                     (*ctx->fops.PreEval)(&ctx, &pop);
@@ -182,12 +184,12 @@ void PGARunGM
                 if (ctx->cops.PreEval) {
                     (*ctx->cops.PreEval)(ctx, PGA_NEWPOP);
                 }
-	    }
-	}
-	MPI_Bcast (&Restarted, 1, MPI_INT, 0, comm);
+            }
+        }
+        MPI_Bcast (&Restarted, 1, MPI_INT, 0, comm);
 
-	PGAEvaluate (ctx, PGA_NEWPOP, evaluate, comm);
-	if (rank == 0) {
+        PGAEvaluate (ctx, PGA_NEWPOP, evaluate, comm);
+        if (rank == 0) {
             int st = PGAGetSelectType (ctx);
             if (st == PGA_SELECT_SUS || st == PGA_SELECT_PROPORTIONAL) {
                 PGAFitness (ctx, PGA_NEWPOP);
@@ -214,16 +216,16 @@ void PGARunGM
             }
         }
 
-	/*  If the GA wasn't restarted, update the generation and print
+        /*  If the GA wasn't restarted, update the generation and print
          *  stuff.  We do this because a restart is NOT counted as a
          *  complete generation.
-	 */
-	if (!Restarted) {
-	    PGAUpdateGeneration (ctx, comm);
-	    if (rank == 0) {
-		PGAPrintReport (ctx, ctx->ga.OutputFile, PGA_OLDPOP);
+         */
+        if (!Restarted) {
+            PGAUpdateGeneration (ctx, comm);
+            if (rank == 0) {
+                PGAPrintReport (ctx, ctx->ga.OutputFile, PGA_OLDPOP);
             }
-	}
+        }
     }
 
     if (rank == 0) {
@@ -278,7 +280,7 @@ void PGARunGM
                 }
             }
         }
-	fflush (ctx->ga.OutputFile);
+        fflush (ctx->ga.OutputFile);
     }
     PGADebugExited ("PGARunGM");
 }
@@ -319,10 +321,10 @@ static void PGAEvaluateSeq
             double *aux = PGAGetAuxEvaluation (ctx, p, pop);
             if (ctx->sys.UserFortran) {
                 int fp = p + 1;
-		e = (*((double(*)(void *, void *, void *, void *))evaluate))
+                e = (*((double(*)(void *, void *, void *, void *))evaluate))
                     (&ctx, &fp, &pop, aux);
             } else {
-		e = (*evaluate)(ctx, p, pop, aux);
+                e = (*evaluate)(ctx, p, pop, aux);
             }
             PGASetEvaluation (ctx, p, pop, e, aux);
             ctx->rep.nevals++;
@@ -512,36 +514,36 @@ static void PGAEvaluateCoop
     ind = PGAGetIndividual (ctx, 0, pop);
 
     for (p=0; p<ctx->ga.PopSize;) {
-	while ((p<ctx->ga.PopSize) && (ind+p)->evaluptodate) {
+        while ((p<ctx->ga.PopSize) && (ind+p)->evaluptodate) {
             p++;
         }
-	if (p<ctx->ga.PopSize) {
-	    PGASendIndividual (ctx, p, pop, 1, PGA_COMM_STRINGTOEVAL, comm);
-	    q = p;
-	}
-	p++;
-	
-	while ((p<ctx->ga.PopSize) && (ind+p)->evaluptodate) {
+        if (p<ctx->ga.PopSize) {
+            PGASendIndividual (ctx, p, pop, 1, PGA_COMM_STRINGTOEVAL, comm);
+            q = p;
+        }
+        p++;
+
+        while ((p<ctx->ga.PopSize) && (ind+p)->evaluptodate) {
             p++;
         }
-	if (p<ctx->ga.PopSize) {
+        if (p<ctx->ga.PopSize) {
             double *aux = PGAGetAuxEvaluation (ctx, p, pop);
-	    if (ctx->sys.UserFortran == PGA_TRUE) {
-		fp = p+1;
-		e = (*((double(*)(void *, void *, void *, void *))evaluate))
+            if (ctx->sys.UserFortran == PGA_TRUE) {
+                fp = p+1;
+                e = (*((double(*)(void *, void *, void *, void *))evaluate))
                     (&ctx, &fp, &pop, aux);
-	    } else {
-		e = (*evaluate)(ctx, p, pop, aux);
-	    }
-	    PGASetEvaluation (ctx, p, pop, e, aux);
+            } else {
+                e = (*evaluate)(ctx, p, pop, aux);
+            }
+            PGASetEvaluation (ctx, p, pop, e, aux);
             ctx->rep.nevals++;
 #if DEBUG_EVAL
             fprintf (stdout, "%4d: %10.8e Local\n", p, e);
             fflush  (stdout);
 #endif
-	}
-	
-	if (q >= 0) {
+        }
+
+        if (q >= 0) {
             PGAReceiveEvaluation
                 (ctx, q, pop, 1, PGA_COMM_EVALOFSTRING, comm, &stat);
             PGASetEvaluationUpToDateFlag (ctx, q, pop, PGA_TRUE);
@@ -550,8 +552,8 @@ static void PGAEvaluateCoop
             fprintf (stdout, "%4d: %10.8e Worker %d\n", p, e, 1);
             fflush  (stdout);
 #endif
-	    q = -1;
-	}
+            q = -1;
+        }
     }
 
     /*  Release the Worker  */
@@ -597,7 +599,7 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
 
     work = malloc (size *sizeof(int));
     if (work == NULL) {
-	PGAError
+        PGAError
             ( ctx, "PGAEvaluateMP:  Couldn't allocate work array"
             , PGA_FATAL, PGA_VOID, NULL
             );
@@ -609,16 +611,16 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
 
     /*  Send strings to all processes, since they are all unused.  */
     for (k=0; ((k<ctx->ga.PopSize) && (s<size)); k++) {
-	if ((ind+k)->evaluptodate == PGA_FALSE) {
-	    work[s] = k;
-	    PGASendIndividual (ctx, k, pop, s, PGA_COMM_STRINGTOEVAL, comm);
+        if ((ind+k)->evaluptodate == PGA_FALSE) {
+            work[s] = k;
+            PGASendIndividual (ctx, k, pop, s, PGA_COMM_STRINGTOEVAL, comm);
 #if DEBUG_EVAL
             fprintf (stdout, "%4d: Sent to worker %d.\n", k, s);
             fflush  (stdout);
 #endif
-	    sentout++;
-	    s++;
-	}
+            sentout++;
+            s++;
+        }
     }
 
     /*  Move to the next string to be evaluated.  Notice that all we need
@@ -653,14 +655,14 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
             );
         fflush (stdout);
 #endif
-	/*  Immediately send another string to be evaluated.  */
-	work [stat.MPI_SOURCE] = k;
-	PGASendIndividual
+        /*  Immediately send another string to be evaluated.  */
+        work [stat.MPI_SOURCE] = k;
+        PGASendIndividual
             (ctx, k, pop, stat.MPI_SOURCE, PGA_COMM_STRINGTOEVAL, comm);
-	
-	/*  Find the next unevaluated individual  */
-	k++;
-	while ((k<ctx->ga.PopSize) && (ind+k)->evaluptodate) {
+
+        /*  Find the next unevaluated individual  */
+        k++;
+        while ((k<ctx->ga.PopSize) && (ind+k)->evaluptodate) {
             k++;
         }
     }
@@ -674,7 +676,7 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
         p = work [stat.MPI_SOURCE];
         PGASetEvaluation (ctx, p, pop, tmp1->evalue, tmp1->auxeval);
         ctx->rep.nevals++;
-	sentout--;
+        sentout--;
 #if DEBUG_EVAL
         fprintf
             ( stdout
@@ -688,7 +690,7 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
 
     /* Release the workers */
     for (i=1; i<size; i++) {
-	MPI_Send (&i, 1, MPI_INT, i, PGA_COMM_DONEWITHEVALS, comm);
+        MPI_Send (&i, 1, MPI_INT, i, PGA_COMM_DONEWITHEVALS, comm);
     }
 
     PGADebugExited ("PGAEvaluateMP");
@@ -737,19 +739,20 @@ static void PGAEvaluateWorker
           )
     {
         double *aux;
-	PGAReceiveIndividual
+        PGAReceiveIndividual
             (ctx, PGA_TEMP1, pop, 0, PGA_COMM_STRINGTOEVAL, comm, &stat);
 
         aux = PGAGetAuxEvaluation (ctx, PGA_TEMP1, pop);
-	if (ctx->sys.UserFortran == PGA_TRUE)
-	    e = (*((double(*)(void *, void *, void *, void *))evaluate))
+        if (ctx->sys.UserFortran == PGA_TRUE) {
+            e = (*((double(*)(void *, void *, void *, void *))evaluate))
                 (&ctx, &k, &pop, aux);
-	else
-	    e = (*evaluate)(ctx, PGA_TEMP1, pop, aux);
+        } else {
+            e = (*evaluate)(ctx, PGA_TEMP1, pop, aux);
+        }
         PGASetEvaluation (ctx, PGA_TEMP1, pop, e, aux);
 
         PGASendEvaluation (ctx, PGA_TEMP1, pop, 0, PGA_COMM_EVALOFSTRING, comm);
-	MPI_Probe (0, MPI_ANY_TAG, comm, &stat);
+        MPI_Probe (0, MPI_ANY_TAG, comm, &stat);
     }
     MPI_Recv (&k, 1, MPI_INT, 0, PGA_COMM_DONEWITHEVALS, comm, &stat);
 
@@ -818,15 +821,15 @@ void PGAEvaluate
     size = PGAGetNumProcs (ctx, comm);
 
     if (rank == 0) {
-	if (size == 1) {
-	    PGAEvaluateSeq (ctx, pop, evaluate);
-	} else if (size == 2) {
-	    PGAEvaluateCoop (ctx, pop, evaluate, comm);
-	} else if (size > 2) {
-	    PGAEvaluateMP (ctx, pop, comm);
+        if (size == 1) {
+            PGAEvaluateSeq (ctx, pop, evaluate);
+        } else if (size == 2) {
+            PGAEvaluateCoop (ctx, pop, evaluate, comm);
+        } else if (size > 2) {
+            PGAEvaluateMP (ctx, pop, comm);
         }
     } else {
-	PGAEvaluateWorker (ctx, pop, evaluate, comm);
+        PGAEvaluateWorker (ctx, pop, evaluate, comm);
     }
 
     PGADebugExited ("PGAEvaluate");
@@ -1358,9 +1361,9 @@ int PGAGetRank (PGAContext *ctx, MPI_Comm comm)
     PGADebugEntered ("PGAGetRank");
 
     if (comm == MPI_COMM_NULL) {
-	rank = 0;
+        rank = 0;
     } else {
-	MPI_Comm_rank (comm, &rank);
+        MPI_Comm_rank (comm, &rank);
     }
 
     PGADebugExited ("PGAGetRank");
@@ -1407,9 +1410,9 @@ int PGAGetNumProcs (PGAContext *ctx, MPI_Comm comm)
     PGADebugEntered ("PGAGetNumProcs");
 
     if (comm == MPI_COMM_NULL) {
-	size = 1;
+        size = 1;
     } else {
-	MPI_Comm_size (comm, &size);
+        MPI_Comm_size (comm, &size);
     }
 
     PGADebugExited ("PGAGetNumProcs");

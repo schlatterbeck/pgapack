@@ -37,9 +37,9 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
-* This file contains the routines that have to do with selection
+* This file contains the routines that have to do with selection.
 * \authors Authors:
 *          David M. Levine, Philip L. Hallstrom, David M. Noelle,
 *          Brian P. Walenz, Ralf Schlatterbeck
@@ -753,7 +753,7 @@ int PGAGetRandomizeSelect (PGAContext *ctx)
     -----------
 
     The probability of selection of individual :math:`i` with fitness
-    :math:`f_i` is given by [1]_ 
+    :math:`f_i` is given by [1]_
     :math:`p_i = \frac{f_i}{\sum_{i} f_i}`
 
     .. [1] D. Goldberg, Genetic Algorithms, p. 11

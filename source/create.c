@@ -37,7 +37,7 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
 * This file contains functions to create and initialize data structures
 * and populations.
@@ -49,11 +49,15 @@ privately owned rights.
 #include <stdint.h>
 #include "pgapack.h"
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+
 /* Helper function to free builtin datatype */
 static void ChromFree (PGAIndividual *ind)
 {
     free (ind->chrom);
 }
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*!****************************************************************************
     \brief Create an uninitialized context variable.

@@ -37,7 +37,7 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
 * This file contains the routines that have to do with fitness calculations.
 * \authors Authors:
@@ -51,6 +51,8 @@ static void PGAFitnessLinearRank (PGAContext *ctx, int popindex);
 static void PGAFitnessLinearNormal (PGAContext *ctx, int popindex);
 static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop);
 static void PGAFitnessMinReciprocal (PGAContext *ctx, PGAIndividual *pop);
+
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 /* Helper function for fitness computation */
 static void remap_to_positive (PGAContext *ctx, PGAIndividual *pop)
@@ -90,6 +92,8 @@ static void remap_to_positive (PGAContext *ctx, PGAIndividual *pop)
         }
     }
 }
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*!****************************************************************************
     \brief Map the user's evaluation function value to a fitness value.

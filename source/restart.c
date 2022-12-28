@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,7 +37,7 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
 * This file contains the routines needed to handle the restart operator,
 * and restarting the GA.
@@ -93,9 +93,9 @@ void PGARestart (PGAContext *ctx, int source_pop, int dest_pop)
 {
     int dest_p, old_mut_type, source_p;
     double val;
-    
+
     PGADebugEntered ("PGARestart");
-    
+
     fprintf (ctx->ga.OutputFile, "Restarting the algorithm . . . \n");
     fflush (ctx->ga.OutputFile);
     source_p = PGAGetBestIndex (ctx, source_pop);
@@ -106,22 +106,22 @@ void PGARestart (PGAContext *ctx, int source_pop, int dest_pop)
     old_mut_type = PGAGetMutationType (ctx);
     ctx->ga.MutationType = PGA_MUTATION_CONSTANT;
     val = ctx->ga.restartAlleleProb;
-    
+
     if (ctx->fops.Mutation) {
-	for (dest_p = 2; dest_p <= ctx->ga.PopSize; dest_p++) {
-	    PGACopyIndividual (ctx, 0, dest_pop, dest_p-1, dest_pop);
-	    (*ctx->fops.Mutation)(&ctx, &dest_p, &dest_pop, &val);
-	    PGASetEvaluationUpToDateFlag (ctx, dest_p-1, dest_pop, PGA_FALSE);
-	}
+        for (dest_p = 2; dest_p <= ctx->ga.PopSize; dest_p++) {
+            PGACopyIndividual (ctx, 0, dest_pop, dest_p-1, dest_pop);
+            (*ctx->fops.Mutation)(&ctx, &dest_p, &dest_pop, &val);
+            PGASetEvaluationUpToDateFlag (ctx, dest_p-1, dest_pop, PGA_FALSE);
+        }
     } else {
-	for (dest_p = 1; dest_p < ctx->ga.PopSize; dest_p++) {
-	    PGACopyIndividual (ctx, 0, dest_pop, dest_p, dest_pop);
-	    (*ctx->cops.Mutation)(ctx, dest_p, dest_pop, val);
-	    PGASetEvaluationUpToDateFlag (ctx, dest_p, dest_pop, PGA_FALSE);
-	}
+        for (dest_p = 1; dest_p < ctx->ga.PopSize; dest_p++) {
+            PGACopyIndividual (ctx, 0, dest_pop, dest_p, dest_pop);
+            (*ctx->cops.Mutation)(ctx, dest_p, dest_pop, val);
+            PGASetEvaluationUpToDateFlag (ctx, dest_p, dest_pop, PGA_FALSE);
+        }
     }
     ctx->ga.MutationType = old_mut_type;
-    
+
     PGADebugExited ("PGARestart");
 }
 

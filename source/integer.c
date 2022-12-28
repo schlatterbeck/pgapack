@@ -37,7 +37,7 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
 * This file contains the routines specific to the integer data structure.
 * \authors Authors:
@@ -47,6 +47,8 @@ privately owned rights.
 
 #include <stdint.h>
 #include "pgapack.h"
+
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 /* Helper for bounds/bounce check */
 static void bouncheck
@@ -157,6 +159,7 @@ static void assert_has_edges (PGAContext *ctx, PGAInteger *a)
     }
 }
 #endif /* DEBUG */
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
 /*!****************************************************************************
@@ -1023,6 +1026,8 @@ void PGAIntegerSBXCrossover
     }
 }
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+
 static void append_edge (PGAContext *ctx, PGAInteger n1, PGAInteger n2)
 {
     int i;
@@ -1243,6 +1248,8 @@ static void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
     }
     remove_edge_from_right (ctx, child [idx + 1]);
 }
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*!****************************************************************************
     \brief Perform Edge Recombination on two parent strings producing
@@ -1665,6 +1672,8 @@ PGAHash PGAIntegerHash (PGAContext *ctx, int p, int pop)
     return hash;
 }
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+
 /* Helper function for computing index into gene for given value if it
  * is part of a fixed edge
  */
@@ -1689,6 +1698,9 @@ static void compute_idx
         x [off][1] = k;
     }
 }
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
 
 /*!****************************************************************************
     \brief Randomly initialize a string of type PGAInteger.

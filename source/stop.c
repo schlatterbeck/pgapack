@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,7 +37,7 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
 * This file contains routines related to the stopping conditions for the GA.
 * \authors Authors:
@@ -87,17 +87,17 @@ int PGADone (PGAContext *ctx, MPI_Comm comm)
     size = PGAGetNumProcs (ctx, comm);
 
     if (rank == 0) {
-	if (ctx->fops.StopCond) {
-	    done = (*ctx->fops.StopCond)(&ctx);
-	} else if (ctx->cops.StopCond) {
-	    done = (*ctx->cops.StopCond)(ctx);
-	} else {
-	    done = PGACheckStoppingConditions (ctx);
+        if (ctx->fops.StopCond) {
+            done = (*ctx->fops.StopCond)(&ctx);
+        } else if (ctx->cops.StopCond) {
+            done = (*ctx->cops.StopCond)(ctx);
+        } else {
+            done = PGACheckStoppingConditions (ctx);
         }
     }
 
     if (size > 1) {
-	MPI_Bcast (&done, 1, MPI_INT, 0, comm);
+        MPI_Bcast (&done, 1, MPI_INT, 0, comm);
     }
 
     PGADebugExited ("PGADone");
@@ -140,21 +140,21 @@ int PGACheckStoppingConditions (PGAContext *ctx)
        && (ctx->ga.iter >= ctx->ga.MaxIter)
        )
     {
-	done = PGA_TRUE;
+        done = PGA_TRUE;
     }
-    
+
     if (  ((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) == PGA_STOP_NOCHANGE)
        && (ctx->ga.ItersOfSame >= ctx->ga.MaxNoChange)
        )
     {
-	done = PGA_TRUE;
+        done = PGA_TRUE;
     }
-	
+
     if (  ((ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR) == PGA_STOP_TOOSIMILAR)
        && (ctx->ga.PercentSame >= ctx->ga.MaxSimilarity)
        )
     {
-	done = PGA_TRUE;
+        done = PGA_TRUE;
     }
 
     if (ctx->ga.Epsilon > 0) {
@@ -204,13 +204,13 @@ void PGASetStoppingRuleType (PGAContext *ctx, int stoprule)
     PGAFailIfSetUp  ("PGASetStoppingRuleType");
 
     switch (stoprule) {
-	case PGA_STOP_MAXITER  :
+        case PGA_STOP_MAXITER  :
         case PGA_STOP_NOCHANGE :
-	case PGA_STOP_TOOSIMILAR :
-	    ctx->ga.StoppingRule |= stoprule;
-	    break;
-	default:
-	    PGAError
+        case PGA_STOP_TOOSIMILAR :
+            ctx->ga.StoppingRule |= stoprule;
+            break;
+        default:
+            PGAError
                 ( ctx, "PGASetStoppingRuleType: Invalid value of stoprule:"
                 , PGA_FATAL, PGA_INT, (void *) &stoprule
                 );
@@ -222,7 +222,7 @@ void PGASetStoppingRuleType (PGAContext *ctx, int stoprule)
 /*!***************************************************************************
     \brief Return a symbolic constant that defines the termination criteria.
     \ingroup query
-   
+
     \param   ctx  context variable
     \return  Return an integer which is an ORed mask of the symbolic constants
              used to specify the stopping rule(s).
@@ -298,14 +298,14 @@ void PGASetMaxGAIterValue (PGAContext *ctx, int maxiter)
     PGAFailIfSetUp  ("PGASetMaxGAIterValue");
 
     if (maxiter < 1) {
-	PGAError
+        PGAError
             ( ctx, "PGASetMaxGAIterValue: Invalid value of maxiter:"
             , PGA_FATAL, PGA_INT, (void *) &maxiter
             );
     } else {
-	ctx->ga.MaxIter = maxiter;
+        ctx->ga.MaxIter = maxiter;
     }
-    
+
     PGADebugExited ("PGASetMaxGAIterValue");
 }
 
@@ -379,14 +379,14 @@ void PGASetMaxNoChangeValue (PGAContext *ctx, int max_no_change)
     PGAFailIfSetUp  ("PGASetMaxNoChangeValue");
 
     if (max_no_change <= 0) {
-	PGAError
+        PGAError
             ( ctx, "PGASetMaxNoChangeValue: max_no_change invalid"
             , PGA_FATAL, PGA_INT, (void *)&max_no_change
             );
     }
-    
+
     ctx->ga.MaxNoChange = max_no_change;
-    
+
     PGADebugExited ("PGASetMaxNoChangeValue");
 }
 
@@ -433,7 +433,7 @@ void PGASetMaxSimilarityValue (PGAContext *ctx, int max_similarity)
             , PGA_FATAL, PGA_INT, (void *) &max_similarity
             );
     }
-    
+
     ctx->ga.MaxSimilarity = max_similarity;
 
     PGADebugExited ("PGASetMaxSimilarityValue");

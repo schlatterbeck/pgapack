@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -252,7 +252,7 @@ void PGAPrintReport (PGAContext *ctx, FILE *fp, int pop)
     PGA_REPORT_STRING to specify offline analysis, online analysis, the
     worst string in the population, the Hamming distance of the
     population, and the actual allele values of the best string.  The
-    best string is always printed. 
+    best string is always printed.
 
     Example
     -------
@@ -554,7 +554,7 @@ void PGAPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
         ( ctx, PGA_DEBUG_PRINTVAR, "PGAPrintString"
         , "pop = ", PGA_INT, (void *) &pop
         );
-    
+
     if (ctx->fops.PrintString) {
         pf = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
         (*ctx->fops.PrintString)(&ctx, NULL, &pf, &pop);
@@ -689,7 +689,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         fprintf (fp, "%d\n", ctx->ga.StringLen);
         break;
     };
-    
+
 
     fprintf (fp, "    Copy to Next Population        : ");
     switch (ctx->ga.PopReplace)
@@ -711,7 +711,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-    
+
     /*fprintf (fp, "    Stopping Rule (s)              :\n");
     if ((ctx->ga.StoppingRule & PGA_STOP_MAXITER) == PGA_STOP_MAXITER)
         fprintf (fp, "%50s", "Maximum iterations\n");
@@ -747,7 +747,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
     else
         fprintf (fp, "Off\n");
 
-    
+
     fprintf (fp, "        Max No Change Iterations   : ");
     switch (ctx->ga.MaxNoChange)
     {
@@ -812,7 +812,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-    
+
     fprintf (fp, "    Crossover Type                 : ");
     switch (ctx->ga.CrossoverType)
     {
@@ -833,21 +833,21 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-    
+
     fprintf (fp, "    Crossover Probability          : ");
     if (ctx->ga.CrossoverProb == PGA_UNINITIALIZED_DOUBLE)
         fprintf (fp, "*UNINITIALIZED*\n");
     else
         fprintf (fp, "%f\n", ctx->ga.CrossoverProb);
 
-    
+
     fprintf (fp, "    Uniform Crossover Prob.        : ");
     if (ctx->ga.UniformCrossProb == PGA_UNINITIALIZED_DOUBLE)
         fprintf (fp, "*UNINITIALIZED*\n");
     else
         fprintf (fp, "%f\n", ctx->ga.UniformCrossProb);
 
-    
+
     fprintf (fp, "    Mutation Type                  : ");
     switch (ctx->ga.datatype)
     {
@@ -887,14 +887,14 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-    
+
     fprintf (fp, "    Mutation Probability           : ");
     if (ctx->ga.MutationProb == PGA_UNINITIALIZED_DOUBLE)
         fprintf (fp, "*UNINITIALIZED*\n");
     else
         fprintf (fp, "%f\n", ctx->ga.MutationProb);
 
-    
+
     fprintf (fp, "    Real Mutation Constant         : ");
     if (ctx->ga.MutationProb == PGA_UNINITIALIZED_DOUBLE)
         fprintf (fp, "*UNINITIALIZED*\n");
@@ -913,7 +913,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     }
 
-    
+
     fprintf (fp, "    Mutation Range Bounded         : ");
     switch (ctx->ga.MutateBoundedFlag)
     {
@@ -931,7 +931,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-    
+
     fprintf (fp, "    Selection Type                 : ");
     switch (ctx->ga.SelectType)
     {
@@ -955,14 +955,14 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-    
+
     fprintf (fp, "    Tournament Selection Param     : ");
     if (ctx->ga.PTournamentProb == PGA_UNINITIALIZED_DOUBLE)
         fprintf (fp, "*UNINITIALIZED*\n");
     else
         fprintf (fp, "%f\n", ctx->ga.PTournamentProb);
-    
-    
+
+
 
     fprintf (fp, "    Restart Operator               : ");
     switch (ctx->ga.restart)
@@ -998,7 +998,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
     else
         fprintf (fp, "%f\n", ctx->ga.restartAlleleProb);
 
-    
+
     fprintf (fp, "    Allow Duplicates               : ");
     switch (ctx->ga.NoDuplicates)
     {
@@ -1037,7 +1037,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-    
+
     if ( ctx->ga.optdir == PGA_MINIMIZE ) {
         fprintf (fp, "    Fitness Type(Minimization)     : ");
         switch (ctx->ga.FitnessMinType) {
@@ -1056,13 +1056,13 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         };
     }
 
-    
+
     fprintf (fp, "    Fitness Ranking Parameter      : ");
     if (ctx->ga.FitnessRankMax == PGA_UNINITIALIZED_DOUBLE)
         fprintf (fp, "*UNINITIALIZED*\n");
     else
         fprintf (fp, "%f\n", ctx->ga.FitnessRankMax);
-    
+
 
     fprintf (fp, "    Fitness CMAX Parameter         : ");
     if (ctx->ga.FitnessCmaxValue == PGA_UNINITIALIZED_DOUBLE)
@@ -1070,10 +1070,10 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
     else
         fprintf (fp, "%f\n", ctx->ga.FitnessCmaxValue);
 
-    
+
     fprintf (fp, "Algorithm Parameters (Dynamic)\n");
 
-    
+
     fprintf (fp, "    Current Generation             : ");
     switch (ctx->ga.iter)
     {
@@ -1118,7 +1118,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-     
+
     /* initialization */
     fprintf (fp, "Initialization\n");
 
@@ -1199,7 +1199,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         fprintf (fp, "!ERROR!  =(%d)?\n", ctx->init.CharacterType);
         break;
     };
-    
+
     fprintf (fp, "    Random Number Seed             : ");
     switch (ctx->init.RandomSeed)
     {
@@ -1271,13 +1271,13 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
     }*/
 
     fprintf (fp, "    Default Communicator           : ");
-    if (ctx->par.DefaultComm == MPI_COMM_NULL) 
+    if (ctx->par.DefaultComm == MPI_COMM_NULL)
         fprintf (fp, "NULL\n");
     else if (ctx->par.DefaultComm == MPI_COMM_WORLD)
         fprintf (fp, "MPI_COMM_WORLD\n");
     else
         fprintf (fp, "User Defined\n");
- 
+
 
 
     /* report */
@@ -1380,7 +1380,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
     else
         fprintf (fp, "C User Defined: %p\n", ctx->cops.CreateString);
 
-    
+
     fprintf (fp, "    InitString    function         : ");
     if (ctx->cops.InitString) {
         if (ctx->cops.InitString == PGABinaryInitString)
@@ -1394,12 +1394,12 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         else
             fprintf (fp, "C User Defined: %p\n", ctx->cops.InitString);
     } else {
-        if (ctx->fops.InitString) 
+        if (ctx->fops.InitString)
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.InitString);
         else
             fprintf (fp, "NULL\n");
     }
-    
+
 
     fprintf (fp, "    BuildDatatype function         : ");
     if (ctx->cops.BuildDatatype == NULL)
@@ -1415,7 +1415,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
     else
         fprintf (fp, "C User Defined: %p\n", ctx->cops.BuildDatatype);
 
-    
+
     fprintf (fp, "    Mutation      function         : ");
     if (ctx->cops.Mutation) {
         if (ctx->cops.Mutation == PGABinaryMutation)
@@ -1429,13 +1429,13 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         else
             fprintf (fp, "C User Defined: %p\n", ctx->cops.Mutation);
     } else {
-        if (ctx->fops.Mutation) 
+        if (ctx->fops.Mutation)
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.Mutation);
         else
             fprintf (fp, "NULL\n");
     }
 
-    
+
     fprintf (fp, "    Crossover     function         : ");
     if (ctx->cops.Crossover) {
         if (ctx->cops.Crossover == PGABinaryOneptCrossover)
@@ -1465,13 +1465,13 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         else
             fprintf (fp, "C User Defined: %p\n", ctx->cops.Crossover);
     } else {
-        if (ctx->fops.Crossover) 
+        if (ctx->fops.Crossover)
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.Crossover);
         else
             fprintf (fp, "NULL\n");
     }
 
-    
+
     fprintf (fp, "    PrintString   function         : ");
     if (ctx->cops.PrintString) {
         if (ctx->cops.PrintString == PGABinaryPrintString)
@@ -1490,7 +1490,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         else
             fprintf (fp, "NULL\n");
     }
-    
+
 
     fprintf (fp, "    CopyString    function         : ");
     if (ctx->cops.CopyString) {
@@ -1511,7 +1511,7 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
             fprintf (fp, "NULL\n");
     }
 
-    
+
     fprintf (fp, "    Duplicate     function         : ");
     if (ctx->cops.Duplicate) {
         if (ctx->cops.Duplicate == PGABinaryDuplicate)
@@ -1519,9 +1519,9 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         else if (ctx->cops.Duplicate == PGAIntegerDuplicate)
             fprintf (fp, "PGAIntegerDuplicate\n");
         else if (ctx->cops.Duplicate == PGARealDuplicate)
-            fprintf (fp, "PGARealDuplicate\n"); 
+            fprintf (fp, "PGARealDuplicate\n");
         else if (ctx->cops.Duplicate == PGACharacterDuplicate)
-            fprintf (fp, "PGACharacterDuplicate\n"); 
+            fprintf (fp, "PGACharacterDuplicate\n");
         else
             fprintf (fp, "C User Defined: %p\n", ctx->cops.Duplicate);
     } else {

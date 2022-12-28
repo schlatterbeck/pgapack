@@ -37,15 +37,19 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
-* This file contains the routines specific to the floating point data structure
+* This file contains the routines specific to the floating point data
+* structure.
 * \authors Authors:
 *          David M. Levine, Philip L. Hallstrom, David M. Noelle,
 *          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include <pgapack.h>
+
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+
 /* Helper for bounds/bounce check */
 static void bouncheck
     ( PGAContext *ctx, int idx, int boundflag, int bounceflag
@@ -71,6 +75,8 @@ static void bouncheck
         }
     }
 }
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*!****************************************************************************
     \brief Set the value of real-valued allele i in string p in

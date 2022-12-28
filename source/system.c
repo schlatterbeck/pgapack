@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,9 +37,9 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
-* This file contains systme routines such as errors and exits
+* This file contains system routines such as errors and exits.
 * \authors Authors:
 *          David M. Levine, Philip L. Hallstrom, David M. Noelle,
 *          Brian P. Walenz, Ralf Schlatterbeck
@@ -47,7 +47,9 @@ privately owned rights.
 
 #include "pgapack.h"
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 char PGAProgram [100];    /* Holds argv[0] for PGAUsage() call */
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*!****************************************************************************
     \brief Report error messages.
@@ -91,22 +93,22 @@ void PGAError (PGAContext *ctx, char *msg, int level, int datatype, void *data)
 
     switch (datatype) {
       case PGA_INT:
-	fprintf (stderr, "%s %d\n", msg, *(int *)    data);
-	break;
+        fprintf (stderr, "%s %d\n", msg, *(int *)    data);
+        break;
       case PGA_DOUBLE:
-	fprintf (stderr, "%s %f\n", msg, *(double *) data);
-	break;
+        fprintf (stderr, "%s %f\n", msg, *(double *) data);
+        break;
       case PGA_CHAR:
-	fprintf (stderr, "%s %s\n", msg,  (char *)   data);
-	break;
+        fprintf (stderr, "%s %s\n", msg,  (char *)   data);
+        break;
       case PGA_VOID:
-	fprintf (stderr, "%s\n", msg);
-	break;
+        fprintf (stderr, "%s\n", msg);
+        break;
     }
     if (level == PGA_FATAL) {
-	fprintf (stderr, "PGAError: Fatal\n");
-	PGADestroy (ctx);
-	exit (-1);
+        fprintf (stderr, "PGAError: Fatal\n");
+        PGADestroy (ctx);
+        exit (-1);
     }
     PGADebugExited ("PGAError");
 }
@@ -152,9 +154,9 @@ void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...)
     vfprintf (stderr, fmt, args);
     va_end (args);
     if (level == PGA_FATAL) {
-	fprintf (stderr, "\nPGAError: Fatal\n");
-	PGADestroy (ctx);
-	exit (-1);
+        fprintf (stderr, "\nPGAError: Fatal\n");
+        PGADestroy (ctx);
+        exit (-1);
     }
 }
 
@@ -162,12 +164,12 @@ void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...)
     \brief Deallocate memory for this instance of PGAPack, if this
            context initialized MPI, finalize MPI as well.
     \ingroup standard_api
-  
+
     \param   ctx    context variable
     \return  None
 
     \rst
-  
+
     Example
     -------
 
@@ -402,15 +404,15 @@ double PGAGetMinMachineDoubleValue (PGAContext *ctx)
 void PGAUsage (PGAContext *ctx)
 {
     if (!ctx->par.MPIAlreadyInit || (PGAGetRank(ctx, MPI_COMM_WORLD) == 0)) {
-	PGAPrintVersionNumber (ctx);
-	printf ("PGAPack usage: %s [pga options]\n", PGAProgram);
-	printf ("Valid PGAPack options:\n");
-	printf ("\t-pgahelp          \tget this message\n");
-	printf ("\t-pgahelp debug    \tlist of debug options\n");
-	printf ("\t-pgadbg <option>  \tset debug option\n");
-	printf ("\t-pgadebug <option>\tset debug option\n");
-	printf ("\t-pgaversion       \tprint current PGAPack version number\n");
-	printf ("\n");
+        PGAPrintVersionNumber (ctx);
+        printf ("PGAPack usage: %s [pga options]\n", PGAProgram);
+        printf ("Valid PGAPack options:\n");
+        printf ("\t-pgahelp          \tget this message\n");
+        printf ("\t-pgahelp debug    \tlist of debug options\n");
+        printf ("\t-pgadbg <option>  \tset debug option\n");
+        printf ("\t-pgadebug <option>\tset debug option\n");
+        printf ("\t-pgaversion       \tprint current PGAPack version number\n");
+        printf ("\n");
     }
     PGADestroy (ctx);
     exit (-1);
@@ -440,11 +442,14 @@ void PGAUsage (PGAContext *ctx)
 void PGAPrintVersionNumber (PGAContext *ctx)
 {
     if (!ctx->par.MPIAlreadyInit || (PGAGetRank(ctx, MPI_COMM_WORLD) == 0)) {
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 #ifdef FAKE_MPI
 #define PRINT1  "Sequential"
 #else
 #define PRINT1  "Parallel"
-#endif               
+#endif
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
         printf
             ( "\nPGAPack version 1.0: (%s, %s)\n\n"
             , (OPTIMIZE) ? "Optimized"  : "Debug"

@@ -37,9 +37,9 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
-* This file contains systme routines that act on entire populations.
+* This file contains routines that act on entire populations.
 * \authors Authors:
 *          David M. Levine, Philip L. Hallstrom, David M. Noelle,
 *          Brian P. Walenz, Ralf Schlatterbeck
@@ -47,12 +47,16 @@ privately owned rights.
 
 #include "pgapack.h"
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+
 #define OPT_DIR_CMP(ctx, e1, e2) \
     (ctx->ga.optdir == PGA_MAXIMIZE ? CMP ((e1), (e2)) : CMP ((e2), (e1)))
 #define NORMALIZE(ctx, e, u) \
     (ctx->ga.optdir == PGA_MAXIMIZE ? ((u) - (e)) : ((e) - (u)))
 #define DENORMALIZE(ctx, e, u) \
     (ctx->ga.optdir == PGA_MAXIMIZE ? ((u) - (e)) : ((e) + (u)))
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*!****************************************************************************
     \brief Creates an (internal) array of indices according to one of

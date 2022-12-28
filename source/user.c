@@ -37,9 +37,9 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
-* This file contains a function to set user functions.
+* This file implements setting of user functions.
 * \authors Authors:
 *          David M. Levine, Philip L. Hallstrom, David M. Noelle,
 *          Brian P. Walenz, Ralf Schlatterbeck
@@ -110,7 +110,7 @@ void PGASetUserFunction (PGAContext *ctx, int constant, void *f)
     PGADebugEntered ("PGASetUserFunction");
 
     if (f == NULL) {
-	PGAError
+        PGAError
             ( ctx, "PGASetUserFunction: Invalid function"
             , PGA_FATAL, PGA_VOID, NULL
             );
@@ -118,174 +118,174 @@ void PGASetUserFunction (PGAContext *ctx, int constant, void *f)
 
     switch (constant) {
       case PGA_USERFUNCTION_CREATESTRING:
-	if (ctx->sys.UserFortran) {
-	    PGAError
+        if (ctx->sys.UserFortran) {
+            PGAError
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_CREATESTRING from Fortran."
                 , PGA_FATAL, PGA_VOID, NULL
                 );
-	} else {
-	    ctx->cops.CreateString = (void(*)(PGAContext *, int, int, int))f;
+        } else {
+            ctx->cops.CreateString = (void(*)(PGAContext *, int, int, int))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_SERIALIZE:
-	if (ctx->sys.UserFortran) {
-	    PGAError
+        if (ctx->sys.UserFortran) {
+            PGAError
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
-		  "PGA_USERFUNCTION_SERIALIZE from Fortran."
+                  "PGA_USERFUNCTION_SERIALIZE from Fortran."
                 , PGA_FATAL, PGA_VOID, NULL
                 );
-	} else {
-	    ctx->cops.Serialize =
+        } else {
+            ctx->cops.Serialize =
                 (size_t(*)(PGAContext *, int, int, const void **))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_DESERIALIZE:
-	if (ctx->sys.UserFortran) {
-	    PGAError
+        if (ctx->sys.UserFortran) {
+            PGAError
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_DESERIALIZE from Fortran."
                 , PGA_FATAL, PGA_VOID, NULL
                 );
-	} else {
-	    ctx->cops.Deserialize =
+        } else {
+            ctx->cops.Deserialize =
                 (void(*)(PGAContext *, int, int, const void *, size_t))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_SERIALIZE_FREE:
-	if (ctx->sys.UserFortran) {
-	    PGAError
+        if (ctx->sys.UserFortran) {
+            PGAError
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_SERIALIZE_FREE from Fortran."
                 , PGA_FATAL, PGA_VOID, NULL
                 );
-	} else {
-	    ctx->cops.SerializeFree = (void(*)(void *))f;
+        } else {
+            ctx->cops.SerializeFree = (void(*)(void *))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_CHROM_FREE:
-	if (ctx->sys.UserFortran) {
-	    PGAError
+        if (ctx->sys.UserFortran) {
+            PGAError
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_CHROM_FREE from Fortran."
                 , PGA_FATAL, PGA_VOID, NULL
                 );
-	} else {
-	    ctx->cops.ChromFree = (void(*)(PGAIndividual *))f;
+        } else {
+            ctx->cops.ChromFree = (void(*)(PGAIndividual *))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_MUTATION:
-	if (ctx->sys.UserFortran) {
-	    ctx->fops.Mutation = (int(*)(void *, void *, void *, void *))f;
-	} else {
-	    ctx->cops.Mutation = (int(*)(PGAContext *, int, int, double))f;
+        if (ctx->sys.UserFortran) {
+            ctx->fops.Mutation = (int(*)(void *, void *, void *, void *))f;
+        } else {
+            ctx->cops.Mutation = (int(*)(PGAContext *, int, int, double))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_CROSSOVER:
-	if (ctx->sys.UserFortran) {
-	    ctx->fops.Crossover =
+        if (ctx->sys.UserFortran) {
+            ctx->fops.Crossover =
                 (void(*)( void *, void *, void *, void *, void *, void *
                         , void *))f;
-	} else {
-	    ctx->cops.Crossover =
+        } else {
+            ctx->cops.Crossover =
                 (void(*)(PGAContext *, int, int, int, int, int, int))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_PRINTSTRING:
-	if (ctx->sys.UserFortran) {
-	    ctx->fops.PrintString = (void(*)(void *, void *, void *, void *))f;
-	} else {
-	    ctx->cops.PrintString =  (void(*)(PGAContext *, FILE *, int, int))f;
+        if (ctx->sys.UserFortran) {
+            ctx->fops.PrintString = (void(*)(void *, void *, void *, void *))f;
+        } else {
+            ctx->cops.PrintString =  (void(*)(PGAContext *, FILE *, int, int))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_COPYSTRING:
-	if (ctx->sys.UserFortran) {
-	    PGAError
+        if (ctx->sys.UserFortran) {
+            PGAError
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_COPYSTRING from Fortran."
                 , PGA_FATAL, PGA_VOID, NULL
                 );
-	} else {
-	    ctx->cops.CopyString = (void(*)(PGAContext *, int, int, int, int))f;
+        } else {
+            ctx->cops.CopyString = (void(*)(PGAContext *, int, int, int, int))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_DUPLICATE:
-	if (ctx->sys.UserFortran) {
-	    ctx->fops.Duplicate =
+        if (ctx->sys.UserFortran) {
+            ctx->fops.Duplicate =
                 (int(*)(void *, void *, void *, void *, void *))f;
-	} else {
-	    ctx->cops.Duplicate = (int(*)(PGAContext *, int, int, int, int))f;
+        } else {
+            ctx->cops.Duplicate = (int(*)(PGAContext *, int, int, int, int))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_INITSTRING:
-	if (ctx->sys.UserFortran) {
-	    ctx->fops.InitString = (void(*)(void *, void *, void *))f;
-	} else {
-	    ctx->cops.InitString = (void(*)(PGAContext *, int, int))f;
+        if (ctx->sys.UserFortran) {
+            ctx->fops.InitString = (void(*)(void *, void *, void *))f;
+        } else {
+            ctx->cops.InitString = (void(*)(PGAContext *, int, int))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_BUILDDATATYPE:
-	if (ctx->sys.UserFortran) {
-	    PGAError
+        if (ctx->sys.UserFortran) {
+            PGAError
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_BUILDDATATYPE from Fortran."
                 , PGA_FATAL, PGA_VOID, NULL
                 );
-	} else {
-	    ctx->cops.BuildDatatype =
+        } else {
+            ctx->cops.BuildDatatype =
                 (MPI_Datatype(*)(PGAContext *, int, int))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_STOPCOND:
-	if (ctx->sys.UserFortran) {
-	    ctx->fops.StopCond = (int(*)(void *))f;
-	} else {
-	    ctx->cops.StopCond = (int(*)(PGAContext *))f;
+        if (ctx->sys.UserFortran) {
+            ctx->fops.StopCond = (int(*)(void *))f;
+        } else {
+            ctx->cops.StopCond = (int(*)(PGAContext *))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_ENDOFGEN:
-	if (ctx->sys.UserFortran) {
-	    ctx->fops.EndOfGen = (void(*)(void *))f;
-	} else {
-	    ctx->cops.EndOfGen = (void(*)(PGAContext *))f;
+        if (ctx->sys.UserFortran) {
+            ctx->fops.EndOfGen = (void(*)(void *))f;
+        } else {
+            ctx->cops.EndOfGen = (void(*)(PGAContext *))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_PRE_EVAL:
-	if (ctx->sys.UserFortran) {
-	    ctx->fops.PreEval = (void(*)(void *, void *))f;
-	} else {
-	    ctx->cops.PreEval = (void(*)(PGAContext *, int))f;
+        if (ctx->sys.UserFortran) {
+            ctx->fops.PreEval = (void(*)(void *, void *))f;
+        } else {
+            ctx->cops.PreEval = (void(*)(PGAContext *, int))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_GEN_DISTANCE:
-	if (ctx->sys.UserFortran) {
-	    ctx->fops.GeneDistance =
+        if (ctx->sys.UserFortran) {
+            ctx->fops.GeneDistance =
                 (double(*)(void *, void *, void *, void *, void *))f;
-	} else {
-	    ctx->cops.GeneDistance =
+        } else {
+            ctx->cops.GeneDistance =
                 (double(*)(PGAContext *, int, int, int, int))f;
         }
-	break;
+        break;
       case PGA_USERFUNCTION_HASH:
-	if (ctx->sys.UserFortran) {
-	    ctx->fops.Hash = (PGAHash(*)(void *, void *, void *))f;
-	} else {
-	    ctx->cops.Hash = (PGAHash(*)(PGAContext *, int, int))f;
+        if (ctx->sys.UserFortran) {
+            ctx->fops.Hash = (PGAHash(*)(void *, void *, void *))f;
+        } else {
+            ctx->cops.Hash = (PGAHash(*)(PGAContext *, int, int))f;
         }
-	break;
+        break;
       default:
-	PGAError
+        PGAError
             ( ctx, "PGASetUserFunction: Invalid constant:"
             , PGA_FATAL, PGA_INT, (void *) &constant
             );
-	break;
+        break;
     }
 
     PGADebugExited ("PGASetUserFunction");

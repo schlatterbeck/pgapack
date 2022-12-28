@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,7 +37,7 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
 * This file contains routines to generate randomness.
 * \authors Authors:
@@ -403,9 +403,12 @@ int PGAGetRandomSeed (PGAContext *ctx)
     \endrst
 
 ******************************************************************************/
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+#define MAX_PROCESSORS 2048
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
 void PGASetRandomSeed (PGAContext *ctx, int seed)
 {
-#define MAX_PROCESSORS 2048
 
     PGADebugEntered ("PGASetRandomSeed");
     PGAFailIfSetUp  ("PGASetRandomSeed");
@@ -416,15 +419,15 @@ void PGASetRandomSeed (PGAContext *ctx, int seed)
             , PGA_FATAL, PGA_INT, (void *) &seed
             );
     } else {
-	ctx->init.RandomSeed = seed;
+        ctx->init.RandomSeed = seed;
     }
-    
+
     PGADebugExited ("PGASetRandomSeed");
 }
 
-#define CUTOFF 13
 
 #if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+#define CUTOFF 13
 static int sample_a1 (PGASampleState *state);
 static int sample_a2 (PGASampleState *state);
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
@@ -478,19 +481,19 @@ void PGARandomSampleInit (PGAContext *ctx, PGASampleState *state, int k, int n)
 {
     PGADebugEntered ("PGARandomSampleInit");
     if (k <= 0) {
-	PGAError
+        PGAError
             ( ctx, "PGARandomSampleInit: Invalid value of k:"
             , PGA_FATAL, PGA_INT, (void *) &k
             );
     }
     if (n <= 0) {
-	PGAError
+        PGAError
             ( ctx, "PGARandomSampleInit: Invalid value of n:"
             , PGA_FATAL, PGA_INT, (void *) &n
             );
     }
     if (k > n) {
-	PGAError
+        PGAError
             ( ctx, "PGARandomSampleInit: Invalid value of k:"
             , PGA_FATAL, PGA_INT, (void *) &k
             );
@@ -527,7 +530,7 @@ int PGARandomNextSample (PGASampleState *state)
     PGAContext *ctx = state->ctx; /* Needed for debug below */
     PGADebugEntered ("PGARandomNextSample");
     if (state->k <= 0) {
-	PGAError
+        PGAError
             ( state->ctx, "PGARandomNextSample: Invalid value of k:"
             , PGA_FATAL, PGA_INT, (void *) &(state->k)
             );

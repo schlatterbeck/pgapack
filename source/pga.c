@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,7 +37,7 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
 * This file contains all the routines that are data structure neutral.
 * \authors Authors:
@@ -46,6 +46,8 @@ privately owned rights.
 *****************************************************************************/
 
 #include "pgapack.h"
+
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 /* Utility function to reset the hash for all individuals */
 static void reset_hash (PGAContext *ctx, int pop)
@@ -60,6 +62,8 @@ static void reset_hash (PGAContext *ctx, int pop)
         }
     }
 }
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*!****************************************************************************
     \brief Highest level routine to execute the genetic algorithm.
@@ -103,7 +107,7 @@ void PGARun
      int nprocs;                     /* number of processes in above  */
      int npops;                      /* number of populations         */
      int ndemes;                     /* number of demes               */
-     
+
 
      PGADebugEntered   ("PGARun");
      PGAFailIfNotSetUp ("PGARun");
@@ -117,9 +121,9 @@ void PGARun
      /*              Global model, one island, one deme                    */
      /**********************************************************************/
      if ((npops == 1) && (ndemes == 1)) {
-	 PGARunGM (ctx, evaluate, comm);
+         PGARunGM (ctx, evaluate, comm);
      }
-     
+
      /**********************************************************************/
      /*              Island model, > one island, one deme                  */
      /**********************************************************************/
@@ -137,7 +141,7 @@ void PGARun
          }
          PGARunIM (ctx, evaluate, comm);
      }
-             
+
      /**********************************************************************/
      /*              Neighborhood model, one island, > one deme            */
      /**********************************************************************/
@@ -155,7 +159,7 @@ void PGARun
          }
          PGARunNM (ctx, evaluate, comm);
      }
-             
+
      /**********************************************************************/
      /*              Mixed model, > one island, > one deme                 */
      /**********************************************************************/
@@ -560,22 +564,22 @@ void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm)
             PGA_NSGA_III_Replacement (ctx);
         }
 
-	if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) {
-	    PGAUpdateAverage(ctx, PGA_NEWPOP);
+        if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) {
+            PGAUpdateAverage(ctx, PGA_NEWPOP);
         }
 
-	if (ctx->rep.PrintOptions & PGA_REPORT_ONLINE) {
-	    PGAUpdateOnline(ctx, PGA_NEWPOP);
+        if (ctx->rep.PrintOptions & PGA_REPORT_ONLINE) {
+            PGAUpdateOnline(ctx, PGA_NEWPOP);
         }
 
-	if (ctx->rep.PrintOptions & PGA_REPORT_OFFLINE) {
-	    PGAUpdateOffline(ctx, PGA_NEWPOP);
+        if (ctx->rep.PrintOptions & PGA_REPORT_OFFLINE) {
+            PGAUpdateOffline(ctx, PGA_NEWPOP);
         }
 
 
         memcpy (oldbest, ctx->rep.Best, sizeof (oldbest));
         PGAUpdateBest (ctx, PGA_NEWPOP);
-	if ((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) || ctx->ga.restart) {
+        if ((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) || ctx->ga.restart) {
             double *best = ctx->rep.Best;
             int k;
             int equal = 1;
@@ -594,25 +598,26 @@ void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm)
             } else {
                 ctx->ga.ItersOfSame = 1;
             }
-	}
-
-	if (ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR)
-	    ctx->ga.PercentSame = PGAComputeSimilarity (ctx, PGA_NEWPOP);
-
-	/*  Clear this twice in case the user EOG calls PGASelect.  */
-	ctx->ga.SelectIndex = 0;
-
-	if (ctx->fops.EndOfGen) {
-	    (*ctx->fops.EndOfGen)(&ctx);
-        }
-	if (ctx->cops.EndOfGen) {
-	    (*ctx->cops.EndOfGen)(ctx);
         }
 
-	ctx->ga.SelectIndex = 0;
-	temp           = ctx->ga.oldpop;
-	ctx->ga.oldpop = ctx->ga.newpop;
-	ctx->ga.newpop = temp;
+        if (ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR) {
+            ctx->ga.PercentSame = PGAComputeSimilarity (ctx, PGA_NEWPOP);
+        }
+
+        /*  Clear this twice in case the user EOG calls PGASelect.  */
+        ctx->ga.SelectIndex = 0;
+
+        if (ctx->fops.EndOfGen) {
+            (*ctx->fops.EndOfGen)(&ctx);
+        }
+        if (ctx->cops.EndOfGen) {
+            (*ctx->cops.EndOfGen)(ctx);
+        }
+
+        ctx->ga.SelectIndex = 0;
+        temp           = ctx->ga.oldpop;
+        ctx->ga.oldpop = ctx->ga.newpop;
+        ctx->ga.newpop = temp;
     }
 
     PGADebugExited ("PGAUpdateGeneration");

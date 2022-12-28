@@ -14,10 +14,10 @@ Ralf Schlatterbeck
 Open Source Consulting
 */
 
-/*****************************************************************************
+/*!***************************************************************************
 * \file
-* Linear Algebra Algorithms
-* \authors Authors: Ralf Schlatterbeck
+* This file contains linear algebra algorithms.
+* \authors Author: Ralf Schlatterbeck
 *****************************************************************************/
 /*!***************************************************************************
  *  \defgroup linalg Linear Algebra Algorithms
@@ -25,7 +25,10 @@ Open Source Consulting
 
 #include <stdlib.h>
 #include "pgapack.h"
+
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 #define LIN_ERROR_SINGULAR 1
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*!***************************************************************
     \brief Solve a linear matrix equation, or system of linear scalar equations.
