@@ -37,46 +37,54 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     File: mutation.c: This file contains the data structure neutral mutation
-*                       routines
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains the data structure neutral mutation routines.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
 
-/*U****************************************************************************
-  PGAMutate - This routine performs mutation on a string.  The type of mutation
-  depends on the data type.  Refer to the user guide for data-specific
-  examples.
+/*!****************************************************************************
+    \brief Perform mutation on a string.
+    \ingroup explicit
 
-  Category: Operators
+    \param  ctx  context variable
+    \param  p    index of string to mutate
+    \param  pop  symbolic constant of the population containing p
+    \return The number of mutations performed.  Member p in population pop is
+            mutated by side-effect
 
-  Inputs:
-      ctx  - context variable
-      p   - index of string to mutate
-      pop - symbolic constant of the population containing p
+    \rst
 
-  Output:
-      The number of mutations performed.  Member p in population pop is
-      mutated by side-effect.
+    Description
+    -----------
 
-  Example:
-      Mutate the best string in the population, until 10 or more mutations
-      have occured.
+    The type of mutation depends on the data type.  Refer to the user
+    guide for data-specific examples.
 
-      PGAContext *ctx;
-      int p, count = 0;
-      :
-      p = PGAGetBestIndex(ctx, PGA_NEWPOP);
-      while (count < 10) {
-          count += PGAMutate(ctx, p, PGA_NEWPOP);
-      }
+    Example
+    -------
 
-****************************************************************************U*/
-int PGAMutate(PGAContext *ctx, int p, int pop)
+    Mutate the best string in the population, until 10 or more mutations
+    have occured.
+
+    .. code-block:: c
+
+        PGAContext *ctx;
+        int p, count = 0;
+
+        p = PGAGetBestIndex (ctx, PGA_NEWPOP);
+        while (count < 10) {
+            count += PGAMutate (ctx, p, PGA_NEWPOP);
+        }
+
+    \endrst
+
+******************************************************************************/
+int PGAMutate (PGAContext *ctx, int p, int pop)
 {
     double mr;
     int count;
@@ -97,457 +105,551 @@ int PGAMutate(PGAContext *ctx, int p, int pop)
 
     PGADebugExited ("PGAMutate");
 
-    return(count);
+    return count;
 }
 
-/*U****************************************************************************
-   PGASetMutationType - set type of mutation to use. Only effects integer-
-   and real-valued strings.  Binary-valued strings are always complemented.
-   In character-valued strings, one alphabetic character is replaced with
-   another chosen uniformly randomly.  The alphabetic characters will be lower,
-   upper, or mixed case depending on how the strings were initialized.
+/*!****************************************************************************
+    \brief Set type of mutation to use.
+    \ingroup init
 
-   Valid choices are PGA_MUTATION_CONSTANT (Real/Integer), PGA_MUTATION_RANGE
-   (Real/Integer), PGA_MUTATION_UNIFORM (Real), PGA_MUTATION_GAUSSIAN (Real),
-   and PGA_MUTATION_PERMUTE (Integer).  The default for integer-valued strings
-   conforms to how the strings were initialized.  The default for real-valued
-   strings is PGA_MUTATION_GAUSSIAN.  See the user guide for more details.
+    \param  ctx            context variable
+    \param  mutation_type  symbolic constant to specify the mutation type
+    \return None
 
-   Category: Operators
+    \rst
 
-   Inputs:
-      ctx           - context variable
-      mutation_type - symbolic constant to specify the mutation type
+    Description
+    -----------
 
-   Outputs:
-      None
+    Only effects integer- and real-valued strings.
+    Binary-valued strings are always complemented.
+    In character-valued strings, one alphabetic character is replaced with
+    another chosen uniformly randomly.  The alphabetic characters will be lower,
+    upper, or mixed case depending on how the strings were initialized.
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetMutationType(ctx, PGA_MUTATION_UNIFORM);
+    Valid choices are PGA_MUTATION_CONSTANT (Real/Integer), PGA_MUTATION_RANGE
+    (Real/Integer), PGA_MUTATION_UNIFORM (Real), PGA_MUTATION_GAUSSIAN (Real),
+    PGA_MUTATION_PERMUTE (Integer), PGA_MUTATION_DE (Real), and
+    PGA_MUTATION_POLY (Real/Integer). The default for integer-valued strings
+    conforms to how the strings were initialized.  The default for real-valued
+    strings is PGA_MUTATION_GAUSSIAN.  See the user guide for more details.
 
-****************************************************************************U*/
-void PGASetMutationType( PGAContext *ctx, int mutation_type)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetMutationType (ctx, PGA_MUTATION_UNIFORM);
+
+    \endrst
+
+******************************************************************************/
+void PGASetMutationType (PGAContext *ctx, int mutation_type)
 {
-    PGADebugEntered("PGASetMutationType");
+    PGADebugEntered ("PGASetMutationType");
 
-     switch (mutation_type)
-     {
-     case PGA_MUTATION_CONSTANT:
-     case PGA_MUTATION_RANGE:
-     case PGA_MUTATION_UNIFORM:
-     case PGA_MUTATION_GAUSSIAN:
-     case PGA_MUTATION_PERMUTE:
-     case PGA_MUTATION_DE:
-     case PGA_MUTATION_POLY:
-          ctx->ga.MutationType = mutation_type;
-          break;
-     default:
-          PGAError ( ctx,
-                    "PGASetMutationType: Invalid value of mutation_type:",
-                    PGA_FATAL, PGA_INT, (void *) &mutation_type);
-          break;
-     }
+    switch (mutation_type) {
+    case PGA_MUTATION_CONSTANT:
+    case PGA_MUTATION_RANGE:
+    case PGA_MUTATION_UNIFORM:
+    case PGA_MUTATION_GAUSSIAN:
+    case PGA_MUTATION_PERMUTE:
+    case PGA_MUTATION_DE:
+    case PGA_MUTATION_POLY:
+         ctx->ga.MutationType = mutation_type;
+         break;
+    default:
+         PGAError
+            ( ctx, "PGASetMutationType: Invalid value of mutation_type:"
+            , PGA_FATAL, PGA_INT, (void *) &mutation_type
+            );
+         break;
+    }
 
-    PGADebugExited("PGASetMutationType");
+    PGADebugExited ("PGASetMutationType");
 }
 
-/*U***************************************************************************
-   PGAGetMutationType - Returns the type of mutation used
+/*!***************************************************************************
+    \brief Return the type of mutation used.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return Returns the integer corresponding to the symbolic constant
+            used to specify the type of mutation specified
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns the integer corresponding to the symbolic constant
-      used to specify the type of mutation specified
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int mutatetype;
-      :
-      mutatetype = PGAGetMutationType(ctx);
-      switch (mutatetype) {
-      case PGA_MUTATION_CONSTANT:
-          printf ("Mutation Type = PGA_MUTATION_CONSTANT\n");
-          break;
-      case PGA_MUTATION_RANGE:
-          printf ("Mutation Type = PGA_MUTATION_RANGE\n");
-          break;
-      case PGA_MUTATION_UNIFORM:
-          printf ("Mutation Type = PGA_MUTATION_UNIFORM\n");
-          break;
-      case PGA_MUTATION_GAUSSIAN:
-          printf ("Mutation Type = PGA_MUTATION_GAUSSIAN\n");
-          break;
-      case PGA_MUTATION_PERMUTE:
-          printf ("Mutation Type = PGA_MUTATION_PERMUTE\n");
-          break;
-      }
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int mutatetype;
+
+       mutatetype = PGAGetMutationType (ctx);
+       switch (mutatetype) {
+       case PGA_MUTATION_CONSTANT:
+           printf ("Mutation Type = PGA_MUTATION_CONSTANT\n");
+           break;
+       case PGA_MUTATION_RANGE:
+           printf ("Mutation Type = PGA_MUTATION_RANGE\n");
+           break;
+       case PGA_MUTATION_UNIFORM:
+           printf ("Mutation Type = PGA_MUTATION_UNIFORM\n");
+           break;
+       case PGA_MUTATION_GAUSSIAN:
+           printf ("Mutation Type = PGA_MUTATION_GAUSSIAN\n");
+           break;
+       case PGA_MUTATION_PERMUTE:
+           printf ("Mutation Type = PGA_MUTATION_PERMUTE\n");
+           break;
+       case PGA_MUTATION_DE:
+           printf ("Mutation Type = PGA_MUTATION_DE\n");
+           break;
+       case PGA_MUTATION_POLY:
+           printf ("Mutation Type = PGA_MUTATION_POLY\n");
+           break;
+       }
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetMutationType (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetMutationType");
-    PGAFailIfNotSetUp("PGAGetMutationType");
-    PGADebugExited("PGAGetMutationType");
-    return(ctx->ga.MutationType);
+    PGADebugEntered   ("PGAGetMutationType");
+    PGAFailIfNotSetUp ("PGAGetMutationType");
+    PGADebugExited ("PGAGetMutationType");
+    return ctx->ga.MutationType;
 }
 
-/*U****************************************************************************
-   PGASetMutationRealValue - Set multiplier to mutate PGA_DATATYPE_REAL
-   strings with.  The use of this value depends on the type of mutation
-   being used.  The default value is 0.1.  See the user guide for more details.
+/*!****************************************************************************
+    \brief Set multiplier to mutate PGA_DATATYPE_REAL strings with.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx  context variable
+    \param  val  the mutation value to use for Real mutation
+    \return None
 
-   Inputs:
-      ctx - context variable
-      val - the mutation value to use for Real mutation
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetMutationRealValue(ctx,50.0);
+    The use of this value depends on the type of mutation being used.
+    The default value is 0.1.  See the user guide for more details.
 
-****************************************************************************U*/
-void PGASetMutationRealValue( PGAContext *ctx, double val)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetMutationRealValue (ctx, 50.0);
+
+    \endrst
+
+******************************************************************************/
+void PGASetMutationRealValue (PGAContext *ctx, double val)
 {
-    PGADebugEntered("PGASetMutationRealValue");
+    PGADebugEntered ("PGASetMutationRealValue");
 
-    if (val < 0.0)
-        PGAError ( ctx,
-                  "PGASetMutationRealValue: Invalid value of val:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
-    else
+    if (val < 0.0) {
+        PGAError
+            ( ctx, "PGASetMutationRealValue: Invalid value of val:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &val
+            );
+    } else {
         ctx->ga.MutateRealValue = val;
+    }
 
-    PGADebugExited("PGASetMutationRealValue");
+    PGADebugExited ("PGASetMutationRealValue");
 }
 
-/*U***************************************************************************
-   PGAGetMutationRealValue - Returns the value of the multiplier used to
-   mutate PGA_DATATYPE_REAL strings with.
+/*!***************************************************************************
+    \brief Return the value of the multiplier used to mutate
+           PGA_DATATYPE_REAL strings with.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The value of the multiplier used to mutate PGA_DATATYPE_REAL
+            strings with
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The value of the multiplier used to mutate PGA_DATATYPE_REAL strings with
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double val;
-      :
-      val = PGAGetMutationRealValue(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double val;
+
+       val = PGAGetMutationRealValue (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetMutationRealValue (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetMutationRealValue");
-    PGAFailIfNotSetUp("PGAGetMutationRealValue");
+    PGADebugEntered   ("PGAGetMutationRealValue");
+    PGAFailIfNotSetUp ("PGAGetMutationRealValue");
 
-    PGADebugExited("PGAGetMutationRealValue");
+    PGADebugExited ("PGAGetMutationRealValue");
 
-    return(ctx->ga.MutateRealValue);
+    return ctx->ga.MutateRealValue;
 }
 
-/*U****************************************************************************
-   PGASetMutationIntegerValue - Set multiplier to mutate PGA_DATATYPE_INTEGER
-   strings with.  The use of this value depends on the type of mutation
-   being used.  The default value is 1.  See the user guide for more details.
+/*!****************************************************************************
+    \brief Set multiplier to mutate PGA_DATATYPE_INTEGER strings with.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx  context variable
+    \param  val  the mutation value to use for Integer mutation
+    \return None
 
-   Inputs:
-      ctx - context variable
-      val - the mutation value to use for Integer mutation
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetMutationIntegerValue(ctx, 5);
+    The use of this value depends on the type of mutation being used.
+    The default value is 1.  See the user guide for more details.
 
-****************************************************************************U*/
-void PGASetMutationIntegerValue( PGAContext *ctx, int val)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetMutationIntegerValue (ctx, 5);
+
+    \endrst
+
+******************************************************************************/
+void PGASetMutationIntegerValue (PGAContext *ctx, int val)
 {
-    PGADebugEntered("PGASetMutationIntegerValue");
+    PGADebugEntered ("PGASetMutationIntegerValue");
 
-    if (val < 0.0)
-        PGAError ( ctx,
-                  "PGASetMutationIntegerValue: Invalid value of val:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
-    else
+    if (val < 0.0) {
+        PGAError
+            ( ctx, "PGASetMutationIntegerValue: Invalid value of val:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &val
+            );
+    } else {
         ctx->ga.MutateIntegerValue = val;
+    }
 
-    PGADebugExited("PGASetMutationIntegerValue");
+    PGADebugExited ("PGASetMutationIntegerValue");
 }
 
 
-/*U***************************************************************************
-  PGAGetMutationIntegerValue - Returns the value of the multiplier
-  used to mutate PGA_DATATYPE_INTEGER strings with.
+/*!***************************************************************************
+    \brief Return the value of the multiplier used to mutate
+           PGA_DATATYPE_INTEGER strings with.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The value of the multiplier used to mutate
+            PGA_DATATYPE_INTEGER strings with
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The value of the multiplier used to mutate PGA_DATATYPE_INTEGER
-      strings with
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int ival;
-      :
-      ival = PGAGetMutationIntegerValue(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+        PGAContext *ctx;
+        int ival;
+
+        ival = PGAGetMutationIntegerValue (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetMutationIntegerValue (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetMutationIntegerValue");
-    PGAFailIfNotSetUp("PGAGetMutationIntegerValue");
+    PGADebugEntered   ("PGAGetMutationIntegerValue");
+    PGAFailIfNotSetUp ("PGAGetMutationIntegerValue");
 
-    PGADebugExited("PGAGetMutationIntegerValue");
+    PGADebugExited ("PGAGetMutationIntegerValue");
 
-    return(ctx->ga.MutateIntegerValue);
+    return ctx->ga.MutateIntegerValue;
 }
 
-/*U****************************************************************************
-   PGASetMutationBoundedFlag - If this flag is set to PGA_TRUE, then for
-   Integer and Real strings whenever a gene is mutated, if it underflows
-   (overflows) the lower (upper)bound it is reset to the lower (upper) bound.
-   In this way all allele values remain within the range the integer strings
-   were initialized on.  If this flag is PGA_FALSE (the default), the alleles
-   may take any values.
+/*!****************************************************************************
+    \brief If this flag is set to PGA_TRUE, then for Integer and Real
+           strings whenever a gene is mutated, if it underflows
+           (overflows) the lower (upper) bound it is reset to the lower
+           (upper) bound.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx   context variable
+    \param  val   either PGA_TRUE or PGA_FALSE
+    \return None
 
-   Inputs:
-      ctx  - context variable
-      flag - either PGA_TRUE or PGA_FALSE
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetMutationBoundedFlag(ctx, PGA_TRUE);
+    In this way all allele values remain within the range the integer strings
+    were initialized on.  If this flag is PGA_FALSE (the default), the alleles
+    may take any values.
 
-****************************************************************************U*/
-void PGASetMutationBoundedFlag(PGAContext *ctx, int val)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetMutationBoundedFlag (ctx, PGA_TRUE);
+
+    \endrst
+
+******************************************************************************/
+void PGASetMutationBoundedFlag (PGAContext *ctx, int val)
 {
-    PGADebugEntered("PGASetMutationBoundedFlag");
+    PGADebugEntered ("PGASetMutationBoundedFlag");
 
-    switch (val)
-    {
+    switch (val) {
     case PGA_TRUE:
     case PGA_FALSE:
          ctx->ga.MutateBoundedFlag = val;
          break;
     default:
-         PGAError(ctx, "PGASetMutationBoundedFlag: Invalid value:",
-                  PGA_FATAL, PGA_INT, (void *) &val);
+         PGAError
+            ( ctx, "PGASetMutationBoundedFlag: Invalid value:"
+            , PGA_FATAL, PGA_INT, (void *) &val
+            );
          break;
     }
 
-    PGADebugExited("PGASetMutationBoundedFlag");
+    PGADebugExited ("PGASetMutationBoundedFlag");
 }
 
 
-/*U****************************************************************************
-   PGAGetMutationBoundedFlag - returns PGA_TRUE or PGA_FALSE to indicate
-   whether mutated integer strings remain in the range specified when
-   initialized with PGASetIntegerInitRange.
+/*!****************************************************************************
+    \brief Return PGA_TRUE or PGA_FALSE to indicate whether mutated
+           integer strings remain in the range specified when
+           initialized with \ref function::PGASetIntegerInitRange.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return PGA_TRUE if restricted to the given range, otherwise PGA_FALSE
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int val;
-      :
-      val = PGAGetMutationBoundedFlag(ctx);
+    .. code-block:: c
 
-****************************************************************************U*/
-int PGAGetMutationBoundedFlag(PGAContext *ctx)
+       PGAContext *ctx;
+       int val;
+
+       val = PGAGetMutationBoundedFlag (ctx);
+
+    \endrst
+
+******************************************************************************/
+int PGAGetMutationBoundedFlag (PGAContext *ctx)
 {
-    PGADebugEntered  ("PGAGetMutationBoundedFlag");
-    PGAFailIfNotSetUp("PGAGetMutationBoundedFlag");
-    PGADebugExited   ("PGAGetMutationBoundedFlag");
-    return (ctx->ga.MutateBoundedFlag);
+    PGADebugEntered   ("PGAGetMutationBoundedFlag");
+    PGAFailIfNotSetUp ("PGAGetMutationBoundedFlag");
+    PGADebugExited    ("PGAGetMutationBoundedFlag");
+    return ctx->ga.MutateBoundedFlag;
 }
 
-/*U****************************************************************************
-   PGASetMutationBounceBackFlag - If this flag is set to PGA_TRUE, then for
-   Integer and Real strings whenever a gene is mutated, if it underflows
-   (overflows) the lower (upper)bound it is reset to a random value between
-   the old value and the violated bound.
-   In this way all allele values remain within the range the strings
-   were initialized on.  If this flag is PGA_FALSE (the default), the alleles
-   may take any values. See also PGASetMutationBoundedFlag.
+/*!****************************************************************************
+    \brief If this flag is set to PGA_TRUE, then for Integer and Real
+           strings whenever a gene is mutated, if it underflows
+           (overflows) the lower (upper) bound it is reset to a random
+           value between the old value and the violated bound.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx   context variable
+    \param  val   either PGA_TRUE or PGA_FALSE
+    \return None
 
-   Inputs:
-      ctx  - context variable
-      flag - either PGA_TRUE or PGA_FALSE
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetMutationBounceBackFlag(ctx, PGA_TRUE);
+    In this way all allele values remain within the range the strings
+    were initialized on.  If this flag is PGA_FALSE (the default), the alleles
+    may take any values. See also :c:func:`PGASetMutationBoundedFlag`.
 
-****************************************************************************U*/
-void PGASetMutationBounceBackFlag(PGAContext *ctx, int val)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetMutationBounceBackFlag (ctx, PGA_TRUE);
+
+    \endrst
+
+******************************************************************************/
+void PGASetMutationBounceBackFlag (PGAContext *ctx, int val)
 {
-    PGADebugEntered("PGASetMutationBounceBackFlag");
+    PGADebugEntered ("PGASetMutationBounceBackFlag");
 
-    switch (val)
-    {
+    switch (val) {
     case PGA_TRUE:
     case PGA_FALSE:
          ctx->ga.MutateBounceFlag = val;
          break;
     default:
-         PGAError(ctx, "PGASetMutationBounceBackFlag: Invalid value:",
-                  PGA_FATAL, PGA_INT, (void *) &val);
+         PGAError
+            ( ctx, "PGASetMutationBounceBackFlag: Invalid value:"
+            , PGA_FATAL, PGA_INT, (void *) &val
+            );
          break;
     }
 
-    PGADebugExited("PGASetMutationBounceBackFlag");
+    PGADebugExited ("PGASetMutationBounceBackFlag");
 }
 
 
-/*U****************************************************************************
-   PGAGetMutationBounceBackFlag - returns PGA_TRUE or PGA_FALSE to indicate
-   whether mutated strings remain within the initialization range
+/*!****************************************************************************
+    \brief Return PGA_TRUE or PGA_FALSE to indicate whether mutated
+           strings remain within the initialization range.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return PGA_TRUE if restricted to the given range, otherwise PGA_FALSE
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int val;
-      :
-      val = PGAGetMutationBounceBackFlag(ctx);
+    .. code-block:: c
 
-****************************************************************************U*/
-int PGAGetMutationBounceBackFlag(PGAContext *ctx)
+       PGAContext *ctx;
+       int val;
+
+       val = PGAGetMutationBounceBackFlag (ctx);
+
+    \endrst
+
+******************************************************************************/
+int PGAGetMutationBounceBackFlag (PGAContext *ctx)
 {
-    PGADebugEntered  ("PGAGetMutationBounceBackFlag");
-    PGAFailIfNotSetUp("PGAGetMutationBounceBackFlag");
-    PGADebugExited   ("PGAGetMutationBounceBackFlag");
-    return (ctx->ga.MutateBounceFlag);
+    PGADebugEntered   ("PGAGetMutationBounceBackFlag");
+    PGAFailIfNotSetUp ("PGAGetMutationBounceBackFlag");
+    PGADebugExited    ("PGAGetMutationBounceBackFlag");
+    return ctx->ga.MutateBounceFlag;
 }
 
 
 
-/*U****************************************************************************
-   PGASetMutationProb - Specifies the probability that a given allele will
-   be mutated.  If this is called without calling PGASetMutationType(), the
-   default mutation type is PGA_MUTATION_FIXED.  The default probability is
-   the reciprocal of the string length.
+/*!****************************************************************************
+    \brief Specify the probability that a given allele will be mutated.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx           context variable
+    \param  mutation_prob the mutation probability
+    \return None
 
-   Inputs:
-      ctx - context variable
-      p   - the mutation probability
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetMutationProb(ctx,0.001);
+    If this is called without calling :c:func:`PGASetMutationType`, the
+    default mutation type is PGA_MUTATION_FIXED.  The default probability is
+    the reciprocal of the string length.
 
-****************************************************************************U*/
-void PGASetMutationProb(PGAContext *ctx, double mutation_prob)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetMutationProb (ctx, 0.001);
+
+    \endrst
+
+******************************************************************************/
+void PGASetMutationProb (PGAContext *ctx, double mutation_prob)
 {
-    PGADebugEntered("PGASetMutationProb");
+    PGADebugEntered ("PGASetMutationProb");
 
-    if ((mutation_prob < 0.0) || (mutation_prob > 1.0))
-        PGAError ( ctx,
-                  "PGASetMutationProb: Invalid value of mutation_prob:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &mutation_prob);
-    else
+    if ((mutation_prob < 0.0) || (mutation_prob > 1.0)) {
+        PGAError
+            ( ctx, "PGASetMutationProb: Invalid value of mutation_prob:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &mutation_prob
+            );
+    } else {
         ctx->ga.MutationProb = mutation_prob;
+    }
 
-    PGADebugExited("PGASetMutationProb");
+    PGADebugExited ("PGASetMutationProb");
 }
 
-/*U***************************************************************************
-   PGAGetMutationProb - Returns the probability of mutation.
+/*!***************************************************************************
+    \brief Return the probability of mutation.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The mutation probability
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The mutation probability
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double pm;
-      :
-      pm = PGAGetMutateProb(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double pm;
+
+       pm = PGAGetMutationProb (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetMutationProb (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetMutationProb");
-    PGAFailIfNotSetUp("PGAGetMutationProb");
-    PGADebugExited("PGAGetMutationProb");
-    return(ctx->ga.MutationProb);
+    PGADebugEntered   ("PGAGetMutationProb");
+    PGAFailIfNotSetUp ("PGAGetMutationProb");
+    PGADebugExited    ("PGAGetMutationProb");
+    return ctx->ga.MutationProb;
 }
 
-/*U****************************************************************************
-   PGASetMutationEtamu for polynomial mutation
+/*!****************************************************************************
+    \brief Set Eta for polynomial mutation.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx  context variable
+    \param  eta  the polynomial mutation eta
+    \return None
 
-   Inputs:
-      ctx - context variable
-      eta - the polynomial mutation eta
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetMutationPolyEta (ctx, 200);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+
+       PGASetMutationPolyEta (ctx, 200);
+
+    \endrst
+
+******************************************************************************/
 void PGASetMutationPolyEta (PGAContext *ctx, double eta)
 {
     if (eta < 0.0) {
@@ -559,48 +661,56 @@ void PGASetMutationPolyEta (PGAContext *ctx, double eta)
     ctx->ga.MutatePolyEta = eta;
 }
 
-/*U***************************************************************************
-   PGAGetMutationPolyEta - Returns the eta for polynomial mutation
+/*!***************************************************************************
+    \brief Return the Eta for polynomial mutation.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The eta for polynomial mutation
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The eta for polynomial mutation
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double eta;
-      :
-      eta = PGAGetMutationPolyEta (ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double eta;
+
+       eta = PGAGetMutationPolyEta (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetMutationPolyEta (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetMutationPolyEta");
-    return(ctx->ga.MutatePolyEta);
+    PGAFailIfNotSetUp ("PGAGetMutationPolyEta");
+    return ctx->ga.MutatePolyEta;
 }
 
-/*U****************************************************************************
-   PGASetMutationPolyValue - Specifies the constant for polynomial mutation
+/*!****************************************************************************
+    \brief Specify the constant for polynomial mutation.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx  context variable
+    \param  v    the polynomial mutation constant
+    \return None
 
-   Inputs:
-      ctx - context variable
-      v   - the polynomial mutation constant
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetMutationPolyValue (ctx, 2.5);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+
+       PGASetMutationPolyValue (ctx, 2.5);
+
+    \endrst
+
+******************************************************************************/
 void PGASetMutationPolyValue (PGAContext *ctx, double v)
 {
     if (v < 0.0) {
@@ -612,56 +722,67 @@ void PGASetMutationPolyValue (PGAContext *ctx, double v)
     ctx->ga.MutatePolyValue = v;
 }
 
-/*U***************************************************************************
-   PGAGetMutationPolyValue - Returns the value for polynomial mutation
+/*!***************************************************************************
+    \brief Return the value for polynomial mutation.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The value for polynomial mutation
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The value for polynomial mutation
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double v;
-      :
-      v = PGAGetMutationPolyValue (ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double v;
+
+       v = PGAGetMutationPolyValue (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetMutationPolyValue (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetMutationPolyValue");
-    return(ctx->ga.MutatePolyValue);
+    PGAFailIfNotSetUp ("PGAGetMutationPolyValue");
+    return ctx->ga.MutatePolyValue;
 }
 
 
-/*U****************************************************************************
-  PGASetDEVariant - sets the variant used for Differential Evolution.
-  Only used if the mutation type is PGA_MUTATION_DE.
+/*!****************************************************************************
+    \brief Set the variant used for Differential Evolution.
+    \ingroup init
 
-  Category: Initialization
+    \param  ctx     context variable
+    \param  variant symbolic constant, currently one of PGA_DE_VARIANT_RAND,
+                    PGA_DE_VARIANT_BEST, PGA_DE_VARIANT_EITHER_OR
+    \return None
 
-  Inputs:
-     ctx - context variable
-     v   - symbolic constant, currently one of PGA_DE_VARIANT_RAND,
-           PGA_DE_VARIANT_BEST, PGA_DE_VARIANT_EITHER_OR
+    \rst
 
-  Outputs:
+    Description
+    -----------
 
-  Example:
+    Only used if the mutation type is PGA_MUTATION_DE.
 
-     PGAContext *ctx;
-     :
-     PGASetDEVariant(ctx, PGA_DE_VARIANT_BEST);
+    Example
+    -------
 
-****************************************************************************U*/
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetDEVariant (ctx, PGA_DE_VARIANT_BEST);
+
+    \endrst
+
+******************************************************************************/
 void PGASetDEVariant (PGAContext *ctx, int variant)
 {
-    PGAFailIfSetUp("PGASetDEVariant");
-    switch (variant)
-    {
+    PGAFailIfSetUp ("PGASetDEVariant");
+    switch (variant) {
     case PGA_DE_VARIANT_BEST:
     case PGA_DE_VARIANT_RAND:
     case PGA_DE_VARIANT_EITHER_OR:
@@ -676,375 +797,446 @@ void PGASetDEVariant (PGAContext *ctx, int variant)
     }
 }
 
-/*U***************************************************************************
-   PGAGetDEVariant - Returns the variant of Differential Evolution
+/*!***************************************************************************
+    \brief Return the variant of Differential Evolution
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return Returns the integer corresponding to the symbolic constant
+            used to specify the variant of differential evolution
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns the integer corresponding to the symbolic constant
-      used to specify the variant of differential evolution
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int variant;
-      :
-      variant = PGAGetDEVariant(ctx);
-      switch (variant) {
-      case PGA_DE_VARIANT_RAND:
-          printf ("DE Variant = PGA_DE_VARIANT_RAND\n");
-          break;
-      case PGA_DE_VARIANT_BEST:
-          printf ("DE Variant = PGA_DE_VARIANT_BEST\n");
-          break;
-      }
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int variant;
+
+       variant = PGAGetDEVariant (ctx);
+       switch (variant) {
+       case PGA_DE_VARIANT_RAND:
+           printf ("DE Variant = PGA_DE_VARIANT_RAND\n");
+           break;
+       case PGA_DE_VARIANT_BEST:
+           printf ("DE Variant = PGA_DE_VARIANT_BEST\n");
+           break;
+       case PGA_DE_VARIANT_EITHER_OR:
+           printf ("DE Variant = PGA_DE_VARIANT_EITHER_OR\n");
+           break;
+       }
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetDEVariant (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetDEVariant");
-    return(ctx->ga.DEVariant);
+    PGAFailIfNotSetUp ("PGAGetDEVariant");
+    return ctx->ga.DEVariant;
 }
 
-/*U****************************************************************************
-   PGASetDEScaleFactor - Set the scale factor F for DE
+/*!****************************************************************************
+    \brief Set the scale factor F for Differential Evolution
+    \ingroup init
 
-   Category: Operators
+    \param  ctx  context variable
+    \param  val  the scale factor
+    \return None
 
-   Inputs:
-      ctx - context variable
-      val - the scale factor
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetDEScaleFactor (ctx, 0.75);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+
+       PGASetDEScaleFactor (ctx, 0.75);
+
+    \endrst
+
+******************************************************************************/
 void PGASetDEScaleFactor (PGAContext *ctx, double val)
 {
-    if (val < 0.0 || val > 2.0)
-        PGAError ( ctx,
-                  "PGASetDEScaleFactor: Invalid value of F:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
-    else
+    if (val < 0.0 || val > 2.0) {
+        PGAError
+            ( ctx, "PGASetDEScaleFactor: Invalid value of F:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &val
+            );
+    } else {
         ctx->ga.DEScaleFactor = val;
+    }
 }
 
-/*U***************************************************************************
-   PGAGetDEScaleFactor - Returns the value of the scale factor F for DE
+/*!***************************************************************************
+    \brief Return the value of the scale factor F for Differential Evolution.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The value of the scale factor
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The value of the scale factor
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double val;
-      :
-      val = PGAGetDEScaleFactor(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double val;
+
+       val = PGAGetDEScaleFactor (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetDEScaleFactor (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetDEScaleFactor");
-    return(ctx->ga.DEScaleFactor);
+    PGAFailIfNotSetUp ("PGAGetDEScaleFactor");
+    return ctx->ga.DEScaleFactor;
 }
 
-/*U****************************************************************************
-   PGASetDEAuxFactor - Set the auxiliary factor K for DE
+/*!****************************************************************************
+    \brief Set the auxiliary factor K for Differential Evolution.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx  context variable
+    \param  val  the auxiliary factor
+    \return None
 
-   Inputs:
-      ctx - context variable
-      val - the auxiliary factor
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetDEAuxFactor (ctx, 0.75);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+
+       PGASetDEAuxFactor (ctx, 0.75);
+
+    \endrst
+
+******************************************************************************/
 void PGASetDEAuxFactor (PGAContext *ctx, double val)
 {
-    if (val < 0.0 || val > 2.0)
-        PGAError ( ctx,
-                  "PGASetDEAuxFactor: Invalid value of K:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
-    else
+    if (val < 0.0 || val > 2.0) {
+        PGAError
+            ( ctx, "PGASetDEAuxFactor: Invalid value of K:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &val
+            );
+    } else {
         ctx->ga.DEAuxFactor = val;
+    }
 }
 
-/*U***************************************************************************
-   PGAGetDEAuxFactor - Returns the value of the auxiliary factor K for DE
+/*!***************************************************************************
+    \brief Return the value of the auxiliary factor K for Differential
+           Evolution.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The value of the auxiliary factor
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The value of the auxiliary factor
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double val;
-      :
-      val = PGAGetDEAuxFactor(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double val;
+
+       val = PGAGetDEAuxFactor (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetDEAuxFactor (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetDEAuxFactor");
-    return(ctx->ga.DEAuxFactor);
+    PGAFailIfNotSetUp ("PGAGetDEAuxFactor");
+    return ctx->ga.DEAuxFactor;
 }
 
-/*U****************************************************************************
-   PGASetDECrossoverProb - Set the crossover probability for DE
+/*!****************************************************************************
+    \brief Set the crossover probability for Differential Evolution.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx  context variable
+    \param  val  the crossover probability
+    \return None
 
-   Inputs:
-      ctx - context variable
-      val - the crossover probability
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetDECrossoverProb (ctx, 0.75);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+
+       PGASetDECrossoverProb (ctx, 0.75);
+
+    \endrst
+
+******************************************************************************/
 void PGASetDECrossoverProb (PGAContext *ctx, double val)
 {
-    if (val < 0.0 || val > 1.0)
-        PGAError ( ctx,
-                  "PGASetDECrossoverProb: Invalid value of crossover:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
-    else
+    if (val < 0.0 || val > 1.0) {
+        PGAError
+            ( ctx, "PGASetDECrossoverProb: Invalid value of crossover:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &val
+            );
+    } else {
         ctx->ga.DECrossoverProb = val;
+    }
 }
 
-/*U***************************************************************************
-   PGAGetDECrossoverProb - Returns the crossover probability for DE
+/*!***************************************************************************
+    \brief Return the crossover probability for Differential Evolution.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The value of the Differential Evolution crossover probability
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The value of the DE crossover probability
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double val;
-      :
-      val = PGAGetDECrossoverProb(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double val;
+
+       val = PGAGetDECrossoverProb (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetDECrossoverProb (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetDECrossoverProb");
-    return(ctx->ga.DECrossoverProb);
+    PGAFailIfNotSetUp ("PGAGetDECrossoverProb");
+    return ctx->ga.DECrossoverProb;
 }
 
-/*U****************************************************************************
-   PGASetDEJitter - Set the jitter for DE
+/*!****************************************************************************
+    \brief Set the jitter for Differential Evolution.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx  context variable
+    \param  val  the jitter for Differential Evolution
+    \return None
 
-   Inputs:
-      ctx - context variable
-      val - the jitter for DE
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetDEJitter (ctx, 0.75);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+
+       PGASetDEJitter (ctx, 0.75);
+
+    \endrst
+
+******************************************************************************/
 void PGASetDEJitter (PGAContext *ctx, double val)
 {
-    if (val < 0.0 || val > 2.0)
-        PGAError ( ctx,
-                  "PGASetDEJitter: Invalid value of jitter:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
-    else
+    if (val < 0.0 || val > 2.0) {
+        PGAError
+            ( ctx, "PGASetDEJitter: Invalid value of jitter:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &val
+            );
+    } else {
         ctx->ga.DEJitter = val;
+    }
 }
 
-/*U***************************************************************************
-   PGAGetDEJitter - Returns the jitter for DE
+/*!***************************************************************************
+    \brief Return the jitter for Differential Evolution.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The value of the Differential Evolution jitter
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The value of the DE jitter
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double val;
-      :
-      val = PGAGetDEJitter(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double val;
+
+       val = PGAGetDEJitter (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetDEJitter (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetDEJitter");
-    return(ctx->ga.DEJitter);
+    PGAFailIfNotSetUp ("PGAGetDEJitter");
+    return ctx->ga.DEJitter;
 }
 
-/*U****************************************************************************
-   PGASetDEProbabilityEO - Set the either-or probability for
-   PGA_DE_VARIANT_EITHER_OR of Differential Evolution
+/*!****************************************************************************
+    \brief Set the either-or probability for PGA_DE_VARIANT_EITHER_OR of
+           Differential Evolution.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx  context variable
+    \param  val  the either-or probability
+    \return None
 
-   Inputs:
-      ctx - context variable
-      val - the either-or probability
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetDEProbabilityEO (ctx, 0.75);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+
+       PGASetDEProbabilityEO (ctx, 0.75);
+
+    \endrst
+
+******************************************************************************/
 void PGASetDEProbabilityEO (PGAContext *ctx, double val)
 {
-    if (val < 0.0 || val > 1.0)
-        PGAError ( ctx,
-                  "PGASetDEProbabilityEO: Invalid value of EO probabilty:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
-    else
+    if (val < 0.0 || val > 1.0) {
+        PGAError
+            ( ctx, "PGASetDEProbabilityEO: Invalid value of EO probabilty:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &val
+            );
+    } else {
         ctx->ga.DEProbabilityEO = val;
+    }
 }
 
-/*U***************************************************************************
-   PGAGetDEProbabilityEO - Returns the probability of the either-or
-   variant of Differential Evolution
+/*!***************************************************************************
+    \brief Return the probability of the either-or variant of
+           Differential Evolution.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The value of the Differential Evolution EO-Probability
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The value of the DE EO-Probability
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double val;
-      :
-      val = PGAGetDEProbabilityEO(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double val;
+
+       val = PGAGetDEProbabilityEO (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetDEProbabilityEO (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetDEProbabilityEO");
-    return(ctx->ga.DEProbabilityEO);
+    PGAFailIfNotSetUp ("PGAGetDEProbabilityEO");
+    return ctx->ga.DEProbabilityEO;
 }
 
-/*U****************************************************************************
-   PGASetDENumDiffs - Set the number of differences for DE
+/*!****************************************************************************
+    \brief Set the number of differences for Differential Evolution.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx  context variable
+    \param  val  the number of differences
+    \return None
 
-   Inputs:
-      ctx - context variable
-      val - the number of differences
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetDENumDiffs (ctx, 2);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+
+       PGASetDENumDiffs (ctx, 2);
+
+    \endrst
+
+******************************************************************************/
 void PGASetDENumDiffs (PGAContext *ctx, int val)
 {
-    if (val < 1 || val > 2)
-        PGAError ( ctx,
-                  "PGASetDENumDiffs: Invalid value of num diffs:",
-                   PGA_FATAL, PGA_INT, (void *) &val);
-    else
+    if (val < 1 || val > 2) {
+        PGAError
+            ( ctx, "PGASetDENumDiffs: Invalid value of num diffs:"
+            , PGA_FATAL, PGA_INT, (void *) &val
+            );
+    } else {
         ctx->ga.DENumDiffs = val;
+    }
 }
 
-/*U***************************************************************************
-   PGAGetDENumDiffs - Returns the number of differences for DE
+/*!***************************************************************************
+    \brief Return the number of differences for Differential Evolution.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The value of the Differential Evolution number of differences
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The value of the DE number of differences
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int val;
-      :
-      val = PGAGetDENumDiffs(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int val;
+
+       val = PGAGetDENumDiffs (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetDENumDiffs (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetDENumDiffs");
-    return(ctx->ga.DENumDiffs);
+    PGAFailIfNotSetUp ("PGAGetDENumDiffs");
+    return ctx->ga.DENumDiffs;
 }
 
-/*U****************************************************************************
-   PGASetDECrossoverType - Set the crossover type for DE
+/*!****************************************************************************
+    \brief Set the crossover type for Differential Evolution.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx  context variable
+    \param  val  the crossover type
+    \return None
 
-   Inputs:
-      ctx - context variable
-      val - the crossover type
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetDECrossoverType (ctx, PGA_DE_CROSSOVER_EXP);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+
+       PGASetDECrossoverType (ctx, PGA_DE_CROSSOVER_EXP);
+
+    \endrst
+
+******************************************************************************/
 void PGASetDECrossoverType (PGAContext *ctx, int val)
 {
-    switch (val)
-    {
+    switch (val) {
     case PGA_DE_CROSSOVER_BIN:
     case PGA_DE_CROSSOVER_EXP:
         ctx->ga.DECrossoverType = val;
@@ -1058,143 +1250,170 @@ void PGASetDECrossoverType (PGAContext *ctx, int val)
     }
 }
 
-/*U***************************************************************************
-   PGAGetDECrossoverType - Returns the DE crossover type
+/*!***************************************************************************
+    \brief Return the Differential Evolution crossover type.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The value of the Differential Evolution crossover type
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The value of the DE crossover type
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int val;
-      :
-      val = PGAGetDECrossoverType(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int val;
+
+       val = PGAGetDECrossoverType (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetDECrossoverType (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetDECrossoverType");
-    return(ctx->ga.DECrossoverType);
+    PGAFailIfNotSetUp ("PGAGetDECrossoverType");
+    return ctx->ga.DECrossoverType;
 }
 
-/*U****************************************************************************
-   PGASetDEDither - Set the DE dither range (+/-)
+/*!****************************************************************************
+    \brief Set the Differential Evolution dither range (+/-).
+    \ingroup init
 
-   Category: Operators
+    \param  ctx  context variable
+    \param  val  the dither range
+    \return None
 
-   Inputs:
-      ctx - context variable
-      val - the dither range
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetDEDither (ctx, 0.25);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+
+       PGASetDEDither (ctx, 0.25);
+
+    \endrst
+
+******************************************************************************/
 void PGASetDEDither (PGAContext *ctx, double val)
 {
-    if (val < 0.0 || val > 1.0)
-        PGAError ( ctx,
-                  "PGASetDEProbabilityEO: Invalid value of Dither:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
-    else
+    if (val < 0.0 || val > 1.0) {
+        PGAError
+            ( ctx, "PGASetDEProbabilityEO: Invalid value of Dither:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &val
+            );
+    } else {
         ctx->ga.DEDither = val;
+    }
 }
 
-/*U***************************************************************************
-   PGAGetDEDither - Returns the DE dither value
+/*!***************************************************************************
+    \brief Return the Differential Evolution dither value.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The value of the Differential Evolution dither
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The value of the DE dither
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double val;
-      :
-      val = PGAGetDEDither(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double val;
+
+       val = PGAGetDEDither (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetDEDither (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetDEDither");
-    return(ctx->ga.DEDither);
+    PGAFailIfNotSetUp ("PGAGetDEDither");
+    return ctx->ga.DEDither;
 }
 
-/*U****************************************************************************
-   PGASetDEDitherPerIndividual - If this is set to PGA_TRUE, then for
-   Differential Evolution if the Dither value is non-zero we produce a
-   new random value to add to the scale factor F *for each individual*.
-   Otherwise if the flag is not set (PGA_FALSE), the we produce a new
-   value in each generation, the same value for *all* individuals.
+/*!****************************************************************************
+    \brief Set if Differential Evolution dither is per individual.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx   context variable
+    \param  val   either PGA_TRUE or PGA_FALSE
+    \return None
 
-   Inputs:
-      ctx  - context variable
-      flag - either PGA_TRUE or PGA_FALSE
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetDEDitherPerIndividual(ctx, PGA_TRUE);
+    If this is set to PGA_TRUE, then for Differential Evolution if the
+    Dither value is non-zero we produce a new random value to add to the
+    scale factor F *for each individual*.
+    Otherwise if the flag is not set (PGA_FALSE), then we produce a new
+    value in each generation, the same value for *all* individuals.
 
-****************************************************************************U*/
-void PGASetDEDitherPerIndividual(PGAContext *ctx, int val)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       PGASetDEDitherPerIndividual (ctx, PGA_TRUE);
+
+    \endrst
+
+******************************************************************************/
+void PGASetDEDitherPerIndividual (PGAContext *ctx, int val)
 {
-    switch (val)
-    {
+    switch (val) {
     case PGA_TRUE:
     case PGA_FALSE:
          ctx->ga.DEDitherPerIndividual = val;
          break;
     default:
-         PGAError(ctx, "PGASetDEDitherPerIndividual: Invalid value:",
-                  PGA_FATAL, PGA_INT, (void *) &val);
+         PGAError
+            ( ctx, "PGASetDEDitherPerIndividual: Invalid value:"
+            , PGA_FATAL, PGA_INT, (void *) &val
+            );
          break;
     }
 }
 
 
-/*U****************************************************************************
-   PGAGetDEDitherPerIndividual - returns PGA_TRUE or PGA_FALSE to indicate
-   whether the dither is applied anew for each individual or if the
-   value is re-used for all individuals in one generation.
+/*!****************************************************************************
+    \brief Return PGA_TRUE or PGA_FALSE to indicate whether the dither
+           is applied anew for each individual or if the value is
+           re-used for all individuals in one generation.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return PGA_TRUE if dither is applied for each individual
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      PGA_TRUE if dither is applied for each individual.
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int val;
-      :
-      val = PGAGetDEDitherPerIndividual(ctx);
+    .. code-block:: c
 
-****************************************************************************U*/
-int PGAGetDEDitherPerIndividual(PGAContext *ctx)
+       PGAContext *ctx;
+       int val;
+
+       val = PGAGetDEDitherPerIndividual (ctx);
+
+    \endrst
+
+******************************************************************************/
+int PGAGetDEDitherPerIndividual (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetMutationBounceBackFlag");
-    return (ctx->ga.DEDitherPerIndividual);
+    PGAFailIfNotSetUp ("PGAGetMutationBounceBackFlag");
+    return ctx->ga.DEDitherPerIndividual;
 }
-
