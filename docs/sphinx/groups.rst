@@ -1,17 +1,32 @@
 Function Groups Standard API
 ----------------------------
 
+Allele Access
++++++++++++++
+
 .. doxygengroup:: allele
    :project: PGAPack
+
+Evaluation
+++++++++++
 
 .. doxygengroup:: evaluation
    :project: PGAPack
 
+Initialization
+++++++++++++++
+
 .. doxygengroup:: init
    :project: PGAPack
 
+Standard API
+++++++++++++
+
 .. doxygengroup:: standard_api
    :project: PGAPack
+
+Querying Parameters
++++++++++++++++++++
 
 .. doxygengroup:: query
    :project: PGAPack
@@ -19,23 +34,44 @@ Function Groups Standard API
 Function Groups Explicit Usage
 ------------------------------
 
+Command Line
+++++++++++++
+
 .. doxygengroup:: cmdline
    :project: PGAPack
+
+Debugging
++++++++++
 
 .. doxygengroup:: debug
    :project: PGAPack
 
+Explicit Usage
+++++++++++++++
+
 .. doxygengroup:: explicit
    :project: PGAPack
+
+Parallel Execution
+++++++++++++++++++
 
 .. doxygengroup:: parallel
    :project: PGAPack
 
+Randomness
+++++++++++
+
 .. doxygengroup:: random
    :project: PGAPack
 
+Reporting and Errors
+++++++++++++++++++++
+
 .. doxygengroup:: reporting
    :project: PGAPack
+
+Utilities
++++++++++
 
 .. doxygengroup:: utility
    :project: PGAPack
@@ -43,13 +79,25 @@ Function Groups Explicit Usage
 Function Groups Internal Implementation
 ---------------------------------------
 
+Bit Manipulation
+++++++++++++++++
+
 .. doxygengroup:: fun_bit
+
+Internal Implementation
++++++++++++++++++++++++
 
 .. doxygengroup:: internal
    :project: PGAPack
 
+Linear Algebra
+++++++++++++++
+
 .. doxygengroup:: linalg
    :project: PGAPack
+
+Not Yet Implemented
++++++++++++++++++++
 
 .. doxygengroup:: not_implemented
    :project: PGAPack

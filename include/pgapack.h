@@ -324,7 +324,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!*********************************************
- *  \defgroup const-fitmin
+ *  \defgroup const-fitness-min
  *  \brief Fitness Minimization variants.
  *  @{
  ***********************************************/

@@ -533,8 +533,8 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
 }
 
 /*!****************************************************************************
-    \brief Allocate a population of individuals and calls
-           PGACreateIndividual to set up each one
+    \brief Allocate a population of individuals and
+           calls \ref function::PGACreateIndividual to set up each one.
     \ingroup internal
 
     \param   ctx  context variable

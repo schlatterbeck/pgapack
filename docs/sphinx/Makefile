@@ -28,9 +28,12 @@ fixedman: man man/man3
 fixedman2: $(MAN_STAGE2)
 	@echo Stage2 done
 
-.stamp-doxygen: $(SOURCE) $(INCLUDE)
+.stamp-doxygen: $(SOURCE) $(INCLUDE) Doxyfile
 	doxygen
 	touch .stamp-doxygen
+
+Doxyfile:
+	@echo Doxyfile
 
 $(MAN_PATH2):
 	mkdir -p $(MAN_PATH2)
