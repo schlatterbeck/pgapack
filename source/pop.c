@@ -327,13 +327,13 @@ int PGAGetRTRWindowSize (PGAContext *ctx)
 
 /*!****************************************************************************
     \brief Return a population string index from the array created by
-           \ref function::PGASortPop.
+           \ref PGASortPop.
     \ingroup query
 
     \param   ctx       context variable
     \param   n         specified which index element is to be returned.
     \return  A population string index from the array created by
-             \ref function::PGASortPop
+             \ref PGASortPop
 
     \rst
 

@@ -144,13 +144,12 @@ static int  PGASelectTruncation   (PGAContext *ctx, int pop);
 
 /*!****************************************************************************
     \brief Perform genetic algorithm selection using either the default
-           selection scheme or that specified with
-           \ref function::PGASetSelectType.
+           selection scheme or that specified with \ref PGASetSelectType.
     \ingroup explicit
 
     \param  ctx    context variable
     \param  popix  symbolic constant of population to select from
-    \return An array used by \ref function::PGASelectNextIndex is
+    \return An array used by \ref PGASelectNextIndex is
             created which contains the population indices of the
             selected individuals
 
@@ -257,7 +256,7 @@ void PGASelect (PGAContext *ctx, int popix)
 
 /*!****************************************************************************
     \brief Return the index of next individual in internal array that
-           contains the indices determined by \ref function::PGASelect
+           contains the indices determined by \ref PGASelect.
     \ingroup explicit
 
     \param  ctx     context variable

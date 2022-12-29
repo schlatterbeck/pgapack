@@ -438,7 +438,7 @@ void PGASetMutationBoundedFlag (PGAContext *ctx, int val)
 /*!****************************************************************************
     \brief Return PGA_TRUE or PGA_FALSE to indicate whether mutated
            integer strings remain in the range specified when
-           initialized with \ref function::PGASetIntegerInitRange.
+           initialized with \ref PGASetIntegerInitRange.
     \ingroup query
 
     \param  ctx  context variable

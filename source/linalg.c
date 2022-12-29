@@ -333,7 +333,7 @@ void LIN_normalize_to_refplane (int dim, double *v)
 }
 
 /*!***************************************************************
-    \brief Static recursive function for \ref function::LIN_dasdennis.
+    \brief Static recursive function for \ref LIN_dasdennis.
     \ingroup internal
     \param dim   dimension
     \param npart Number of partitions
@@ -370,7 +370,7 @@ static int dasdennis (int dim, int npart, int depth, int sum, void *p)
 }
 
 /*!***************************************************************
-    \brief Static function for \ref function::LIN_dasdennis scaling of points
+    \brief Static function for \ref LIN_dasdennis scaling of points
     \ingroup internal
     \param dim     dimension
     \param npoints Number of points

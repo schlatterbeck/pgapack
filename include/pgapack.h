@@ -179,8 +179,8 @@ typedef unsigned int    PGAHash;
 /*!***********************************************
  *  \defgroup const-err-print
  *  \brief Constants for error printing.
- *   Use these with \ref function::PGAError
- *   or better use \ref function::PGAErrorPrintf.
+ *   Use these with \ref PGAError
+ *   or better use \ref PGAErrorPrintf.
  *  @{
  ************************************************/
 #define PGA_INT                   1 /**< integer value for printing   */
@@ -357,7 +357,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  * regardless if crossover was performed or not (this is the way all
  * traditional implementations of GA are handling it).
  * Note: This replaces the previous flags
- * (\ref function::PGASetMutationOrCrossoverFlag and friends)
+ * (\ref PGASetMutationOrCrossoverFlag and friends)
  * which are still supported for legacy reasons.
  * The default is PGA_MIX_MUTATE_OR_CROSS also for legacy reasons.
  *  @{

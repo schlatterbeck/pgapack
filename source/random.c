@@ -511,7 +511,7 @@ void PGARandomSampleInit (PGAContext *ctx, PGASampleState *state, int k, int n)
     \ingroup random
 
     \param   state pointer to PGASampleState, needs to be allocated by caller
-                   and initialized by \ref function::PGARandomSampleInit
+                   and initialized by \ref PGARandomSampleInit
     \return  next sample
 
     \rst
