@@ -493,7 +493,7 @@ int PGAGetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop)
 /*!****************************************************************************
     \brief Interpet a binary string as encoding a real value and
            return the real value it represents.
-    \ingroup evaluation
+    \ingroup allele
 
     \param    ctx    context variable
     \param    p      string index
@@ -577,7 +577,7 @@ double PGAGetRealFromBinary
     \brief Interpet a binary reflected Gray code sequence in a binary
            string as encoding a real value and return the real value it
            represents.
-    \ingroup evaluation
+    \ingroup allele
 
     \param  ctx    context variable
     \param  p      string index
@@ -659,7 +659,7 @@ double PGAGetRealFromGrayCode
 
 /*!****************************************************************************
     \brief Encode a real value as a binary string.
-    \ingroup evaluation
+    \ingroup allele
 
     \param ctx    context variable
     \param p      string index
@@ -743,7 +743,7 @@ void PGAEncodeRealAsBinary
 
 /*!****************************************************************************
     \brief Encode a real value as a binary reflected Gray code sequence.
-    \ingroup evaluation
+    \ingroup allele
 
     Inputs:
     \param  ctx    context variable
@@ -831,7 +831,7 @@ void PGAEncodeRealAsGrayCode
 /*!****************************************************************************
     \brief Interpet a binary string as encoding an integer value and
            return the integer value it represents.
-    \ingroup evaluation
+    \ingroup allele
 
     \param  ctx    context variable
     \param  p      string index
@@ -911,7 +911,7 @@ unsigned int PGAGetIntegerFromBinary
 /*!****************************************************************************
     \brief Interpets a binary reflected Gray code sequence as encoding
            an integer value and return the integer value it represents.
-    \ingroup evaluation
+    \ingroup allele
 
     \param  ctx    context variable
     \param  p      string index
@@ -1006,7 +1006,7 @@ unsigned int PGAGetIntegerFromGrayCode
 
 /*!****************************************************************************
     \brief Encode an integer value as a binary string.
-    \ingroup evaluation
+    \ingroup allele
 
     \param  ctx    context variable
     \param  p      string index
@@ -1095,7 +1095,7 @@ void PGAEncodeIntegerAsBinary
 
 /*!****************************************************************************
     \brief Encode a real value as a binary reflected Gray code sequence.
-    \ingroup evaluation
+    \ingroup allele
 
     \param  ctx    context variable
     \param  p      string index
