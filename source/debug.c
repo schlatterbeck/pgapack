@@ -461,7 +461,7 @@ int PGAGetDebugLevelOfName (PGAContext *ctx, char *funcname)
 /*!****************************************************************************
     \brief Check whether the flag to do a debug print in routine
                  funcname has been set.
-    \ingroup intern
+    \ingroup internal
 
     \param   ctx       context variable
     \param   funcname  name of the function in question

@@ -118,7 +118,7 @@ extern "C" {
 /*****************************************
  *           BINARY   MACROS
  *****************************************/
-/** \brief Word length
+/** \brief Word length.
  * Note: WL used to be a macro defined on the command-line.
  *       Since it is used only to represent the size of the PGABinary
  *       data type (an unsigned long) we can safely use sizeof here.
@@ -149,7 +149,8 @@ static inline int CMP (const double a, const double b)
 }
 
 /*!***********************************************
- *  \defgroup const_datatype Abstract Data Types
+ *  \defgroup const-datatype
+ *  \brief Abstract Data Types.
  *  @{
  ************************************************/
 /** Array of unsigned ints parsed into bits */
@@ -173,7 +174,15 @@ typedef double          PGAReal;
 typedef signed char     PGACharacter;
 /** Result of hashing */
 typedef unsigned int    PGAHash;
+/*! @} */
 
+/*!***********************************************
+ *  \defgroup const-err-print
+ *  \brief Constants for error printing.
+ *   Use these with \ref function::PGAError
+ *   or better use \ref function::PGAErrorPrintf.
+ *  @{
+ ************************************************/
 #define PGA_INT                   1 /**< integer value for printing   */
 #define PGA_DOUBLE                2 /**< double value for printing    */
 #define PGA_CHAR                  3 /**< char value for printing      */
@@ -181,7 +190,8 @@ typedef unsigned int    PGAHash;
 /*! @} */
 
 /*!***************************************
- * \defgroup const_bool Booleans
+ * \defgroup const-bool
+ * \brief Constancts for booleans.
  * @{
  ****************************************/
 #define PGA_TRUE                   1 /**< True value  */
@@ -189,7 +199,8 @@ typedef unsigned int    PGAHash;
 /*! @} */
 
 /*!********************************************
- * \defgroup fun_bit Bit arrays
+ * \defgroup fun_bit
+ * \brief Bit arrays.
  * Some functions for manipulating bit arrays
  * @{
  **********************************************/
@@ -221,7 +232,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 
 
 /*!*******************************************
- * \defgroup const_printflags Printing flags
+ * \defgroup const-printflags
+ * \brief Printing flags.
  * @{
  ********************************************/
 #define PGA_FATAL                 1 /**< Fatal error */
@@ -229,7 +241,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!*****************************************
- * \defgroup const_misc Misc Constants
+ * \defgroup const-misc
+ * \brief Misc Constants.
  * @{
  ******************************************/
 #define PGA_TEMP1                -1138 /**< temporary individual 1 */
@@ -243,7 +256,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!**************************************
- * \defgroup const_debug Debug Levels
+ * \defgroup const-debug
+ * \brief Debug Levels.
  * @{
  ****************************************/
 #define PGA_DEBUG_ENTERED        12     /**< Entering a function */
@@ -256,7 +270,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!********************************************************************
- *  \defgroup const_opt_dir Optimization Direction (Maximize/Minimize)
+ *  \defgroup const-opt-dir
+ *  \brief Optimization Direction (Maximize/Minimize).
  *  @{
  **********************************************************************/
 #define PGA_MAXIMIZE            1    /**< specify direction for fitness calc */
@@ -264,7 +279,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- * \defgroup const_stop Stopping Criteria
+ * \defgroup const-stop
+ * \brief Stopping Criteria.
  *  @{
  *****************************************/
 #define PGA_STOP_MAXITER        1    /**< Stop: for maximum iterations    */
@@ -273,7 +289,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- * \defgroup const_crossover Crossover
+ * \defgroup const-crossover
+ * \brief Crossover variants.
  *  @{
  *****************************************/
 #define PGA_CROSSOVER_ONEPT     1    /**< One point crossover              */
@@ -284,7 +301,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- *  \defgroup const_selection Selection
+ *  \defgroup const-selection
+ *  \brief Selection variants.
  *  @{
  *****************************************/
 #define PGA_SELECT_PROPORTIONAL 1    /**< proportional selection             */
@@ -296,7 +314,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- *  \defgroup const_fitness Fitness
+ *  \defgroup const-fitness
+ *  \brief Fitness variants.
  *  @{
  *****************************************/
 #define PGA_FITNESS_RAW         1    /**< use raw fitness (evaluation)  */
@@ -305,7 +324,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!*********************************************
- *  \defgroup const_fitmin Fitness Minimization
+ *  \defgroup const-fitmin
+ *  \brief Fitness Minimization variants.
  *  @{
  ***********************************************/
 #define PGA_FITNESSMIN_RECIPROCAL  1 /**< reciprocal fitness */
@@ -313,7 +333,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- *  \defgroup const_mutation Mutation
+ *  \defgroup const-mutation
+ *  \brief Mutation variants.
  *  @{
  *****************************************/
 #define PGA_MUTATION_CONSTANT   1    /**< Real/Integer: Fixed value          */
@@ -326,7 +347,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!****************************************
- *  \defgroup const_mixing Mixing
+ *  \defgroup const-mixing
+ *  \brief Mixing variants.
  *
  * This defines how mutation/crossover are combined (or not)
  * The MUTATE_AND_CROSS variant performs mutation only if crossover was
@@ -334,8 +356,9 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  * configured probability and then mutates with the given probability
  * regardless if crossover was performed or not (this is the way all
  * traditional implementations of GA are handling it).
- * Note: This replaces the previous flags (PGASetMutationOrCrossoverFlag
- * and friends) which are still supported for legacy reasons.
+ * Note: This replaces the previous flags
+ * (\ref function::PGASetMutationOrCrossoverFlag and friends)
+ * which are still supported for legacy reasons.
  * The default is PGA_MIX_MUTATE_OR_CROSS also for legacy reasons.
  *  @{
  */
@@ -345,27 +368,30 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_MIX_TRADITIONAL       4    /**< Mutation after crossover     */
 /*! @} */
 
-/*!***********************************************************
- *  \defgroup const_de_variant Differential Evolution Variant
+/*!****************************************
+ *  \defgroup const-de-variant
+ *  \brief Differential Evolution Variants.
  *  @{
- *************************************************************/
-#define PGA_DE_VARIANT_RAND      1   /**< Standard DE */
+ ******************************************/
+#define PGA_DE_VARIANT_RAND      1   /**< Standard DE from random string */
 #define PGA_DE_VARIANT_BEST      2   /**< Derive from best string */
 #define PGA_DE_VARIANT_EITHER_OR 3   /**< Either-or variant */
 /*! @} */
 
-/*!*******************************************************************
- *  \defgroup const_de_cross Differential Evolution Crossover Variant
+/*!**************************************************
+ *  \defgroup const-de-cross
+ *  \brief Differential Evolution Crossover Variants.
  *  @{
- *********************************************************************/
+ ****************************************************/
 #define PGA_DE_CROSSOVER_BIN      1  /**< Standard DE binomial crossover */
 #define PGA_DE_CROSSOVER_EXP      2  /**< Exponential crossover          */
 /*! @} */
 
-/*!***********************************************
- *  \defgroup const_poprep Population Replacement
+/*!*****************************************
+ *  \defgroup const-poprep
+ *  \brief Population Replacement variants.
  *  @{
- *************************************************/
+ *******************************************/
 #define PGA_POPREPL_BEST          1  /**< Select best   string                */
 #define PGA_POPREPL_RANDOM_NOREP  2  /**< Select random string w/o replacement*/
 #define PGA_POPREPL_RANDOM_REP    3  /**< Select random string w/  replacement*/
@@ -376,7 +402,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!**************************************
- *  \defgroup const_rep Report Options
+ *  \defgroup const-rep
+ *  \brief Report Options.
  *  @{
  ****************************************/
 #define PGA_REPORT_ONLINE        1    /**< Print the online analysis       */
@@ -388,7 +415,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!************************************************
- *  \defgroup const_randinit Random initialization
+ *  \defgroup const-randinit
+ *  \brief Variants for random initialization of genes.
  *  @{
  **************************************************/
 #define PGA_RINIT_PERCENT        1  /**< real percent offset               */
@@ -401,7 +429,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- *  \defgroup const_ufun User Functions
+ *  \defgroup const-ufun
+ *  \brief User Functions.
  *  @{
  *****************************************/
 #define PGA_USERFUNCTION_CREATESTRING            1  /**< String create       */
@@ -427,7 +456,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!*******************************************
- *  \defgroup const_mpitag MPI Send/Recv Tags
+ *  \defgroup const-mpitag
+ *  \brief MPI Send/Recv Tags.
  *  @{
  *********************************************/
 #define PGA_COMM_STRINGTOEVAL        1 /**< MPI tag for sending string       */
@@ -437,13 +467,13 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- *        Max. size of common part
- *       when sending PGAIndividual
+ * \brief Max. size of common part when sending PGAIndividual
  *****************************************/
 #define PGA_MPI_HEADER_ELEMENTS      7
 
 /*!****************************************
- * \defgroup const_eps Epsilon Constraints
+ * \defgroup const-eps
+ * \brief constants for Epsilon Constraints.
  *  @{
  ******************************************/
 #define PGA_EPSILON_EXPONENT_MIN   3.0 /**< minimum exponent cp from paper */
