@@ -40,6 +40,7 @@ breathe_projects = {
 breathe_default_project = "PGAPack"
 breathe_implementation_filename_extensions = []
 breathe_order_parameters_first = True
+breathe_domain_by_extension = dict (c = 'c', h = 'c')
 
 # Setup the exhale extension
 exhale_args = {

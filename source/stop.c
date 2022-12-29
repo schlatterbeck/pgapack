@@ -166,7 +166,8 @@ int PGACheckStoppingConditions (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    Specify a stopping criterion.
+    \brief Specify a stopping criterion.
+    \ingroup init
 
     \param   ctx       context variable
     \param   stoprule  symbolic constant to specify stopping rule
