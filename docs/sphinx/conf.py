@@ -1,5 +1,12 @@
 import os
 from xml.etree import ElementTree
+import inspect
+import ast
+import exhale
+import exhale.graph
+import exhale.utils
+import exhale.configs
+import exhale.parse
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -153,3 +160,60 @@ for fn in ldir:
                 (('api/%s_%s' % (kind, id), name, brief, authors, '3a'))
 
 man_make_section_directory = True
+
+def src (obj):
+    s = inspect.getsource (obj).split ('\n')
+    indent = len (s [0]) - len (s [0].strip ())
+    return '\n'.join (i [indent:] for i in s)
+# end def src
+
+def monkey_patch ():
+    cls = exhale.graph.ExhaleRoot
+    d   = dict \
+        ( configs  = exhale.configs
+        , utils    = exhale.utils
+        , StringIO = exhale.graph.StringIO
+        , textwrap = exhale.graph.textwrap
+        , codecs   = exhale.graph.codecs
+        , parse    = exhale.parse
+        )
+
+    n   = 'generateViewHierarchies'
+    fun = getattr (cls, n)
+    mod = ast.parse (src (fun))
+    assert mod.body [0].body [4].value.args [0].keys [3].value == 'file_title'
+    assert (  mod.body [0].body [4].value.args [0].values [3].value
+           == 'Class Hierarchy'
+           )
+    mod.body [0].body [4].value.args [0].values [3].value = 'Data Structures'
+    exec (compile (mod, '<string>', 'exec'), d)
+    setattr (cls, n, d [n])
+
+    n   = 'generateNamespaceChildrenString'
+    fun = getattr (cls, n)
+    mod = ast.parse (src (fun))
+    assert mod.body [0].body [11].value.args [1].value == 'Classes'
+    mod.body [0].body [11].value.args [1].value = 'Structs'
+    exec (compile (mod, '<string>', 'exec'), d)
+    setattr (cls, n, d [n])
+
+    n   = 'generateFileNodeDocuments'
+    fun = getattr (cls, n)
+    mod = ast.parse (src (fun))
+    assert mod.body[0].body [2].body [15].value.args [1].value == 'Classes'
+    mod.body[0].body [2].body [15].value.args [1].value = 'Structs'
+    exec (compile (mod, '<string>', 'exec'), d)
+    setattr (cls, n, d [n])
+
+    n   = 'generateUnabridgedAPI'
+    fun = getattr (cls, n)
+    mod = ast.parse (src (fun))
+    assert (  mod.body [0].body [3].body [5].value.elts [1].elts [0].value
+           == 'Classes and Structs'
+           )
+    mod.body [0].body [3].body [5].value.elts [1].elts [0].value = 'Structs'
+    exec (compile (mod, '<string>', 'exec'), d)
+    setattr (cls, n, d [n])
+# end def monkey_patch
+
+monkey_patch ()
