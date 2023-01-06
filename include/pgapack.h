@@ -447,7 +447,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /** Only used for backward compatibility */
 #define PGA_USERFUNCTION_GEN_DIFFERENCE PGA_USERFUNCTION_GEN_DISTANCE
 #define PGA_USERFUNCTION_PRE_EVAL                12 /**< Start of generation */
-#define PGA_USERFUNCTION_HASH                    13 /**< Gene hasing         */
+#define PGA_USERFUNCTION_HASH                    13 /**< Gene hashing        */
 #define PGA_USERFUNCTION_SERIALIZE               14 /**< Serialization       */
 #define PGA_USERFUNCTION_DESERIALIZE             15 /**< De-serialization    */
 #define PGA_USERFUNCTION_SERIALIZE_FREE          16 /**< Free serialization  */

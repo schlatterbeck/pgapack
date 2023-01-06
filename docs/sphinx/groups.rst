@@ -6,30 +6,35 @@ Allele Access
 
 .. doxygengroup:: allele
    :project: PGAPack
+   :sort:
 
 Evaluation
 ++++++++++
 
 .. doxygengroup:: evaluation
    :project: PGAPack
+   :sort:
 
 Initialization
 ++++++++++++++
 
 .. doxygengroup:: init
    :project: PGAPack
+   :sort:
 
 Standard API
 ++++++++++++
 
 .. doxygengroup:: standard_api
    :project: PGAPack
+   :sort:
 
 Querying Parameters
 +++++++++++++++++++
 
 .. doxygengroup:: query
    :project: PGAPack
+   :sort:
 
 Function Groups Explicit Usage
 ------------------------------
@@ -39,42 +44,49 @@ Command Line
 
 .. doxygengroup:: cmdline
    :project: PGAPack
+   :sort:
 
 Debugging
 +++++++++
 
 .. doxygengroup:: debug
    :project: PGAPack
+   :sort:
 
 Explicit Usage
 ++++++++++++++
 
 .. doxygengroup:: explicit
    :project: PGAPack
+   :sort:
 
 Parallel Execution
 ++++++++++++++++++
 
 .. doxygengroup:: parallel
    :project: PGAPack
+   :sort:
 
 Randomness
 ++++++++++
 
 .. doxygengroup:: random
    :project: PGAPack
+   :sort:
 
 Reporting and Errors
 ++++++++++++++++++++
 
 .. doxygengroup:: reporting
    :project: PGAPack
+   :sort:
 
 Utilities
 +++++++++
 
 .. doxygengroup:: utility
    :project: PGAPack
+   :sort:
 
 Function Groups Internal Implementation
 ---------------------------------------
@@ -89,18 +101,21 @@ Internal Implementation
 
 .. doxygengroup:: internal
    :project: PGAPack
+   :sort:
 
 Linear Algebra
 ++++++++++++++
 
 .. doxygengroup:: linalg
    :project: PGAPack
+   :sort:
 
 Not Yet Implemented
 +++++++++++++++++++
 
 .. doxygengroup:: not_implemented
    :project: PGAPack
+   :sort:
 
 Constant Definitions
 --------------------

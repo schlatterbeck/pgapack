@@ -246,6 +246,14 @@ void PGARunGM
                     );
             }
             fprintf (ctx->ga.OutputFile, ".\n");
+            #if 0
+            /* Maybe make this an option? */
+            fprintf
+                ( ctx->ga.OutputFile
+                , "Evaluations: %d\n"
+                , PGAGetEvalCount (ctx)
+                );
+            #endif
             fprintf (ctx->ga.OutputFile, "The Best String:\n");
             PGAPrintString (ctx, ctx->ga.OutputFile, best_p, pop);
         } else {
