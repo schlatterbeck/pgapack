@@ -18,9 +18,34 @@ class Man_Fixer:
     # end def output_saved
 
     def fixdoc (self):
+        th = None
+        name_seen = False
         for line in self.f_in:
             line = line.rstrip ('\n')
-            if line.startswith ('.INDENT'):
+            if line.startswith ('.TH'):
+                th = line
+                continue
+            if line == '.SH NAME':
+                assert th
+                name_seen = True
+                continue
+            if name_seen:
+                ths = th.split ()
+                pn  = ths [-1]
+                dt  = []
+                for i in range (-3, -8, -1):
+                    dt.append (ths [i])
+                    if ths [i].startswith ('"'):
+                        break
+                else:
+                    assert 0
+                dt  = ' '.join (reversed (dt))
+                n   = line.split (None, 1) [0]
+                print ('.TH "%s" "3" %s "" %s' % (n, dt, pn), file = self.f_out)
+                print ('.SH NAME', file = self.f_out)
+                name_seen = False
+                th = None
+            elif line.startswith ('.INDENT'):
                 self.saved = None
                 continue
             elif line.startswith ('.UNINDENT'):

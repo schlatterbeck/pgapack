@@ -1,7 +1,9 @@
 *.o
 *.a
+*.bak
 lib
 .*.swp
+.nfs*
 .coverage*
 *.swp
 README.html

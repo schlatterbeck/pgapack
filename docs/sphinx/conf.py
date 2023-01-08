@@ -217,3 +217,14 @@ def monkey_patch ():
 # end def monkey_patch
 
 monkey_patch ()
+
+def get_popen (cmd):
+    """ Return stripped output from external command
+    """
+    fd = os.popen (cmd)
+    ret = fd.read ().strip ()
+    fd.close ()
+    return ret
+# end def get_popen
+
+today = get_popen ('git show -s --format=%cd --date=format:%Y-%m-%d')
