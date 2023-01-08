@@ -1102,7 +1102,6 @@ void PGASortFuncNameIndex(PGAContext *ctx)
     \brief Write debugging information
     \ingroup debug
 
-    Inputs:
     \param   ctx        context variable
     \param   level      a symbolic constant that maps to the type of
                         print requested (e.g., an entry or exit print).
@@ -1218,7 +1217,6 @@ void PGADebugPrint
     \brief Turn on a debug level.
     \ingroup debug
 
-    Inputs:
     \param   ctx    context variable
     \param   level  the debug level to set to PGA_TRUE.
     \return  None

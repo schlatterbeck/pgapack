@@ -49,6 +49,7 @@ privately owned rights.
 
 /*!****************************************************************************
     \brief Compute total value over all constraint violations.
+    \ingroup standard-api
 
     \param  ind    Pointer to Individual
     \return Computed or cached total value over all constraint violations

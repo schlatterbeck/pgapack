@@ -20,8 +20,15 @@ class Man_Fixer:
     def fixdoc (self):
         th = None
         name_seen = False
+        synopsis_seen = False
+        b_seen = False
         for line in self.f_in:
             line = line.rstrip ('\n')
+            if b_seen:
+                if line == '.sp':
+                    b_seen = False
+                else:
+                    continue
             if line.startswith ('.TH'):
                 th = line
                 continue
@@ -41,10 +48,16 @@ class Man_Fixer:
                     assert 0
                 dt  = ' '.join (reversed (dt))
                 n   = line.split (None, 1) [0]
+                if len (n) > 31:
+                    pn = '""'
+                    dt = '""'
                 print ('.TH "%s" "3" %s "" %s' % (n, dt, pn), file = self.f_out)
                 print ('.SH NAME', file = self.f_out)
                 name_seen = False
                 th = None
+            elif synopsis_seen and line.startswith ('.B'):
+                b_seen = True
+                synopsis_seen = False
             elif line.startswith ('.INDENT'):
                 self.saved = None
                 continue
@@ -54,6 +67,7 @@ class Man_Fixer:
             elif line == '.SH FUNCTION DOCUMENTATION':
                 self.output_saved ()
                 line = '.SH SYNOPSIS'
+                synopsis_seen = True
             elif line.startswith ('.SS '):
                 self.output_saved ()
                 line = '.SH ' + line.split (None, 1) [-1].upper ()
@@ -61,7 +75,9 @@ class Man_Fixer:
                 self.output_saved ()
                 line = '.SH EXAMPLE'
             elif line.startswith ('.TP'):
-                self.saved = line
+                # Delete the .TP for synopsis
+                if not synopsis_seen:
+                    self.saved = line
                 continue
             elif line == '.B Parameters':
                 self.saved = None

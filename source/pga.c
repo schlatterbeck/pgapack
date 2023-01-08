@@ -67,7 +67,7 @@ static void reset_hash (PGAContext *ctx, int pop)
 
 /*!****************************************************************************
     \brief Highest level routine to execute the genetic algorithm.
-    \ingroup standard_api
+    \ingroup standard-api
 
     \param  ctx       context variable
     \param  evaluate  a pointer to the user's evaluation function, which

@@ -76,7 +76,7 @@ privately owned rights.
  *  \brief Not yet implemented, mainly used for island/multiple demes.
  *****************************************************************************/
 /*!***************************************************************************
- *  \defgroup standard_api Standard API
+ *  \defgroup standard-api Standard API
  *  \brief The standard API
  *****************************************************************************/
 

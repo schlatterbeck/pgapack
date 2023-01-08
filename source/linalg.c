@@ -450,7 +450,7 @@ void LIN_dasdennis_allocated
 
 /*!***************************************************************
     \brief Allocate memory and compute Das & Dennis points.
-    \ingroup linalg
+    \ingroup standard-api
     \param dim     dimension
     \param npart   Number of partitions
     \param result  List of existing points to extend

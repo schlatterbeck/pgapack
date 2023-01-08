@@ -163,7 +163,7 @@ void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...)
 /*!****************************************************************************
     \brief Deallocate memory for this instance of PGAPack, if this
            context initialized MPI, finalize MPI as well.
-    \ingroup standard_api
+    \ingroup standard-api
 
     \param   ctx    context variable
     \return  None

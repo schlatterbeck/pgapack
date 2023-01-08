@@ -76,7 +76,7 @@ privately owned rights.
     -----------
 
     The type of crossover performed is either the default or that
-    specified by PGASetCrossoverType
+    specified by :c:func:`PGASetCrossoverType`.
 
 
     Example
@@ -91,7 +91,7 @@ privately owned rights.
       PGAContext *ctx;
       int mom, dad, child1, child2;
 
-      PGACrossover(ctx, mom, dad, PGA_OLDPOP, child1, child2, PGA_NEWPOP);
+      PGACrossover (ctx, mom, dad, PGA_OLDPOP, child1, child2, PGA_NEWPOP);
 
     \endrst
 

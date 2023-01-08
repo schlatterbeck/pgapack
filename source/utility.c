@@ -221,7 +221,7 @@ int PGARound (PGAContext *ctx, double x)
 
 /*!****************************************************************************
     \brief Copy individual source to individual dest.
-    \ingroup utility
+    \ingroup explicit
 
     \param  src  Individual to copy
     \param  dst  Individual to copy ind1 to
@@ -272,12 +272,12 @@ void INDCopyIndividual (PGAIndividual *src, PGAIndividual *dst)
 
     (*ctx->cops.CopyString)(ctx, srcidx, spop, dstidx, dpop);
 
-    PGADebugExited ("PGACopyIndividual");
+    PGADebugExited ("INDCopyIndividual");
 }
 
 /*!****************************************************************************
     \brief Copy string p1 in population pop1 to position p2 in population pop2.
-    \ingroup utility
+    \ingroup explicit
 
     \param  ctx   context variable
     \param  p1    string to copy
@@ -400,7 +400,7 @@ int PGACheckSum (PGAContext *ctx, int p, int pop)
 /*!***************************************************************************
     \brief Return the index of the string with the worst evaluation
            function value in population pop.
-    \ingroup utility
+    \ingroup standard-api
 
     \param  ctx  context variable
     \param  pop  symbolic constant of the population to find the worst string in
@@ -450,7 +450,7 @@ int PGAGetWorstIndex (PGAContext *ctx, int pop)
 /*!***************************************************************************
     \brief Return the index of the string with the best evaluation
            function value in population pop
-    \ingroup utility
+    \ingroup standard-api
 
     \param  ctx    context variable
     \param  popidx symbolic constant of the population to find the best
@@ -528,7 +528,7 @@ int PGAGetBestIndex (PGAContext *ctx, int popidx)
 /*!***************************************************************************
     \brief Return the best evaluation value in population pop
            for the given evaluation index.
-    \ingroup utility
+    \ingroup standard-api
 
     \param  ctx  context variable
     \param  pop  symbolic constant of the population to find the best
@@ -581,7 +581,7 @@ double PGAGetBestReport (PGAContext *ctx, int pop, int idx)
 /*!***************************************************************************
     \brief Return the index of the string with the best evaluation
            function value in population pop for the given evaluation index.
-    \ingroup utility
+    \ingroup standard-api
 
     \param  ctx  context variable
     \param  pop  symbolic constant of the population to find the best
@@ -713,7 +713,7 @@ PGAIndividual *PGAGetIndividual (PGAContext *ctx, int p, int pop)
 
 /*!****************************************************************************
     \brief Updates the best fitness statistic for reporting.
-    \ingroup utility
+    \ingroup internal
 
     \param  ctx   context variable
     \param  popix symbolic constant of the population
@@ -819,7 +819,7 @@ void PGAUpdateBest (PGAContext *ctx, int popix)
 
 /*!****************************************************************************
     \brief Update the average fitness statistic for reporting.
-    \ingroup utility
+    \ingroup internal
 
     \param  ctx  context variable
     \param  pop  symbolic constant of the population
@@ -885,7 +885,7 @@ void PGAUpdateAverage (PGAContext *ctx, int pop)
 
 /*!****************************************************************************
     \brief Update the online value based on the results in the new generation.
-    \ingroup utility
+    \ingroup internal
 
     \param  ctx  context variable
     \param  pop  symbolic constant of the population whose statistics to use
@@ -969,7 +969,7 @@ void PGAUpdateOnline (PGAContext *ctx, int pop)
 
 /*!****************************************************************************
     \brief Update the offline value based on the results in the new generation.
-    \ingroup utility
+    \ingroup internal
 
     \param  ctx  context variable
     \param  pop  symbolic constant of the population whose statistics to use
@@ -1033,7 +1033,7 @@ void PGAUpdateOffline (PGAContext *ctx, int pop)
 /*!****************************************************************************
     \brief Compute the percentage of the population that have the same
            evaluation function.
-    \ingroup utility
+    \ingroup internal
 
     \param  ctx      context variable
     \param  popindex symbolic constant of the population whose statistics to use
@@ -1270,7 +1270,7 @@ int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 
 /*!****************************************************************************
     \brief Compare two PGAIndividual pointers for qsort
-    \ingroup utility
+    \ingroup internal
     \param a1 void pointer to first individual
     \param a2 void pointer to second individual
     \return -1 if less, 0 if equal, 1 if greater
@@ -1364,7 +1364,7 @@ do {                                     \
 
 /*!****************************************************************************
     \brief Hashing utility function.
-    \ingroup utility
+    \ingroup standard-api
     \param data  pointer to data to hash
     \param len   length of data
     \param hashv previous hash, use PGA_INITIAL_HASH if first

@@ -55,7 +55,7 @@ privately owned rights.
     \param   ctx   context variable
     \param   comm  an MPI communicator
     \return  return PGA_TRUE if at least one of the termination
-             conditions has been met, otherwise, returns PGA_FALSE
+             conditions has been met, otherwise return PGA_FALSE
 
     \rst
 
@@ -109,7 +109,7 @@ int PGADone (PGAContext *ctx, MPI_Comm comm)
     \brief Return boolean to indicate if the PGAPack termination
            conditions, PGA_STOP_MAXITER, PGA_STOP_TOOSIMILAR,
            PGA_STOP_NOCHANGE, have been met.
-    \ingroup standard_api
+    \ingroup standard-api
 
     \param   ctx   context variable
     \return  return PGA_TRUE if at least one of the termination
@@ -120,11 +120,19 @@ int PGADone (PGAContext *ctx, MPI_Comm comm)
     Example
     -------
 
+    Useful in a user-defined function that is registered as a stopping
+    condition function. We can use this to keep the builtin stopping
+    conditions in addition to a user-define condition.
+
     .. code-block:: c
 
-      PGAContext *ctx;
-
-      PGACheckStoppingConditions (ctx);
+      int StopCond (PGAContext *ctx)
+      {
+          if (my_stop_check (ctx)) {
+              return PGA_TRUE;
+          }
+          return PGACheckStoppingConditions (ctx);
+      }
 
     \endrst
 
