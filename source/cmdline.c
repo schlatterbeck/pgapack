@@ -195,7 +195,7 @@ static void PGAStripArgs (char **argv, int *argc, int *c, int num)
     \ingroup cmdline
 
     \param   ctx   context variable
-    \param   argc  address of the count of the number of command line argumen
+    \param   argc  address of the count of the number of command line arguments
     \param   argv  array of command line arguments
     \return  None
 

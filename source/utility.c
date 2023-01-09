@@ -72,7 +72,9 @@ privately owned rights.
 
     .. code-block:: c
 
+      PGAContext *ctx;
       int list [ctx->ga.PopSize];
+      ...
       for (i=0; i<ctx->ga.PopSize; i++) {
           list [i] = i;
       }
@@ -112,6 +114,7 @@ void PGAShuffle (PGAContext *ctx, int *list, int n)
       PGAContext *ctx;
       double a [100], mean;
 
+      ...
       mean = PGAMean (ctx, a, 100);
 
     \endrst
@@ -155,6 +158,7 @@ double PGAMean (PGAContext *ctx, double *a, int n)
       PGAContext *ctx;
       double a [100], mean, sigma;
 
+      ...
       mean  = PGAMean (ctx, a, 100);
       sigma = PGAStddev (ctx, a, 100, mean);
 
@@ -196,6 +200,8 @@ double PGAStddev (PGAContext *ctx, double *a, int n, double mean)
 
        PGAContext *ctx;
        int y;
+
+       ...
        y = PGARound (ctx, -78.6);
 
     \endrst
@@ -237,6 +243,7 @@ int PGARound (PGAContext *ctx, double x)
       PGAContext *ctx;
       PGAIndividual *source, *dest;
 
+      ...
       INDCopyIndividual (ctx, source, dest);
 
     \endrst
@@ -296,6 +303,7 @@ void INDCopyIndividual (PGAIndividual *src, PGAIndividual *dst)
       PGAContext *ctx;
       int i, j;
 
+      ...
       PGACopyIndividual (ctx, i, PGA_OLDPOP, j, PGA_NEWPOP);
 
     \endrst
@@ -341,6 +349,7 @@ void PGACopyIndividual (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
        PGAContext *ctx;
        int p, sum;
 
+       ...
        sum = PGACheckSum (ctx, p, PGA_NEWPOP);
 
     \endrst
@@ -416,6 +425,7 @@ int PGACheckSum (PGAContext *ctx, int p, int pop)
        PGAContext *ctx;
        int worst;
 
+       ...
        worst = PGAGetWorstIndex (ctx, PGA_OLDPOP);
 
     \endrst
@@ -477,6 +487,7 @@ int PGAGetWorstIndex (PGAContext *ctx, int pop)
        PGAContext *ctx;
        int best;
 
+       ...
        best = PGAGetBestIndex (ctx, PGA_OLDPOP);
 
     \endrst
@@ -557,6 +568,7 @@ int PGAGetBestIndex (PGAContext *ctx, int popidx)
        PGAContext *ctx;
        double best;
 
+       ...
        best = PGAGetBestReport (ctx, PGA_OLDPOP, 1);
 
     \endrst
@@ -610,6 +622,7 @@ double PGAGetBestReport (PGAContext *ctx, int pop, int idx)
        PGAContext *ctx;
        int best;
 
+       ...
        best = PGAGetBestReportIndex (ctx, PGA_OLDPOP, 1);
 
     \endrst
@@ -654,6 +667,7 @@ int PGAGetBestReportIndex (PGAContext *ctx, int pop, int idx)
       PGAContext *ctx;
       int p;
 
+      ...
       source = PGAGetIndividual (ctx, p, PGA_NEWPOP);
 
     \endrst
@@ -907,6 +921,7 @@ void PGAUpdateAverage (PGAContext *ctx, int pop)
 
        PGAContext *ctx;
 
+       ...
        PGAUpdateOnline (ctx, PGA_NEWPOP);
 
     \endrst
@@ -991,6 +1006,7 @@ void PGAUpdateOnline (PGAContext *ctx, int pop)
 
        PGAContext *ctx;
 
+       ...
        PGAUpdateOffline (ctx, PGA_NEWPOP);
 
     \endrst
@@ -1049,6 +1065,7 @@ void PGAUpdateOffline (PGAContext *ctx, int pop)
 
        PGAContext *ctx;
 
+       ...
        PGAComputeSimilarity (ctx, PGA_NEWPOP);
 
     \endrst
@@ -1256,6 +1273,7 @@ int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2)
       PGAContext *ctx;
       int result;
 
+      ...
       result = PGAEvalCompare (ctx, p1, PGA_OLDPOP, p2, PGA_OLDPOP);
 
     \endrst
@@ -1323,6 +1341,7 @@ int PGAEvalSortHelper (const void *a1, const void *a2)
       PGAContext *ctx;
       int indexes [ctx->ga.PopSize];
 
+      ...
       PGAEvalSort (ctx, PGA_OLDPOP, indexes);
 
     \endrst

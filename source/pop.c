@@ -166,6 +166,7 @@ void PGASortPop (PGAContext *ctx, int pop)
        PGAContext *ctx;
        int popsize;
 
+       ...
        popsize = PGAGetPopSize (ctx);
 
     \endrst
@@ -198,6 +199,7 @@ int PGAGetPopSize (PGAContext *ctx)
        PGAContext *ctx;
        int numreplace;
 
+       ...
        numreplace = PGAGetNumReplaceValue (ctx);
 
     \endrst
@@ -231,6 +233,7 @@ int PGAGetNumReplaceValue (PGAContext *ctx)
        PGAContext *ctx;
        int popreplace;
 
+       ...
        popreplace = PGAGetPopReplaceType (ctx);
        switch (popreplace) {
        case PGA_POPREPL_BEST:
@@ -261,18 +264,24 @@ int PGAGetPopReplaceType (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    \brief Set window size used for restricted tournament selection.
+    \brief Set window size used for restricted tournament replacement.
     \ingroup init
-
-    The window size must be smaller than the population size.
-    The default is min (n, N/20) where n is the string length and N is
-    the population size.
-
     \param   ctx         context variable
-    \param   windowsize  size of the window for restricted tournament selection
+    \param   windowsize  size of the window for restricted tournament
+                         replacement
     \return  None
 
     \rst
+
+    Description
+    -----------
+
+    This function will have no effect unless PGA_POPREPL_RTR was
+    specified as  the population replacement strategy with
+    :c:func:`PGASetPopReplaceType`.
+    The window size must be smaller than the population size.
+    The default is min (n, N/20) where n is the string length and N is
+    the population size.
 
     Example
     -------
@@ -281,6 +290,7 @@ int PGAGetPopReplaceType (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetRTRWindowSize (ctx, windowsize);
 
     \endrst
@@ -311,6 +321,7 @@ void PGASetRTRWindowSize (PGAContext *ctx, int windowsize)
        PGAContext *ctx;
        int windowsize;
 
+       ...
        windowsize = PGAGetRTRWindowSize (ctx);
 
     \endrst
@@ -327,7 +338,7 @@ int PGAGetRTRWindowSize (PGAContext *ctx)
 
 /*!****************************************************************************
     \brief Return a population string index from the array created by
-           \ref PGASortPop.
+           sorting of the population.
     \ingroup query
 
     \param   ctx       context variable
@@ -347,8 +358,9 @@ int PGAGetRTRWindowSize (PGAContext *ctx)
     .. code-block:: c
 
        PGAContext *ctx;
-       int i,j;
+       int i, j;
 
+       ...
        PGASetPopReplaceType (ctx,PGA_POPREPL_BEST)
        PGASortPop (ctx, PGA_OLDPOP);
        for (i=0; i<5; i++) {
@@ -400,6 +412,7 @@ int PGAGetSortedPopIndex (PGAContext *ctx, int n)
 
        PGAContext *ctx;
 
+       ...
        PGASetPopSize (ctx, 200);
 
     \endrst
@@ -439,7 +452,7 @@ void PGASetPopSize (PGAContext *ctx, int popsize)
     Description
     -----------
 
-    The default is ten percent of the population size
+    The default is ten percent of the population size.
 
     Example
     -------
@@ -448,6 +461,7 @@ void PGASetPopSize (PGAContext *ctx, int popsize)
 
        PGAContext *ctx;
 
+       ...
        PGASetNumReplaceValue (ctx, 35);
 
     \endrst
@@ -504,6 +518,7 @@ void PGASetNumReplaceValue (PGAContext *ctx, int pop_replace)
 
        PGAContext *ctx;
 
+       ...
        PGASetPopReplaceType (ctx, PGA_POPREPL_RANDOM_NOREP);
 
     \endrst
@@ -551,10 +566,12 @@ void PGASetPopReplaceType (PGAContext *ctx, int pop_replace)
     .. code-block:: c
 
        PGAContext *ctx;
+       ...
        int dim = PGAGetNumAuxEval (ctx) - PGAGetNumConstraint (ctx) + 1;
        void *p = NULL;
        int np  = 0;
 
+       ...
        np = LIN_dasdennis (dim, 3, &p, 0, 1, NULL);
        PGASetReferencePoints (ctx, np, p);
 
@@ -602,11 +619,13 @@ void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points)
 
     .. code-block:: c
 
-       dim = PGAGetNumAuxEval (ctx) - PGAGetNumConstraint (ctx) + 1;
 
        PGAContext *ctx;
        double dirs [][3] = {{1, 2, 3}, {4, 5, 6}};
+       ...
+       int dim = PGAGetNumAuxEval (ctx) - PGAGetNumConstraint (ctx) + 1;
 
+       ...
        PGASetReferenceDirections (ctx, 2, dirs, 5, 0.1);
 
     \endrst
@@ -654,6 +673,7 @@ void PGASetReferenceDirections
 
       PGAContext *ctx;
 
+      ...
       PGARestrictedTournamentReplacement (ctx);
 
     \endrst
@@ -737,6 +757,7 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGAPairwiseBestReplacement (ctx);
 
     \endrst
@@ -1528,6 +1549,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
 
        PGAContext *ctx;
 
+       ...
        PGA_NSGA_II_Replacement (ctx);
 
     \endrst
@@ -1561,6 +1583,7 @@ void PGA_NSGA_II_Replacement (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGA_NSGA_II_Replacement (ctx);
 
     \endrst

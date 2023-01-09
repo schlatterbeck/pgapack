@@ -49,6 +49,10 @@ privately owned rights.
  *  \defgroup parallel Parallel
  *  \brief Parallel implementation of GA
  *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup notimplemented Not yet implemented
+ *  \brief Not yet implemented, mainly used for island/multiple demes.
+ *****************************************************************************/
 
 #include "pgapack.h"
 
@@ -84,6 +88,7 @@ privately owned rights.
       PGAContext *ctx;
       double f (PGAContext *ctx, int p, int pop, double *aux);
 
+      ...
       PGARunGM (ctx, f, MPI_COMM_WORLD);
 
     \endrst
@@ -360,6 +365,7 @@ static void PGAEvaluateSeq
        int           p;
        MPI_Datatype  dt;
 
+       ...
        dt = PGABuildEvaluation (ctx, p, pop);
 
     \endrst
@@ -417,6 +423,7 @@ MPI_Datatype PGABuildEvaluation (PGAContext *ctx, int p, int pop)
       PGAContext *ctx;
       int p, dest;
 
+      ...
       dest = SelectAFreeProcessor ();
       PGASendEvaluation (ctx, p, PGA_NEWPOP, dest, PGA_COMM_EVALOFSTRING, comm);
 
@@ -461,6 +468,7 @@ void PGASendEvaluation (PGAContext *ctx, int p, int pop, int dest, int tag,
       MPI_Comm    comm;
       MPI_Status  status;
 
+      ...
       PGAReceiveEvaluation
         (ctx, PGA_TEMP1, PGA_NEWPOP, 0, PGA_COMM_EVALOFSTRING, comm, &status);
 
@@ -769,7 +777,7 @@ static void PGAEvaluateWorker
 
 
 /*!****************************************************************************
-    \brief Calls a user-specified function to return an evaluation of
+    \brief Call a user-specified function to return an evaluation of
            each string in the population.
     \ingroup explicit
 
@@ -809,6 +817,7 @@ static void PGAEvaluateWorker
 
        PGAContext *ctx;
 
+       ...
        PGAEvaluate (ctx, PGA_NEWPOP, Energy, MPI_COMM_WORLD);
 
     \endrst
@@ -864,6 +873,7 @@ void PGAEvaluate
       int p;
       MPI_Datatype dt;
 
+      ...
       dt = PGABuildDatatype (ctx, p, PGA_NEWPOP);
 
     \endrst
@@ -911,6 +921,7 @@ MPI_Datatype PGABuildDatatype(PGAContext *ctx, int p, int pop)
       int displs [PGA_MPI_HEADER_ELEMENTS + ...];
       MPI_Datatype types [PGA_MPI_HEADER_ELEMENTS + ...];
 
+      ...
       idx = PGABuildDatatypeHeader (ctx, counts, displs, types);
       // Fill rest of counts, displs, types here and build datatype
       counts [idx] =
@@ -1031,6 +1042,7 @@ MPI_Datatype PGASerializedBuildDatatype (PGAContext *ctx, int p, int pop)
       PGAContext *ctx;
       int p, dest;
 
+      ...
       dest = SelectAFreeProcessor ();
       PGASendIndividual (ctx, p, PGA_NEWPOP, dest, PGA_SR_STRINGTOEVAL, comm);
 
@@ -1108,6 +1120,7 @@ void PGASendIndividual
       MPI_Comm    comm;
       MPI_Status  status;
 
+      ...
       PGAReceiveIndividual
         (ctx, PGA_TEMP1, PGA_NEWPOP, 0, PGA_SR_STRINGTOEVAL, comm, &status);
 
@@ -1195,6 +1208,7 @@ void PGAReceiveIndividual
       MPI_Status  status;
       int  s, r;
 
+      ...
       PGASendReceiveIndividual
         ( ctx
         , s, PGA_NEWPOP, 1, PGA_SR_STRINGTOMODIFY
@@ -1235,7 +1249,7 @@ void PGASendReceiveIndividual
 
 /*!****************************************************************************
     \brief Execute the island model genetic algorithm
-    \ingroup not_implemented
+    \ingroup notimplemented
 
     \param  ctx       context variable
     \param  evaluate  a pointer to the user's evaluation function, which must
@@ -1261,6 +1275,7 @@ void PGASendReceiveIndividual
       double f (PGAContext *ctx, int p, int pop, double *aux);
       MPI_Comm comm;
 
+      ...
       PGARunIM (ctx, f, comm);
 
     \endrst
@@ -1283,7 +1298,7 @@ void PGARunIM
 
 /*!****************************************************************************
     \brief Execute a neighborhood model genetic algorithm
-    \ingroup not_implemented
+    \ingroup notimplemented
 
     \param  ctx       context variable
     \param  evaluate  a pointer to the user's evaluation function, which must
@@ -1309,6 +1324,7 @@ void PGARunIM
       MPI_Comm comm;
       double f (PGAContext *ctx, int p, int pop);
 
+      ...
       PGARunNM (ctx, f, comm);
 
     \endrst
@@ -1354,6 +1370,7 @@ void PGARunNM
         PGAContext  *ctx;
         int          rank;
 
+        ...
         rank = PGAGetRank (ctx, MPI_COMM_WORLD);
         if (rank == 0) {
             LetRank0DoSomething ();
@@ -1403,6 +1420,7 @@ int PGAGetRank (PGAContext *ctx, MPI_Comm comm)
 
         PGAContext  *ctx;
 
+        ...
         if (PGAGetNumProcs (ctx, MPI_COMM_WORLD) < 4) {
             printf ("Too few processors for decent performance!\n");
             exit (-1);
@@ -1431,7 +1449,7 @@ int PGAGetNumProcs (PGAContext *ctx, MPI_Comm comm)
 
 /*!****************************************************************************
     \brief Set the number of islands to use in an island model GA.
-    \ingroup not_implemented
+    \ingroup notimplemented
 
     \param   ctx  context variable
     \param   n    number of islands
@@ -1482,7 +1500,7 @@ void PGASetNumIslands( PGAContext *ctx, int n)
 
 /*!***************************************************************************
    \brief Returns the number of islands to use in an island model
-   \ingroup not_implemented
+   \ingroup notimplemented
 
    \param   ctx  context variable
    \return  The number of islands to use in an island model
@@ -1497,6 +1515,7 @@ void PGASetNumIslands( PGAContext *ctx, int n)
       PGAContext *ctx;
       int npop;
 
+      ...
       npop = PGAGetNumIslands (ctx);
 
     \endrst
@@ -1514,7 +1533,7 @@ int PGAGetNumIslands (PGAContext *ctx)
 
 /*!****************************************************************************
     \brief Set the number of demes to use in a neighborhood model GA.
-    \ingroup not_implemented
+    \ingroup notimplemented
 
     \param   ctx           context variable
     \param   numdemes      number of demes
@@ -1564,7 +1583,7 @@ void PGASetNumDemes( PGAContext *ctx, int numdemes)
 
 /*!***************************************************************************
     \brief Returns the number of demes to use in a neighborhood model.
-    \ingroup not_implemented
+    \ingroup notimplemented
 
     \param   ctx  context variable
     \return  The number of demes to use in a neighborhood model
@@ -1579,6 +1598,7 @@ void PGASetNumDemes( PGAContext *ctx, int numdemes)
        PGAContext *ctx;
        int npop;
 
+       ...
        npop = PGAGetNumDemes (ctx);
 
     \endrst

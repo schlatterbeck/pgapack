@@ -76,6 +76,7 @@ char PGAProgram [100];    /* Holds argv[0] for PGAUsage() call */
        PGAContext *ctx;
        int         val;
 
+       ...
        PGAError
         ( ctx, "Some Non Fatal Error: val = "
         , PGA_WARNING, PGA_INT, (void *) &val
@@ -141,6 +142,7 @@ void PGAError (PGAContext *ctx, char *msg, int level, int datatype, void *data)
        PGAContext *ctx;
        int         val;
 
+       ...
        PGAErrorPrintf (ctx, PGA_WARNING, "Some Non Fatal Error: val = %d", val);
        PGAErrorPrintf (ctx, PGA_FATAL, "A Fatal Error!");
 
@@ -177,6 +179,7 @@ void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...)
 
       PGAContext *ctx;
 
+      ...
       PGADestroy (ctx);
 
     \endrst
@@ -266,6 +269,7 @@ void PGADestroy (PGAContext *ctx)
        PGAContext *ctx;
        int intmax;
 
+       ...
        intmax = PGAGetMaxMachineIntValue (ctx);
 
     \endrst
@@ -297,6 +301,7 @@ int PGAGetMaxMachineIntValue (PGAContext *ctx)
        PGAContext *ctx;
        int intmin;
 
+       ...
        intmin = PGAGetMinMachineIntValue (ctx);
 
     \endrst
@@ -328,6 +333,7 @@ int PGAGetMinMachineIntValue (PGAContext *ctx)
        PGAContext *ctx;
        double big;
 
+       ...
        big = PGAGetMaxMachineDoubleValue (ctx);
 
     \endrst
@@ -359,6 +365,7 @@ double PGAGetMaxMachineDoubleValue (PGAContext *ctx)
        PGAContext *ctx;
        double small;
 
+       ...
        small = PGAGetMinMachineDoubleValue (ctx);
 
     \endrst
@@ -396,6 +403,7 @@ double PGAGetMinMachineDoubleValue (PGAContext *ctx)
 
        PGAContext ctx;
 
+       ...
        PGAUsage (ctx);
 
     \endrst
@@ -420,12 +428,17 @@ void PGAUsage (PGAContext *ctx)
 
 /*!****************************************************************************
     \brief Print PGAPack version number
-    \ingroup reporting
+    \ingroup notimplemented
 
     \param   ctx  context variable
     \return  print PGAPack version number
 
     \rst
+
+    Description
+    -----------
+
+    This currently prints a meaningless hard-coded string.
 
     Example
     -------
@@ -434,6 +447,7 @@ void PGAUsage (PGAContext *ctx)
 
        PGAContext ctx;
 
+       ...
        PGAPrintVersionNumber (ctx);
 
     \endrst

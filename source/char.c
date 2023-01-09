@@ -70,8 +70,10 @@ privately owned rights.
 
         PGAContext *ctx;
         int p, q, i;
-        int l = PGAGetStringLength (ctx);
+        int l;
 
+        ...
+        l = PGAGetStringLength (ctx);
         for (i=0; i<l; i++) {
             char a = PGAGetCharacterAllele (ctx, p, PGA_OLDPOP, i);
             PGASetCharacterAllele (ctx, q, PGA_NEWPOP, i, a);
@@ -116,8 +118,10 @@ void PGASetCharacterAllele (PGAContext *ctx, int p, int pop, int i, char val)
 
         PGAContext *ctx;
         int p, q, i;
-        int l = PGAGetStringLength (ctx);
+        int l;
 
+        ...
+        l = PGAGetStringLength (ctx);
         for (i=0; i<l; i++) {
             char a = PGAGetCharacterAllele (ctx, p, PGA_OLDPOP, i);
             PGASetCharacterAllele (ctx, q, PGA_NEWPOP, i, a);
@@ -168,6 +172,7 @@ char PGAGetCharacterAllele (PGAContext *ctx, int p, int pop, int i)
 
        PGAContext *ctx;
 
+       ...
        PGASetCharacterInitType (ctx, PGA_CINIT_UPPER);
 
     \endrst
@@ -228,6 +233,7 @@ void PGASetCharacterInitType (PGAContext *ctx, int value)
         PGAContext *ctx;
         int p;
 
+        ...
         PGACharacterCreateString (ctx, p, PGA_NEWPOP, PGA_FALSE);
 
     \endrst
@@ -296,6 +302,7 @@ void PGACharacterCreateString (PGAContext *ctx, int p, int pop, int initflag)
        int p;
        int NumMutations;
 
+       ...
        NumMutations = PGACharacterMutation (ctx, p, PGA_NEWPOP, 0.01);
 
     \endrst
@@ -372,6 +379,7 @@ int PGACharacterMutation (PGAContext *ctx, int p, int pop, double mr)
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGACharacterOneptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
 
     \endrst
@@ -440,6 +448,7 @@ void PGACharacterOneptCrossover
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGACharacterTwoptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
 
     \endrst
@@ -521,6 +530,7 @@ void PGACharacterTwoptCrossover
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGACharacterUniformCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
 
     \endrst
@@ -577,6 +587,7 @@ void PGACharacterUniformCrossover
        PGAContext *ctx;
        int p;
 
+       ...
        PGACharacterPrintString (ctx, stdout, p, PGA_NEWPOP);
 
     \endrst
@@ -589,8 +600,8 @@ void PGACharacterPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 
     PGADebugEntered ("PGACharacterPrintString");
 
-    c = (PGACharacter *)PGAGetIndividual(ctx, p, pop)->chrom;
-    len = PGAGetStringLength(ctx);
+    c = (PGACharacter *)PGAGetIndividual (ctx, p, pop)->chrom;
+    len = PGAGetStringLength (ctx);
 
     pos = 0;
     while (len > 0) {
@@ -637,6 +648,7 @@ void PGACharacterPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
        PGAContext *ctx;
        int x, y;
 
+       ...
        PGACharacterCopyString (ctx, x, PGA_OLDPOP, y, PGA_NEWPOP);
 
     \endrst
@@ -689,6 +701,7 @@ void PGACharacterCopyString
        PGAContext *ctx;
        int x, y;
 
+       ...
        if (PGACharacterDuplicate (ctx, x, PGA_NEWPOP, y, PGA_NEWPOP)) {
            printf ("strings are duplicates\n");
        }
@@ -765,6 +778,7 @@ PGAHash PGACharacterHash (PGAContext *ctx, int p, int pop)
        PGAContext *ctx;
        int p;
 
+       ...
        PGACharacterInitString (ctx, p, PGA_NEWPOP);
 
     \endrst

@@ -71,6 +71,7 @@ privately owned rights.
       PGAIndividual *ind = PGAGetIndividual (ctx, p, PGA_OLDPOP);
       double result;
 
+      ...
       result = INDGetAuxTotal (ind);
 
     \endrst
@@ -120,6 +121,7 @@ double INDGetAuxTotal (PGAIndividual *ind)
       PGAContext *ctx;
       double result;
 
+      ...
       result = PGAGetAuxTotal (ctx, p, PGA_OLDPOP);
 
     \endrst
@@ -144,8 +146,8 @@ static int  PGASelectTruncation   (PGAContext *ctx, int pop);
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*!****************************************************************************
-    \brief Perform genetic algorithm selection using either the default
-           selection scheme or that specified with \ref PGASetSelectType.
+    \brief Perform genetic algorithm selection using the defined
+           selection scheme.
     \ingroup explicit
 
     \param  ctx    context variable
@@ -158,6 +160,9 @@ static int  PGASelectTruncation   (PGAContext *ctx, int pop);
 
     Description
     -----------
+
+    The selection scheme used is either the default selection scheme or
+    that specified with :c:func:`PGASetSelectType`.
 
     Valid selection
     methods are proportional, stochastic universal, tournament, probabilistic
@@ -176,6 +181,7 @@ static int  PGASelectTruncation   (PGAContext *ctx, int pop);
 
       PGAContext *ctx,
 
+      ...
       PGASelect (ctx, PGA_OLDPOP);
 
     \endrst
@@ -245,7 +251,7 @@ void PGASelect (PGAContext *ctx, int popix)
         )
     {
         for (i=0; i<ctx->ga.PopSize; i++) {
-            j          = PGARandomInterval (ctx, 0,ctx->ga.PopSize-1);
+            j          = PGARandomInterval (ctx, 0, ctx->ga.PopSize-1);
             temp       = ctx->ga.selected [j];
             ctx->ga.selected [j] = ctx->ga.selected [i];
             ctx->ga.selected [i] = temp;
@@ -256,8 +262,7 @@ void PGASelect (PGAContext *ctx, int popix)
 }
 
 /*!****************************************************************************
-    \brief Return the index of next individual in internal array that
-           contains the indices determined by \ref PGASelect.
+    \brief Return the index of next individual in internal array.
     \ingroup explicit
 
     \param  ctx     context variable
@@ -265,6 +270,13 @@ void PGASelect (PGAContext *ctx, int popix)
     \return A population index for the next selected creature
 
     \rst
+
+    Description
+    -----------
+
+    The internal array used contains the indices determined by
+    :c:func:`PGASelect`.
+
 
     Example
     -------
@@ -274,6 +286,7 @@ void PGASelect (PGAContext *ctx, int popix)
       PGAContext *ctx;
       int l;
 
+      ...
       l = PGASelectNextIndex (ctx, PGA_OLDPOP);
 
     \endrst
@@ -322,6 +335,7 @@ int PGASelectNextIndex (PGAContext *ctx, int popix)
 
        PGAContext *ctx;
 
+       ...
        PGASetSelectType (ctx, PGA_SELECT_SUS);
 
     \endrst
@@ -370,6 +384,7 @@ void PGASetSelectType (PGAContext *ctx, int select_type)
        PGAContext *ctx;
        int selecttype;
 
+       ...
        selecttype = PGAGetSelectType (ctx);
        switch (selecttype) {
        case PGA_SELECT_PROPORTIONAL:
@@ -419,7 +434,7 @@ int PGAGetSelectType (PGAContext *ctx)
 
     This function will have no effect
     unless PGA_SELECT_PTOURNAMENT was specified as the type of selection to
-    use with PGASetSelectType.  The default value is 0.6.
+    use with :c:func:`PGASetSelectType`.  The default value is 0.6.
 
     Example
     -------
@@ -428,7 +443,8 @@ int PGAGetSelectType (PGAContext *ctx)
 
        PGAContext *ctx;
 
-       PGASetPTournamentProb (ctx,0.8);
+       ...
+       PGASetPTournamentProb (ctx, 0.8);
 
     \endrst
 
@@ -460,6 +476,7 @@ void PGASetPTournamentProb (PGAContext *ctx, double ptournament_prob)
        PGAContext *ctx;
        double pt;
 
+       ...
        pt = PGAGetPTournamentProb (ctx);
 
     \endrst
@@ -489,8 +506,8 @@ double PGAGetPTournamentProb (PGAContext *ctx)
     -----------
 
     This function will have no effect unless PGA_SELECT_TOURNAMENT was
-    specified as the type of selection to use with PGASetSelectType.  The
-    default value is 2.
+    specified as the type of selection to use with :c:func:`PGASetSelectType`.
+    The default value is 2.
 
     Example
     -------
@@ -499,7 +516,8 @@ double PGAGetPTournamentProb (PGAContext *ctx)
 
        PGAContext *ctx;
 
-       PGASetTournamentSize (ctx,3);
+       ...
+       PGASetTournamentSize (ctx, 3);
 
     \endrst
 
@@ -530,6 +548,7 @@ void PGASetTournamentSize (PGAContext *ctx, double tournament_size)
        PGAContext *ctx;
        double sz;
 
+       ...
        sz = PGAGetTournamentSize (ctx);
 
     \endrst
@@ -559,7 +578,7 @@ double PGAGetTournamentSize (PGAContext *ctx)
 
     This function will have no effect unless
     PGA_SELECT_TOURNAMENT was specified as the type of selection to use
-    with PGASetSelectType. The default value is PGA_TRUE.
+    with :c:func:`PGASetSelectType`. The default value is PGA_TRUE.
 
     Example
     -------
@@ -568,7 +587,8 @@ double PGAGetTournamentSize (PGAContext *ctx)
 
        PGAContext *ctx;
 
-       PGASetTournamentWithReplacement (ctx,PGA_FALSE);
+       ...
+       PGASetTournamentWithReplacement (ctx, PGA_FALSE);
 
     \endrst
 
@@ -597,6 +617,7 @@ void PGASetTournamentWithReplacement (PGAContext *ctx, int v)
        PGAContext *ctx;
        int v;
 
+       ...
        v = PGAGetTournamentWithReplacement (ctx);
 
     \endrst
@@ -623,7 +644,7 @@ int PGAGetTournamentWithReplacement (PGAContext *ctx)
 
     This function will have no
     effect unless PGA_SELECT_TRUNCATION was specified as the type of
-    selection to use with PGASetSelectType. The default value is 0.5.
+    selection to use with :c:func:`PGASetSelectType`. The default value is 0.5.
 
     Example
     -------
@@ -632,6 +653,7 @@ int PGAGetTournamentWithReplacement (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetTruncationProportion (ctx, 0.7);
 
     \endrst
@@ -644,11 +666,12 @@ void PGASetTruncationProportion (PGAContext *ctx, double proportion)
 }
 
 /*!***************************************************************************
-    \brief Return the setting for truncation proportion.
+    \brief Return the proportion of best individuals selected in
+           truncation selection.
     \ingroup query
 
     \param   ctx  context variable
-    \return  The truncation proportion
+    \return  Proportion of best individuals selected in truncation selection
 
     \rst
 
@@ -660,6 +683,7 @@ void PGASetTruncationProportion (PGAContext *ctx, double proportion)
        PGAContext *ctx;
        double v;
 
+       ...
        v = PGAGetTruncationProportion (ctx);
 
     \endrst
@@ -698,6 +722,7 @@ double PGAGetTruncationProportion (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetRandomizeSelect (ctx, PGA_TRUE);
 
     \endrst
@@ -717,6 +742,18 @@ void PGASetRandomizeSelect (PGAContext *ctx, int v)
 
     \rst
 
+    Description
+    -----------
+
+    This function will return PGA_TRUE if a second randomization step
+    after selection is performed. All selection schemes except
+    PGA_SELECT_SUS already return the individuals in randomized order,
+    previously  this  was randomized  again.  With this method you can
+    find out if the randomization for selection schemes other than
+    PGA_SELECT_SUS (for which a randomization step is always performed)
+    is turned on.
+
+
     Example
     -------
 
@@ -725,6 +762,7 @@ void PGASetRandomizeSelect (PGAContext *ctx, int v)
        PGAContext *ctx;
        int v;
 
+       ...
        v = PGAGetRandomizeSelect (ctx);
 
     \endrst
@@ -766,6 +804,7 @@ int PGAGetRandomizeSelect (PGAContext *ctx)
       PGAContext *ctx,
       int l;
 
+      ...
       l = PGASelectProportional (ctx, PGA_OLDPOP);
 
     \endrst
@@ -823,6 +862,7 @@ static int PGASelectProportional (PGAContext *ctx, PGAIndividual *pop)
 
       PGAContext *ctx,
 
+      ...
       PGASelectSUS (ctx, PGA_OLDPOP);
 
     \endrst
@@ -895,6 +935,7 @@ static void PGASelectSUS (PGAContext *ctx, PGAIndividual *pop)
       PGAContext *ctx,
       int l;
 
+      ...
       l = PGASelectTournamentWithReplacement (ctx, PGA_OLDPOP);
 
     \endrst
@@ -953,6 +994,7 @@ int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
       PGAContext *ctx,
       int l;
 
+      ...
       l = PGASelectTournamentWithoutReplacement (ctx, PGA_OLDPOP);
 
     \endrst
@@ -1031,6 +1073,7 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
       PGAContext *ctx,
       int l;
 
+      ...
       l = PGASelectLinear (ctx, PGA_OLDPOP);
 
     \endrst
@@ -1072,6 +1115,7 @@ static int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
       PGAContext *ctx,
       int l;
 
+      ...
       l = PGASelectTruncation (ctx, PGA_OLDPOP);
 
     \endrst
@@ -1133,6 +1177,7 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
       PGAContext *ctx,
       int l;
 
+      ...
       l = PGASelectTournament (ctx, PGA_OLDPOP);
 
     \endrst
@@ -1176,6 +1221,7 @@ static int PGASelectTournament (PGAContext *ctx, int pop)
       PGAContext *ctx,
       int l;
 
+      ...
       l = PGASelectPTournament (ctx, PGA_OLDPOP);
 
     \endrst

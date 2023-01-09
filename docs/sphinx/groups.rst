@@ -25,7 +25,7 @@ Initialization
 Standard API
 ++++++++++++
 
-.. doxygengroup:: standard_api
+.. doxygengroup:: standard-api
    :project: PGAPack
    :sort:
 
@@ -33,6 +33,13 @@ Querying Parameters
 +++++++++++++++++++
 
 .. doxygengroup:: query
+   :project: PGAPack
+   :sort:
+
+Deprecated
+++++++++++
+
+.. doxygengroup:: deprecated
    :project: PGAPack
    :sort:
 
@@ -113,7 +120,7 @@ Linear Algebra
 Not Yet Implemented
 +++++++++++++++++++
 
-.. doxygengroup:: not_implemented
+.. doxygengroup:: notimplemented
    :project: PGAPack
    :sort:
 

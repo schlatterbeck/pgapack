@@ -79,6 +79,7 @@ privately owned rights.
       PGAContext *ctx;
       int p;
 
+      ...
       while (PGADuplicate (ctx, p, PGA_NEWNEW, PGA_NEWPOP)) {
           PGAChange (ctx, p, PGA_NEWPOP);
       }
@@ -149,6 +150,7 @@ int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
       PGAContext *ctx;
       int p;
 
+      ...
       while (PGADuplicate (ctx, p, PGA_NEWNEW, PGA_NEWPOP)) {
           PGAChange (ctx, p, PGA_NEWPOP);
       }
@@ -265,6 +267,7 @@ void PGAHashIndividual (PGAContext *ctx, int p, int pop)
 
       PGAContext *ctx;
 
+      ...
       PGASetNoDuplicatesFlag (ctx, PGA_TRUE);
 
     \endrst
@@ -306,16 +309,12 @@ void PGASetNoDuplicatesFlag (PGAContext *ctx, int no_dup)
     .. code-block:: c
 
       PGAContext *ctx;
-      int nodups;
 
-      nodups = PGAGetNoDuplicatesFlag (ctx);
-      switch (nodups) {
-      case PGA_TRUE:
+      ...
+      if (PGAGetNoDuplicatesFlag (ctx)) {
           printf ("Duplicate strings not allowed in population\n");
-          break;
-      case PGA_FALSE:
+      } else {
           printf ("Duplicate strings allowed in population\n");
-          break;
       }
 
     \endrst

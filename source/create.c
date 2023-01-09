@@ -486,6 +486,7 @@ PGAContext *PGACreate
        PGAContext *ctx;
        int p;
 
+       ...
        PGACreateIndividual (ctx, p, PGA_NEWPOP, PGA_TRUE);
     \endrst
 
@@ -550,6 +551,7 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
 
        PGAContext *ctx;
 
+       ...
        PGACreatePop (ctx, PGA_NEWPOP);
 
     \endrst
@@ -1686,6 +1688,7 @@ void PGASetUp (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetRandomInitFlag (ctx,PGA_FALSE);
     \endrst
 
@@ -1727,16 +1730,12 @@ void PGASetRandomInitFlag (PGAContext *ctx, int flag)
     .. code-block:: c
 
        PGAContext *ctx;
-       int raninit;
 
-       raninit = PGAGetRandomInitFlag (ctx);
-       switch (raninit) {
-       case PGA_TRUE:
+       ...
+       if (PGAGetRandomInitFlag (ctx)) {
            printf ("Population is randomly initialized\n");
-           break;
-       case PGA_FALSE:
+       } else {
            printf ("Population initialized to zero\n");
-           break;
        }
 
     \endrst
@@ -1770,6 +1769,7 @@ int PGAGetRandomInitFlag (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetNumAuxEval (ctx, 5);
     \endrst
 
@@ -1805,6 +1805,7 @@ void PGASetNumAuxEval (PGAContext *ctx, int n)
        PGAContext *ctx;
        int num;
 
+       ...
        num = PGAGetNumAuxEval (ctx);
 
     \endrst
@@ -1829,7 +1830,7 @@ int PGAGetNumAuxEval (PGAContext *ctx)
     -----------
 
     The maximum number of constraints (and the default) is the number of
-    Auxiliary evaluations, see PGASetNumAuxEval above.
+    Auxiliary evaluations, see :c:func:`PGASetNumAuxEval`.
 
     Example
     -------
@@ -1838,6 +1839,7 @@ int PGAGetNumAuxEval (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetNumConstraint (ctx, 5);
 
     \endrst
@@ -1874,6 +1876,7 @@ void PGASetNumConstraint (PGAContext *ctx, int n)
        PGAContext *ctx;
        int num;
 
+       ...
        num = PGAGetNumConstraint (ctx);
 
     \endrst
@@ -1914,6 +1917,7 @@ int PGAGetNumConstraint (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetSumConstraintsFlag (ctx, PGA_FALSE);
 
     \endrst
@@ -1952,6 +1956,7 @@ void PGASetSumConstraintsFlag (PGAContext *ctx, int n)
        PGAContext *ctx;
        int n;
 
+       ...
        n = PGAGetSumConstraintsFlag (ctx);
 
     \endrst
@@ -1987,6 +1992,7 @@ int PGAGetSumConstraintsFlag (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetEpsilonGeneration (ctx, 50);
 
     \endrst
@@ -2015,6 +2021,7 @@ void PGASetEpsilonGeneration (PGAContext *ctx, int gen)
        PGAContext *ctx;
        int n;
 
+       ...
        n = PGAGetEpsilonGeneration (ctx);
 
     \endrst
@@ -2043,6 +2050,7 @@ int PGAGetEpsilonGeneration (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetEpsilonExponent (ctx, 5);
     \endrst
 
@@ -2078,6 +2086,7 @@ void PGASetEpsilonExponent (PGAContext *ctx, double e)
        PGAContext *ctx;
        double e;
 
+       ...
        e = PGAGetEpsilonExponent (ctx);
     \endrst
 
@@ -2092,7 +2101,6 @@ double PGAGetEpsilonExponent (PGAContext *ctx)
            the epsilon constraint.
     \ingroup init
 
-    Inputs:
     \param   ctx       context variable
     \param   n         population index theta
     \return  None
@@ -2113,6 +2121,7 @@ double PGAGetEpsilonExponent (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetEpsilonTheta (ctx, n);
     \endrst
 
@@ -2145,6 +2154,7 @@ void PGASetEpsilonTheta (PGAContext *ctx, int n)
        PGAContext *ctx;
        int n;
 
+       ...
        n = PGAGetEpsilonTheta (ctx);
     \endrst
 
@@ -2178,11 +2188,12 @@ int PGAGetEpsilonTheta (PGAContext *ctx)
        PGAContext *ctx;
        char *name = "output.file";
 
+       ...
        PGASetOutputFile (ctx, name);
     \endrst
 
 ******************************************************************************/
-void PGASetOutputFile (PGAContext *ctx, char *name)
+void PGASetOutputFile (PGAContext *ctx, const char *name)
 {
     char *n = malloc (strlen (name) + 1);
     if (n == NULL) {

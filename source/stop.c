@@ -72,6 +72,7 @@ privately owned rights.
 
       PGAContext *ctx;
 
+      ...
       PGADone (ctx, comm);
 
     \endrst
@@ -201,6 +202,7 @@ int PGACheckStoppingConditions (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetStoppingRuleType (ctx, PGA_STOP_TOOSIMILAR);
 
     \endrst
@@ -246,6 +248,7 @@ void PGASetStoppingRuleType (PGAContext *ctx, int stoprule)
        PGAContext *ctx;
        int stop;
 
+       ...
        stop = PGAGetStoppingRuleType (ctx);
        if (stop & PGA_STOP_MAXITER) {
            printf ("Stopping Rule = PGA_STOP_MAXITER\n");
@@ -295,6 +298,7 @@ int PGAGetStoppingRuleType (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetMaxGAIterValue (ctx, 5000);
 
     \endrst
@@ -335,6 +339,7 @@ void PGASetMaxGAIterValue (PGAContext *ctx, int maxiter)
        PGAContext *ctx;
        int maxiter;
 
+       ...
        maxiter = PGAGetMaxGAIterValue (ctx);
 
     \endrst
@@ -351,7 +356,7 @@ int PGAGetMaxGAIterValue (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    \brief Specifiy maximum number of iterations of no change in the
+    \brief Specify maximum number of iterations of no change in the
            evaluation function value of the best string before stopping.
     \ingroup init
 
@@ -377,6 +382,7 @@ int PGAGetMaxGAIterValue (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetMaxNoChangeValue (ctx, 100);
 
     \endrst
@@ -400,7 +406,7 @@ void PGASetMaxNoChangeValue (PGAContext *ctx, int max_no_change)
 }
 
 /*!****************************************************************************
-    \brief Specifiy the maximum percent of homogeneity of the population
+    \brief Specify the maximum percent of homogeneity of the population
            before stopping.
     \ingroup init
 
@@ -426,6 +432,7 @@ void PGASetMaxNoChangeValue (PGAContext *ctx, int max_no_change)
 
        PGAContext *ctx;
 
+       ...
        PGASetMaxSimilarityValue (ctx, 99);
 
     \endrst
@@ -467,6 +474,7 @@ void PGASetMaxSimilarityValue (PGAContext *ctx, int max_similarity)
        PGAContext *ctx;
        int max_similarity;
 
+       ...
        max_similarity = PGAGetMaxSimilarityValue (ctx);
 
     \endrst

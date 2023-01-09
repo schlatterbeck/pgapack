@@ -149,7 +149,7 @@ static inline int CMP (const double a, const double b)
 }
 
 /*!***********************************************
- *  \defgroup const-datatype
+ *  \defgroup const-datatype Data Types
  *  \brief Abstract Data Types.
  *  @{
  ************************************************/
@@ -177,7 +177,7 @@ typedef unsigned int    PGAHash;
 /*! @} */
 
 /*!***********************************************
- *  \defgroup const-err-print
+ *  \defgroup const-err-print Error Printing
  *  \brief Constants for error printing.
  *   Use these with \ref PGAError
  *   or better use \ref PGAErrorPrintf.
@@ -190,7 +190,7 @@ typedef unsigned int    PGAHash;
 /*! @} */
 
 /*!***************************************
- * \defgroup const-bool
+ * \defgroup const-bool Boolean
  * \brief Constancts for booleans.
  * @{
  ****************************************/
@@ -199,9 +199,8 @@ typedef unsigned int    PGAHash;
 /*! @} */
 
 /*!********************************************
- * \defgroup fun_bit
- * \brief Bit arrays.
- * Some functions for manipulating bit arrays
+ * \defgroup fun_bit Bits arrays
+ * \brief Some functions for manipulating bit arrays
  * @{
  **********************************************/
 
@@ -232,7 +231,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 
 
 /*!*******************************************
- * \defgroup const-printflags
+ * \defgroup const-printflags Print flags
  * \brief Printing flags.
  * @{
  ********************************************/
@@ -241,7 +240,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!*****************************************
- * \defgroup const-misc
+ * \defgroup const-misc Misc Constants
  * \brief Misc Constants.
  * @{
  ******************************************/
@@ -256,7 +255,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!**************************************
- * \defgroup const-debug
+ * \defgroup const-debug Debug
  * \brief Debug Levels.
  * @{
  ****************************************/
@@ -270,7 +269,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!********************************************************************
- *  \defgroup const-opt-dir
+ *  \defgroup const-opt-dir Optimization Direction
  *  \brief Optimization Direction (Maximize/Minimize).
  *  @{
  **********************************************************************/
@@ -279,8 +278,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- * \defgroup const-stop
- * \brief Stopping Criteria.
+ * \defgroup const-stop Stopping Criteria
+ * \brief Define when to stop, multiple conditions selectable.
  *  @{
  *****************************************/
 #define PGA_STOP_MAXITER        1    /**< Stop: for maximum iterations    */
@@ -289,8 +288,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- * \defgroup const-crossover
- * \brief Crossover variants.
+ * \defgroup const-crossover Crossover
+ * \brief Constants for crossover variants.
  *  @{
  *****************************************/
 #define PGA_CROSSOVER_ONEPT     1    /**< One point crossover              */
@@ -301,8 +300,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- *  \defgroup const-selection
- *  \brief Selection variants.
+ *  \defgroup const-selection Selection
+ *  \brief Constants for selection variants.
  *  @{
  *****************************************/
 #define PGA_SELECT_PROPORTIONAL 1    /**< proportional selection             */
@@ -314,8 +313,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- *  \defgroup const-fitness
- *  \brief Fitness variants.
+ *  \defgroup const-fitness Fitness
+ *  \brief Constants for fitness variants.
  *  @{
  *****************************************/
 #define PGA_FITNESS_RAW         1    /**< use raw fitness (evaluation)  */
@@ -324,8 +323,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!*********************************************
- *  \defgroup const-fitness-min
- *  \brief Fitness Minimization variants.
+ *  \defgroup const-fitness-min Fitness Minimization
+ *  \brief Constants for fitness minimization variants.
  *  @{
  ***********************************************/
 #define PGA_FITNESSMIN_RECIPROCAL  1 /**< reciprocal fitness */
@@ -333,8 +332,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- *  \defgroup const-mutation
- *  \brief Mutation variants.
+ *  \defgroup const-mutation Mutation
+ *  \brief Constants for mutation variants.
  *  @{
  *****************************************/
 #define PGA_MUTATION_CONSTANT   1    /**< Real/Integer: Fixed value          */
@@ -347,8 +346,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!****************************************
- *  \defgroup const-mixing
- *  \brief Mixing variants.
+ *  \defgroup const-mixing Mixing Variants
+ *  \brief Constants for defining mixing variants.
  *
  * This defines how mutation/crossover are combined (or not)
  * The MUTATE_AND_CROSS variant performs mutation only if crossover was
@@ -369,8 +368,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!****************************************
- *  \defgroup const-de-variant
- *  \brief Differential Evolution Variants.
+ *  \defgroup const-de-variant Differential Evolution Variants
+ *  \brief Constants for Differential Evolution Variants.
  *  @{
  ******************************************/
 #define PGA_DE_VARIANT_RAND      1   /**< Standard DE from random string */
@@ -379,8 +378,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!**************************************************
- *  \defgroup const-de-cross
- *  \brief Differential Evolution Crossover Variants.
+ *  \defgroup const-de-cross Differential Evolution Crossover
+ *  \brief Constants for Differential Evolution Crossover Variants.
  *  @{
  ****************************************************/
 #define PGA_DE_CROSSOVER_BIN      1  /**< Standard DE binomial crossover */
@@ -388,8 +387,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!*****************************************
- *  \defgroup const-poprep
- *  \brief Population Replacement variants.
+ *  \defgroup const-poprep Population Replacement
+ *  \brief Constants for population replacement variants.
  *  @{
  *******************************************/
 #define PGA_POPREPL_BEST          1  /**< Select best   string                */
@@ -402,8 +401,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!**************************************
- *  \defgroup const-rep
- *  \brief Report Options.
+ *  \defgroup const-rep Reporting
+ *  \brief Reporting Options, multiple options can be defined.
  *  @{
  ****************************************/
 #define PGA_REPORT_ONLINE        1    /**< Print the online analysis       */
@@ -415,7 +414,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!************************************************
- *  \defgroup const-randinit
+ *  \defgroup const-randinit Initialization
  *  \brief Variants for random initialization of genes.
  *  @{
  **************************************************/
@@ -429,8 +428,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
- *  \defgroup const-ufun
- *  \brief User Functions.
+ *  \defgroup const-ufun User Functions
+ *  \brief Constants used for registering user functions
  *  @{
  *****************************************/
 #define PGA_USERFUNCTION_CREATESTRING            1  /**< String create       */
@@ -456,7 +455,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!*******************************************
- *  \defgroup const-mpitag
+ *  \defgroup const-mpitag MPI
  *  \brief MPI Send/Recv Tags.
  *  @{
  *********************************************/
@@ -472,8 +471,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_MPI_HEADER_ELEMENTS      7
 
 /*!****************************************
- * \defgroup const-eps
- * \brief constants for Epsilon Constraints.
+ * \defgroup const-eps Epsilon Constraints
+ * \brief Constants for epsilon constraints algorithm.
  *  @{
  ******************************************/
 #define PGA_EPSILON_EXPONENT_MIN   3.0 /**< minimum exponent cp from paper */
@@ -806,6 +805,11 @@ struct PGAContext {
     PGAScratch             scratch;   /**< Scratch space             */
 };
 
+/*!***************************************************************************
+ *  \defgroup deprecated Deprecated functions
+ *  \brief Deprecated functions, see doc for replacement
+ *****************************************************************************/
+
 #if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 /*****************************************
@@ -886,7 +890,7 @@ void PGASetEpsilonExponent (PGAContext *ctx, double exponent);
 double PGAGetEpsilonExponent (PGAContext *ctx);
 void PGASetEpsilonTheta (PGAContext *ctx, int theta);
 int PGAGetEpsilonTheta (PGAContext *ctx);
-void PGASetOutputFile (PGAContext *ctx, char *filename);
+void PGASetOutputFile (PGAContext *ctx, const char *filename);
 
 /*****************************************
  *          cross.c
@@ -1230,7 +1234,39 @@ int PGARandomNextSample(PGASampleState *state);
 
 void PGASetRealAllele (PGAContext *ctx, int p, int pop, int i, double value);
 double PGAGetRealAllele (PGAContext *ctx, int p, int pop, int i);
-void PGASetRealInitPercent (PGAContext *ctx, double *median, double *percent);
+void PGASetRealInitFraction (PGAContext *ctx, double *median, double *frac);
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+/*!****************************************************************************
+    \brief Set the upper and lower bounds for randomly initializing
+           real-valued genes.
+    \ingroup deprecated
+    \param   ctx      context variable
+    \param   median   an array containing the mean value of the interval
+    \param   frac     an array containing the fraction of median to add and
+                      subtract to/from the median to define the interval
+    \return  None
+
+    \rst
+
+    Description
+    -----------
+
+    This function is deprecated due to wrong naming: The last parameter
+    was always a fraction, not a percentage. It is kept for backwards
+    compatibility, do not use for new code. Use
+    :c:func:`PGASetRealInitFraction` instead.
+
+    \endrst
+
+******************************************************************************/
+
+static inline void PGASetRealInitPercent
+    (PGAContext *ctx, double *median, double *frac)
+{
+    PGASetRealInitFraction (ctx, median, frac);
+}
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 void PGASetRealInitRange
     (PGAContext *ctx, const double *min, const double *max);
 double PGAGetMinRealInitValue (PGAContext *ctx, int i);

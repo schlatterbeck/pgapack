@@ -72,6 +72,7 @@ privately owned rights.
         PGAContext *ctx;
         double hd;
 
+        ...
         hd = PGAHammingDistance (ctx, PGA_NEWPOP);
 
     \endrst

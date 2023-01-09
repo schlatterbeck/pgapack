@@ -89,6 +89,7 @@ static void bouncheck
     \param   i    allele index
     \param   val  real value to set the allele to
     \return  The specified allele in p is modified by side-effect.
+
     \rst
 
     Example
@@ -102,6 +103,7 @@ static void bouncheck
        PGAContext *ctx;
        int i, p;
 
+       ...
        PGASetRealAllele (ctx, p, PGA_NEWPOP, i, 1.57);
 
     \endrst
@@ -132,6 +134,7 @@ void PGASetRealAllele (PGAContext *ctx, int p, int pop, int i, double val)
     \param   pop  symbolic constant of the population the string is in
     \param   i    allele index
     \return  The value of allele i
+
     \rst
 
     Example
@@ -143,8 +146,11 @@ void PGASetRealAllele (PGAContext *ctx, int p, int pop, int i, double val)
     .. code-block:: c
 
        PGAContext *ctx;
-       int p, i, r;
-       r =  PGAGetRealAllele (ctx, p, PGA_NEWPOP, i);
+       int p, i
+       double d;
+
+       ...
+       d = PGAGetRealAllele (ctx, p, PGA_NEWPOP, i);
 
     \endrst
 
@@ -172,9 +178,10 @@ double PGAGetRealAllele (PGAContext *ctx, int p, int pop, int i)
 
     \param   ctx      context variable
     \param   median   an array containing the mean value of the interval
-    \param   percent  an array containing the percent offset to add and
-                      subtract to the median to define the interval
+    \param   frac     an array containing the fraction of median to add and
+                      subtract to/from the median to define the interval
     \return  None
+
     \rst
 
     Description
@@ -182,7 +189,7 @@ double PGAGetRealAllele (PGAContext *ctx, int p, int pop, int i)
 
     For each gene these bounds define an interval from which the initial
     allele value is selected uniformly randomly.  With this routine the
-    user specifies a median value and a percent offset for each allele.
+    user specifies a median value and a fraction of the median for each allele.
 
 
     Example
@@ -196,22 +203,23 @@ double PGAGetRealAllele (PGAContext *ctx, int p, int pop, int i)
     .. code-block:: c
 
        PGAContext *ctx;
-       double *median, *percent;
+       double *median, *frac;
        int i, stringlen;
 
+       ...
        stringlen = PGAGetStringLength (ctx);
-       median  = malloc (stringlen * sizeof(double));
-       percent = malloc (stringlen * sizeof(double));
+       median = malloc (stringlen * sizeof(double));
+       frac   = malloc (stringlen * sizeof(double));
        for (i=0; i<stringlen; i++) {
-          median  [i] = (double) i;
-          percent [i] = 0.5;
+          median [i] = (double) i;
+          frac   [i] = 0.5;
        }
-       PGASetRealInitPercent (ctx, median, percent);
+       PGASetRealInitPercent (ctx, median, frac);
 
     \endrst
 
 ******************************************************************************/
-void PGASetRealInitPercent (PGAContext *ctx, double *median, double *percent)
+void PGASetRealInitFraction (PGAContext *ctx, double *median, double *frac)
 {
     int i;
     int stringlen;
@@ -223,7 +231,7 @@ void PGASetRealInitPercent (PGAContext *ctx, double *median, double *percent)
 
     stringlen = PGAGetStringLength (ctx);
     for (i=0; i<stringlen; i++) {
-         offset = fabs (median [i] * percent [i]);
+         offset = fabs (median [i] * frac [i]);
          ctx->init.RealMin [i] = median [i] - offset;
          ctx->init.RealMax [i] = median [i] + offset;
     }
@@ -241,6 +249,7 @@ void PGASetRealInitPercent (PGAContext *ctx, double *median, double *percent)
     \param   min array containing the lower bound of the interval for each gene
     \param   max array containing the upper bound of the interval for each gene
     \return  None
+
     \rst
 
     Description
@@ -248,7 +257,7 @@ void PGASetRealInitPercent (PGAContext *ctx, double *median, double *percent)
 
     For each gene these bounds define an interval from which the initial
     allele value is selected uniformly randomly.  The user specifies two
-    arrays containing lower and bound for each gene to define the
+    arrays containing lower and upper bound for each gene to define the
     interval.  This is the default strategy for initializing real-valued
     strings.  The default interval is :math:`[0,1.0]` for each gene.
 
@@ -265,6 +274,7 @@ void PGASetRealInitPercent (PGAContext *ctx, double *median, double *percent)
        double *low, *high;
        int i, stringlen;
 
+       ...
        stringlen = PGAGetStringLength (ctx);
        low  = malloc (stringlen * sizeof(double));
        high = malloc (stringlen * sizeof(double));
@@ -310,6 +320,7 @@ void PGASetRealInitRange (PGAContext *ctx, const double *min, const double *max)
     \param   ctx  context variable
     \param   i    an allele position
     \return  The minimum value used to randomly initialize allele i
+
     \rst
 
     Example
@@ -320,6 +331,7 @@ void PGASetRealInitRange (PGAContext *ctx, const double *min, const double *max)
         PGAContext *ctx;
         int min;
 
+        ...
         min = PGAGetMinRealInitValue (ctx, 0);
     \endrst
 
@@ -350,6 +362,7 @@ double PGAGetMinRealInitValue (PGAContext *ctx, int i)
     \param   ctx  context variable
     \param   i    an allele position
     \return  The maximum value used to randomly initialize allele i
+
     \rst
 
     Example
@@ -360,6 +373,7 @@ double PGAGetMinRealInitValue (PGAContext *ctx, int i)
         PGAContext *ctx;
         int max;
 
+        ...
         max = PGAGetMaxRealInitValue (ctx, 0);
     \endrst
 
@@ -390,6 +404,7 @@ double PGAGetMaxRealInitValue (PGAContext *ctx, int i)
     \param  ctx  context variable
     \return Returns the integer corresponding to the symbolic constant
             used to specify the scheme used to initialize real strings
+
     \rst
 
     Example
@@ -400,6 +415,7 @@ double PGAGetMaxRealInitValue (PGAContext *ctx, int i)
         PGAContext *ctx;
         int inittype;
 
+        ...
         inittype = PGAGetRealInitType (ctx);
         switch (inittype) {
         case PGA_RINIT_PERCENT:
@@ -434,6 +450,7 @@ int PGAGetRealInitType (PGAContext *ctx)
                        ctx->ga.RandomInit to initialize the string
                        either randomly or set to zero
     \return  None
+
     \rst
 
     Description
@@ -454,6 +471,7 @@ int PGAGetRealInitType (PGAContext *ctx)
        PGAContext *ctx;
        int p;
 
+       ...
        PGARealCreateString (ctx, p, PGA_NEWPOP, PGA_FALSE);
     \endrst
 
@@ -499,6 +517,7 @@ void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
     \param   pop  symbolic constant of the population string p is in
     \param   mr   probability of mutating a real-valued gene
     \return  The number of mutations performed
+
     \rst
 
     Description
@@ -533,6 +552,7 @@ void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
        PGAContext *ctx;
        int NumMutations, p;
 
+       ...
        NumMutations = PGARealMutation (ctx, p, PGA_NEWPOP, .001);
 
     \endrst
@@ -820,6 +840,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect
+
     \rst
 
     Description
@@ -840,6 +861,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGARealOneptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
     \endrst
 
@@ -886,6 +908,7 @@ void PGARealOneptCrossover
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect
+
     \rst
 
     Description
@@ -906,6 +929,7 @@ void PGARealOneptCrossover
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGARealTwoptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
     \endrst
 
@@ -967,6 +991,7 @@ void PGARealTwoptCrossover
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect
+
     \rst
 
     Description
@@ -987,6 +1012,7 @@ void PGARealTwoptCrossover
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGARealUniformCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
     \endrst
 
@@ -1035,6 +1061,7 @@ void PGARealUniformCrossover
     \param   pop2  symbolic constant of the population to contain
                    string c1 and c2
     \return  c1 and c2 in population pop2 are modified by side-effect
+
     \rst
 
     Description
@@ -1055,6 +1082,7 @@ void PGARealUniformCrossover
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGARealSBXCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
     \endrst
 
@@ -1110,6 +1138,7 @@ void PGARealSBXCrossover
     \param   p    index of the string to write out
     \param   pop  symbolic constant of the population string p is in
     \return  None
+
     \rst
 
     Example
@@ -1122,6 +1151,7 @@ void PGARealSBXCrossover
        PGAContext *ctx;
        int s;
 
+       ...
        PGARealPrintString (ctx, stdout, s, PGA_NEWPOP);
     \endrst
 
@@ -1168,6 +1198,7 @@ void PGARealPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
     \param   pop2  symbolic constant of population containing string p2
     \return  String p2 in population pop2 is modified to be a copy of
              string p1 in population pop1.
+
     \rst
 
     Description
@@ -1186,6 +1217,7 @@ void PGARealPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
        PGAContext *ctx;
        int x, y;
 
+       ...
        PGARealCopyString (ctx, x, PGA_OLDPOP, y, PGA_NEWPOP);
     \endrst
 
@@ -1216,6 +1248,7 @@ void PGARealCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \param   p2    string index of the second string to compare
     \param   pop2  symbolic constant of the population string p2 is in
     \return  Returns true/false if strings are duplicates
+
     \rst
 
     Description
@@ -1234,6 +1267,7 @@ void PGARealCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
        PGAContext *ctx;
        int x, y;
 
+       ...
        if (PGARealDuplicate (ctx, x, PGA_OLDPOP, y, PGA_OLDPOP)) {
            printf ("strings are duplicates\n");
        }
@@ -1267,6 +1301,7 @@ int PGARealDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \param   p     string index of the string to hash
     \param   pop   symbolic constant of the population string p is in
     \return  Hash value for string
+
     \rst
 
     Description
@@ -1294,6 +1329,7 @@ PGAHash PGARealHash (PGAContext *ctx, int p, int pop)
     \param   p    index of string to randomly initialize
     \param   pop  symbolic constant of the population string p is in
     \return  String p in population pop is randomly initialized by side-effect
+
     \rst
 
     Description
@@ -1310,6 +1346,7 @@ PGAHash PGARealHash (PGAContext *ctx, int p, int pop)
        PGAContext *ctx;
        int p;
 
+       ...
        PGARealInitString (ctx, p, PGA_NEWPOP);
 
     \endrst
@@ -1338,6 +1375,7 @@ void PGARealInitString (PGAContext *ctx, int p, int pop)
     \param   p      index of string
     \param   pop    symbolic constant of population string p is in
     \return  An MPI_Datatype
+
     \rst
 
     Example
@@ -1349,6 +1387,7 @@ void PGARealInitString (PGAContext *ctx, int p, int pop)
        int           p;
        MPI_Datatype  dt;
 
+       ...
        dt = PGARealBuildDatatype(ctx, p, pop);
     \endrst
 
@@ -1393,6 +1432,7 @@ MPI_Datatype PGARealBuildDatatype (PGAContext *ctx, int p, int pop)
     \param   p2     second string index
     \param   pop2   symbolic constant of the population the second string is in
     \return  genetic distance of the two strings
+
     \rst
 
     Description
@@ -1429,15 +1469,32 @@ double PGARealGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \param   pop1   symbolic constant of the population the first string is in
     \param   p2     second string index
     \param   pop2   symbolic constant of the population the second string is in
-    \return  genetic euclidian distance of the two strings
+    \return  Genetic euclidian distance of the two strings
+
     \rst
 
     Description
     -----------
 
     This uses the Euclidian distance metric, the square-root of the sum
-    of all squared differences of each allele.
-    Use in PGASetUserFunction.
+    of all squared differences of each allele. It can be used to
+    override the default real genetic distance function (which uses a
+    manhattan distance metric) using :c:func:`PGASetUserFunction` with
+    the PGA_USERFUNCTION_GEN_DISTANCE setting.
+
+    Example
+    -------
+
+    Override genetic distance function:
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       assert (PGAGetDataType (ctx) == PGA_DATATYPE_REAL);
+       PGASetUserFunction
+        (ctx, PGA_USERFUNCTION_GEN_DISTANCE, PGARealEuclidianDistance);
 
     \endrst
 

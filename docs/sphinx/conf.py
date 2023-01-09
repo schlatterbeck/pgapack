@@ -127,7 +127,7 @@ except FileNotFoundError:
 group_remove = {}
 # Compute functions in some groups for which we do not create manpages
 if ldir:
-    for g in ('internal', 'linalg', 'utility'):
+    for g in ('internal', 'linalg', 'utility', 'notimplemented'):
         tree = ElementTree.parse (os.path.join (dir, 'group__%s.xml' % g))
         root = tree.getroot ()
         for memb in root.findall ('.//memberdef'):
@@ -135,18 +135,19 @@ if ldir:
                 continue
             group_remove [memb.get ('id')] = True
 for fn in ldir:
-    if fn.endswith ('8c.xml'):
+    if fn.endswith ('8c.xml') or fn.endswith ('8h.xml'):
         tree = ElementTree.parse (os.path.join (dir, fn))
         root = tree.getroot ()
         for memb in root.findall ('.//memberdef'):
             if memb.get ('kind') != 'function':
                 continue
-            if memb.get ('static') == 'yes':
+            name  = memb.find ('name').text
+            # Don't allow static, but allow static inline
+            if memb.get ('static') == 'yes' and memb.get ('inline') == 'no':
                 continue
             id = memb.get ('id')
             if id in group_remove:
                 continue
-            name  = memb.find ('name').text
             kind  = memb.get ('kind')
             try:
                 brief = memb.find ('briefdescription') [0].text

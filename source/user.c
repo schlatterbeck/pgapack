@@ -100,6 +100,7 @@ privately owned rights.
        void MyStringInit (PGAContext *, void *);
        PGAContext *ctx;
 
+       ...
        PGASetUserFunction (ctx, PGA_USERFUNCTION_INITSTRING, MyStringInit);
 
     \endrst

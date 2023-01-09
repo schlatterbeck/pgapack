@@ -484,6 +484,7 @@ int PGAGetDebugLevelOfName (PGAContext *ctx, char *funcname)
        PGAContext *ctx;
        int IsItSet;
 
+       ...
        IsItSet = PGAGetDebugFlag (ctx, "PGASetUp");
     \endrst
 
@@ -1133,6 +1134,7 @@ void PGASortFuncNameIndex(PGAContext *ctx)
        PGAContext *ctx;
        int num;
 
+       ...
        PGADebugPrint
           ( ctx, PGA_DEBUG_PRINTVAR
           , "Add2Nums", "num = ", PGA_INT, (void *) &num
@@ -1236,6 +1238,7 @@ void PGADebugPrint
 
        PGAContext *ctx;
 
+       ...
        PGASetDebugLevel (ctx, 70);
     \endrst
 
@@ -1295,6 +1298,7 @@ void PGASetDebugLevel (PGAContext *ctx, int level)
 
        PGAContext *ctx;
 
+       ...
        PGAClearDebugLevel (ctx, 70);
     \endrst
 
@@ -1348,6 +1352,7 @@ void PGAClearDebugLevel (PGAContext *ctx, int level)
 
         PGAContext *ctx;
 
+        ...
         PGASetDebugLevelByName (ctx, "PGAGetBinaryAllele");
     \endrst
 
@@ -1377,6 +1382,7 @@ void PGASetDebugLevelByName (PGAContext *ctx, char *funcname)
 
         PGAContext *ctx;
 
+        ...
         PGAClearDebugLevelByName (ctx, "PGAGetBinaryAllele");
     \endrst
 
@@ -1406,6 +1412,7 @@ void PGAClearDebugLevelByName (PGAContext *ctx, char *funcname)
 
        PGAContext ctx;
 
+       ...
        PGAPrintDebugOptions (ctx);
     \endrst
 

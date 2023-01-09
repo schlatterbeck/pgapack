@@ -76,6 +76,7 @@ privately owned rights.
         PGAContext *ctx;
         int p, count = 0;
 
+        ...
         p = PGAGetBestIndex (ctx, PGA_NEWPOP);
         while (count < 10) {
             count += PGAMutate (ctx, p, PGA_NEWPOP);
@@ -141,6 +142,7 @@ int PGAMutate (PGAContext *ctx, int p, int pop)
 
        PGAContext *ctx;
 
+       ...
        PGASetMutationType (ctx, PGA_MUTATION_UNIFORM);
 
     \endrst
@@ -189,6 +191,7 @@ void PGASetMutationType (PGAContext *ctx, int mutation_type)
        PGAContext *ctx;
        int mutatetype;
 
+       ...
        mutatetype = PGAGetMutationType (ctx);
        switch (mutatetype) {
        case PGA_MUTATION_CONSTANT:
@@ -248,6 +251,7 @@ int PGAGetMutationType (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetMutationRealValue (ctx, 50.0);
 
     \endrst
@@ -288,6 +292,7 @@ void PGASetMutationRealValue (PGAContext *ctx, double val)
        PGAContext *ctx;
        double val;
 
+       ...
        val = PGAGetMutationRealValue (ctx);
 
     \endrst
@@ -326,6 +331,7 @@ double PGAGetMutationRealValue (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetMutationIntegerValue (ctx, 5);
 
     \endrst
@@ -367,6 +373,7 @@ void PGASetMutationIntegerValue (PGAContext *ctx, int val)
         PGAContext *ctx;
         int ival;
 
+        ...
         ival = PGAGetMutationIntegerValue (ctx);
 
     \endrst
@@ -409,6 +416,7 @@ int PGAGetMutationIntegerValue (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetMutationBoundedFlag (ctx, PGA_TRUE);
 
     \endrst
@@ -437,14 +445,20 @@ void PGASetMutationBoundedFlag (PGAContext *ctx, int val)
 
 /*!****************************************************************************
     \brief Return PGA_TRUE or PGA_FALSE to indicate whether mutated
-           integer strings remain in the range specified when
-           initialized with \ref PGASetIntegerInitRange.
+           integer strings remain in the initialization range.
+
     \ingroup query
 
     \param  ctx  context variable
     \return PGA_TRUE if restricted to the given range, otherwise PGA_FALSE
 
     \rst
+
+    Description
+    -----------
+
+    The initialization range is specified when initialized with
+    :c:func:`PGASetIntegerInitRange`.
 
     Example
     -------
@@ -454,6 +468,7 @@ void PGASetMutationBoundedFlag (PGAContext *ctx, int val)
        PGAContext *ctx;
        int val;
 
+       ...
        val = PGAGetMutationBoundedFlag (ctx);
 
     \endrst
@@ -494,6 +509,7 @@ int PGAGetMutationBoundedFlag (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetMutationBounceBackFlag (ctx, PGA_TRUE);
 
     \endrst
@@ -522,7 +538,8 @@ void PGASetMutationBounceBackFlag (PGAContext *ctx, int val)
 
 /*!****************************************************************************
     \brief Return PGA_TRUE or PGA_FALSE to indicate whether mutated
-           strings remain within the initialization range.
+           strings remain within the initialization range by bouncing
+           them from the boundary.
     \ingroup query
 
     \param  ctx  context variable
@@ -538,6 +555,7 @@ void PGASetMutationBounceBackFlag (PGAContext *ctx, int val)
        PGAContext *ctx;
        int val;
 
+       ...
        val = PGAGetMutationBounceBackFlag (ctx);
 
     \endrst
@@ -577,6 +595,7 @@ int PGAGetMutationBounceBackFlag (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetMutationProb (ctx, 0.001);
 
     \endrst
@@ -615,6 +634,7 @@ void PGASetMutationProb (PGAContext *ctx, double mutation_prob)
        PGAContext *ctx;
        double pm;
 
+       ...
        pm = PGAGetMutationProb (ctx);
 
     \endrst
@@ -645,6 +665,7 @@ double PGAGetMutationProb (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetMutationPolyEta (ctx, 200);
 
     \endrst
@@ -678,6 +699,7 @@ void PGASetMutationPolyEta (PGAContext *ctx, double eta)
        PGAContext *ctx;
        double eta;
 
+       ...
        eta = PGAGetMutationPolyEta (ctx);
 
     \endrst
@@ -706,6 +728,7 @@ double PGAGetMutationPolyEta (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetMutationPolyValue (ctx, 2.5);
 
     \endrst
@@ -739,6 +762,7 @@ void PGASetMutationPolyValue (PGAContext *ctx, double v)
        PGAContext *ctx;
        double v;
 
+       ...
        v = PGAGetMutationPolyValue (ctx);
 
     \endrst
@@ -774,6 +798,7 @@ double PGAGetMutationPolyValue (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetDEVariant (ctx, PGA_DE_VARIANT_BEST);
 
     \endrst
@@ -815,6 +840,7 @@ void PGASetDEVariant (PGAContext *ctx, int variant)
        PGAContext *ctx;
        int variant;
 
+       ...
        variant = PGAGetDEVariant (ctx);
        switch (variant) {
        case PGA_DE_VARIANT_RAND:
@@ -854,6 +880,7 @@ int PGAGetDEVariant (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetDEScaleFactor (ctx, 0.75);
 
     \endrst
@@ -888,6 +915,7 @@ void PGASetDEScaleFactor (PGAContext *ctx, double val)
        PGAContext *ctx;
        double val;
 
+       ...
        val = PGAGetDEScaleFactor (ctx);
 
     \endrst
@@ -916,6 +944,7 @@ double PGAGetDEScaleFactor (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetDEAuxFactor (ctx, 0.75);
 
     \endrst
@@ -951,6 +980,7 @@ void PGASetDEAuxFactor (PGAContext *ctx, double val)
        PGAContext *ctx;
        double val;
 
+       ...
        val = PGAGetDEAuxFactor (ctx);
 
     \endrst
@@ -979,6 +1009,7 @@ double PGAGetDEAuxFactor (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetDECrossoverProb (ctx, 0.75);
 
     \endrst
@@ -1013,6 +1044,7 @@ void PGASetDECrossoverProb (PGAContext *ctx, double val)
        PGAContext *ctx;
        double val;
 
+       ...
        val = PGAGetDECrossoverProb (ctx);
 
     \endrst
@@ -1041,6 +1073,7 @@ double PGAGetDECrossoverProb (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetDEJitter (ctx, 0.75);
 
     \endrst
@@ -1075,6 +1108,7 @@ void PGASetDEJitter (PGAContext *ctx, double val)
        PGAContext *ctx;
        double val;
 
+       ...
        val = PGAGetDEJitter (ctx);
 
     \endrst
@@ -1104,6 +1138,7 @@ double PGAGetDEJitter (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetDEProbabilityEO (ctx, 0.75);
 
     \endrst
@@ -1139,6 +1174,7 @@ void PGASetDEProbabilityEO (PGAContext *ctx, double val)
        PGAContext *ctx;
        double val;
 
+       ...
        val = PGAGetDEProbabilityEO (ctx);
 
     \endrst
@@ -1167,6 +1203,7 @@ double PGAGetDEProbabilityEO (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetDENumDiffs (ctx, 2);
 
     \endrst
@@ -1201,6 +1238,7 @@ void PGASetDENumDiffs (PGAContext *ctx, int val)
        PGAContext *ctx;
        int val;
 
+       ...
        val = PGAGetDENumDiffs (ctx);
 
     \endrst
@@ -1229,6 +1267,7 @@ int PGAGetDENumDiffs (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetDECrossoverType (ctx, PGA_DE_CROSSOVER_EXP);
 
     \endrst
@@ -1267,6 +1306,7 @@ void PGASetDECrossoverType (PGAContext *ctx, int val)
        PGAContext *ctx;
        int val;
 
+       ...
        val = PGAGetDECrossoverType (ctx);
 
     \endrst
@@ -1295,6 +1335,7 @@ int PGAGetDECrossoverType (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetDEDither (ctx, 0.25);
 
     \endrst
@@ -1329,6 +1370,7 @@ void PGASetDEDither (PGAContext *ctx, double val)
        PGAContext *ctx;
        double val;
 
+       ...
        val = PGAGetDEDither (ctx);
 
     \endrst
@@ -1366,6 +1408,7 @@ double PGAGetDEDither (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetDEDitherPerIndividual (ctx, PGA_TRUE);
 
     \endrst
@@ -1407,6 +1450,7 @@ void PGASetDEDitherPerIndividual (PGAContext *ctx, int val)
        PGAContext *ctx;
        int val;
 
+       ...
        val = PGAGetDEDitherPerIndividual (ctx);
 
     \endrst

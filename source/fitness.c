@@ -116,7 +116,7 @@ static void remap_to_positive (PGAContext *ctx, PGAIndividual *pop)
     direction was minimization.  This positive sequence is then mapped
     to a fitness value using linear ranking, linear normalization
     fitness, or the identity (i.e., the evaluation function value).
-    This routine is usually used after PGAEvaluate is called.
+    This routine is usually used after :c:func:`PGAEvaluate` is called.
 
     Example
     -------
@@ -126,10 +126,11 @@ static void remap_to_positive (PGAContext *ctx, PGAIndividual *pop)
 
     .. code-block:: c
 
-       double energy (PGAContext *ctx, int p, int pop);
+       double energy (PGAContext *ctx, int p, int pop, double *aux);
        PGAContext *ctx;
        MPI_Comm comm;
 
+       ...
        PGAEvaluate (ctx, PGA_NEWPOP, energy, comm);
        PGAFitness  (ctx, PGA_NEWPOP);
 
@@ -252,6 +253,7 @@ void PGAFitness (PGAContext *ctx, int popindex)
       int popsize = PGAGetPopsize (ctx)
       int order [popsize];
 
+      ...
       PGAEvalSort (ctx, pop, order);
       rank = PGARank (ctx, p, order, popsize)
 
@@ -316,6 +318,7 @@ int PGARank (PGAContext *ctx, int p, int *order, int n)
        int p;
        double fit;
 
+       ...
        fit = PGAGetFitness (ctx, p, PGA_NEWPOP);
 
     \endrst
@@ -360,6 +363,7 @@ double PGAGetFitness (PGAContext *ctx, int p, int pop)
        PGAContext *ctx;
        int fittype;
 
+       ...
        fittype = PGAGetFitnessType (ctx);
        switch (fittype) {
        case PGA_FITNESS_RAW:
@@ -406,6 +410,7 @@ int PGAGetFitnessType (PGAContext *ctx)
        PGAContext *ctx;
        int fitmintype;
 
+       ...
        fitmintype = PGAGetFitnessMinType (ctx);
        switch (fitmintype) {
        case PGA_FITNESSMIN_RECIPROCAL:
@@ -446,6 +451,7 @@ int PGAGetFitnessMinType (PGAContext *ctx)
        PGAContext *ctx;
        double max;
 
+       ...
        max = PGAGetMaxFitnessRank (ctx);
 
     \endrst
@@ -486,6 +492,7 @@ double PGAGetMaxFitnessRank (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetFitnessType (ctx, PGA_FITNESS_RANKING);
 
     \endrst
@@ -530,7 +537,7 @@ void PGASetFitnessType (PGAContext *ctx, int fitness_type)
     Valid choices are PGA_FITNESSMIN_RECIPROCAL and PGA_FITNESSMIN_CMAX to do
     the mapping using the reciprocal of the evaluation function, or by
     subtracting the worst evaluation function value from each evaluation
-    function value, respectively.  The default is PGA_FITNESSMIN_CMAX
+    function value, respectively.  The default is PGA_FITNESSMIN_CMAX.
 
     Example
     -------
@@ -539,6 +546,7 @@ void PGASetFitnessType (PGAContext *ctx, int fitness_type)
 
        PGAContext *ctx;
 
+       ...
        PGASetFitnessMinType (ctx, PGA_FITNESSMIN_CMAX);
 
    \endrst
@@ -590,6 +598,7 @@ void PGASetFitnessMinType (PGAContext *ctx, int fitness_type)
 
        PGAContext *ctx;
 
+       ...
        PGASetMaxFitnessRank (ctx, 1.1);
 
     \endrst
@@ -834,8 +843,8 @@ static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop)
 
 
 /*!****************************************************************************
-    \brief The value of the multiplier used by PGAFitnessMinCmax so that
-           the worst string has a nonzero fitness.
+    \brief Set value of the multiplier used by MinCmax fitness algorithm
+           so that the worst string has a nonzero fitness.
     \ingroup init
 
     \param   ctx  context variable
@@ -856,6 +865,7 @@ static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop)
 
        PGAContext *ctx;
 
+       ...
        PGASetFitnessCmaxValue (ctx, 1.2);
 
     \endrst
@@ -869,7 +879,8 @@ void PGASetFitnessCmaxValue (PGAContext *ctx, double val)
 }
 
 /*!***************************************************************************
-    \brief Return the value of the multiplier used by PGAFitnessMinCmax.
+    \brief Return the value of the multiplier used in the MinCmax
+           fitness algorithm.
     \ingroup query
 
     \param  ctx  context variable
@@ -885,6 +896,7 @@ void PGASetFitnessCmaxValue (PGAContext *ctx, double val)
        PGAContext *ctx;
        double cmax;
 
+       ...
        cmax = PGAGetFitnessCmaxValue (ctx);
 
     \endrst

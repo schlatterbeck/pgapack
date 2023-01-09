@@ -186,6 +186,7 @@ static void assert_has_edges (PGAContext *ctx, PGAInteger *a)
        PGAContext *ctx;
        int p, i;
 
+       ...
        PGASetIntegerAllele (ctx, p, PGA_NEWPOP, i, 64)
 
     \endrst
@@ -230,6 +231,7 @@ void PGASetIntegerAllele (PGAContext *ctx, int p, int pop, int i, int val)
        PGAContext *ctx;
        int p, i, k;
 
+       ...
        k =  PGAGetIntegerAllele (ctx, p, PGA_NEWPOP, i)
 
     \endrst
@@ -283,6 +285,7 @@ int PGAGetIntegerAllele (PGAContext *ctx, int p, int pop, int i)
 
         PGAContext *ctx;
 
+        ...
         PGASetIntegerInitPermute (ctx, 500, 599)}
 
     \endrst
@@ -345,6 +348,7 @@ void PGASetIntegerInitPermute (PGAContext *ctx, int min, int max)
         PGAContext *ctx;
         int *low, *high, stringlen, i;
 
+        ...
         stringlen = PGAGetStringLength (ctx);
         low  = malloc (stringlen * sizeof (int));
         high = malloc (stringlen * sizeof (int));
@@ -403,6 +407,7 @@ void PGASetIntegerInitRange (PGAContext *ctx, const int *min, const int *max)
         PGAContext *ctx;
         int inittype;
 
+        ...
         inittype = PGAGetIntegerInitType (ctx);
         switch (inittype) {
         case PGA_IINIT_PERMUTE:
@@ -446,8 +451,10 @@ int PGAGetIntegerInitType (PGAContext *ctx)
 
        PGAContext *ctx;
        int min;
+       int idx;
 
-       min = PGAGetMinIntegerInitValue (ctx);
+       ...
+       min = PGAGetMinIntegerInitValue (ctx, idx);
 
     \endrst
 
@@ -471,7 +478,7 @@ int PGAGetMinIntegerInitValue (PGAContext *ctx, int i)
 }
 
 /*!***************************************************************************
-    \brief return the maximum of the range of integers used to randomly
+    \brief Return the maximum of the range of integers used to randomly
            initialize integer strings.
     \ingroup query
 
@@ -488,9 +495,11 @@ int PGAGetMinIntegerInitValue (PGAContext *ctx, int i)
     .. code-block:: c
 
        PGAContext *ctx;
+       int idx;
        int max;
 
-       max = PGAGetMaxIntegerInitValue (ctx);
+       ...
+       max = PGAGetMaxIntegerInitValue (ctx, idx);
 
     \endrst
 
@@ -546,6 +555,7 @@ int PGAGetMaxIntegerInitValue (PGAContext *ctx, int i)
        PGAContext *ctx;
        PGAIndividual *ind;
 
+       ...
        PGAIntegerCreateString (ctx, ind, PGA_FALSE);
 
     \endrst
@@ -741,6 +751,7 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGAIntegerOneptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
 
     \endrst
@@ -813,6 +824,7 @@ void PGAIntegerOneptCrossover
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGAIntegerTwoptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
 
     \endrst
@@ -900,6 +912,7 @@ void PGAIntegerTwoptCrossover
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGAIntegerUniformCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
 
     \endrst
@@ -973,6 +986,7 @@ void PGAIntegerUniformCrossover
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGAIntegerSBXCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
 
     \endrst
@@ -1287,6 +1301,7 @@ static void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGAIntegerEdgeCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
 
     \endrst
@@ -1428,6 +1443,7 @@ void PGAIntegerEdgeCrossover
        PGAInteger edge[][2] = {(PGAInteger []){0, 213}, (PGAInteger []){7, 11}};
        int  n = sizeof (edge) / (2 * sizeof (PGAInteger));
 
+       ...
        PGAIntegerSetFixedEdges (ctx, n, edge, PGA_TRUE);
 
     \endrst
@@ -1529,6 +1545,7 @@ void PGAIntegerSetFixedEdges
        PGAContext *ctx;
        int  p;
 
+       ...
        PGAIntegerPrintString (ctx, stdout, p, PGA_NEWPOP);
 
     \endrst
@@ -1706,9 +1723,9 @@ static void compute_idx
     \brief Randomly initialize a string of type PGAInteger.
     \ingroup internal
 
-    \param   ctx - context variable
-    \param   p   - index of string to randomly initialize
-    \param   pop - symbolic constant of the population string p is in
+    \param   ctx  context variable
+    \param   p    index of string to randomly initialize
+    \param   pop  symbolic constant of the population string p is in
     \return  None
 
     \rst
@@ -1923,8 +1940,24 @@ double PGAIntegerGeneDistance
     -----------
 
     This uses the Euclidian distance metric, the square-root of the sum
-    of all squared differences of each allele.
-    Used in PGASetUserFunction.
+    of all squared differences of each allele. It can be used to
+    override the default integer genetic distance function (which uses a
+    manhattan distance metric) using :c:func:`PGASetUserFunction` with
+    the PGA_USERFUNCTION_GEN_DISTANCE setting.
+
+    Example
+    -------
+
+    Override genetic distance function:
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       assert (PGAGetDataType (ctx) == PGA_DATATYPE_INTEGER);
+       PGASetUserFunction
+        (ctx, PGA_USERFUNCTION_GEN_DISTANCE, PGAIntegerEuclidianDistance);
 
     \endrst
 

@@ -74,6 +74,7 @@ privately owned rights.
        PGAContext *ctx;
        int p;
 
+       ...
        PGAPrintReport (ctx, stdout, PGA_NEWPOP);
 
     \endrst
@@ -261,6 +262,7 @@ void PGAPrintReport (PGAContext *ctx, FILE *fp, int pop)
 
        PGAContext *ctx;
 
+       ...
        PGASetPrintOptions (ctx, PGA_REPORT_WORST);
 
     \endrst
@@ -296,7 +298,7 @@ void PGASetPrintOptions (PGAContext *ctx, int option)
     \ingroup init
 
     \param   ctx         context variable
-    \param   print_freq  the genetic algorithm population size to use
+    \param   print_freq  print frequency (in generations)
     \return  None
 
     \rst
@@ -314,6 +316,7 @@ void PGASetPrintOptions (PGAContext *ctx, int option)
 
        PGAContext *ctx;
 
+       ...
        PGASetPrintFrequencyValue (ctx, 1);
 
     \endrst
@@ -352,6 +355,7 @@ void PGASetPrintFrequencyValue (PGAContext *ctx, int print_freq)
        PGAContext *ctx;
        int freq;
 
+       ...
        freq = PGAGetPrintFrequencyValue (ctx);
 
     \endrst
@@ -385,6 +389,7 @@ int PGAGetPrintFrequencyValue (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetMultiObjPrecision (ctx, 12);
 
     \endrst
@@ -420,6 +425,7 @@ void PGASetMultiObjPrecision (PGAContext *ctx, int prec)
        PGAContext *ctx;
        int prec;
 
+       ...
        prec = PGAGetMultiObjPrecision (ctx);
 
     \endrst
@@ -432,7 +438,8 @@ int PGAGetMultiObjPrecision (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    \brief Call PGAPrintIndividual to print each member of a population.
+    \brief Print each member of a population.
+
     \ingroup reporting
 
     \param   ctx  context variable
@@ -443,6 +450,11 @@ int PGAGetMultiObjPrecision (PGAContext *ctx)
 
     \rst
 
+    Description
+    -----------
+
+    Call :c:func:`PGAPrintIndividual` to print each member of a population.
+
     Example
     -------
 
@@ -450,6 +462,7 @@ int PGAGetMultiObjPrecision (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGAPrintPopulation (ctx, stdout, PGA_NEWPOP);
 
     \endrst
@@ -492,6 +505,7 @@ void PGAPrintPopulation (PGAContext *ctx, FILE *fp, int pop)
        PGAContext *ctx;
        int p;
 
+       ...
        PGAPrintIndividual (ctx, stdout, p, PGA_NEWPOP);
 
     \endrst
@@ -536,6 +550,7 @@ void PGAPrintIndividual (PGAContext *ctx, FILE *fp, int p, int pop)
        PGAContext *ctx;
        int p;
 
+       ...
        PGAPrintString (ctx, stdout, p, PGA_OLDPOP);
 
     \endrst
@@ -584,6 +599,7 @@ void PGAPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 
        PGAContext *ctx;
 
+       ...
        PGAPrintContextVariable (ctx, stdout);
 
     \endrst

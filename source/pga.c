@@ -212,6 +212,7 @@ void PGARun
 
       PGAContext *ctx;
 
+      ...
       PGARunMutationAndCrossover (ctx, PGA_OLDPOP, PGA_NEWPOP);
 
     \endrst
@@ -323,6 +324,7 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
 
       PGAContext *ctx;
 
+      ...
       PGARunMutationOrCrossover (ctx, PGA_OLDPOP, PGA_NEWPOP);
 
     \endrst
@@ -431,6 +433,7 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
 
       PGAContext *ctx;
 
+      ...
       PGARunMutationOnly (ctx, PGA_OLDPOP, PGA_NEWPOP);
 
     \endrst
@@ -505,6 +508,7 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
 
       PGAContext *ctx;
 
+      ...
       PGAUpdateGeneration (ctx, MPI_COMM_WORLD);
 
     \endrst
@@ -642,6 +646,7 @@ void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm)
        PGAContext *ctx;
        int datatype;
 
+       ...
        datatype = PGAGetDataType (ctx);
        switch (datatype) {
        case PGA_DATATYPE_BINARY:
@@ -691,6 +696,7 @@ int PGAGetDataType (PGAContext *ctx)
        PGAContext *ctx;
        int optdir;
 
+       ...
        optdir = PGAGetOptDirFlag (ctx);
        switch (optdir) {
        case PGA_MAXIMIZE:
@@ -729,6 +735,7 @@ int PGAGetOptDirFlag (PGAContext *ctx)
        PGAContext *ctx;
        int stringlen;
 
+       ...
        stringlen = PGAGetStringLength (ctx);
 
     \endrst
@@ -760,6 +767,7 @@ int PGAGetStringLength (PGAContext *ctx)
         PGAContext *ctx;
         int g;
 
+        ...
         g = PGAGetGAIterValue (ctx);
 
     \endrst
@@ -776,7 +784,7 @@ int PGAGetGAIterValue (PGAContext *ctx)
 }
 
 /*!***************************************************************************
-    \brief Return the number of function evaluations.
+    \brief Return the number of function evaluations so far.
     \ingroup query
 
     \param   ctx  context variable
@@ -792,6 +800,7 @@ int PGAGetGAIterValue (PGAContext *ctx)
         PGAContext *ctx;
         int g;
 
+        ...
         g = PGAGetEvalCount (ctx);
 
     \endrst
@@ -807,7 +816,7 @@ int PGAGetEvalCount (PGAContext *ctx)
 /*!****************************************************************************
     \brief Set a boolean flag to indicate if recombination uses exactly
            one of crossover or mutation on selected strings.
-    \ingroup init
+    \ingroup deprecated
 
     \param   ctx   context variable
     \param   flag  PGA_TRUE (default) or PGA_FALSE
@@ -840,7 +849,7 @@ void PGASetMutationOrCrossoverFlag (PGAContext *ctx, int flag)
 /*!****************************************************************************
     \brief Set a boolean flag to indicate if recombination uses both
            crossover and mutation on selected strings.
-    \ingroup init
+    \ingroup deprecated
 
     \param   ctx   context variable
     \param   flag  PGA_TRUE (default) or PGA_FALSE
@@ -871,7 +880,7 @@ void PGASetMutationAndCrossoverFlag (PGAContext *ctx, int flag)
 }
 /*!***************************************************************************
     \brief Return true if mutation only occurs when crossover does not.
-    \ingroup query
+    \ingroup deprecated
 
     \param   ctx  context variable
     \return  Return PGA_TRUE if mutation only occurs when crossover does
@@ -904,7 +913,7 @@ int PGAGetMutationOrCrossoverFlag (PGAContext *ctx)
 
 /*!***************************************************************************
     \brief Return true if mutation occurs only when crossover does.
-    \ingroup query
+    \ingroup deprecated
 
     \param   ctx  context variable
     \return Return PGA_TRUE if mutation is applied to crossed-over strings,
@@ -937,7 +946,7 @@ int PGAGetMutationAndCrossoverFlag (PGAContext *ctx)
 
 /*!****************************************************************************
     \brief Set a boolean flag to indicate that recombination uses mutation only.
-    \ingroup init
+    \ingroup deprecated
 
     \param   ctx   context variable
     \param   flag  PGA_TRUE (default) or PGA_FALSE
@@ -968,8 +977,8 @@ void PGASetMutationOnlyFlag (PGAContext *ctx, int flag)
 }
 
 /*!***************************************************************************
-    \brief Return true if only mutation is used.
-    \ingroup query
+    \brief Return PGA_TRUE if only mutation is used.
+    \ingroup deprecated
 
     \param   ctx  context variable
     \return Return PGA_TRUE if only mutation is applied, otherwise,
@@ -1011,6 +1020,7 @@ int PGAGetMutationOnlyFlag (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetMixingType (ctx, PGA_MIX_MUTATE_ONLY);
 
     \endrst
@@ -1053,6 +1063,7 @@ void PGASetMixingType (PGAContext *ctx, int type)
        PGAContext *ctx;
        int mixtype;
 
+       ...
        mixtype = PGAGetMixingType (ctx);
 
     \endrst

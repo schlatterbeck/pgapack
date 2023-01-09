@@ -86,6 +86,7 @@ privately owned rights.
         double x;
         int v;
 
+        ...
         x = PGAMapIntegerToReal (ctx, v, 0, 31, 0.0, 3.14);
 
     \endrst
@@ -135,6 +136,7 @@ static double PGAMapIntegerToReal
       double r;
       int v;
 
+      ...
       v = PGAMapRealToInteger (ctx, r, 0.0, 3.14, 0, 31);
 
     \endrst
@@ -179,7 +181,9 @@ static int PGAMapRealToInteger
 
        PGAContext *ctx;
        int p;
+       double aux [...];
 
+       ...
        PGASetEvaluation (ctx, p, PGA_NEWPOP, 123.456);
 
     or
@@ -256,6 +260,7 @@ void _PGASetEvaluation
        int p;
        double eval;
 
+       ...
        eval = PGAGetEvaluation (ctx, p, PGA_NEWPOP);
 
     or
@@ -263,6 +268,7 @@ void _PGASetEvaluation
     .. code-block:: c
 
        const double *p;
+       ...
        eval = PGAGetEvaluation (ctx, p, PGA_NEWPOP, &p);
 
     \endrst
@@ -328,6 +334,7 @@ double _PGAGetEvaluation (PGAContext *ctx, int p, int pop, const double **aux)
        int p;
        double *aux;
 
+       ...
        aux = PGAGetAuxEvaluation (ctx, p, PGA_NEWPOP);
 
     \endrst
@@ -395,6 +402,7 @@ double *PGAGetAuxEvaluation (PGAContext *ctx, int p, int pop)
         PGAContext *ctx;
         int p;
 
+        ...
         PGASetEvaluationUpToDateFlag (ctx, p, PGA_NEWPOP, PGA_FALSE);
 
     \endrst
@@ -437,7 +445,7 @@ void PGASetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop, int status)
 }
 
 /*!***************************************************************************
-    \brief Return true/false to indicate whether the evaluate function
+    \brief Return PGA_TRUE/PGA_FALSE to indicate whether the evaluate function
            value is up to date
     \ingroup evaluation
 
@@ -455,16 +463,12 @@ void PGASetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop, int status)
     .. code-block:: c
 
         PGAContext *ctx;
-        int uptodate;
 
-        uptodate = PGAGetEvaluationUpToDateFlag (ctx);
-        switch (uptodate) {
-        case PGA_TRUE:
+        ...
+        if (PGAGetEvaluationUpToDateFlag (ctx)) {
             printf ("Evaluation function value current\n");
-            break;
-        case PGA_FALSE:
+        } else {
             printf ("Evaluation function value out-of-date\n");
-            break;
         }
 
     \endrst
@@ -491,7 +495,7 @@ int PGAGetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop)
 }
 
 /*!****************************************************************************
-    \brief Interpet a binary string as encoding a real value and
+    \brief Interpret a binary string as encoding a real value and
            return the real value it represents.
     \ingroup allele
 
@@ -501,7 +505,7 @@ int PGAGetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop)
     \param    start  starting bit position in the binary representation
     \param    end    ending bit position in the binary representation
     \param    lower  lower bound of the interval the real number is defined on
-    \param    upper  lower bound of the interval the real number is defined on
+    \param    upper  upper bound of the interval the real number is defined on
     \return  The real value encoded by the binary string
 
     \rst
@@ -517,6 +521,7 @@ int PGAGetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop)
 
         double x;
 
+        ...
         x = PGAGetRealFromBinary (ctx, p, PGA_NEWPOP, 10, 29, -10.0, 20.0);
 
     \endrst
@@ -564,7 +569,7 @@ double PGAGetRealFromBinary
     sum = PGAGetIntegerFromBinary (ctx, p, pop, start, end);
     value = PGAMapIntegerToReal
         ( ctx, sum, 0
-        , (length == sizeof(unsigned) * 8 - 1) ? INT_MAX : (1u << length) - 1
+        , (length == sizeof (unsigned) * 8 - 1) ? INT_MAX : (1u << length) - 1
         , lower, upper
         );
 
@@ -574,7 +579,7 @@ double PGAGetRealFromBinary
 }
 
 /*!****************************************************************************
-    \brief Interpet a binary reflected Gray code sequence in a binary
+    \brief Interpret a binary reflected Gray code sequence in a binary
            string as encoding a real value and return the real value it
            represents.
     \ingroup allele
@@ -585,7 +590,7 @@ double PGAGetRealFromBinary
     \param  start  starting bit position in the binary representation
     \param  end    ending bit position in the binary representation
     \param  lower  lower bound of the interval the real number is defined on
-    \param  upper  lower bound of the interval the real number is defined on
+    \param  upper  upper bound of the interval the real number is defined on
     \return The real value encoded by the binary reflected Gray code sequence
 
     \rst
@@ -601,6 +606,7 @@ double PGAGetRealFromBinary
 
         double x;
 
+        ...
         x = PGAGetRealFromGrayCode (ctx, p, PGA_NEWPOP, 10, 29, -10.0, 20.0);
 
     \endrst
@@ -648,7 +654,7 @@ double PGAGetRealFromGrayCode
     sum = PGAGetIntegerFromGrayCode (ctx, p, pop, start, end);
     value = PGAMapIntegerToReal
         ( ctx, sum, 0
-        , (length == sizeof(unsigned) * 8 - 1) ? INT_MAX : (1u << length) - 1
+        , (length == sizeof (unsigned) * 8 - 1) ? INT_MAX : (1u << length) - 1
         , lower, upper
         );
 
@@ -667,7 +673,7 @@ double PGAGetRealFromGrayCode
     \param start  starting bit position in p to encode val in
     \param end    ending bit position in p to encode val in
     \param low    lower bound of the interval the val is defined on
-    \param high   lower bound of the interval the val is defined on
+    \param high   upper bound of the interval the val is defined on
     \param val    the real number to be represented as a binary string
     \return The string is modified by side-effect
 
@@ -683,8 +689,9 @@ double PGAGetRealFromGrayCode
 
         PGAContext *ctx;
         int p;
-        :
-        PGAEncodeRealAsBinary(ctx, p, PGA_NEWPOP, 0, 29, 0.0, 10.0, 3.14);
+
+        ...
+        PGAEncodeRealAsBinary (ctx, p, PGA_NEWPOP, 0, 29, 0.0, 10.0, 3.14);
 
     \endrst
 
@@ -707,7 +714,7 @@ void PGAEncodeRealAsBinary
             , PGA_FATAL, PGA_INT, (void *) &start
             );
     }
-    if (end >= PGAGetStringLength(ctx)) {
+    if (end >= PGAGetStringLength (ctx)) {
         PGAError
             ( ctx, "PGAEncodeRealAsBinary: end greater than string length:"
             , PGA_FATAL, PGA_INT, (void *) &end
@@ -745,14 +752,13 @@ void PGAEncodeRealAsBinary
     \brief Encode a real value as a binary reflected Gray code sequence.
     \ingroup allele
 
-    Inputs:
     \param  ctx    context variable
     \param  p      string index
     \param  pop    symbolic constant of the population the string is in
     \param  start  starting bit position in p to encode val in
     \param  end    ending bit position in p to encode val in
     \param  low    lower bound of the interval the val is defined on
-    \param  high   lower bound of the interval the val is defined on
+    \param  high   upper bound of the interval the val is defined on
     \param  val    the real number to be represented as a binary string
     \return The string is modified by side-effect
 
@@ -770,6 +776,7 @@ void PGAEncodeRealAsBinary
         PGAContext *ctx;
         int p;
 
+        ...
         PGAEncodeRealAsGrayCode (ctx, p, PGA_NEWPOP, 0, 29, 0.0, 10.0, 3.14);
 
     \endrst
@@ -793,7 +800,7 @@ void PGAEncodeRealAsGrayCode
             , PGA_FATAL, PGA_INT, (void *) &start
             );
     }
-    if (end >= PGAGetStringLength(ctx)) {
+    if (end >= PGAGetStringLength (ctx)) {
         PGAError
             (ctx, "PGAEncodeRealAsGrayCode: end greater than string length:"
             , PGA_FATAL, PGA_INT, (void *) &end
@@ -829,7 +836,7 @@ void PGAEncodeRealAsGrayCode
 
 
 /*!****************************************************************************
-    \brief Interpet a binary string as encoding an integer value and
+    \brief Interpret a binary string as encoding an integer value and
            return the integer value it represents.
     \ingroup allele
 
@@ -852,6 +859,7 @@ void PGAEncodeRealAsGrayCode
         PGAContext *ctx;
         int j, p;
 
+        ...
         j = PGAGetIntegerFromBinary (ctx, p, PGA_NEWPOP, 10, 29);
 
     \endrst
@@ -868,7 +876,7 @@ unsigned int PGAGetIntegerFromBinary
     PGACheckDataType ("PGAGetIntegerFromBinary", PGA_DATATYPE_BINARY);
 
     length = end - start + 1;
-    if (length > sizeof(int) * 8 - 1) {
+    if (length > sizeof (int) * 8 - 1) {
         PGAError
             ( ctx
             , "PGAGetIntegerFromBinary: "
@@ -882,7 +890,7 @@ unsigned int PGAGetIntegerFromBinary
             , PGA_FATAL, PGA_INT, (void *) &start
             );
     }
-    if (end >= PGAGetStringLength(ctx)) {
+    if (end >= PGAGetStringLength (ctx)) {
         PGAError
             ( ctx, "PGAGetIntegerFromBinary: end greater than string length:"
             , PGA_FATAL, PGA_INT, (void *) &end
@@ -909,7 +917,7 @@ unsigned int PGAGetIntegerFromBinary
 }
 
 /*!****************************************************************************
-    \brief Interpets a binary reflected Gray code sequence as encoding
+    \brief Interpret a binary reflected Gray code sequence as encoding
            an integer value and return the integer value it represents.
     \ingroup allele
 
@@ -933,6 +941,7 @@ unsigned int PGAGetIntegerFromBinary
         PGAContext *ctx;
         int j, p;
 
+        ...
         j = PGAGetIntegerFromGrayCode (ctx, p, PGA_NEWPOP, 10, 29);
 
     \endrst
@@ -977,7 +986,7 @@ unsigned int PGAGetIntegerFromGrayCode
             );
     }
 
-    BitString = malloc (length * sizeof(int));
+    BitString = malloc (length * sizeof (int));
     if (!BitString) {
         PGAError
             ( ctx, "PGAGetIntegerFromGrayCode: No room for BitString"
@@ -1029,6 +1038,7 @@ unsigned int PGAGetIntegerFromGrayCode
         PGAContext *ctx;
         int p;
 
+        ...
         PGAEncodeIntegerAsBinary (ctx, p, PGA_NEWPOP, 0, 19, 7);
 
     \endrst
@@ -1119,6 +1129,7 @@ void PGAEncodeIntegerAsBinary
         PGAContext *ctx;
         int p;
 
+        ...
         PGAEncodeIntegerAsGrayCode (ctx, p, PGA_NEWPOP, 0, 19, 7);
 
     \endrst

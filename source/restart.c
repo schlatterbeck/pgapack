@@ -77,9 +77,11 @@ privately owned rights.
     .. code-block:: c
 
        PGAContext *ctx;
+       ...
        PGAEvaluate (ctx, PGA_OLDPOP, f, comm);
        PGAFitness  (ctx, PGA_OLDPOP);
 
+       ...
        if (StagnantEvolution ()) {
            PGARestart  (ctx, PGA_OLDPOP, PGA_NEWPOP);
            PGAEvaluate (ctx, PGA_NEWPOP, EvalFunc);
@@ -142,6 +144,7 @@ void PGARestart (PGAContext *ctx, int source_pop, int dest_pop)
 
         PGAContext *ctx;
 
+        ...
         PGASetRestartFlag (ctx, PGA_TRUE);
 
     \endrst
@@ -184,6 +187,7 @@ void PGASetRestartFlag (PGAContext *ctx, int val)
        PGAContext *ctx;
        int val;
 
+       ...
        val = PGAGetRestartFlag (ctx);
 
     \endrst
@@ -217,6 +221,7 @@ int PGAGetRestartFlag (PGAContext *ctx)
 
         PGAContext *ctx;
 
+        ...
         PGASetRestartFrequencyValue (ctx, 100);
 
     \endrst
@@ -255,8 +260,10 @@ void PGASetRestartFrequencyValue (PGAContext *ctx, int numiter)
     .. code-block:: c
 
         PGAContext *ctx;
+        int frq;
 
-        numiter = PGAGetRestartFrequencyValue (ctx);
+        ...
+        frq = PGAGetRestartFrequencyValue (ctx);
 
     \endrst
 
@@ -289,6 +296,7 @@ int PGAGetRestartFrequencyValue (PGAContext *ctx)
 
         PGAContext *ctx;
 
+        ...
         PGASetRestartAlleleChangeProb (ctx, 0.5);
 
     \endrst
@@ -326,7 +334,9 @@ void PGASetRestartAlleleChangeProb (PGAContext *ctx, double prob)
     .. code-block:: c
 
         PGAContext *ctx;
+        double prob;
 
+        ...
         prob = PGAGetRestartAlleleChangeProb (ctx);
 
     \endrst

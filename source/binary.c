@@ -72,10 +72,6 @@ privately owned rights.
  *  \brief Reporting, output printing
  *****************************************************************************/
 /*!***************************************************************************
- *  \defgroup not_implemented Not yet implemented
- *  \brief Not yet implemented, mainly used for island/multiple demes.
- *****************************************************************************/
-/*!***************************************************************************
  *  \defgroup standard-api Standard API
  *  \brief The standard API
  *****************************************************************************/
@@ -103,8 +99,10 @@ privately owned rights.
 
        PGAContext *ctx;
        int p, q, i;
-       int l = PGAGetStringLength (ctx);
+       int l;
 
+       ...
+       l = PGAGetStringLength (ctx);
        for (i=0 i<l; i++) {
            int a = PGAGetBinaryAllele (ctx, p, PGA_OLDPOP, i);
            PGASetBinaryAllele (ctx, q, PGA_NEWPOP, i, a);
@@ -160,6 +158,7 @@ void PGASetBinaryAllele (PGAContext *ctx, int p, int pop, int i, int val)
         PGAContext *ctx;
         int p, q, i;
 
+        ...
         for (i=PGAGetStringLength (ctx)-1; i>=0; i--) {
             int a = PGAGetBinaryAllele (ctx, p, PGA_OLDPOP, i);
             PGASetBinaryAllele (ctx, q, PGA_NEWPOP, i, a);
@@ -214,6 +213,7 @@ int PGAGetBinaryAllele (PGAContext *ctx, int p, int pop, int i)
 
        PGAContext *ctx;
 
+       ...
        PGASetBinaryInitProb (ctx, 0.01);
 
     \endrst
@@ -237,11 +237,11 @@ void PGASetBinaryInitProb (PGAContext *ctx, double p)
 }
 
 /*!***************************************************************************
-    \brief Returns the probability that an allele will be randomly
+    \brief Return the probability that an allele will be randomly
            initialized to "1" in a PGA_DATATYPE_BINARY string.
     \ingroup query
 
-    \param  ctx - context variable
+    \param  ctx  context variable
     \return The probability that a bit will be randomly initialized to one
 
     \rst
@@ -254,6 +254,7 @@ void PGASetBinaryInitProb (PGAContext *ctx, double p)
        PGAContext *ctx;
        double prob;
 
+       ...
        prob = PGAGetBinaryInitProb (ctx);
 
     \endrst
@@ -301,6 +302,7 @@ double PGAGetBinaryInitProb (PGAContext *ctx)
         PGAContext *ctx;
         int p;
 
+        ...
         for (p=PGAGetPopSize(ctx)-1; p>=0; p--) {
             PGABinaryCreateString (ctx, p, PGA_NEWPOP, PGA_FALSE);
         }
@@ -351,7 +353,7 @@ void PGABinaryCreateString (PGAContext *ctx, int p, int pop, int initflag)
     \param   p    string index
     \param   pop  symbolic constant for the population string p is in
     \param   mr   probability of mutating (toggling) a bit
-    \return  Returns the number of mutations
+    \return  Return the number of mutations
 
     \rst
 
@@ -374,6 +376,7 @@ void PGABinaryCreateString (PGAContext *ctx, int p, int pop, int initflag)
        PGAContext *ctx;
        int p;
 
+       ...
        PGABinaryMutation (ctx, p, PGA_NEWPOP, .001);
 
     \endrst
@@ -446,6 +449,7 @@ int PGABinaryMutation (PGAContext *ctx, int p, int pop, double mr)
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGABinaryOneptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
 
     \endrst
@@ -543,6 +547,7 @@ void PGABinaryOneptCrossover
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGABinaryTwoptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
 
     \endrst
@@ -673,6 +678,7 @@ void PGABinaryTwoptCrossover
        PGAContext *ctx;
        int m, d, s, b;
 
+       ...
        PGABinaryUniformCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
 
     \endrst
@@ -771,6 +777,7 @@ void PGABinaryPrint (PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb)
        PGAContext *ctx;
        int s;
 
+       ...
        PGABinaryPrintString (ctx, stdout, s, PGA_NEWPOP);
 
     \endrst
@@ -835,6 +842,7 @@ void PGABinaryPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
        PGAContext *ctx;
        int x, y
 
+       ...
        PGABinaryCopyString (ctx, x, PGA_OLDPOP, y, PGA_NEWPOP);
 
     \endrst
@@ -864,7 +872,7 @@ void PGABinaryCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \param   pop1  symbolic constant of the population string p1 is in
     \param   p2    string index of the second string to compare
     \param   pop2  symbolic constant of the population string p2 is in
-    \return  Returns true/false if strings are duplicates
+    \return  Return true/false if strings are duplicates
 
     \rst
 
@@ -884,6 +892,7 @@ void PGABinaryCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
        PGAContext *ctx;
        int x, y;
 
+       ...
        if (PGABinaryDuplicate (ctx, x, PGA_NEWPOP, y, PGA_NEWPOP)) {
            printf ("strings are duplicates\n");
        }
@@ -914,9 +923,9 @@ int PGABinaryDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \brief Return hash value of given gene.
     \ingroup internal
 
-    \param   ctx  - context variable
-    \param   p    - string index of the string to hash
-    \param   pop  - symbolic constant of the population string p is in
+    \param   ctx   context variable
+    \param   p     string index of the string to hash
+    \param   pop   symbolic constant of the population string p is in
     \return  Hash value for string
 
     \rst
@@ -963,6 +972,7 @@ PGAHash PGABinaryHash (PGAContext *ctx, int p, int pop)
        PGAContext *ctx;
        int p;
 
+       ...
        PGABinaryInitString (ctx, p, PGA_NEWPOP);
 
     \endrst
@@ -1041,7 +1051,7 @@ MPI_Datatype PGABinaryBuildDatatype (PGAContext *ctx, int p, int pop)
 
 
 /*!****************************************************************************
-    \brief Returns the Hamming distance between two strings.
+    \brief Return the Hamming distance between two strings.
     \ingroup internal
 
     \param   ctx  context variable
@@ -1069,6 +1079,7 @@ MPI_Datatype PGABinaryBuildDatatype (PGAContext *ctx, int p, int pop)
        PGABinary *x, *y;
        int d;
 
+       ...
        d = PGABinaryHammingDistance (ctx, x, y);
 
     \endrst

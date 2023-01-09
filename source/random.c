@@ -71,6 +71,7 @@ privately owned rights.
        PGAContext *ctx;
        int bit;
 
+       ...
        bit = PGARandomFlip (ctx, 0.7)
 
     \endrst
@@ -106,6 +107,7 @@ int PGARandomFlip (PGAContext *ctx, double p)
        PGAContext *ctx;
        int r;
 
+       ...
        r = PGARandomInterval (ctx, 0, 99);
 
     \endrst
@@ -170,6 +172,7 @@ int PGARandomInterval (PGAContext *ctx, int start, int end)
        PGAContext *ctx;
        double r;
 
+       ...
        r = PGARandom01 (ctx, 0);
 
     \endrst
@@ -278,6 +281,7 @@ double PGARandom01 (PGAContext *ctx, int newseed)
        PGAContext *ctx;
        double r;
 
+       ...
        r = PGARandomUniform (ctx, -0.5, 1.5);
 
     \endrst
@@ -321,6 +325,7 @@ double PGARandomUniform (PGAContext *ctx, double start, double end)
        PGAContext *ctx;
        double r;
 
+       ...
        r = PGARandomGaussian (ctx, 0.0, 1.0);
 
     \endrst
@@ -359,6 +364,7 @@ double PGARandomGaussian (PGAContext *ctx, double mean, double sigma)
        PGAContext *ctx;
        int seed;
 
+       ...
        seed = PGAGetRandomSeed (ctx);
 
     \endrst
@@ -398,6 +404,7 @@ int PGAGetRandomSeed (PGAContext *ctx)
 
        PGAContext *ctx;
 
+       ...
        PGASetRandomSeed (ctx, 1);
 
     \endrst
@@ -470,6 +477,7 @@ static int sample_a2 (PGASampleState *state);
        PGASampleState state;
        int s;
 
+       ...
        PGARandomSampleInit (ctx, &state, 3, 6);
        s = PGARandomNextSample (&state);
 

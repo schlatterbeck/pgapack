@@ -26,6 +26,8 @@ fixedman: man man/man3
 	$(MAKE) fixedman2
 
 fixedman2: $(MAN_STAGE2)
+	cp $(MAN_PATH2)/_PGAGetEvaluation.3 $(MAN_PATH2)/PGAGetEvaluation.3
+	cp $(MAN_PATH2)/_PGASetEvaluation.3 $(MAN_PATH2)/PGASetEvaluation.3
 	@echo Stage2 done
 
 .stamp-doxygen: $(SOURCE) $(INCLUDE) Doxyfile
