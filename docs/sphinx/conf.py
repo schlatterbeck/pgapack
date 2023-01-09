@@ -127,7 +127,7 @@ except FileNotFoundError:
 group_remove = {}
 # Compute functions in some groups for which we do not create manpages
 if ldir:
-    for g in ('internal', 'linalg', 'utility', 'notimplemented'):
+    for g in ('internal', 'linalg', 'utility', 'notimplemented', 'fun-bit'):
         tree = ElementTree.parse (os.path.join (dir, 'group__%s.xml' % g))
         root = tree.getroot ()
         for memb in root.findall ('.//memberdef'):

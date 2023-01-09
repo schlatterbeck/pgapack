@@ -142,7 +142,9 @@ extern "C" {
 /** map global column (bit) to word (ix) and bit (bx) */
 #define INDEX(ix,bx,bit,WL) ix=bit/WL;bx=bit%WL
 
-/** Used in PGAEvalCompare and others */
+/** \brief Used in PGAEvalCompare and others
+    \ingroup internal
+ */
 static inline int CMP (const double a, const double b)
 {
     return (a < b ? -1 : (a > b ? 1 : 0));
@@ -199,7 +201,7 @@ typedef unsigned int    PGAHash;
 /*! @} */
 
 /*!********************************************
- * \defgroup fun_bit Bits arrays
+ * \defgroup fun-bit Bits arrays
  * \brief Some functions for manipulating bit arrays
  * @{
  **********************************************/
