@@ -22,7 +22,7 @@ companion projects:
 Updates 
 =======
 
-Update XXX:
+Update Jan 2023:
 
 - Add Sphinx documentation
 - Generate manual pages from Sphinx docs, this has a lot of bug-fixes in
