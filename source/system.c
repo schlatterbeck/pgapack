@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,101 +37,118 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: system.c: This file contains systme routines such as errors and
-*                     exits
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains system routines such as errors and exits.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
 
-char PGAProgram[100];    /* Holds argv[0] for PGAUsage() call */
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+char PGAProgram [100];    /* Holds argv[0] for PGAUsage() call */
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-/*U****************************************************************************
-   PGAError - reports error messages.  Prints out the message supplied, and
-   the value of a piece of data.  Terminates if PGA_FATAL.
+/*!****************************************************************************
+    \brief Report error messages.
+    \ingroup reporting
 
-   Category: System
+    Prints out the message supplied, and
+    the value of a piece of data.  Terminates if PGA_FATAL.
 
-   Inputs:
-      ctx      - context variable
-      msg      - the error message to print
-      level    - PGA_WARNING or PGA_FATAL to indicate the error's severity
-      datatype - the data type of the following argument
-      data     - the address of the data to be written out, cast as a void
-                 pointer
+    \param   ctx       context variable
+    \param   msg       the error message to print
+    \param   level     PGA_WARNING or PGA_FATAL to indicate the error's severity
+    \param   datatype  the data type of the following argument
+    \param   data      the address of the data to be written out, cast as a void
+                       pointer
+    \return  None
 
-   Outputs:
-      None
+    \rst
 
-   Example:
-      PGAContext *ctx;
-      int         val;
-      :
-      PGAError(ctx, "Some Non Fatal Error: val = ", PGA_WARNING, PGA_INT,
-               (void *) &val);
-      :
-      PGAError(ctx, "A Fatal Error!", PGA_FATAL, PGA_VOID, NULL);
+    Example
+    -------
 
-****************************************************************************U*/
-void PGAError( PGAContext *ctx, char *msg,
-               int level, int datatype, void *data )
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int         val;
+
+       ...
+       PGAError
+        ( ctx, "Some Non Fatal Error: val = "
+        , PGA_WARNING, PGA_INT, (void *) &val
+        );
+
+       PGAError (ctx, "A Fatal Error!", PGA_FATAL, PGA_VOID, NULL);
+
+    \endrst
+
+******************************************************************************/
+void PGAError (PGAContext *ctx, char *msg, int level, int datatype, void *data)
 {
 
-    PGADebugEntered("PGAError");
+    PGADebugEntered ("PGAError");
 
     switch (datatype) {
       case PGA_INT:
-	fprintf(stderr, "%s %d\n", msg, *(int *)    data);
-	break;
+        fprintf (stderr, "%s %d\n", msg, *(int *)    data);
+        break;
       case PGA_DOUBLE:
-	fprintf(stderr, "%s %f\n", msg, *(double *) data);
-	break;
+        fprintf (stderr, "%s %f\n", msg, *(double *) data);
+        break;
       case PGA_CHAR:
-	fprintf(stderr, "%s %s\n", msg,  (char *)   data);
-	break;
+        fprintf (stderr, "%s %s\n", msg,  (char *)   data);
+        break;
       case PGA_VOID:
-	fprintf(stderr, "%s\n", msg);
-	break;
+        fprintf (stderr, "%s\n", msg);
+        break;
     }
-    if ( level == PGA_FATAL ) {
-	fprintf(stderr, "PGAError: Fatal\n");
-	PGADestroy(ctx);
-	exit(-1);
+    if (level == PGA_FATAL) {
+        fprintf (stderr, "PGAError: Fatal\n");
+        PGADestroy (ctx);
+        exit (-1);
     }
-    PGADebugExited("PGAError");
+    PGADebugExited ("PGAError");
 }
 
-/*U****************************************************************************
-   PGAErrorPrintf - reports error messages.
-   Prints out the message supplied, and the value of a piece of data.
-   Uses printf-style.
-   Terminates if PGA_FATAL.
-   Note that compared to PGAError msg and level are exchanged, seems
-   more natural.
+/*!****************************************************************************
+    \brief Report error messages using printf-like interface.
+    \ingroup reporting
 
-   Category: System
+    \param   ctx       context variable
+    \param   level     PGA_WARNING or PGA_FATAL to indicate the error's severity
+    \param   fmt       the printf-style format to print
+    \param   ...       additional parameters depending on format string in msg
+    \return  None
 
-   Inputs:
-      ctx      - context variable
-      level    - PGA_WARNING or PGA_FATAL to indicate the error's severity
-      fmt      - the printf-style format to print
-      params   - additional parameters depending on format string in msg
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      int         val;
-      :
-      PGAErrorPrintf (ctx, PGA_WARNING, "Some Non Fatal Error: val = %d", val);
-      :
-      PGAErrorPrintf (ctx, PGA_FATAL, "A Fatal Error!");
+    Prints out the message supplied, and optional parameters.
+    Uses a printf-style interface. Terminates if PGA_FATAL.
+    Note that compared to :c:func:`PGAError` msg and level are
+    exchanged, seems more natural.
 
-****************************************************************************U*/
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int         val;
+
+       ...
+       PGAErrorPrintf (ctx, PGA_WARNING, "Some Non Fatal Error: val = %d", val);
+       PGAErrorPrintf (ctx, PGA_FATAL, "A Fatal Error!");
+
+    \endrst
+
+******************************************************************************/
 void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...)
 {
     va_list args;
@@ -139,30 +156,35 @@ void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...)
     vfprintf (stderr, fmt, args);
     va_end (args);
     if (level == PGA_FATAL) {
-	fprintf (stderr, "\nPGAError: Fatal\n");
-	PGADestroy (ctx);
-	exit (-1);
+        fprintf (stderr, "\nPGAError: Fatal\n");
+        PGADestroy (ctx);
+        exit (-1);
     }
 }
 
-/*U****************************************************************************
-  PGADestroy - deallocate memory for this instance of PGAPack, if this context
-  initialized MPI, finalize MPI as well.
+/*!****************************************************************************
+    \brief Deallocate memory for this instance of PGAPack, if this
+           context initialized MPI, finalize MPI as well.
+    \ingroup standard-api
 
-  Category: Generation
+    \param   ctx    context variable
+    \return  None
 
-  Inputs:
-     ctx   - context variable
+    \rst
 
-  Outputs:
-     None
+    Example
+    -------
 
-  Example:
-    PGAContext *ctx;
-    :
-    PGADestroy(ctx);
+    .. code-block:: c
 
-****************************************************************************U*/
+      PGAContext *ctx;
+
+      ...
+      PGADestroy (ctx);
+
+    \endrst
+
+******************************************************************************/
 void PGADestroy (PGAContext *ctx)
 {
     int i;
@@ -196,8 +218,9 @@ void PGADestroy (PGAContext *ctx)
         {
             int err = fclose (ctx->ga.OutputFile);
             if (err != 0) {
-                fprintf
-                    ( stderr, "Warning: Closing output file returned: %s"
+                PGAErrorPrintf
+                    ( ctx, PGA_WARNING
+                    , "Warning: Closing output file returned: %s"
                     , strerror (errno)
                     );
             }
@@ -229,180 +252,222 @@ void PGADestroy (PGAContext *ctx)
     free (ctx);
 }
 
-/*U***************************************************************************
-   PGAGetMaxMachineIntValue - returns the largest integer of the current
-   machine
+/*!***************************************************************************
+    \brief Return the largest integer of the current machine
+    \ingroup query
 
-   Category: System
+    \param   ctx  context variable
+    \return  The largest integer of the given machine
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The largest integer of the given machine
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int intmax;
-      :
-      intmax = PGAGetMaxMachineIntValue(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int intmax;
+
+       ...
+       intmax = PGAGetMaxMachineIntValue (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetMaxMachineIntValue (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetMaxMachineIntValue");
+    PGADebugEntered ("PGAGetMaxMachineIntValue");
 
-    PGADebugExited("PGAGetMaxMachineIntValue");
+    PGADebugExited  ("PGAGetMaxMachineIntValue");
 
-    return(ctx->sys.PGAMaxInt);
+    return ctx->sys.PGAMaxInt;
 }
 
-/*U***************************************************************************
-   PGAGetMaxMachineIntValue - returns the smallest integer of the current
-   machine
+/*!***************************************************************************
+    \brief Return the smallest integer of the current machine
+    \ingroup query
 
-   Category: System
+    \param   ctx  context variable
+    \return  The smallest integer of the given machine
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The smallest integer of the given machine
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int intmin;
-      :
-      intmin = PGAGetMinMachineIntValue(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int intmin;
+
+       ...
+       intmin = PGAGetMinMachineIntValue (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetMinMachineIntValue (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetMinMachineIntValue");
+    PGADebugEntered ("PGAGetMinMachineIntValue");
 
-    PGADebugExited("PGAGetMinMachineIntValue");
+    PGADebugExited  ("PGAGetMinMachineIntValue");
 
-    return(ctx->sys.PGAMinInt);
+    return ctx->sys.PGAMinInt;
 }
 
-/*U***************************************************************************
-   PGAGetMaxMachineDoubleValue - returns the largest double of the current
-   machine
+/*!***************************************************************************
+    \brief Return the largest double of the current machine
+    \ingroup query
 
-   Category: System
+    \param   ctx  context variable
+    \return  The largest double of the given machine
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The largest double of the given machine
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double big;
-      :
-      big = PGAGetMaxMachineDoubleValue(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double big;
+
+       ...
+       big = PGAGetMaxMachineDoubleValue (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetMaxMachineDoubleValue (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetMaxMachineDoubleValue");
+    PGADebugEntered ("PGAGetMaxMachineDoubleValue");
 
-    PGADebugExited("PGAGetMaxMachineDoubleValue");
+    PGADebugExited  ("PGAGetMaxMachineDoubleValue");
 
-    return(ctx->sys.PGAMaxDouble);
+    return ctx->sys.PGAMaxDouble;
 }
 
-/*U***************************************************************************
-   PGAGetMaxMachineDoubleValue - returns the smallest double of the current
-   machine
+/*!***************************************************************************
+    \brief Return the smallest double of the current machine.
+    \ingroup query
 
-   Category: System
+    \param   ctx  context variable
+    \return  The smallest double of the given machine
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The smallest double of the given machine
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double small;
-      :
-      small = PGAGetMinMachineDoubleValue(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double small;
+
+       ...
+       small = PGAGetMinMachineDoubleValue (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetMinMachineDoubleValue (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetMinMachineDoubleValue");
+    PGADebugEntered ("PGAGetMinMachineDoubleValue");
 
-    PGADebugExited("PGAGetMinMachineDoubleValue");
+    PGADebugExited  ("PGAGetMinMachineDoubleValue");
 
-    return(ctx->sys.PGAMinDouble);
+    return ctx->sys.PGAMinDouble;
 }
 
 
-/*U****************************************************************************
-   PGAUsage - print list of available parameters and quit
+/*!****************************************************************************
+    \brief Print list of available parameters and quit
+    \ingroup reporting
 
-   Inputs:
-      ctx - context variable
+    \param   ctx  context variable
+    \return  print list of available parameters
 
-   Outputs:
-     list of available parametersNone
+    \rst
 
-   Example:
-      PGAContext ctx;
-      :
-      PGAUsage(ctx);
+    Description
+    -----------
 
-****************************************************************************U*/
-void PGAUsage( PGAContext *ctx )
+    Print the usage info out if MPI isn't running (thus, only one process
+    is probably running), or if we actually are the rank-0 process.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext ctx;
+
+       ...
+       PGAUsage (ctx);
+
+    \endrst
+
+******************************************************************************/
+void PGAUsage (PGAContext *ctx)
 {
-    /*  Print the usage info out if MPI isn't running (thus, only one process
-     *  is probably running), or if we actually are the master.
-     */
     if (!ctx->par.MPIAlreadyInit || (PGAGetRank(ctx, MPI_COMM_WORLD) == 0)) {
-	PGAPrintVersionNumber( ctx );
-	printf("PGAPack usage: %s [pga options]\n", PGAProgram);
-	printf("Valid PGAPack options:\n");
-	printf("\t-pgahelp          \tget this message\n");
-	printf("\t-pgahelp debug    \tlist of debug options\n");
-	printf("\t-pgadbg <option>  \tset debug option\n");
-	printf("\t-pgadebug <option>\tset debug option\n");
-	printf("\t-pgaversion       \tprint current PGAPack version number\n");
-	printf("\n");
+        PGAPrintVersionNumber (ctx);
+        printf ("PGAPack usage: %s [pga options]\n", PGAProgram);
+        printf ("Valid PGAPack options:\n");
+        printf ("\t-pgahelp          \tget this message\n");
+        printf ("\t-pgahelp debug    \tlist of debug options\n");
+        printf ("\t-pgadbg <option>  \tset debug option\n");
+        printf ("\t-pgadebug <option>\tset debug option\n");
+        printf ("\t-pgaversion       \tprint current PGAPack version number\n");
+        printf ("\n");
     }
-    PGADestroy(ctx);
-    exit(-1);
+    PGADestroy (ctx);
+    exit (-1);
 }
 
-/*U****************************************************************************
-   PGAPrintVersionNumber - print PGAPack version number
+/*!****************************************************************************
+    \brief Print PGAPack version number
+    \ingroup notimplemented
 
-   Inputs:
-      ctx - context variable
+    \param   ctx  context variable
+    \return  print PGAPack version number
 
-   Outputs:
-      PGAPack version number
+    \rst
 
-   Example:
-      PGAContext ctx;
-      :
-      PGAPrintVersionNumber(ctx);
+    Description
+    -----------
 
-****************************************************************************U*/
-void PGAPrintVersionNumber( PGAContext *ctx )
+    This currently prints a meaningless hard-coded string.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext ctx;
+
+       ...
+       PGAPrintVersionNumber (ctx);
+
+    \endrst
+
+******************************************************************************/
+void PGAPrintVersionNumber (PGAContext *ctx)
 {
     if (!ctx->par.MPIAlreadyInit || (PGAGetRank(ctx, MPI_COMM_WORLD) == 0)) {
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 #ifdef FAKE_MPI
 #define PRINT1  "Sequential"
 #else
 #define PRINT1  "Parallel"
-#endif               
-        printf("\nPGAPack version 1.0: (%s, %s)\n\n",
-	       (OPTIMIZE)                ? "Optimized"  : "Debug",
-		PRINT1 );
+#endif
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+        printf
+            ( "\nPGAPack version 1.0: (%s, %s)\n\n"
+            , (OPTIMIZE) ? "Optimized"  : "Debug"
+            , PRINT1
+            );
     }
 }
-

@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,49 +37,56 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: duplicate.c: This file contains the routines that have to do with
-*                        testing for duplicate strings
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains the routines that have to do with testing for
+* duplicate strings.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
 
-/*U****************************************************************************
-  PGADuplicate - determines if a specified string is a duplicate of one
-  already in an existing population
+/*!****************************************************************************
+    \brief Determine if a specified string is a duplicate of one already
+           in an existing population.
+    \ingroup explicit
 
-  Category: Generation
+    \param  ctx   context variable
+    \param  p     string index
+    \param  pop1  symbolic constant of the population containing string p
+    \param  pop2  symbolic constant of the (possibly partial)
+                  population containing strings to compare string p
+                  against
+    \return Returns PGA_TRUE if PGAGetNoDuplicatesFlag() returns
+            PGA_TRUE and string p in population pop1 is a duplicate of
+            at least one strings already inserted into population pop2,
+            otherwise returns PGA_FALSE
 
-  Inputs:
-    ctx  - context variable
-    p    - string index
-    pop1 - symbolic constant of the population containing string p
-    pop2 - symbolic constant of the (possibly partial) population containing
-           strings to compare string p against
+    \rst
 
-  Outputs:
-    Returns PGA_TRUE if PGAGetNoDuplicatesFlag() returns PGA_TRUE and
-    string p in population pop1 is a duplicate of at least one strings
-    already inserted into population pop2.  Otherwise returns PGA_FALSE
+    Example
+    -------
 
-  Example:
     Check the current to-be-inserted string if it is a copy of any of
     the strings in PGA_NEWPOP. Note that the check relies on all
     individuals in PGA_NEWPOP to also be inserted into the duplicate
-    hash, see PGAHashIndividual.
+    hash, see :c:func:`PGAHashIndividual`.
 
-    PGAContext *ctx;
-    int p;
-    :
+    .. code-block:: c
 
-    while (PGADuplicate (ctx, p, PGA_NEWNEW, PGA_NEWPOP)) {
-        PGAChange (ctx, p, PGA_NEWPOP);
-    }
+      PGAContext *ctx;
+      int p;
 
-****************************************************************************U*/
+      ...
+      while (PGADuplicate (ctx, p, PGA_NEWNEW, PGA_NEWPOP)) {
+          PGAChange (ctx, p, PGA_NEWPOP);
+      }
+
+    \endrst
+
+******************************************************************************/
 int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
 {
     int RetVal = PGA_FALSE;
@@ -89,7 +96,7 @@ int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
         int p2, fp;
         size_t idx = PGAIndividualHashIndex (ctx, p, pop1);
         PGAIndividual *ind = NULL;
-    
+
         assert (pop2 == PGA_NEWPOP);
         for (ind = ctx->scratch.hashed [idx]; ind; ind = ind->next_hash) {
             p2 = ind - ind->pop;
@@ -112,38 +119,45 @@ int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
 }
 
 
-/*U****************************************************************************
-  PGAChange - Repeatedly apply mutation to a string (with an increasing
-  mutation rate) until one or more mutations have occurred.  This routine is
-  usually used with PGADuplicate to modify a duplicate string.  It is not
-  intended to replace PGAMutation
+/*!****************************************************************************
+    \brief Repeatedly apply mutation to a string (with an increasing
+           mutation rate) until one or more mutations have occurred.
+    \ingroup explicit
 
-  Category: Generation
+    \param  ctx   context variable
+    \param  p     string index
+    \param  pop   symbolic constant of the population containing string p
+    \return Mutates string p in population pop via side effect
 
-  Inputs:
-    ctx  - context variable
-    p    - string index
-    pop  - symbolic constant of the population containing string p
+    \rst
 
-  Outputs:
-    Mutates string p in population pop via side effect.
+    Description
+    -----------
 
-  Example:
+    This routine is usually used with PGADuplicate to modify a duplicate
+    string.  It is not intended to replace PGAMutation
+
+    Example
+    -------
+
     Check the current to-be-inserted string if it is a copy of any of
     the strings in PGA_NEWPOP. Note that the check relies on all
     individuals in PGA_NEWPOP to also be inserted into the duplicate
-    hash, see PGAHashIndividual.
+    hash, see :c:func:`PGAHashIndividual`.
 
-    PGAContext *ctx;
-    int p;
-    :
+    .. code-block:: c
 
-    while (PGADuplicate (ctx, p, PGA_NEWNEW, PGA_NEWPOP)) {
-        PGAChange (ctx, p, PGA_NEWPOP);
-    }
+      PGAContext *ctx;
+      int p;
 
+      ...
+      while (PGADuplicate (ctx, p, PGA_NEWNEW, PGA_NEWPOP)) {
+          PGAChange (ctx, p, PGA_NEWPOP);
+      }
 
-****************************************************************************U*/
+    \endrst
+
+******************************************************************************/
 void PGAChange (PGAContext *ctx, int p, int pop)
 {
     int    changed = PGA_FALSE;
@@ -163,12 +177,12 @@ void PGAChange (PGAContext *ctx, int p, int pop)
         );
 
     while (!changed) {
-	if (ctx->fops.Mutation) {
-	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
+        if (ctx->fops.Mutation) {
+            fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
             nflips = (*ctx->fops.Mutation)(&ctx, &fp, &pop, &mr);
-	} else {
-	    nflips = (*ctx->cops.Mutation)( ctx, p, pop, mr );
-	}
+        } else {
+            nflips = (*ctx->cops.Mutation)( ctx, p, pop, mr );
+        }
 
         if (nflips > 0) {
             changed = PGA_TRUE;
@@ -184,30 +198,35 @@ void PGAChange (PGAContext *ctx, int p, int pop)
     }
 
     if (changed) {
-	PGASetEvaluationUpToDateFlag (ctx, p, pop, PGA_FALSE);
+        PGASetEvaluationUpToDateFlag (ctx, p, pop, PGA_FALSE);
     } else {
-	PGAError (ctx, "Could not change string:", PGA_WARNING, PGA_VOID, NULL);
-	PGAPrintString (ctx, stderr, p, pop);
+        PGAError (ctx, "Could not change string:", PGA_WARNING, PGA_VOID, NULL);
+        PGAPrintString (ctx, stderr, p, pop);
     }
 
     PGADebugExited ("PGAChange");
 }
 
-/*U****************************************************************************
-  PGAHashIndividual - Compute Hash for this individual and insert into
-  hash-table
+/*!****************************************************************************
+    \brief Compute Hash for this individual and insert into hash-table
+    \ingroup explicit
 
-  Category: Generation
+    \param   ctx   context variable
+    \param   p     string index
+    \param   pop   symbolic constant of the population containing string p
+    \return  Computes hash of given individual and inserts it into hash table
 
-  Inputs:
-     ctx  - context variable
-     p    - string index
-     pop  - symbolic constant of the population containing string p
+    \rst
 
-  Outputs:
-     Computes hash of given individual and inserts it into hash table.
+    Description
+    -----------
 
-****************************************************************************U*/
+    Calls :c:func:`PGAIndividualHashIndex` for the hash value and puts
+    it into the correct hash bucket.
+
+    \endrst
+
+******************************************************************************/
 void PGAHashIndividual (PGAContext *ctx, int p, int pop)
 {
     if (ctx->ga.NoDuplicates) {
@@ -222,28 +241,38 @@ void PGAHashIndividual (PGAContext *ctx, int p, int pop)
     }
 }
 
-/*U****************************************************************************
-  PGASetNoDuplicatesFlag - A boolean flag to indicate if duplicate strings are
-  allowed in the population. Valid choices are PGA_TRUE and PGA_FALSE.  The
-  default is PGA_FALSE -- allow duplicates.
+/*!****************************************************************************
+    \brief A boolean flag to indicate if duplicate strings are allowed
+           in the population.
+    \ingroup init
 
-  Category: Generation
+    \param  ctx     context variable
+    \param  no_dup  PGA_TRUE or PGA_FALSE
+    \return None
 
-  Inputs:
-    ctx  - context variable
-    flag - PGA_TRUE or PGA_FALSE
+    \rst
 
-  Outputs:
-    None
+    Description
+    -----------
 
-  Example:
+    Valid choices are PGA_TRUE and PGA_FALSE.  The default is PGA_FALSE:
+    allow duplicates.
+
+    Example
+    -------
+
     Set the NoDuplicates flag to require that all strings are unique.
 
-    PGAContext *ctx;
-    :
-    PGASetNoDuplicatesFlag (ctx,PGA_TRUE);
+    .. code-block:: c
 
-****************************************************************************U*/
+      PGAContext *ctx;
+
+      ...
+      PGASetNoDuplicatesFlag (ctx, PGA_TRUE);
+
+    \endrst
+
+******************************************************************************/
 void PGASetNoDuplicatesFlag (PGAContext *ctx, int no_dup)
 {
     PGADebugEntered ("PGASetNoDuplicatesFlag");
@@ -264,33 +293,33 @@ void PGASetNoDuplicatesFlag (PGAContext *ctx, int no_dup)
     PGADebugExited ("PGASetNoDuplicatesFlag");
 }
 
-/*U***************************************************************************
-  PGAGetNoDuplicatesFlag - Returns PGA_TRUE if duplicates are not allowed,
-  else returns PGA_FALSE.
+/*!***************************************************************************
+    \brief Return PGA_TRUE if duplicates are not allowed, else return
+           PGA_FALSE.
+    \ingroup query
 
-  Category: Generation
+    \param  ctx  context variable
+    \return The value of the NoDuplicates flag
 
-  Inputs:
-    ctx - context variable
+    \rst
 
-  Outputs:
-    The value of the NoDuplicates flag.
+    Example
+    -------
 
-  Example:
-    PGAContext *ctx;
-    int nodups;
-    :
-    nodups = PGAGetNoDuplicatesFlag (ctx);
-    switch (nodups) {
-    case PGA_TRUE:
-        printf ("Duplicate strings not allowed in population\n");
-        break;
-    case PGA_FALSE:
-        printf ("Duplicate strings allowed in population\n");
-        break;
-    }
+    .. code-block:: c
 
-***************************************************************************U*/
+      PGAContext *ctx;
+
+      ...
+      if (PGAGetNoDuplicatesFlag (ctx)) {
+          printf ("Duplicate strings not allowed in population\n");
+      } else {
+          printf ("Duplicate strings allowed in population\n");
+      }
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetNoDuplicatesFlag (PGAContext *ctx)
 {
     PGADebugEntered ("PGAGetNoDuplicatesFlag");

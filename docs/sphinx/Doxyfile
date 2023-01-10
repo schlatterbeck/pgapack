@@ -1,0 +1,37 @@
+INPUT           = ../../include ../../source
+EXCLUDE         = ../../include/pgapackf.h ../../source/mpi_stub.c
+STRIP_FROM_PATH = ../..
+# Needed by exhale:
+OUTPUT_DIRECTORY       = ./_doxygen
+# From default exhale:
+CREATE_SUBDIRS         = NO
+FULL_PATH_NAMES        = YES
+RECURSIVE              = YES
+GENERATE_XML           = YES
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+SKIP_FUNCTION_MACROS   = NO
+EXPAND_ONLY_PREDEF     = NO
+# Own settings
+XML_PROGRAMLISTING     = NO
+OPTIMIZE_OUTPUT_FOR_C  = YES
+EXTRACT_ALL            = NO
+EXTRACT_LOCAL_CLASSES  = NO
+EXTRACT_STATIC         = YES
+SHOW_INCLUDE_FILES     = NO
+SHOW_NAMESPACES        = NO
+QT_AUTOBRIEF           = YES
+JAVADOC_AUTOBRIEF      = YES
+SKIP_FUNCTION_MACROS   = YES
+GENERATE_MAN           = NO
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+PREDEFINED             = DOXYGEN_DOCUMENTATION_BUILD
+PREDEFINED            += DOXYGEN_SHOULD_SKIP_THIS
+PREDEFINED            += STATIC=static
+PREDEFINED            += PGADebugEntered(a)
+PREDEFINED            += PGADebugExited(a)
+PREDEFINED            += PGACheckDataType(a,b)
+PREDEFINED            += INDEX(a,b,c,d)
+ALIASES                = "rst=\verbatim embed:rst"
+ALIASES               += "endrst=\endverbatim"

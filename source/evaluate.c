@@ -37,60 +37,182 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: evaluate.c: This file contains routines specific to the evaluation
-*                       of the strings.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains routines specific to the evaluation of the strings.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup evaluation Evaluation
+ *  \brief Functions used during evaluation and fitness computation
+ *****************************************************************************/
 
 #include "pgapack.h"
 
-/*U****************************************************************************
-   PGASetEvaluation - Set the evaluation function value for a string to a
-   specified value.  Also sets the evaulation up to date flag to PGA_TRUE.
-   There is a macro that makes the last argument optional.
+/*!****************************************************************************
+    \brief Maps the value v defined on [a,b] to r defined on [l,u].
 
-   Category: Fitness & Evaluation
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p    - string index
-      pop  - symbolic constant of the population string p is in
-      val  - the (user) evaluation value to assign to string p
-      aux  - Auxiliary evaluations
+    \param  ctx   context variable
+    \param  v     value from original interval (usually the decoded bit string)
+    \param  a     lower bound of integer interval
+    \param  b     upper bound of integer interval
+    \param  l     lower bound of real interval
+    \param  u     upper bound of real interval
+    \return Scaled value of v defined on [l,u]
 
-   Outputs:
-      Sets the evaluation function value of string p and the EvalUpToDate
-      flag (to PGA_TRUE) via side effect
+    \rst
 
-   Example:
-      Set the evaluation function value of string p in population PGA_NEWPOP
-      to 123.456.
+    Description
+    -----------
+
+    In the context of PGAPack :math:`[a,b]` is the discrete interval
+    :math:`[0,2^{nbits}-1]` (i.e., the number of bits in a binary
+    string) and :math:`[l,u]` represent the range of possible values of
+    the real number :math:`r`.
+
+    Example
+    -------
+
+    Map a five bit (that is, an integer with a range of [0, 31]) integer v
+    to a real in the range [0, 3.14].
+
+    .. code-block:: c
+
+        PGAContext *ctx;
+        double x;
+        int v;
+
+        ...
+        x = PGAMapIntegerToReal (ctx, v, 0, 31, 0.0, 3.14);
+
+    \endrst
+
+******************************************************************************/
+static double PGAMapIntegerToReal
+    (PGAContext *ctx, int v, int a, int b, double l, double u)
+{
+    double retval = ((v-a) * (u-l) / (b-a) + l);
+    /* This may exceed the upper bound due to imprecision */
+    if (retval > u) {
+        return u;
+    }
+    return retval;
+}
+
+/*!****************************************************************************
+    \brief Map the value r defined on [l,u] to v defined on [a,b].
+    \ingroup internal
+
+    \param   ctx       context variable
+    \param   r         real value defined on [l,u]
+    \param   l         lower bound of real interval
+    \param   u         upper bound of real interval
+    \param   a         lower bound of integer interval
+    \param   b         upper bound of integer interval
+    \return Scaled value of r defined on [a,b]
+
+    \rst
+
+    Description
+    -----------
+
+    In the context of PGAPack :math:`[a,b]` is the discrete interval
+    :math:`[0,2^{nbits}-1]`
+    (i.e., the number of bits in a binary string) and :math:`[l,u]`
+    represent the range of possible values of the real number :math:`r`.
+
+    Example
+    -------
+
+    Map the value r on the interval [0, 3.14] to a five bit integer v.
+
+    .. code-block:: c
 
       PGAContext *ctx;
-      int p;
-      :
-      PGASetEvaluation(ctx, p, PGA_NEWPOP, 123.456);
+      double r;
+      int v;
 
-      or
+      ...
+      v = PGAMapRealToInteger (ctx, r, 0.0, 3.14, 0, 31);
 
-      PGASetEvaluation(ctx, p, PGA_NEWPOP, 123.456, aux);
+    \endrst
 
-****************************************************************************U*/
+******************************************************************************/
+static int PGAMapRealToInteger
+    (PGAContext *ctx, double r, double l, double u, int a, int b)
+{
+    return PGARound (ctx, (b - a) * (r - l) / (u - l) + a);
+}
+
+/*!****************************************************************************
+    \brief Set the evaluation function value for a string to a specified
+           value.
+    \ingroup evaluation
+
+    \param   ctx   context variable
+    \param   p     string index
+    \param   pop   symbolic constant of the population string p is in
+    \param   val   the (user) evaluation value to assign to string p
+    \param   aux   Auxiliary evaluations
+    \return  Sets the evaluation function value of string p and the
+             EvalUpToDate flag (to PGA_TRUE) via side effect
+
+    \rst
+
+    Description
+    -----------
+
+    This uses a trick for implementing optional arguments in C. The real
+    function to use is without leading underscore. There is a
+    macro that makes the last argument optional.
+    Also sets the evaluation up to date flag to PGA_TRUE.
+
+    Example
+    -------
+
+    Set the evaluation function value of string p in population PGA_NEWPOP
+    to 123.456.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int p;
+       double aux [...];
+
+       ...
+       PGASetEvaluation (ctx, p, PGA_NEWPOP, 123.456);
+
+    or
+
+    .. code-block:: c
+
+       PGASetEvaluation (ctx, p, PGA_NEWPOP, 123.456, aux);
+
+    \endrst
+
+******************************************************************************/
 void _PGASetEvaluation
     (PGAContext *ctx, int p, int pop, double val, const double *aux)
 {
     PGAIndividual *ind;
 
     PGADebugEntered ("PGASetEvaluation");
-    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGASetEvaluation", "p = ",
-                   PGA_INT, (void *) &p );
-    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGASetEvaluation", "pop = ",
-                   PGA_INT, (void *) &pop );
-    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGASetEvaluation", "val = ",
-                   PGA_DOUBLE, (void *) &val );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGASetEvaluation"
+        , "p = ", PGA_INT, (void *) &p
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGASetEvaluation"
+        , "pop = ", PGA_INT, (void *) &pop
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGASetEvaluation"
+        , "val = ", PGA_DOUBLE, (void *) &val
+        );
 
     ind               = PGAGetIndividual (ctx, p, pop);
     ind->evalue       = val;
@@ -108,488 +230,641 @@ void _PGASetEvaluation
     PGADebugExited ("PGASetEvaluation");
 }
 
-/*U***************************************************************************
-   PGAGetEvaluation - returns the evaluation function value for
-   string p in population pop and optionally a pointer to the auxiliary
-   evaluations.
-   There is a macro that makes the last argument optional.
+/*!***************************************************************************
+    \brief Return the evaluation function value for string p in
+           population pop and optionally a pointer to the auxiliary
+           evaluations.
+    \ingroup evaluation
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant of the population the string is in
+    \param   aux  Pointer to Auxiliary evaluations
+    \return  The evaluation function value for string p in population pop
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
-      aux - Pointer to Auxiliary evaluations
+    \rst
 
-   Outputs:
-      The evaluation function value for string p in population pop
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      int p;
-      double eval;
-      :
-      eval = PGAGetEvaluation(ctx, p, PGA_NEWPOP);
+    This uses a trick for implementing optional arguments in C. The real
+    function to use is without leading underscore. There is a
+    macro that makes the last argument optional.
 
-      or
+    Example
+    -------
 
-      const double *p;
-      eval = PGAGetEvaluation(ctx, p, PGA_NEWPOP, &p);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int p;
+       double eval;
+
+       ...
+       eval = PGAGetEvaluation (ctx, p, PGA_NEWPOP);
+
+    or
+
+    .. code-block:: c
+
+       const double *p;
+       ...
+       eval = PGAGetEvaluation (ctx, p, PGA_NEWPOP, &p);
+
+    \endrst
+
+*****************************************************************************/
 double _PGAGetEvaluation (PGAContext *ctx, int p, int pop, const double **aux)
 {
     PGAIndividual *ind;
 
     PGADebugEntered ("PGAGetEvaluation");
-    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGAGetEvaluation", "p = ",
-                   PGA_INT, (void *) &p );
-    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGAGetEvaluation", "pop = ",
-                   PGA_INT, (void *) &pop );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGAGetEvaluation"
+        , "p = ", PGA_INT, (void *) &p
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGAGetEvaluation"
+        , "pop = ", PGA_INT, (void *) &pop
+        );
 
-    ind = PGAGetIndividual ( ctx, p, pop );
+    ind = PGAGetIndividual (ctx, p, pop);
 
 #ifndef OPTIMIZE
-    if (ind->evaluptodate != PGA_TRUE)
-	PGAError (ctx, "Evaluation not up to date.  Returning old evaluation.",
-                  PGA_WARNING, PGA_VOID, NULL);
+    if (ind->evaluptodate != PGA_TRUE) {
+        PGAError
+            ( ctx, "Evaluation not up to date.  Returning old evaluation."
+            , PGA_WARNING, PGA_VOID, NULL
+            );
+    }
 #endif
 
     if (aux) {
         *aux = ind->auxeval;
     }
-    PGADebugExited("PGAGetEvaluation");
-    return(ind->evalue);
+    PGADebugExited ("PGAGetEvaluation");
+    return ind->evalue;
 }
 
-/*U***************************************************************************
-   PGAGetAuxEvaluation - returns the auxiliary evaluation for string p in
-   population pop. This is mostly used internally: the evaluation
-   function will get a pointer to this anyway, this is the only point
-   where the aux evaluations should be modified.
+/*!***************************************************************************
+    \brief Return the auxiliary evaluation for string p in population
+           pop.
+    \ingroup evaluation
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant of the population the string is in
+    \return  The evaluation function value for string p in population pop
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
+    \rst
 
-   Outputs:
-      The evaluation function value for string p in population pop
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      int p;
-      double *aux;
-      :
-      aux = PGAGetAuxEvaluation(ctx, p, PGA_NEWPOP);
+    This is mostly used internally: the evaluation function will get a
+    pointer to this anyway, this is the only point where the aux
+    evaluations should be modified.
 
-***************************************************************************U*/
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int p;
+       double *aux;
+
+       ...
+       aux = PGAGetAuxEvaluation (ctx, p, PGA_NEWPOP);
+
+    \endrst
+
+*****************************************************************************/
 double *PGAGetAuxEvaluation (PGAContext *ctx, int p, int pop)
 {
     PGAIndividual *ind;
 
     PGADebugEntered ("PGAGetAuxEvaluation");
-    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGAGetAuxEvaluation", "p = ",
-                   PGA_INT, (void *) &p );
-    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGAGetAuxEvaluation", "pop = ",
-                   PGA_INT, (void *) &pop );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGAGetAuxEvaluation"
+        , "p = ", PGA_INT, (void *) &p
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGAGetAuxEvaluation"
+        , "pop = ", PGA_INT, (void *) &pop
+        );
 
     ind = PGAGetIndividual (ctx, p, pop);
 
 #ifndef OPTIMIZE
-    if (ind->evaluptodate != PGA_TRUE)
-	PGAError (ctx, "Evaluation not up to date.  Returning old evaluation.",
-                  PGA_WARNING, PGA_VOID, NULL);
+    if (ind->evaluptodate != PGA_TRUE) {
+        PGAError
+            ( ctx, "Evaluation not up to date.  Returning old evaluation."
+            , PGA_WARNING, PGA_VOID, NULL
+            );
+    }
 #endif
 
     PGADebugExited ("PGAGetAuxEvaluation");
-    return (ind->auxeval);
+    return ind->auxeval;
 }
 
-/*U****************************************************************************
-  PGASetEvaluationUpToDateFlag - sets the flag associated with a
-  string to PGA_TRUE or PGA_FLASE to indicate whether the evaluate
-  function value is out-of-date or not.  Note that this flag is always
-  set to PGA_TRUE when PGASetEvaluation is called.
+/*!****************************************************************************
+    \brief Set the flag associated with a string to PGA_TRUE or
+           PGA_FALSE to indicate whether the evaluate function value is
+           up-to-date or not.
+    \ingroup evaluation
 
-    Category: Fitness & Evaluation
+    \param  ctx    context variable
+    \param  p      string index
+    \param  pop    symbolic constant of the population string p is in
+    \param  status boolean for whether up-to-date
+    \return Sets the EvalUpToDate associated with the evaluation
+            function value of string p via side effect
 
-    Inputs:
-      ctx  - context variable
-      p    - string index
-      pop  - symbolic constant of the population string p is in
-      status - boolean for whether up-to-date
+    \rst
 
-   Outputs:
-      Sets the EvalUpToDate associated with the evaluation function value of
-      string p via side effect
+    Description
+    -----------
 
-   Example:
-      Set the evaluation function flag for string p in population PGA_NEWPOP
-      to PGA_FALSE (as might happen after, for example, calling a hill-climbing
-      routine that modified this string).
+    Note that this flag is always set to PGA_TRUE when PGASetEvaluation
+    is called.
 
-      PGAContext *ctx;
-      int p;
-      :
-      PGASetEvaluationUpToDateFlag(ctx, p, PGA_NEWPOP, PGA_FALSE);
+    Example
+    -------
 
-****************************************************************************U*/
-void PGASetEvaluationUpToDateFlag ( PGAContext *ctx, int p, int pop,
-                                   int status )
+    Set the evaluation function flag for string p in population
+    PGA_NEWPOP to PGA_FALSE (as might happen after, for example, calling
+    a hill-climbing routine that modified this string).
+
+    .. code-block:: c
+
+        PGAContext *ctx;
+        int p;
+
+        ...
+        PGASetEvaluationUpToDateFlag (ctx, p, PGA_NEWPOP, PGA_FALSE);
+
+    \endrst
+
+******************************************************************************/
+void PGASetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop, int status)
 {
     PGAIndividual *ind;
 
-    PGADebugEntered("PGASetEvaluationUpToDateFlag");
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGASetEvaluationUpToDateFlag",
-                  "p = ", PGA_INT, (void *) &p );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGASetEvaluationUpToDateFlag",
-                  "pop = ", PGA_INT, (void *) &pop );
+    PGADebugEntered ("PGASetEvaluationUpToDateFlag");
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGASetEvaluationUpToDateFlag"
+        , "p = ", PGA_INT, (void *) &p
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGASetEvaluationUpToDateFlag"
+        , "pop = ", PGA_INT, (void *) &pop
+        );
 
-    ind = PGAGetIndividual ( ctx, p, pop );
+    ind = PGAGetIndividual (ctx, p, pop);
 
-    switch(status) {
+    switch (status) {
     case PGA_TRUE:
     case PGA_FALSE:
-      ind->evaluptodate = status;
-      /* Invalidate cached auxtotal */
-      if (!status) {
-        ind->auxtotalok = PGA_FALSE;
-      }
-      break;
+        ind->evaluptodate = status;
+        /* Invalidate cached auxtotal */
+        if (!status) {
+            ind->auxtotalok = PGA_FALSE;
+        }
+        break;
     default:
-      PGAError(ctx, "PGASetEvaluationUpToDateFlag: Invalid value of status:",
-               PGA_FATAL, PGA_INT, (void *) &status);
-      break;
+        PGAError
+            ( ctx, "PGASetEvaluationUpToDateFlag: Invalid value of status:"
+            , PGA_FATAL, PGA_INT, (void *) &status
+            );
+        break;
     }
 
-    PGADebugExited("PGASetEvaluationUpToDateFlag");
+    PGADebugExited ("PGASetEvaluationUpToDateFlag");
 }
 
-/*U***************************************************************************
-  PGAGetEvaluationUpToDateFlag - returns true/false to indicate
-  whether the evaluate function value is up to date
+/*!***************************************************************************
+    \brief Return PGA_TRUE/PGA_FALSE to indicate whether the evaluate function
+           value is up to date
+    \ingroup evaluation
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant of the population the string is in
+    \return  Return PGA_TRUE if the evaluate function value is up to date,
+             otherwise, return PGA_FALSE
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
+    \rst
 
-   Outputs:
-      Returns PGA_TRUE if the evaluate function value is up to date.
-      Otherwise, returns PGA_FALSE
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int uptodate;
-      :
-      uptodate = PGAGetEvaluationUpToDateFlag(ctx);
-      switch (uptodate) {
-      case PGA_TRUE:
-          printf ("Evaluation function value current\n");
-          break;
-      case PGA_FALSE:
-          printf ("Evaluation function value out-of-date\n");
-          break;
-      }
+    .. code-block:: c
 
-***************************************************************************U*/
-int PGAGetEvaluationUpToDateFlag ( PGAContext *ctx, int p, int pop )
+        PGAContext *ctx;
+
+        ...
+        if (PGAGetEvaluationUpToDateFlag (ctx)) {
+            printf ("Evaluation function value current\n");
+        } else {
+            printf ("Evaluation function value out-of-date\n");
+        }
+
+    \endrst
+
+*****************************************************************************/
+int PGAGetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop)
 {
     PGAIndividual *ind;
 
-    PGADebugEntered("PGAGetEvaluationUpToDateFlag");
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGAGetEvaluationUpToDateFlag",
-                  "p = ", PGA_INT, (void *) &p );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGAGetEvaluationUpToDateFlag",
-                   "p = ", PGA_INT, (void *) &pop );
+    PGADebugEntered ("PGAGetEvaluationUpToDateFlag");
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGAGetEvaluationUpToDateFlag"
+        , "p = ", PGA_INT, (void *) &p
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGAGetEvaluationUpToDateFlag"
+        , "p = ", PGA_INT, (void *) &pop
+        );
 
-    ind = PGAGetIndividual ( ctx, p, pop );
+    ind = PGAGetIndividual (ctx, p, pop);
 
-    PGADebugExited("PGAGetEvaluationUpToDateFlag");
-    return(ind->evaluptodate);
+    PGADebugExited ("PGAGetEvaluationUpToDateFlag");
+    return ind->evaluptodate;
 }
 
-/*U****************************************************************************
-  PGAGetRealFromBinary - Interpets a binary string as encoding a real value
-  and returns the real value it represents.
+/*!****************************************************************************
+    \brief Interpret a binary string as encoding a real value and
+           return the real value it represents.
+    \ingroup allele
 
-  Category: Fitness & Evaluation
+    \param    ctx    context variable
+    \param    p      string index
+    \param    pop    symbolic constant of the population the string is in
+    \param    start  starting bit position in the binary representation
+    \param    end    ending bit position in the binary representation
+    \param    lower  lower bound of the interval the real number is defined on
+    \param    upper  upper bound of the interval the real number is defined on
+    \return  The real value encoded by the binary string
 
-  Inputs:
-      ctx   - context variable
-      p     - string index
-      pop   - symbolic constant of the population the string is in
-      start - starting bit position in the binary representation
-      end   - ending bit position in the binary representation
-      lower - lower bound of the interval the real number is defined on
-      upper - lower bound of the interval the real number is defined on
+    \rst
 
-  Outputs:
-      The real value encoded by the binary string
+    Example
+    -------
 
-  Example:
-      Decode a real value from the string p in population PGA_NEWPOP.  The
-      value to decode lies on the interval [-10,20] and is represented
-      using the 20 bits in bit positions 10--29.
+    Decode a real value from the string p in population PGA_NEWPOP.  The
+    value to decode lies on the interval [-10,20] and is represented
+    using the 20 bits in bit positions 10--29.
 
-      double x;
-      :
-      x = PGAGetRealFromBinary(ctx, p, PGA_NEWPOP, 10, 29, -10.0, 20.0);
+    .. code-block:: c
 
-****************************************************************************U*/
-double PGAGetRealFromBinary(PGAContext *ctx, int p, int pop, int start,
-                            int end, double lower, double upper)
+        double x;
+
+        ...
+        x = PGAGetRealFromBinary (ctx, p, PGA_NEWPOP, 10, 29, -10.0, 20.0);
+
+    \endrst
+
+******************************************************************************/
+double PGAGetRealFromBinary
+    ( PGAContext *ctx
+    , int p, int pop, int start, int end
+    , double lower, double upper
+    )
 {
-     int length, sum;
-     double value;
+    int length, sum;
+    double value;
 
-    PGADebugEntered("PGAGetRealFromBinary");
-     PGACheckDataType("PGAGetRealFromBinary", PGA_DATATYPE_BINARY);
+    PGADebugEntered  ("PGAGetRealFromBinary");
+    PGACheckDataType ("PGAGetRealFromBinary", PGA_DATATYPE_BINARY);
 
-     length = end - start + 1;
+    length = end - start + 1;
 
-     if (start < 0)
-          PGAError(ctx, "PGAGetRealFromBinary: start less than 0:",
-                   PGA_FATAL, PGA_INT, (void *) &start);
-     if (end >= PGAGetStringLength(ctx))
-	 PGAError(ctx, "PGAGetRealFromBinary: end greater than string "
-                   "length:", PGA_FATAL, PGA_INT, (void *) &end);
-     if (start >= end)
-          PGAError(ctx, "PGAGetRealFromBinary: start exceeds end:",
-                   PGA_FATAL, PGA_INT, (void *) &start);
-     if (lower >= upper)
-          PGAError(ctx, "PGAGetRealFromBinary: lower exceeds upper:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &lower);
+    if (start < 0) {
+        PGAError
+            ( ctx, "PGAGetRealFromBinary: start less than 0:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
+    }
+    if (end >= PGAGetStringLength (ctx)) {
+        PGAError
+            ( ctx, "PGAGetRealFromBinary: end greater than string length:"
+            , PGA_FATAL, PGA_INT, (void *) &end
+            );
+    }
+    if (start >= end) {
+        PGAError
+            ( ctx, "PGAGetRealFromBinary: start exceeds end:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
+    }
+    if (lower >= upper) {
+        PGAError
+            ( ctx, "PGAGetRealFromBinary: lower exceeds upper:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &lower
+            );
+    }
 
-     sum = PGAGetIntegerFromBinary(ctx, p, pop, start, end);
-     value = PGAMapIntegerToReal(ctx, sum, 0,
-                                 (length == sizeof(unsigned) * 8 - 1)
-                                 ? INT_MAX : (1u << length) - 1, lower, upper);
+    sum = PGAGetIntegerFromBinary (ctx, p, pop, start, end);
+    value = PGAMapIntegerToReal
+        ( ctx, sum, 0
+        , (length == sizeof (unsigned) * 8 - 1) ? INT_MAX : (1u << length) - 1
+        , lower, upper
+        );
 
-    PGADebugExited("PGAGetRealFromBinary");
+    PGADebugExited ("PGAGetRealFromBinary");
 
-     return(value);
+     return (value);
 }
 
-/*U****************************************************************************
-  PGAGetRealFromGrayCode - interpets a binary reflected Gray code sequence in
-  a binary string as encoding a real value and returns the real value it
-  represents.
+/*!****************************************************************************
+    \brief Interpret a binary reflected Gray code sequence in a binary
+           string as encoding a real value and return the real value it
+           represents.
+    \ingroup allele
 
-  Category: Fitness & Evaluation
+    \param  ctx    context variable
+    \param  p      string index
+    \param  pop    symbolic constant of the population the string is in
+    \param  start  starting bit position in the binary representation
+    \param  end    ending bit position in the binary representation
+    \param  lower  lower bound of the interval the real number is defined on
+    \param  upper  upper bound of the interval the real number is defined on
+    \return The real value encoded by the binary reflected Gray code sequence
 
-  Inputs:
-      ctx   - context variable
-      p     - string index
-      pop   - symbolic constant of the population the string is in
-      start - starting bit position in the binary representation
-      end   - ending bit position in the binary representation
-      lower - lower bound of the interval the real number is defined on
-      upper - lower bound of the interval the real number is defined on
+    \rst
 
-  Outputs:
-      The real value encoded by the binary reflected Gray code sequence
+    Example
+    -------
 
-  Example:
-      Decode a real value from the string p in population PGA_NEWPOP.  The
-      value to decode lies on the interval [-10,20] and is represented
-      using the 20 bits in bit positions 10--29.
+    Decode a real value from the string p in population PGA_NEWPOP.
+    The value to decode lies on the interval [-10,20] and is represented
+    using the 20 bits in bit positions 10--29.
 
-      double x;
-      :
-      x = PGAGetRealFromGrayCode(ctx, p, PGA_NEWPOP, 10, 29, -10.0, 20.0);
+    .. code-block:: c
 
-****************************************************************************U*/
-double PGAGetRealFromGrayCode(PGAContext *ctx, int p, int pop, int start,
-                                  int end, double lower, double upper)
+        double x;
+
+        ...
+        x = PGAGetRealFromGrayCode (ctx, p, PGA_NEWPOP, 10, 29, -10.0, 20.0);
+
+    \endrst
+
+******************************************************************************/
+double PGAGetRealFromGrayCode
+    ( PGAContext *ctx
+    , int p, int pop, int start, int end
+    , double lower, double upper
+    )
 {
-     int length, sum;
-     double value;
+    int length, sum;
+    double value;
 
-    PGADebugEntered("PGAGetRealFromGrayCode");
-     PGACheckDataType("PGAGetRealFromGrayCode", PGA_DATATYPE_BINARY);
+    PGADebugEntered  ("PGAGetRealFromGrayCode");
+    PGACheckDataType ("PGAGetRealFromGrayCode", PGA_DATATYPE_BINARY);
 
-     length = end - start + 1;
+    length = end - start + 1;
 
-     if (start < 0)
-          PGAError(ctx, "PGAGetRealFromGrayCode: start less than 0:",
-                   PGA_FATAL, PGA_INT, (void *) &start);
-     if (end >= PGAGetStringLength(ctx))
-          PGAError(ctx, "PGAGetRealFromGrayCode: end greater than string "
-                   "length:", PGA_FATAL, PGA_INT, (void *) &end);
-     if (start >= end)
-          PGAError(ctx, "PGAGetRealFromGrayCode: start exceeds end:",
-                   PGA_FATAL, PGA_INT, (void *) &start);
-     if (lower >= upper)
-          PGAError(ctx, "PGAGetRealFromGrayCode: lower exceeds upper:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &lower);
+    if (start < 0) {
+        PGAError
+            ( ctx, "PGAGetRealFromGrayCode: start less than 0:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
+    }
+    if (end >= PGAGetStringLength (ctx)) {
+        PGAError
+            ( ctx, "PGAGetRealFromGrayCode: end greater than string length:"
+            , PGA_FATAL, PGA_INT, (void *) &end
+            );
+    }
+    if (start >= end) {
+        PGAError
+            ( ctx, "PGAGetRealFromGrayCode: start exceeds end:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
+    }
+    if (lower >= upper) {
+        PGAError
+            ( ctx, "PGAGetRealFromGrayCode: lower exceeds upper:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &lower
+            );
+    }
 
-     sum = PGAGetIntegerFromGrayCode(ctx, p, pop, start, end);
-     value = PGAMapIntegerToReal(ctx, sum, 0,
-                                 (length == sizeof(unsigned) * 8 - 1)
-                                 ? INT_MAX : (1u << length) - 1, lower, upper);
+    sum = PGAGetIntegerFromGrayCode (ctx, p, pop, start, end);
+    value = PGAMapIntegerToReal
+        ( ctx, sum, 0
+        , (length == sizeof (unsigned) * 8 - 1) ? INT_MAX : (1u << length) - 1
+        , lower, upper
+        );
 
-    PGADebugExited("PGAGetRealFromGrayCode");
+    PGADebugExited ("PGAGetRealFromGrayCode");
 
-     return(value);
+    return value;
 }
 
-/*U****************************************************************************
-  PGAEncodeRealAsBinary - encodes a real value as a binary string
+/*!****************************************************************************
+    \brief Encode a real value as a binary string.
+    \ingroup allele
 
-  Category: Fitness & Evaluation
+    \param ctx    context variable
+    \param p      string index
+    \param pop    symbolic constant of the population the string is in
+    \param start  starting bit position in p to encode val in
+    \param end    ending bit position in p to encode val in
+    \param low    lower bound of the interval the val is defined on
+    \param high   upper bound of the interval the val is defined on
+    \param val    the real number to be represented as a binary string
+    \return The string is modified by side-effect
 
-  Inputs:
-      ctx   - context variable
-      p     - string index
-      pop   - symbolic constant of the population the string is in
-      start - starting bit position in p to encode val in
-      end   - ending bit position in p to encode val in
-      low   - lower bound of the interval the val is defined on
-      high  - lower bound of the interval the val is defined on
-      val   - the real number to be represented as a binary string
+    \rst
 
-  Outputs:
-      The string is modified by side-effect.
+    Example
+    -------
 
-  Example:
-      Encode 3.14 from the interval [0,10] in 30 bits in bit positions
-      0--29 in string p in population PGA_NEWPOP.
+    Encode 3.14 from the interval [0,10] in 30 bits in bit positions
+    0--29 in string p in population PGA_NEWPOP.
 
-      PGAContext *ctx;
-      int p;
-      :
-      PGAEncodeRealAsBinary(ctx, p, PGA_NEWPOP, 0, 29, 0.0, 10.0, 3.14);
+    .. code-block:: c
 
-****************************************************************************U*/
-void PGAEncodeRealAsBinary(PGAContext *ctx, int p, int pop, int start,
-                               int end, double low, double high, double val)
+        PGAContext *ctx;
+        int p;
+
+        ...
+        PGAEncodeRealAsBinary (ctx, p, PGA_NEWPOP, 0, 29, 0.0, 10.0, 3.14);
+
+    \endrst
+
+******************************************************************************/
+void PGAEncodeRealAsBinary
+    ( PGAContext *ctx
+    , int p, int pop, int start, int end
+    , double low, double high, double val
+    )
 {
-     int length, d;
+    int length, d;
 
-    PGADebugEntered("PGAEncodeRealAsBinary");
-     PGACheckDataType("PGAEncodeRealAsBinary", PGA_DATATYPE_BINARY);
+    PGADebugEntered  ("PGAEncodeRealAsBinary");
+    PGACheckDataType ("PGAEncodeRealAsBinary", PGA_DATATYPE_BINARY);
 
-     length = end - start + 1;
-     if (start < 0)
-          PGAError(ctx, "PGAEncodeRealAsBinary: start less than 0:",
-                   PGA_FATAL, PGA_INT, (void *) &start);
-     if (end >= PGAGetStringLength(ctx))
-          PGAError(ctx, "PGAEncodeRealAsBinary: end greater than string "
-                   "length:", PGA_FATAL, PGA_INT, (void *) &end);
-     if (start >= end)
-          PGAError(ctx, "PGAEncodeRealAsBinary: start exceeds end:",
-                   PGA_FATAL, PGA_INT, (void *) &start);
-     if (low >= high)
-          PGAError(ctx, "PGAEncodeRealAsBinary: low exceeds high:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &low);
-     if (val < low || val > high)
-          PGAError(ctx, "PGAEncodeRealAsBinary: val outside of bounds:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
+    length = end - start + 1;
+    if (start < 0) {
+        PGAError
+            ( ctx, "PGAEncodeRealAsBinary: start less than 0:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
+    }
+    if (end >= PGAGetStringLength (ctx)) {
+        PGAError
+            ( ctx, "PGAEncodeRealAsBinary: end greater than string length:"
+            , PGA_FATAL, PGA_INT, (void *) &end
+            );
+    }
+    if (start >= end) {
+        PGAError
+            ( ctx, "PGAEncodeRealAsBinary: start exceeds end:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
+    }
+    if (low >= high) {
+        PGAError
+            ( ctx, "PGAEncodeRealAsBinary: low exceeds high:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &low
+            );
+    }
+    if (val < low || val > high) {
+        PGAError
+            ( ctx, "PGAEncodeRealAsBinary: val outside of bounds:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &val
+            );
+    }
 
-     d = PGAMapRealToInteger(ctx, val, low, high, 0,
-                             (length == sizeof(unsigned) * 8 - 1)
-                             ? INT_MAX : (1u << length) - 1);
-     PGAEncodeIntegerAsBinary(ctx, p, pop, start, end, d);
+    d = PGAMapRealToInteger
+        ( ctx, val, low, high, 0
+        , (length == sizeof (unsigned) * 8 - 1) ? INT_MAX : (1u << length) - 1
+        );
+    PGAEncodeIntegerAsBinary (ctx, p, pop, start, end, d);
 
-    PGADebugExited("PGAEncodeRealAsBinary");
+    PGADebugExited ("PGAEncodeRealAsBinary");
 }
 
-/*U****************************************************************************
-  PGAEncodeRealAsGrayCode - encodes a real value as a binary reflected Gray
-  code sequence
+/*!****************************************************************************
+    \brief Encode a real value as a binary reflected Gray code sequence.
+    \ingroup allele
 
-  Category: Fitness & Evaluation
+    \param  ctx    context variable
+    \param  p      string index
+    \param  pop    symbolic constant of the population the string is in
+    \param  start  starting bit position in p to encode val in
+    \param  end    ending bit position in p to encode val in
+    \param  low    lower bound of the interval the val is defined on
+    \param  high   upper bound of the interval the val is defined on
+    \param  val    the real number to be represented as a binary string
+    \return The string is modified by side-effect
 
-  Inputs:
-      ctx   - context variable
-      p     - string index
-      pop   - symbolic constant of the population the string is in
-      start - starting bit position in p to encode val in
-      end   - ending bit position in p to encode val in
-      low   - lower bound of the interval the val is defined on
-      high  - lower bound of the interval the val is defined on
-      val   - the real number to be represented as a binary string
+    \rst
 
-  Outputs:
-      The string is modified by side-effect.
+    Example
+    -------
 
-  Example:
-      Encode 3.14 from the interval [0,10] in 30 bits in bit positions
-      0--29 in string p in population PGA_NEWPOP as a binary reflected Gray
-      code sequence.
+    Encode 3.14 from the interval [0,10] in 30 bits in bit positions
+    0--29 in string p in population PGA_NEWPOP as a binary reflected Gray
+    code sequence.
 
-      PGAContext *ctx;
-      int p;
-      :
-      PGAEncodeRealAsGrayCode(ctx, p, PGA_NEWPOP, 0, 29, 0.0, 10.0, 3.14);
+    .. code-block:: c
 
-****************************************************************************U*/
-void PGAEncodeRealAsGrayCode(PGAContext *ctx, int p, int pop, int start,
-                              int end, double low, double high, double val)
+        PGAContext *ctx;
+        int p;
+
+        ...
+        PGAEncodeRealAsGrayCode (ctx, p, PGA_NEWPOP, 0, 29, 0.0, 10.0, 3.14);
+
+    \endrst
+
+******************************************************************************/
+void PGAEncodeRealAsGrayCode
+    ( PGAContext *ctx
+    , int p, int pop, int start, int end
+    , double low, double high, double val
+    )
 {
-     int length, d;
+    int length, d;
 
-    PGADebugEntered("PGAEncodeRealAsGrayCode");
-     PGACheckDataType("PGAEncodeRealAsGrayCode", PGA_DATATYPE_BINARY);
+    PGADebugEntered  ("PGAEncodeRealAsGrayCode");
+    PGACheckDataType ("PGAEncodeRealAsGrayCode", PGA_DATATYPE_BINARY);
 
-     length = end - start + 1;
-     if (start < 0)
-          PGAError(ctx, "PGAEncodeRealAsGrayCode: start less than 0:",
-                   PGA_FATAL, PGA_INT, (void *) &start);
-     if (end >= PGAGetStringLength(ctx))
-          PGAError(ctx, "PGAEncodeRealAsGrayCode: end greater than string "
-                   "length:", PGA_FATAL, PGA_INT, (void *) &end);
-     if (start >= end)
-          PGAError(ctx, "PGAEncodeRealAsGrayCode: start exceeds end:",
-                   PGA_FATAL, PGA_INT, (void *) &start);
-     if (low >= high)
-          PGAError(ctx, "PGAEncodeRealAsGrayCode: low exceeds high:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &low);
-     if (val < low || val > high)
-          PGAError(ctx, "PGAEncodeRealAsGrayCode: val outside of bounds:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &val);
+    length = end - start + 1;
+    if (start < 0) {
+        PGAError
+            ( ctx, "PGAEncodeRealAsGrayCode: start less than 0:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
+    }
+    if (end >= PGAGetStringLength (ctx)) {
+        PGAError
+            (ctx, "PGAEncodeRealAsGrayCode: end greater than string length:"
+            , PGA_FATAL, PGA_INT, (void *) &end
+            );
+    }
+    if (start >= end) {
+        PGAError
+            ( ctx, "PGAEncodeRealAsGrayCode: start exceeds end:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
+    }
+    if (low >= high) {
+        PGAError
+            ( ctx, "PGAEncodeRealAsGrayCode: low exceeds high:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &low
+            );
+    }
+    if (val < low || val > high) {
+        PGAError
+            ( ctx, "PGAEncodeRealAsGrayCode: val outside of bounds:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &val
+            );
+    }
 
-     d = PGAMapRealToInteger(ctx, val, low, high, 0,
-                             (length == sizeof(unsigned) * 8 - 1) ? INT_MAX :
-                             (1u << length) - 1);
-     PGAEncodeIntegerAsGrayCode(ctx, p, pop, start, end, d);
+    d = PGAMapRealToInteger
+        ( ctx, val, low, high, 0
+        , (length == sizeof (unsigned) * 8 - 1) ? INT_MAX : (1u << length) - 1
+        );
+    PGAEncodeIntegerAsGrayCode (ctx, p, pop, start, end, d);
 
-    PGADebugExited("PGAEncodeRealAsGrayCode");
+    PGADebugExited ("PGAEncodeRealAsGrayCode");
 }
 
 
-/*U****************************************************************************
-  PGAGetIntegerFromBinary - interpets a binary string as encoding an integer
-  value and returns the integer value it represents.
+/*!****************************************************************************
+    \brief Interpret a binary string as encoding an integer value and
+           return the integer value it represents.
+    \ingroup allele
 
-  Category: Fitness & Evaluation
+    \param  ctx    context variable
+    \param  p      string index
+    \param  pop    symbolic constant of the population the string is in
+    \param  start  starting bit position in the binary representation
+    \param  end    ending bit position in the binary representation
+    \return The integer value encoded by the binary string
 
-  Inputs:
-      ctx   - context variable
-      p     - string index
-      pop   - symbolic constant of the population the string is in
-      start - starting bit position in the binary representation
-      end   - ending bit position in the binary representation
+    \rst
 
-  Outputs:
-      The integer value encoded by the binary string
+    Example
+    -------
 
-  Example:
-      Get an integer j from bits 10--29 of string p in population PGA_NEWPOP.
+    Get an integer j from bits 10--29 of string p in population PGA_NEWPOP.
 
-      PGAContext *ctx;
-      int j, p;
-      :
-      j = PGAGetIntegerFromBinary(ctx, p, PGA_NEWPOP, 10, 29);
+    .. code-block:: c
 
-****************************************************************************U*/
+        PGAContext *ctx;
+        int j, p;
+
+        ...
+        j = PGAGetIntegerFromBinary (ctx, p, PGA_NEWPOP, 10, 29);
+
+    \endrst
+
+******************************************************************************/
 unsigned int PGAGetIntegerFromBinary
     (PGAContext *ctx, int p, int pop, int start, int end)
 {
@@ -597,26 +872,35 @@ unsigned int PGAGetIntegerFromBinary
     int i;
     unsigned int val, power2;
 
-    PGADebugEntered ("PGAGetIntegerFromBinary");
+    PGADebugEntered  ("PGAGetIntegerFromBinary");
     PGACheckDataType ("PGAGetIntegerFromBinary", PGA_DATATYPE_BINARY);
 
     length = end - start + 1;
-    if (length > sizeof(int) * 8 - 1) {
-        PGAError (ctx, "PGAGetIntegerFromBinary: length of bit string "
-                  "exceeds sizeof type int:", PGA_FATAL, PGA_INT,
-                  (void *) &length);
+    if (length > sizeof (int) * 8 - 1) {
+        PGAError
+            ( ctx
+            , "PGAGetIntegerFromBinary: "
+              "length of bit string exceeds sizeof type int:"
+            , PGA_FATAL, PGA_INT, (void *) &length
+            );
     }
     if (start < 0) {
-        PGAError (ctx, "PGAGetIntegerFromBinary: start less than 0:",
-                  PGA_FATAL, PGA_INT, (void *) &start);
+        PGAError
+            ( ctx, "PGAGetIntegerFromBinary: start less than 0:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
     }
-    if (end >= PGAGetStringLength(ctx)) {
-        PGAError (ctx, "PGAGetIntegerFromBinary: end greater than string "
-                  "length:", PGA_FATAL, PGA_INT, (void *) &end);
+    if (end >= PGAGetStringLength (ctx)) {
+        PGAError
+            ( ctx, "PGAGetIntegerFromBinary: end greater than string length:"
+            , PGA_FATAL, PGA_INT, (void *) &end
+            );
     }
     if (start >= end) {
-        PGAError (ctx, "PGAGetIntegerFromBinary: start exceeds end:",
-                  PGA_FATAL, PGA_INT, (void *) &start);
+        PGAError
+            ( ctx, "PGAGetIntegerFromBinary: start exceeds end:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
     }
     val = 0;
     power2 = 1u << (length - 1);
@@ -632,32 +916,37 @@ unsigned int PGAGetIntegerFromBinary
     return (val);
 }
 
-/*U****************************************************************************
-  PGAGetIntegerFromGrayCode - interpets a binary reflected Gray code sequence
-  as encoding an integer value and returns the integer value it represents.
+/*!****************************************************************************
+    \brief Interpret a binary reflected Gray code sequence as encoding
+           an integer value and return the integer value it represents.
+    \ingroup allele
 
-  Category: Fitness & Evaluation
+    \param  ctx    context variable
+    \param  p      string index
+    \param  pop    symbolic constant of the population the string is in
+    \param  start  starting bit position in the binary representation
+    \param  end    ending bit position in the binary representation
+    \return The integer value encoded by the binary reflected Gray code sequence
 
-  Inputs:
-      ctx   - context variable
-      p     - string index
-      pop   - symbolic constant of the population the string is in
-      start - starting bit position in the binary representation
-      end   - ending bit position in the binary representation
+    \rst
 
-  Outputs:
-      The integer value encoded by the binary reflected Gray code sequence
+    Example
+    -------
 
-  Example:
-      Get an integer j from bits 10--29 of string p in population PGA_NEWPOP.
-      The string is encoded in Gray code.
+    Get an integer j from bits 10--29 of string p in population PGA_NEWPOP.
+    The string is encoded in Gray code.
 
-      PGAContext *ctx;
-      int j, p;
-      :
-      j = PGAGetIntegerFromGrayCode(ctx, p, PGA_NEWPOP, 10, 29);
+    .. code-block:: c
 
-****************************************************************************U*/
+        PGAContext *ctx;
+        int j, p;
+
+        ...
+        j = PGAGetIntegerFromGrayCode (ctx, p, PGA_NEWPOP, 10, 29);
+
+    \endrst
+
+******************************************************************************/
 unsigned int PGAGetIntegerFromGrayCode
     (PGAContext *ctx, int p, int pop, int start, int end)
 {
@@ -666,32 +955,43 @@ unsigned int PGAGetIntegerFromGrayCode
     int *BitString;
     unsigned power2;
 
-    PGADebugEntered ("PGAGetIntegerFromGrayCode");
+    PGADebugEntered  ("PGAGetIntegerFromGrayCode");
     PGACheckDataType ("PGAGetIntegerFromGrayCode", PGA_DATATYPE_BINARY);
 
     length = end - start + 1;
     if (length > sizeof (int) * 8 - 1) {
-        PGAError (ctx, "PGAGetIntegerFromGrayCode: length of binary string "
-                  "exceeds size of type int:", PGA_FATAL, PGA_INT,
-                  (void *) &length);
+        PGAError
+            ( ctx
+            , "PGAGetIntegerFromGrayCode: "
+              "length of binary string exceeds size of type int:"
+            , PGA_FATAL, PGA_INT, (void *) &length
+            );
     }
     if (start < 0) {
-        PGAError (ctx, "PGAGetIntegerFromGrayCode: start less than 0:",
-                  PGA_FATAL, PGA_INT, (void *) &start);
+        PGAError
+            ( ctx, "PGAGetIntegerFromGrayCode: start less than 0:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
     }
     if (end >= PGAGetStringLength (ctx)) {
-        PGAError (ctx, "PGAGetIntegerFromGrayCode: end greater than string "
-                  "length:", PGA_FATAL, PGA_INT, (void *) &end);
+        PGAError
+            ( ctx, "PGAGetIntegerFromGrayCode: end greater than string length:"
+            , PGA_FATAL, PGA_INT, (void *) &end
+            );
     }
     if (start >= end) {
-        PGAError (ctx, "PGAGetIntegerFromGrayCode: start exceeds end:",
-                  PGA_FATAL, PGA_INT, (void *) &start);
+        PGAError
+            ( ctx, "PGAGetIntegerFromGrayCode: start exceeds end:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
     }
 
-    BitString = malloc (length * sizeof(int));
+    BitString = malloc (length * sizeof (int));
     if (!BitString) {
-        PGAError (ctx, "PGAGetIntegerFromGrayCode: No room for BitString",
-                  PGA_FATAL, PGA_VOID, NULL);
+        PGAError
+            ( ctx, "PGAGetIntegerFromGrayCode: No room for BitString"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
     }
     BitString[0] = PGAGetBinaryAllele (ctx, p, pop, start);
 
@@ -710,66 +1010,83 @@ unsigned int PGAGetIntegerFromGrayCode
     free (BitString);
 
     PGADebugExited ("PGAGetIntegerFromGrayCode");
-    return (val);
+    return val;
 }
 
-/*U****************************************************************************
-  PGAEncodeIntegerAsBinary - encodes an integer value as a binary string
+/*!****************************************************************************
+    \brief Encode an integer value as a binary string.
+    \ingroup allele
 
-  Category: Fitness & Evaluation
+    \param  ctx    context variable
+    \param  p      string index
+    \param  pop    symbolic constant of the population the string is in
+    \param  start  starting bit position in p to encode val in
+    \param  end    ending bit position in p to encode val in
+    \param  val    the integer value to be represented as a binary string
+    \return The string is modified by side-effect
 
-  Inputs:
-      ctx   - context variable
-      p     - string index
-      pop   - symbolic constant of the population the string is in
-      start - starting bit position in p to encode val in
-      end   - ending bit position in p to encode val in
-      val   - the integer value to be represented as a binary string
+    \rst
 
-  Outputs:
-      The string is modified by side-effect.
+    Example
+    -------
 
-  Example:
-      Encode an integer v in 20 bits in bit positions 0--19 in string p
-      in population PGA_NEWPOP.
+    Encode an integer 7 in 20 bits in bit positions 0--19 in string p
+    in population PGA_NEWPOP.
 
-      PGAContext *ctx;
-      int v, p;
-      :
-      PGAEncodeIntegerAsBinary(ctx, p, PGA_NEWPOP, 0, 19, v);
+    .. code-block:: c
 
-****************************************************************************U*/
+        PGAContext *ctx;
+        int p;
+
+        ...
+        PGAEncodeIntegerAsBinary (ctx, p, PGA_NEWPOP, 0, 19, 7);
+
+    \endrst
+
+******************************************************************************/
 void PGAEncodeIntegerAsBinary
     (PGAContext *ctx, int p, int pop, int start, int end, unsigned int val)
 {
     size_t length, i;
     unsigned power2;
 
-    PGADebugEntered ("PGAEncodeIntegerAsBinary");
+    PGADebugEntered  ("PGAEncodeIntegerAsBinary");
     PGACheckDataType ("PGAEncodeIntegerAsBinary", PGA_DATATYPE_BINARY);
 
     length = end - start + 1;
 
     if (length > sizeof (int) * 8 - 1) {
-        PGAError (ctx, "PGAEncodeIntegerAsBinary: length of bit string "
-                  "exceeds size of type int:", PGA_FATAL, PGA_INT,
-                  (void *) &length);
+        PGAError
+            ( ctx
+            , "PGAEncodeIntegerAsBinary: "
+              "length of bit string exceeds size of type int:"
+            , PGA_FATAL, PGA_INT, (void *) &length
+            );
     }
     if (start < 0) {
-        PGAError (ctx, "PGAEncodeIntegerAsBinary: start less than 0:",
-                  PGA_FATAL, PGA_INT, (void *) &start);
+        PGAError
+            ( ctx, "PGAEncodeIntegerAsBinary: start less than 0:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
     }
     if (end >= PGAGetStringLength (ctx)) {
-        PGAError (ctx, "PGAEncodeIntegerAsBinary: end greater than string "
-                  "length:", PGA_FATAL, PGA_INT, (void *) &end);
+        PGAError
+            ( ctx, "PGAEncodeIntegerAsBinary: end greater than string length:"
+            , PGA_FATAL, PGA_INT, (void *) &end
+            );
     }
     if (start >= end) {
-        PGAError (ctx, "PGAEncodeIntegerAsBinary: start exceeds end:",
-                  PGA_FATAL, PGA_INT, (void *) &start);
+        PGAError
+            ( ctx, "PGAEncodeIntegerAsBinary: start exceeds end:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
     }
     if ((val > (1u << length) - 1) && (length != sizeof (int) * 8) - 1) {
-        PGAError (ctx, "PGAEncodeIntegerAsBinary: Integer too big for string "
-                  "length:", PGA_FATAL, PGA_INT, (void *) &val);
+        PGAError
+            ( ctx
+            , "PGAEncodeIntegerAsBinary: Integer too big for string length:"
+            , PGA_FATAL, PGA_INT, (void *) &val
+            );
     }
 
     power2 = 1u << (length - 1);
@@ -783,37 +1100,41 @@ void PGAEncodeIntegerAsBinary
         power2 >>= 1;
     }
 
-    PGADebugExited("PGAEncodeIntegerAsBinary");
+    PGADebugExited ("PGAEncodeIntegerAsBinary");
 }
 
-/*U****************************************************************************
-  PGAEncodeIntegerAsGrayCode - encodes a real value as a binary reflected
-  Gray code sequence
+/*!****************************************************************************
+    \brief Encode a real value as a binary reflected Gray code sequence.
+    \ingroup allele
 
-  Category: Fitness & Evaluation
+    \param  ctx    context variable
+    \param  p      string index
+    \param  pop    symbolic constant of the population the string is in
+    \param  start  starting bit position in p to encode val in
+    \param  end    ending bit position in p to encode val in
+    \param  val    the integer value to be represented as a binary reflected
+                   Gray code sequence
+    \return The string is modified by side-effect
 
-  Inputs:
-      ctx   - context variable
-      p     - string index
-      pop   - symbolic constant of the population the string is in
-      start - starting bit position in p to encode val in
-      end   - ending bit position in p to encode val in
-      val   - the integer value to be represented as a binary reflected
-              Gray code sequence
+    \rst
 
-  Outputs:
-      The string is modified by side-effect.
+    Example
+    -------
 
-  Example:
-      Encode an integer v in 20 bits in bit positions  0--19 in string p in
-      population PGA_NEWPOP using Gray code.
+    Encode an integer 7 in 20 bits in bit positions  0--19 in string p in
+    population PGA_NEWPOP using Gray code.
 
-      PGAContext *ctx;
-      int v, p;
-      :
-      PGAEncodeIntegerAsGrayCode(ctx, p, PGA_NEWPOP, 0, 19, 7);
+    .. code-block:: c
 
-****************************************************************************U*/
+        PGAContext *ctx;
+        int p;
+
+        ...
+        PGAEncodeIntegerAsGrayCode (ctx, p, PGA_NEWPOP, 0, 19, 7);
+
+    \endrst
+
+******************************************************************************/
 void PGAEncodeIntegerAsGrayCode
     (PGAContext *ctx, int p, int pop, int start, int end, unsigned int val)
 {
@@ -821,27 +1142,37 @@ void PGAEncodeIntegerAsGrayCode
     int *bit;
     unsigned power2;
 
-    PGADebugEntered ("PGAEncodeIntegerAsGrayCode");
+    PGADebugEntered  ("PGAEncodeIntegerAsGrayCode");
     PGACheckDataType ("PGAEncodeIntegerAsGrayCode", PGA_DATATYPE_BINARY);
 
     length = end - start + 1;
 
     if (length > sizeof (int) * 8 - 1) {
-        PGAError (ctx, "PGAEncodeIntegerAsGrayCode: length of bit string"
-                  "exceeds size of type int:", PGA_FATAL, PGA_INT,
-                  (void *) &length);
+        PGAError
+            ( ctx
+            , "PGAEncodeIntegerAsGrayCode: "
+              "length of bit string exceeds size of type int:"
+            , PGA_FATAL, PGA_INT, (void *) &length
+            );
     }
     if (start < 0) {
-        PGAError (ctx, "PGAEncodeIntegerAsGrayCode: start less than 0:",
-                  PGA_FATAL, PGA_INT, (void *) &start);
+        PGAError
+            ( ctx, "PGAEncodeIntegerAsGrayCode: start less than 0:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
     }
     if (end >= PGAGetStringLength (ctx)) {
-        PGAError (ctx, "PGAEncodeIntegerAsGrayCode: end greater than string "
-                  "length:", PGA_FATAL, PGA_INT, (void *) &end);
+        PGAError
+            ( ctx
+            , "PGAEncodeIntegerAsGrayCode: end greater than string length:"
+            , PGA_FATAL, PGA_INT, (void *) &end
+            );
     }
     if (start >= end) {
-        PGAError (ctx, "PGAEncodeIntegerAsGrayCode: start exceeds end:",
-                  PGA_FATAL, PGA_INT, (void *) &start);
+        PGAError
+            ( ctx, "PGAEncodeIntegerAsGrayCode: start exceeds end:"
+            , PGA_FATAL, PGA_INT, (void *) &start
+            );
     }
     if ((val > (1u << length) - 1) && (length != sizeof (int) * 8 - 1)) {
         PGAErrorPrintf
@@ -853,8 +1184,10 @@ void PGAEncodeIntegerAsGrayCode
     }
     bit = malloc (length * sizeof (int));
     if (bit == NULL) {
-        PGAError (ctx, "PGAEncodeIntegerAsGrayCode: No room to allocate bit",
-                  PGA_FATAL, PGA_VOID, NULL);
+        PGAError
+            ( ctx, "PGAEncodeIntegerAsGrayCode: No room to allocate bit"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
     }
     power2 = 1u << (length - 1);
     for (i=0; i<length; i++) {
@@ -874,85 +1207,3 @@ void PGAEncodeIntegerAsGrayCode
 
     PGADebugExited ("PGAEncodeIntegerAsGrayCode");
 }
-
-
-/*I****************************************************************************
-   PGAMapIntegerToReal - Maps the value v defined on [a,b] to r defined on
-   [l,u].  In the context of PGAPack [a,b] is the discrete interval
-   [0,2^nbits-1] (i.e., the number of bits in a binary string) and [l,u]
-   represent the range of possible values of the real number r.
-
-   Inputs:
-      ctx      - context variable
-      v        - value from original interval (usually the decoded bit string)
-      a        - lower bound of integer interval (usually 0)
-      b        - upper bound of integer interval (usually 2^nbits-1)
-      l        - lower bound of real interval
-      u        - upper bound of real interval
-
-   Outputs:
-      Scaled value of v defined on [l,u]
-
-   Example:
-       Map a five bit (that is, an integer with a range of [0, 31]) integer v
-       to a real in the range [0, 3.14].
-
-       PGAContext *ctx;
-       double x;
-       int v;
-       :
-       x = PGAMapIntegerToReal(ctx, v, 0, 31, 0.0, 3.14);
-
-****************************************************************************I*/
-double PGAMapIntegerToReal (PGAContext *ctx, int v, int a, int b, double l,
-                            double u)
-{
-    PGADebugEntered("PGAMapIntegerToReal");
-
-    PGADebugExited("PGAMapIntegerToReal");
-
-    double retval = ((v-a) * (u-l) / (b-a) + l);
-    /* This may exceed the upper bound due to imprecision */
-    if (retval > u)
-        return u;
-    return retval;
-}
-
-/*I****************************************************************************
-   PGAMapRealToInteger - Maps the value r defined on [l,u] to v defined on
-   [a,b].  In the context of PGAPack [a,b] is the discrete interval
-   [0,2^nbits-1] (i.e., the number of bits in a binary string) and [l,u]
-   represent the range of possible values of the real number r.
-
-   Inputs:
-      ctx      - context variable
-      r        - real value defined on [l,u]
-      l        - lower bound of real interval
-      u        - upper bound of real interval
-      a        - lower bound of integer interval (usually 0)
-      b        - upper bound of integer interval (usually 2^nbits-1)
-
-   Outputs:
-      Scaled value of r defined on [a,b]
-
-   Example:
-     Map the value r on the interval [0, 3.14] to a five bit integer v.
-
-     PGAContext *ctx;
-     double r;
-     int v;
-     :
-     v = PGAMapRealToInteger(ctx, r, 0.0, 3.14, 0, 31);
-
-****************************************************************************I*/
-int PGAMapRealToInteger(PGAContext *ctx, double r, double l, double u, int a,
-                        int b)
-{
-    PGADebugEntered("PGAMapRealToInteger");
-
-    PGADebugExited("PGAMapRealToInteger");
-
-     return PGARound(ctx, (b - a) * (r - l) / (u - l) + a);
-}
-
-

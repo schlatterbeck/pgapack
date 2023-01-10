@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,16 +37,18 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: integer.c: This file contains the routines specific to the integer
-*                      data structure
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains the routines specific to the integer data structure.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include <stdint.h>
 #include "pgapack.h"
+
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 /* Helper for bounds/bounce check */
 static void bouncheck
@@ -74,7 +76,7 @@ static void bouncheck
     }
 }
 /* Helper for sorting / searching */
-int intcmp (const void *v1, const void *v2)
+static int intcmp (const void *v1, const void *v2)
 {
     const PGAInteger *i1 = v1;
     const PGAInteger *i2 = v2;
@@ -157,33 +159,40 @@ static void assert_has_edges (PGAContext *ctx, PGAInteger *a)
     }
 }
 #endif /* DEBUG */
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 
-/*U****************************************************************************
-   PGASetIntegerAllele - sets the value of a (integer) allele.
+/*!****************************************************************************
+    \brief Set the value of a (integer) allele.
+    \ingroup allele
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant of the population the string is in
+    \param   i    allele index
+    \param   val  integer value to set the allele to
+    \return  None
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
-      i   - allele index
-      val - integer value to set the allele to
+    \rst
 
-   Outputs:
+    Example
+    -------
 
-   Example:
-      Set the value of the ith allele of string p in population PGA_NEWPOP
-      to 64.
+    Set the value of the ith allele of string p in population PGA_NEWPOP
+    to 64.
 
-      PGAContext *ctx;
-      int p, i;
-      :
-      PGASetIntegerAllele (ctx, p, PGA_NEWPOP, i, 64)
+    .. code-block:: c
 
-****************************************************************************U*/
-void PGASetIntegerAllele (PGAContext *ctx, int p, int pop, int i, int value)
+       PGAContext *ctx;
+       int p, i;
+
+       ...
+       PGASetIntegerAllele (ctx, p, PGA_NEWPOP, i, 64)
+
+    \endrst
+
+******************************************************************************/
+void PGASetIntegerAllele (PGAContext *ctx, int p, int pop, int i, int val)
 {
     PGAIndividual *ind;
     PGAInteger     *chrom;
@@ -193,35 +202,41 @@ void PGASetIntegerAllele (PGAContext *ctx, int p, int pop, int i, int value)
 
     ind = PGAGetIndividual ( ctx, p, pop );
     chrom = (PGAInteger *)ind->chrom;
-    chrom[i] = value;
+    chrom[i] = val;
 
     PGADebugExited("PGASetIntegerAllele");
 }
 
-/*U****************************************************************************
-   PGAGetIntegerAllele - Returns the value of allele i of member p in
-   population pop.  Assumes the data type is PGA_DATATYPE_INTEGER.
+/*!****************************************************************************
+    \brief Return the value of allele i of member p in population pop,
+           assume the data type is PGA_DATATYPE_INTEGER.
+    \ingroup allele
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant of the population the string is in
+    \param   i    allele index
+    \return  The value of allele i in string p
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
-      i   - allele index
+    \rst
 
-   Outputs:
+    Example
+    -------
 
-   Example:
-      Returns the value of the ith integer allele of string p
-      in population PGA_NEWPOP.
+    Returns the value of the ith integer allele of string p
+    in population PGA_NEWPOP.
 
-      PGAContext *ctx;
-      int p, i, k;
-      :
-      k =  PGAGetIntegerAllele ( ctx, p, PGA_NEWPOP, i )
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+       int p, i, k;
+
+       ...
+       k =  PGAGetIntegerAllele (ctx, p, PGA_NEWPOP, i)
+
+    \endrst
+
+******************************************************************************/
 int PGAGetIntegerAllele (PGAContext *ctx, int p, int pop, int i)
 {
     PGAIndividual *ind;
@@ -239,310 +254,381 @@ int PGAGetIntegerAllele (PGAContext *ctx, int p, int pop, int i)
     return( (int) chrom[i] );
 }
 
-/*U****************************************************************************
-  PGASetIntegerInitPermute - sets a flag to tell the initialization routines
-  to set each integer-valued gene to a random permutation of the values given
-  by an upper and lower bound.  The length of the interval must be the same
-  as the string length.  This is the default strategy for initializing
-  integer-valued strings. The default interval is [0,L-1] where L is the
-  string length.  No string initialization is done by this call.
+/*!****************************************************************************
+    \brief Set a flag to tell the initialization routines to set each
+           integer-valued gene to a random permutation of the values given
+           by an upper and lower bound.
+    \ingroup init
 
-  Category: Initialization
+    \param   ctx  context variable
+    \param   min  the lower bound of numbers used in the permutation
+    \param   max  the upper bound of numbers used in the permutation
+    \return  None
 
-  Inputs:
-     ctx - context variable
-     min - the lower bound of numbers used in the permutation
-     max - the upper bound of numbers used in the permutation
+    \rst
 
-  Outputs:
+    Description
+    -----------
 
-  Example:
-      Set the initialization routines to set each gene to a random and
-      unique value from the interval $[500,599]$.
+    The length of the interval must be the same
+    as the string length.  This is the default strategy for initializing
+    integer-valued strings. The default interval is [0,L-1] where L is the
+    string length.  No string initialization is done by this call.
 
-      PGAContext *ctx;
-      :
-      PGASetIntegerInitPermute(ctx, 500, 599)}
+    Example
+    -------
 
-****************************************************************************U*/
-void PGASetIntegerInitPermute ( PGAContext *ctx, int min, int max)
+    Set the initialization routines to set each gene to a random and
+    unique value from the interval [500,599].
+
+    .. code-block:: c
+
+        PGAContext *ctx;
+
+        ...
+        PGASetIntegerInitPermute (ctx, 500, 599)}
+
+    \endrst
+******************************************************************************/
+void PGASetIntegerInitPermute (PGAContext *ctx, int min, int max)
 {
-     int i, range;
+    int i, range;
 
-    PGADebugEntered("PGASetIntegerInitPermute");
-    PGAFailIfSetUp("PGASetIntegerInitPermute");
-    PGACheckDataType("PGASetIntegerInitPermute", PGA_DATATYPE_INTEGER);
+    PGADebugEntered  ("PGASetIntegerInitPermute");
+    PGAFailIfSetUp   ("PGASetIntegerInitPermute");
+    PGACheckDataType ("PGASetIntegerInitPermute", PGA_DATATYPE_INTEGER);
 
-     range = max - min + 1;
-     if (max <= min)
-          PGAError(ctx, "PGASetIntegerInitPermute: max does not exceed min:",
-                   PGA_FATAL, PGA_INT, (void *) &max);
-     else if (range != ctx->ga.StringLen) {
-          PGAError(ctx, "PGASetIntegerInitPermute: range of:",
-                   PGA_FATAL, PGA_INT, (void *) &range);
-          PGAError(ctx, "PGASetIntegerInitPermute: does not equal "
-                   "string length:", PGA_FATAL, PGA_INT,
-                    (void *) &(ctx->ga.StringLen));
-     }
-     else
-     {
-          ctx->init.IntegerType = PGA_IINIT_PERMUTE;
-          for (i = 0; i < ctx->ga.StringLen; i++)
-          {
-               ctx->init.IntegerMin[i] = min;
-               ctx->init.IntegerMax[i] = max;
-          }
-     }
+    range = max - min + 1;
+    if (max <= min) {
+        PGAError
+            ( ctx, "PGASetIntegerInitPermute: max does not exceed min:"
+            , PGA_FATAL, PGA_INT, (void *) &max
+            );
+    } else if (range != ctx->ga.StringLen) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetIntegerInitPermute: range of %d does not equal "
+              "StringLen %d"
+            , range, ctx->ga.StringLen
+            );
+    } else {
+        ctx->init.IntegerType = PGA_IINIT_PERMUTE;
+        for (i = 0; i < ctx->ga.StringLen; i++) {
+            ctx->init.IntegerMin[i] = min;
+            ctx->init.IntegerMax[i] = max;
+        }
+    }
 
-    PGADebugExited("PGASetIntegerInitPermute");
+    PGADebugExited ("PGASetIntegerInitPermute");
 }
 
-/*U****************************************************************************
-  PGASetIntegerInitRange - sets a flag to tell the initialization routines to
-  set each integer-valued gene to a value chosen randomly from the interval
-  given by an upper and lower bound.  No string initialization is done by
-  this call.
+/*!****************************************************************************
+    \brief Set a flag to tell the initialization routines to set each
+           integer-valued gene to a value chosen randomly from the
+           interval given by an upper and lower bound.
+    \ingroup init
+    \param   ctx  context variable
+    \param   min  array of lower bounds that define the interval the gene is
+                  initialized from
+    \param   max  array of upper bounds that define the interval the gene is
+                  initialized from
+    \return  None
 
-  Category: Initialization
+    \rst
 
-  Inputs:
-     ctx - context variable
-     min - array of lower bounds that define the interval the gene is
-           initialized from
-     max - array of upper bounds that define the interval the gene is
-           initialized from
+    Example
+    -------
 
-  Outputs:
+    Set the initialization routines to select a value for gene i
+    uniformly randomly from the interval [0,i].  Assumes all strings
+    are of the same length.
 
-  Example:
-      Set the initialization routines to select a value for gene i
-      uniformly randomly from the interval [0,i].  Assumes all strings
-      are of the same length.
+    .. code-block:: c
 
-      PGAContext *ctx;
-      int *low, *high, stringlen, i;
-      :
-      stringlen = PGAGetStringLength(ctx);
-      low  = (int *) malloc(stringlen*sizeof(int));
-      high = (int *) malloc(stringlen*sizeof(int));
-      for(i=0;i<stringlen;i++) {
-          low[i]  = 0;
-          high[i] = i
-      }
-      PGASetIntegerInitRange(ctx, low, high);
+        PGAContext *ctx;
+        int *low, *high, stringlen, i;
 
-****************************************************************************U*/
+        ...
+        stringlen = PGAGetStringLength (ctx);
+        low  = malloc (stringlen * sizeof (int));
+        high = malloc (stringlen * sizeof (int));
+        for (i=0; i<stringlen; i++) {
+            low  [i] = 0;
+            high [i] = i;
+        }
+        PGASetIntegerInitRange (ctx, low, high);
+
+    \endrst
+
+******************************************************************************/
 void PGASetIntegerInitRange (PGAContext *ctx, const int *min, const int *max)
 {
-     int i;
+    int i;
 
-     PGADebugEntered("PGASetIntegerInitRange");
-     PGAFailIfSetUp("PGASetIntegerInitRange");
-     PGACheckDataType("PGASetIntegerInitRange", PGA_DATATYPE_INTEGER);
+    PGADebugEntered  ("PGASetIntegerInitRange");
+    PGAFailIfSetUp   ("PGASetIntegerInitRange");
+    PGACheckDataType ("PGASetIntegerInitRange", PGA_DATATYPE_INTEGER);
 
-     for (i = 0; i < ctx->ga.StringLen; i++)
-     {
-        if (max[i] < min[i])
-            PGAError(ctx, "PGASetIntegerInitRange: Lower bound exceeds upper "
-                    "bound for allele #", PGA_FATAL, PGA_INT, (void *) &i);
-        else {
-            ctx->init.IntegerMin[i] = min[i];
-            ctx->init.IntegerMax[i] = max[i];
+    for (i = 0; i < ctx->ga.StringLen; i++)
+    {
+        if (max[i] < min[i]) {
+            PGAError
+                ( ctx
+                , "PGASetIntegerInitRange: Lower bound exceeds upper "
+                  "bound for allele #"
+                , PGA_FATAL, PGA_INT, (void *) &i
+                );
+        } else {
+            ctx->init.IntegerMin [i] = min [i];
+            ctx->init.IntegerMax [i] = max [i];
         }
-     }
-     ctx->init.IntegerType = PGA_IINIT_RANGE;
+    }
+    ctx->init.IntegerType = PGA_IINIT_RANGE;
 
-     PGADebugExited("PGASetIntegerInitRange");
+    PGADebugExited ("PGASetIntegerInitRange");
 }
 
-/*U***************************************************************************
-  PGAGetIntegerInitType - returns the type of scheme used to randomly
-  initialize strings of data type PGA_DATATYPE_INTEGER.
+/*!***************************************************************************
+    \brief Return the type of scheme used to randomly initialize strings
+           of data type PGA_DATATYPE_INTEGER.
+    \ingroup query
 
-   Category: Initialization
+    \param    ctx  context variable
+    \return Returns the integer corresponding to the symbolic constant
+            used to specify the scheme used to initialize integer strings.
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns the integer corresponding to the symbolic constant
-      used to specify the scheme used to initialize integer strings
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int inittype;
-      :
-      inittype = PGAGetIntegerInitType(ctx);
-      switch (inittype) {
-      case PGA_IINIT_PERMUTE:
-          printf ("Data Type = PGA_IINIT_PERMUTE\n");
-          break;
-      case PGA_IINIT_RANGE:
-          printf ("Data Type = PGA_IINIT_RANGE\n");
-          break;
-      }
+    .. code-block:: c
 
-***************************************************************************U*/
+        PGAContext *ctx;
+        int inittype;
+
+        ...
+        inittype = PGAGetIntegerInitType (ctx);
+        switch (inittype) {
+        case PGA_IINIT_PERMUTE:
+            printf ("Data Type = PGA_IINIT_PERMUTE\n");
+            break;
+        case PGA_IINIT_RANGE:
+            printf ("Data Type = PGA_IINIT_RANGE\n");
+            break;
+        }
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetIntegerInitType (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetIntegerInitType");
-    PGAFailIfNotSetUp("PGAGetIntegerInitType");
-    PGACheckDataType("PGAGetIntegerInitType", PGA_DATATYPE_INTEGER);
+    PGADebugEntered   ("PGAGetIntegerInitType");
+    PGAFailIfNotSetUp ("PGAGetIntegerInitType");
+    PGACheckDataType  ("PGAGetIntegerInitType", PGA_DATATYPE_INTEGER);
 
-    PGADebugExited("PGAGetIntegerInitType");
+    PGADebugExited ("PGAGetIntegerInitType");
 
-    return(ctx->init.IntegerType);
+    return ctx->init.IntegerType;
 }
 
-/*U***************************************************************************
-   PGAGetMinIntegerInitValue - returns the minimum of the range of integers
-   used to randomly initialize integer strings.
+/*!***************************************************************************
+    \brief Return the minimum of the range of integers used to randomly
+           initialize integer strings.
+    \ingroup query
 
-   Category: Initialization
+    \param   ctx  context variable
+    \param   i    Index of the initialization range
+    \return The minimum of the range of integers used to randomly initialize
+            integer strings
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The minimum of the range of integers used to randomly initialize
-      integer strings
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int min;
-      :
-      min = PGAGetMinIntegerInitValue(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int min;
+       int idx;
+
+       ...
+       min = PGAGetMinIntegerInitValue (ctx, idx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetMinIntegerInitValue (PGAContext *ctx, int i)
 {
-    PGADebugEntered("PGAGetMinIntegerInitValue");
-    PGAFailIfNotSetUp("PGAGetMinIntegerInitValue");
-    PGACheckDataType("PGASetIntegerAllele", PGA_DATATYPE_INTEGER);
+    PGADebugEntered   ("PGAGetMinIntegerInitValue");
+    PGAFailIfNotSetUp ("PGAGetMinIntegerInitValue");
+    PGACheckDataType  ("PGASetIntegerAllele", PGA_DATATYPE_INTEGER);
 
-    if (i < 0 || i >= ctx->ga.StringLen)
-         PGAError(ctx, "PGAGetMinIntegerInitValue: Index out of range:",
-                  PGA_FATAL, PGA_INT, (int *) &i);
+    if (i < 0 || i >= ctx->ga.StringLen) {
+        PGAError
+            ( ctx, "PGAGetMinIntegerInitValue: Index out of range:"
+            , PGA_FATAL, PGA_INT, (int *) &i
+            );
+    }
 
-    PGADebugExited("PGAGetMinIntegerInitValue");
+    PGADebugExited ("PGAGetMinIntegerInitValue");
 
-    return(ctx->init.IntegerMin[i]);
+    return ctx->init.IntegerMin [i];
 }
 
-/*U***************************************************************************
-   PGAGetMaxIntegerInitValue - returns the maximum of the range of integers
-   used to randomly initialize integer strings.
+/*!***************************************************************************
+    \brief Return the maximum of the range of integers used to randomly
+           initialize integer strings.
+    \ingroup query
 
-   Category: Initialization
+    \param   ctx  context variable
+    \param   i    Index of the initialization range
+    \return  The maximum of the range of integers used to randomly initialize
+             integer strings
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The maximum of the range of integers used to randomly initialize
-      integer strings.
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int max;
-      :
-      max = PGAGetMaxIntegerInitValue(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int idx;
+       int max;
+
+       ...
+       max = PGAGetMaxIntegerInitValue (ctx, idx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetMaxIntegerInitValue (PGAContext *ctx, int i)
 {
-    PGADebugEntered("PGAGetMaxIntegerInitValue");
-    PGAFailIfNotSetUp("PGAGetMaxIntegerInitValue");
-    PGACheckDataType("PGAGetMaxIntegerInitValue", PGA_DATATYPE_INTEGER);
+    PGADebugEntered   ("PGAGetMaxIntegerInitValue");
+    PGAFailIfNotSetUp ("PGAGetMaxIntegerInitValue");
+    PGACheckDataType  ("PGAGetMaxIntegerInitValue", PGA_DATATYPE_INTEGER);
 
-    if (i < 0 || i >= ctx->ga.StringLen)
-         PGAError(ctx, "PGAGetMaxIntegerInitValue: Index out of range:",
-                  PGA_FATAL, PGA_INT, (int *) &i);
+    if (i < 0 || i >= ctx->ga.StringLen) {
+        PGAError
+            ( ctx, "PGAGetMaxIntegerInitValue: Index out of range:"
+            , PGA_FATAL, PGA_INT, (int *) &i
+            );
+    }
 
-    PGADebugExited("PGAGetMaxIntegerInitValue");
+    PGADebugExited ("PGAGetMaxIntegerInitValue");
 
-    return(ctx->init.IntegerMax[i]);
+    return ctx->init.IntegerMax [i];
 }
 
 
-/*I****************************************************************************
-   PGAIntegerCreateString - Allocate memory for a string of type PGAInteger,
-   and initializes or clears the string according to initflag.
+/*!****************************************************************************
+    \brief Allocate memory for a string of type PGAInteger, and
+           initializes or clears the string according to initflag.
+    \ingroup internal
 
-   Inputs:
-      ctx      - context variable
-      p        - string index
-      pop      - symbolic constant of the population string p is in
-      initflag - A true/false flag used in conjunction with ctx->ga.RandomInit
-                 to initialize the string either randomly or set to zero
+    \param   ctx       context variable
+    \param   p         string index
+    \param   pop       symbolic constant of the population string p is in
+    \param   initflag  A true/false flag used in conjunction with
+                       ctx->ga.RandomInit to initialize the string
+                       either randomly or set to zero
+    \return  None
 
-   Outputs:
-      new      - a pointer set to the address of the allocated memory
+    \rst
 
-   Example:
-      Allocates and clears memory and assigns the address of the allocated
-      memory to the string field (ind->chrom) of the individual.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      PGAIndividual *ind;
-      :
-      PGAIntegerCreateString( ctx, ind, PGA_FALSE );
+    Note that this function is set in :c:func:`PGASetUp` as the
+    create string user function for the integer datatype.
 
-****************************************************************************I*/
-void PGAIntegerCreateString (PGAContext *ctx, int p, int pop, int InitFlag)
+    Example
+    -------
+
+    Allocates and clears memory and assigns the address of the allocated
+    memory to the string field (ind->chrom) of the individual.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       PGAIndividual *ind;
+
+       ...
+       PGAIntegerCreateString (ctx, ind, PGA_FALSE);
+
+    \endrst
+
+******************************************************************************/
+void PGAIntegerCreateString (PGAContext *ctx, int p, int pop, int
+initflag)
 {
     int i, fp;
     PGAInteger *c;
     PGAIndividual *new = PGAGetIndividual(ctx, p, pop);
 
-    PGADebugEntered("PGAIntegerCreateString");
+    PGADebugEntered ("PGAIntegerCreateString");
 
     new->chrom = (void *)malloc(ctx->ga.StringLen * sizeof(PGAInteger));
-    if (new->chrom == NULL)
-	PGAError(ctx, "PGAIntegerCreateString: No room to allocate "
-		 "new->chrom", PGA_FATAL, PGA_VOID, NULL);
+    if (new->chrom == NULL) {
+        PGAError
+            ( ctx
+            , "PGAIntegerCreateString: No room to allocate new->chrom"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
+    }
     c = (PGAInteger *)new->chrom;
-    if (InitFlag)
-	if (ctx->fops.InitString) {
-	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
-	    (*ctx->fops.InitString)(&ctx, &fp, &pop);
-	} else {
-	    (*ctx->cops.InitString)(ctx, p, pop);
-	}
-    else
-	for (i=0; i<ctx->ga.StringLen; i++)
-	    c[i] = 0;
-    
-    PGADebugExited("PGAIntegerCreateString");
+    if (initflag) {
+        if (ctx->fops.InitString) {
+            fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
+            (*ctx->fops.InitString)(&ctx, &fp, &pop);
+        } else {
+            (*ctx->cops.InitString)(ctx, p, pop);
+        }
+    } else {
+        for (i=0; i<ctx->ga.StringLen; i++) {
+            c[i] = 0;
+        }
+    }
+
+    PGADebugExited ("PGAIntegerCreateString");
 }
 
-/*I****************************************************************************
-   PGAIntegerMutation - randomly mutates an integer-valued gene with a
-   specified probability. This routine is called from PGAMutation and must
-   cast the void string pointer it is passed as the second argument.
+/*!****************************************************************************
+    \brief Randomly mutates an integer-valued gene with a specified
+           probability.
+    \ingroup internal
 
-   Inputs:
-      ctx      - context variable
-      p        - string index
-      pop      - symbolic constant of the population string p is in
-      mr       - probability of mutating an integer-valued gene
+    \param   ctx       context variable
+    \param   p         string index
+    \param   pop       symbolic constant of the population string p is in
+    \param   mr        probability of mutating an integer-valued gene
+    \return  Returns the number of mutations
 
-   Outputs:
-      Returns the number of mutations
+    \rst
 
-   Example:
+    Description
+    -----------
 
-****************************************************************************I*/
-int PGAIntegerMutation( PGAContext *ctx, int p, int pop, double mr )
+    This routine is called from :c:func`PGAMutation`.
+
+    Note that this function is set in :c:func:`PGASetUp` as the mutation
+    user function for the integer datatype by default.
+
+    \endrst
+
+******************************************************************************/
+int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
 {
     PGAInteger *c;
     int i, j, temp;
     int count = 0;
 
-    PGADebugEntered("PGAIntegerMutation");
+    PGADebugEntered ("PGAIntegerMutation");
 
-    c = (PGAInteger *)PGAGetIndividual(ctx, p, pop)->chrom;
-    for(i=0; i<ctx->ga.StringLen; i++) {
+    c = (PGAInteger *)PGAGetIndividual (ctx, p, pop)->chrom;
+    for (i=0; i<ctx->ga.StringLen; i++) {
         int old_value = c [i];
         /* Do not permute fixed edges */
         if (  ctx->ga.n_edges
@@ -558,286 +644,354 @@ int PGAIntegerMutation( PGAContext *ctx, int p, int pop, double mr )
             switch (ctx->ga.MutationType) {
             case PGA_MUTATION_CONSTANT:
                 /* add or subtract from allele */
-                if ( PGARandomFlip(ctx, .5) )
-                    c[i] += ctx->ga.MutateIntegerValue;
-                else
-                    c[i] -= ctx->ga.MutateIntegerValue;
+                if (PGARandomFlip(ctx, .5)) {
+                    c [i] += ctx->ga.MutateIntegerValue;
+                } else {
+                    c [i] -= ctx->ga.MutateIntegerValue;
+                }
                 break;
             case PGA_MUTATION_PERMUTE:
             {
                 /* could check for j == i if we were noble */
-	        /* edd: 16 Jun 2007  applying patch from Debian bug
+                /* edd: 16 Jun 2007  applying patch from Debian bug
                  * report #333381 correcting an 'off-by-one' here
-		 * bu reducing StringLen by 1
+                 * bu reducing StringLen by 1
                  */
-                j = PGARandomInterval(ctx, 0, ctx->ga.StringLen - 1);
+                j = PGARandomInterval (ctx, 0, ctx->ga.StringLen - 1);
                 if (ctx->ga.n_edges) {
                     while (get_edge (ctx, c [j]) || rev_edge (ctx, c [j])) {
-                        j = PGARandomInterval(ctx, 0, ctx->ga.StringLen - 1);
+                        j = PGARandomInterval (ctx, 0, ctx->ga.StringLen - 1);
                     }
                 }
-                temp = c[i];
-                c[i] = c[j];
-                c[j] = temp;
+                temp  = c [i];
+                c [i] = c [j];
+                c [j] = temp;
                 break;
             }
             case PGA_MUTATION_RANGE:
-                c[i] = PGARandomInterval(ctx, ctx->init.IntegerMin[i],
-                                              ctx->init.IntegerMax[i]);
+                c [i] = PGARandomInterval
+                    (ctx, ctx->init.IntegerMin [i], ctx->init.IntegerMax [i]);
                 break;
             case PGA_MUTATION_POLY:
               {
-		double u = PGARandom01 (ctx, 0);
-		double eta = PGAGetMutationPolyEta (ctx) + 1;
+                double u = PGARandom01 (ctx, 0);
+                double eta = PGAGetMutationPolyEta (ctx) + 1;
                 double delta, val;
-		if (u < 0.5) {
-		    delta = pow (2 * u, 1.0 / eta) - 1.0;
-		} else {
-		    delta = 1.0 - pow (2 * (1 - u), 1.0 / eta);
-		}
-		if (ctx->ga.MutatePolyValue >= 0) {
-		    c [i] += (int)round (delta * ctx->ga.MutatePolyValue);
-		} else {
-		    if (delta < 0) {
-			val = fabs (c [i] - ctx->init.IntegerMin [i] + 0.4999);
-		    } else {
-			val = fabs (ctx->init.IntegerMax [i] - c [i] + 0.4999);
-		    }
-		    c [i] += (int)round (delta * val);
-		}
-		break;
+                if (u < 0.5) {
+                    delta = pow (2 * u, 1.0 / eta) - 1.0;
+                } else {
+                    delta = 1.0 - pow (2 * (1 - u), 1.0 / eta);
+                }
+                if (ctx->ga.MutatePolyValue >= 0) {
+                    c [i] += (int)round (delta * ctx->ga.MutatePolyValue);
+                } else {
+                    if (delta < 0) {
+                        val = fabs (c [i] - ctx->init.IntegerMin [i] + 0.4999);
+                    } else {
+                        val = fabs (ctx->init.IntegerMax [i] - c [i] + 0.4999);
+                    }
+                    c [i] += (int)round (delta * val);
+                }
+                break;
               }
             default:
-                PGAError(ctx, "PGAIntegerMutation: Invalid value of "
-                         "ga.MutationType:", PGA_FATAL, PGA_INT,
-                         (void *) &(ctx->ga.MutationType));
+                PGAError
+                    ( ctx
+                    , "PGAIntegerMutation: Invalid value of ga.MutationType:"
+                    , PGA_FATAL, PGA_INT, (void *) &(ctx->ga.MutationType)
+                    );
                 break;
             }
 
             /* reset to min/max or bounce if outside range */
-	    bouncheck
+            bouncheck
                 ( ctx, i, ctx->ga.MutateBoundedFlag, ctx->ga.MutateBounceFlag
                 , c, old_value, old_value
                 );
             count++;
         }
     }
-    PGADebugExited("PGAIntegerMutation");
-    return(count);
+    PGADebugExited ("PGAIntegerMutation");
+    return count;
 }
 
-/*I****************************************************************************
-   PGAIntegerOneptCrossover - performs one-point crossover on two parent
-   strings producing two children via side-effect
+/*!****************************************************************************
+    \brief Perform one-point crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect
 
-   Outputs:
+    \rst
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGAIntegerOneptCrossover(ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    one-point crossover.
 
-****************************************************************************I*/
-void PGAIntegerOneptCrossover(PGAContext *ctx, int p1, int p2, int pop1,
-                              int c1, int c2, int pop2)
+    Example
+    -------
+
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerOneptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGAIntegerOneptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
-     PGAInteger *parent1 = (PGAInteger *)PGAGetIndividual(ctx, p1,
-                                                          pop1)->chrom;
-     PGAInteger *parent2 = (PGAInteger *)PGAGetIndividual(ctx, p2,
-                                                          pop1)->chrom;
-     PGAInteger *child1  = (PGAInteger *)PGAGetIndividual(ctx, c1,
-                                                          pop2)->chrom;
-     PGAInteger *child2  = (PGAInteger *)PGAGetIndividual(ctx, c2,
-                                                          pop2)->chrom;
+     PGAInteger *parent1 = (PGAInteger *)PGAGetIndividual
+        (ctx, p1, pop1)->chrom;
+     PGAInteger *parent2 = (PGAInteger *)PGAGetIndividual
+        (ctx, p2, pop1)->chrom;
+     PGAInteger *child1  = (PGAInteger *)PGAGetIndividual
+        (ctx, c1, pop2)->chrom;
+     PGAInteger *child2  = (PGAInteger *)PGAGetIndividual
+        (ctx, c2, pop2)->chrom;
      int i, xsite;
 
-    PGADebugEntered("PGAIntegerOneptCrossover");
+    PGADebugEntered ("PGAIntegerOneptCrossover");
 
-    xsite = PGARandomInterval(ctx, 1,ctx->ga.StringLen-1);
+    xsite = PGARandomInterval (ctx, 1,ctx->ga.StringLen-1);
 
-    for(i=0;i<xsite;i++) {
-        child1[i] = parent1[i];
-        child2[i] = parent2[i];
+    for (i=0; i<xsite; i++) {
+        child1 [i] = parent1 [i];
+        child2 [i] = parent2 [i];
     }
 
-    for(i=xsite;i<ctx->ga.StringLen;i++) {
-        child1[i] = parent2[i];
-        child2[i] = parent1[i];
+    for (i=xsite; i<ctx->ga.StringLen; i++) {
+        child1 [i] = parent2 [i];
+        child2 [i] = parent1 [i];
     }
 
-    PGADebugExited("PGAIntegerOneptCrossover");
+    PGADebugExited ("PGAIntegerOneptCrossover");
 }
 
 
-/*I****************************************************************************
-   PGAIntegerTwoptCrossover - performs two-point crossover on two parent
-   strings producing two children via side-effect
+/*!****************************************************************************
+    \brief Perform two-point crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect
 
-   Outputs:
+    \rst
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGAIntegerTwoptCrossover(ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    two-point crossover.
 
-****************************************************************************I*/
-void PGAIntegerTwoptCrossover( PGAContext *ctx, int p1, int p2, int pop1,
-                              int c1, int c2, int pop2)
+    Example
+    -------
+
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerTwoptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGAIntegerTwoptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
-     PGAInteger *parent1 = (PGAInteger *)PGAGetIndividual(ctx, p1,
-                                                          pop1)->chrom;
-     PGAInteger *parent2 = (PGAInteger *)PGAGetIndividual(ctx, p2,
-                                                          pop1)->chrom;
-     PGAInteger *child1  = (PGAInteger *)PGAGetIndividual(ctx, c1,
-                                                          pop2)->chrom;
-     PGAInteger *child2  = (PGAInteger *)PGAGetIndividual(ctx, c2,
-                                                          pop2)->chrom;
+     PGAInteger *parent1 = (PGAInteger *)PGAGetIndividual
+        (ctx, p1, pop1)->chrom;
+     PGAInteger *parent2 = (PGAInteger *)PGAGetIndividual
+        (ctx, p2, pop1)->chrom;
+     PGAInteger *child1  = (PGAInteger *)PGAGetIndividual
+        (ctx, c1, pop2)->chrom;
+     PGAInteger *child2  = (PGAInteger *)PGAGetIndividual
+        (ctx, c2, pop2)->chrom;
      int i, temp, xsite1, xsite2;
 
-    PGADebugEntered("PGAIntegerTwoptCrossover");
+    PGADebugEntered ("PGAIntegerTwoptCrossover");
 
     /* pick two cross sites such that xsite2 > xsite1 */
-    xsite1 = PGARandomInterval(ctx, 1,ctx->ga.StringLen-1);
+    xsite1 = PGARandomInterval (ctx, 1,ctx->ga.StringLen-1);
     xsite2 = xsite1;
-    while ( xsite2 == xsite1 )
-        xsite2 = PGARandomInterval(ctx, 1,ctx->ga.StringLen-1);
-    if ( xsite1 > xsite2 ) {
+    while (xsite2 == xsite1) {
+        xsite2 = PGARandomInterval (ctx, 1,ctx->ga.StringLen-1);
+    }
+    if (xsite1 > xsite2) {
         temp   = xsite1;
         xsite1 = xsite2;
         xsite2 = temp;
     }
 
-    for(i=0;i<xsite1;i++) {
-        child1[i] = parent1[i];
-        child2[i] = parent2[i];
+    for (i=0; i<xsite1; i++) {
+        child1 [i] = parent1 [i];
+        child2 [i] = parent2 [i];
     }
 
-    for(i=xsite1;i<xsite2;i++) {
-        child1[i] = parent2[i];
-        child2[i] = parent1[i];
+    for (i=xsite1; i<xsite2; i++) {
+        child1 [i] = parent2 [i];
+        child2 [i] = parent1 [i];
     }
 
-    for(i=xsite2;i<ctx->ga.StringLen;i++) {
-        child1[i] = parent1[i];
-        child2[i] = parent2[i];
+    for (i=xsite2; i<ctx->ga.StringLen; i++) {
+        child1 [i] = parent1 [i];
+        child2 [i] = parent2 [i];
     }
 
-    PGADebugExited("PGAIntegerTwoptCrossover");
+    PGADebugExited ("PGAIntegerTwoptCrossover");
 }
 
 
-/*I****************************************************************************
-   PGAIntegerUniformCrossover - performs uniform crossover on two parent
-   strings producing two children via side-effect
+/*!****************************************************************************
+    \brief Perform uniform crossover on two parent strings producing two
+           children via side-effect.
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect
 
-   Outputs:
+    \rst
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGAIntegerUniformCrossover( ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    uniform crossover.
 
-****************************************************************************I*/
-void PGAIntegerUniformCrossover(PGAContext *ctx, int p1, int p2, int pop1,
-                                int c1, int c2, int pop2)
+    Example
+    -------
+
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerUniformCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGAIntegerUniformCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
-     PGAInteger *parent1 = (PGAInteger *)PGAGetIndividual(ctx, p1,
-                                                          pop1)->chrom;
-     PGAInteger *parent2 = (PGAInteger *)PGAGetIndividual(ctx, p2,
-                                                          pop1)->chrom;
-     PGAInteger *child1  = (PGAInteger *)PGAGetIndividual(ctx, c1,
-                                                          pop2)->chrom;
-     PGAInteger *child2  = (PGAInteger *)PGAGetIndividual(ctx, c2,
-                                                          pop2)->chrom;
-     int i;
+    PGAInteger *parent1 = (PGAInteger *)PGAGetIndividual
+        (ctx, p1, pop1)->chrom;
+    PGAInteger *parent2 = (PGAInteger *)PGAGetIndividual
+        (ctx, p2, pop1)->chrom;
+    PGAInteger *child1  = (PGAInteger *)PGAGetIndividual
+        (ctx, c1, pop2)->chrom;
+    PGAInteger *child2  = (PGAInteger *)PGAGetIndividual
+        (ctx, c2, pop2)->chrom;
+    int i;
 
-    PGADebugEntered("PGAIntegerUniformCrossover");
+    PGADebugEntered ("PGAIntegerUniformCrossover");
 
-    for(i=0;i<ctx->ga.StringLen;i++) {
-        if ( parent1[i] == parent2[i] ) {
-            child1[i] = parent1[i];
-            child2[i] = parent2[i];
-        }
-        else {
-            if(PGARandomFlip(ctx, ctx->ga.UniformCrossProb)) {
-                child1[i] = parent1[i];
-                child2[i] = parent2[i];
-            }
-            else {
-                child1[i] = parent2[i];
-                child2[i] = parent1[i];
+    for (i=0; i<ctx->ga.StringLen; i++) {
+        if (parent1 [i] == parent2 [i]) {
+            child1 [i] = parent1 [i];
+            child2 [i] = parent2 [i];
+        } else {
+            if(PGARandomFlip (ctx, ctx->ga.UniformCrossProb)) {
+                child1 [i] = parent1 [i];
+                child2 [i] = parent2 [i];
+            } else {
+                child1 [i] = parent2 [i];
+                child2 [i] = parent1 [i];
             }
         }
     }
-
-    PGADebugExited("PGAIntegerUniformCrossover");
+    PGADebugExited ("PGAIntegerUniformCrossover");
 }
 
-/*I****************************************************************************
-   PGAIntegerSBXCrossover - performs simulated binary crossover (SBX)
-   on two parent strings producing two children via side-effect
+/*!****************************************************************************
+    \brief Performs simulated binary crossover (SBX) on two parent
+           strings producing two children via side-effect.
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
 
-   Outputs:
-      c1 and c2 in population pop2 are modified by side-effect.
+    \rst
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGAIntegerSBXCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    simulated binary crossover.
 
-****************************************************************************I*/
+    Example
+    -------
+
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerSBXCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
 void PGAIntegerSBXCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
@@ -886,32 +1040,7 @@ void PGAIntegerSBXCrossover
     }
 }
 
-/*I****************************************************************************
-   PGAIntegerEdgeCrossover - performs Edge Recombination
-   on two parent strings producing two children via side-effect
-
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
-
-   Outputs:
-      c1 and c2 in population pop2 are modified by side-effect.
-
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
-
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGAIntegerEdgeCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
-
-****************************************************************************I*/
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 static void append_edge (PGAContext *ctx, PGAInteger n1, PGAInteger n2)
 {
@@ -959,7 +1088,7 @@ static void build_edge_map (PGAContext *ctx, PGAInteger **parent)
 /* Remove new edge from all right sides, note that only the edges in
  * the edge table for the new edge have this edge on the right side
  */
-void remove_edge_from_right (PGAContext *ctx, PGAInteger cidx)
+static void remove_edge_from_right (PGAContext *ctx, PGAInteger cidx)
 {
     int i, j;
     for (j=0; j<4; j++) {
@@ -1034,7 +1163,7 @@ static void fix_edge_map (PGAContext *ctx)
     }
 }
 
-int count_edges (PGAContext *ctx, PGAInteger idx)
+static int count_edges (PGAContext *ctx, PGAInteger idx)
 {
     int j;
     int c = 0;
@@ -1047,7 +1176,7 @@ int count_edges (PGAContext *ctx, PGAInteger idx)
     return c;
 }
 
-void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
+static void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
 {
     PGAInteger i, j;
     PGAInteger *em = ctx->scratch.edgemap [child [idx]];
@@ -1133,6 +1262,51 @@ void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
     }
     remove_edge_from_right (ctx, child [idx + 1]);
 }
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+/*!****************************************************************************
+    \brief Perform Edge Recombination on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    edge crossover.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerEdgeCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
 
 void PGAIntegerEdgeCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
@@ -1237,32 +1411,44 @@ void PGAIntegerEdgeCrossover
     }
 }
 
-/*I****************************************************************************
-   PGAIntegerSetFixedEdges - Set edges that have to be present
-   This is used only in Edge Crossover
-   Note: The edges data structure is copied and must be freed by the
-   caller. It is admissible that the edges data is in automatic
-   variables allocated on the stack.
+/*!****************************************************************************
+    \brief Set edges that have to be present.
+    \ingroup init
 
-   Inputs:
-      ctx       - context variable
-      n         - Number of edges
-      edge      - Pointer to edges, each edge consists of two indices
-      symmetric - Flag that indicates if edges are allowed in reverse
-                  direction
+    \param   ctx        context variable
+    \param   n          Number of edges
+    \param   edge       Pointer to edges, each edge consists of two indices
+    \param   symmetric  Flag that indicates if edges are allowed in reverse
+                        direction
+    \return  None
 
-   Outputs:
+    \rst
 
-   Example:
-      Set edges (0, 213) and (7, 11) as a fixed edges
+    Description
+    -----------
 
-      PGAContext *ctx;
-      PGAInteger edge[][2] = {(PGAInteger []){0, 213}, (PGAInteger []){7, 11}};
-      int  n = sizeof (edge) / (2 * sizeof (PGAInteger));
-      :
-      PGAIntegerSetFixedEdges (ctx, n, edge, PGA_TRUE);
+    This is used only in Edge Crossover.
+    Note: The edges data structure is copied and must be freed by the
+    caller. It is admissible that the edges data is in automatic
+    variables allocated on the stack.
 
-****************************************************************************I*/
+    Example
+    -------
+
+    Set edges (0, 213) and (7, 11) as fixed edges.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       PGAInteger edge[][2] = {(PGAInteger []){0, 213}, (PGAInteger []){7, 11}};
+       int  n = sizeof (edge) / (2 * sizeof (PGAInteger));
+
+       ...
+       PGAIntegerSetFixedEdges (ctx, n, edge, PGA_TRUE);
+
+    \endrst
+
+******************************************************************************/
 void PGAIntegerSetFixedEdges
     (PGAContext *ctx, size_t n, PGAInteger (*edge)[2], int symmetric)
 {
@@ -1337,105 +1523,126 @@ void PGAIntegerSetFixedEdges
     }
 }
 
-/*I****************************************************************************
-   PGAIntegerPrintString - writes an integer-valued string to a file.
+/*!****************************************************************************
+    \brief Write an integer-valued string to a file.
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      fp  - file pointer to file to write the string to
-      p   - index of the string to write out
-      pop - symbolic constant of the population string p is in
+    \param   ctx  context variable
+    \param   fp   file pointer to file to write the string to
+    \param   p    index of the string to write out
+    \param   pop  symbolic constant of the population string p is in
+    \return  None
 
-   Outputs:
+    \rst
 
-   Example:
-      Write member p in population PGA_NEWPOP to stdout.
+    Example
+    -------
 
-      PGAContext *ctx;
-      int  p;
-      :
-      PGAIntegerPrintString (ctx, stdout, p, PGA_NEWPOP);
+    Write member p in population PGA_NEWPOP to stdout.
 
-****************************************************************************I*/
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int  p;
+
+       ...
+       PGAIntegerPrintString (ctx, stdout, p, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
 void PGAIntegerPrintString ( PGAContext *ctx, FILE *fp, int p, int pop)
 {
-    PGAInteger *c = (PGAInteger *)PGAGetIndividual(ctx, p, pop)->chrom;
+    PGAInteger *c = (PGAInteger *)PGAGetIndividual (ctx, p, pop)->chrom;
     int i;
 
-    PGADebugEntered("PGAIntegerPrintString");
+    PGADebugEntered ("PGAIntegerPrintString");
 
-    for(i = 0; i < ctx->ga.StringLen; i++)
-    {
-        switch ( i % 6 )
-        {
+    for (i = 0; i < ctx->ga.StringLen; i++) {
+        switch (i % 6) {
         case 0:
-            fprintf ( fp, "#%5d: [%8ld]",i,c[i]);
+            fprintf (fp, "#%5d: [%8ld]",i,c[i]);
             break;
         case 1:
         case 2:
         case 3:
         case 4:
-            fprintf ( fp, ", [%8ld]",c[i]);
+            fprintf (fp, ", [%8ld]",c[i]);
             break;
         case 5:
-            fprintf ( fp, ", [%8ld]",c[i]);
-            if (i+1 < ctx->ga.StringLen)
+            fprintf (fp, ", [%8ld]",c[i]);
+            if (i+1 < ctx->ga.StringLen) {
                 fprintf ( fp, "\n");
+            }
             break;
         }
     }
-    fprintf ( fp, "\n" );
+    fprintf (fp, "\n");
 
-    PGADebugExited("PGAIntegerPrintString");
+    PGADebugExited ("PGAIntegerPrintString");
 }
 
-/*I****************************************************************************
-   PGAIntegerCopyString - Copy one integer-valued string to another.
+/*!****************************************************************************
+    \brief Copy one integer-valued string to another.
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      p1   - string to copy
-      pop1 - symbolic constant of population containing string p1
-      p2   - string to copy p1 to
-      pop2 - symbolic constant of population containing string p2
+    \param   ctx   context variable
+    \param   p1    string to copy
+    \param   pop1  symbolic constant of population containing string p1
+    \param   p2    string to copy p1 to
+    \param   pop2  symbolic constant of population containing string p2
+    \return  None
 
-   Outputs:
+    \rst
 
-   Example:
+    Description
+    -----------
 
-****************************************************************************I*/
+    Note that this function is set in :c:func:`PGASetUp` as the copy
+    string user function for the integer datatype by default.
+
+    \endrst
+
+******************************************************************************/
 void PGAIntegerCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
-    PGAInteger *source = (PGAInteger *)PGAGetIndividual(ctx, p1, pop1)->chrom;
-    PGAInteger *dest   = (PGAInteger *)PGAGetIndividual(ctx, p2, pop2)->chrom;
+    PGAInteger *source = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    PGAInteger *dest   = (PGAInteger *)PGAGetIndividual (ctx, p2, pop2)->chrom;
     int i;
 
-    PGADebugEntered("PGAIntegerCopyString");
+    PGADebugEntered ("PGAIntegerCopyString");
 
-    for (i = 0; i < ctx->ga.StringLen; i++)
-        dest[i] = source[i];
+    for (i = 0; i < ctx->ga.StringLen; i++) {
+        dest [i] = source [i];
+    }
 
-    PGADebugExited("PGAIntegerCopyString");
+    PGADebugExited ("PGAIntegerCopyString");
 }
 
-/*I****************************************************************************
-   PGAIntegerDuplicate - Returns true if string a is a duplicate of
-   string b, else returns false.
+/*!****************************************************************************
+    \brief Return true if string a is a duplicate of string b, else
+           returns false.
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      p1   - string index of the first string to compare
-      pop1 - symbolic constant of the population string p1 is in
-      p2   - string index of the second string to compare
-      pop2 - symbolic constant of the population string p2 is in
+    \param   ctx   context variable
+    \param   p1    string index of the first string to compare
+    \param   pop1  symbolic constant of the population string p1 is in
+    \param   p2    string index of the second string to compare
+    \param   pop2  symbolic constant of the population string p2 is in
+    \return  Returns true/false if strings are duplicates
 
-   Outputs:
-      Returns true/false if strings are duplicates
+    \rst
 
-   Example:
+    Description
+    -----------
 
-****************************************************************************I*/
-int PGAIntegerDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+    Note that this function is set in :c:func:`PGASetUp` as the duplicate
+    checking user function for the integer datatype by default.
+
+    \endrst
+
+******************************************************************************/
+int PGAIntegerDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
     PGAInteger *a = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     PGAInteger *b = (PGAInteger *)PGAGetIndividual (ctx, p2, pop2)->chrom;
@@ -1449,23 +1656,31 @@ int PGAIntegerDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
         }
     }
 
-    PGADebugExited("PGAIntegerDuplicate");
+    PGADebugExited ("PGAIntegerDuplicate");
 
     return count == ctx->ga.StringLen ? PGA_TRUE : PGA_FALSE;
 }
 
-/*I****************************************************************************
-   PGAIntegerHash - Returns hash value of given gene
+/*!****************************************************************************
+    \brief Return hash value of given gene.
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      p    - string index of the string to hash
-      pop  - symbolic constant of the population string p is in
+    \param   ctx   context variable
+    \param   p     string index of the string to hash
+    \param   pop   symbolic constant of the population string p is in
+    \return  Hash value for string
 
-   Outputs:
-      Hash value for string
+    \rst
 
-****************************************************************************I*/
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    hash user function for the integer datatype by default.
+
+    \endrst
+
+******************************************************************************/
 PGAHash PGAIntegerHash (PGAContext *ctx, int p, int pop)
 {
     void *a = PGAGetIndividual (ctx, p, pop)->chrom;
@@ -1474,19 +1689,7 @@ PGAHash PGAIntegerHash (PGAContext *ctx, int p, int pop)
     return hash;
 }
 
-/*I****************************************************************************
-   PGAIntegerInitString - randomly initialize a string of type PGAInteger
-
-   Inputs:
-      ctx - context variable
-      p   - index of string to randomly initialize
-      pop - symbolic constant of the population string p is in
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 /* Helper function for computing index into gene for given value if it
  * is part of a fixed edge
@@ -1513,6 +1716,30 @@ static void compute_idx
     }
 }
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+
+/*!****************************************************************************
+    \brief Randomly initialize a string of type PGAInteger.
+    \ingroup internal
+
+    \param   ctx  context variable
+    \param   p    index of string to randomly initialize
+    \param   pop  symbolic constant of the population string p is in
+    \return  None
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    init string user function for the integer datatype by default.
+
+    \endrst
+
+******************************************************************************/
+
 void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
 {
     int *list;
@@ -1523,15 +1750,15 @@ void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
 
     len = ctx->ga.StringLen;
 
-    switch (ctx->init.IntegerType)
-    {
+    switch (ctx->init.IntegerType) {
     case PGA_IINIT_PERMUTE:
-        list = (int *)malloc (sizeof(int) * len);
-        if (list == NULL)
+        list = (int *)malloc (sizeof (int) * len);
+        if (list == NULL) {
             PGAErrorPrintf
                 ( ctx, PGA_FATAL
                 , "PGAIntegerInitString: No room to allocate list"
                 );
+        }
         j = ctx->init.IntegerMin [0];
         for (i=0; i<len; i++) {
              list [i] = j++;
@@ -1610,20 +1837,25 @@ void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
     PGADebugExited ("PGAIntegerInitString");
 }
 
-/*I****************************************************************************
-  PGAIntegerBuildDatatype - Build an MPI datatype for a string of type
-  PGA_DATATYPE_INTEGER.
+/*!****************************************************************************
+    \brief Build an MPI datatype for a string of type PGA_DATATYPE_INTEGER.
+    \ingroup internal
 
-  Inputs:
-      ctx - context variable
-      p   - index of string
-      pop - symbolic constant of the population string p is in
+    \param    ctx  context variable
+    \param    p    index of string
+    \param    pop  symbolic constant of the population string p is in
+    \return   MPI_Datatype
 
-  Outputs:
+    \rst
 
-  Example:
+    Description
+    -----------
 
-****************************************************************************I*/
+    Called only by MPI routines.  Not for user consumption.
+
+    \endrst
+
+******************************************************************************/
 MPI_Datatype PGAIntegerBuildDatatype (PGAContext *ctx, int p, int pop)
 {
     int            idx = 0;
@@ -1654,70 +1886,94 @@ MPI_Datatype PGAIntegerBuildDatatype (PGAContext *ctx, int p, int pop)
     return individualtype;
 }
 
-/*I****************************************************************************
-   PGAIntegerGeneDistance - Compute genetic difference of two strings.
-   Sum of the absolute values of the differences of each allele.
+/*!****************************************************************************
+    \brief Compute genetic distance of two strings.
+    \ingroup internal
 
-   Inputs:
-      ctx   - context variable
-      p1    - first string index
-      pop1  - symbolic constant of the population the first string is in
-      p2    - second string index
-      pop2  - symbolic constant of the population the second string is in
+    \param   ctx    context variable
+    \param   p1     first string index
+    \param   pop1   symbolic constant of the population the first string is in
+    \param   p2     second string index
+    \param   pop2   symbolic constant of the population the second string is in
+    \return  genetic distance of the two strings
 
-   Outputs:
-      genetic distance of the two strings
+    \rst
 
-   Example:
-      Internal function.  Use PGAGeneDistance.
+    Description
+    -----------
+    Sum of the absolute values of the differences of each allele.
+    Internal function.  Use PGAGeneDistance.
 
-****************************************************************************I*/
-double PGAIntegerGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+    \endrst
+
+******************************************************************************/
+double PGAIntegerGeneDistance
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
     PGAInteger *c1 = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     PGAInteger *c2 = (PGAInteger *)PGAGetIndividual (ctx, p2, pop2)->chrom;
     int ret = 0;
     int i;
 
-    PGADebugEntered("PGAIntegerGeneDistance");
+    PGADebugEntered ("PGAIntegerGeneDistance");
     for (i=0; i<ctx->ga.StringLen; i++) {
         ret += labs (c1 [i] - c2 [i]);
     }
-    PGADebugExited("PGAIntegerGeneDistance");
+    PGADebugExited ("PGAIntegerGeneDistance");
     return ret;
 }
 
-/*I****************************************************************************
-   PGAIntegerEuclidianDistance - Compute genetic difference of two strings.
-   This uses the Euclidian distance metric, the square-root of the sum
-   of all squared differences of each allele.
+/*!****************************************************************************
+    \brief Compute genetic distance of two strings.
+    \ingroup init
 
-   Inputs:
-      ctx   - context variable
-      p1    - first string index
-      pop1  - symbolic constant of the population the first string is in
-      p2    - second string index
-      pop2  - symbolic constant of the population the second string is in
+    \param   ctx    context variable
+    \param   p1     first string index
+    \param   pop1   symbolic constant of the population the first string is in
+    \param   p2     second string index
+    \param   pop2   symbolic constant of the population the second string is in
+    \return  genetic euclidian distance of the two strings
 
-   Outputs:
-      genetic euclidian distance of the two strings
+    \rst
 
-   Example:
-      Use in PGASetUserFunction.
+    Description
+    -----------
 
-****************************************************************************I*/
-double PGAIntegerEuclidianDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+    This uses the Euclidian distance metric, the square-root of the sum
+    of all squared differences of each allele. It can be used to
+    override the default integer genetic distance function (which uses a
+    manhattan distance metric) using :c:func:`PGASetUserFunction` with
+    the PGA_USERFUNCTION_GEN_DISTANCE setting.
+
+    Example
+    -------
+
+    Override genetic distance function:
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       assert (PGAGetDataType (ctx) == PGA_DATATYPE_INTEGER);
+       PGASetUserFunction
+        (ctx, PGA_USERFUNCTION_GEN_DISTANCE, PGAIntegerEuclidianDistance);
+
+    \endrst
+
+******************************************************************************/
+double PGAIntegerEuclidianDistance
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
     PGAInteger *c1 = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     PGAInteger *c2 = (PGAInteger *)PGAGetIndividual (ctx, p2, pop2)->chrom;
     double ret = 0.0;
     int i;
 
-    PGADebugEntered("PGAIntegerGeneDistance");
+    PGADebugEntered ("PGAIntegerGeneDistance");
     for (i=0; i<ctx->ga.StringLen; i++) {
         ret += pow (c1 [i] - c2 [i], 2);
     }
-    PGADebugExited("PGAIntegerGeneDistance");
+    PGADebugExited ("PGAIntegerGeneDistance");
     return sqrt (ret);
 }
-

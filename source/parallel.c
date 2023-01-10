@@ -37,53 +37,79 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/******************************************************************************
-*     FILE: parallel.c: This file contains all the parallel functions
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!****************************************************************************
+* \file
+* This file contains all the parallel functions.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 ******************************************************************************/
+
+/*!***************************************************************************
+ *  \defgroup parallel Parallel
+ *  \brief Parallel implementation of GA
+ *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup notimplemented Not yet implemented
+ *  \brief Not yet implemented, mainly used for island/multiple demes.
+ *****************************************************************************/
 
 #include "pgapack.h"
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 #define DEBUG_EVAL 0
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-/*U****************************************************************************
-  PGARunGM - High-level routine to execute the genetic algorithm using the
-  global model.  It is called after PGACreate and PGASetup have been called.
-  If a NULL communicator is given, a sequential execution method is used,
-  otherwise, work is divided among the processors in the communicator.
+/*!****************************************************************************
+    \brief High-level routine to execute the genetic algorithm using the
+           global model.
+    \ingroup explicit
 
-  Category: Generation
+    \param  ctx       context variable
+    \param  evaluate  a pointer to the user's evaluation function, which must
+                      have the calling sequence shown in the example
+    \param  comm      an MPI communicator
+    \return None
 
-  Inputs:
-    ctx      - context variable
-    evaluate - a pointer to the user's evaluation function, which must
-    have the calling sequence shown in the example.
-    comm     - an MPI communicator
+    \rst
 
-  Outputs:
-    none
+    Description
+    -----------
 
-  Example:
-    PGAContext *ctx;
-    double f(PGAContext *ctx, int p, int pop, double *aux);
-    :
-    PGARunGM(ctx, f, MPI_COMM_WORLD);
+    It is called after PGACreate and PGASetup have been called.
+    If a NULL communicator is given, a sequential execution method is used,
+    otherwise, work is divided among the processors in the communicator.
 
-****************************************************************************U*/
-void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
-	      MPI_Comm comm)
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+      double f (PGAContext *ctx, int p, int pop, double *aux);
+
+      ...
+      PGARunGM (ctx, f, MPI_COMM_WORLD);
+
+    \endrst
+
+******************************************************************************/
+void PGARunGM
+    ( PGAContext *ctx
+    , double (*evaluate)(PGAContext *, int, int, double *)
+    , MPI_Comm comm
+    )
 {
     int       rank, Restarted;
-    void    (*CreateNewGeneration)(PGAContext *, int, int) = NULL;
+    void    (*CreateNewGeneration) (PGAContext *, int, int) = NULL;
 
     /*  Let this be warned:
      *  The communicator is NOT duplicated.  There might be problems with
      *  PGAPack and the user program using the same communicator.
      */
-    PGADebugEntered("PGARunGM");
+    PGADebugEntered ("PGARunGM");
 
-    rank = PGAGetRank(ctx, comm);
+    rank = PGAGetRank (ctx, comm);
 
     if (rank == 0) {
         if (ctx->fops.PreEval) {
@@ -95,7 +121,7 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
         }
     }
 
-    PGAEvaluate (ctx, PGA_OLDPOP, f, comm);
+    PGAEvaluate (ctx, PGA_OLDPOP, evaluate, comm);
     if (rank == 0) {
         int st = PGAGetSelectType (ctx);
         /* If epsilon constraints are used */
@@ -103,8 +129,8 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
             int idx;
             PGAIndividual *ind;
             /* Sort population by auxiliary eval */
-	    /* No need to init the indeces, filled in by PGAEvalSort */
-	    PGAEvalSort (ctx, PGA_OLDPOP, ctx->scratch.intscratch);
+            /* No need to init the indeces, filled in by PGAEvalSort */
+            PGAEvalSort (ctx, PGA_OLDPOP, ctx->scratch.intscratch);
             idx = ctx->scratch.intscratch [ctx->ga.EpsilonTheta];
             ind = PGAGetIndividual (ctx, idx, PGA_OLDPOP);
             assert (ind->auxtotalok);
@@ -130,32 +156,32 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
 
     switch (PGAGetMixingType (ctx)) {
     case PGA_MIX_MUTATE_OR_CROSS:
-	CreateNewGeneration = PGARunMutationOrCrossover;
+        CreateNewGeneration = PGARunMutationOrCrossover;
         break;
     case PGA_MIX_MUTATE_AND_CROSS:
-	CreateNewGeneration = PGARunMutationAndCrossover;
+        CreateNewGeneration = PGARunMutationAndCrossover;
         break;
     case PGA_MIX_MUTATE_ONLY:
-	CreateNewGeneration = PGARunMutationOnly;
+        CreateNewGeneration = PGARunMutationOnly;
         break;
     case PGA_MIX_TRADITIONAL:
-	CreateNewGeneration = PGARunMutationAndCrossover;
+        CreateNewGeneration = PGARunMutationAndCrossover;
         break;
     default:
         assert (0);
     }
 
     while (!PGADone(ctx, comm)) {
-	if (rank == 0) {
-	    Restarted = PGA_FALSE;
-	    if ((ctx->ga.restart == PGA_TRUE) &&
-		(ctx->ga.ItersOfSame % ctx->ga.restartFreq == 0)) {
-		ctx->ga.ItersOfSame++;
-		Restarted = PGA_TRUE;
-		PGARestart(ctx, PGA_OLDPOP, PGA_NEWPOP);
-	    } else {
-		PGASelect(ctx, PGA_OLDPOP);
-		CreateNewGeneration(ctx, PGA_OLDPOP, PGA_NEWPOP);
+        if (rank == 0) {
+            Restarted = PGA_FALSE;
+            if ((ctx->ga.restart == PGA_TRUE) &&
+                (ctx->ga.ItersOfSame % ctx->ga.restartFreq == 0)) {
+                ctx->ga.ItersOfSame++;
+                Restarted = PGA_TRUE;
+                PGARestart(ctx, PGA_OLDPOP, PGA_NEWPOP);
+            } else {
+                PGASelect(ctx, PGA_OLDPOP);
+                CreateNewGeneration(ctx, PGA_OLDPOP, PGA_NEWPOP);
                 if (ctx->fops.PreEval) {
                     int pop = PGA_NEWPOP;
                     (*ctx->fops.PreEval)(&ctx, &pop);
@@ -163,12 +189,12 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
                 if (ctx->cops.PreEval) {
                     (*ctx->cops.PreEval)(ctx, PGA_NEWPOP);
                 }
-	    }
-	}
-	MPI_Bcast(&Restarted, 1, MPI_INT, 0, comm);
+            }
+        }
+        MPI_Bcast (&Restarted, 1, MPI_INT, 0, comm);
 
-	PGAEvaluate(ctx, PGA_NEWPOP, f, comm);
-	if (rank == 0) {
+        PGAEvaluate (ctx, PGA_NEWPOP, evaluate, comm);
+        if (rank == 0) {
             int st = PGAGetSelectType (ctx);
             if (st == PGA_SELECT_SUS || st == PGA_SELECT_PROPORTIONAL) {
                 PGAFitness (ctx, PGA_NEWPOP);
@@ -195,16 +221,16 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
             }
         }
 
-	/*  If the GA wasn't restarted, update the generation and print
+        /*  If the GA wasn't restarted, update the generation and print
          *  stuff.  We do this because a restart is NOT counted as a
          *  complete generation.
-	 */
-	if (!Restarted) {
-	    PGAUpdateGeneration(ctx, comm);
-	    if (rank == 0) {
-		PGAPrintReport (ctx, ctx->ga.OutputFile, PGA_OLDPOP);
+         */
+        if (!Restarted) {
+            PGAUpdateGeneration (ctx, comm);
+            if (rank == 0) {
+                PGAPrintReport (ctx, ctx->ga.OutputFile, PGA_OLDPOP);
             }
-	}
+        }
     }
 
     if (rank == 0) {
@@ -225,6 +251,14 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
                     );
             }
             fprintf (ctx->ga.OutputFile, ".\n");
+            #if 0
+            /* Maybe make this an option? */
+            fprintf
+                ( ctx->ga.OutputFile
+                , "Evaluations: %d\n"
+                , PGAGetEvalCount (ctx)
+                );
+            #endif
             fprintf (ctx->ga.OutputFile, "The Best String:\n");
             PGAPrintString (ctx, ctx->ga.OutputFile, best_p, pop);
         } else {
@@ -259,30 +293,35 @@ void PGARunGM(PGAContext *ctx, double (*f)(PGAContext *, int, int, double *),
                 }
             }
         }
-	fflush (ctx->ga.OutputFile);
+        fflush (ctx->ga.OutputFile);
     }
     PGADebugExited ("PGARunGM");
 }
 
 
-/*I****************************************************************************
-   PGAEvaluateSeq - Internal evalution function.  Evaluates all strings
-   that need to be evaluated using one processor.
+/*!****************************************************************************
+    \brief Sequential internal evalution function.
+    \ingroup internal
 
-   Category: Fitness & Evaluation
+    \param   ctx       context variable
+    \param   pop       symbolic constant of the population to be evaluated
+    \param   evaluate  a pointer to a function to evaluate a string.
 
-   Inputs:
-      ctx  - context variable
-      pop  - symbolic constant of the population to be evaluated
-      f    - a pointer to a function to evaluate a string.
+    \rst
 
-   Outputs:
+    Description
+    -----------
 
-   Example:
+    Evaluates all strings that need to be evaluated using one processor.
 
-****************************************************************************I*/
-void PGAEvaluateSeq(PGAContext *ctx, int pop,
-		    double (*f)(PGAContext *, int, int, double *))
+    \endrst
+
+******************************************************************************/
+static void PGAEvaluateSeq
+    ( PGAContext *ctx
+    , int pop
+    , double (*evaluate)(PGAContext *, int, int, double *)
+    )
 {
     int     p;
     double  e;
@@ -291,40 +330,47 @@ void PGAEvaluateSeq(PGAContext *ctx, int pop,
 
     /*  Standard sequential evaluation.  */
     for (p=0; p<ctx->ga.PopSize; p++) {
-        if (!PGAGetEvaluationUpToDateFlag(ctx, p, pop)) {
+        if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
             double *aux = PGAGetAuxEvaluation (ctx, p, pop);
-            if (ctx->sys.UserFortran == PGA_TRUE) {
+            if (ctx->sys.UserFortran) {
                 int fp = p + 1;
-		e = (*((double(*)(void *, void *, void *, void *))f))
+                e = (*((double(*)(void *, void *, void *, void *))evaluate))
                     (&ctx, &fp, &pop, aux);
             } else {
-		e = (*f)(ctx, p, pop, aux);
+                e = (*evaluate)(ctx, p, pop, aux);
             }
-            PGASetEvaluation(ctx, p, pop, e, aux);
+            PGASetEvaluation (ctx, p, pop, e, aux);
             ctx->rep.nevals++;
         }
     }
-    PGADebugExited("PGAEvaluateSeq");
+    PGADebugExited ("PGAEvaluateSeq");
 }
-/*I****************************************************************************
-  PGABuildEvaluation - Build an MPI datatype for eval and auxeval.
+/*!****************************************************************************
+    \brief Build an MPI datatype for eval and auxeval.
+    \ingroup internal
 
-  Inputs:
-     ctx   - context variable
-     p     - index of string
-     pop   - symbolic constant of population string p is in
+    \param   ctx    context variable
+    \param   p      index of string
+    \param   pop    symbolic constant of population string p is in
+    \return  An MPI_Datatype
 
-  Outputs:
-     An MPI_Datatype.
+    \rst
 
-  Example:
-     PGAContext   *ctx;
-     int           p;
-     MPI_Datatype  dt;
-     :
-     dt = PGABuildEvaluation (ctx, p, pop);
+    Example
+    -------
 
-****************************************************************************I*/
+    .. code-block:: c
+
+       PGAContext   *ctx;
+       int           p;
+       MPI_Datatype  dt;
+
+       ...
+       dt = PGABuildEvaluation (ctx, p, pop);
+
+    \endrst
+
+******************************************************************************/
 static
 MPI_Datatype PGABuildEvaluation (PGAContext *ctx, int p, int pop)
 {
@@ -356,29 +402,34 @@ MPI_Datatype PGABuildEvaluation (PGAContext *ctx, int p, int pop)
     return (individualtype);
 }
 
-/*U****************************************************************************
-  PGASendEvaluation - transmit evaluation and aux eval to another process
+/*!****************************************************************************
+    \brief Transmit evaluation and aux eval to another process.
+    \ingroup internal
 
-  Category: Parallel
+    \param  ctx   context variable
+    \param  p     index of an individual
+    \param  pop   symbolic constant of the population
+    \param  dest  ID of the process where this is going
+    \param  tag   MPI tag to send with the individual
+    \param  comm  MPI communicator
 
-  Inputs:
-    ctx  - context variable
-    p    - index of an individual
-    pop  - symbolic constant of the population
-    dest - ID of the process where this is going
-    tag  - MPI tag to send with the individual
-    comm - MPI communicator
+    \rst
 
-  Outputs:
+    Example
+    -------
 
-  Example:
-    PGAContext *ctx;
-    int p, dest;
-    :
-    dest = SelectAFreeProcessor();
-    PGASendEvaluation (ctx, p, PGA_NEWPOP, dest, PGA_COMM_EVALOFSTRING, comm);
+    .. code-block:: c
 
-****************************************************************************U*/
+      PGAContext *ctx;
+      int p, dest;
+
+      ...
+      dest = SelectAFreeProcessor ();
+      PGASendEvaluation (ctx, p, PGA_NEWPOP, dest, PGA_COMM_EVALOFSTRING, comm);
+
+    \endrst
+
+******************************************************************************/
 static
 void PGASendEvaluation (PGAContext *ctx, int p, int pop, int dest, int tag,
                         MPI_Comm comm)
@@ -390,37 +441,45 @@ void PGASendEvaluation (PGAContext *ctx, int p, int pop, int dest, int tag,
     MPI_Type_free (&individualtype);
 }
 
-/*U****************************************************************************
-  PGAReceiveEvaluation - receive evaluation and aux eval from another process
+/*!****************************************************************************
+    \brief Receive evaluation and aux eval from another process
+    \ingroup internal
 
-  Category: Parallel
+    \param  ctx     contex variable
+    \param  p       index of an individual
+    \param  pop     symbolic constant of the population
+    \param  source  ID of the process from which to receive
+    \param  tag     MPI tag to look for
+    \param  comm    an MPI communicator
+    \param  status  pointer to an MPI status structure
+    \return string p in population pop is changed by side-effect
 
-  Inputs:
-    ctx    - contex variable
-    p      - index of an individual
-    pop    - symbolic constant of the population
-    source - ID of the process from which to receive
-    tag    - MPI tag to look for
-    status - pointer to an MPI status structure
+    \rst
 
-  Outputs:
-    string p in population pop is changed by side-effect.
+    Example
+    -------
 
-  Example:
-    Receive evaluation from sub-process and place it into the first temporary
-    location in PGA_NEWPOP.
+    Receive evaluation from sub-process and place it into the first
+    temporary location in PGA_NEWPOP.
 
-    PGAContext *ctx;
-    MPI_Comm    comm;
-    MPI_Status  status;
-    :
-    PGAReceiveEvaluation (ctx, PGA_TEMP1, PGA_NEWPOP, 0, PGA_COMM_EVALOFSTRING,
-                          comm, &status);
+    .. code-block:: c
 
-****************************************************************************U*/
+      PGAContext *ctx;
+      MPI_Comm    comm;
+      MPI_Status  status;
+
+      ...
+      PGAReceiveEvaluation
+        (ctx, PGA_TEMP1, PGA_NEWPOP, 0, PGA_COMM_EVALOFSTRING, comm, &status);
+
+    \endrst
+
+******************************************************************************/
 static
-void PGAReceiveEvaluation (PGAContext *ctx, int p, int pop, int source, int tag,
-                           MPI_Comm comm, MPI_Status *status)
+void PGAReceiveEvaluation
+    ( PGAContext *ctx, int p, int pop
+    , int source, int tag, MPI_Comm comm, MPI_Status *status
+    )
 {
     MPI_Datatype individualtype;
 
@@ -429,30 +488,35 @@ void PGAReceiveEvaluation (PGAContext *ctx, int p, int pop, int source, int tag,
     MPI_Type_free (&individualtype);
 }
 
+/*!****************************************************************************
+    \brief Cooperative internal evaluation function.
+    \ingroup internal
 
+    \param   ctx      context variable
+    \param   pop      symbolic constant of the population to be evaluated
+    \param   evaluate a pointer to a function to evaluate a string.
+    \param   comm     an MPI communicator
+    \return  None
 
-/*I****************************************************************************
-   PGAEvaluateCoop - Internal evaluation function.  Evaluates all strings
-   that need to be evaluated using two processors cooperatively.  The first
-   is treated as a master, it will send a string to the second for evaluation.
-   While the second is evaluating, the master will _also_ evaluate a string.
+    \rst
 
-   Category: Fitness & Evaluation
+    Description
+    -----------
 
-   Inputs:
-      ctx  - context variable
-      pop  - symbolic constant of the population to be evaluated
-      f    - a pointer to a function to evaluate a string.
-      comm - an MPI communicator
+    Evaluates all strings that need to be evaluated using two processors
+    cooperatively.  The first being the rank-0 process will send a
+    string to the second for evaluation.  While the second is
+    evaluating, the rank-0 process will *also* evaluate a string.
 
-   Outputs:
+    \endrst
 
-   Example:
-
-****************************************************************************I*/
-void PGAEvaluateCoop(PGAContext *ctx, int pop,
-		     double (*f)(PGAContext *, int, int, double *),
-                     MPI_Comm comm)
+******************************************************************************/
+static void PGAEvaluateCoop
+    ( PGAContext *ctx
+    , int pop
+    , double (*evaluate)(PGAContext *, int, int, double *)
+    , MPI_Comm comm
+    )
 {
     MPI_Status      stat;
     int             p, fp, q;
@@ -463,48 +527,52 @@ void PGAEvaluateCoop(PGAContext *ctx, int pop,
 
     q = -1;
 
-    ind = PGAGetIndividual(ctx, 0, pop);
+    ind = PGAGetIndividual (ctx, 0, pop);
 
     for (p=0; p<ctx->ga.PopSize;) {
-	while ((p<ctx->ga.PopSize) && (ind+p)->evaluptodate)  p++;
-	if (p<ctx->ga.PopSize) {
-	    PGASendIndividual (ctx, p, pop, 1, PGA_COMM_STRINGTOEVAL, comm);
-	    q = p;
-	}
-	p++;
-	
-	while ((p<ctx->ga.PopSize) && (ind+p)->evaluptodate)  p++;
-	if (p<ctx->ga.PopSize) {
+        while ((p<ctx->ga.PopSize) && (ind+p)->evaluptodate) {
+            p++;
+        }
+        if (p<ctx->ga.PopSize) {
+            PGASendIndividual (ctx, p, pop, 1, PGA_COMM_STRINGTOEVAL, comm);
+            q = p;
+        }
+        p++;
+
+        while ((p<ctx->ga.PopSize) && (ind+p)->evaluptodate) {
+            p++;
+        }
+        if (p<ctx->ga.PopSize) {
             double *aux = PGAGetAuxEvaluation (ctx, p, pop);
-	    if (ctx->sys.UserFortran == PGA_TRUE) {
-		fp = p+1;
-		e = (*((double(*)(void *, void *, void *, void *))f))
+            if (ctx->sys.UserFortran == PGA_TRUE) {
+                fp = p+1;
+                e = (*((double(*)(void *, void *, void *, void *))evaluate))
                     (&ctx, &fp, &pop, aux);
-	    } else {
-		e = (*f)(ctx, p, pop, aux);
-	    }
-	    PGASetEvaluation (ctx, p, pop, e, aux);
+            } else {
+                e = (*evaluate)(ctx, p, pop, aux);
+            }
+            PGASetEvaluation (ctx, p, pop, e, aux);
             ctx->rep.nevals++;
 #if DEBUG_EVAL
             fprintf (stdout, "%4d: %10.8e Local\n", p, e);
             fflush  (stdout);
 #endif
-	}
-	
-	if (q >= 0) {
+        }
+
+        if (q >= 0) {
             PGAReceiveEvaluation
                 (ctx, q, pop, 1, PGA_COMM_EVALOFSTRING, comm, &stat);
             PGASetEvaluationUpToDateFlag (ctx, q, pop, PGA_TRUE);
             ctx->rep.nevals++;
 #if DEBUG_EVAL
-            fprintf (stdout, "%4d: %10.8e Slave %d\n", p, e, 1);
+            fprintf (stdout, "%4d: %10.8e Worker %d\n", p, e, 1);
             fflush  (stdout);
 #endif
-	    q = -1;
-	}
+            q = -1;
+        }
     }
 
-    /*  Release the slave  */
+    /*  Release the Worker  */
     MPI_Send (&q, 1, MPI_INT, 1, PGA_COMM_DONEWITHEVALS, comm);
 
     PGADebugExited ("PGAEvaluateCoop");
@@ -512,60 +580,63 @@ void PGAEvaluateCoop(PGAContext *ctx, int pop,
 
 
 
-/*I****************************************************************************
-   PGAEvaluateMS - Internal evaluation function.  Evaluates all strings
-   that need evaluating using three or more processors.  Operates in a
-   standard master-slave execution method.
+/*!****************************************************************************
+    Internal evaluation function, multiprocessing version.
 
-   Category: Fitness & Evaluation
+    \param   ctx      context variable
+    \param   pop      symbolic constant of the population to be evaluated
+    \param   comm     an MPI communicator
+    \return  None
 
-   Inputs:
-      ctx  - context variable
-      pop  - symbolic constant of the population to be evaluated
-      f    - a pointer to a function to evaluate a string.
-      comm - an MPI communicator
+    \rst
 
-   Outputs:
+    Description
+    -----------
 
-   Example:
+    Evaluates all strings that need evaluating using three or more
+    processors.  The rank-0 process sends individuals to evaluate to all
+    other processes and collects the results. The rank-0 process
+    performs no evaluations itself.
 
-****************************************************************************I*/
-void PGAEvaluateMS(PGAContext *ctx, int pop,
-		   double (*f)(PGAContext *c, int p, int pop, double *),
-                   MPI_Comm comm)
+    \endrst
+
+******************************************************************************/
+static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
 {
     int    *work;
     int     i, k, s, p, size, sentout;
     MPI_Status stat;
     PGAIndividual *ind;
-    PGAIndividual *tmp1 = PGAGetIndividual(ctx, PGA_TEMP1, pop);
+    PGAIndividual *tmp1 = PGAGetIndividual (ctx, PGA_TEMP1, pop);
 
-    PGADebugEntered("PGAEvaluateMS");
+    PGADebugEntered ("PGAEvaluateMP");
 
-    size = PGAGetNumProcs(ctx, comm);
+    size = PGAGetNumProcs (ctx, comm);
 
-    work = (int *)malloc(size *sizeof(int));
+    work = malloc (size *sizeof(int));
     if (work == NULL) {
-	PGAError(ctx, "PGAEvaluateMS:  Couldn't allocate work array",
-		 PGA_FATAL, PGA_VOID, NULL);
+        PGAError
+            ( ctx, "PGAEvaluateMP:  Couldn't allocate work array"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
     }
 
     sentout = 0;
     s = 1;
-    ind = PGAGetIndividual(ctx, 0, pop);
+    ind = PGAGetIndividual (ctx, 0, pop);
 
     /*  Send strings to all processes, since they are all unused.  */
     for (k=0; ((k<ctx->ga.PopSize) && (s<size)); k++) {
-	if ((ind+k)->evaluptodate == PGA_FALSE) {
-	    work[s] = k;
-	    PGASendIndividual(ctx, k, pop, s, PGA_COMM_STRINGTOEVAL, comm);
+        if ((ind+k)->evaluptodate == PGA_FALSE) {
+            work[s] = k;
+            PGASendIndividual (ctx, k, pop, s, PGA_COMM_STRINGTOEVAL, comm);
 #if DEBUG_EVAL
-            fprintf (stdout, "%4d: Sent to slave %d.\n", k, s);
+            fprintf (stdout, "%4d: Sent to worker %d.\n", k, s);
             fflush  (stdout);
 #endif
-	    sentout++;
-	    s++;
-	}
+            sentout++;
+            s++;
+        }
     }
 
     /*  Move to the next string to be evaluated.  Notice that all we need
@@ -573,7 +644,9 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
      *  below, where we need to _first_ go to the next string, then
      *  skip any that are up to date.
      */
-    while ((k<ctx->ga.PopSize) && (ind+k)->evaluptodate)  k++;
+    while ((k<ctx->ga.PopSize) && (ind+k)->evaluptodate) {
+        k++;
+    }
 
     /*  While there are still unevaluated individuals, receive whatever
      *  is waiting, then immediately send a new string to it.  This
@@ -593,23 +666,25 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
 #if DEBUG_EVAL
         fprintf
             ( stdout
-            , "%4d: %10.8e Slave %d  Sent %d\n"
+            , "%4d: %10.8e Worker %d  Sent %d\n"
             , work[stat.MPI_SOURCE], e, stat.MPI_SOURCE, k
             );
         fflush (stdout);
 #endif
-	/*  Immediately send another string to be evaluated.  */
-	work [stat.MPI_SOURCE] = k;
-	PGASendIndividual (ctx, k, pop, stat.MPI_SOURCE,
-			   PGA_COMM_STRINGTOEVAL, comm);
-	
-	/*  Find the next unevaluated individual  */
-	k++;
-	while ((k<ctx->ga.PopSize) && (ind+k)->evaluptodate)  k++;
+        /*  Immediately send another string to be evaluated.  */
+        work [stat.MPI_SOURCE] = k;
+        PGASendIndividual
+            (ctx, k, pop, stat.MPI_SOURCE, PGA_COMM_STRINGTOEVAL, comm);
+
+        /*  Find the next unevaluated individual  */
+        k++;
+        while ((k<ctx->ga.PopSize) && (ind+k)->evaluptodate) {
+            k++;
+        }
     }
 
     /*  All strings have been sent out.  Wait for them to be done.  */
-    while(sentout > 0) {
+    while (sentout > 0) {
         PGAReceiveEvaluation
             ( ctx, PGA_TEMP1, pop
             , MPI_ANY_SOURCE, PGA_COMM_EVALOFSTRING, comm, &stat
@@ -617,49 +692,60 @@ void PGAEvaluateMS(PGAContext *ctx, int pop,
         p = work [stat.MPI_SOURCE];
         PGASetEvaluation (ctx, p, pop, tmp1->evalue, tmp1->auxeval);
         ctx->rep.nevals++;
-	sentout--;
+        sentout--;
 #if DEBUG_EVAL
         fprintf
             ( stdout
-            , "%4d: %10.8e Slave %d\n"
+            , "%4d: %10.8e Worker %d\n"
             , work [stat.MPI_SOURCE], e, stat.MPI_SOURCE
             );
         fflush (stdout);
 #endif
     }
-    free(work);
+    free (work);
 
-    /*  Release the slaves.  */
-    for (i=1; i<size; i++)
-	MPI_Send(&i, 1, MPI_INT, i, PGA_COMM_DONEWITHEVALS, comm);
+    /* Release the workers */
+    for (i=1; i<size; i++) {
+        MPI_Send (&i, 1, MPI_INT, i, PGA_COMM_DONEWITHEVALS, comm);
+    }
 
-    PGADebugExited("PGAEvaluateMS");
+    PGADebugExited ("PGAEvaluateMP");
 }
 
 
-/*I****************************************************************************
-   PGAEvaluateSlave - Slave execution routine.  Sit around and wait for a
-   string to eval to show up, then evaluate it and return the evaluation.
-   Terminates when it receives PGA_COMM_DONEWITHEVALS.
+/*!****************************************************************************
+    \brief Evaluation worker routine.
+    \ingroup internal
+    \param   ctx      context variable
+    \param   pop      symbolic constant of the population to be evaluated
+    \param   evaluate a pointer to a function to evaluate a string.
+    \param   comm     an MPI communicator
+    \return  None
 
-   Category: Fitness & Evaluation
+    \rst
 
-   Inputs:
+    Description
+    -----------
 
-   Outputs:
+    Sit around and wait for a string to eval to show up, then evaluate
+    it and return the evaluation.  Terminates when it receives
+    PGA_COMM_DONEWITHEVALS.
 
-   Example:
+    \endrst
 
-****************************************************************************I*/
-void PGAEvaluateSlave(PGAContext *ctx, int pop,
-		      double (*f)(PGAContext *, int, int, double *),
-                      MPI_Comm comm)
+******************************************************************************/
+static void PGAEvaluateWorker
+    ( PGAContext *ctx
+    , int pop
+    , double (*evaluate)(PGAContext *, int, int, double *)
+    , MPI_Comm comm
+    )
 {
     MPI_Status  stat;
     int         k;
     double      e;
 
-    PGADebugEntered("PGAEvaluateSlave");
+    PGADebugEntered ("PGAEvaluateWorker");
 
     k = PGA_TEMP1;
 
@@ -669,107 +755,130 @@ void PGAEvaluateSlave(PGAContext *ctx, int pop,
           )
     {
         double *aux;
-	PGAReceiveIndividual
+        PGAReceiveIndividual
             (ctx, PGA_TEMP1, pop, 0, PGA_COMM_STRINGTOEVAL, comm, &stat);
 
         aux = PGAGetAuxEvaluation (ctx, PGA_TEMP1, pop);
-	if (ctx->sys.UserFortran == PGA_TRUE)
-	    e = (*((double(*)(void *, void *, void *, void *))f))
+        if (ctx->sys.UserFortran == PGA_TRUE) {
+            e = (*((double(*)(void *, void *, void *, void *))evaluate))
                 (&ctx, &k, &pop, aux);
-	else
-	    e = (*f)(ctx, PGA_TEMP1, pop, aux);
-        PGASetEvaluation(ctx, PGA_TEMP1, pop, e, aux);
+        } else {
+            e = (*evaluate)(ctx, PGA_TEMP1, pop, aux);
+        }
+        PGASetEvaluation (ctx, PGA_TEMP1, pop, e, aux);
 
         PGASendEvaluation (ctx, PGA_TEMP1, pop, 0, PGA_COMM_EVALOFSTRING, comm);
-	MPI_Probe(0, MPI_ANY_TAG, comm, &stat);
+        MPI_Probe (0, MPI_ANY_TAG, comm, &stat);
     }
-    MPI_Recv(&k, 1, MPI_INT, 0, PGA_COMM_DONEWITHEVALS, comm, &stat);
+    MPI_Recv (&k, 1, MPI_INT, 0, PGA_COMM_DONEWITHEVALS, comm, &stat);
 
-    PGADebugExited("PGAEvaluateSlave");
+    PGADebugExited ("PGAEvaluateWorker");
 }
 
 
-/*U****************************************************************************
-   PGAEvaluate - Calls a user-specified function to return an evaluation of
-   each string in the population. The user-specified function is only called
-   if the string has been changed (e.g., by crossover or mutation) or the user
-   has explicitly signaled the string's evaluation is out-of-date by a call
-   to PGASetEvaluationUpToDateFlag().
+/*!****************************************************************************
+    \brief Call a user-specified function to return an evaluation of
+           each string in the population.
+    \ingroup explicit
 
-   Category: Fitness & Evaluation
+    \param   ctx      context variable
+    \param   pop      symbolic constant of the population to be evaluated
+    \param   evaluate a pointer to a function to evaluate a string.
+    \param   comm     an MPI communicator
+    \return  Evaluates the population via side effect
 
-   Inputs:
-      ctx  - context variable
-      pop  - symbolic constant of the population to be evaluated
-      f    - a pointer to a function to evaluate a string.  This function will
-             be called once for each string in population pop that requires
-             evaluation.  This function must return a double (the evaluation
-             function value) and must fit the prototype
-                 double f(PGAContext *c, int p, int pop);
-      comm - an MPI communicator
+    \rst
 
-   Outputs:
-      Evaluates the population via side effect
+    Description
+    -----------
 
-   Example:
-      Evaluate all strings in population PGA_NEWPOP using the user-defined
-      evaluation function Energy.
+    The user-specified function is only called if the string has been
+    changed (e.g., by crossover or mutation) or the user has explicitly
+    signaled the string's evaluation is out-of-date by a call to
+    :c:func:`PGASetEvaluationUpToDateFlag`.
 
-      double Energy(PGAContext *ctx, int p, int pop) {
-        :
-      };
+    The user-specified function will be called once for each string in
+    population pop that requires evaluation.  This function must return
+    a double (the evaluation function value) and must fit the prototype::
 
-      PGAContext *ctx;
-      :
-      PGAEvaluate(ctx, PGA_NEWPOP, Energy, MPI_COMM_WORLD);
+        double evaluate (PGAContext *c, int p, int pop, double *aux);
 
-****************************************************************************U*/
-void PGAEvaluate(PGAContext *ctx, int pop,
-		 double (*f)(PGAContext *, int, int, double *), MPI_Comm comm)
+    Example
+    -------
+
+    Evaluate all strings in population PGA_NEWPOP using the user-defined
+    evaluation function Energy.
+
+    .. code-block:: c
+
+       double Energy (PGAContext *ctx, int p, int pop, double *aux) {
+           ...
+       };
+
+       PGAContext *ctx;
+
+       ...
+       PGAEvaluate (ctx, PGA_NEWPOP, Energy, MPI_COMM_WORLD);
+
+    \endrst
+
+******************************************************************************/
+void PGAEvaluate
+    ( PGAContext *ctx
+    , int pop
+    , double (*evaluate)(PGAContext *, int, int, double *)
+    , MPI_Comm comm
+    )
 {
     int  rank, size;
 
-    PGADebugEntered("PGAEvaluate");
+    PGADebugEntered ("PGAEvaluate");
 
-    rank = PGAGetRank(ctx, comm);
-    size = PGAGetNumProcs(ctx, comm);
+    rank = PGAGetRank (ctx, comm);
+    size = PGAGetNumProcs (ctx, comm);
 
     if (rank == 0) {
-	if (size == 1)
-	    PGAEvaluateSeq(ctx, pop, f);
-	if (size == 2)
-	    PGAEvaluateCoop(ctx, pop, f, comm);
-	if (size > 2)
-	    PGAEvaluateMS(ctx, pop, f, comm);
+        if (size == 1) {
+            PGAEvaluateSeq (ctx, pop, evaluate);
+        } else if (size == 2) {
+            PGAEvaluateCoop (ctx, pop, evaluate, comm);
+        } else if (size > 2) {
+            PGAEvaluateMP (ctx, pop, comm);
+        }
     } else {
-	PGAEvaluateSlave(ctx, pop, f, comm);
+        PGAEvaluateWorker (ctx, pop, evaluate, comm);
     }
 
-    PGADebugExited("PGAEvaluate");
+    PGADebugExited ("PGAEvaluate");
 }
 
 
-/*U****************************************************************************
-  PGABuildDatatype - Build an MPI datatype for string p in population pop.
+/*!****************************************************************************
+    \brief Build an MPI datatype for string p in population pop.
+    \ingroup explicit
 
-  Category: Parallel
+    \param  ctx      context variable
+    \param  p        index of an individual
+    \param  pop      symbolic constant of the population
+    \return An MPI datatype for member p of population pop
 
-  Inputs:
-    ctx     - context variable
-    p       - index of an individual
-    pop     - symbolic constant of the population
+    \rst
 
-  Outputs:
-    An MPI datatype for member p of population pop.
+    Example
+    -------
 
-  Example:
-    PGAContext *ctx;
-    int p;
-    MPI_Datatype dt;
-    :
-    dt = PGABuildDatatype(ctx, p, PGA_NEWPOP);
+    .. code-block:: c
 
-****************************************************************************U*/
+      PGAContext *ctx;
+      int p;
+      MPI_Datatype dt;
+
+      ...
+      dt = PGABuildDatatype (ctx, p, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
 MPI_Datatype PGABuildDatatype(PGAContext *ctx, int p, int pop)
 {
     PGADebugEntered("PGABuildDatatype");
@@ -780,41 +889,50 @@ MPI_Datatype PGABuildDatatype(PGAContext *ctx, int p, int pop)
 }
 
 
-/*U****************************************************************************
-  PGABuildDatatypeHeader - Common part for building an MPI datatype
-                           for an individual
+/*!****************************************************************************
+    \brief Common part for building an MPI datatype for an individual
+    \ingroup explicit
 
-  Category: Parallel
+    \param  ctx       context variable
+    \param  p         index of string
+    \param  pop       symbolic constant of the population string p is in
+    \param  counts    Number of elements in each block
+    \param  displs    byte displacement array pointer
+    \param  types     type elements
+    \return The index of the next-to-be-filled counts, displs, types
 
-  Inputs:
-    ctx      - context variable
-    counts   - Number of elements in each block
-    displs   - byte displacement array pointer
-    types    - type elements
+    \rst
 
+    Description
+    -----------
 
-  Outputs:
-    A partially filled array of counts, displs, types
-    The index of the next-to-be-filled counts, displs, types
-    The returned index will be max PGA_MPI_HEADER_ELEMENTS.
+    Returns by side effect a partially filled array of counts, displs,
+    types. The returned index will be max PGA_MPI_HEADER_ELEMENTS.
     This means callers may use a statically allocated buffer.
 
-  Example:
-    PGAContext *ctx;
-    int idx = 0;
-    int counts [7];
-    int displs [7];
-    MPI_Datatype types [7];
-    :
-    idx = PGABuildDatatypeHeader (ctx, counts, displs, types);
-    // Fill rest of counts, displs, types here and build datatype
-    counts [idx] =
-    displs [idx] =
-    types  [idx] =
-    idx++;
-    ...
+    Example
+    -------
 
-****************************************************************************U*/
+    .. code-block:: c
+
+      PGAContext *ctx;
+      int idx = 0;
+      int counts [PGA_MPI_HEADER_ELEMENTS + ...];
+      int displs [PGA_MPI_HEADER_ELEMENTS + ...];
+      MPI_Datatype types [PGA_MPI_HEADER_ELEMENTS + ...];
+
+      ...
+      idx = PGABuildDatatypeHeader (ctx, counts, displs, types);
+      // Fill rest of counts, displs, types here and build datatype
+      counts [idx] =
+      displs [idx] =
+      types  [idx] =
+      idx++;
+      ...
+
+    \endrst
+
+******************************************************************************/
 int PGABuildDatatypeHeader
     ( PGAContext *ctx, int p, int pop
     , int *counts, MPI_Aint *displs, MPI_Datatype *types
@@ -851,22 +969,26 @@ int PGABuildDatatypeHeader
 }
 
 
-/*U****************************************************************************
-  PGASerializedBuildDatatype - Build datatype from serialized data
+/*!****************************************************************************
+    \brief Build datatype from serialized data.
+    \ingroup internal
 
-  Category: Parallel
+    \param  ctx  context variable
+    \param  p    index of string
+    \param  pop  symbolic constant of the population string p is in
+    \return An MPI_Datatype
 
-  Inputs:
-    ctx - context variable
-    p   - index of string
-    pop - symbolic constant of the population string p is in
+    \rst
 
+    Description
+    -----------
 
-  Outputs:
+    This is the default function for the BuildDatatype user function if
+    serialization is in use.
 
-  Example:
+    \endrst
 
-****************************************************************************U*/
+******************************************************************************/
 MPI_Datatype PGASerializedBuildDatatype (PGAContext *ctx, int p, int pop)
 {
     int            idx = 0;
@@ -892,31 +1014,43 @@ MPI_Datatype PGASerializedBuildDatatype (PGAContext *ctx, int p, int pop)
 }
 
 
-/*U****************************************************************************
-  PGASendIndividual - transmit an individual to another process
+/*!****************************************************************************
+    \brief Transmit an individual to another process.
+    \ingroup explicit
 
-  Category: Parallel
+    \param  ctx   context variable
+    \param  p     index of an individual
+    \param  pop   symbolic constant of the population
+    \param  dest  ID of the process where this is going
+    \param  tag   MPI tag to send with the individual
+    \param  comm  MPI communicator
+    \return None
 
-  Inputs:
-    ctx  - context variable
-    p    - index of an individual
-    pop  - symbolic constant of the population
-    dest - ID of the process where this is going
-    tag  - MPI tag to send with the individual
-    comm - MPI communicator
+    \rst
 
-  Outputs:
+    Description
+    -----------
 
-  Example:
-    PGAContext *ctx;
-    int p, dest;
-    :
-    dest = SelectAFreeProcessor();
-    PGASendIndividual(ctx, p, PGA_NEWPOP, dest, PGA_SR_STRINGTOEVAL, comm);
+    This is usually called by one of the functions called via
+    :c:func:`PGAEvaluate`.
 
-****************************************************************************U*/
-void PGASendIndividual(PGAContext *ctx, int p, int pop, int dest, int tag,
-                       MPI_Comm comm)
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+      int p, dest;
+
+      ...
+      dest = SelectAFreeProcessor ();
+      PGASendIndividual (ctx, p, PGA_NEWPOP, dest, PGA_SR_STRINGTOEVAL, comm);
+
+    \endrst
+
+******************************************************************************/
+void PGASendIndividual
+    (PGAContext *ctx, int p, int pop, int dest, int tag, MPI_Comm comm)
 {
     MPI_Datatype individualtype;
 
@@ -952,37 +1086,51 @@ void PGASendIndividual(PGAContext *ctx, int p, int pop, int dest, int tag,
     PGADebugExited ("PGASendIndividual");
 }
 
-/*U****************************************************************************
-  PGAReceiveIndividual - receive an individual from another process
+/*!****************************************************************************
+    \brief Receive an individual from another process.
+    \ingroup explicit
 
-  Category: Parallel
+    \param  ctx     contex variable
+    \param  p       index of an individual
+    \param  pop     symbolic constant of the population
+    \param  source  ID of the process from which to receive
+    \param  tag     MPI tag to look for
+    \param  comm    MPI communicator
+    \param  status  pointer to an MPI status structure
+    \return Status and string p in population pop are changed by side-effect
 
-  Inputs:
-    ctx    - contex variable
-    p      - index of an individual
-    pop    - symbolic constant of the population
-    source - ID of the process from which to receive
-    tag    - MPI tag to look for
-    status - pointer to an MPI status structure
+    \rst
 
-  Outputs:
-    status and string p in population pop are changed by side-effect.
+    Description
+    -----------
 
-  Example:
-    Receive a string from the master process (rank == 0) with tag
+    This is usually called by one of the functions called via
+    :c:func:`PGAEvaluate`.
+
+    Example
+    -------
+
+    Receive a string from the rank-0 process with tag
     PGA_SR_STRINGTOEVAL, and place it into the first temporary location
     in PGA_NEWPOP.
 
-    PGAContext *ctx;
-    MPI_Comm    comm;
-    MPI_Status  status;
-    :
-    PGAReceiveIndividual(ctx, PGA_TEMP1, PGA_NEWPOP, 0, PGA_SR_STRINGTOEVAL,
-                         comm, &status);
+    .. code-block:: c
 
-****************************************************************************U*/
-void PGAReceiveIndividual(PGAContext *ctx, int p, int pop, int source, int tag,
-                          MPI_Comm comm, MPI_Status *status)
+      PGAContext *ctx;
+      MPI_Comm    comm;
+      MPI_Status  status;
+
+      ...
+      PGAReceiveIndividual
+        (ctx, PGA_TEMP1, PGA_NEWPOP, 0, PGA_SR_STRINGTOEVAL, comm, &status);
+
+    \endrst
+
+******************************************************************************/
+void PGAReceiveIndividual
+    ( PGAContext *ctx, int p, int pop
+    , int source, int tag, MPI_Comm comm, MPI_Status *status
+    )
 {
     MPI_Datatype individualtype;
 
@@ -1025,425 +1173,524 @@ void PGAReceiveIndividual(PGAContext *ctx, int p, int pop, int source, int tag,
     PGADebugExited ("PGAReceiveIndividual");
 }
 
-/*U****************************************************************************
-  PGASendReceiveIndividual - Send an individual to a process, while receiving
-  a different individual from a different process.
+/*!****************************************************************************
+    \brief Send an individual to a process, while receiving a different
+           individual from a different process.
+    \ingroup explicit
 
-  Category: Parallel
+    \param  ctx        context variable
+    \param  send_p     index of string to send
+    \param  send_pop   symbolic constant of population to send from
+    \param  dest       destination process
+    \param  send_tag   tag to send with
+    \param  recv_p     index of string to receive
+    \param  recv_pop   symbolic constant of population to receive from
+    \param  source     process to receive from
+    \param  recv_tag   tag to receive with
+    \param  comm       an MPI communicator
+    \param  status     pointer to the MPI status structure
+    \return status and string recv_p in population recv_pop are modified by
+            side-effect
 
-  Inputs:
-    ctx       - context variable
-    send_p    - index of string to send
-    send_pop  - symbolic constant of population to send from
-    dest      - destination process
-    send_tag  - tag to send with
-    recv_p    - index of string to receive
-    recv_pop  - symbolic constant of population to receive from
-    source    - process to receive from
-    recv_tag  - tag to receive with
-    comm      - an MPI communicator
-    status    - pointer to the MPI status structure
+    \rst
 
-  Outputs:
-    status and string recv_p in population recv_pop are modified by
-    side-effect.
+    Example
+    -------
 
-  Example:
     A dedicated process is being used to perform an optimization algorithm
     on the strings.  Send a new string, s, to the process, while receiving an
     optimized string, r, from it.
 
-    PGAContext *ctx;
-    MPI_Comm    comm;
-    MPI_Status  status;
-    int  s, r;
-    :
-    PGASendReceiveIndividual(ctx, s, PGA_NEWPOP, 1, PGA_SR_STRINGTOMODIFY,
-                                  r, PGA_NEWPOP, 1, PGA_SR_MODIFIEDSTRING,
-                                  comm, &status);
+    .. code-block:: c
 
-****************************************************************************U*/
-void PGASendReceiveIndividual(PGAContext *ctx, int send_p, int send_pop,
-                              int dest, int send_tag, int recv_p, int recv_pop,
-                              int source, int recv_tag, MPI_Comm comm,
-                              MPI_Status *status)
+      PGAContext *ctx;
+      MPI_Comm    comm;
+      MPI_Status  status;
+      int  s, r;
+
+      ...
+      PGASendReceiveIndividual
+        ( ctx
+        , s, PGA_NEWPOP, 1, PGA_SR_STRINGTOMODIFY
+        , r, PGA_NEWPOP, 1, PGA_SR_MODIFIEDSTRING
+        , comm, &status
+        );
+
+    \endrst
+
+******************************************************************************/
+void PGASendReceiveIndividual
+    ( PGAContext *ctx
+    , int send_p, int send_pop, int dest, int send_tag
+    , int recv_p, int recv_pop, int source, int recv_tag
+    , MPI_Comm comm, MPI_Status *status
+    )
 {
-     MPI_Datatype individualsendtype;
-     MPI_Datatype individualrecvtype;
+    MPI_Datatype individualsendtype;
+    MPI_Datatype individualrecvtype;
 
-    PGADebugEntered("PGASendReceiveIndividual");
+    PGADebugEntered ("PGASendReceiveIndividual");
 
-     individualsendtype = PGABuildDatatype(ctx, send_p, send_pop);
-     individualrecvtype = PGABuildDatatype(ctx, recv_p, recv_pop);
+    individualsendtype = PGABuildDatatype (ctx, send_p, send_pop);
+    individualrecvtype = PGABuildDatatype (ctx, recv_p, recv_pop);
 
-     MPI_Sendrecv(MPI_BOTTOM, 1, individualsendtype, dest,   send_tag,
-                  MPI_BOTTOM, 1, individualrecvtype, source, recv_tag,
-                  comm, status);
+    MPI_Sendrecv
+        ( MPI_BOTTOM, 1, individualsendtype, dest,   send_tag
+        , MPI_BOTTOM, 1, individualrecvtype, source, recv_tag
+        , comm, status
+        );
 
-     MPI_Type_free(&individualsendtype);
-     MPI_Type_free(&individualrecvtype);
+    MPI_Type_free (&individualsendtype);
+    MPI_Type_free (&individualrecvtype);
 
-    PGADebugExited("PGASendReceiveIndividual");
+    PGADebugExited ("PGASendReceiveIndividual");
 }
 
 
-/*I****************************************************************************
-  PGARunIM - Execute the island model genetic algorithm
+/*!****************************************************************************
+    \brief Execute the island model genetic algorithm
+    \ingroup notimplemented
 
-  Category: Parallel
+    \param  ctx       context variable
+    \param  evaluate  a pointer to the user's evaluation function, which must
+                      have the calling sequence shown in the example.
+    \param  comm      the MPI communicator to use
+    \return None
 
-  Inputs:
-    ctx      - context variable
-    evaluate - a pointer to the user's evaluation function, which must
-               have the calling sequence shown in the example.
-    comm     - the MPI communicator to use
+    \rst
 
-  Outputs:
-    none
+    Description
+    -----------
 
-  Example:
-    PGAContext *ctx,
-    double f(PGAContext *ctx, int p, int pop);
-    MPI_Comm comm;
-    :
-    PGARunIM(ctx, f, comm);
+    Not yet implemented.
+    Based on ctx->par.topology this routine will need to create the
+    appropriate communicator out of comm.
 
-****************************************************************************I*/
-void PGARunIM(PGAContext *ctx,
-              double (*f)(PGAContext *c, int p, int pop, double *aux),
-              MPI_Comm tcomm)
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+      double f (PGAContext *ctx, int p, int pop, double *aux);
+      MPI_Comm comm;
+
+      ...
+      PGARunIM (ctx, f, comm);
+
+    \endrst
+
+******************************************************************************/
+void PGARunIM
+    ( PGAContext *ctx
+    , double (*evaluate)(PGAContext *c, int p, int pop, double *aux)
+    , MPI_Comm comm
+    )
 {
-    /* Based on ctx->par.topology this routine will need to create the
-       appropriate communicator out of tcomm
-    */
-
-     PGADebugEntered("PGARunIM");
-     PGAError (ctx, "PGARunIM: Island model not implemented",
-               PGA_FATAL, PGA_VOID, NULL);
-     PGADebugExited("PGARunIM");
+     PGADebugEntered ("PGARunIM");
+     PGAError
+        ( ctx, "PGARunIM: Island model not implemented"
+        , PGA_FATAL, PGA_VOID, NULL
+        );
+     PGADebugExited ("PGARunIM");
 }
 
 
-/*I****************************************************************************
-  PGARunNM - Execute a neighborhood model genetic algorithm
+/*!****************************************************************************
+    \brief Execute a neighborhood model genetic algorithm
+    \ingroup notimplemented
 
-  Category: Parallel
+    \param  ctx       context variable
+    \param  evaluate  a pointer to the user's evaluation function, which must
+                      have the calling sequence shown in the example.
+    \param  comm      the MPI communicator to use
+    \return None
 
-  Inputs:
-    ctx      - context variable
-    evaluate - a pointer to the user's evaluation function, which must
-               have the calling sequence shown in the example.
-    comm     - the MPI communicator to use
+    \rst
 
-  Outputs:
-    none
+    Description
+    -----------
 
-  Example:
-    PGAContext *ctx,
-    MPI_Comm comm;
-    double f(PGAContext *ctx, int p, int pop);
-    :
-    PGARunNM(ctx, f, comm);
+    Not yet implemented.
+    Based on ctx->par.topology this routine will need to create the
+    appropriate communicator out of comm.
 
-****************************************************************************I*/
-void PGARunNM(PGAContext *ctx,
-              double (*f)(PGAContext *c, int p, int pop, double *aux),
-              MPI_Comm tcomm)
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+      MPI_Comm comm;
+      double f (PGAContext *ctx, int p, int pop);
+
+      ...
+      PGARunNM (ctx, f, comm);
+
+    \endrst
+
+******************************************************************************/
+void PGARunNM
+    ( PGAContext *ctx
+    , double (*evaluate)(PGAContext *c, int p, int pop, double *aux)
+    , MPI_Comm comm
+    )
 {
-    /* Based on ctx->par.topology this routine will need to create the
-       appropriate communicator out of tcomm
-    */
-     PGADebugEntered("PGARunNM");
-     PGAError (ctx, "PGARunNM: Island model not implemented",
-               PGA_FATAL, PGA_VOID, NULL);
-     PGADebugExited("PGARunNM");
+    PGADebugEntered ("PGARunNM");
+    PGAError
+        ( ctx, "PGARunNM: Island model not implemented"
+        , PGA_FATAL, PGA_VOID, NULL
+        );
+    PGADebugExited ("PGARunNM");
 }
 
 
 
-/*U****************************************************************************
-  PGAGetRank - Returns the rank of the processor in communicator comm.  If
-  comm is NULL or a sequential version of PGAPack is used, PGAGetRank()
-  returns 0.
+/*!****************************************************************************
+    \brief Return the rank of the processor in communicator comm.
+    \ingroup parallel
 
-  Category: Parallel
+    \param   ctx   context variable structure pointer
+    \param   comm  an MPI communicator
+    \return  The rank of this processor
 
-  Inputs:
-      ctx  - context variable structure pointer
-      comm - an MPI communicator
+    \rst
 
-  Outputs:
-      The rank of this processor
+    Description
+    -----------
 
-  Example:
-      PGAContext  *ctx;
-      int          rank;
-      :
-      rank = PGAGetRank(ctx, MPI_COMM_WORLD);
-      if (rank == 0) {
-          LetTheMasterDoSomething();
-      }
+    If comm is NULL or a sequential version of PGAPack is used,
+    PGAGetRank returns 0.
 
-****************************************************************************U*/
+    Example
+    -------
+
+    .. code-block:: c
+
+        PGAContext  *ctx;
+        int          rank;
+
+        ...
+        rank = PGAGetRank (ctx, MPI_COMM_WORLD);
+        if (rank == 0) {
+            LetRank0DoSomething ();
+        }
+
+    \endrst
+
+******************************************************************************/
 int PGAGetRank (PGAContext *ctx, MPI_Comm comm)
 {
     int rank;
 
-    PGADebugEntered("PGAGetRank");
+    PGADebugEntered ("PGAGetRank");
 
-    if (comm == MPI_COMM_NULL)
-	rank = 0;
-    else
-	MPI_Comm_rank(comm, &rank);
+    if (comm == MPI_COMM_NULL) {
+        rank = 0;
+    } else {
+        MPI_Comm_rank (comm, &rank);
+    }
 
-    PGADebugExited("PGAGetRank");
+    PGADebugExited ("PGAGetRank");
 
-    return(rank);
+    return rank;
 }
 
 
-/*U****************************************************************************
-  PGAGetNumProcs - Returns the size of communicator comm in processes.  If
-  comm is NULL or a sequential version of PGAPack is used, PGAGetNumProcs()
-  returns 1.
+/*!****************************************************************************
+    \brief Return the size of communicator comm in processes.
+    \ingroup parallel
 
-  Category: Parallel
+    \param   ctx   context variable structure pointer
+    \param   comm  an MPI communicator
+    \return  The numbers of processors in communicator comm
 
-  Inputs:
-      ctx  - context variable structure pointer
-      comm - an MPI communicator
+    \rst
 
-  Outputs:
-      The numbers of processors in communicator comm.
+    Description
+    -----------
 
-  Example:
-      PGAContext  *ctx;
-      :
-      if (PGAGetNumProcs (ctx, MPI_COMM_WORLD) < 4) {
-          printf ("Too few processors for decent performance!\n");
-          exit (-1);
-      }
+    If comm is NULL or a sequential version of PGAPack is used,
+    PGAGetNumProcs returns 1.
 
-****************************************************************************U*/
+    Example
+    -------
+
+    .. code-block:: c
+
+        PGAContext  *ctx;
+
+        ...
+        if (PGAGetNumProcs (ctx, MPI_COMM_WORLD) < 4) {
+            printf ("Too few processors for decent performance!\n");
+            exit (-1);
+        }
+
+    \endrst
+
+******************************************************************************/
 int PGAGetNumProcs (PGAContext *ctx, MPI_Comm comm)
 {
     int size;
 
-    PGADebugEntered("PGAGetNumProcs");
+    PGADebugEntered ("PGAGetNumProcs");
 
-    if (comm == MPI_COMM_NULL)
-	size = 1;
-    else
-	MPI_Comm_size(comm, &size);
+    if (comm == MPI_COMM_NULL) {
+        size = 1;
+    } else {
+        MPI_Comm_size (comm, &size);
+    }
 
-    PGADebugExited("PGAGetNumProcs");
+    PGADebugExited ("PGAGetNumProcs");
 
-    return(size);
+    return size;
 }
 
 
-/*I****************************************************************************
-   PGASetNumIslands - Set the number of islands to use in an island model
-   GA. The default is one.  Currently must be the same as the number of
-   processes in the default communicator.
+/*!****************************************************************************
+    \brief Set the number of islands to use in an island model GA.
+    \ingroup notimplemented
 
-   Category: Parallel
+    \param   ctx  context variable
+    \param   n    number of islands
+    \return  None
 
-   Inputs:
-      ctx - context variable
-      n   - number of islands
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx,
-      double f(PGAContext *ctx, int p, int pop);
-      :
-      ctx = PGACreate(&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
-      PGASetNumIslands(ctx, 10);
-      PGASetUp(ctx);
-      PGARun(ctx, f);
-      PGADestroy(ctx);
+    The default is one.  Currently must be the same as the number of
+    processes in the default communicator.
 
-****************************************************************************I*/
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx,
+       double f (PGAContext *ctx, int p, int pop, double *aux);
+
+       ctx = PGACreate (&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
+       PGASetNumIslands (ctx, 10);
+       PGASetUp (ctx);
+       PGARun (ctx, f);
+       PGADestroy (ctx);
+
+    \endrst
+
+******************************************************************************/
 void PGASetNumIslands( PGAContext *ctx, int n)
 {
 
-    PGADebugEntered("PGASetNumIslands");
+    PGADebugEntered ("PGASetNumIslands");
 
-    if ( n < 1 )
-        PGAError(ctx, "PGASetNumIslands: Invalid value of n:",
-                 PGA_FATAL, PGA_INT, (void *) &n);
+    if (n < 1) {
+        PGAError
+            ( ctx, "PGASetNumIslands: Invalid value of n:"
+            , PGA_FATAL, PGA_INT, (void *) &n
+            );
+    }
 
     ctx->par.NumIslands = n;
 
-    PGADebugExited("PGASetNumIslands");
+    PGADebugExited ("PGASetNumIslands");
 }
 
 
-/*I***************************************************************************
-   PGAGetNumIslands - Returns the number of islands to use in an island model
+/*!***************************************************************************
+   \brief Returns the number of islands to use in an island model
+   \ingroup notimplemented
 
-   Category: Parallel
+   \param   ctx  context variable
+   \return  The number of islands to use in an island model
 
-   Inputs:
-      ctx - context variable
+   \rst
 
-   Outputs:
-       the number of islands to use in an island model
+   Example
+   -------
 
-   Example:
+    .. code-block:: c
+
       PGAContext *ctx;
       int npop;
-      :
-      npop = PGAGetNumIslands(ctx);
 
-***************************************************************************I*/
+      ...
+      npop = PGAGetNumIslands (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetNumIslands (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetNumIslands");
-    PGAFailIfNotSetUp("PGAGetNumIslands");
+    PGADebugEntered   ("PGAGetNumIslands");
+    PGAFailIfNotSetUp ("PGAGetNumIslands");
 
-    PGADebugExited("PGAGetNumIslands");
+    PGADebugExited ("PGAGetNumIslands");
 
-    return(ctx->par.NumIslands);
+    return ctx->par.NumIslands;
 }
 
-/*I****************************************************************************
-   PGASetNumDemes - Set the number of demes to use in a neighborhood model
-   GA. Currently must be the same as the number of processes in the default
-   communicator.  The default is one.
+/*!****************************************************************************
+    \brief Set the number of demes to use in a neighborhood model GA.
+    \ingroup notimplemented
 
-   Category: Parallel
+    \param   ctx           context variable
+    \param   numdemes      number of demes
+    \return  None
 
-   Inputs:
-      ctx          - context variable
-      numdemes     - number of demes
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx,
-      double f(PGAContext *ctx, int p, int pop);
-      :
-      ctx = PGACreate(&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
-      PGASetNumDemes(ctx, 4);
-      PGASetUp(ctx);
-      PGARun(ctx, f);
-      PGADestroy(ctx);
+    Currently must be the same as the number of processes in the default
+    communicator.  The default is one.
 
-****************************************************************************I*/
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx,
+       double f (PGAContext *ctx, int p, int pop, double *aux);
+
+       ctx = PGACreate (&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
+       PGASetNumDemes (ctx, 4);
+       PGASetUp (ctx);
+       PGARun (ctx, f);
+       PGADestroy (ctx);
+
+    \endrst
+
+******************************************************************************/
 void PGASetNumDemes( PGAContext *ctx, int numdemes)
 {
-    PGADebugEntered("PGASetNumDemes");
+    PGADebugEntered ("PGASetNumDemes");
 
-    if ( numdemes < 1 )
-        PGAError(ctx, "PGASetNumDemes: Invalid value of numdemes:",
-                 PGA_FATAL, PGA_INT, (void *) &numdemes);
+    if (numdemes < 1) {
+        PGAError
+            ( ctx, "PGASetNumDemes: Invalid value of numdemes:"
+            , PGA_FATAL, PGA_INT, (void *) &numdemes
+            );
+    }
 
     ctx->par.NumDemes = numdemes;
 
-    PGADebugExited("PGASetNumDemes");
+    PGADebugExited ("PGASetNumDemes");
 }
 
 
-/*I***************************************************************************
-   PGAGetNumDemes - Returns the number of demes to use in a neighborhood model
+/*!***************************************************************************
+    \brief Returns the number of demes to use in a neighborhood model.
+    \ingroup notimplemented
 
-   Category: Parallel
+    \param   ctx  context variable
+    \return  The number of demes to use in a neighborhood model
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-       the number of demes to use in a neighborhood model
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int npop;
-      :
-      npop = PGAGetNumDemes(ctx);
+    .. code-block:: c
 
-***************************************************************************I*/
+       PGAContext *ctx;
+       int npop;
+
+       ...
+       npop = PGAGetNumDemes (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetNumDemes (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetNumDemes");
-    PGAFailIfNotSetUp("PGAGetNumDemes");
+    PGADebugEntered   ("PGAGetNumDemes");
+    PGAFailIfNotSetUp ("PGAGetNumDemes");
 
-    PGADebugExited("PGAGetNumDemes");
+    PGADebugExited ("PGAGetNumDemes");
 
-    return(ctx->par.NumDemes);
+    return ctx->par.NumDemes;
 }
 
 
-/*U****************************************************************************
-   PGASetCommunicator - Set the default communicator to use when PGARun is
-   called.  Does not necessarily need to be the same as the number of
-   processes in MPI_COMM_WORLD (which is the default).
+/*!****************************************************************************
+    \brief Set the default communicator to use when PGARun is called.
+    \ingroup init
 
-   Category: Parallel
+    \param   ctx     context variable
+    \param   comm    communicator to use
+    \return  None
 
-   Inputs:
-      ctx    - context variable
-      comm   - communicator to use
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      MPI_Comm mycomm;
-      PGAContext *ctx,
-      double f(PGAContext *ctx, int p, int pop);
-      :
-      ctx = PGACreate(&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
-      PGASetCommunicator(ctx, mycomm);
-      PGASetUp(ctx);
-      PGARun(ctx, f);
-      PGADestroy(ctx);
+    Does not necessarily need to be MPI_COMM_WORLD (which is the
+    default).
 
-****************************************************************************U*/
-void PGASetCommunicator( PGAContext *ctx, MPI_Comm comm)
+    Example
+    -------
+
+    .. code-block:: c
+
+       MPI_Comm mycomm;
+       PGAContext *ctx,
+       double f (PGAContext *ctx, int p, int pop, double *aux);
+
+       ctx = PGACreate (&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
+       PGASetCommunicator (ctx, mycomm);
+       PGASetUp (ctx);
+       PGARun (ctx, f);
+       PGADestroy (ctx);
+
+    \endrst
+
+******************************************************************************/
+void PGASetCommunicator (PGAContext *ctx, MPI_Comm comm)
 {
 
-    PGADebugEntered("PGASetCommunicator");
+    PGADebugEntered ("PGASetCommunicator");
 
     ctx->par.DefaultComm = comm;
 
-    PGADebugExited("PGASetCommunicator");
+    PGADebugExited ("PGASetCommunicator");
 }
 
 
-/*U****************************************************************************
-   PGAGetCommunicator - Returns the default communicator used when PGARun is
-   called.
+/*!****************************************************************************
+    \brief Returns the default communicator used when PGARun is called.
+    \ingroup query
 
-   Category: Parallel
+    \param   ctx     context variable
+    \return  The default communicator
 
-   Inputs:
-      ctx    - context variable
+    \rst
 
-   Outputs:
-      The default communicator
+    Example
+    -------
 
-   Example:
-      MPI_Comm comm;
-      PGAContext *ctx,
-      double f(PGAContext *ctx, int p, int pop);
-      :
-      ctx = PGACreate(&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
-      PGASetUp(ctx);
-      comm = PGAGetCommunicator(ctx);
+    .. code-block:: c
 
+       MPI_Comm comm;
+       PGAContext *ctx,
+       double f (PGAContext *ctx, int p, int pop, double *aux);
 
-****************************************************************************U*/
-MPI_Comm PGAGetCommunicator( PGAContext *ctx)
+       ctx = PGACreate (&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
+       PGASetUp (ctx);
+       comm = PGAGetCommunicator (ctx);
+
+    \endrst
+
+******************************************************************************/
+MPI_Comm PGAGetCommunicator (PGAContext *ctx)
 {
 
-    PGADebugEntered("PGAGetCommunicator");
+    PGADebugEntered ("PGAGetCommunicator");
 
-    PGADebugExited("PGAGetCommunicator");
+    PGADebugExited  ("PGAGetCommunicator");
 
-    return(ctx->par.DefaultComm);
+    return ctx->par.DefaultComm;
 }

@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,92 +37,137 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     File: binary.c: This file contains routines specific to the binary
-*                     datatype.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains routines specific to the binary datatype.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
 
-/*U****************************************************************************
-   PGASetBinaryAllele - sets a binary allele to the specified value.
+/*!***************************************************************************
+ *  \defgroup allele Allele Values
+ *  \brief Functions for getting and setting allele values
+ *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup init Initialization
+ *  \brief Functions used to change initialization
+ *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup query Query parameters
+ *  \brief Functions to query PGA parameters
+ *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup explicit Functions for explicit usage
+ *  \brief See description of explicit usage in user guide
+ *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup internal Functions for internal usage
+ *  \brief These functions are only used internally
+ *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup reporting Reporting of algorithm progress
+ *  \brief Reporting, output printing
+ *****************************************************************************/
+/*!***************************************************************************
+ *  \defgroup standard-api Standard API
+ *  \brief The standard API
+ *****************************************************************************/
 
-   Category: Fitness & Evaluation
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
-      i   - allele index
-      val - binary value (either 1 or 0) to set the allele to
+/*!****************************************************************************
+    \brief Sets a binary allele to the specified value.
+    \ingroup allele
 
-   Outputs:
-      The allele is changed by side-effect.
+    \param ctx context variable
+    \param p   string index
+    \param pop symbolic constant of the population the string is in
+    \param i   allele index
+    \param val binary value (either 1 or 0) to set the allele to
+    \return The allele is changed by side-effect
 
-   Example:
-      Copies the alleles from member p in PGA_OLDPOP to member q PGA_NEWPOP.
-      Assumes strings are of the same length.
+    \rst
 
-      PGAContext *ctx;
-      int p, q, i;
-      :
-      for (i=PGAGetStringLength(ctx)-1; i>=0; i--)
-          PGASetBinaryAllele(ctx, q, PGA_NEWPOP, i,
-                             PGAGetBinaryAllele(ctx, p, PGA_OLDPOP, i))
+    Example
+    -------
 
-****************************************************************************U*/
-void PGASetBinaryAllele ( PGAContext *ctx, int p, int pop, int i, int val )
+    Copies the alleles from member p in PGA_OLDPOP to member q in PGA_NEWPOP.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int p, q, i;
+       int l;
+
+       ...
+       l = PGAGetStringLength (ctx);
+       for (i=0 i<l; i++) {
+           int a = PGAGetBinaryAllele (ctx, p, PGA_OLDPOP, i);
+           PGASetBinaryAllele (ctx, q, PGA_NEWPOP, i, a);
+       }
+
+    \endrst
+
+******************************************************************************/
+void PGASetBinaryAllele (PGAContext *ctx, int p, int pop, int i, int val)
 {
     int windex;        /* index of the computer word allele i is in      */
     int bix;           /* bit position in word chrom[windex] of allele i */
     PGAIndividual *ind;
     PGABinary *chrom;
 
-    PGADebugEntered("PGASetBinaryAllele");
-    PGACheckDataType("PGAGetBinaryAllele", PGA_DATATYPE_BINARY);
+    PGADebugEntered  ("PGASetBinaryAllele");
+    PGACheckDataType ("PGASetBinaryAllele", PGA_DATATYPE_BINARY);
 
-    INDEX( windex,bix,i,WL );
-    ind = PGAGetIndividual ( ctx, p, pop );
+    INDEX (windex, bix, i, WL);
+    ind = PGAGetIndividual (ctx, p, pop);
     chrom = (PGABinary *)ind->chrom;
-    if ( val == 0 )
-        UNSET( bix, chrom[windex] );
-    else
-        SET( bix, chrom[windex] );
+    if (val == 0) {
+        UNSET (bix, chrom[windex]);
+    } else {
+        SET (bix, chrom[windex]);
+    }
 
-    PGADebugExited("PGASetBinaryAllele");
+    PGADebugExited ("PGASetBinaryAllele");
 }
 
-/*U****************************************************************************
-   PGAGetBinaryAllele - returns the value of a (binary) allele in a
-   PGA_DATATYPE_BINARY string
+/*!****************************************************************************
+    \brief Return the value of a (binary) allele in a
+           PGA_DATATYPE_BINARY string.
 
-   Category: Fitness & Evaluation
+    \ingroup allele
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
-      i   - allele index
+    \param  ctx  context variable
+    \param  p    string index
+    \param  pop  symbolic constant of the population the string is in
+    \param  i    allele index
+    \return The value of the ith allele of string p in population pop
 
-   Outputs:
-      The value of the ith allele of string p in population pop.
+    \rst
 
-   Example:
-      Copies the alleles from member p in PGA_OLDPOP to member q PGA_NEWPOP.
-      Assumes the strings are of the same length.
+    Example
+    -------
 
-      PGAContext *ctx;
-      int p, q, i;
-      :
-      for (i=PGAGetStringLength(ctx)-1; i>=0; i--)
-          PGASetBinaryAllele(ctx, q, PGA_NEWPOP, i,
-                             PGAGetBinaryAllele(ctx, p, PGA_OLDPOP, i))
+    Copies the alleles from member p in PGA_OLDPOP to member q PGA_NEWPOP.
+    Assumes the strings are of the same length.
 
-****************************************************************************U*/
-int PGAGetBinaryAllele ( PGAContext *ctx, int p, int pop, int i )
+    .. code-block:: c
+
+        PGAContext *ctx;
+        int p, q, i;
+
+        ...
+        for (i=PGAGetStringLength (ctx)-1; i>=0; i--) {
+            int a = PGAGetBinaryAllele (ctx, p, PGA_OLDPOP, i);
+            PGASetBinaryAllele (ctx, q, PGA_NEWPOP, i, a);
+        }
+
+    \endrst
+
+******************************************************************************/
+int PGAGetBinaryAllele (PGAContext *ctx, int p, int pop, int i)
 {
 
     int windex;        /* index of the computer word allele i is in      */
@@ -130,73 +175,91 @@ int PGAGetBinaryAllele ( PGAContext *ctx, int p, int pop, int i )
     PGAIndividual *ind;
     PGABinary *chrom;
 
-    PGADebugEntered("PGAGetBinaryAllele");
-    PGACheckDataType("PGAGetBinaryAllele", PGA_DATATYPE_BINARY);
+    PGADebugEntered  ("PGAGetBinaryAllele");
+    PGACheckDataType ("PGAGetBinaryAllele", PGA_DATATYPE_BINARY);
 
-    INDEX( windex,bix,i,WL );
-    ind = PGAGetIndividual ( ctx, p, pop );
+    INDEX (windex,bix,i,WL);
+    ind = PGAGetIndividual (ctx, p, pop);
     chrom = (PGABinary *)ind->chrom;
 
-    PGADebugExited("PGAGetBinaryAllele");
-    return( BIT(bix, chrom[windex]) != 0 );
+    PGADebugExited ("PGAGetBinaryAllele");
+    return (BIT (bix, chrom [windex]) != 0);
 }
 
-/*U****************************************************************************
-   PGASetBinaryInitProb - specify the probability of initializing an allele to
-   "1" when creating a PGA_DATATYPE_BINARY string.  The default value is 0.5.
+/*!****************************************************************************
+    \brief Specify the probability of initializing an allele to "1" when
+           creating a PGA_DATATYPE_BINARY string.
 
-   Category: Initialization
+    \ingroup init
 
-   Inputs:
-      ctx - context variable
-      p   - the binary initialization probability
+    \param   ctx  context variable
+    \param   p    the binary initialization probability
+    \return  None
 
-   Outputs:
-      None
+    \rst
 
-   Example:
-      Set approximately 1 percent of all binary alleles to "1" when randomly
-      initializing the population.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      :
-      PGASetBinaryInitProb(ctx, 0.01);
+    The default value is 0.5.
 
-****************************************************************************U*/
-void PGASetBinaryInitProb ( PGAContext *ctx, double probability )
+    Example
+    -------
+
+    Set approximately 1 percent of all binary alleles to "1" when randomly
+    initializing the population.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetBinaryInitProb (ctx, 0.01);
+
+    \endrst
+
+******************************************************************************/
+void PGASetBinaryInitProb (PGAContext *ctx, double p)
 {
-    PGADebugEntered("PGASetBinaryInitProb");
-    PGAFailIfSetUp("PGASetBinaryInitProb");
-    PGACheckDataType("PGASetBinaryInitProb", PGA_DATATYPE_BINARY);
+    PGADebugEntered  ("PGASetBinaryInitProb");
+    PGAFailIfSetUp   ("PGASetBinaryInitProb");
+    PGACheckDataType ("PGASetBinaryInitProb", PGA_DATATYPE_BINARY);
 
-     if ( (probability <= 1.0) && (probability >= 0.0) )
-          ctx->init.BinaryProbability = probability;
-     else
-          PGAError( ctx, "PGASetBinaryInitProb: Invalid value of probability:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &probability );
-
-    PGADebugExited("PGASetBinaryInitProb");
+    if ((p <= 1.0) && (p >= 0.0)) {
+        ctx->init.BinaryProbability = p;
+    } else {
+        PGAError
+            ( ctx, "PGASetBinaryInitProb: Invalid value of p:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &p
+            );
+    }
+    PGADebugExited ("PGASetBinaryInitProb");
 }
 
-/*U***************************************************************************
-   PGAGetBinaryInitProb - Returns the probability that an allele will be
-   randomly initialized to "1" in a PGA_DATATYPE_BINARY string.
+/*!***************************************************************************
+    \brief Return the probability that an allele will be randomly
+           initialized to "1" in a PGA_DATATYPE_BINARY string.
+    \ingroup query
 
-   Category: Initialization
+    \param  ctx  context variable
+    \return The probability that a bit will be randomly initialized to one
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The probability that a bit will be randomly initialized to one
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double prob;
-      :
-      prob = PGAGetBinaryInitProb(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double prob;
+
+       ...
+       prob = PGAGetBinaryInitProb (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetBinaryInitProb (PGAContext *ctx)
 {
     PGADebugEntered("PGAGetBinaryInitProb");
@@ -208,84 +271,118 @@ double PGAGetBinaryInitProb (PGAContext *ctx)
 }
 
 
-/*I****************************************************************************
-   PGABinaryCreateString - Allocate a PGA_DATATYPE_BINARY string for member
-   p of population pop.  If initflag is PGA_TRUE, randomly initialize all
-   alleles, otherwise clear all alleles.
+/*!****************************************************************************
+    \brief Allocate a PGA_DATATYPE_BINARY string for member p of
+           population pop.
+    \ingroup internal
 
-   Inputs:
-      ctx      - context variable
-      p        - string index
-      pop      - symbolic constant of the population string p is in
-      initflag - a flag, if set, randomly initialize, else clear alleles
+    \param   ctx       context variable
+    \param   p         string index
+    \param   pop       symbolic constant of the population string p is in
+    \param   initflag  a flag, if set, randomly initialize, else clear alleles
+    \return  Member p in population pop is allocated and initialized.
 
-   Outputs:
-      Member p in population pop is allocated and initialized.
+    \rst
 
-   Example:
-      Allocates and clears alleles for all strings in PGA_NEWPOP
+    Description
+    -----------
+    If initflag is PGA_TRUE, randomly initialize all alleles, otherwise
+    clear all alleles.
 
-      PGAContext *ctx;
-      int p;
-      :
-      for (p=PGAGetPopSize(ctx)-1; p>=0; p--)
-          PGABinaryCreateString( ctx, p, PGA_NEWPOP, PGA_FALSE );
+    Note that this function is set in :c:func:`PGASetUp` as the create
+    string user function for the binary datatype by default.
 
-****************************************************************************I*/
-void PGABinaryCreateString(PGAContext *ctx, int p, int pop, int initflag)
+    Example
+    -------
+
+    Allocates and clears alleles for all strings in PGA_NEWPOP
+
+    .. code-block:: c
+
+        PGAContext *ctx;
+        int p;
+
+        ...
+        for (p=PGAGetPopSize(ctx)-1; p>=0; p--) {
+            PGABinaryCreateString (ctx, p, PGA_NEWPOP, PGA_FALSE);
+        }
+
+    \endrst
+******************************************************************************/
+void PGABinaryCreateString (PGAContext *ctx, int p, int pop, int initflag)
 {
     int i, fp;
     PGABinary *s;
     PGAIndividual *new = PGAGetIndividual(ctx, p, pop);
-    
-    PGADebugEntered("PGABinaryCreateString");
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR, "PGABinaryCreateString",
-		  "initflag = ", PGA_INT, (void *) &initflag );
-    
+
+    PGADebugEntered ("PGABinaryCreateString");
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGABinaryCreateString"
+        , "initflag = ", PGA_INT, (void *) &initflag
+        );
+
     new->chrom = (void *)malloc(ctx->ga.tw * sizeof(PGABinary));
     if (new->chrom == NULL)
-	PGAError(ctx, "PGABinaryCreateString: No room to allocate "
-		 "new->chrom", PGA_FATAL, PGA_VOID, NULL);
-    
+        PGAError
+            ( ctx, "PGABinaryCreateString: No room to allocate new->chrom"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
+
     s = (PGABinary *)new->chrom;
-    if (initflag)
-	if (ctx->fops.InitString) {
-	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
+    if (initflag) {
+        if (ctx->fops.InitString) {
+            fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
             (*ctx->fops.InitString)(&ctx, &fp, &pop);
-	} else {
-	    (*ctx->cops.InitString)(ctx, p, pop);
-	}
-    else
-	for ( i=0; i<ctx->ga.tw; i++ )
-	    s[i] = 0;
-    
+        } else {
+            (*ctx->cops.InitString)(ctx, p, pop);
+        }
+    } else {
+        for (i=0; i<ctx->ga.tw; i++) {
+            s[i] = 0;
+        }
+    }
+
     PGADebugExited("PGABinaryCreateString");
 }
 
-/*I****************************************************************************
-   PGABinaryMutation - randomly mutates a bit with a specified probability.
-   This routine is called from PGAMutation.
+/*!****************************************************************************
+    \brief Randomly mutates a bit with a specified probability.
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant for the population string p is in
-      mr  - probability of mutating (toggling) a bit
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant for the population string p is in
+    \param   mr   probability of mutating (toggling) a bit
+    \return  Return the number of mutations
 
-   Outputs:
-      Returns the number of mutations
+    \rst
 
-   Example:
-      Mutates string p in population PGA_NEWPOP with a probability of 0.001
-      for each bit.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int p;
-      :
-      PGABinaryMutation( ctx, p, PGA_NEWPOP, .001 );
+    This routine is called from PGAMutation.
 
-****************************************************************************I*/
-int PGABinaryMutation( PGAContext *ctx, int p, int pop, double mr )
+    Note that this function is set in :c:func:`PGASetUp` as the mutation
+    user function for the binary datatype by default.
+
+    Example
+    -------
+
+    Mutates string p in population PGA_NEWPOP with a probability of 0.001
+    for each bit.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int p;
+
+       ...
+       PGABinaryMutation (ctx, p, PGA_NEWPOP, .001);
+
+    \endrst
+
+******************************************************************************/
+int PGABinaryMutation (PGAContext *ctx, int p, int pop, double mr)
 {
     int i,wi;
     int count = 0;
@@ -318,34 +415,48 @@ int PGABinaryMutation( PGAContext *ctx, int p, int pop, double mr )
 
 }
 
-/*I****************************************************************************
-   PGABinaryOneptCrossover - performs one-point crossover on two parent strings
-   to create two children via side-effect
+/*!****************************************************************************
+    \brief Performs one-point crossover on two parent strings to create
+           two children via side-effect.
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population containing c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population containing c1 and c2
+    \return  None
 
-   Outputs:
-      None.
+    \rst
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGABinaryOneptCrossover( ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP );
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the binary datatype when selecting
+    one-point crossover.
 
-****************************************************************************I*/
-void PGABinaryOneptCrossover(PGAContext *ctx, int p1, int p2, int pop1, int c1,
-                             int c2, int pop2)
+    Example
+    -------
+
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGABinaryOneptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGABinaryOneptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
     PGABinary *parent1 = (PGABinary *)PGAGetIndividual(ctx, p1, pop1)->chrom;
     PGABinary *parent2 = (PGABinary *)PGAGetIndividual(ctx, p2, pop1)->chrom;
@@ -400,34 +511,50 @@ void PGABinaryOneptCrossover(PGAContext *ctx, int p1, int p2, int pop1, int c1,
 }
 
 
-/*I****************************************************************************
-   PGABinaryTwoptCrossover - performs two-point crossover on two parent strings
-   producing two children via side-effect
+/*!****************************************************************************
+    \brief Perform two-point crossover on two parent strings producing
+           two children via side-effect
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  None
 
-   Outputs:
-      None.
+    \rst
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGABinaryTwoptCrossover( ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP );
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the binary datatype when selecting
+    two-point crossover.
 
-****************************************************************************I*/
-void PGABinaryTwoptCrossover(PGAContext *ctx, int p1, int p2, int pop1, int c1,
-                             int c2, int pop2)
+    Example
+    -------
+
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGABinaryTwoptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGABinaryTwoptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
     PGABinary *parent1 = (PGABinary *)PGAGetIndividual(ctx, p1, pop1)->chrom;
     PGABinary *parent2 = (PGABinary *)PGAGetIndividual(ctx, p2, pop1)->chrom;
@@ -515,34 +642,50 @@ void PGABinaryTwoptCrossover(PGAContext *ctx, int p1, int p2, int pop1, int c1,
 }
 
 
-/*I****************************************************************************
-   PGABinaryUniformCrossover - performs uniform crossover on two parent strings
-   producing two children via side-effect
+/*!****************************************************************************
+    \brief Perform uniform crossover on two parent strings producing two
+           children via side-effect.
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing string
+                   p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain string
+                   c1 and c2
+    \return  None
 
-   Outputs:
-      None.
+    \rst
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGABinaryUniformCrossover( ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP );
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the binary datatype when selecting
+    uniform crossover.
 
-****************************************************************************I*/
-void PGABinaryUniformCrossover (PGAContext *ctx, int p1, int p2, int pop1,
-                                int c1, int c2, int pop2)
+    Example
+    -------
+
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGABinaryUniformCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGABinaryUniformCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
     PGABinary *parent1 = (PGABinary *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     PGABinary *parent2 = (PGABinary *)PGAGetIndividual (ctx, p2, pop1)->chrom;
@@ -572,27 +715,74 @@ void PGABinaryUniformCrossover (PGAContext *ctx, int p1, int p2, int pop1,
     PGADebugExited ("PGABinaryUniformCrossover");
 }
 
-/*I****************************************************************************
-   PGABinaryPrintString - writes a bit string to a file.
+/*!****************************************************************************
+    \brief Write a bit string to a file.
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      fp  - file pointer to file to write bit string to
-      p   - index of the string to write out
-      pop - symbolic constant of the population string p is in
+    \param   ctx    context variable
+    \param   fp     file to write the bit string to
+    \param   chrom  pointer to the bit string to write
+    \param   nb     number of bits to write out
+    \return  None
 
-   Outputs:
-      None.
+    \rst
 
-   Example:
-      Write string s to stdout.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int s;
-      :
-      PGABinaryPrintString (ctx, stdout, s, PGA_NEWPOP);
+    Puts the binary
+    representation of the bit string pointed to by chrom into a character
+    string and writes that out. Assumes the maximum length of string to
+    print is WL, and that all bits are in the same word.
 
-****************************************************************************I*/
+    Internal function.  Use PGABinaryPrintString to print a binary string.
+    \endrst
+
+******************************************************************************/
+static
+void PGABinaryPrint (PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb)
+{
+     char *s, string[WL+1];
+     PGABinary mask;
+     int i;
+
+     mask = ((PGABinary)1)<<(WL-1);
+     s = string;
+     for(i=0; i<nb; mask>>=1,i++)              /* mask each bit and set the  */
+          *s++ = (mask&(*chrom)?'1':'0');      /* appropriate character      */
+     *s=0;                                     /* string terminator          */
+     fprintf(fp, "%s", string);                /* print out character string */
+}
+
+
+/*!****************************************************************************
+    \brief Write a bit string to a file.
+    \ingroup internal
+
+    \param   ctx  context variable
+    \param   fp   file pointer to file to write bit string to
+    \param   p    index of the string to write out
+    \param   pop  symbolic constant of the population string p is in
+    \return  None
+
+    \rst
+
+    Example
+    -------
+
+    Write string s to stdout.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int s;
+
+       ...
+       PGABinaryPrintString (ctx, stdout, s, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
 void PGABinaryPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 {
     PGABinary *c = (PGABinary *)PGAGetIndividual (ctx, p, pop)->chrom;
@@ -622,29 +812,42 @@ void PGABinaryPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
     PGADebugExited ("PGABinaryPrintString");
 }
 
-/*I****************************************************************************
-   PGABinaryCopyString - Copy one bit string to another
+/*!****************************************************************************
+    \brief Copy one bit string to another.
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - string to copy
-      pop1 - symbolic constant of population containing string p1
-      p2   - string to copy p1 to
-      pop2 - symbolic constant of population containing string p2
+    \param   ctx   context variable
+    \param   p1    string to copy
+    \param   pop1  symbolic constant of population containing string p1
+    \param   p2    string to copy p1 to
+    \param   pop2  symbolic constant of population containing string p2
+    \return  None
 
-   Outputs:
-      None.
+    \rst
 
-   Example:
-      Copy bit string x to y (both are implicitly assumed to have the same
-      length).
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int x, y
-      :
-      PGABinaryCopyString ( ctx, x, PGA_OLDPOP, y, PGA_NEWPOP );
+    Note that this function is set in :c:func:`PGASetUp` as the copy
+    string user function for the binary datatype by default.
 
-****************************************************************************I*/
+    Example
+    -------
+
+    Copy bit string x to y (both are implicitly assumed to have the same
+    length).
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int x, y
+
+       ...
+       PGABinaryCopyString (ctx, x, PGA_OLDPOP, y, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
 void PGABinaryCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
     PGABinary *source = (PGABinary *)PGAGetIndividual(ctx, p1, pop1)->chrom;
@@ -659,32 +862,45 @@ void PGABinaryCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     PGADebugExited("PGABinaryCopyString");
 }
 
-/*I****************************************************************************
-   PGABinaryDuplicate - Returns true if bit string a is a duplicate of bit
-   string b, else returns false.
+/*!****************************************************************************
+    \brief Return true if bit string a is a duplicate of bit string b,
+           else returns false.
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - string index of the first string to compare
-      pop1 - symbolic constant of the population string p1 is in
-      p2   - string index of the second string to compare
-      pop2 - symbolic constant of the population string p2 is in
+    \param   ctx   context variable
+    \param   p1    string index of the first string to compare
+    \param   pop1  symbolic constant of the population string p1 is in
+    \param   p2    string index of the second string to compare
+    \param   pop2  symbolic constant of the population string p2 is in
+    \return  Return true/false if strings are duplicates
 
-   Outputs:
-      Returns true/false if strings are duplicates
+    \rst
 
-   Example:
-      Compare bit string x with y and print a message if they are the same.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int x, y;
-      :
-      if (PGABinaryDuplicate (ctx, x, PGA_NEWPOP, y, PGA_NEWPOP)) {
-          printf ("strings are duplicates\n");
-      }
+    Note that this function is set in :c:func:`PGASetUp` as the
+    duplicate checking user function for the binary datatype by default.
 
-****************************************************************************I*/
-int PGABinaryDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+    Example
+    -------
+
+    Compare bit string x with y and print a message if they are the same.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int x, y;
+
+       ...
+       if (PGABinaryDuplicate (ctx, x, PGA_NEWPOP, y, PGA_NEWPOP)) {
+           printf ("strings are duplicates\n");
+       }
+
+    \endrst
+
+******************************************************************************/
+int PGABinaryDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
      PGABinary *a = (PGABinary *)PGAGetIndividual (ctx, p1, pop1)->chrom;
      PGABinary *b = (PGABinary *)PGAGetIndividual (ctx, p2, pop2)->chrom;
@@ -703,18 +919,26 @@ int PGABinaryDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
      return wi == ctx->ga.tw ? PGA_TRUE : PGA_FALSE;
 }
 
-/*I****************************************************************************
-   PGABinaryHash - Returns hash value of given gene
+/*!****************************************************************************
+    \brief Return hash value of given gene.
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p    - string index of the string to hash
-      pop  - symbolic constant of the population string p is in
+    \param   ctx   context variable
+    \param   p     string index of the string to hash
+    \param   pop   symbolic constant of the population string p is in
+    \return  Hash value for string
 
-   Outputs:
-      Hash value for string
+    \rst
 
-****************************************************************************I*/
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    hash user function for the binary datatype by default.
+
+    \endrst
+
+******************************************************************************/
 PGAHash PGABinaryHash (PGAContext *ctx, int p, int pop)
 {
      void *a = PGAGetIndividual (ctx, p, pop)->chrom;
@@ -723,61 +947,78 @@ PGAHash PGABinaryHash (PGAContext *ctx, int p, int pop)
      return hash;
 }
 
-/*I****************************************************************************
-   PGABinaryInitString - randomly initialize a string of type PGABinary
+/*!****************************************************************************
+    \brief Randomly initialize a string of type PGABinary.
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      p   - index of string to randomly initialize
-      pop - symbolic constant of the population string p is in
+    \param   ctx  context variable
+    \param   p    index of string to randomly initialize
+    \param   pop  symbolic constant of the population string p is in
+    \return  None
 
-   Outputs:
+    \rst
 
-   Example:
-      PGAContext *ctx;
-      int p;
-      :
-      PGABinaryInitString ( ctx, p, PGA_NEWPOP );
+    Description
+    -----------
 
-****************************************************************************I*/
-void PGABinaryInitString(PGAContext *ctx, int p, int pop)
+    Note that this function is set in :c:func:`PGASetUp` as the
+    init string user function for the binary datatype by default.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int p;
+
+       ...
+       PGABinaryInitString (ctx, p, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGABinaryInitString (PGAContext *ctx, int p, int pop)
 {
-     PGABinary *c = (PGABinary *)PGAGetIndividual(ctx, p, pop)->chrom;
-     int i;
-     int windex;        /* index of the computer word allele i is in      */
-     int bix;           /* binary position in word chrom[windex] of allele i */
+    PGABinary *c = (PGABinary *)PGAGetIndividual (ctx, p, pop)->chrom;
+    int i;
+    int windex;        /* index of the computer word allele i is in      */
+    int bix;           /* binary position in word chrom[windex] of allele i */
 
-     PGADebugEntered("PGABinaryInitString");
+    PGADebugEntered ("PGABinaryInitString");
 
-     for (i = 0; i < ctx->ga.tw; i++)
-          c[i] = 0;
-     for (i = 0; i < ctx->ga.StringLen; i++)
-     {
-          INDEX(windex,bix,i,WL);
-          if ( PGARandomFlip(ctx, ctx->init.BinaryProbability) )
-               SET  ( bix, c[windex] );
-     }
+    for (i = 0; i < ctx->ga.tw; i++) {
+        c[i] = 0;
+    }
+    for (i = 0; i < ctx->ga.StringLen; i++) {
+        INDEX(windex,bix,i,WL);
+        if (PGARandomFlip(ctx, ctx->init.BinaryProbability)) {
+            SET(bix, c[windex]);
+        }
+    }
 
-     PGADebugExited("PGABinaryInitString");
+    PGADebugExited ("PGABinaryInitString");
 }
 
+/*!****************************************************************************
+    \brief Build an MPI_Datatype for a binary string datatype.
+    \ingroup internal
 
-/*I****************************************************************************
-  PGABinaryBuildDatatype - Build an MPI_Datatype for a binary string
-  datatype.
+    \param    ctx   context variable
+    \param    p     index of the string to build a datatype from
+    \param    pop   symbolic constant of the population string p is in
+    \return   MPI_Datatype.
 
-  Inputs:
-      ctx  - context variable
-      p    - index of the string to build a datatype from
-      pop  - symbolic constant of the population string p is in
+    \rst
 
-  Outputs:
-      MPI_Datatype.
+    Description
+    -----------
 
-  Example:
-      Called only by MPI routines.  Not for user consumption.
+    Called only by MPI routines.  Not for user consumption.
 
-****************************************************************************I*/
+    \endrst
+
+******************************************************************************/
 MPI_Datatype PGABinaryBuildDatatype (PGAContext *ctx, int p, int pop)
 {
     int            idx = 0;
@@ -809,28 +1050,42 @@ MPI_Datatype PGABinaryBuildDatatype (PGAContext *ctx, int p, int pop)
 }
 
 
-/*I****************************************************************************
-   PGABinaryHammingDistance - Returns the Hamming distance between two strings
+/*!****************************************************************************
+    \brief Return the Hamming distance between two strings.
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      s1  - the first string to compare
-      s2  - the second string to compare
+    \param   ctx  context variable
+    \param   s1   the first string to compare
+    \param   s2   the second string to compare
+    \return  The Hamming distance between two strings
 
-   Outputs:
-      The Hamming distance between two strings
+    \rst
 
-   Example:
-      Returns the Hamming distance between bit strings x and y.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      PGABinary *x, *y;
-      int d;
-      :
-      d = PGABinaryHammingDistance( ctx, x, y );
+    Note that this function is used in c:func:`PGAHammingDistance`
+    for implementing a generic hamming distance function.
 
-****************************************************************************I*/
-int PGABinaryHammingDistance ( PGAContext *ctx, PGABinary *s1, PGABinary *s2 )
+
+    Example
+    -------
+
+    Return the Hamming distance between bit strings x and y.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       PGABinary *x, *y;
+       int d;
+
+       ...
+       d = PGABinaryHammingDistance (ctx, x, y);
+
+    \endrst
+
+******************************************************************************/
+int PGABinaryHammingDistance (PGAContext *ctx, PGABinary *s1, PGABinary *s2)
 {
     int        j, wi, distance;
     PGABinary  t1, t2, mask;
@@ -859,62 +1114,30 @@ int PGABinaryHammingDistance ( PGAContext *ctx, PGABinary *s1, PGABinary *s2 )
     return (distance);
 }
 
-/*I****************************************************************************
-   PGABinaryPrint - writes a bit string to a file.  Puts the binary
-   representation of the bit string pointed to by chrom into a character
-   string and writes that out. Assumes the maximum length of string to
-   print is WL, and that all bits are in the same word.
+/*!****************************************************************************
+    \brief Compute genetic difference of two strings.
+    \ingroup internal
 
-   Inputs:
-      ctx   - context variable
-      fp    - file to write the bit string to
-      chrom - pointer to the bit string to write
-      nb    - number of bits to write out
+    \param   ctx    context variable
+    \param   p1     first string index
+    \param   pop1   symbolic constant of the population the first string is in
+    \param   p2     second string index
+    \param   pop2   symbolic constant of the population the second string is in
+    \return  genetic distance of the two strings
 
-   Outputs:
+    \rst
 
-   Example:
-      Internal function.  Use PGABinaryPrintString to print a binary string.
+    Description
+    -----------
 
-****************************************************************************I*/
-void PGABinaryPrint( PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb )
-{
-     char *s, string[WL+1];
-     PGABinary mask;
-     int i;
+    For binary genes this is the Hamming distance.
+    Internal function.  Use PGAGeneDistance.
 
-     PGADebugEntered("PGABinaryPrint");
+    \endrst
 
-     mask = ((PGABinary)1)<<(WL-1);
-     s = string;
-     for(i=0; i<nb; mask>>=1,i++)              /* mask each bit and set the  */
-          *s++ = (mask&(*chrom)?'1':'0');      /* appropriate character      */
-     *s=0;                                     /* string terminator          */
-     fprintf(fp, "%s", string);                /* print out character string */
-
-     PGADebugExited("PGABinaryPrint");
-}
-
-
-/*I****************************************************************************
-   PGABinaryGeneDistance - Compute genetic difference of two strings.
-   For binary genes this is the Hamming distance.
-
-   Inputs:
-      ctx   - context variable
-      p1    - first string index
-      pop1  - symbolic constant of the population the first string is in
-      p2    - second string index
-      pop2  - symbolic constant of the population the second string is in
-
-   Outputs:
-      genetic distance of the two strings
-
-   Example:
-      Internal function.  Use PGAGeneDistance.
-
-****************************************************************************I*/
-double PGABinaryGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+******************************************************************************/
+double PGABinaryGeneDistance
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
      PGABinary *c1 = (PGABinary *)PGAGetIndividual (ctx, p1, pop1)->chrom;
      PGABinary *c2 = (PGABinary *)PGAGetIndividual (ctx, p2, pop2)->chrom;
@@ -923,5 +1146,3 @@ double PGABinaryGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop
      PGADebugExited("PGABinaryGeneDistance");
      return PGABinaryHammingDistance (ctx, c1, c2);
 }
-
-

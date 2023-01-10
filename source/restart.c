@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,270 +37,317 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: restart.c: This file contains the routines needed to handle
-*                      the restart operator, and restarting the GA.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains the routines needed to handle the restart operator,
+* and restarting the GA.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
 
-/*U****************************************************************************
-   PGARestart - reseeds a population from the best string
+/*!****************************************************************************
+    \brief Reseed a population from the best string
+    \ingroup explicit
 
-   Category: Operators
+    \param   ctx          context variable
+    \param   source_pop   symbolic constant of the source population
+    \param   dest_pop     symbolic constant of the destination population
+    \return  dest_pop is modified by side-effect
 
-   Inputs:
-      val         - the probability of changing an allele when copying the
-                    best string to the new population
-      source_pop  - the source population
-      dest_pop    - symbolic constant of the destination population
+    \rst
 
-   Outputs:
-      dest_pop is modified by side-effect.
+    Description
+    -----------
 
-   Example:
-      Perform an unspecified test to determine if the current evolution is
-      not evolving fast enough, and if so, restart the evolution.
+    Perform mutation on the best string.
+    For integers and reals, the amount by which to change is set with
+    :c:func:`PGASetMutationIntegerValue` and
+    :c:func:`PGASetMutationRealValue`,
+    respectively.  For binary strings, the bits are complemented.
 
-      PGAContext *ctx;	    PGAEvaluateMS(ctx, PGA_OLDPOP, f, comm);
-	    PGAFitness   (ctx, PGA_OLDPOP);
-	    }
+    Example
+    -------
 
-      :
-      if (StagnantEvolution()) {
-          PGARestart(ctx, PGA_OLDPOP, PGA_NEWPOP);
-          PGAEvaluate(ctx, PGA_NEWPOP, EvalFunc);
-          PGAUpdateGeneration(ctx);
-      }
+    Perform an unspecified test to determine if the current evolution is
+    not evolving fast enough, and if so, restart the evolution.
 
-****************************************************************************U*/
-void PGARestart(PGAContext *ctx, int source_pop, int dest_pop)
+    .. code-block:: c
+
+       PGAContext *ctx;
+       ...
+       PGAEvaluate (ctx, PGA_OLDPOP, f, comm);
+       PGAFitness  (ctx, PGA_OLDPOP);
+
+       ...
+       if (StagnantEvolution ()) {
+           PGARestart  (ctx, PGA_OLDPOP, PGA_NEWPOP);
+           PGAEvaluate (ctx, PGA_NEWPOP, EvalFunc);
+           PGAUpdateGeneration (ctx);
+       }
+
+    \endrst
+
+******************************************************************************/
+void PGARestart (PGAContext *ctx, int source_pop, int dest_pop)
 {
-    /* For integers and reals, the amount by which to change is set with
-       PGASetMutationIntegerValue and PGASetMutationRealValue, respectively.
-       For binary strings, the bits are complemented. */
-
     int dest_p, old_mut_type, source_p;
     double val;
-    
-    PGADebugEntered("PGARestart");
-    
+
+    PGADebugEntered ("PGARestart");
+
     fprintf (ctx->ga.OutputFile, "Restarting the algorithm . . . \n");
     fflush (ctx->ga.OutputFile);
-    source_p = PGAGetBestIndex(ctx, source_pop);
-    if (source_p != 0 || source_pop != dest_pop)
-	PGACopyIndividual(ctx, source_p, source_pop, 0, dest_pop);
-    PGASetEvaluationUpToDateFlag(ctx, 0, dest_pop, PGA_FALSE);
-    old_mut_type = PGAGetMutationType(ctx);
+    source_p = PGAGetBestIndex (ctx, source_pop);
+    if (source_p != 0 || source_pop != dest_pop) {
+        PGACopyIndividual (ctx, source_p, source_pop, 0, dest_pop);
+    }
+    PGASetEvaluationUpToDateFlag (ctx, 0, dest_pop, PGA_FALSE);
+    old_mut_type = PGAGetMutationType (ctx);
     ctx->ga.MutationType = PGA_MUTATION_CONSTANT;
     val = ctx->ga.restartAlleleProb;
-    
+
     if (ctx->fops.Mutation) {
-	for (dest_p = 2; dest_p <= ctx->ga.PopSize; dest_p++) {
-	    PGACopyIndividual(ctx, 0, dest_pop, dest_p-1, dest_pop);
-	    (*ctx->fops.Mutation)(&ctx, &dest_p, &dest_pop, &val);
-	    PGASetEvaluationUpToDateFlag(ctx, dest_p-1, dest_pop, PGA_FALSE);
-	}
+        for (dest_p = 2; dest_p <= ctx->ga.PopSize; dest_p++) {
+            PGACopyIndividual (ctx, 0, dest_pop, dest_p-1, dest_pop);
+            (*ctx->fops.Mutation)(&ctx, &dest_p, &dest_pop, &val);
+            PGASetEvaluationUpToDateFlag (ctx, dest_p-1, dest_pop, PGA_FALSE);
+        }
     } else {
-	for (dest_p = 1; dest_p < ctx->ga.PopSize; dest_p++) {
-	    PGACopyIndividual(ctx, 0, dest_pop, dest_p, dest_pop);
-	    (*ctx->cops.Mutation)(ctx, dest_p, dest_pop, val);
-	    PGASetEvaluationUpToDateFlag(ctx, dest_p, dest_pop, PGA_FALSE);
-	}
+        for (dest_p = 1; dest_p < ctx->ga.PopSize; dest_p++) {
+            PGACopyIndividual (ctx, 0, dest_pop, dest_p, dest_pop);
+            (*ctx->cops.Mutation)(ctx, dest_p, dest_pop, val);
+            PGASetEvaluationUpToDateFlag (ctx, dest_p, dest_pop, PGA_FALSE);
+        }
     }
     ctx->ga.MutationType = old_mut_type;
-    
-    PGADebugExited("PGARestart");
+
+    PGADebugExited ("PGARestart");
 }
 
-/*U****************************************************************************
-  PGASetRestartFlag - specifies whether the algorithm should employ
-  the restart operator
+/*!****************************************************************************
+    \brief Specify whether the algorithm should employ the restart operator.
+    \ingroup init
 
-   Category: Operators
+    \param   ctx  context variable
+    \param   val  boolean variable
+    \return  None
 
-   Inputs:
-      ctx - context variable
-      val - boolean variable
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetRestartFlag(ctx, PGA_TRUE);
+    .. code-block:: c
 
-****************************************************************************U*/
-void PGASetRestartFlag(PGAContext *ctx, int val)
+        PGAContext *ctx;
+
+        ...
+        PGASetRestartFlag (ctx, PGA_TRUE);
+
+    \endrst
+
+******************************************************************************/
+void PGASetRestartFlag (PGAContext *ctx, int val)
 {
-    PGADebugEntered("PGASetRestartFlag");
+    PGADebugEntered ("PGASetRestartFlag");
 
-    switch (val)
-    {
+    switch (val) {
     case PGA_TRUE:
     case PGA_FALSE:
          ctx->ga.restart = val;
          break;
     default:
-         PGAError(ctx, "PGASetRestartFlag: Invalid value for restart:",
-                  PGA_FATAL, PGA_INT, (void *) &val);
+         PGAError
+            ( ctx, "PGASetRestartFlag: Invalid value for restart:"
+            , PGA_FATAL, PGA_INT, (void *) &val
+            );
          break;
     }
 
-    PGADebugExited("PGASetRestartFlag");
+    PGADebugExited ("PGASetRestartFlag");
 }
 
-/*U****************************************************************************
-   PGAGetRestartFlag - returns whether the algorithm should employ the
-   restart operator
+/*!****************************************************************************
+    \brief Return whether the algorithm should employ the restart operator.
+    \ingroup query
 
-   Category: Operators
+    \param   ctx  context variable
+    \return  PGA_TRUE if restarting is enabled, otherwise PGA_FALSE
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      PGA_TRUE if restarting is enabled, otherwise PGA_FALSE.
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int val;
-      :
-      val = PGAGetRestartFlag(ctx);
+    .. code-block:: c
 
-****************************************************************************U*/
-int PGAGetRestartFlag(PGAContext *ctx)
+       PGAContext *ctx;
+       int val;
+
+       ...
+       val = PGAGetRestartFlag (ctx);
+
+    \endrst
+
+******************************************************************************/
+int PGAGetRestartFlag (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetRestartFlag");
-    PGAFailIfNotSetUp("PGAGetRestartFlag");
+    PGADebugEntered   ("PGAGetRestartFlag");
+    PGAFailIfNotSetUp ("PGAGetRestartFlag");
 
-    PGADebugExited("PGAGetRestartFlag");
+    PGADebugExited ("PGAGetRestartFlag");
 
-    return (ctx->ga.restart);
+    return ctx->ga.restart;
 }
 
-/*U****************************************************************************
-  PGASetRestartFrequencyValue - specifies the number of iterations of no
-  change in the best string after which the algorithm should restart
+/*!****************************************************************************
+    \brief Specify the number of iterations of no change in the best
+           string after which the algorithm should restart.
+    \ingroup init
 
-  Category: Operators
+    \param    ctx      context variable
+    \param    numiter  number of changeless iterations
+    \return  None
 
-  Inputs:
-      ctx - context variable
-      numiter - number of changeless iterations
+    \rst
 
-  Outputs:
-      None
+    Example
+    -------
 
-  Example:
-      PGAContext *ctx;
-      :
-      PGASetRestartFrequencyValue(ctx, 100);
+    .. code-block:: c
 
-****************************************************************************U*/
-void PGASetRestartFrequencyValue(PGAContext *ctx, int numiter)
+        PGAContext *ctx;
+
+        ...
+        PGASetRestartFrequencyValue (ctx, 100);
+
+    \endrst
+
+******************************************************************************/
+void PGASetRestartFrequencyValue (PGAContext *ctx, int numiter)
 {
-    PGADebugEntered("PGASetRestartFrequencyValue");
+    PGADebugEntered ("PGASetRestartFrequencyValue");
 
-    if (numiter > 0)
+    if (numiter > 0) {
          ctx->ga.restartFreq = numiter;
-    else
-         PGAError(ctx, "PGASetRestartFrequencyValue: Invalid value for "
-                  "restart freqency:", PGA_FATAL, PGA_INT, (void *) &numiter);
+    } else {
+         PGAError
+            ( ctx
+            , "PGASetRestartFrequencyValue: Invalid value for restart freqency:"
+            , PGA_FATAL, PGA_INT, (void *) &numiter
+            );
+    }
 
-    PGADebugExited("PGASetRestartFrequencyValue");
+    PGADebugExited ("PGASetRestartFrequencyValue");
 }
 
-/*U****************************************************************************
-  PGAGetRestartFrequencyValue - returns the number of iterations of no
-  change in the best string after which the algorithm should restart
+/*!****************************************************************************
+    \brief Return the number of iterations of no change in the best
+           string after which the algorithm should restart.
+    \ingroup query
 
-  Category: Operators
+    \param    ctx      context variable
+    \return  The number of iteration of no change required for a restart
 
-  Inputs:
-      ctx     - context variable
-      numiter - number of changeless iterations
+    \rst
 
-  Outputs:
-      The number of iteration of no change required for a restart.
+    Example
+    -------
 
-  Example:
-      PGAContext *ctx;
-      :
-      numiter = PGAGetRestartFrequencyValue(ctx);
+    .. code-block:: c
 
-****************************************************************************U*/
-int PGAGetRestartFrequencyValue(PGAContext *ctx)
+        PGAContext *ctx;
+        int frq;
+
+        ...
+        frq = PGAGetRestartFrequencyValue (ctx);
+
+    \endrst
+
+******************************************************************************/
+int PGAGetRestartFrequencyValue (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetRestartFrequencyValue");
-    PGAFailIfNotSetUp("PGAGetRestartFrequencyValue");
+    PGADebugEntered   ("PGAGetRestartFrequencyValue");
+    PGAFailIfNotSetUp ("PGAGetRestartFrequencyValue");
 
-    PGADebugExited("PGAGetRestartFrequencyValue");
+    PGADebugExited ("PGAGetRestartFrequencyValue");
 
-    return (ctx->ga.restartFreq);
+    return ctx->ga.restartFreq;
 }
 
-/*U****************************************************************************
-  PGASetRestartAlleleChangeProb - specifies the probability with which
-  an allele will be mutated during a restart
+/*!****************************************************************************
+    \brief Specify the probability with which an allele will be mutated
+           during a restart.
+    \ingroup init
 
-  Category: Operators
+    \param   ctx   context variable
+    \param   prob  probability of mutation
+    \return  None
 
-  Inputs:
-      ctx - context variable
-      prob - probability of mutation
+    \rst
 
-  Outputs:
-      None
+    Example
+    -------
 
-  Example:
-      PGAContext *ctx;
-      :
-      PGASetRestartAlleleChangeProb(ctx, 0.5);
+    .. code-block:: c
 
-****************************************************************************U*/
-void PGASetRestartAlleleChangeProb(PGAContext *ctx, double prob)
+        PGAContext *ctx;
+
+        ...
+        PGASetRestartAlleleChangeProb (ctx, 0.5);
+
+    \endrst
+
+******************************************************************************/
+void PGASetRestartAlleleChangeProb (PGAContext *ctx, double prob)
 {
-    PGADebugEntered("PGASetRestartAlleleChangeProb");
+    PGADebugEntered ("PGASetRestartAlleleChangeProb");
 
-    if (prob >= 0.0 && prob <= 1.0)
+    if (prob >= 0.0 && prob <= 1.0) {
          ctx->ga.restartAlleleProb = prob;
-    else
-         PGAError(ctx, "PGASetRestartAlleleChangeProb: Invalid probability:",
-                  PGA_FATAL, PGA_DOUBLE, (void *) &prob);
+    } else {
+         PGAError
+            ( ctx, "PGASetRestartAlleleChangeProb: Invalid probability:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &prob
+            );
+    }
 
-    PGADebugExited("PGASetRestartAlleleChangeProb");
+    PGADebugExited ("PGASetRestartAlleleChangeProb");
 }
 
-/*U****************************************************************************
-  PGAGetRestartAlleleChangeProb - returns the probability with which
-  an allele will be mutated during a restart
+/*!****************************************************************************
+    \brief Return the probability with which an allele will be mutated
+           during a restart.
+    \ingroup query
 
-  Category: Operators
+    \param   ctx  context variable
+    \return  The probability of mutating an allele during a restart
 
-  Inputs:
-      ctx - context variable
+    \rst
 
-  Outputs:
-      The probability of mutating an allele during a restart.
+    Example
+    -------
 
-  Example:
-      PGAContext *ctx;
-      :
-      prob = PGASetRestartAlleleChangeProb(ctx);
+    .. code-block:: c
 
-****************************************************************************U*/
-double PGAGetRestartAlleleChangeProb(PGAContext *ctx)
+        PGAContext *ctx;
+        double prob;
+
+        ...
+        prob = PGAGetRestartAlleleChangeProb (ctx);
+
+    \endrst
+
+******************************************************************************/
+double PGAGetRestartAlleleChangeProb (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetRestartAlleleChangeProb");
-    PGAFailIfNotSetUp("PGAGetRestartAlleleChangeProb");
+    PGADebugEntered   ("PGAGetRestartAlleleChangeProb");
+    PGAFailIfNotSetUp ("PGAGetRestartAlleleChangeProb");
 
-    PGADebugExited("PGAGetRestartAlleleChangeProb");
+    PGADebugExited ("PGAGetRestartAlleleChangeProb");
 
-    return (ctx->ga.restartAlleleProb);
+    return ctx->ga.restartAlleleProb;
 }
-

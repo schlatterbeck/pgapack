@@ -37,36 +37,46 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: select.c: This file contains the routines that have to do with
-*                     selection
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz, Ralf Schlatterbeck
+/*!***************************************************************************
+* \file
+* This file contains the routines that have to do with selection.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
 
-/*U****************************************************************************
-  INDGetAuxTotal - Compute total value over all aux evaluations
+/*!****************************************************************************
+    \brief Compute total value over all constraint violations.
+    \ingroup standard-api
 
-  Category: Operators
+    \param  ind    Pointer to Individual
+    \return Computed or cached total value over all constraint violations
 
-  Inputs:
-    ind   - Pointer to Individual
+    \rst
 
-  Outputs:
-    Computed or cached total value over all aux evaluations
-    This is the sum of all *positive* individual aux evaluations.
+    Description
+    -----------
+
+    This returns the sum of all *positive* individual aux evaluations
+    that are used for constraints.
     The semantics is a total value of all constraint violations.
 
-  Example:
-    PGAIndividual *ind = PGAGetIndividual (ctx, p, PGA_OLDPOP);
-    double result;
-    :
-    result = INDGetAuxTotal (ind);
+    Example
+    -------
 
-****************************************************************************U*/
+    .. code-block:: c
+
+      PGAIndividual *ind = PGAGetIndividual (ctx, p, PGA_OLDPOP);
+      double result;
+
+      ...
+      result = INDGetAuxTotal (ind);
+
+    \endrst
+
+******************************************************************************/
 double INDGetAuxTotal (PGAIndividual *ind)
 {
     PGAContext *ctx = ind->ctx;
@@ -86,61 +96,97 @@ double INDGetAuxTotal (PGAIndividual *ind)
     return ind->auxtotal;
 }
 
-/*U****************************************************************************
-  PGAGetAuxTotal - Compute total value over all aux evaluations
+/*!****************************************************************************
+    \brief Compute total value over all constraint violations.
 
-  Category: Operators
+    \param  ctx    context variable
+    \param  p      index of individual
+    \param  pop    population
+    \return Computed or cached total value over all constraint violations
 
-  Inputs:
-    ctx   - context variable
-    p     - individual
-    pop   - population
+    \rst
 
-  Outputs:
-    Computed or cached total value over all aux evaluations
-    This is the sum of all *positive* individual aux evaluations.
+    Description
+    -----------
+
+    This returns the sum of all *positive* individual aux evaluations
+    that are used for constraints.
     The semantics is a total value of all constraint violations.
 
-  Example:
-    PGAContext *ctx;
-    double result;
-    :
-    result = PGAGetAuxTotal(ctx, p, PGA_OLDPOP);
+    Example
+    -------
 
-****************************************************************************U*/
+    .. code-block:: c
+
+      PGAContext *ctx;
+      double result;
+
+      ...
+      result = PGAGetAuxTotal (ctx, p, PGA_OLDPOP);
+
+    \endrst
+
+******************************************************************************/
 double PGAGetAuxTotal (PGAContext *ctx, int p, int pop)
 {
-    PGAIndividual *ind = PGAGetIndividual(ctx, p, pop);
+    PGAIndividual *ind = PGAGetIndividual (ctx, p, pop);
     return INDGetAuxTotal (ind);
 }
 
-/*U****************************************************************************
-  PGASelect - performs genetic algorithm selection using either the default
-  selection scheme or that specified with PGASetSelectType().  Valid selection
-  methods are proportional, stochastic universal, tournament, probabilistic
-  tournament selection, truncation selection, or linear selection,
-  PGA_SELECT_PROPORTIONAL, PGA_SELECT_SUS, PGA_SELECT_TOURNAMENT,
-  PGA_SELECT_PTOURNAMENT, PGA_SELECT_TRUNCATION, PGA_SELECT_LINEAR
-  respectively. This function updates an internal array with the
-  indices of members of popix selected for recombination.  These indices
-  may be accessed with PGASelectNextIndex()
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
-  Category: Operators
+/* Forward declarations of static functions */
+static int  PGASelectLinear       (PGAContext *ctx, PGAIndividual *pop);
+static int  PGASelectProportional (PGAContext *ctx, PGAIndividual *pop);
+static void PGASelectSUS          (PGAContext *ctx, PGAIndividual *pop);
+static int  PGASelectTournament   (PGAContext *ctx, int pop);
+static int  PGASelectPTournament  (PGAContext *ctx, int pop);
+static int  PGASelectTruncation   (PGAContext *ctx, int pop);
 
-  Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-  Outputs:
-    An array used by PGASelectNextIndex() is created which contains the
-    population indices of the selected individuals.
+/*!****************************************************************************
+    \brief Perform genetic algorithm selection using the defined
+           selection scheme.
+    \ingroup explicit
 
-  Example:
-    PGAContext *ctx,
-    :
-    PGASelect(ctx, PGA_OLDPOP);
+    \param  ctx    context variable
+    \param  popix  symbolic constant of population to select from
+    \return An array used by \ref PGASelectNextIndex is
+            created which contains the population indices of the
+            selected individuals
 
-****************************************************************************U*/
+    \rst
+
+    Description
+    -----------
+
+    The selection scheme used is either the default selection scheme or
+    that specified with :c:func:`PGASetSelectType`.
+
+    Valid selection
+    methods are proportional, stochastic universal, tournament, probabilistic
+    tournament selection, truncation selection, or linear selection,
+    PGA_SELECT_PROPORTIONAL, PGA_SELECT_SUS, PGA_SELECT_TOURNAMENT,
+    PGA_SELECT_PTOURNAMENT, PGA_SELECT_TRUNCATION, PGA_SELECT_LINEAR
+    respectively. This function updates an internal array with the
+    indices of members of popix selected for recombination.  These indices
+    may be accessed with :c:func:`PGASelectNextIndex`.
+
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+
+      ...
+      PGASelect (ctx, PGA_OLDPOP);
+
+    \endrst
+
+******************************************************************************/
 void PGASelect (PGAContext *ctx, int popix)
 {
     int i;                   /* not to intefere with dummy argument        */
@@ -148,41 +194,45 @@ void PGASelect (PGAContext *ctx, int popix)
     int temp;                /* for shuffling selected indices US          */
     PGAIndividual *pop;      /* pointer to appropriate population          */
 
-    PGADebugEntered("PGASelect");
+    PGADebugEntered ("PGASelect");
 
-    pop = PGAGetIndividual(ctx, 0, popix);
+    pop = PGAGetIndividual (ctx, 0, popix);
 
     switch (ctx->ga.SelectType) {
 
     case PGA_SELECT_PROPORTIONAL:  /* proportional selection             */
-        for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectProportional (ctx, pop);
+        for (i=0; i<ctx->ga.PopSize; i++) {
+            ctx->ga.selected [i] = PGASelectProportional (ctx, pop);
+        }
         break;
     case PGA_SELECT_SUS:           /* stochastic universal selection     */
-        PGASelectSUS( ctx, pop );
+        PGASelectSUS (ctx, pop);
         break;
     case PGA_SELECT_TOURNAMENT:    /* tournament selection               */
-        for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectTournament (ctx, popix);
+        for (i=0; i<ctx->ga.PopSize; i++) {
+            ctx->ga.selected [i] = PGASelectTournament (ctx, popix);
+        }
         break;
     case PGA_SELECT_PTOURNAMENT:   /* probabilistic tournament selection */
-        for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectPTournament (ctx, popix);
+        for (i=0; i<ctx->ga.PopSize; i++) {
+            ctx->ga.selected [i] = PGASelectPTournament (ctx, popix);
+        }
         break;
     case PGA_SELECT_TRUNCATION:   /* truncation selection */
-        for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectTruncation (ctx, popix);
+        for (i=0; i<ctx->ga.PopSize; i++) {
+            ctx->ga.selected [i] = PGASelectTruncation (ctx, popix);
+        }
         break;
     case PGA_SELECT_LINEAR:      /* linear selection */
-        for (i=0; i<ctx->ga.PopSize; i++)
-            ctx->ga.selected[i] = PGASelectLinear (ctx, pop);
+        for (i=0; i<ctx->ga.PopSize; i++) {
+            ctx->ga.selected [i] = PGASelectLinear (ctx, pop);
+        }
         break;
     default:
-        PGAError( ctx,
-                 "PGASelect: Invalid value of SelectType:",
-                  PGA_FATAL,
-                  PGA_INT,
-                  (void *) &(ctx->ga.SelectType) );
+        PGAError
+            ( ctx, "PGASelect: Invalid value of SelectType:"
+            , PGA_FATAL, PGA_INT, (void *) &(ctx->ga.SelectType)
+            );
         break;
     }
 
@@ -201,39 +251,50 @@ void PGASelect (PGAContext *ctx, int popix)
         )
     {
         for (i=0; i<ctx->ga.PopSize; i++) {
-            j          = PGARandomInterval(ctx, 0,ctx->ga.PopSize-1);
-            temp       = ctx->ga.selected[j];
-            ctx->ga.selected[j] = ctx->ga.selected[i];
-            ctx->ga.selected[i] = temp;
+            j          = PGARandomInterval (ctx, 0, ctx->ga.PopSize-1);
+            temp       = ctx->ga.selected [j];
+            ctx->ga.selected [j] = ctx->ga.selected [i];
+            ctx->ga.selected [i] = temp;
         }
     }
 
-    PGADebugExited("PGASelect");
+    PGADebugExited ("PGASelect");
 }
 
-/*U****************************************************************************
-  PGASelectNextIndex - returns the index of next individual in
-  internal array that contains the indices determined by PGASelect
+/*!****************************************************************************
+    \brief Return the index of next individual in internal array.
+    \ingroup explicit
 
-  Category: Operators
+    \param  ctx     context variable
+    \param  popix   the population index, typically PGA_OLDPOP
+    \return A population index for the next selected creature
 
-  Inputs:
-    ctx   - context variable
-    popidx - the population index, typically PGA_OLDPOP
+    \rst
 
-  Outputs:
-    A population index for the next selected creature.
+    Description
+    -----------
 
-  Example:
-    PGAContext *ctx;
-    int l;
-    :
-    l = PGASelectNextIndex(ctx, PGA_OLDPOP);
+    The internal array used contains the indices determined by
+    :c:func:`PGASelect`.
 
-****************************************************************************U*/
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+      int l;
+
+      ...
+      l = PGASelectNextIndex (ctx, PGA_OLDPOP);
+
+    \endrst
+
+******************************************************************************/
 int PGASelectNextIndex (PGAContext *ctx, int popix)
 {
-    PGADebugEntered("PGASelectNextIndex");
+    PGADebugEntered ("PGASelectNextIndex");
 
     /* We allow the select to consume more than ga.PopSize items
      * If more are consumed we need to prepare the next batch.
@@ -243,36 +304,47 @@ int PGASelectNextIndex (PGAContext *ctx, int popix)
         ctx->ga.SelectIndex = 0;
     }
 
-    PGADebugExited("PGASelectNextIndex");
-    return(ctx->ga.selected[ctx->ga.SelectIndex++]);
+    PGADebugExited ("PGASelectNextIndex");
+    return ctx->ga.selected [ctx->ga.SelectIndex++];
 }
 
-/*U****************************************************************************
-   PGASetSelectType - specify the type of selection to use. Valid choices
-   are PGA_SELECT_PROPORTIONAL, PGA_SELECT_SUS, PGA_SELECT_TOURNAMENT, and
-   PGA_SELECT_PTOURNAMENT for proportional, stochastic universal selection,
-   tournament, and probabilistic tournament selection, respectively.  The
-   default is PGA_SELECT_TOURNAMENT.
+/*!****************************************************************************
+    \brief Specify the type of selection to use.
+    \ingroup init
 
-   Category: Operators
+    \param   ctx          context variable
+    \param   select_type  symbolic constant to specify selection type
+    \return  None
 
-   Inputs:
-      ctx         - context variable
-      select_type - symbolic constant to specify selection type
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetSelectType(ctx, PGA_SELECT_SUS);
+    Valid choices
+    are PGA_SELECT_PROPORTIONAL, PGA_SELECT_SUS, PGA_SELECT_TOURNAMENT,
+    PGA_SELECT_PTOURNAMENT, PGA_SELECT_TRUNCATION, and PGA_SELECT_LINEAR
+    for proportional, stochastic universal selection,
+    tournament, probabilistic tournament selection, truncation selection
+    and linear selection, respectively.  The default is PGA_SELECT_TOURNAMENT.
 
-****************************************************************************U*/
-void PGASetSelectType( PGAContext *ctx, int select_type)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetSelectType (ctx, PGA_SELECT_SUS);
+
+    \endrst
+
+******************************************************************************/
+void PGASetSelectType (PGAContext *ctx, int select_type)
 {
 
-    PGADebugEntered("PGASetSelectType");
+    PGADebugEntered ("PGASetSelectType");
 
     switch (select_type) {
         case PGA_SELECT_PROPORTIONAL:
@@ -284,142 +356,172 @@ void PGASetSelectType( PGAContext *ctx, int select_type)
             ctx->ga.SelectType = select_type;
             break;
         default:
-            PGAError ( ctx, "PGASetSelectType: Invalid value of select_type:",
-                      PGA_FATAL, PGA_INT, (void *) &select_type);
+            PGAError
+                ( ctx, "PGASetSelectType: Invalid value of select_type:"
+                , PGA_FATAL, PGA_INT, (void *) &select_type
+                );
         break;
     }
 
-    PGADebugExited("PGASetSelectType");
+    PGADebugExited ("PGASetSelectType");
 }
 
-/*U***************************************************************************
-   PGAGetSelectType - Returns the type of selection selected
+/*!***************************************************************************
+    \brief Return the type of selection selected.
+    \ingroup query
 
-   Category: Operators
+    \param   ctx  context variable
+    \return  Return the integer corresponding to the symbolic constant
+             used to specify the type of selection specified
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns the integer corresponding to the symbolic constant
-      used to specify the type of selection specified
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int selecttype;
-      :
-      selecttype = PGAGetSelectType(ctx);
-      switch (selecttype) {
-      case PGA_SELECT_PROPORTIONAL:
-          printf ("Selection Type = PGA_SELECT_PROPORTIONAL\n");
-          break;
-      case PGA_SELECT_SUS:
-          printf ("Selection Type = PGA_SELECT_SUS\n");
-          break;
-      case PGA_SELECT_TOURNAMENT:
-          printf ("Selection Type = PGA_SELECT_TOURNAMENT\n");
-          break;
-      case PGA_SELECT_PTOURNAMENT:
-          printf ("Selection Type = PGA_SELECT_PTOURNAMENT\n");
-          break;
-      case PGA_SELECT_TRUNCATION:
-          printf ("Selection Type = PGA_SELECT_TRUNCATION\n");
-          break;
-      }
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int selecttype;
+
+       ...
+       selecttype = PGAGetSelectType (ctx);
+       switch (selecttype) {
+       case PGA_SELECT_PROPORTIONAL:
+           printf ("Selection Type = PGA_SELECT_PROPORTIONAL\n");
+           break;
+       case PGA_SELECT_SUS:
+           printf ("Selection Type = PGA_SELECT_SUS\n");
+           break;
+       case PGA_SELECT_TOURNAMENT:
+           printf ("Selection Type = PGA_SELECT_TOURNAMENT\n");
+           break;
+       case PGA_SELECT_PTOURNAMENT:
+           printf ("Selection Type = PGA_SELECT_PTOURNAMENT\n");
+           break;
+       case PGA_SELECT_TRUNCATION:
+           printf ("Selection Type = PGA_SELECT_TRUNCATION\n");
+           break;
+       }
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetSelectType (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetSelectType");
-    PGAFailIfNotSetUp("PGAGetSelectType");
+    PGADebugEntered   ("PGAGetSelectType");
+    PGAFailIfNotSetUp ("PGAGetSelectType");
 
-    PGADebugExited("PGAGetSelectType");
+    PGADebugExited ("PGAGetSelectType");
 
-    return(ctx->ga.SelectType);
+    return ctx->ga.SelectType;
 }
 
 
-/*U****************************************************************************
-   PGASetPTournamentProb - Specifies the probability that the string that wins
-   a binary tournament will be selected.  This function will have no effect
-   unless PGA_SELECT_PTOURNAMENT was specified as the type of selection to
-   use with PGASetSelectType.  The default value is 0.6.
+/*!****************************************************************************
+    \brief Specify the probability that the string that wins a binary
+           tournament will be selected.
+    \ingroup init
 
-   Category: Operators
+    \param   ctx              context variable
+    \param   ptournament_prob the probability of selecting the better string
+    \return  None
 
-   Inputs:
-      ctx - context variable
-      p   - the probability of selecting the better string
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetPTournamentProb(ctx,0.8);
+    This function will have no effect
+    unless PGA_SELECT_PTOURNAMENT was specified as the type of selection to
+    use with :c:func:`PGASetSelectType`.  The default value is 0.6.
 
-****************************************************************************U*/
-void PGASetPTournamentProb(PGAContext *ctx, double ptournament_prob)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetPTournamentProb (ctx, 0.8);
+
+    \endrst
+
+******************************************************************************/
+void PGASetPTournamentProb (PGAContext *ctx, double ptournament_prob)
 {
-    PGADebugEntered("PGASetPTournamentProb");
+    PGADebugEntered ("PGASetPTournamentProb");
 
     ctx->ga.PTournamentProb = ptournament_prob;
 
-    PGADebugExited("PGASetPTournamentProb");
+    PGADebugExited ("PGASetPTournamentProb");
 }
 
-/*U***************************************************************************
-   PGAGetPTournamentProb - returns the probability of selecting the best
-   string in a probabilistic binary tournament
+/*!***************************************************************************
+    \brief Return the probability of selecting the best string in a
+           probabilistic binary tournament.
+    \ingroup query
 
-   Category: Operators
+    \param   ctx  context variable
+    \return  The probabilistic binary tournament selection probability
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The probabilistic binary tournament selection probability
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double pt;
-      :
-      pt = PGAGetPTournamentProb(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
-double PGAGetPTournamentProb(PGAContext *ctx)
+       PGAContext *ctx;
+       double pt;
+
+       ...
+       pt = PGAGetPTournamentProb (ctx);
+
+    \endrst
+
+*****************************************************************************/
+double PGAGetPTournamentProb (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetPTournamentProb");
-    PGAFailIfNotSetUp("PGAGetPTournamentProb");
+    PGADebugEntered   ("PGAGetPTournamentProb");
+    PGAFailIfNotSetUp ("PGAGetPTournamentProb");
 
-    PGADebugExited("PGAGetPTournamentProb");
+    PGADebugExited ("PGAGetPTournamentProb");
 
-     return ctx->ga.PTournamentProb;
+    return ctx->ga.PTournamentProb;
 }
 
-/*U****************************************************************************
-   PGASetTournamentSize - Specifies the number of participants in a
-   non-probabilistic Tournament
-   This function will have no effect unless PGA_SELECT_TOURNAMENT was
-   specified as the type of selection to use with PGASetSelectType.  The
-   default value is 2.
+/*!****************************************************************************
+    \brief Specify the number of participants in a non-probabilistic Tournament.
+    \ingroup init
 
-   Category: Operators
+    \param   ctx               context variable
+    \param   tournament_size   the size of the tournament
+    \return  None
 
-   Inputs:
-      ctx - context variable
-      sz  - the size of the tournament
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetTournamentSize(ctx,3);
+    This function will have no effect unless PGA_SELECT_TOURNAMENT was
+    specified as the type of selection to use with :c:func:`PGASetSelectType`.
+    The default value is 2.
 
-****************************************************************************U*/
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetTournamentSize (ctx, 3);
+
+    \endrst
+
+******************************************************************************/
 void PGASetTournamentSize (PGAContext *ctx, double tournament_size)
 {
     PGADebugEntered ("PGASetTournamentSize");
@@ -429,257 +531,344 @@ void PGASetTournamentSize (PGAContext *ctx, double tournament_size)
     PGADebugExited ("PGASetTournamentSize");
 }
 
-/*U***************************************************************************
-   PGAGetTournamentSize - returns the number of participants in a
-   tournament
+/*!***************************************************************************
+    \brief Return the number of participants in a tournament
+    \ingroup query
 
-   Category: Operators
+    \param   ctx  context variable
+    \return  The number of participants in a non probabilistic tournament
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The number of participants in a non probabilistic tournament
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double sz;
-      :
-      sz = PGAGetTournamentSize (ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double sz;
+
+       ...
+       sz = PGAGetTournamentSize (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetTournamentSize (PGAContext *ctx)
 {
-    PGADebugEntered ("PGAGetTournamentSize");
-    PGAFailIfNotSetUp("PGAGetTournamentSize");
+    PGADebugEntered   ("PGAGetTournamentSize");
+    PGAFailIfNotSetUp ("PGAGetTournamentSize");
 
     PGADebugExited ("PGAGetTournamentSize");
 
     return ctx->ga.TournamentSize;
 }
-/*U****************************************************************************
-   PGASetTournamentWithReplacement - Specifies if tournament is with or
-   without replacement. This function will have no effect unless
-   PGA_SELECT_TOURNAMENT was specified as the type of selection to use
-   with PGASetSelectType. The default value is PGA_TRUE.
+/*!****************************************************************************
+    \brief Specify if tournament is with or without replacement.
+    \ingroup init
 
-   Category: Operators
+    \param   ctx  context variable
+    \param   v    The value, PGA_TRUE or PGA_FALSE
+    \return  None
 
-   Inputs:
-      ctx - context variable
-      v   - The value, PGA_TRUE or PGA_FALSE
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetTournamentWithReplacement(ctx,PGA_FALSE);
+    This function will have no effect unless
+    PGA_SELECT_TOURNAMENT was specified as the type of selection to use
+    with :c:func:`PGASetSelectType`. The default value is PGA_TRUE.
 
-****************************************************************************U*/
-void PGASetTournamentWithReplacement(PGAContext *ctx, int v)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetTournamentWithReplacement (ctx, PGA_FALSE);
+
+    \endrst
+
+******************************************************************************/
+void PGASetTournamentWithReplacement (PGAContext *ctx, int v)
 {
     ctx->ga.TournamentWithRepl = v;
 }
 
-/*U***************************************************************************
-   PGAGetTournamentWithReplacement - returns the setting for tournament
-   sampling: with replacement returns PGA_TRUE, without replacement
-   returns PGA_FALSE.
+/*!***************************************************************************
+    \brief Return the setting for tournament sampling: with replacement
+           returns PGA_TRUE, without replacement returns PGA_FALSE.
+    \ingroup query
 
-   Category: Operators
+    \param   ctx  context variable
+    \return  The setting of tournament with/without replacement, PGA_TRUE
+             if with replacement
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The setting of tournament with/without replacement, PGA_TRUE if
-      with replacement
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int v;
-      :
-      v = PGAGetTournamentWithReplacement(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
-int PGAGetTournamentWithReplacement(PGAContext *ctx)
+       PGAContext *ctx;
+       int v;
+
+       ...
+       v = PGAGetTournamentWithReplacement (ctx);
+
+    \endrst
+
+*****************************************************************************/
+int PGAGetTournamentWithReplacement (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetTournamentWithReplacement");
+    PGAFailIfNotSetUp ("PGAGetTournamentWithReplacement");
     return ctx->ga.TournamentWithRepl;
 }
-/*U****************************************************************************
-   PGASetTruncationProportion - Specifies the proportion of selected
-   individuals for truncation selection. This function will have no
-   effect unless PGA_SELECT_TRUNCATION was specified as the type of
-   selection to use with PGASetSelectType. The default value is 0.5.
+/*!****************************************************************************
+    \brief Specify the proportion of selected individuals for truncation
+           selection.
+    \ingroup init
 
-   Category: Operators
+    \param   ctx         context variable
+    \param   proportion  The value, 0 < proportion <= 1
+    \return  None
 
-   Inputs:
-      ctx - context variable
-      proportion - The value, 0 < proportion <= 1
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetTruncationProportion(ctx, 0.7);
+    This function will have no
+    effect unless PGA_SELECT_TRUNCATION was specified as the type of
+    selection to use with :c:func:`PGASetSelectType`. The default value is 0.5.
 
-****************************************************************************U*/
-void PGASetTruncationProportion(PGAContext *ctx, double proportion)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetTruncationProportion (ctx, 0.7);
+
+    \endrst
+
+******************************************************************************/
+void PGASetTruncationProportion (PGAContext *ctx, double proportion)
 {
-    PGAFailIfSetUp("PGASetTruncationProportion");
+    PGAFailIfSetUp ("PGASetTruncationProportion");
     ctx->ga.TruncProportion = proportion;
 }
 
-/*U***************************************************************************
-   PGAGetTruncationProportion - returns the setting for truncation
-   proportion.
+/*!***************************************************************************
+    \brief Return the proportion of best individuals selected in
+           truncation selection.
+    \ingroup query
 
-   Category: Operators
+    \param   ctx  context variable
+    \return  Proportion of best individuals selected in truncation selection
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The truncation proportion
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double v;
-      :
-      v = PGAGetTruncationProportion(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
-double PGAGetTruncationProportion(PGAContext *ctx)
+       PGAContext *ctx;
+       double v;
+
+       ...
+       v = PGAGetTruncationProportion (ctx);
+
+    \endrst
+
+*****************************************************************************/
+double PGAGetTruncationProportion (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetTruncationProportion");
+    PGAFailIfNotSetUp ("PGAGetTruncationProportion");
     return ctx->ga.TruncProportion;
 }
-/*U****************************************************************************
-   PGASetRandomizeSelect - Specifies if during PGASelect the chosen
-   individuals should be randomized again. All selection schemes except
-   PGA_SELECT_SUS already return the individuals in randomized order,
-   previously this was randomized again. With this method you can
-   re-enable the randomization for selection schemes other than
-   PGA_SELECT_SUS (for which a randomization step is always performed).
 
-   Category: Operators
+/*!****************************************************************************
+    \brief Specify if during PGASelect the chosen individuals should be
+           randomized again.
+    \ingroup init
 
-   Inputs:
-      ctx - context variable
-      v - The value, PGA_FALSE or PGA_TRUE
+    \param   ctx  context variable
+    \param   v    The value, PGA_FALSE or PGA_TRUE
+    \return  None
 
-   Outputs:
-      None
+    \rst
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetRandomizeSelect(ctx, PGA_TRUE);
+    Description
+    -----------
 
-****************************************************************************U*/
-void PGASetRandomizeSelect(PGAContext *ctx, int v)
+    All selection schemes except
+    PGA_SELECT_SUS already return the individuals in randomized order,
+    previously this was randomized again. With this method you can
+    re-enable the randomization for selection schemes other than
+    PGA_SELECT_SUS (for which a randomization step is always performed).
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetRandomizeSelect (ctx, PGA_TRUE);
+
+    \endrst
+
+******************************************************************************/
+void PGASetRandomizeSelect (PGAContext *ctx, int v)
 {
     ctx->ga.RandomizeSelect = v;
 }
 
-/*U***************************************************************************
-   PGAGetRandomizeSelect - returns the setting for additional select
-   randomization.
+/*!***************************************************************************
+    \brief Return the setting for additional select randomization.
+    \ingroup query
 
-   Category: Operators
+    \param   ctx  context variable
+    \return  The setting of select randomization (PGA_TRUE or PGA_FALSE)
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The setting of select randomization
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      int v;
-      :
-      v = PGAGetRandomizeSelect(ctx);
+    This function will return PGA_TRUE if a second randomization step
+    after selection is performed. All selection schemes except
+    PGA_SELECT_SUS already return the individuals in randomized order,
+    previously  this  was randomized  again.  With this method you can
+    find out if the randomization for selection schemes other than
+    PGA_SELECT_SUS (for which a randomization step is always performed)
+    is turned on.
 
-***************************************************************************U*/
-int PGAGetRandomizeSelect(PGAContext *ctx)
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int v;
+
+       ...
+       v = PGAGetRandomizeSelect (ctx);
+
+    \endrst
+
+*****************************************************************************/
+int PGAGetRandomizeSelect (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetTruncationProportion");
+    PGAFailIfNotSetUp ("PGAGetTruncationProportion");
     return ctx->ga.RandomizeSelect;
 }
 
 
 
-/*I****************************************************************************
-  PGASelectProportional - selects a parent for the next generation using a
-  linear search through a (fitness) weighted ``roulette wheel''.  The
-  probability of selection is given by p_i = f_i/sum(i)f_i
-  Ref: D. Goldberg, Genetic Algorithms, pg.
+/*!****************************************************************************
+    \brief Select a parent for the next generation using a linear search
+           through a (fitness) weighted 'roulette wheel'.
+    \ingroup internal
 
-  Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    \param  ctx    context variable
+    \param  pop    pointer to first individual of population
+    \return index of the selected string
 
-  Outputs:
-    index of the selected string
+    \rst
 
-  Example:
-    PGAContext *ctx,
-    int l;
-    :
-    l = PGASelectProportional(ctx, PGA_OLDPOP);
+    Description
+    -----------
 
-****************************************************************************I*/
-int PGASelectProportional(PGAContext *ctx, PGAIndividual *pop)
+    The probability of selection of individual :math:`i` with fitness
+    :math:`f_i` is given by [1]_
+    :math:`p_i = \frac{f_i}{\sum_{i} f_i}`
+
+    .. [1] D. Goldberg, Genetic Algorithms, p. 11
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+      int l;
+
+      ...
+      l = PGASelectProportional (ctx, PGA_OLDPOP);
+
+    \endrst
+
+******************************************************************************/
+static int PGASelectProportional (PGAContext *ctx, PGAIndividual *pop)
 {
     double sum, sumfitness, r;
     int i;
 
-    PGADebugEntered("PGASelectProportional");
+    PGADebugEntered ("PGASelectProportional");
 
     sumfitness = 0.0;
-    for (i=0; i<ctx->ga.PopSize; i++)
+    for (i=0; i<ctx->ga.PopSize; i++) {
         sumfitness += (pop+i)->fitness;
+    }
 
     i = 0;
     sum = (pop+i)->fitness;
 
-    r = sumfitness * PGARandom01(ctx, 0);
-    while(r > sum || i==ctx->ga.PopSize) {
+    r = sumfitness * PGARandom01 (ctx, 0);
+    while (r > sum || i==ctx->ga.PopSize) {
         i++;
         sum += (pop+i)->fitness;
     }
 
-    PGADebugExited("PGASelectProportional");
+    PGADebugExited ("PGASelectProportional");
 
-    return(i);
+    return i;
 }
 
-/*I****************************************************************************
-  PGASelectSUS - A select routine using stochastic universal sampling
-  Ref:    J. Baker, Reducing Bias and Inefficiency in the Selection Algorithm.
-  Second GA conference, pp 14-21 (page 16)
+/*!****************************************************************************
+    \brief A select routine using stochastic universal sampling
+    \ingroup internal
 
-  Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    \param  ctx    context variable
+    \param  pop    pointer to first individual of population
+    \return the array ga.selected [] created via side effect.
 
-  Outputs:
-    the array ga.selected[] created via side effect.  I.e., this routine
-    creates the entire selected population with one call
+    \rst
 
-  Example:
-    PGAContext *ctx,
-    :
-    PGASelectSUS(ctx, PGA_OLDPOP);
+    Description
+    -----------
 
-****************************************************************************I*/
-void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop )
+    Perform stochastic universal sampling selection [1]_.
+    This routine creates the entire selected population with one call.
+
+    .. [1] J. Baker, Reducing Bias and Inefficiency in the Selection
+           Algorithm.  Second GA conference, pp 14-21 (page 16)
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+
+      ...
+      PGASelectSUS (ctx, PGA_OLDPOP);
+
+    \endrst
+
+******************************************************************************/
+static void PGASelectSUS (PGAContext *ctx, PGAIndividual *pop)
 {
     int i;
     int k;                          /* index to fill samples array    */
@@ -687,54 +876,71 @@ void PGASelectSUS( PGAContext *ctx, PGAIndividual *pop )
     double sum;                     /* running sum of expected values */
     double r;                       /* random number                  */
 
-    PGADebugEntered("PGASelectSUS");
+    PGADebugEntered ("PGASelectSUS");
 
     /* fill the expected value array */
     davg = 0.0;
-    for(i=0;i<ctx->ga.PopSize;i++)
+    for (i=0; i<ctx->ga.PopSize; i++) {
         davg += (pop+i)->fitness;
+    }
     davg /=  (double) ctx->ga.PopSize;
-    for(i=0;i<ctx->ga.PopSize;i++)
-        ctx->scratch.dblscratch[i] = (pop+i)->fitness / davg;
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        ctx->scratch.dblscratch [i] = (pop+i)->fitness / davg;
+    }
 
     /* select ctx->ga.PopSize as follows */
     sum = 0;
     k   = 0;
-    r   = PGARandom01(ctx, 0);
-    for(i=0;i<ctx->ga.PopSize;i++)
-        for( sum+=ctx->scratch.dblscratch[i]; sum>r; r++ )
-            ctx->ga.selected[k++] = i;
+    r   = PGARandom01 (ctx, 0);
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        for (sum+=ctx->scratch.dblscratch [i]; sum>r; r++) {
+            ctx->ga.selected [k++] = i;
+        }
+    }
 
-    PGADebugExited("PGASelectSUS");
+    PGADebugExited ("PGASelectSUS");
 }
 
 
-/*I****************************************************************************
-  PGASelectTournamentWithReplacement - chooses N strings randomly and
-  returns the one with best evaluation, N is the value set with
-  PGASetTournamentSize, the default is 2. The selection happens *with*
-  replacement. See decription of PGASelectTournamentWithoutReplacement
-  for details of sampling without replacement.
-  Ref:    Generalization of D. Goldberg, Genetic Algorithms, pg. 121
-          For the generalization see, e.g., D. E. Goldberg and K. Deb
-          A Comparative Analysis of Selection Schemes Used in Genetic
-          Algorithms, in Gregory J. E. Rawlins (Ed.) Foundation of
-          Genetic Algorithms (FOGA) 1, pp. 69-93, 1991.
+/*!****************************************************************************
+    \brief Choose N strings randomly and return the one with best evaluation.
+    \ingroup internal
 
-  Inputs:
-    ctx - context variable
-    pop - symbolic constant of population to select from
+    \param  ctx  context variable
+    \param  pop  symbolic constant of population to select from
+    \return index of the selected string
 
-  Outputs:
-    index of the selected string
+    \rst
 
-  Example:
-    PGAContext *ctx,
-    int l;
-    :
-    l = PGASelectTournamentWithReplacement(ctx, PGA_OLDPOP);
+    Description
+    -----------
 
-****************************************************************************I*/
+    The configuration parameter N is the value set with
+    :c:func:`PGASetTournamentSize`, the default is 2.
+    The selection happens *with* replacement.
+    This is a generalization of Goldbergs description [1]_,
+    for the generalization see, e.g. [2]_.
+
+    .. [1] D. E. Goldberg, Genetic Algorithms, p. 121
+    .. [2] D. E. Goldberg and K. Deb.
+           A Comparative Analysis of Selection Schemes Used in Genetic
+           Algorithms, in Gregory J. E. Rawlins (Ed.) Foundation of
+           Genetic Algorithms (FOGA) 1, pp. 69-93, 1991.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+      int l;
+
+      ...
+      l = PGASelectTournamentWithReplacement (ctx, PGA_OLDPOP);
+
+    \endrst
+
+******************************************************************************/
 static
 int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
 {
@@ -745,7 +951,7 @@ int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
         t += PGARandomFlip (ctx, ctx->ga.TournamentSize - t);
     }
     for (i=1; i<t; i++) {
-        int mn = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
+        int mn = PGARandomInterval (ctx, 0, ctx->ga.PopSize-1);
         /* use '<=' for backwards-compat with prev. binary tournament */
         if (PGAEvalCompare (ctx, mn, pop, m, pop) <= 0) {
             m = mn;
@@ -754,34 +960,48 @@ int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
     return m;
 }
 
-/*I****************************************************************************
-  PGASelectTournamentWithoutReplacement - chooses N strings randomly and
-  returns the one with best evaluation, N is the value set with
-  PGASetTournamentSize, the default is 2. The selection happens *without*
-  replacement. This means if we select N individuals with a tournament
-  size of 2, each individual is participating in exactly two
-  tournaments. This does *not* mean that a single individual cannot be
-  returned more than once.
-  Ref:    For implementation notes on the algorithm see p.504 in
-          David E. Goldberg, Bradley Korb, and Kalyanmoy Deb. Messy
-          genetic algorithms: Motivation, analysis, and first results.
-          Complex Systems, 3(5):493–530, 1989.
+/*!****************************************************************************
+    \brief Choose N strings randomly and return the one with best evaluation.
+    \ingroup internal
 
-  Inputs:
-    ctx - context variable
-    pop - symbolic constant of population to select from
+    \param  ctx  context variable
+    \param  pop  symbolic constant of population to select from
+    \return index of the selected string
 
-  Outputs:
-    index of the selected string
+    \rst
 
-  Example:
-    PGAContext *ctx,
-    int l;
-    :
-    l = PGASelectTournamentWithoutReplacement(ctx, PGA_OLDPOP);
+    Description
+    -----------
 
-****************************************************************************I*/
+    The configuration parameter N is the value set with
+    :c:func:`PGASetTournamentSize`, the default is 2.
+    The selection happens *without* replacement.
+    This means if we select N individuals with a tournament
+    size of 2, each individual is participating in exactly two
+    tournaments. This does *not* mean that a single individual cannot be
+    returned more than once. For implementation notes on the algorithm
+    see [1]_, p. 504.
 
+    .. [1]  David E. Goldberg, Bradley Korb, and Kalyanmoy Deb. Messy
+            genetic algorithms: Motivation, analysis, and first results.
+            Complex Systems, 3(5):493–530, 1989.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+      int l;
+
+      ...
+      l = PGASelectTournamentWithoutReplacement (ctx, PGA_OLDPOP);
+
+    \endrst
+
+******************************************************************************/
+
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 /* Helper function to compute permuted list */
 static void _shuffle (PGAContext *ctx, int k, int init)
@@ -802,6 +1022,8 @@ static void _shuffle (PGAContext *ctx, int k, int init)
       )                                               \
     : ctx->scratch.permute [ctx->ga.perm_idx++]
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
 static
 int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
 {
@@ -813,10 +1035,10 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
         t += PGARandomFlip (ctx, ctx->ga.TournamentSize - t);
     }
 
-    m = NEXT_IDX(ctx, ctx->ga.PopSize, 1);
+    m = NEXT_IDX (ctx, ctx->ga.PopSize, 1);
     assert (0 <= m && m < ctx->ga.PopSize);
     for (i=1; i<t; i++) {
-        int mn = NEXT_IDX(ctx, ctx->ga.PopSize, 1);
+        int mn = NEXT_IDX (ctx, ctx->ga.PopSize, 1);
         assert (0 <= mn && mn < ctx->ga.PopSize);
         if (PGAEvalCompare (ctx, mn, pop, m, pop) <= 0) {
             m = mn;
@@ -825,27 +1047,39 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
     return m;
 }
 
-/*I****************************************************************************
-  PGASelectLinear - chooses all strings that are not already copied to
-  the next generation due to elitist strategies. Note that this
-  'selection' scheme isn't a selection scheme in the genetic sense, it
-  has no selection pressure. Note that the indeces are *not randomized.
+/*!****************************************************************************
+    \brief Choose all strings that are not already copied to the next
+           generation due to elitist strategies.
+    \ingroup internal
 
-  Inputs:
-    ctx   - context variable
-    popix - symbolic constant of population to select from
+    \param  ctx    context variable
+    \param  pop    pointer to first individual of population
+    \return index of the selected string
 
-  Outputs:
-    index of the selected string
+    \rst
 
-  Example:
-    PGAContext *ctx,
-    int l;
-    :
-    l = PGASelectLinear (ctx, PGA_OLDPOP);
+    Description
+    -----------
 
-****************************************************************************I*/
-int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
+    Note that this 'selection' scheme isn't a selection scheme in the
+    genetic sense, it has no selection pressure. Note that the indeces
+    are *not* randomized.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+      int l;
+
+      ...
+      l = PGASelectLinear (ctx, PGA_OLDPOP);
+
+    \endrst
+
+******************************************************************************/
+static int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
 {
     int numreplace = PGAGetNumReplaceValue (ctx);
     int popsize = PGAGetPopSize (ctx);
@@ -857,25 +1091,36 @@ int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
     return ctx->ga.perm_idx++;
 }
 
-/*I****************************************************************************
-  PGASelectTruncation - chooses the best k strings and returns them in
-  random order. The value k is (N * TruncationProportion) rounded to the
-  next integer.
+/*!****************************************************************************
+    \brief Choose the best k strings and return them in random order.
+    \ingroup internal
 
-  Inputs:
-    ctx - context variable
-    pop - symbolic constant of population to select from
+    \param  ctx  context variable
+    \param  pop  symbolic constant of population to select from
+    \return index of the selected string
 
-  Outputs:
-    index of the selected string
+    \rst
 
-  Example:
-    PGAContext *ctx,
-    int l;
-    :
-    l = PGASelectTruncation (ctx, PGA_OLDPOP);
+    Description
+    -----------
 
-****************************************************************************I*/
+    The value k is (N * TruncationProportion) rounded to the
+    next integer.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+      int l;
+
+      ...
+      l = PGASelectTruncation (ctx, PGA_OLDPOP);
+
+    \endrst
+
+******************************************************************************/
 int PGASelectTruncation (PGAContext *ctx, int pop)
 {
     int m = -1;
@@ -901,72 +1146,97 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
         ctx->ga.perm_idx  = k;
     }
 
-    m = NEXT_IDX(ctx, k, 0);
+    m = NEXT_IDX (ctx, k, 0);
     assert (0 <= m && m < ctx->ga.PopSize);
     return m;
 }
 
-/*I****************************************************************************
-  PGASelectTournament - chooses N strings randomly and
-  returns the one with best evaluation, N is the value set with
-  PGASetTournamentSize, the default is 2. Depending on the setting of
-  PGASetTournamentWithReplacement calls one of two local functions to
-  use the right sampling.
+/*!****************************************************************************
+    \brief Choose N strings randomly and return the one with best evaluation.
+    \ingroup internal
 
-  Inputs:
-    ctx - context variable
-    pop - symbolic constant of population to select from
+    \param  ctx  context variable
+    \param  pop  symbolic constant of population to select from
+    \return index of the selected string
 
-  Outputs:
-    index of the selected string
+    \rst
 
-  Example:
-    PGAContext *ctx,
-    int l;
-    :
-    l = PGASelectTournament(ctx, PGA_OLDPOP);
+    Description
+    -----------
 
-****************************************************************************I*/
-int PGASelectTournament (PGAContext *ctx, int pop)
+    The configuration parameter N is the value set with
+    :c:func:`PGASetTournamentSize`, the default is 2.
+    Depending on the setting of :c:func:`PGASetTournamentWithReplacement`
+    calls one of two local functions to use the right sampling.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+      int l;
+
+      ...
+      l = PGASelectTournament (ctx, PGA_OLDPOP);
+
+    \endrst
+
+******************************************************************************/
+static int PGASelectTournament (PGAContext *ctx, int pop)
 {
-    PGADebugEntered("PGASelectTournament");
+    PGADebugEntered ("PGASelectTournament");
     if (ctx->ga.TournamentWithRepl) {
         return PGASelectTournamentWithReplacement (ctx, pop);
     } else {
         return PGASelectTournamentWithoutReplacement (ctx, pop);
     }
-    PGADebugExited("PGASelectTournament");
+    PGADebugExited ("PGASelectTournament");
 }
 
-/*I****************************************************************************
-  PGASelectPTournament - chooses two strings randomly and returns the one with
-  better evaluation with a specified probability
-  Ref:    D. Goldberg, Genetic Algorithms, pg. 121
+/*!****************************************************************************
+    \brief Choose two strings randomly and return the one with better
+           evaluation with a specified probability.
+    \ingroup internal
 
-  Inputs:
-    ctx - context variable
-    pop - symbolic constant of population to select from
 
-  Outputs:
-    index of the selected string
+    \param  ctx  context variable
+    \param  pop  symbolic constant of population to select from
+    \return index of the selected string
 
-  Example:
-    PGAContext *ctx,
-    int l;
-    :
-    l = PGASelectPTournament(ctx, PGA_OLDPOP);
+    \rst
 
-****************************************************************************I*/
+    Description
+    -----------
+
+    See description in [1]_
+
+    .. [1] D. Goldberg, Genetic Algorithms, p. 121
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+      int l;
+
+      ...
+      l = PGASelectPTournament (ctx, PGA_OLDPOP);
+
+    \endrst
+
+******************************************************************************/
 int PGASelectPTournament (PGAContext *ctx, int pop)
 {
     int m1, m2;
     int RetVal;
     double drand;
 
-    PGADebugEntered("PGASelectPTournament");
+    PGADebugEntered ("PGASelectPTournament");
 
-    m1 = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
-    m2 = PGARandomInterval(ctx, 0, ctx->ga.PopSize-1);
+    m1 = PGARandomInterval (ctx, 0, ctx->ga.PopSize-1);
+    m2 = PGARandomInterval (ctx, 0, ctx->ga.PopSize-1);
     drand = PGARandom01 (ctx, 0);
 
     if (PGAEvalCompare (ctx, m1, pop, m2, pop) < 0) {
@@ -975,6 +1245,6 @@ int PGASelectPTournament (PGAContext *ctx, int pop)
         RetVal = drand < ctx->ga.PTournamentProb ? m2 : m1;
     }
 
-    PGADebugExited("PGASelectPTournament");
-    return(RetVal);
+    PGADebugExited ("PGASelectPTournament");
+    return RetVal;
 }

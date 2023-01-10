@@ -1,0 +1,6 @@
+__pycache__
+_build
+_doxygen
+api
+man
+.stamp-*

@@ -37,15 +37,19 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: real.c: This file contains the routines specific to the floating
-*                   point data structure
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains the routines specific to the floating point data
+* structure.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include <pgapack.h>
+
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+
 /* Helper for bounds/bounce check */
 static void bouncheck
     ( PGAContext *ctx, int idx, int boundflag, int bounceflag
@@ -72,398 +76,488 @@ static void bouncheck
     }
 }
 
-/*U****************************************************************************
-   PGASetRealAllele - sets the value of real-valued allele i in string p
-   in population pop
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-   Category: Fitness & Evaluation
+/*!****************************************************************************
+    \brief Set the value of real-valued allele i in string p in
+           population pop
+    \ingroup allele
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
-      i   - allele index
-      val - real value to set the allele to
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant of the population the string is in
+    \param   i    allele index
+    \param   val  real value to set the allele to
+    \return  The specified allele in p is modified by side-effect.
 
-   Outputs:
-      The specified allele in p is modified by side-effect.
+    \rst
 
-   Example:
-      Sets the value of the ith allele of string p in population PGA_NEWPOP
-      to 1.57
+    Example
+    -------
 
-      PGAContext *ctx;
-      int i, p;
-      :
-      PGASetRealAllele ( ctx, p, PGA_NEWPOP, i, 1.57)
+    Sets the value of the ith allele of string p in population PGA_NEWPOP
+    to 1.57
 
-****************************************************************************U*/
-void PGASetRealAllele (PGAContext *ctx, int p, int pop, int i, double value)
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int i, p;
+
+       ...
+       PGASetRealAllele (ctx, p, PGA_NEWPOP, i, 1.57);
+
+    \endrst
+
+******************************************************************************/
+void PGASetRealAllele (PGAContext *ctx, int p, int pop, int i, double val)
 {
     PGAIndividual *ind;
     PGAReal      *chrom;
 
-    PGADebugEntered("PGASetRealAllele");
-    PGACheckDataType("PGASetRealAllele", PGA_DATATYPE_REAL);
+    PGADebugEntered  ("PGASetRealAllele");
+    PGACheckDataType ("PGASetRealAllele", PGA_DATATYPE_REAL);
 
-    ind = PGAGetIndividual ( ctx, p, pop );
+    ind = PGAGetIndividual (ctx, p, pop);
     chrom = (PGAReal *)ind->chrom;
-    chrom[i] = value;
+    chrom [i] = val;
 
-    PGADebugExited("PGASetRealAllele");
+    PGADebugExited ("PGASetRealAllele");
 }
 
-/*U****************************************************************************
-   PGAGetRealAllele - returns the value of real-valued allele i in string p
-   in population pop
+/*!****************************************************************************
+    \brief Return the value of real-valued allele i in string p in
+           population pop
+    \ingroup allele
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant of the population the string is in
+    \param   i    allele index
+    \return  The value of allele i
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
-      i   - allele index
+    \rst
 
-   Outputs:
-      The value of allele i
+    Example
+    -------
 
-   Example:
-      Returns the value of the ith real-valued allele of string p
-      in population PGA_NEWPOP
+    Returns the value of the ith real-valued allele of string p
+    in population PGA_NEWPOP
 
-      PGAContext *ctx;
-      int p, i, r;
-      r =  PGAGetRealAllele (ctx, p, PGA_NEWPOP, i)
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+       int p, i
+       double d;
+
+       ...
+       d = PGAGetRealAllele (ctx, p, PGA_NEWPOP, i);
+
+    \endrst
+
+******************************************************************************/
 double PGAGetRealAllele (PGAContext *ctx, int p, int pop, int i)
 {
     PGAIndividual *ind;
     PGAReal      *chrom;
 
-    PGADebugEntered("PGAGetRealAllele");
-    PGACheckDataType("PGAGetRealAllele", PGA_DATATYPE_REAL);
+    PGADebugEntered  ("PGAGetRealAllele");
+    PGACheckDataType ("PGAGetRealAllele", PGA_DATATYPE_REAL);
 
-    ind = PGAGetIndividual ( ctx, p, pop );
+    ind = PGAGetIndividual (ctx, p, pop);
     chrom = (PGAReal *)ind->chrom;
 
-    PGADebugExited("PGAGetRealAllele");
+    PGADebugExited ("PGAGetRealAllele");
 
-    return( (double) chrom[i] );
+    return (double) chrom [i];
 }
 
-/*U****************************************************************************
-  PGASetRealInitPercent - sets the upper and lower bounds for randomly
-  initializing real-valued genes.  For each gene these bounds define an
-  interval from which the initial allele value is selected uniformly randomly.
-  With this routine the user specifies a median value and a percent offset
-  for each allele.
+/*!****************************************************************************
+    \brief Set the upper and lower bounds for randomly initializing
+           real-valued genes.
+    \ingroup init
 
-  Category: Initialization
+    \param   ctx      context variable
+    \param   median   an array containing the mean value of the interval
+    \param   frac     an array containing the fraction of median to add and
+                      subtract to/from the median to define the interval
+    \return  None
 
-  Inputs:
-     ctx     - context variable
-     median  - an array containing the mean value of the interval
-     percent - an array containing the percent offset to add and subtract to
-               the median to define the interval
+    \rst
 
-  Outputs:
+    Description
+    -----------
 
-  Example:
-     Set the initialization routines to select a value for each real-valued
-     gene i uniformly randomly from the interval [i-v,i+v], where $v = i/2$.
-     Assumes all strings are the same length.
+    For each gene these bounds define an interval from which the initial
+    allele value is selected uniformly randomly.  With this routine the
+    user specifies a median value and a fraction of the median for each allele.
 
-     PGAContext *ctx;
-     double *median, *percent;
-     int i, stringlen;
-     :
-     stringlen = PGAGetStringLength(ctx);
-     median  = (double *) malloc(stringlen*sizeof(double));
-     percent = (double *) malloc(stringlen*sizeof(double));
-     for(i=0;i<stringlen;i++) {
-        median[i]  = (double) i;
-        percent[i] = 0.5;
-     }
-     PGASetRealInitPercent(ctx, median, percent);
 
-****************************************************************************U*/
-void PGASetRealInitPercent ( PGAContext *ctx, double *median, double *percent)
+    Example
+    -------
+
+    Set the initialization routines to select a value for each real-valued
+    gene i uniformly randomly from the interval [i-v,i+v], where
+    :math:`v = i/2`.
+    Assumes all strings are the same length.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       double *median, *frac;
+       int i, stringlen;
+
+       ...
+       stringlen = PGAGetStringLength (ctx);
+       median = malloc (stringlen * sizeof(double));
+       frac   = malloc (stringlen * sizeof(double));
+       for (i=0; i<stringlen; i++) {
+          median [i] = (double) i;
+          frac   [i] = 0.5;
+       }
+       PGASetRealInitPercent (ctx, median, frac);
+
+    \endrst
+
+******************************************************************************/
+void PGASetRealInitFraction (PGAContext *ctx, double *median, double *frac)
 {
-     int i;
-     int stringlen;
-     double offset;
+    int i;
+    int stringlen;
+    double offset;
 
-    PGADebugEntered("PGASetRealInitPercent");
-    PGAFailIfSetUp("PGASetRealInitPercent");
-    PGACheckDataType("PGASetRealInitPercent", PGA_DATATYPE_REAL);
+    PGADebugEntered  ("PGASetRealInitPercent");
+    PGAFailIfSetUp   ("PGASetRealInitPercent");
+    PGACheckDataType ("PGASetRealInitPercent", PGA_DATATYPE_REAL);
 
-    stringlen = PGAGetStringLength(ctx);
+    stringlen = PGAGetStringLength (ctx);
     for (i=0; i<stringlen; i++) {
-    }
-    for (i=0; i<stringlen; i++) {
-         offset = fabs(median[i] * percent[i]);
-         ctx->init.RealMin[i] = median[i] - offset;
-         ctx->init.RealMax[i] = median[i] + offset;
+         offset = fabs (median [i] * frac [i]);
+         ctx->init.RealMin [i] = median [i] - offset;
+         ctx->init.RealMax [i] = median [i] + offset;
     }
     ctx->init.RealType = PGA_RINIT_PERCENT;
 
-    PGADebugExited("PGASetRealInitPercent");
+    PGADebugExited ("PGASetRealInitPercent");
 }
 
-/*U****************************************************************************
-  PGASetRealInitRange - sets the upper and lower bounds for randomly
-  initializing real-valued genes.  For each gene these bounds define an
-  interval from which the initial allele value is selected uniformly randomly.
-  The user specifies two arrays containing lower and bound for each gene to
-  define the interval.  This is the default strategy for initializing
-  real-valued strings.  The default interval is $[0,1.0]$ for each gene.
+/*!****************************************************************************
+    \brief Set the upper and lower bounds for randomly initializing
+           real-valued genes.
+    \ingroup init
 
-  Category: Initialization
+    \param   ctx context variable
+    \param   min array containing the lower bound of the interval for each gene
+    \param   max array containing the upper bound of the interval for each gene
+    \return  None
 
-  Inputs:
-     ctx - context variable
-     min - array containing the lower bound of the interval for each gene
-     mac - array containing the upper bound of the interval for each gene
+    \rst
 
-  Outputs:
+    Description
+    -----------
 
-  Example:
-     Set the initialization routines to select a value for each real-valued
-     gene i uniformly randomly from the interval [-10.,i]
-     Assumes all strings are of the same length.
+    For each gene these bounds define an interval from which the initial
+    allele value is selected uniformly randomly.  The user specifies two
+    arrays containing lower and upper bound for each gene to define the
+    interval.  This is the default strategy for initializing real-valued
+    strings.  The default interval is :math:`[0,1.0]` for each gene.
 
-     PGAContext *ctx;
-     double *low, *high;
-     int i, stringlen;
-     :
-     stringlen = PGAGetStringLength(ctx);
-     low  = (double *) malloc(stringlen*sizeof(double));
-     high = (double *) malloc(stringlen*sizeof(double));
-     for(i=0;i<stringlen;i++) {
-        low[i]  = -10.0;
-        high[i] = i;
-     }
-     PGASetRealInitRange(ctx, low, high);
+    Example
+    -------
 
-****************************************************************************U*/
+    Set the initialization routines to select a value for each real-valued
+    gene i uniformly randomly from the interval [-10.,i]
+    Assumes all strings are of the same length.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       double *low, *high;
+       int i, stringlen;
+
+       ...
+       stringlen = PGAGetStringLength (ctx);
+       low  = malloc (stringlen * sizeof(double));
+       high = malloc (stringlen * sizeof(double));
+       for (i=0; i<stringlen; i++) {
+          low  [i] = -10.0;
+          high [i] = i;
+       }
+       PGASetRealInitRange (ctx, low, high);
+
+    \endrst
+
+******************************************************************************/
 void PGASetRealInitRange (PGAContext *ctx, const double *min, const double *max)
 {
-     int i;
-    PGADebugEntered("PGASetRealInitRange");
-    PGAFailIfSetUp("PGASetRealInitRange");
-    PGACheckDataType("PGASetRealInitRange", PGA_DATATYPE_REAL);
+    int i;
+    PGADebugEntered  ("PGASetRealInitRange");
+    PGAFailIfSetUp   ("PGASetRealInitRange");
+    PGACheckDataType ("PGASetRealInitRange", PGA_DATATYPE_REAL);
 
     for (i=ctx->ga.StringLen-1; i>=0; i--) {
-         if (max[i] < min[i])
-              PGAError(ctx, "PGASetRealInitRange: Lower bound exceeds upper "
-                       "bound for allele #", PGA_FATAL, PGA_INT, (void *) &i);
-         else
-         {
-              ctx->init.RealMin[i] = min[i];
-              ctx->init.RealMax[i] = max[i];
-         }
+        if (max [i] < min [i]) {
+            PGAError
+                ( ctx
+                , "PGASetRealInitRange: Lower bound exceeds upper bound "
+                  "for allele #"
+                , PGA_FATAL, PGA_INT, (void *) &i
+                );
+        } else {
+             ctx->init.RealMin [i] = min [i];
+             ctx->init.RealMax [i] = max [i];
+        }
     }
     ctx->init.RealType = PGA_RINIT_RANGE;
 
-    PGADebugExited("PGASetRealInitRange");
+    PGADebugExited ("PGASetRealInitRange");
 }
 
+/*!***************************************************************************
+    \brief Returns the minimum value used to randomly initialize allele
+           i in a real string.
+    \ingroup query
 
-/*U***************************************************************************
-  PGAGetMinRealInitValue - returns the minimum value used to randomly
-  initialize allele i in a real string
+    \param   ctx  context variable
+    \param   i    an allele position
+    \return  The minimum value used to randomly initialize allele i
 
-   Category: Initialization
+    \rst
 
-   Inputs:
-      ctx - context variable
-      i   - an allele position
+    Example
+    -------
 
-   Outputs:
-      The minimum value used to randomly initialize allele i
+    .. code-block:: c
 
-   Example:
-      PGAContext *ctx;
-      int min;
-      :
-      min = PGAGetMinRealInitValue(ctx, 0);
+        PGAContext *ctx;
+        int min;
 
-***************************************************************************U*/
+        ...
+        min = PGAGetMinRealInitValue (ctx, 0);
+    \endrst
+
+*****************************************************************************/
 double PGAGetMinRealInitValue (PGAContext *ctx, int i)
 {
-    PGADebugEntered("PGAGetMinRealInitValue");
-    PGAFailIfNotSetUp("PGAGetMinRealInitValue");
-    PGACheckDataType("PGAGetMinRealInitValue", PGA_DATATYPE_REAL);
+    PGADebugEntered   ("PGAGetMinRealInitValue");
+    PGAFailIfNotSetUp ("PGAGetMinRealInitValue");
+    PGACheckDataType  ("PGAGetMinRealInitValue", PGA_DATATYPE_REAL);
 
-    if (i < 0 || i >= ctx->ga.StringLen)
-         PGAError(ctx, "PGAGetMinRealInitValue: Index out of range:",
-                  PGA_FATAL, PGA_INT, (int *) &i);
+    if (i < 0 || i >= ctx->ga.StringLen) {
+        PGAError
+            ( ctx, "PGAGetMinRealInitValue: Index out of range:"
+            , PGA_FATAL, PGA_INT, (int *) &i
+            );
+    }
 
-    PGADebugExited("PGAGetMinRealInitValue");
+    PGADebugExited ("PGAGetMinRealInitValue");
 
-    return(ctx->init.RealMin[i]);
+    return ctx->init.RealMin [i];
 }
 
-/*U***************************************************************************
-  PGAGetMaxRealInitValue - returns the maximum value used to randomly
-  initialize allele i in a real string
+/*!***************************************************************************
+    \brief Return the maximum value used to randomly initialize allele i
+           in a real string.
+    \ingroup query
 
-   Category: Initialization
+    \param   ctx  context variable
+    \param   i    an allele position
+    \return  The maximum value used to randomly initialize allele i
 
-   Inputs:
-      ctx - context variable
-      i   - an allele position
+    \rst
 
-   Outputs:
-      The maximum value used to randomly initialize allele i
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int max;
-      :
-      max = PGAGetMaxRealInitValue(ctx, 0);
+    .. code-block:: c
 
-***************************************************************************U*/
+        PGAContext *ctx;
+        int max;
+
+        ...
+        max = PGAGetMaxRealInitValue (ctx, 0);
+    \endrst
+
+*****************************************************************************/
 double PGAGetMaxRealInitValue (PGAContext *ctx, int i)
 {
-    PGADebugEntered("PGAGetMaxRealInitValue");
-    PGAFailIfNotSetUp("PGAGetMaxRealInitValue");
-    PGACheckDataType("PGAGetMaxRealInitValue", PGA_DATATYPE_REAL);
+    PGADebugEntered   ("PGAGetMaxRealInitValue");
+    PGAFailIfNotSetUp ("PGAGetMaxRealInitValue");
+    PGACheckDataType  ("PGAGetMaxRealInitValue", PGA_DATATYPE_REAL);
 
-    if (i < 0 || i >= ctx->ga.StringLen)
-         PGAError(ctx, "PGAGetMaxRealInitValue: Index out of range:",
-                  PGA_FATAL, PGA_INT, (int *) &i);
+    if (i < 0 || i >= ctx->ga.StringLen) {
+        PGAError
+            ( ctx, "PGAGetMaxRealInitValue: Index out of range:"
+            , PGA_FATAL, PGA_INT, (int *) &i
+            );
+    }
 
-    PGADebugExited("PGAGetMaxRealInitValue");
+    PGADebugExited ("PGAGetMaxRealInitValue");
 
-    return(ctx->init.RealMax[i]);
+    return ctx->init.RealMax [i];
 }
 
+/*!***************************************************************************
+    \brief Return the type of scheme used to randomly initialize strings
+           of data type PGA_DATATYPE_REAL.
+    \ingroup query
 
-/*U***************************************************************************
-  PGAGetRealInitType - returns the type of scheme used to randomly
-  initialize strings of data type PGA_DATATYPE_REAL.
+    \param  ctx  context variable
+    \return Returns the integer corresponding to the symbolic constant
+            used to specify the scheme used to initialize real strings
 
-   Category: Initialization
+    \rst
 
-   Inputs:
-      ctx - context variable
+    Example
+    -------
 
-   Outputs:
-      Returns the integer corresponding to the symbolic constant
-      used to specify the scheme used to initialize real strings
+    .. code-block:: c
 
-   Example:
-      PGAContext *ctx;
-      int inittype;
-      :
-      inittype = PGAGetRealInitType(ctx);
-      switch (inittype) {
-      case PGA_RINIT_PERCENT:
-          printf ("Data Type = PGA_RINIT_PERCENT\n");
-          break;
-      case PGA_RINIT_RANGE:
-          printf ("Data Type = PGA_RINIT_RANGE\n");
-          break;
-      }
+        PGAContext *ctx;
+        int inittype;
 
-***************************************************************************U*/
+        ...
+        inittype = PGAGetRealInitType (ctx);
+        switch (inittype) {
+        case PGA_RINIT_PERCENT:
+            printf ("Data Type = PGA_RINIT_PERCENT\n");
+            break;
+        case PGA_RINIT_RANGE:
+            printf ("Data Type = PGA_RINIT_RANGE\n");
+            break;
+        }
+    \endrst
+
+*****************************************************************************/
 int PGAGetRealInitType (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetRealInitType");
-    PGAFailIfNotSetUp("PGAGetRealInitType");
-    PGACheckDataType("PGAGetRealInitType", PGA_DATATYPE_REAL);
+    PGADebugEntered   ("PGAGetRealInitType");
+    PGAFailIfNotSetUp ("PGAGetRealInitType");
+    PGACheckDataType  ("PGAGetRealInitType", PGA_DATATYPE_REAL);
 
-    PGADebugExited("PGAGetRealInitType");
+    PGADebugExited ("PGAGetRealInitType");
 
-    return(ctx->init.RealType);
+    return ctx->init.RealType;
 }
 
+/*!****************************************************************************
+    \brief Allocate memory for a string of type PGAReal.
+    \ingroup internal
 
-/*I****************************************************************************
-   PGARealCreateString - Allocate memory for a string of type PGAReal
+    \param   ctx       context variable
+    \param   p         string index
+    \param   pop       symbolic constant of the population string p is in
+    \param   initflag  A true/false flag used in conjunction with
+                       ctx->ga.RandomInit to initialize the string
+                       either randomly or set to zero
+    \return  None
 
-   Inputs:
-      ctx      - context variable
-      p        - string index
-      pop      - symbolic constant of the population string p is in
-      initflag - A true/false flag used in conjunction with ctx->ga.RandomInit
-                 to initialize the string either randomly or set to zero
+    \rst
 
-   Outputs:
+    Description
+    -----------
 
-   Example:
-      Allocates memory and assigns the address of the allocated memory to
-      the real string field (ind->chrom) of the individual.  Also, clears
-      the string.
+    Note that this function is set in :c:func:`PGASetUp` as the create
+    string user function for the real datatype by default.
 
-      PGAContext *ctx;
-      int p;
-      :
-      PGARealCreateString( ctx, p, PGA_NEWPOP, PGA_FALSE );
+    Example
+    -------
 
-****************************************************************************I*/
+    Allocates memory and assigns the address of the allocated memory to
+    the real string field (ind->chrom) of the individual.  Also, clears
+    the string.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int p;
+
+       ...
+       PGARealCreateString (ctx, p, PGA_NEWPOP, PGA_FALSE);
+    \endrst
+
+******************************************************************************/
 void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
 {
-    PGAIndividual *new = PGAGetIndividual(ctx, p, pop);
+    PGAIndividual *new = PGAGetIndividual (ctx, p, pop);
     int i, fp;
     PGAReal *c;
 
-    PGADebugEntered("PGARealCreateString");
+    PGADebugEntered ("PGARealCreateString");
 
     new->chrom = (void *) malloc (ctx->ga.StringLen * sizeof(PGAReal));
-    if (new->chrom == NULL)
-	PGAError(ctx, "PGARealCreateString: No room to allocate new->chrom",
-		 PGA_FATAL, PGA_VOID, NULL);
+    if (new->chrom == NULL) {
+        PGAError
+            ( ctx, "PGARealCreateString: No room to allocate new->chrom"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
+    }
     c = (PGAReal *)new->chrom;
-    if (initflag)
-	if (ctx->fops.InitString) {
-	    fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
-	    (*ctx->fops.InitString)(&ctx, &fp, &pop);
-	} else {
-	    (*ctx->cops.InitString)(ctx, p, pop);
-	}
-    else
-	for (i=ctx->ga.StringLen-1; i>=0; i--)
-	    c[i] = 0.0;
+    if (initflag) {
+        if (ctx->fops.InitString) {
+            fp = ((p == PGA_TEMP1) || (p == PGA_TEMP2)) ? p : p+1;
+            (*ctx->fops.InitString)(&ctx, &fp, &pop);
+        } else {
+            (*ctx->cops.InitString)(ctx, p, pop);
+        }
+    } else {
+        for (i=ctx->ga.StringLen-1; i>=0; i--) {
+            c[i] = 0.0;
+        }
+    }
 
-    PGADebugExited("PGARealCreateString");
+    PGADebugExited ("PGARealCreateString");
 }
 
-/*I****************************************************************************
-   PGARealMutation - randomly mutates a floating point string with probability
-   mr.  Three of the four mutation operators are of the form v = v +- p*v.
-   That is, the new value of v (allele i) is the old value + or - a percentage,
-   p, of the old value. There are three possibilities for choosing p: (1)
-   constant value (0.01 by default), (2) selected uniformly on (0,UB) (UB is
-   .1 by default), and (3) selected from a Gaussian distribution (with mean 0
-   and standard deviation .1 be default).  The change to an allele, p*v, is
-   added or subtracted to the old value with a probability of .5. The fourth
-   option is to replace v with a value selected uniformly random from the
-   initialization range of that gene. Alleles to mutate are randomly selected.
-   The value set by the routine PGASetMutationRealValue is used as p, UB, and
-   sigma in cases 1,2, and 3, respectively.
+/*!****************************************************************************
+    \brief Randomly mutates a floating point string with probability mr.
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      p        - string index
-      pop      - symbolic constant of the population string p is in
-      mr  - probability of mutating a real-valued gene
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant of the population string p is in
+    \param   mr   probability of mutating a real-valued gene
+    \return  The number of mutations performed
 
-   Outputs: The number of mutations performed.
+    \rst
 
-   Example:
-      Sets the value of the ith gene of string p
-      in population PGA_NEWPOP to one
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int NumMutations, p;
-      :
-      NumMutations = PGARealMutation( ctx, p, PGA_NEWPOP, .001 );
+    Three of the four mutation operators are of the form
+    :math:`v = v +- p*v`.
+    That is, the new value of v (allele i) is the old value + or - a
+    percentage, p, of the old value. There are three possibilities for
+    choosing p: (1) constant value (0.01 by default), (2) selected
+    uniformly on (0,UB) (UB is .1 by default), and (3) selected from a
+    Gaussian distribution (with mean 0 and standard deviation .1 be
+    default).  The change to an allele, :math:`p*v`, is added or
+    subtracted to the old value with a probability of .5. The fourth
+    option is to replace v with a value selected uniformly random from
+    the initialization range of that gene. Alleles to mutate are
+    randomly selected.  The value set by the routine
+    PGASetMutationRealValue is used as p, UB, and sigma in cases 1,2,
+    and 3, respectively.
 
-****************************************************************************I*/
+    Note that this function is set in :c:func:`PGASetUp` as the mutation
+    user function for the real datatype by default.
+
+    Example
+    -------
+
+    Sets the value of the ith gene of string p in population PGA_NEWPOP
+    to one.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int NumMutations, p;
+
+       ...
+       NumMutations = PGARealMutation (ctx, p, PGA_NEWPOP, .001);
+
+    \endrst
+
+******************************************************************************/
 int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
 {
     PGAReal *c;
@@ -481,7 +575,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
     static int last_iter = -1;
 
 
-    PGADebugEntered("PGARealMutation");
+    PGADebugEntered ("PGARealMutation");
     if (ctx->ga.MutationType == PGA_MUTATION_DE) {
         DECLARE_DYNARRAY (int, idx, maxidx);
         PGASampleState sstate;
@@ -574,8 +668,8 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
         midx = PGARandomInterval (ctx, 0, ctx->ga.StringLen - 1);
     }
 
-    c = (PGAReal *)PGAGetIndividual(ctx, p, pop)->chrom;
-    for(i=0; i<ctx->ga.StringLen; i++) {
+    c = (PGAReal *)PGAGetIndividual (ctx, p, pop)->chrom;
+    for (i=0; i<ctx->ga.StringLen; i++) {
         double old_value = c [i];
         int idx = i;
 
@@ -725,227 +819,274 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
             );
     }
 
-    PGADebugExited("PGARealMutation");
+    PGADebugExited ("PGARealMutation");
 
-    return(count);
+    return count;
 }
 
-/*I****************************************************************************
-   PGARealOneptCrossover - this routine performs one point crossover on two
-   parent strings, producing (via side effect) the crossed children child1 and
-   child2
+/*!****************************************************************************
+    \brief This routine performs one point crossover on two parent
+           strings, producing (via side effect) the crossed children
+           child1 and child2.
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect
 
-   Outputs:
-      c1 and c2 in population pop2 are modified by side-effect.
+    \rst
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGARealOneptCrossover( ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP );
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the real datatype when selecting
+    one-point crossover.
 
-****************************************************************************I*/
-void PGARealOneptCrossover( PGAContext *ctx, int p1, int p2, int pop1,
-                           int c1, int c2, int pop2)
+    Example
+    -------
+
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGARealOneptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+    \endrst
+
+******************************************************************************/
+void PGARealOneptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
-     PGAReal *parent1 = (PGAReal *)PGAGetIndividual(ctx, p1,
-                                                    pop1)->chrom;
-     PGAReal *parent2 = (PGAReal *)PGAGetIndividual(ctx, p2,
-                                                    pop1)->chrom;
-     PGAReal *child1  = (PGAReal *)PGAGetIndividual(ctx, c1,
-                                                    pop2)->chrom;
-     PGAReal *child2  = (PGAReal *)PGAGetIndividual(ctx, c2,
-                                                    pop2)->chrom;
-     int i, xsite;
+    PGAReal *parent1 = (PGAReal *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    PGAReal *parent2 = (PGAReal *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    PGAReal *child1  = (PGAReal *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    PGAReal *child2  = (PGAReal *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    int i, xsite;
 
-    PGADebugEntered("PGARealOneptCrossover");
+    PGADebugEntered ("PGARealOneptCrossover");
 
-    xsite = PGARandomInterval(ctx, 1,ctx->ga.StringLen-1);
+    xsite = PGARandomInterval (ctx, 1, ctx->ga.StringLen - 1);
 
-    for(i=0;i<xsite;i++) {
-        child1[i] = parent1[i];
-        child2[i] = parent2[i];
+    for (i=0; i<xsite; i++) {
+        child1 [i] = parent1 [i];
+        child2 [i] = parent2 [i];
     }
 
-    for(i=xsite;i<ctx->ga.StringLen;i++) {
-        child1[i] = parent2[i];
-        child2[i] = parent1[i];
+    for (i=xsite; i<ctx->ga.StringLen; i++) {
+        child1 [i] = parent2 [i];
+        child2 [i] = parent1 [i];
     }
 
-    PGADebugExited("PGARealOneptCrossover");
+    PGADebugExited ("PGARealOneptCrossover");
 }
 
 
-/*I****************************************************************************
-   PGARealTwoptCrossover - performs two-point crossover on two parent strings
-   producing two children via side-effect
+/*!****************************************************************************
+    \brief Perform two-point crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect
 
-   Outputs:
-      c1 and c2 in population pop2 are modified by side-effect.
+    \rst
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGARealTwoptCrossover( ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP );
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the real datatype when selecting
+    two-point crossover.
 
-****************************************************************************I*/
-void PGARealTwoptCrossover( PGAContext *ctx, int p1, int p2, int pop1,
-                           int c1, int c2, int pop2)
+    Example
+    -------
+
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGARealTwoptCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+    \endrst
+
+******************************************************************************/
+void PGARealTwoptCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
-     PGAReal *parent1 = (PGAReal *)PGAGetIndividual(ctx, p1,
-                                                    pop1)->chrom;
-     PGAReal *parent2 = (PGAReal *)PGAGetIndividual(ctx, p2,
-                                                    pop1)->chrom;
-     PGAReal *child1  = (PGAReal *)PGAGetIndividual(ctx, c1,
-                                                    pop2)->chrom;
-     PGAReal *child2  = (PGAReal *)PGAGetIndividual(ctx, c2,
-                                                    pop2)->chrom;
-     int i, temp, xsite1, xsite2;
+    PGAReal *parent1 = (PGAReal *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    PGAReal *parent2 = (PGAReal *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    PGAReal *child1  = (PGAReal *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    PGAReal *child2  = (PGAReal *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    int i, temp, xsite1, xsite2;
 
-    PGADebugEntered("PGARealTwoptCrossover");
+    PGADebugEntered ("PGARealTwoptCrossover");
 
     /* pick two cross sites such that xsite2 > xsite1 */
-    xsite1 = PGARandomInterval(ctx, 1,ctx->ga.StringLen-1);
+    xsite1 = PGARandomInterval (ctx, 1, ctx->ga.StringLen - 1);
     xsite2 = xsite1;
-    while ( xsite2 == xsite1 )
-        xsite2 = PGARandomInterval(ctx, 1,ctx->ga.StringLen-1);
-    if ( xsite1 > xsite2 ) {
+    while (xsite2 == xsite1) {
+        xsite2 = PGARandomInterval (ctx, 1, ctx->ga.StringLen - 1);
+    }
+    if (xsite1 > xsite2) {
         temp   = xsite1;
         xsite1 = xsite2;
         xsite2 = temp;
     }
 
-    for(i=0;i<xsite1;i++) {
-        child1[i] = parent1[i];
-        child2[i] = parent2[i];
+    for (i=0; i<xsite1; i++) {
+        child1 [i] = parent1 [i];
+        child2 [i] = parent2 [i];
     }
 
-    for(i=xsite1;i<xsite2;i++) {
-        child1[i] = parent2[i];
-        child2[i] = parent1[i];
+    for (i=xsite1; i<xsite2; i++) {
+        child1 [i] = parent2 [i];
+        child2 [i] = parent1 [i];
     }
 
-    for(i=xsite2;i<ctx->ga.StringLen;i++) {
-        child1[i] = parent1[i];
-        child2[i] = parent2[i];
+    for (i=xsite2; i<ctx->ga.StringLen; i++) {
+        child1 [i] = parent1 [i];
+        child2 [i] = parent2 [i];
     }
 
-    PGADebugExited("PGARealTwoptCrossover");
+    PGADebugExited ("PGARealTwoptCrossover");
 }
 
 
-/*I****************************************************************************
-   PGARealUniformCrossover - performs uniform crossover on two parent strings
-   producing two children via side-effect
+/*!****************************************************************************
+    \brief Perform uniform crossover on two parent strings producing two
+           children via side-effect
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect
 
-   Outputs:
-      c1 and c2 in population pop2 are modified by side-effect.
+    \rst
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGARealUniformCrossover( ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP );
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the real datatype when selecting
+    uniform crossover.
 
-****************************************************************************I*/
-void PGARealUniformCrossover( PGAContext *ctx, int p1, int p2, int pop1,
-                             int c1, int c2, int pop2)
+    Example
+    -------
+
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGARealUniformCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+    \endrst
+
+******************************************************************************/
+void PGARealUniformCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
-     PGAReal *parent1 = (PGAReal *)PGAGetIndividual(ctx, p1,
-                                                    pop1)->chrom;
-     PGAReal *parent2 = (PGAReal *)PGAGetIndividual(ctx, p2,
-                                                    pop1)->chrom;
-     PGAReal *child1  = (PGAReal *)PGAGetIndividual(ctx, c1,
-                                                    pop2)->chrom;
-     PGAReal *child2  = (PGAReal *)PGAGetIndividual(ctx, c2,
-                                                    pop2)->chrom;
-     int i;
+    PGAReal *parent1 = (PGAReal *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    PGAReal *parent2 = (PGAReal *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    PGAReal *child1  = (PGAReal *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    PGAReal *child2  = (PGAReal *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    int i;
 
-    PGADebugEntered("PGARealUniformCrossover");
+    PGADebugEntered ("PGARealUniformCrossover");
 
-    for(i=0;i<ctx->ga.StringLen;i++) {
-        if ( parent1[i] == parent2[i] ) {
-            child1[i] = parent1[i];
-            child2[i] = parent2[i];
-        }
-        else {
-            if(PGARandomFlip(ctx, ctx->ga.UniformCrossProb)) {
-                child1[i] = parent1[i];
-                child2[i] = parent2[i];
-            }
-            else {
-                child1[i] = parent2[i];
-                child2[i] = parent1[i];
+    for (i=0; i<ctx->ga.StringLen; i++) {
+        if (parent1 [i] == parent2 [i]) {
+            child1 [i] = parent1 [i];
+            child2 [i] = parent2 [i];
+        } else {
+            if (PGARandomFlip(ctx, ctx->ga.UniformCrossProb)) {
+                child1 [i] = parent1 [i];
+                child2 [i] = parent2 [i];
+            } else {
+                child1 [i] = parent2 [i];
+                child2 [i] = parent1 [i];
             }
         }
     }
 
-    PGADebugExited("PGARealUniformCrossover");
+    PGADebugExited ("PGARealUniformCrossover");
 }
 
-/*I****************************************************************************
-   PGARealSBXCrossover - performs simulated binary crossover (SBX)
-   on two parent strings producing two children via side-effect
+/*!****************************************************************************
+    \brief Perform simulated binary crossover (SBX) on two parent
+           strings producing two children via side-effect.
+    \ingroup internal
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect
 
-   Outputs:
-      c1 and c2 in population pop2 are modified by side-effect.
+    \rst
 
-   Example:
-      Performs crossover on the two parent strings m and d, producing
-      children s and b.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int m, d, s, b;
-      :
-      PGARealSBXCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the real datatype when selecting
+    simulated binary crossover.
 
-****************************************************************************I*/
+    Example
+    -------
+
+    Performs crossover on the two parent strings m and d, producing
+    children s and b.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGARealSBXCrossover (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+    \endrst
+
+******************************************************************************/
 void PGARealSBXCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
@@ -988,123 +1129,152 @@ void PGARealSBXCrossover
     }
 }
 
-/*I****************************************************************************
-   PGARealPrintString - writes a real-valued string to a file.  This routine
-   casts the void string pointer it is passed as the second argument.
+/*!****************************************************************************
+    \brief Write a real-valued string to a file.
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      fp  - file pointer to file to write the string to
-      p   - index of the string to write out
-      pop - symbolic constant of the population string p is in
+    \param   ctx  context variable
+    \param   fp   file pointer to file to write the string to
+    \param   p    index of the string to write out
+    \param   pop  symbolic constant of the population string p is in
+    \return  None
 
-   Outputs:
+    \rst
 
-   Example:
-      Write string s to stdout.
+    Example
+    -------
 
-      PGAContext *ctx;
-      int s;
-      :
-      PGARealPrintString (ctx, stdout, s, PGA_NEWPOP);
+    Write string s to stdout.
 
-****************************************************************************I*/
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int s;
+
+       ...
+       PGARealPrintString (ctx, stdout, s, PGA_NEWPOP);
+    \endrst
+
+******************************************************************************/
 void PGARealPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 {
-    PGAReal *c = (PGAReal *)PGAGetIndividual(ctx, p, pop)->chrom;
+    PGAReal *c = (PGAReal *)PGAGetIndividual (ctx, p, pop)->chrom;
     int i;
 
-    PGADebugEntered("PGARealPrintString");
+    PGADebugEntered ("PGARealPrintString");
 
-    for(i = 0; i < ctx->ga.StringLen; i++)
-    {
-        switch ( i % 5 )
-        {
+    for (i = 0; i < ctx->ga.StringLen; i++) {
+        switch (i % 5) {
         case 0:
-            fprintf ( fp, "#%4d: [%11.7g]",i,c[i]);
+            fprintf (fp, "#%4d: [%11.7g]",i,c[i]);
             break;
         case 1:
         case 2:
         case 3:
-            fprintf ( fp, ", [%11.7g]",c[i]);
+            fprintf (fp, ", [%11.7g]",c[i]);
             break;
         case 4:
-            fprintf ( fp, ", [%11.7g]",c[i]);
-            if (i+1 < ctx->ga.StringLen)
-                fprintf ( fp, "\n");
+            fprintf (fp, ", [%11.7g]",c[i]);
+            if (i+1 < ctx->ga.StringLen) {
+                fprintf (fp, "\n");
+            }
             break;
         }
     }
-    fprintf ( fp, "\n" );
+    fprintf (fp, "\n");
 
-    PGADebugExited("PGARealPrintString");
+    PGADebugExited ("PGARealPrintString");
 }
 
 
-/*I****************************************************************************
-   PGARealCopyString - Copy one real-valued string string to another
+/*!****************************************************************************
+    \brief Copy one real-valued string string to another
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      p1   - string to copy
-      pop1 - symbolic constant of population containing string p1
-      p2   - string to copy p1 to
-      pop2 - symbolic constant of population containing string p2
+    \param   ctx   context variable
+    \param   p1    string to copy
+    \param   pop1  symbolic constant of population containing string p1
+    \param   p2    string to copy p1 to
+    \param   pop2  symbolic constant of population containing string p2
+    \return  String p2 in population pop2 is modified to be a copy of
+             string p1 in population pop1.
 
-   Outputs:
-      String p2 in population pop2 is modified to be a copy of string
-      p1 in population pop1.
+    \rst
 
-   Example:
-      Copy string x to y.
+    Description
+    -----------
 
-      PGAContext *ctx;
-      int x, y;
-      :
-      PGARealCopyString (ctx, x, PGA_OLDPOP, y, PGA_NEWPOP);
+    Note that this function is set in :c:func:`PGASetUp` as the copy
+    string user function for the real datatype by default.
 
-****************************************************************************I*/
-void PGARealCopyString ( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+    Example
+    -------
+
+    Copy string x to y.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int x, y;
+
+       ...
+       PGARealCopyString (ctx, x, PGA_OLDPOP, y, PGA_NEWPOP);
+    \endrst
+
+******************************************************************************/
+void PGARealCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
-    PGAReal *source = (PGAReal *)PGAGetIndividual(ctx, p1, pop1)->chrom;
-    PGAReal *dest   = (PGAReal *)PGAGetIndividual(ctx, p2, pop2)->chrom;
+    PGAReal *source = (PGAReal *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    PGAReal *dest   = (PGAReal *)PGAGetIndividual (ctx, p2, pop2)->chrom;
     int i;
 
-    PGADebugEntered("PGARealCopyString");
+    PGADebugEntered ("PGARealCopyString");
 
-    for (i=ctx->ga.StringLen-1; i>=0; i--)
+    for (i=ctx->ga.StringLen-1; i>=0; i--) {
         *(dest++) = *(source++);
+    }
 
-    PGADebugExited("PGARealCopyString");
+    PGADebugExited ("PGARealCopyString");
 }
 
+/*!****************************************************************************
+    \brief Returns true if real-valued string a is a duplicate of
+           real-valued string b, else returns false.
+    \ingroup internal
 
-/*I****************************************************************************
-   PGARealDuplicate - Returns true if real-valued string a is a duplicate of
-   real-valued string b, else returns false.
+    \param   ctx   context variable
+    \param   p1    string index of the first string to compare
+    \param   pop1  symbolic constant of the population string p1 is in
+    \param   p2    string index of the second string to compare
+    \param   pop2  symbolic constant of the population string p2 is in
+    \return  Returns true/false if strings are duplicates
 
-   Inputs:
-      ctx - context variable
-      p1   - string index of the first string to compare
-      pop1 - symbolic constant of the population string p1 is in
-      p2   - string index of the second string to compare
-      pop2 - symbolic constant of the population string p2 is in
+    \rst
 
-   Outputs:
-      Returns true/false if strings are duplicates
+    Description
+    -----------
 
-   Example:
-      Compare strings x with y to see if they are duplicates
+    Note that this function is set in :c:func:`PGASetUp` as the
+    duplicate checking user function for the real datatype by default.
 
-      PGAContext *ctx;
-      int x, y;
-      :
-      if (PGARealDuplicate (ctx, x, PGA_OLDPOP, y, PGA_OLDPOP)) {
-          printf ("strings are duplicates\n");
-      }
+    Example
+    -------
 
-****************************************************************************I*/
-int PGARealDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+    Compare strings x with y to see if they are duplicates.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int x, y;
+
+       ...
+       if (PGARealDuplicate (ctx, x, PGA_OLDPOP, y, PGA_OLDPOP)) {
+           printf ("strings are duplicates\n");
+       }
+    \endrst
+
+******************************************************************************/
+int PGARealDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
     PGAReal *a = (PGAReal *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     PGAReal *b = (PGAReal *)PGAGetIndividual (ctx, p2, pop2)->chrom;
@@ -1123,18 +1293,26 @@ int PGARealDuplicate( PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     return count == ctx->ga.StringLen ? PGA_TRUE : PGA_FALSE;
 }
 
-/*I****************************************************************************
-   PGARealHash - Returns hash value of given gene
+/*!****************************************************************************
+    \brief Return hash value of given gene.
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      p    - string index of the string to hash
-      pop  - symbolic constant of the population string p is in
+    \param   ctx   context variable
+    \param   p     string index of the string to hash
+    \param   pop   symbolic constant of the population string p is in
+    \return  Hash value for string
 
-   Outputs:
-      Hash value for string
+    \rst
 
-****************************************************************************I*/
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    hash user function for the real datatype by default.
+
+    \endrst
+
+******************************************************************************/
 PGAHash PGARealHash (PGAContext *ctx, int p, int pop)
 {
     void *a = PGAGetIndividual (ctx, p, pop)->chrom;
@@ -1143,57 +1321,77 @@ PGAHash PGARealHash (PGAContext *ctx, int p, int pop)
     return hash;
 }
 
-/*I****************************************************************************
-   PGARealInitString - randomly initialize a string of type PGAReal
+/*!****************************************************************************
+    PGARealInitString - randomly initialize a string of type PGAReal
+    \ingroup internal
 
-   Inputs:
-      ctx - context variable
-      p   - index of string to randomly initialize
-      pop - symbolic constant of the population string p is in
+    \param   ctx  context variable
+    \param   p    index of string to randomly initialize
+    \param   pop  symbolic constant of the population string p is in
+    \return  String p in population pop is randomly initialized by side-effect
 
-   Outputs:
-      String p in population pop is randomly initialized by side-effect.
+    \rst
 
-   Example:
-      PGAContext *ctx;
-      int p;
-      :
-      PGARealInitString (ctx, p, PGA_NEWPOP);
+    Description
+    -----------
 
-****************************************************************************I*/
-void PGARealInitString ( PGAContext *ctx, int p, int pop)
+    Note that this function is set in :c:func:`PGASetUp` as the
+    init string user function for the real datatype by default.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int p;
+
+       ...
+       PGARealInitString (ctx, p, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+void PGARealInitString (PGAContext *ctx, int p, int pop)
 {
-     int i;
-     PGAReal *c = (PGAReal *)PGAGetIndividual(ctx, p, pop)->chrom;
+    int i;
+    PGAReal *c = (PGAReal *)PGAGetIndividual (ctx, p, pop)->chrom;
 
-     PGADebugEntered("PGARealInitString");
+    PGADebugEntered ("PGARealInitString");
 
-     for (i = 0; i < ctx->ga.StringLen; i++)
-          c[i] = PGARandomUniform(ctx, ctx->init.RealMin[i],
-                                  ctx->init.RealMax[i]);
+    for (i = 0; i < ctx->ga.StringLen; i++) {
+        c[i] = PGARandomUniform
+            (ctx, ctx->init.RealMin[i], ctx->init.RealMax[i]);
+    }
 
-     PGADebugExited("PGARealInitString");
+    PGADebugExited ("PGARealInitString");
 }
 
-/*I****************************************************************************
-  PGARealBuildDatatype - Build an MPI datatype for a string.
+/*!****************************************************************************
+    \brief Build an MPI datatype for a string.
+    \ingroup internal
 
-  Inputs:
-     ctx   - context variable
-     p     - index of string
-     pop   - symbolic constant of population string p is in
+    \param   ctx    context variable
+    \param   p      index of string
+    \param   pop    symbolic constant of population string p is in
+    \return  An MPI_Datatype
 
-  Outputs:
-     An MPI_Datatype.
+    \rst
 
-  Example:
-     PGAContext   *ctx;
-     int           p;
-     MPI_Datatype  dt;
-     :
-     dt = PGARealBuildDatatype(ctx, p, pop);
+    Example
+    -------
 
-****************************************************************************I*/
+    .. code-block:: c
+
+       PGAContext   *ctx;
+       int           p;
+       MPI_Datatype  dt;
+
+       ...
+       dt = PGARealBuildDatatype(ctx, p, pop);
+    \endrst
+
+******************************************************************************/
 MPI_Datatype PGARealBuildDatatype (PGAContext *ctx, int p, int pop)
 {
     int            idx = 0;
@@ -1224,25 +1422,29 @@ MPI_Datatype PGARealBuildDatatype (PGAContext *ctx, int p, int pop)
     return individualtype;
 }
 
-/*I****************************************************************************
-   PGARealGeneDistance - Compute genetic difference of two strings.
-   Sum of the absolute values of the differences of each allele.
-   So this is a Manhattan distance (mainly for performance reasons).
+/*!****************************************************************************
+    \brief Compute genetic difference of two strings.
+    \ingroup internal
 
-   Inputs:
-      ctx   - context variable
-      p1    - first string index
-      pop1  - symbolic constant of the population the first string is in
-      p2    - second string index
-      pop2  - symbolic constant of the population the second string is in
+    \param   ctx    context variable
+    \param   p1     first string index
+    \param   pop1   symbolic constant of the population the first string is in
+    \param   p2     second string index
+    \param   pop2   symbolic constant of the population the second string is in
+    \return  genetic distance of the two strings
 
-   Outputs:
-      genetic distance of the two strings
+    \rst
 
-   Example:
-      Internal function.  Use PGAGeneDistance.
+    Description
+    -----------
 
-****************************************************************************I*/
+    Sum of the absolute values of the differences of each allele.
+    So this is a Manhattan distance (mainly for performance reasons).
+    Internal function.  Use PGAGeneDistance.
+
+    \endrst
+
+******************************************************************************/
 double PGARealGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
     PGAReal *c1 = (PGAReal *)PGAGetIndividual (ctx, p1, pop1)->chrom;
@@ -1250,39 +1452,60 @@ double PGARealGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     double ret = 0.0;
     int i;
 
-    PGADebugEntered("PGARealGeneDistance");
+    PGADebugEntered ("PGARealGeneDistance");
     for (i=0; i<ctx->ga.StringLen; i++) {
         ret += fabs (c1 [i] - c2 [i]);
     }
-    PGADebugExited("PGARealGeneDistance");
+    PGADebugExited ("PGARealGeneDistance");
     return ret;
 }
 
-/*I****************************************************************************
-   PGARealEuclidianDistance - Compute genetic difference of two strings.
-   This uses the Euclidian distance metric, the square-root of the sum
-   of all squared differences of each allele.
+/*!****************************************************************************
+    \brief Compute genetic difference of two strings.
+    \ingroup init
 
-   Inputs:
-      ctx   - context variable
-      p1    - first string index
-      pop1  - symbolic constant of the population the first string is in
-      p2    - second string index
-      pop2  - symbolic constant of the population the second string is in
+    \param   ctx    context variable
+    \param   p1     first string index
+    \param   pop1   symbolic constant of the population the first string is in
+    \param   p2     second string index
+    \param   pop2   symbolic constant of the population the second string is in
+    \return  Genetic euclidian distance of the two strings
 
-   Outputs:
-      genetic euclidian distance of the two strings
+    \rst
 
-   Example:
-      Use in PGASetUserFunction.
+    Description
+    -----------
 
-****************************************************************************I*/
-double PGARealEuclidianDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+    This uses the Euclidian distance metric, the square-root of the sum
+    of all squared differences of each allele. It can be used to
+    override the default real genetic distance function (which uses a
+    manhattan distance metric) using :c:func:`PGASetUserFunction` with
+    the PGA_USERFUNCTION_GEN_DISTANCE setting.
+
+    Example
+    -------
+
+    Override genetic distance function:
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       assert (PGAGetDataType (ctx) == PGA_DATATYPE_REAL);
+       PGASetUserFunction
+        (ctx, PGA_USERFUNCTION_GEN_DISTANCE, PGARealEuclidianDistance);
+
+    \endrst
+
+******************************************************************************/
+double PGARealEuclidianDistance
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
     PGAReal *c1 = (PGAReal *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     PGAReal *c2 = (PGAReal *)PGAGetIndividual (ctx, p2, pop2)->chrom;
 
-    PGADebugEntered("PGARealGeneDistance");
-    PGADebugExited("PGARealGeneDistance");
+    PGADebugEntered ("PGARealGeneDistance");
+    PGADebugExited  ("PGARealGeneDistance");
     return LIN_euclidian_distance (ctx->ga.StringLen, c1, c2);
 }

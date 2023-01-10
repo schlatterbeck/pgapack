@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,12 +37,12 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: fitness.c: This file contains the routines that have to do with
-*                      fitness calculations.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains the routines that have to do with fitness calculations.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
@@ -51,6 +51,8 @@ static void PGAFitnessLinearRank (PGAContext *ctx, int popindex);
 static void PGAFitnessLinearNormal (PGAContext *ctx, int popindex);
 static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop);
 static void PGAFitnessMinReciprocal (PGAContext *ctx, PGAIndividual *pop);
+
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 /* Helper function for fitness computation */
 static void remap_to_positive (PGAContext *ctx, PGAIndividual *pop)
@@ -91,35 +93,50 @@ static void remap_to_positive (PGAContext *ctx, PGAIndividual *pop)
     }
 }
 
-/*U****************************************************************************
-  PGAFitness - Maps the user's evaluation function value to a fitness value.
-  First, the user's evaluation function value is translated to all positive
-  values if any are negative.  Next, this positive sequence is translated to
-  a maximization problem if the user's optimization direction was minimization.
-  This positive sequence is then mapped to a fitness value using linear
-  ranking, linear normalization fitness, or the identity (i.e., the evaluation
-  function value).  This routine is usually used after PGAEvaluate is called.
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-  Category: Fitness & Evaluation
+/*!****************************************************************************
+    \brief Map the user's evaluation function value to a fitness value.
+    \ingroup evaluation
 
-  Inputs:
-    ctx  - context variable
-    pop  - symbolic constant of the population to calculate fitness for
+    \param  ctx      context variable
+    \param  popindex symbolic constant of the population to calculate
+                     fitness for
+    \return Calculate the fitness for each string in the population via
+            side effect
 
-  Outputs:
-     Calculates the fitness for each string in the population via side effect
+    \rst
 
-  Example:
-     Calculate the fitness of all strings in population PGA_NEWPOP after
-     calling PGAEvaluate to calculate the strings evaluation value.
+    Description
+    -----------
 
-     double energy(PGAContext *ctx, int p, int pop);
-     PGAContext *ctx;
-     :
-     PGAEvaluate(ctx, PGA_NEWPOP, energy);
-     PGAFitness (ctx, PGA_NEWPOP);
+    First, the user's evaluation function value is translated to all
+    positive values if any are negative.  Next, this positive sequence
+    is translated to a maximization problem if the user's optimization
+    direction was minimization.  This positive sequence is then mapped
+    to a fitness value using linear ranking, linear normalization
+    fitness, or the identity (i.e., the evaluation function value).
+    This routine is usually used after :c:func:`PGAEvaluate` is called.
 
-****************************************************************************U*/
+    Example
+    -------
+
+    Calculate the fitness of all strings in population PGA_NEWPOP after
+    calling PGAEvaluate to calculate the strings evaluation value.
+
+    .. code-block:: c
+
+       double energy (PGAContext *ctx, int p, int pop, double *aux);
+       PGAContext *ctx;
+       MPI_Comm comm;
+
+       ...
+       PGAEvaluate (ctx, PGA_NEWPOP, energy, comm);
+       PGAFitness  (ctx, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
 void PGAFitness (PGAContext *ctx, int popindex)
 {
     int i;
@@ -130,16 +147,20 @@ void PGAFitness (PGAContext *ctx, int popindex)
     PGADebugEntered ("PGAFitness");
 
     if (popindex != PGA_OLDPOP && popindex != PGA_NEWPOP) {
-        PGAError(ctx, "PGAFitness: Invalid value of popindex:",
-                 PGA_FATAL, PGA_INT, (void *) &popindex);
+        PGAError
+            ( ctx, "PGAFitness: Invalid value of popindex:"
+            , PGA_FATAL, PGA_INT, (void *) &popindex
+            );
     }
 
     /* make sure all evaluation function values are up-to-date */
 
     for (i=0; i<ctx->ga.PopSize; i++) {
         if ((pop+i)->evaluptodate != PGA_TRUE) {
-            PGAError( ctx, "PGAFitness: evaluptodate not PGA_TRUE for:",
-                      PGA_FATAL, PGA_INT, (void *) &i );
+            PGAError
+                ( ctx, "PGAFitness: evaluptodate not PGA_TRUE for:"
+                , PGA_FATAL, PGA_INT, (void *) &i
+                );
         }
     }
 
@@ -202,237 +223,285 @@ void PGAFitness (PGAContext *ctx, int popindex)
 }
 
 
-/*U****************************************************************************
-  PGARank - returns the rank of a string in a population.  This is a value
-  between 1,...,N (the population size).  The most fit string has rank 1,
-  the least fit string has rank N.
+/*!****************************************************************************
+    \brief Return the rank of a string in a population.
+    \ingroup evaluation
 
-  Category: Fitness & Evaluation
+    \param  ctx    context variable
+    \param  p      the index of the string whose rank is desired
+    \param  order  an array containing a unique rank for each string
+    \param  n      the size of the array order
+    \return The rank of string p
 
-  Inputs:
-    ctx   - context variable
-    p     - the index of the string whose rank is desired
-    order - an array containing a unique rank for each string
-    n     - the size of the array order
+    \rst
 
-  Outputs:
-    The rank of string p
+    Description
+    -----------
 
-  Example:
+    This is a value between 1,...,N (the population size).  The most fit
+    string has rank 1, the least fit string has rank N.
+
+    Example
+    -------
+
     Determine the rank of string p.
 
-    PGAContext *ctx;
-    int i, popsize, rank;
-    int popsize = PGAGetPopsize (ctx)
-    int order [popsize];
+    .. code-block:: c
 
-    PGAEvalSort (ctx, pop, order);
-    rank = PGARank(ctx, p, order, popsize)
+      PGAContext *ctx;
+      int i, popsize, rank;
+      int popsize = PGAGetPopsize (ctx)
+      int order [popsize];
 
-****************************************************************************U*/
-int PGARank( PGAContext *ctx, int p, int *order, int n )
+      ...
+      PGAEvalSort (ctx, pop, order);
+      rank = PGARank (ctx, p, order, popsize)
+
+    \endrst
+
+******************************************************************************/
+int PGARank (PGAContext *ctx, int p, int *order, int n)
 {
     int i;
 
-    PGADebugEntered("PGARank");
+    PGADebugEntered ("PGARank");
 
     /*  If the user gives us PGA_TEMP1 or PGA_TEMP2 (or, gasp, some random
      *  number that is not in the population), fail.
      */
-    if ((p<0) || (p >= PGAGetPopSize(ctx)))
-        PGAError(ctx, "PGARank: Not a valid population member, p = ",
-                 PGA_FATAL, PGA_INT, (void *)&p);
+    if ((p<0) || (p >= PGAGetPopSize (ctx))) {
+        PGAError
+            ( ctx, "PGARank: Not a valid population member, p = "
+            , PGA_FATAL, PGA_INT, (void *)&p
+            );
+    }
 
     /*  Search through all the orderings until we find the one that
      *  matches the given string.  Return the index number.  If we do not
      *  find one, something is _very_ bad; terminate with a fatal error.
      */
-    for(i=0; i<n; i++)
+    for (i=0; i<n; i++) {
         if (order[i] == p) {
-	    PGADebugExited("PGARank");
-	    return(i+1);
+            PGADebugExited ("PGARank");
+            return i+1;
         }
+    }
 
     /*  Ideally, we should print out the order array, but, well, ideally,
      *  we should never get here anyway...Also, to make some compilers
      *  shut up, return(0) is here, even though PGAError doesn't return.
      */
-    PGAError( ctx, "PGARank: Bottom of loop in rank, p = ", PGA_FATAL,
-             PGA_INT, (void *) &p );
-    return(0);
+    PGAError
+        ( ctx, "PGARank: Bottom of loop in rank, p = ", PGA_FATAL
+        , PGA_INT, (void *) &p
+        );
+    return 0;
 }
 
-/*U***************************************************************************
-   PGAGetFitness - returns the fitness value for a string
+/*!***************************************************************************
+    \brief Return the fitness value for a string.
+    \ingroup evaluation
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \param   p    string index
+    \param   pop  symbolic constant of the population the string is in
+    \return  The fitness value for string p in population pop
 
-   Inputs:
-      ctx - context variable
-      p   - string index
-      pop - symbolic constant of the population the string is in
+    \rst
 
-   Outputs:
-      The fitness value for string p in population pop
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int p;
-      double fit;
-      :
-      fit = PGAGetFitness(ctx, p, PGA_NEWPOP);
+    .. code-block:: c
 
-***************************************************************************U*/
-double PGAGetFitness ( PGAContext *ctx, int p, int pop )
+       PGAContext *ctx;
+       int p;
+       double fit;
+
+       ...
+       fit = PGAGetFitness (ctx, p, PGA_NEWPOP);
+
+    \endrst
+
+*****************************************************************************/
+double PGAGetFitness (PGAContext *ctx, int p, int pop)
 {
     PGAIndividual *ind;
 
-    PGADebugEntered("PGAGetFitness");
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGAGetFitness", "p = ",
-                   PGA_INT, (void *) &p );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR,"PGAGetFitness", "pop = ",
-                   PGA_INT, (void *) &pop );
+    PGADebugEntered ("PGAGetFitness");
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR,"PGAGetFitness", "p = "
+        , PGA_INT, (void *) &p
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR,"PGAGetFitness", "pop = "
+        , PGA_INT, (void *) &pop
+        );
 
-    ind = PGAGetIndividual ( ctx, p, pop );
+    ind = PGAGetIndividual (ctx, p, pop);
 
-    PGADebugExited("PGAGetFitness");
+    PGADebugExited ("PGAGetFitness");
 
-    return(ind->fitness);
+    return ind->fitness;
 }
 
-/*U***************************************************************************
-   PGAGetFitnessType - Returns the type of fitness transformation used.
+/*!***************************************************************************
+    \brief Return the type of fitness transformation used.
+    \ingroup query
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \return  Returns the integer corresponding to the symbolic constant
+             to specify the type of fitness transformation used
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns the integer corresponding to the symbolic constant
-      used to specify the type of fitness transformation used
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int fittype;
-      :
-      fittype = PGAGetFitnessType(ctx);
-      switch (fittype) {
-      case PGA_FITNESS_RAW:
-          printf ("Fitness Type = PGA_FITNESS_RAW\n");
-          break;
-      case PGA_FITNESS_NORMAL:
-          printf ("Fitness Type = PGA_FITNESS_NORMAL\n");
-          break;
-      case PGA_FITNESS_RANKING:
-          printf ("Fitness Type = PGA_FITNESS_RANKING\n");
-          break;
-      }
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int fittype;
+
+       ...
+       fittype = PGAGetFitnessType (ctx);
+       switch (fittype) {
+       case PGA_FITNESS_RAW:
+           printf ("Fitness Type = PGA_FITNESS_RAW\n");
+           break;
+       case PGA_FITNESS_NORMAL:
+           printf ("Fitness Type = PGA_FITNESS_NORMAL\n");
+           break;
+       case PGA_FITNESS_RANKING:
+           printf ("Fitness Type = PGA_FITNESS_RANKING\n");
+           break;
+       }
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetFitnessType (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetFitnessType");
-    PGAFailIfNotSetUp("PGAGetFitnessType");
+    PGADebugEntered   ("PGAGetFitnessType");
+    PGAFailIfNotSetUp ("PGAGetFitnessType");
 
-    PGADebugExited("PGAGetFitnessType");
+    PGADebugExited ("PGAGetFitnessType");
 
     return(ctx->ga.FitnessType);
 }
 
-/*U***************************************************************************
-   PGAGetFitnessMinType - Returns the type of fitness transformation used
-   for minimization problems.
+/*!***************************************************************************
+    \brief Return the type of fitness transformation used for
+           minimization problems.
+    \ingroup query
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \return  Returns the integer corresponding to the symbolic constant
+             used to specify the type of fitness transformation used for
+             minimization problems
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns the integer corresponding to the symbolic constant
-      used to specify the type of fitness transformation used
-      for minimization problems
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int fitmintype;
-      :
-      fitmintype = PGAGetFitnessMinType(ctx);
-      switch (fitmintype) {
-      case PGA_FITNESSMIN_RECIPROCAL:
-          printf ("Fitness Minimization Type = PGA_FITNESSMIN_RECIPROCAL\n");
-          break;
-      case PGA_FITNESSMIN_CMAX:
-          printf ("Fitness Minimization Type = PGA_FITNESSMIN_CMAX\n");
-          break;
-      }
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int fitmintype;
+
+       ...
+       fitmintype = PGAGetFitnessMinType (ctx);
+       switch (fitmintype) {
+       case PGA_FITNESSMIN_RECIPROCAL:
+           printf ("Fitness Minimization Type = PGA_FITNESSMIN_RECIPROCAL\n");
+           break;
+       case PGA_FITNESSMIN_CMAX:
+           printf ("Fitness Minimization Type = PGA_FITNESSMIN_CMAX\n");
+           break;
+       }
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetFitnessMinType (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetFitnessMinType");
-    PGAFailIfNotSetUp("PGAGetFitnessType");
+    PGADebugEntered   ("PGAGetFitnessMinType");
+    PGAFailIfNotSetUp ("PGAGetFitnessType");
 
-    PGADebugExited("PGAGetFitnessMinType");
+    PGADebugExited ("PGAGetFitnessMinType");
 
     return(ctx->ga.FitnessMinType);
 }
 
-/*U***************************************************************************
-   PGAGetMaxFitnessRank - returns the maximum value used in rank-based
-   fitness.
+/*!***************************************************************************
+    \brief Return the maximum value used in rank-based fitness.
+    \ingroup query
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \return  The value of MAX used in rank-based fitness
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The value of MAX used in rank-based fitness
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double max;
-      :
-      max = PGAGetMaxFitnessRank(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double max;
+
+       ...
+       max = PGAGetMaxFitnessRank (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetMaxFitnessRank (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetMaxFitnessRank");
-    PGAFailIfNotSetUp("PGAGetFitnessType");
+    PGADebugEntered   ("PGAGetMaxFitnessRank");
+    PGAFailIfNotSetUp ("PGAGetMaxFitnessRank");
 
-    PGADebugExited("PGAGetMaxFitnessRank");
+    PGADebugExited ("PGAGetMaxFitnessRank");
 
-    return(ctx->ga.FitnessRankMax);
+    return ctx->ga.FitnessRankMax;
 }
 
-/*U****************************************************************************
-   PGASetFitnessType - Set the type of fitness algorithm to use. Valid choices
-   are PGA_FITNESS_RAW, PGA_FITNESS_NORMAL, or PGA_FITNESS_RANKING for
-   raw fitness (the evaluation function value), linear normalization, or
-   linear ranking, respectively.  The default is PGA_FITNESS_RAW.
+/*!****************************************************************************
+    \brief Set the type of fitness algorithm to use.
+    \ingroup init
 
-   Category: Fitness & Evaluation
+    \param   ctx           context variable
+    \param   fitness_type  symbolic constant to specify fitness type
+    \return  None
 
-   Inputs:
-      ctx          - context variable
-      fitness_type - symbolic constant to specify fitness type
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetFitnessType(ctx, PGA_FITNESS_RANKING);
+    Valid choices are PGA_FITNESS_RAW, PGA_FITNESS_NORMAL, or
+    PGA_FITNESS_RANKING for raw fitness (the evaluation function value),
+    linear normalization, or linear ranking, respectively.  The default
+    is PGA_FITNESS_RAW.
 
-****************************************************************************U*/
-void PGASetFitnessType( PGAContext *ctx, int fitness_type)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetFitnessType (ctx, PGA_FITNESS_RANKING);
+
+    \endrst
+
+******************************************************************************/
+void PGASetFitnessType (PGAContext *ctx, int fitness_type)
 {
 
-    PGADebugEntered("PGASetFitnessType");
+    PGADebugEntered ("PGASetFitnessType");
 
     switch (fitness_type) {
         case PGA_FITNESS_RAW:
@@ -441,41 +510,52 @@ void PGASetFitnessType( PGAContext *ctx, int fitness_type)
             ctx->ga.FitnessType = fitness_type;
             break;
         default:
-            PGAError(ctx, "PGASetFitnessType: Invalid value of fitness_type:",
-                     PGA_FATAL, PGA_INT, (void *) &fitness_type);
+            PGAError
+                ( ctx, "PGASetFitnessType: Invalid value of fitness_type:"
+                , PGA_FATAL, PGA_INT, (void *) &fitness_type
+                );
             break;
     }
 
-    PGADebugExited("PGASetFitnessType");
+    PGADebugExited ("PGASetFitnessType");
 }
 
-/*U****************************************************************************
-   PGASetFitnessMinType - sets the type of algorithm used if a minimization
-   problem is specified to determine how values are remapped for maximization.
-   Valid choices are PGA_FITNESSMIN_RECIPROCAL and PGA_FITNESSMIN_CMAX to do
-   the mapping using the reciprocal of the evaluation function, or by
-   subtracting the worst evaluation function value from each evaluation
-   function value, respectively.  The default is PGA_FITNESSMIN_CMAX
+/*!****************************************************************************
+    \brief Set the type of algorithm used if a minimization problem is
+           specified to determine how values are remapped for maximization.
+    \ingroup init
 
-   Category: Fitness & Evaluation
+    \param ctx          context variable
+    \param fitness_type symbolic constant to specify fitness minimization type
+    \return None
 
-   Inputs:
-      ctx          - context variable
-      fitness_type - symbolic constant to specify fitness minimization type
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetFitnessMinType(ctx, PGA_FITNESSMIN_CMAX);
+    Valid choices are PGA_FITNESSMIN_RECIPROCAL and PGA_FITNESSMIN_CMAX to do
+    the mapping using the reciprocal of the evaluation function, or by
+    subtracting the worst evaluation function value from each evaluation
+    function value, respectively.  The default is PGA_FITNESSMIN_CMAX.
 
-****************************************************************************U*/
-void PGASetFitnessMinType( PGAContext *ctx, int fitness_type)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetFitnessMinType (ctx, PGA_FITNESSMIN_CMAX);
+
+   \endrst
+
+******************************************************************************/
+void PGASetFitnessMinType (PGAContext *ctx, int fitness_type)
 {
 
-    PGADebugEntered("PGASetFitnessMinType");
+    PGADebugEntered ("PGASetFitnessMinType");
 
     switch (fitness_type) {
         case PGA_FITNESSMIN_RECIPROCAL:
@@ -483,71 +563,87 @@ void PGASetFitnessMinType( PGAContext *ctx, int fitness_type)
             ctx->ga.FitnessMinType = fitness_type;
             break;
         default:
-            PGAError ( ctx,
-                      "PGASetFitnessMinType: Invalid value of fitness_type:",
-                       PGA_FATAL, PGA_INT, (void *) &fitness_type);
+            PGAError
+                ( ctx, "PGASetFitnessMinType: Invalid value of fitness_type:"
+                , PGA_FATAL, PGA_INT, (void *) &fitness_type
+                );
         break;
     }
 
-    PGADebugExited("PGASetFitnessMinType");
+    PGADebugExited ("PGASetFitnessMinType");
 }
 
-/*U****************************************************************************
-   PGASetMaxFitnessRank - The value of the parameter Max when using linear
-   ranking for fitness determination. The default value is 1.2.  The value
-   must be from the interval [1.0, 2.0].  The fitness type must have been set
-   to PGA_FITNESS_RANKING with PGASetFitnessType for this function call
-   to have any effect.
+/*!****************************************************************************
+    \brief The value of the parameter Max when using linear ranking for
+           fitness determination.
+    \ingroup init
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \param   max  the value of the parameter Max when using linear ranking
+    \return None
 
-   Inputs:
-      ctx - context variable
-      max - the value of the parameter Max when using linear ranking
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetMaxFitnessRank(ctx, 1.1);
+    The default value is 1.2.  The value must be from the interval
+    [1.0, 2.0]. The fitness type must have been set to PGA_FITNESS_RANKING
+    with PGASetFitnessType for this function call to have any effect.
 
-****************************************************************************U*/
-void PGASetMaxFitnessRank( PGAContext *ctx, double fitness_rank_max)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetMaxFitnessRank (ctx, 1.1);
+
+    \endrst
+
+******************************************************************************/
+void PGASetMaxFitnessRank (PGAContext *ctx, double max)
 {
-    PGADebugEntered("PGASetMaxFitnessRank");
+    PGADebugEntered ("PGASetMaxFitnessRank");
 
-    if ((fitness_rank_max < 1.0) || (fitness_rank_max > 2.0))
-        PGAError ( ctx,
-                  "PGASetMaxFitnessRank: Invalid value of fitness_rank_max:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &fitness_rank_max);
-    else
-        ctx->ga.FitnessRankMax = fitness_rank_max;
+    if ((max < 1.0) || (max > 2.0)) {
+        PGAError
+            ( ctx, "PGASetMaxFitnessRank: Invalid value of max:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &max
+            );
+    } else {
+        ctx->ga.FitnessRankMax = max;
+    }
 
-    PGADebugExited("PGASetMaxFitnessRank");
+    PGADebugExited ("PGASetMaxFitnessRank");
 }
 
+/*!****************************************************************************
+    \brief Calculates fitness using a ranking method and linear ordering.
+    \ingroup internal
+
+    \param  ctx      context variable
+    \param  popindex population index to calculate fitness for
+    \return Calculates the fitness for each string in the population via
+            side effect
+
+    \rst
+
+    Description
+    -----------
+
+    The fitness function is of the form u(x) = K - (rank * sigma) with
+    the constant K equal to the mean of the evaluation functions, and
+    the decrement sigma equal to the standard deviation of the same [1]_.
+
+    .. [1] L. Davis, Handbook of Genetic Algorithms, pg. 33
+
+    \endrst
 
 
-/*I****************************************************************************
-  PGAFitnessLinearNormal - Calculates fitness using a ranking method and
-  linear' ordering.  The fitness function is of the form
-  u(x) = K - ( rank * sigma ) with the constant K equal to the mean of the
-  evaluation functions, and the decrement sigma equal to the standard
-  deviation of the same.
-  Ref:    L. Davis, Handbook of Genetic Algorithms, pg. 33
-
-  Inputs:
-    ctx  - context variable
-    pop  - population index to calculate fitness for
-
-  Outputs:
-     Calculates the fitness for each string in the population via side effect
-
-  Example:
-
-****************************************************************************I*/
+******************************************************************************/
 static void PGAFitnessLinearNormal (PGAContext *ctx, int popindex)
 {
 
@@ -556,7 +652,7 @@ static void PGAFitnessLinearNormal (PGAContext *ctx, int popindex)
     PGAIndividual *pop =
         (popindex == PGA_OLDPOP) ? ctx->ga.oldpop : ctx->ga.newpop;
 
-    PGADebugEntered("PGAFitnessLinearNormal");
+    PGADebugEntered ("PGAFitnessLinearNormal");
 
     /* Sort by *eval* (not fitness), no need to init array */
     PGAEvalSort (ctx, popindex, ctx->scratch.intscratch);
@@ -576,32 +672,40 @@ static void PGAFitnessLinearNormal (PGAContext *ctx, int popindex)
     for (i=0; i<ctx->ga.PopSize; i++) {
         (pop+i)->fitness =
             K - ( sigma
-                * (double)PGARank (ctx,i,ctx->scratch.intscratch,ctx->ga.PopSize)
+                * (double)PGARank
+                    (ctx,i,ctx->scratch.intscratch,ctx->ga.PopSize)
                 );
     }
 
-    PGADebugExited("PGAFitnessLinearNormal");
+    PGADebugExited ("PGAFitnessLinearNormal");
 }
 
-/*I****************************************************************************
-  PGAFitnessLinearRank - Calculates fitness using linear ranking. The fitness
-  function is of the form 1/N * ( max - (max-min) * ( (i-1)/(N-1) ) ) where
-  min = 2-max and 1 <= max <= 2.
-  Ref:    J. Baker: Adaptive selection methods for GAs
-  Ref:    J. Baker: Extended selection mechanism in GAs
-  Ref:    J. Grefenstte: A critical look at implicit parallelism
-  Ref:    D. Whitley's linear() function on pp. 121 of ICGA
+/*!****************************************************************************
+    \brief Calculate fitness using linear ranking.
+    \ingroup internal
 
-  Inputs:
-    ctx  - context variable
-    pop  - population index to calculate fitness for
+    \param  ctx      context variable
+    \param  popindex population index to calculate fitness for
+    \return Calculates the fitness for each string in the population via
+            side effect
 
-  Outputs:
-     Calculates the fitness for each string in the population via side effect
+    \rst
 
-  Example:
+    Description
+    -----------
 
-****************************************************************************I*/
+    The fitness function is of the form [1]_, [2]_, [3]_, [4]_
+    1/N * (max - (max-min) * ((i-1)/(N-1)))
+    where min = 2-max and 1 <= max <= 2.
+
+    .. [1]    J. Baker: Adaptive selection methods for GAs
+    .. [2]    J. Baker: Extended selection mechanism in GAs
+    .. [3]    J. Grefenstette: A critical look at implicit parallelism
+    .. [4]    D. Whitley's linear() function on pp. 121 of ICGA
+
+    \endrst
+
+******************************************************************************/
 static void PGAFitnessLinearRank (PGAContext *ctx, int popindex)
 {
     double max, min, popsize, rpopsize;
@@ -625,7 +729,7 @@ static void PGAFitnessLinearRank (PGAContext *ctx, int popindex)
             ( rpopsize
             * ( max
               - ( (max - min)
-                * ( ((double)PGARank(ctx,i,scratch,ctx->ga.PopSize) - 1.)
+                * ( ((double)PGARank (ctx,i,scratch,ctx->ga.PopSize) - 1.)
                   / (popsize - 1.)
                   )
                 )
@@ -637,58 +741,69 @@ static void PGAFitnessLinearRank (PGAContext *ctx, int popindex)
 }
 
 
-/*I****************************************************************************
-  PGAFitnessMinReciprocal - Calculates fitness in the case of a minimization
-  problem using the reciprocal of the evaluation function. This is a power law
-  u(x) = ( a f(x) + b )^k with a=1, b=0, k=-1
+/*!****************************************************************************
+    \brief Calculate fitness in the case of a minimization problem using
+           the reciprocal of the evaluation function.
+    \ingroup internal
 
-  Inputs:
-    ctx  - context variable
-    pop  - population pointer to calculate fitness for
+    \param  ctx   context variable
+    \param  pop   population pointer to calculate fitness for
+    \return Calculates the fitness for each string in the population via
+            side effect
 
-  Outputs:
-     Calculates the fitness for each string in the population via side effect
+    \rst
 
-  Example:
+    Description
+    -----------
 
-****************************************************************************I*/
-static void PGAFitnessMinReciprocal ( PGAContext *ctx, PGAIndividual *pop )
+    This is a power law
+    u(x) = (a f(x) + b)^k with a=1, b=0, k=-1
+
+    \endrst
+
+******************************************************************************/
+static void PGAFitnessMinReciprocal (PGAContext *ctx, PGAIndividual *pop)
 {
     int i;
 
-    PGADebugEntered("PGAFitnessMinReciprocal");
+    PGADebugEntered ("PGAFitnessMinReciprocal");
 
-    for( i=0; i<ctx->ga.PopSize; i++ ) {
-        if ( (pop+i)->fitness != 0. )
+    for (i=0; i<ctx->ga.PopSize; i++) {
+        if ((pop+i)->fitness != 0.) {
             (pop+i)->fitness = 1. / (pop+i)->fitness;
-        else
-            PGAError( ctx,
-                     "PGAFitnessReciprocal: Value 0.0 for fitness member:",
-                      PGA_FATAL,
-                      PGA_INT,
-                     (void *) &i );
+        } else {
+            PGAError
+                ( ctx, "PGAFitnessReciprocal: Value 0.0 for fitness member:"
+                , PGA_FATAL, PGA_INT, (void *) &i
+                );
+        }
     }
 
-    PGADebugExited("PGAFitnessMinReciprocal");
+    PGADebugExited ("PGAFitnessMinReciprocal");
 }
 
 
-/*I****************************************************************************
-  PGAFitnessMinCmax - Calculates fitness in the case of a minimization
-  problem by subtracting the worst evaluation function value from each
-  evaluation function.  This is a dynamic linear fitness function
-  u(x) = a f(x) + b(t) with a=-1, b(t) = 1.1 * max f(x)
+/*!****************************************************************************
+    \brief Calculate fitness in the case of a minimization problem by
+           subtracting the worst evaluation function value from each
+           evaluation function.
+    \ingroup internal
 
-  Inputs:
-    ctx  - context variable
-    pop  - population pointer to calculate fitness for
+    \param  ctx   context variable
+    \param  pop   population pointer to calculate fitness for
+    \return Calculates the fitness for each string in the population via
+            side effect
 
-  Outputs:
-     Calculates the fitness for each string in the population via side effect
+    \rst
 
-  Example:
+    Description
+    -----------
 
-****************************************************************************I*/
+    This is a dynamic linear fitness function
+    u(x) = a f(x) + b(t) with a=-1, b(t) = 1.1 * max f(x)
+
+    \endrst
+******************************************************************************/
 static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop)
 {
     int i;
@@ -712,7 +827,8 @@ static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop)
          */
         double evalue = (pop+i)->evalue;
         if (cmax == cmax - evalue && evalue != 0) {
-            PGAErrorPrintf (ctx, PGA_FATAL
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
                 , "PGAFitness: Overflow computing cmax fitness\n"
                   "Values: cmax=%e, evalue=%e\n"
                   "You can use a ranking variant of fitness computation\n"
@@ -726,59 +842,70 @@ static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop)
 }
 
 
-/*U****************************************************************************
-   PGASetFitnessCmaxValue - The value of the multiplier used by
-   PGAFitnessMinCmax so that the worst string has a nonzero fitness.
-   The default value is 1.01.
+/*!****************************************************************************
+    \brief Set value of the multiplier used by MinCmax fitness algorithm
+           so that the worst string has a nonzero fitness.
+    \ingroup init
 
-   Category: Fitness & Evaluation
+    \param   ctx  context variable
+    \param   val  the value of the multiplier
+    \return  None
 
-   Inputs:
-      ctx - context variable
-      val - the value of the multiplier
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetFitnessCmaxValue(ctx, 1.2);
+    The default value is 1.01.
 
-****************************************************************************U*/
-void PGASetFitnessCmaxValue( PGAContext *ctx, double val)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetFitnessCmaxValue (ctx, 1.2);
+
+    \endrst
+
+******************************************************************************/
+void PGASetFitnessCmaxValue (PGAContext *ctx, double val)
 {
-    PGADebugEntered("PGASetFitnessCmaxValue");
+    PGADebugEntered ("PGASetFitnessCmaxValue");
     ctx->ga.FitnessCmaxValue = val;
-    PGADebugExited("PGASetFitnessCmaxValue");
+    PGADebugExited ("PGASetFitnessCmaxValue");
 }
 
+/*!***************************************************************************
+    \brief Return the value of the multiplier used in the MinCmax
+           fitness algorithm.
+    \ingroup query
 
+    \param  ctx  context variable
+    \return The value of Cmax used
 
-/*U***************************************************************************
-   PGAGetFitnessCmaxValue - returns the value of the multiplier used by
-   PGAFitnessMinCmax.
+    \rst
 
-   Category: Fitness & Evaluation
+    Example
+    -------
 
-   Inputs:
-      ctx - context variable
+    .. code-block:: c
 
-   Outputs:
-      The value of Cmax used in
+       PGAContext *ctx;
+       double cmax;
 
-   Example:
-      PGAContext *ctx;
-      double cmax;
-      :
-      cmax = PGAGetFitnessCmaxValue(ctx);
+       ...
+       cmax = PGAGetFitnessCmaxValue (ctx);
 
-***************************************************************************U*/
+    \endrst
+
+*****************************************************************************/
 double PGAGetFitnessCmaxValue (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetFitnessCmaxValue");
-    PGAFailIfNotSetUp("PGAGetFitnessType");
-    PGADebugExited("PGAGetFitnessCmaxValue");
-    return(ctx->ga.FitnessCmaxValue);
+    PGADebugEntered   ("PGAGetFitnessCmaxValue");
+    PGAFailIfNotSetUp ("PGAGetFitnessCmaxValue");
+    PGADebugExited ("PGAGetFitnessCmaxValue");
+    return ctx->ga.FitnessCmaxValue;
 }
-

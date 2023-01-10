@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,32 +37,40 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: f2c_interface.c
-*
-*     This file contains routines that are called by the Fortran version of
-*     the PGAPack calls.  They just make the call to the appropriate C
-*     routine.  Issues are:
-*         * Fortran's always passing by reference,
-*         * Using Fortran integers for holding C pointer values
-*         * Fortran's 1,...,n indexing vs. C's 0,...,n-1
-*           (this comes up in population member and allele indices)
-*         * Pointers to functions
-*         * File pointers
-*         * Characters strings
-*         * Variable length argument lists
-*
-*     We assume the Fortran compiler generates one of three symbol names for
-*     the external PGAPack routine, e.g.,  pgasetpopsize,  pgasetpopsize_, or
-*     PGASETPOPSIZE.  We use #ifdef's based on the appropriate routine to
-*     convert the canonical pgasetpopsize_ to the other two.  Since the real
-*     C routine is always mixed case we will never have a conflict.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+    \file
+    This file contains routines that are called by the Fortran version of
+    the PGAPack calls.
+    \authors Authors:
+           David M. Levine, Philip L. Hallstrom, David M. Noelle,
+           Brian P. Walenz, Ralf Schlatterbeck
+
+    They just make the call to the appropriate C routine.  Issues are:
+ 
+    - Fortran's always passing by reference,
+    - Using Fortran integers for holding C pointer values
+    - Fortran's 1,...,n indexing vs. C's 0,...,n-1
+      (this comes up in population member and allele indices)
+    - Pointers to functions
+    - File pointers
+    - Characters strings
+    - Variable length argument lists
+ 
+    We assume the Fortran compiler generates one of three symbol names for
+    the external PGAPack routine, e.g., ``pgasetpopsize``, ``pgasetpopsize_``,
+    or ``PGASETPOPSIZE``.  We use ``#ifdef``'s based on the appropriate
+    routine to convert the canonical ``pgasetpopsize_`` to the other
+    two.  Since the real C routine is always mixed case we will never
+    have a conflict.
+ 
+    Note that the functions are not explicitly documented, they are
+    typically a mangled variant (lowercase or uppercase, leading and/or
+    trailing underscore) of the C original.
+
 *****************************************************************************/
 
 #include "pgapack.h"
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 #if defined(FORTRANCAP)
 /* binary.c */
@@ -1101,16 +1109,20 @@ int pgautilhash_ (void *data, size_t *sz, int *initval);
 void pgasetbinaryallele_(PGAContext **ftx, int *p, int *pop, int *i,
      int *val)
 {
-     PGASetBinaryAllele(*ftx,
-	   *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-	   *pop, *i-1, *val);
+     PGASetBinaryAllele
+        ( *ftx
+        , *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1
+        , *pop, *i-1, *val
+        );
 }
 
 int pgagetbinaryallele_(PGAContext **ftx, int *p, int *pop, int *i)
 {
-     return PGAGetBinaryAllele(*ftx,
-		  *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-		  *pop, *i-1);
+     return PGAGetBinaryAllele
+        ( *ftx
+        , *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1
+        , *pop, *i-1
+        );
 }
 
 void pgasetbinaryinitprob_(PGAContext **ftx, double *probability)
@@ -1127,17 +1139,21 @@ double pgagetbinaryinitprob_(PGAContext **ftx)
 void pgasetcharacterallele_(PGAContext **ftx, int *p, int *pop, int *i,
      char *val)
 {
-     PGASetCharacterAllele(*ftx,
-	   *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-	   *pop, *i-1, *val);
+     PGASetCharacterAllele
+        ( *ftx
+        , *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1
+        , *pop, *i-1, *val
+        );
 }
 
 void pgagetcharacterallele_(char *retval_ptr, int retval_len, PGAContext **ftx,
      int *p, int *pop, int *i)
 {
-     *retval_ptr = PGAGetCharacterAllele(*ftx,
-		  *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-		  *pop, *i-1);
+     *retval_ptr = PGAGetCharacterAllele
+        ( *ftx
+        , *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1
+        , *pop, *i-1
+        );
 }
 
 void pgasetcharacterinittype_(PGAContext **ftx, int *value)
@@ -1245,13 +1261,15 @@ void pgasetoutputfile_ (PGAContext **ftx, char *name)
 void pgacrossover_(PGAContext **ftx, int *m1, int *m2, int *oldpop, int *t1,
      int *t2, int *newpop)
 {
-     PGACrossover (*ftx,
-		   *m1 == PGA_TEMP1 || *m1 == PGA_TEMP2 ? *m1 : *m1-1,
-		   *m2 == PGA_TEMP1 || *m2 == PGA_TEMP2 ? *m2 : *m2-1,
-		   *oldpop,
-		   *t1 == PGA_TEMP1 || *t1 == PGA_TEMP2 ? *t1 : *t1-1,
-		   *t2 == PGA_TEMP1 || *t2 == PGA_TEMP2 ? *t2 : *t2-1,
-		   *newpop);
+     PGACrossover
+        ( *ftx
+        , *m1 == PGA_TEMP1 || *m1 == PGA_TEMP2 ? *m1 : *m1-1
+        , *m2 == PGA_TEMP1 || *m2 == PGA_TEMP2 ? *m2 : *m2-1
+        , *oldpop
+        , *t1 == PGA_TEMP1 || *t1 == PGA_TEMP2 ? *t1 : *t1-1
+        , *t2 == PGA_TEMP1 || *t2 == PGA_TEMP2 ? *t2 : *t2-1
+        , *newpop
+        );
 }
 
 int pgagetcrossovertype_(PGAContext **ftx)
@@ -1334,9 +1352,10 @@ void pgadebugprint_
 /* FORTRAN implicitly passes the lengths of funcname and msg into len1
    and len2, respectively */
 {
-     if (funcname [len1] != 0 || msg [len2] != 0)
-	  funcname [len1] = msg [len2] = 0;
-     PGADebugPrint (*ftx, *level, funcname, msg, *datatype, data );
+    if (funcname [len1] != 0 || msg [len2] != 0) {
+        funcname [len1] = msg [len2] = 0;
+    }
+    PGADebugPrint (*ftx, *level, funcname, msg, *datatype, data );
 }
 #else
 void pgadebugprint_
@@ -1620,16 +1639,20 @@ double pgahammingdistance_(PGAContext **ftx, int *popindex)
 void pgasetintegerallele_(PGAContext **ftx, int *p, int *pop, int *i,
      int *val)
 {
-     PGASetIntegerAllele(*ftx,
-	   *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-	   *pop, *i-1, *val);
+     PGASetIntegerAllele
+        ( *ftx
+        , *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1
+        , *pop, *i-1, *val
+        );
 }
 
 int pgagetintegerallele_(PGAContext **ftx, int *p, int *pop, int *i)
 {
-     return PGAGetIntegerAllele(*ftx,
-		  *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-		  *pop, *i-1);
+     return PGAGetIntegerAllele
+        ( *ftx
+        , *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1
+        , *pop, *i-1
+        );
 }
 
 void pgasetintegerinitpermute_(PGAContext **ftx, int *min, int *max)
@@ -1660,8 +1683,7 @@ int pgagetmaxintegerinitvalue_ (PGAContext **ftx, int *i)
 /* mutation.c */
 void pgamutate_(PGAContext **ftx, int *p, int *pop)
 {
-     PGAMutate(*ftx,
-	   *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop);
+     PGAMutate (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop);
 }
 
 void pgasetmutationtype_(PGAContext **ftx, int *mutation_type)
@@ -1860,9 +1882,11 @@ void pgaevaluate_(PGAContext **ftx, int *pop,
 
 unsigned long pgabuilddatatype_(PGAContext **ftx, int *p, int *pop)
 {
-     return((unsigned long)PGABuildDatatype(*ftx, 
-                             *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-                             *pop));
+     return (unsigned long)PGABuildDatatype
+        ( *ftx
+        , *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1
+        , *pop
+        );
 }
 
 void pgasendindividual_(PGAContext **ftx, int *p, int *pop, int *dest, int *tag, MPI_Comm *comm)
@@ -1879,11 +1903,13 @@ void pgareceiveindividual_(PGAContext **ftx, int *p, int *pop, int *source, int 
 
 void pgasendreceiveindividual_(PGAContext **ftx, int *send_p, int *send_pop, int *dest, int *send_tag, int *recv_p, int *recv_pop, int *source, int *recv_tag, MPI_Comm *comm, MPI_Status *status)
 {
-     PGASendReceiveIndividual(*ftx, 
-          *send_p == PGA_TEMP1 || *send_p == PGA_TEMP2 ? *send_p : *send_p - 1,
-          *send_pop, *dest, *send_tag, 
-          *recv_p == PGA_TEMP1 || *recv_p == PGA_TEMP2 ? *recv_p : *recv_p - 1,
-          *recv_pop, *source, *recv_tag, *comm, status);
+     PGASendReceiveIndividual
+        ( *ftx
+        , *send_p == PGA_TEMP1 || *send_p == PGA_TEMP2 ? *send_p : *send_p - 1
+        , *send_pop, *dest, *send_tag
+        , *recv_p == PGA_TEMP1 || *recv_p == PGA_TEMP2 ? *recv_p : *recv_p - 1
+        , *recv_pop, *source, *recv_tag, *comm, status
+        );
 }
 
 int pgagetrank_(PGAContext **ftx, MPI_Comm *comm)
@@ -2091,16 +2117,20 @@ void pgasetrandomseed_(PGAContext **ftx, int *seed)
 void pgasetrealallele_(PGAContext **ftx, int *p, int *pop, int *i,
      double *val)
 {
-     PGASetRealAllele(*ftx,
-	   *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-	   *pop, *i-1, *val);
+     PGASetRealAllele
+        ( *ftx
+        , *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1
+        , *pop, *i-1, *val
+        );
 }
 
 double pgagetrealallele_(PGAContext **ftx, int *p, int *pop, int *i)
 {
-     return PGAGetRealAllele(*ftx,
-		  *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-		  *pop, *i-1);
+     return PGAGetRealAllele
+        ( *ftx
+        , *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1
+        , *pop, *i-1
+        );
 }
 
 void pgasetrealinitpercent_(PGAContext **ftx, double *median, double *percent)
@@ -2132,31 +2162,28 @@ int pgagetrealinittype_(PGAContext **ftx)
 void pgaprintreport_(PGAContext **ftx, char *name, int *pop, int len)
 /* FORTRAN implicitly passes the length of name into len. */
 {
-     FILE *fp;
-     if (name[len] != 0)
-	  name[len] = 0;
-     if (!strcmp(name, "STDOUT") || !strcmp(name, "stdout"))
-     {
-	  fp = stdout;
-	  PGAPrintReport(*ftx, fp, *pop);
-     }
-     else if (!strcmp(name, "STDERR") || !strcmp(name, "stderr"))
-     {
-	  fp = stderr;
-	  PGAPrintReport(*ftx, fp, *pop);
-     }
-     else
-     {
-	  fp = fopen(name, "a");
-	  if (!fp)
-	       PGAError(*ftx, "PGAPrintReport: Could not open file:",
-			     PGA_FATAL, PGA_CHAR, (void *) name);
-	  else
-	  {
-	       PGAPrintReport(*ftx, fp, *pop);
-	       fclose(fp);
-	  }
-     }
+    FILE *fp;
+    if (name[len] != 0) {
+        name[len] = 0;
+    }
+    if (!strcmp(name, "STDOUT") || !strcmp(name, "stdout")) {
+        fp = stdout;
+        PGAPrintReport(*ftx, fp, *pop);
+    } else if (!strcmp(name, "STDERR") || !strcmp(name, "stderr")) {
+        fp = stderr;
+        PGAPrintReport(*ftx, fp, *pop);
+    } else {
+        fp = fopen (name, "a");
+        if (!fp) {
+            PGAError
+                ( *ftx, "PGAPrintReport: Could not open file:"
+                , PGA_FATAL, PGA_CHAR, (void *) name
+                );
+        } else {
+            PGAPrintReport (*ftx, fp, *pop);
+            fclose (fp);
+        }
+    }
 }
 
 void pgasetprintoptions_(PGAContext **ftx, int *option)
@@ -2187,135 +2214,129 @@ int pgagetmultiobjprecision_ (PGAContext **ftx)
 void pgaprintpopulation_(PGAContext **ftx, char *name, int *pop, int len)
 /* FORTRAN implicitly passes the length of name into len. */
 {
-     FILE *fp;
-     if (name[len] != 0)
-	  name[len] = 0;
-     if (!strcmp(name, "STDOUT") || !strcmp(name, "stdout"))
-     {
-	  fp = stdout;
-	  PGAPrintPopulation(*ftx, fp, *pop);
-     }
-     else if (!strcmp(name, "STDERR") || !strcmp(name, "stderr"))
-     {
-	  fp = stderr;
-	  PGAPrintPopulation(*ftx, fp, *pop);
-     }
-     else
-     {
-	  fp = fopen(name, "a");
-	  if (!fp)
-	       PGAError(*ftx, "PGAPrintPopulation: Could not open file:",
-			     PGA_FATAL, PGA_CHAR, (void *) name);
-	  else
-	  {
-	       PGAPrintPopulation(*ftx, fp, *pop);
-	       fclose(fp);
-	  }
-     }
+    FILE *fp;
+    if (name[len] != 0) {
+        name[len] = 0;
+    }
+    if (!strcmp(name, "STDOUT") || !strcmp(name, "stdout")) {
+        fp = stdout;
+        PGAPrintPopulation (*ftx, fp, *pop);
+    } else if (!strcmp(name, "STDERR") || !strcmp(name, "stderr")) {
+        fp = stderr;
+        PGAPrintPopulation (*ftx, fp, *pop);
+    } else {
+        fp = fopen (name, "a");
+        if (!fp) {
+            PGAError
+                ( *ftx, "PGAPrintPopulation: Could not open file:"
+                , PGA_FATAL, PGA_CHAR, (void *) name
+                );
+        } else {
+            PGAPrintPopulation (*ftx, fp, *pop);
+            fclose (fp);
+        }
+    }
 }
 
-void pgaprintindividual_ (PGAContext **ftx, char *name, int *p,
-     int *pop, int len)
-          /* FORTRAN implicitly passes the length of name into len. */
+void pgaprintindividual_
+    (PGAContext **ftx, char *name, int *p, int *pop, int len)
+    /* FORTRAN implicitly passes the length of name into len. */
 {
-     FILE *fp;
-     if (name[len] != 0)
-	  name[len] = 0;
-     if (!strcmp(name, "STDOUT") || !strcmp(name, "stdout"))
-     {
-	  fp = stdout;
-	  PGAPrintIndividual(*ftx, fp, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-		*pop);
-     }
-     else if (!strcmp(name, "STDERR") || !strcmp(name, "stderr"))
-     {
-	  fp = stderr;
-	  PGAPrintIndividual(*ftx, fp, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-		*pop);
-     }
-     else
-     {
-	  fp = fopen(name, "a");
-	  if (!fp)
-	       PGAError(*ftx, "PGAPrintIndividual: Could not open file:",
-			     PGA_FATAL, PGA_CHAR, (void *) name);
-	  else
-	  {
-	       PGAPrintIndividual(*ftx, fp, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-		     *pop);
-	       fclose(fp);
-	  }
-     }
+    FILE *fp;
+    if (name[len] != 0) {
+        name[len] = 0;
+    }
+    if (!strcmp(name, "STDOUT") || !strcmp(name, "stdout")) {
+        fp = stdout;
+        PGAPrintIndividual
+            (*ftx, fp, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1, *pop);
+    } else if (!strcmp(name, "STDERR") || !strcmp(name, "stderr")) {
+        fp = stderr;
+        PGAPrintIndividual
+            (*ftx, fp, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1, *pop);
+    } else {
+        fp = fopen(name, "a");
+        if (!fp) {
+            PGAError
+                ( *ftx, "PGAPrintIndividual: Could not open file:"
+                , PGA_FATAL, PGA_CHAR, (void *) name
+                );
+        } else {
+            PGAPrintIndividual
+                ( *ftx, fp
+                , *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1
+                , *pop
+                );
+            fclose(fp);
+        }
+    }
 }
 
 void pgaprintstring_ (PGAContext **ftx, char *name, int *p,
      int *pop, int len)
           /* FORTRAN implicitly passes the length of name into len. */
 {
-     FILE *fp;
-     if (name[len] != 0)
-	  name[len] = 0;
-     if (!strcmp(name, "STDOUT") || !strcmp(name, "stdout"))
-     {
-	  fp = stdout;
-	  PGAPrintString(*ftx, fp, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-		*pop);
-     }
-     else if (!strcmp(name, "STDERR") || !strcmp(name, "stderr"))
-     {
-	  fp = stderr;
-	  PGAPrintString(*ftx, fp, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-		*pop);
-     }
-     else
-     {
-	  fp = fopen(name, "a");
-	  if (!fp)
-	       PGAError(*ftx, "PGAPrintString: Could not open file:",
-			     PGA_FATAL, PGA_CHAR, (void *) name);
-	  else
-	  {
-	       PGAPrintString(*ftx, fp, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1,
-		     *pop);
-	       fclose(fp);
-	  }
-     }
+    FILE *fp;
+    if (name [len] != 0) {
+        name [len] = 0;
+    }
+    if (!strcmp(name, "STDOUT") || !strcmp(name, "stdout")) {
+        fp = stdout;
+        PGAPrintString
+            (*ftx, fp, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1, *pop);
+    } else if (!strcmp(name, "STDERR") || !strcmp(name, "stderr")) {
+        fp = stderr;
+        PGAPrintString
+            (*ftx, fp, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1, *pop);
+    } else {
+        fp = fopen (name, "a");
+        if (!fp) {
+            PGAError
+                ( *ftx, "PGAPrintString: Could not open file:"
+                , PGA_FATAL, PGA_CHAR, (void *) name
+                );
+        } else {
+            PGAPrintString
+                ( *ftx, fp
+                , *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p - 1
+                , *pop
+                );
+            fclose(fp);
+        }
+    }
 }
 
 void pgaprintcontextvariable_(PGAContext **ftx, char *name, int len)
 /* FORTRAN implicitly passes the length of name into len. */
 {
-     FILE *fp;
-     if (name[len] != 0)
-	  name[len] = 0;
-     if (!strcmp(name, "STDOUT") || !strcmp(name, "stdout"))
-     {
-	  fp = stdout;
-	  PGAPrintContextVariable(*ftx, fp);
-     }
-     else if (!strcmp(name, "STDERR") || !strcmp(name, "stderr"))
-     {
-	  fp = stderr;
-	  PGAPrintContextVariable(*ftx, fp);
-     }
-     else
-     {
-	  fp = fopen(name, "a");
-	  if (!fp)
-	       PGAError(*ftx, "PGAPrintContextVariable: Could not open file:",
-			     PGA_FATAL, PGA_CHAR, (void *) name);
-	  else
-	  {
-	       PGAPrintContextVariable(*ftx, fp);
-	       fclose(fp);
-	  }
-     }
+    FILE *fp;
+    if (name [len] != 0) {
+        name [len] = 0;
+    }
+    if (!strcmp(name, "STDOUT") || !strcmp(name, "stdout")) {
+        fp = stdout;
+        PGAPrintContextVariable (*ftx, fp);
+    } else if (!strcmp(name, "STDERR") || !strcmp(name, "stderr")) {
+        fp = stderr;
+        PGAPrintContextVariable (*ftx, fp);
+    } else {
+        fp = fopen (name, "a");
+        if (!fp) {
+            PGAError
+                ( *ftx, "PGAPrintContextVariable: Could not open file:"
+                , PGA_FATAL, PGA_CHAR, (void *) name
+                );
+        } else {
+            PGAPrintContextVariable (*ftx, fp);
+            fclose (fp);
+        }
+    }
 }
 
 /* restart.c */
 void pgarestart_(PGAContext **ftx, int *source_pop, int *dest_pop)
 {
-     PGARestart  (*ftx, *source_pop, *dest_pop);
+    PGARestart (*ftx, *source_pop, *dest_pop);
 }
 
 void pgasetrestartflag_(PGAContext **ftx, int *val)
@@ -2470,9 +2491,10 @@ void pgaerror_(PGAContext **ftx, char *msg, int *level, int *datatype,
      void **data, int len)
 /* FORTRAN implicitly passes the length of msg into len. */
 {
-     if (msg[len] != 0)
-	  msg[len] = 0;
-     PGAError (*ftx, msg, *level, *datatype, *data);
+    if (msg [len] != 0) {
+        msg [len] = 0;
+    }
+    PGAError (*ftx, msg, *level, *datatype, *data);
 }
 
 void pgadestroy_(PGAContext **ftx)
@@ -2534,21 +2556,24 @@ int pgaround_(PGAContext **ftx, double *x)
 
 void pgacopyindividual_(PGAContext **ftx, int *i, int *p1, int *j, int *p2)
 {
-     PGACopyIndividual(*ftx,
-	   *i == PGA_TEMP1 || *i == PGA_TEMP2 ? *i : *i-1,
-	   *p1,
-	   *j == PGA_TEMP1 || *j == PGA_TEMP2 ? *j : *j-1,
-	   *p2);
+     PGACopyIndividual
+        ( *ftx
+        , *i == PGA_TEMP1 || *i == PGA_TEMP2 ? *i : *i-1
+        , *p1
+        , *j == PGA_TEMP1 || *j == PGA_TEMP2 ? *j : *j-1
+        , *p2
+        );
 }
 
 int pgachecksum_(PGAContext **ftx, int *p, int *pop)
 {
-     return PGACheckSum(*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop);
+    return PGACheckSum
+        (*ftx, *p == PGA_TEMP1 || *p == PGA_TEMP2 ? *p : *p-1, *pop);
 }
 
 int pgagetworstindex_(PGAContext **ftx, int *pop)
 {
-     return PGAGetWorstIndex(*ftx, *pop) + 1;
+    return PGAGetWorstIndex(*ftx, *pop) + 1;
 }
 
 int pgagetbestindex_(PGAContext **ftx, int *pop)
@@ -2571,3 +2596,4 @@ int pgautilhash_ (void *data, size_t *sz, int *initval)
      int value = (int)PGAUtilHash (data, *sz, *initval);
      return value;
 }
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

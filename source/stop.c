@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,84 +37,108 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: stop.c: This file contains routines related to the stopping
-*                   conditions for the GA.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains routines related to the stopping conditions for the GA.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
 
-/*U****************************************************************************
-  PGADone - Returns PGA_TRUE if the stopping conditions have been met,
-  otherwise returns false.  Calls exactly one of the user defined C or
-  fortran or system (PGACheckStoppingConditions) stopping condition functions.
+/*!****************************************************************************
+    \brief Return PGA_TRUE if the stopping conditions have been met,
+           otherwise return PGA_FALSE.
+    \ingroup explicit
 
-  Category: Generation
+    \param   ctx   context variable
+    \param   comm  an MPI communicator
+    \return  return PGA_TRUE if at least one of the termination
+             conditions has been met, otherwise return PGA_FALSE
 
-  Inputs:
-     ctx  - context variable
-     comm - an MPI communicator
+    \rst
 
-  Outputs:
-     returns PGA_TRUE if at least one of the termination conditions has been
-     met.  Otherwise, returns PGA_FALSE
+    Description
+    -----------
 
-  Example:
-    PGAContext *ctx;
-    :
-    PGADone(ctx, comm);
+    Calls exactly one of the user defined C or fortran or system
+    :c:func:`PGACheckStoppingConditions` stopping condition functions.
 
-****************************************************************************U*/
-int PGADone(PGAContext *ctx, MPI_Comm comm)
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+
+      ...
+      PGADone (ctx, comm);
+
+    \endrst
+
+******************************************************************************/
+int PGADone (PGAContext *ctx, MPI_Comm comm)
 {
     int rank, size, done;
 
-    PGADebugEntered("PGADone");
+    PGADebugEntered ("PGADone");
 
-    rank = PGAGetRank(ctx, comm);
-    size = PGAGetNumProcs(ctx, comm);
+    rank = PGAGetRank (ctx, comm);
+    size = PGAGetNumProcs (ctx, comm);
 
     if (rank == 0) {
-	if (ctx->fops.StopCond)
-	    done = (*ctx->fops.StopCond)(&ctx);
-	else if (ctx->cops.StopCond)
-	    done = (*ctx->cops.StopCond)(ctx);
-	else
-	    done = PGACheckStoppingConditions(ctx);
+        if (ctx->fops.StopCond) {
+            done = (*ctx->fops.StopCond)(&ctx);
+        } else if (ctx->cops.StopCond) {
+            done = (*ctx->cops.StopCond)(ctx);
+        } else {
+            done = PGACheckStoppingConditions (ctx);
+        }
     }
 
-    if (size > 1)
-	MPI_Bcast(&done, 1, MPI_INT, 0, comm);
+    if (size > 1) {
+        MPI_Bcast (&done, 1, MPI_INT, 0, comm);
+    }
 
-    PGADebugExited("PGADone");
+    PGADebugExited ("PGADone");
 
-    return(done);
+    return done;
 }
 
-/*U****************************************************************************
-  PGACheckStoppingConditions - returns boolean to indicate if the PGAPack
-  termination conditions -- PGA_STOP_MAXITER, PGA_STOP_TOOSIMILAR, 
-  PGA_STOP_NOCHANGE -- have been met.
+/*!****************************************************************************
+    \brief Return boolean to indicate if the PGAPack termination
+           conditions, PGA_STOP_MAXITER, PGA_STOP_TOOSIMILAR,
+           PGA_STOP_NOCHANGE, have been met.
+    \ingroup standard-api
 
-  Category: Generation
+    \param   ctx   context variable
+    \return  return PGA_TRUE if at least one of the termination
+             conditions has been met, otherwise returns PGA_FALSE
 
-  Inputs:
-     ctx  - context variable
+    \rst
 
-  Outputs:
-     returns PGA_TRUE if at least one of the termination conditions has been
-     met.  Otherwise, returns PGA_FALSE
+    Example
+    -------
 
-  Example:
-    PGAContext *ctx;
-    :
-    PGACheckStoppingConditions(ctx);
+    Useful in a user-defined function that is registered as a stopping
+    condition function. We can use this to keep the builtin stopping
+    conditions in addition to a user-define condition.
 
-****************************************************************************U*/
-int PGACheckStoppingConditions( PGAContext *ctx)
+    .. code-block:: c
+
+      int StopCond (PGAContext *ctx)
+      {
+          if (my_stop_check (ctx)) {
+              return PGA_TRUE;
+          }
+          return PGACheckStoppingConditions (ctx);
+      }
+
+    \endrst
+
+******************************************************************************/
+int PGACheckStoppingConditions (PGAContext *ctx)
 {
     int done = PGA_FALSE;
 
@@ -125,21 +149,21 @@ int PGACheckStoppingConditions( PGAContext *ctx)
        && (ctx->ga.iter >= ctx->ga.MaxIter)
        )
     {
-	done = PGA_TRUE;
+        done = PGA_TRUE;
     }
-    
+
     if (  ((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) == PGA_STOP_NOCHANGE)
        && (ctx->ga.ItersOfSame >= ctx->ga.MaxNoChange)
        )
     {
-	done = PGA_TRUE;
+        done = PGA_TRUE;
     }
-	
+
     if (  ((ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR) == PGA_STOP_TOOSIMILAR)
        && (ctx->ga.PercentSame >= ctx->ga.MaxSimilarity)
        )
     {
-	done = PGA_TRUE;
+        done = PGA_TRUE;
     }
 
     if (ctx->ga.Epsilon > 0) {
@@ -150,242 +174,312 @@ int PGACheckStoppingConditions( PGAContext *ctx)
     return done;
 }
 
-/*U****************************************************************************
-   PGASetStoppingRuleType - specify a stopping criterion.  If called more than
-   once the different stopping criterion are ORed together.  Valid choices
-   are PGA_STOP_MAXITER, PGA_STOP_TOOSIMILAR, or PGA_STOP_NOCHANGE to
-   specify iteration limit reached, population too similar, or no change in
-   the best solution found in a given number of iterations, respectively.
-   The default is to stop when a maximum iteration limit is reached (by
-   default, 1000 iterations).
+/*!****************************************************************************
+    \brief Specify a stopping criterion.
+    \ingroup init
 
-   Category: Generation
+    \param   ctx       context variable
+    \param   stoprule  symbolic constant to specify stopping rule
+    \return  None
 
-   Inputs:
-      ctx      - context variable
-      stoprule - symbolic constant to specify stopping rule
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetStoppingRuleType(ctx, PGA_STOP_TOOSIMILAR);
+    If called more than
+    once the different stopping criterion are ORed together.  Valid choices
+    are PGA_STOP_MAXITER, PGA_STOP_TOOSIMILAR, or PGA_STOP_NOCHANGE to
+    specify iteration limit reached, population too similar, or no change in
+    the best solution found in a given number of iterations, respectively.
+    The default is to stop when a maximum iteration limit is reached (by
+    default, 1000 iterations).
 
-****************************************************************************U*/
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetStoppingRuleType (ctx, PGA_STOP_TOOSIMILAR);
+
+    \endrst
+
+******************************************************************************/
 void PGASetStoppingRuleType (PGAContext *ctx, int stoprule)
 {
 
-    PGADebugEntered("PGASetStoppingRuleType");
-    PGAFailIfSetUp("PGASetStoppingRuleType");
+    PGADebugEntered ("PGASetStoppingRuleType");
+    PGAFailIfSetUp  ("PGASetStoppingRuleType");
 
     switch (stoprule) {
-	case PGA_STOP_MAXITER  :
+        case PGA_STOP_MAXITER  :
         case PGA_STOP_NOCHANGE :
-	case PGA_STOP_TOOSIMILAR :
-	    ctx->ga.StoppingRule |= stoprule;
-	    break;
-	default:
-	    PGAError( ctx,
-		     "PGASetStoppingRuleType: Invalid value of stoprule:",
-		     PGA_FATAL, PGA_INT, (void *) &stoprule );
+        case PGA_STOP_TOOSIMILAR :
+            ctx->ga.StoppingRule |= stoprule;
+            break;
+        default:
+            PGAError
+                ( ctx, "PGASetStoppingRuleType: Invalid value of stoprule:"
+                , PGA_FATAL, PGA_INT, (void *) &stoprule
+                );
     }
 
-    PGADebugExited("PGASetStoppingRuleType");
+    PGADebugExited ("PGASetStoppingRuleType");
 }
 
-/*U***************************************************************************
-   PGAGetStoppingRuleType - Returns a symbolic constant that defines the
-   termination criteria.
+/*!***************************************************************************
+    \brief Return a symbolic constant that defines the termination criteria.
+    \ingroup query
 
-   Category: Generation
+    \param   ctx  context variable
+    \return  Return an integer which is an ORed mask of the symbolic constants
+             used to specify the stopping rule(s).
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns an integer which is an ORed mask of the symbolic constants
-      used to specify the stopping rule(s).
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int stop;
-      :
-      stop = PGAGetStoppingRuleType(ctx);
-      if (stop & PGA_STOP_MAXITER)
-          printf ("Stopping Rule = PGA_STOP_MAXITER\n");
-      if (stop & PGA_STOP_NOCHANGE)
-          printf ("Stopping Rule = PGA_STOP_NOCHANGE\n");
-      if (stop & PGA_STOP_TOOSIMILAR)
-          printf ("Stopping Rule = PGA_STOP_TOOSIMILAR\n");
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int stop;
+
+       ...
+       stop = PGAGetStoppingRuleType (ctx);
+       if (stop & PGA_STOP_MAXITER) {
+           printf ("Stopping Rule = PGA_STOP_MAXITER\n");
+       }
+       if (stop & PGA_STOP_NOCHANGE) {
+           printf ("Stopping Rule = PGA_STOP_NOCHANGE\n");
+       }
+       if (stop & PGA_STOP_TOOSIMILAR) {
+           printf ("Stopping Rule = PGA_STOP_TOOSIMILAR\n");
+       }
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetStoppingRuleType (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetStoppingRuleType");
-    PGAFailIfNotSetUp("PGAGetStoppingRuleType");
+    PGADebugEntered   ("PGAGetStoppingRuleType");
+    PGAFailIfNotSetUp ("PGAGetStoppingRuleType");
 
-    PGADebugExited("PGAGetStoppingRuleType");
+    PGADebugExited ("PGAGetStoppingRuleType");
 
-    return(ctx->ga.StoppingRule);
+    return ctx->ga.StoppingRule;
 }
 
-/*U****************************************************************************
-   PGASetMaxGAIterValue - specify the maximum number of iterations for the
-   stopping rule PGA_STOP_MAXITER (which, by itself, is the default stopping
-   rule and is always in effect).  The default value is 1000 iterations.
+/*!****************************************************************************
+    \brief Specify the maximum number of iterations for the stopping
+           rule PGA_STOP_MAXITER.
+    \ingroup init
 
-   Category: Generation
+    \param   ctx     context variable
+    \param   maxiter the maximum number of GA iterations to run before stopping
+    \return  None
 
-   Inputs:
-      ctx     - context variable
-      maxiter - the maximum number of GA iterations to run before stopping
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetMaxGAIterValue(ctx,5000);
+    The rule PGA_STOP_MAXITER is the default stopping
+    rule and is always in effect.
+    The default value is 1000 iterations.
 
-****************************************************************************U*/
-void PGASetMaxGAIterValue(PGAContext *ctx, int maxiter)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetMaxGAIterValue (ctx, 5000);
+
+    \endrst
+
+******************************************************************************/
+void PGASetMaxGAIterValue (PGAContext *ctx, int maxiter)
 {
 
-    PGADebugEntered("PGASetMaxGAIterValue");
-    PGAFailIfSetUp("PGASetMaxGAIterValue");
+    PGADebugEntered ("PGASetMaxGAIterValue");
+    PGAFailIfSetUp  ("PGASetMaxGAIterValue");
 
-    if (maxiter < 1)
-	PGAError( ctx, "PGASetMaxGAIterValue: Invalid value of maxiter:",
-		 PGA_FATAL, PGA_INT, (void *) &maxiter );
-    else
-	ctx->ga.MaxIter = maxiter;
-    
-    PGADebugExited("PGASetMaxGAIterValue");
+    if (maxiter < 1) {
+        PGAError
+            ( ctx, "PGASetMaxGAIterValue: Invalid value of maxiter:"
+            , PGA_FATAL, PGA_INT, (void *) &maxiter
+            );
+    } else {
+        ctx->ga.MaxIter = maxiter;
+    }
+
+    PGADebugExited ("PGASetMaxGAIterValue");
 }
 
-/*U***************************************************************************
-   PGAGetMaxGAIterValue - Returns the maximum number of iterations to run
+/*!***************************************************************************
+    \brief Return the maximum number of iterations to run.
+    \ingroup query
 
-   Category: Generation
+    \param   ctx  context variable
+    \return  The maximum number of iterations to run
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The maximum number of iterations to run
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int maxiter;
-      :
-      maxiter = PGAGetMaxGAIterValue(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int maxiter;
+
+       ...
+       maxiter = PGAGetMaxGAIterValue (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetMaxGAIterValue (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetMaxGAIterValue");
-    PGAFailIfNotSetUp("PGAGetMaxGAIterValue");
+    PGADebugEntered   ("PGAGetMaxGAIterValue");
+    PGAFailIfNotSetUp ("PGAGetMaxGAIterValue");
 
-    PGADebugExited("PGAGetMaxGAIterValue");
+    PGADebugExited ("PGAGetMaxGAIterValue");
 
-    return(ctx->ga.MaxIter);
+    return ctx->ga.MaxIter;
 }
 
-/*U****************************************************************************
-   PGASetMaxNoChangeValue - specifiy maximum number of iterations of no change
-   in the evaluation function value of the best string before stopping.  The
-   default value is 50.  The stopping rule PGA_STOP_NOCHANGE must have been
-   set by PGASetStoppingRuleType for this function call to have any effect.
+/*!****************************************************************************
+    \brief Specify maximum number of iterations of no change in the
+           evaluation function value of the best string before stopping.
+    \ingroup init
 
-   Category: Generation
+    \param   ctx           context variable
+    \param   max_no_change the maximum number of GA iterations allowed
+                           with no change in the best evaluation
+                           function value
+    \return  None
 
-   Inputs:
-      ctx     - context variable
-      maxiter - the maximum number of GA iterations allowed with no change
-                in the best evaluation function value.
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetMaxGAIterValue(ctx,5000);
+    The default value is 50.  The stopping rule PGA_STOP_NOCHANGE must
+    have been set by :c:func:`PGASetStoppingRuleType` for this function
+    call to have any effect.
 
-****************************************************************************U*/
-void PGASetMaxNoChangeValue(PGAContext *ctx, int max_no_change)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetMaxNoChangeValue (ctx, 100);
+
+    \endrst
+
+******************************************************************************/
+void PGASetMaxNoChangeValue (PGAContext *ctx, int max_no_change)
 {
-    PGADebugEntered("PGASetMaxNoChangeValue");
-    PGAFailIfSetUp("PGASetMaxNoChangeValue");
+    PGADebugEntered ("PGASetMaxNoChangeValue");
+    PGAFailIfSetUp  ("PGASetMaxNoChangeValue");
 
-    if (max_no_change <= 0)
-	PGAError(ctx, "PGASetMaxNoChangeValue: max_no_change invalid",
-		 PGA_FATAL, PGA_INT, (void *)&max_no_change);
-    
+    if (max_no_change <= 0) {
+        PGAError
+            ( ctx, "PGASetMaxNoChangeValue: max_no_change invalid"
+            , PGA_FATAL, PGA_INT, (void *)&max_no_change
+            );
+    }
+
     ctx->ga.MaxNoChange = max_no_change;
-    
-    PGADebugExited("PGASetMaxNoChangeValue");
+
+    PGADebugExited ("PGASetMaxNoChangeValue");
 }
 
-/*U****************************************************************************
-   PGASetMaxSimilarityValue - Specifiy the maximum percent of homogeneity of
-   the population before stopping.  The similarity measure is the same
-   evaluation function value.  The default value is 95 percent.  The stopping
-   rule PGA_STOP_TOOSIMILAR must have been set by PGASetStoppingRuleType for
-   this function call to have any effect.
+/*!****************************************************************************
+    \brief Specify the maximum percent of homogeneity of the population
+           before stopping.
+    \ingroup init
 
-   Category: Generation
+    \param   ctx             context variable
+    \param   max_similarity  the maximum percent of the population that can
+                             share the same evaluation function value
+    \return  None
 
-   Inputs:
-      ctx            - context variable
-      max_similarity - the maximum percent of the population that can share
-                       the same evaluation function value
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetMaxSimilarityValue (ctx, 99);
+    The similarity measure is the same evaluation function value.  The
+    default value is 95 percent.  The stopping rule PGA_STOP_TOOSIMILAR
+    must have been set by :c:func:`PGASetStoppingRuleType` for this
+    function call to have any effect.
 
-****************************************************************************U*/
-void PGASetMaxSimilarityValue(PGAContext *ctx, int max_similarity)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetMaxSimilarityValue (ctx, 99);
+
+    \endrst
+
+******************************************************************************/
+void PGASetMaxSimilarityValue (PGAContext *ctx, int max_similarity)
 {
     PGADebugEntered ("PGASetMaxSimilarityValue");
-    PGAFailIfSetUp ("PGASetMaxSimilarityValue");
+    PGAFailIfSetUp  ("PGASetMaxSimilarityValue");
 
-    if ((max_similarity <= 0) || (max_similarity > 100))
-        PGAError (ctx, "PGASetMaxSimilarityValue: max_similarity invalid",
-                  PGA_FATAL, PGA_INT, (void *) &max_similarity);
-    
+    if ((max_similarity <= 0) || (max_similarity > 100)) {
+        PGAError
+            ( ctx, "PGASetMaxSimilarityValue: max_similarity invalid"
+            , PGA_FATAL, PGA_INT, (void *) &max_similarity
+            );
+    }
+
     ctx->ga.MaxSimilarity = max_similarity;
 
     PGADebugExited ("PGASetMaxSimilarityValue");
 }
-/*U****************************************************************************
-   PGAGetMaxSimilarityValue - Get the maximum percent of homogeneity of
-   the population before stopping.
 
-   Category: Generation
+/*!****************************************************************************
+    \brief Get the maximum percent of homogeneity of the population
+           before stopping.
+    \ingroup query
 
-   Inputs:
-      ctx            - context variable
+    \param   ctx             context variable
+    \return  the maximum percent of the population that can share the
+             same evaluation function value
 
-   Outputs:
-      max_similarity - the maximum percent of the population that can share
-                       the same evaluation function value
+    \rst
 
-   Example:
-      PGAContext *ctx;
-      int max_similarity;
-      :
-      max_similarity = PGAGetMaxSimilarityValue (ctx);
+    Example
+    -------
 
-****************************************************************************U*/
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int max_similarity;
+
+       ...
+       max_similarity = PGAGetMaxSimilarityValue (ctx);
+
+    \endrst
+
+******************************************************************************/
 int PGAGetMaxSimilarityValue (PGAContext *ctx)
 {
     return ctx->ga.MaxSimilarity;

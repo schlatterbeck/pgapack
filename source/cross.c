@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,114 +37,148 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: crossover.c: This file contains the data structure neutral
-*                        crossover routines.
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
-*****************************************************************************/
+/*!***************************************************************************
+ *  \file
+ *  This file contains the data structure neutral crossover routines.
+ *  \authors Authors:
+ *           David M. Levine, Philip L. Hallstrom, David M. Noelle,
+ *           Brian P. Walenz, Ralf Schlatterbeck
+ *****************************************************************************/
 
 #include "pgapack.h"
 
-/*U****************************************************************************
-   PGACrossover - performs crossover on two parent strings to create two
-   child strings (via side-effect).  The type of crossover performed is
-   either the default or that specified by PGASetCrossoverType
+/*!***************************************************************************
+ *  \defgroup operators Operators
+ *  \brief Genetic Operators used during genetic search
+ *****************************************************************************/
 
-   Category: Operators
+/*!***************************************************************************
+    \brief Perform crossover on two parent strings to create two child strings
+           (via side-effect).
+    \ingroup explicit
 
-   Inputs:
-      ctx  - context variable
-      p1   - the first parent string
-      p2   - the second parent string
-      pop1 - symbolic constant of the population containing string p1 and p2
-      c1   - the first child string
-      c2   - the second child string
-      pop2 - symbolic constant of the population to contain string c1 and c2
+    \param ctx  the context variable
+    \param p1   the first parent string
+    \param p2   the second parent string
+    \param pop1 symbolic constant of the population containing string
+                p1 and p2
+    \param c1   the first child string
+    \param c2   the second child string
+    \param pop2 symbolic constant of the population to contain string
+                c1 and c2
 
-   Outputs:
-      c1 and c2 in pop2 are children of p1 and p2 in pop1.  p1 and p2 are not
-      modified.
+    \return c1 and c2 in pop2 are children of p1 and p2 in pop1.  p1 and
+            p2 are not modified.
 
-   Example:
-      Perform crossover on the two parent strings mom and dad in population
-      PGA_OLDPOP, and insert the child strings, child1 and child1, in
-      population PGA_NEWPOP.
+    \rst
+
+    Description
+    -----------
+
+    The type of crossover performed is either the default or that
+    specified by :c:func:`PGASetCrossoverType`.
+
+
+    Example
+    -------
+
+    Perform crossover on the two parent strings mom and dad in population
+    PGA_OLDPOP, and insert the child strings, child1 and child1, in
+    population PGA_NEWPOP.
+
+    .. code-block:: c
 
       PGAContext *ctx;
       int mom, dad, child1, child2;
-      :
-      PGACrossover(ctx, mom, dad, PGA_OLDPOP, child1, child2, PGA_NEWPOP);
 
-****************************************************************************U*/
+      ...
+      PGACrossover (ctx, mom, dad, PGA_OLDPOP, child1, child2, PGA_NEWPOP);
+
+    \endrst
+
+*****************************************************************************/
+
 void PGACrossover ( PGAContext *ctx, int p1, int p2, int pop1,
                     int c1, int c2, int pop2 )
 {
     int fp1, fp2, fc1, fc2;
 
-    PGADebugEntered("PGACrossover");
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " p1 = ",
-		  PGA_INT, (void *) &p1 );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " p2 = ",
-		  PGA_INT, (void *) &p2 );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " c1 = ",
-		  PGA_INT, (void *) &c1 );
-    PGADebugPrint( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " c2 = ",
-		  PGA_INT, (void *) &c2 );
+    PGADebugEntered ("PGACrossover");
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " p1 = "
+        , PGA_INT, (void *) &p1
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " p2 = "
+        , PGA_INT, (void *) &p2
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " c1 = "
+        , PGA_INT, (void *) &c1
+        );
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR, "PGACrossover", " c2 = "
+        , PGA_INT, (void *) &c2
+        );
 
     if (ctx->fops.Crossover) {
-	fp1 = ((p1 == PGA_TEMP1) || (p1 == PGA_TEMP2)) ? p1 : p1+1;
-	fp2 = ((p2 == PGA_TEMP1) || (p2 == PGA_TEMP2)) ? p2 : p2+1;
-	fc1 = ((c1 == PGA_TEMP1) || (c1 == PGA_TEMP2)) ? c1 : c1+1;
-	fc2 = ((c2 == PGA_TEMP1) || (c2 == PGA_TEMP2)) ? c2 : c2+1;
-	(*ctx->fops.Crossover)(&ctx, &fp1, &fp2, &pop1, &fc1, &fc2, &pop2);
+        fp1 = ((p1 == PGA_TEMP1) || (p1 == PGA_TEMP2)) ? p1 : p1+1;
+        fp2 = ((p2 == PGA_TEMP1) || (p2 == PGA_TEMP2)) ? p2 : p2+1;
+        fc1 = ((c1 == PGA_TEMP1) || (c1 == PGA_TEMP2)) ? c1 : c1+1;
+        fc2 = ((c2 == PGA_TEMP1) || (c2 == PGA_TEMP2)) ? c2 : c2+1;
+        (*ctx->fops.Crossover)(&ctx, &fp1, &fp2, &pop1, &fc1, &fc2, &pop2);
     } else {
-	(*ctx->cops.Crossover)(ctx, p1, p2, pop1, c1, c2, pop2);
+        (*ctx->cops.Crossover)(ctx, p1, p2, pop1, c1, c2, pop2);
     }
 
     PGASetEvaluationUpToDateFlag(ctx, c1, pop2, PGA_FALSE);
     PGASetEvaluationUpToDateFlag(ctx, c2, pop2, PGA_FALSE);
-    
+
     PGADebugExited("PGACrossover");
 }
 
-/*U***************************************************************************
-   PGAGetCrossoverType - Returns the type of crossover selected
+/*!***************************************************************************
+    \brief Return the type of crossover selected.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx context variable
+    \return Return the integer corresponding to the symbolic constant
+            used to specify the crossover type.
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns the integer corresponding to the symbolic constant
-      used to specify the crossover type
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int crosstype;
-      :
-      crosstype = PGAGetCrossoverType(ctx);
-      switch (crosstype) {
-      case PGA_CROSSOVER_ONEPT:
-          printf ("Crossover Type = PGA_CROSSOVER_ONEPT\n");
-          break;
-      case PGA_CROSSOVER_TWOPT:
-          printf ("Crossover Type = PGA_CROSSOVER_TWOPT\n");
-          break;
-      case PGA_CROSSOVER_UNIFORM:
-          printf ("Crossover Type = PGA_CROSSOVER_UNIFORM\n");
-          break;
-      case PGA_CROSSOVER_SBX:
-          printf ("Crossover Type = PGA_CROSSOVER_SBX\n");
-          break;
-      case PGA_CROSSOVER_EDGE:
-          printf ("Crossover Type = PGA_CROSSOVER_EDGE\n");
-          break;
-      }
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int crosstype;
+
+       ...
+       crosstype = PGAGetCrossoverType (ctx);
+       switch (crosstype) {
+       case PGA_CROSSOVER_ONEPT:
+           printf ("Crossover Type = PGA_CROSSOVER_ONEPT\n");
+           break;
+       case PGA_CROSSOVER_TWOPT:
+           printf ("Crossover Type = PGA_CROSSOVER_TWOPT\n");
+           break;
+       case PGA_CROSSOVER_UNIFORM:
+           printf ("Crossover Type = PGA_CROSSOVER_UNIFORM\n");
+           break;
+       case PGA_CROSSOVER_SBX:
+           printf ("Crossover Type = PGA_CROSSOVER_SBX\n");
+           break;
+       case PGA_CROSSOVER_EDGE:
+           printf ("Crossover Type = PGA_CROSSOVER_EDGE\n");
+           break;
+       }
+
+    \endrst
+
+*****************************************************************************/
+
 int PGAGetCrossoverType (PGAContext *ctx)
 {
     PGADebugEntered("PGAGetCrossoverType");
@@ -156,24 +190,29 @@ int PGAGetCrossoverType (PGAContext *ctx)
     return(ctx->ga.CrossoverType);
 }
 
-/*U***************************************************************************
-   PGAGetCrossoverProb - Returns the crossover probability
+/*!***************************************************************************
+    \brief Return the crossover probability.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx context variable
+    \return The crossover probability
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The crossover probability
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      double pc;
-      :
-      pc = PGAGetCrossoverProb(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       double pc;
+
+       ...
+       pc = PGAGetCrossoverProb (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetCrossoverProb (PGAContext *ctx)
 {
     PGADebugEntered("PGAGetCrossoverProb");
@@ -185,25 +224,31 @@ double PGAGetCrossoverProb (PGAContext *ctx)
     return(ctx->ga.CrossoverProb);
 }
 
-/*U***************************************************************************
-   PGAGetUniformCrossoverProb - returns the probability of a bit being
-   selected from the first child string in uniform crossover
+/*!***************************************************************************
+    \brief Return the probability of an allele being selected from the
+           first child string in uniform crossover.
 
-   Category: Operators
+    \ingroup query
 
-   Inputs:
-      ctx - context variable
+    \param  ctx context variable
+    \return The uniform crossover probability
 
-   Outputs:
-      The uniform crossover probability
+    \rst
 
-   Example:
+    Example
+    -------
+
+    .. code-block:: c
+
       PGAContext *ctx;
       double pu;
-      :
-      pu = PGAGetUniformCrossoverProb(ctx);
 
-***************************************************************************U*/
+      ...
+      pu = PGAGetUniformCrossoverProb (ctx);
+
+    \endrst
+
+*****************************************************************************/
 double PGAGetUniformCrossoverProb (PGAContext *ctx)
 {
     PGADebugEntered("PGAGetUniformCrossoverProb");
@@ -215,27 +260,40 @@ double PGAGetUniformCrossoverProb (PGAContext *ctx)
     return(ctx->ga.UniformCrossProb);
 }
 
-/*U****************************************************************************
-   PGASetCrossoverType - specify the type of crossover to use.
-   The default is PGA_CROSSOVER_TWOPT.
+/*!****************************************************************************
+    \brief Specify the type of crossover to use.
+    \ingroup init
+    \param ctx            context variable
+    \param crossover_type symbolic constant to specify crossover type
+    \return None
 
-   Category: Operators
+    \rst
 
-   Inputs:
-      ctx            - context variable
-      crossover_type - symbolic constant to specify crossover type
+    Description
+    -----------
 
-   Outputs:
-      None
+    Valid   choices   are   PGA_CROSSOVER_ONEPT,   PGA_CROSSOVER_TWOPT,
+    or PGA_CROSSOVER_UNIFORM, PGA_CROSSOVER_SBX, and PGA_CROSSOVER_EDGE
+    for one-point, two-point, uniform, simulated binary (SBX), and edge
+    crossover, respectively.  The default is PGA_CROSSOVER_TWOPT.
+    Edge crossover is only defined for integer genes and SBX is only
+    defined for integer and real genes.
 
-   Example:
-      Use uniform crossover when crossingover strings.
+    Example
+    -------
+
+    Use uniform crossover when crossingover strings.
+
+    .. code-block:: c
 
       PGAContext *ctx;
-      :
-      PGASetCrossoverType(ctx, PGA_CROSSOVER_UNIFORM);
 
-****************************************************************************U*/
+      ...
+      PGASetCrossoverType (ctx, PGA_CROSSOVER_UNIFORM);
+
+    \endrst
+
+******************************************************************************/
 void PGASetCrossoverType (PGAContext *ctx, int crossover_type)
 {
 
@@ -259,221 +317,266 @@ void PGASetCrossoverType (PGAContext *ctx, int crossover_type)
 }
 
 
-/*U****************************************************************************
-   PGASetCrossoverProb - Probability that a selected string will undergo
-   crossover.  The default is 0.85.
+/*!****************************************************************************
+    \brief Set Probability that a selected string will undergo crossover.
+    \ingroup init
+    \param  ctx  context variable
+    \param  p    the crossover probability
+    \return  None
 
-   Category: Operators
+    \rst
 
-   Inputs:
-      ctx - context variable
-      p   - the crossover probability
+    Description
+    -----------
 
-   Outputs:
-      None
+    The default is 0.85.
 
-   Example:
-      Make crossover happen infrequently.
+    Example
+    -------
 
-      PGAContext *ctx;
-      :
-      PGASetCrossoverProb(ctx,0.001);
+    Make crossover happen infrequently.
 
-****************************************************************************U*/
-void PGASetCrossoverProb( PGAContext *ctx, double crossover_prob)
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetCrossoverProb (ctx, 0.001);
+
+    \endrst
+
+******************************************************************************/
+void PGASetCrossoverProb (PGAContext *ctx, double p)
 {
-    PGADebugEntered("PGASetCrossoverProb");
+    PGADebugEntered ("PGASetCrossoverProb");
 
-    if ((crossover_prob < 0.0) || (crossover_prob > 1.0))
-        PGAError ( ctx,
-                  "PGASetCrossoverProb: Invalid value of crossover_prob:",
-                   PGA_FATAL, PGA_DOUBLE, (void *) &crossover_prob);
-    else
-        ctx->ga.CrossoverProb = crossover_prob;
+    if ((p < 0.0) || (p > 1.0)) {
+        PGAError
+            ( ctx, "PGASetCrossoverProb: Invalid value of p:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &p
+            );
+    } else {
+        ctx->ga.CrossoverProb = p;
+    }
 
-    PGADebugExited("PGASetCrossoverProb");
+    PGADebugExited ("PGASetCrossoverProb");
 }
 
-/*U****************************************************************************
-   PGASetUniformCrossoverProb - Probability used in uniform crossover
-   to specify that an allele value value be selected from a particular
-   parent. The default is 0.6.  The crossover type must have been set
-   to PGA_CROSSOVER_UNIFORM with PGASetCrossoverType for this function
-   call to have any effect.
+/*!****************************************************************************
+    \brief Set probability used in uniform crossover to specify that an
+           allele value value be selected from a particular parent.
+    \ingroup init
+    \param  ctx  context variable
+    \param  p    the crossover probability
+    \return  None
 
-   Category: Operators
+    \rst
 
-   Inputs:
-      ctx - context variable
-      p   - the crossover probability
+    Description
+    -----------
 
-   Outputs:
-      None
+    The default is 0.6.
+    The crossover type must have been set to PGA_CROSSOVER_UNIFORM with
+    :c:func:`PGASetCrossoverType` for this function call to have any effect.
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetUniformCrossoverProb(ctx,0.9);
+    Example
+    -------
 
-****************************************************************************U*/
-void PGASetUniformCrossoverProb( PGAContext *ctx, double uniform_cross_prob)
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetUniformCrossoverProb (ctx, 0.9);
+
+    \endrst
+
+******************************************************************************/
+void PGASetUniformCrossoverProb (PGAContext *ctx, double p)
 {
-    PGADebugEntered("PGASetUniformCrossoverProb");
+    PGADebugEntered ("PGASetUniformCrossoverProb");
 
-    if ((uniform_cross_prob < 0.0) || (uniform_cross_prob > 1.0))
-        PGAError ( ctx,
-                  "PGASetUniformCrossoverProb: Invalid value of "
-                  "uniform_cross_prob:", PGA_FATAL, PGA_DOUBLE,
-                  (void *) &uniform_cross_prob);
-    else
-        ctx->ga.UniformCrossProb = uniform_cross_prob;
+    if ((p < 0.0) || (p > 1.0)) {
+        PGAError
+            ( ctx, "PGASetUniformCrossoverProb: Invalid value of p:"
+            , PGA_FATAL, PGA_DOUBLE, (void *) &p
+            );
+    } else {
+        ctx->ga.UniformCrossProb = p;
+    }
 
-    PGADebugExited("PGASetUniformCrossoverProb");
+    PGADebugExited ("PGASetUniformCrossoverProb");
 }
 
-/*U****************************************************************************
-   PGASetCrossoverBoundedFlag - If this flag is set to PGA_TRUE, then for
-   Integer and Real strings with simulated binary crossover (SBX)
-   crossed over values that exceed the bounds are confined to the
-   bounds by setting them to the boundary.
+/*!****************************************************************************
+    \brief If this flag is set to PGA_TRUE, then for Integer and Real
+           strings with simulated binary crossover (SBX) crossed over
+           values that exceed the bounds are confined to the bounds by
+           setting them to the boundary.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx   context variable
+    \param  flag  either PGA_TRUE or PGA_FALSE
+    \return  None
 
-   Inputs:
-      ctx  - context variable
-      flag - either PGA_TRUE or PGA_FALSE
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetCrossoverBoundedFlag (ctx, PGA_TRUE);
+    .. code-block:: c
 
-****************************************************************************U*/
-void PGASetCrossoverBoundedFlag (PGAContext *ctx, int val)
+       PGAContext *ctx;
+
+       ...
+       PGASetCrossoverBoundedFlag (ctx, PGA_TRUE);
+
+    \endrst
+
+******************************************************************************/
+void PGASetCrossoverBoundedFlag (PGAContext *ctx, int flag)
 {
-    switch (val)
+    switch (flag)
     {
     case PGA_TRUE:
     case PGA_FALSE:
-         ctx->ga.CrossBoundedFlag = val;
+         ctx->ga.CrossBoundedFlag = flag;
          break;
     default:
-         PGAError(ctx, "PGASetCrossoverBoundedFlag: Invalid value:",
-                  PGA_FATAL, PGA_INT, (void *) &val);
+         PGAError
+            ( ctx, "PGASetCrossoverBoundedFlag: Invalid value:"
+            , PGA_FATAL, PGA_INT, (void *) &flag
+            );
          break;
     }
 }
 
-/*U****************************************************************************
-   PGAGetCrossoverBoundedFlag - returns PGA_TRUE or PGA_FALSE to indicate
-   whether crossed over strings remain in the range specified.
+/*!****************************************************************************
+    \brief Return PGA_TRUE or PGA_FALSE to indicate whether crossed
+           over strings remain in the range specified.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \returns  PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int val;
-      :
-      val = PGAGetCrossoverBoundedFlag (ctx);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+       int val;
+
+       ...
+       val = PGAGetCrossoverBoundedFlag (ctx);
+
+    \endrst
+
+******************************************************************************/
 int PGAGetCrossoverBoundedFlag (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetCrossoverBoundedFlag");
+    PGAFailIfNotSetUp ("PGAGetCrossoverBoundedFlag");
     return (ctx->ga.CrossBoundedFlag);
 }
 
-/*U****************************************************************************
-   PGASetCrossoverBounceBackFlag - If this flag is set to PGA_TRUE, then
-   for Integer and Real strings with simulated binary crossover (SBX)
-   crossed over values that exceed the bounds are confined to the
-   bounds by bouncing them back to a random value between the boundary
-   and the neares parent.
+/*!****************************************************************************
+    \brief If this flag is set to PGA_TRUE, then for Integer and Real
+           strings with simulated binary crossover (SBX) crossed over
+           values that exceed the bounds are confined to the bounds by
+           bouncing them back to a random value between the boundary and
+           the neares parent.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx   context variable
+    \param  flag  either PGA_TRUE or PGA_FALSE
+    \return  None
 
-   Inputs:
-      ctx  - context variable
-      flag - either PGA_TRUE or PGA_FALSE
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetCrossoverBounceBackFlag (ctx, PGA_TRUE);
+    .. code-block:: c
 
-****************************************************************************U*/
-void PGASetCrossoverBounceBackFlag (PGAContext *ctx, int val)
+       PGAContext *ctx;
+
+       ...
+       PGASetCrossoverBounceBackFlag (ctx, PGA_TRUE);
+
+    \endrst
+
+******************************************************************************/
+void PGASetCrossoverBounceBackFlag (PGAContext *ctx, int flag)
 {
-    switch (val)
+    switch (flag)
     {
     case PGA_TRUE:
     case PGA_FALSE:
-         ctx->ga.CrossBounceFlag = val;
+         ctx->ga.CrossBounceFlag = flag;
          break;
     default:
          PGAError(ctx, "PGASetCrossoverBounceBackFlag: Invalid value:",
-                  PGA_FATAL, PGA_INT, (void *) &val);
+                  PGA_FATAL, PGA_INT, (void *) &flag);
          break;
     }
 }
 
-/*U****************************************************************************
-   PGAGetCrossoverBounceBackFlag - returns PGA_TRUE or PGA_FALSE to indicate
-   whether crossed over strings are bounced back when exceeding the
-   bounds.
+/*!****************************************************************************
+    \brief Return PGA_TRUE or PGA_FALSE to indicate whether crossed
+           over strings are bounced back when exceeding the bounds.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return  PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int val;
-      :
-      val = PGAGetCrossoverBounceBackFlag (ctx);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+       int val;
+
+       ...
+       val = PGAGetCrossoverBounceBackFlag (ctx);
+
+    \endrst
+
+******************************************************************************/
 int PGAGetCrossoverBounceBackFlag (PGAContext *ctx)
 {
     PGAFailIfNotSetUp("PGAGetCrossoverBounceBackFlag");
     return (ctx->ga.CrossBounceFlag);
 }
 
-/*U****************************************************************************
-   PGASetCrossoverSBXEta - Set the eta parameter for simulated binary
-   crossover (SBX)
+/*!****************************************************************************
+    \brief Set the eta parameter for simulated binary crossover (SBX).
 
-   Category: Operators
+    \ingroup init
 
-   Inputs:
-      ctx  - context variable
-      eta  - eta >= 0
+    \param  ctx   context variable
+    \param  eta   eta >= 0
+    \return  None
 
-   Outputs:
-      None
+    \rst
 
-   Example:
+    Example
+    -------
+
+    .. code-block:: c
+
       PGAContext *ctx;
-      :
+
+      ...
       PGASetCrossoverSBXEta (ctx, 10);
 
-****************************************************************************U*/
+    \endrst
+
+******************************************************************************/
 void PGASetCrossoverSBXEta (PGAContext *ctx, double eta)
 {
     if (eta < 0) {
@@ -483,52 +586,66 @@ void PGASetCrossoverSBXEta (PGAContext *ctx, double eta)
     ctx->ga.CrossSBXEta = eta;
 }
 
-/*U****************************************************************************
-   PGAGetCrossoverSBXEta - returns SBX eta value
+/*!****************************************************************************
+    \brief Return simulated binary crossover (SBX) eta value.
 
-   Category: Operators
+    \ingroup query
 
-   Inputs:
-      ctx - context variable
+    \param  ctx  context variable
+    \return  The SBX eta value
 
-   Outputs:
-      The SBX eta value
+    \rst
 
-   Example:
-      PGAContext *ctx;
-      double eta;
-      :
-      eta = PGAGetCrossoverSBXEta (ctx);
+    Example
+    -------
 
-****************************************************************************U*/
+    .. code-block:: c
+
+       PGAContext *ctx;
+       double eta;
+
+       ...
+       eta = PGAGetCrossoverSBXEta (ctx);
+
+    \endrst
+
+******************************************************************************/
 double PGAGetCrossoverSBXEta (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetCrossoverSBXEta");
+    PGAFailIfNotSetUp ("PGAGetCrossoverSBXEta");
     return (ctx->ga.CrossSBXEta);
 }
 
-/*U****************************************************************************
-   PGASetCrossoverSBXOncePerString - Compute random number for SBX
-   polynomial distribution only once per string/individual. If set to
-   PGA_TRUE all alleles will use the same value which means that the
-   resulting string will point into the same direction as the vector
-   between both parents.
+/*!****************************************************************************
+    \brief Compute random number for simulated binary crossover (SBX)
+           polynomial distribution only once per string/individual.
+    \ingroup init
 
-   Category: Operators
+    \param  ctx   context variable
+    \param  val   PGA_TRUE or PGA_FALSE, default is PGA_FALSE
+    \return  None
 
-   Inputs:
-      ctx  - context variable
-      val  - PGA_TRUE or PGA_FALSE, default is PGA_FALSE
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetCrossoverSBXOncePerString (ctx, PGA_TRUE);
+    If set to PGA_TRUE all alleles will use the same
+    value which means that the resulting string will point into the same
+    direction as the vector between both parents.
 
-****************************************************************************U*/
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetCrossoverSBXOncePerString (ctx, PGA_TRUE);
+    \endrst
+
+******************************************************************************/
 void PGASetCrossoverSBXOncePerString (PGAContext *ctx, int val)
 {
     if (val != PGA_TRUE && val != PGA_FALSE) {
@@ -538,25 +655,30 @@ void PGASetCrossoverSBXOncePerString (PGAContext *ctx, int val)
     ctx->ga.CrossSBXOnce = val;
 }
 
-/*U****************************************************************************
-   PGAGetCrossoverSBXOncePerString - returns SBX setting if random
-   number for SBX polynomial distribution is computed once per string.
+/*!****************************************************************************
+    \brief Return simulated binary crossover (SBX) setting if random number
+           for SBX polynomial distribution is computed once per string.
+    \ingroup query
 
-   Category: Operators
+    \param  ctx  context variable
+    \return The SBX once-per-string value
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The SBX once-per-string value
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int r;
-      :
-      r = PGAGetCrossoverSBXOncePerString (ctx);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+       int r;
+
+       ...
+       r = PGAGetCrossoverSBXOncePerString (ctx);
+
+    \endrst
+
+******************************************************************************/
 int PGAGetCrossoverSBXOncePerString (PGAContext *ctx)
 {
     PGAFailIfNotSetUp("PGAGetCrossoverSBXOncePerString");
@@ -564,36 +686,46 @@ int PGAGetCrossoverSBXOncePerString (PGAContext *ctx)
 }
 
 
-/*U****************************************************************************
-   PGACrossoverSBX - Cross over two parent alleles with simulated binary
-   crossover. This uses double for both parent alleles but is re-used in
-   both, integer and real SBX crossover. The probability is used to
-   compute the new alleles from the polynomial distribution.
+/*!****************************************************************************
+    \brief Cross over two parent alleles with simulated binary crossover (SBX).
+    \ingroup internal
 
-   Category: Operators
+    \param   ctx context variable
+    \param   p1  (double) Allele of first string
+    \param   p2  (double) Allele of second string
+    \param   u   Random value between 0 and 1
+    \param   c1  pointer to new first child allele
+    \param   c2  pointer to new second child allele
+    \return  None
 
-   Inputs:
-      ctx - context variable
-      p1  - (double) Allele of first string
-      p2  - (double) Allele of second string
-      u   - Random value between 0 and 1
-      c1  - pointer to new first child allele
-      c2  - pointer to new second child allele
+    \rst
 
+    Description
+    -----------
 
-   Outputs:
-      None
+    This uses double for both parent alleles but is re-used in
+    both, integer and real SBX crossover in
+    :c:func:`PGAIntegerSBXCrossover` and :c:func:`PGARealSBXCrossover`,
+    respectively. The probability is used to
+    compute the new alleles from the polynomial distribution.
 
-   Example:
-      PGAContext *ctx;
-      double p1, p2, u;
-      double c1, c2;
-      double result;
-      :
-      u = PGARandom01 (ctx, 0);
-      result = PGACrossoverSBX (ctx, p1, p2, u, &c1, &c2);
+    Example
+    -------
 
-****************************************************************************U*/
+    .. code-block:: c
+
+       PGAContext *ctx;
+       double p1, p2, u;
+       double c1, c2;
+       double result;
+
+       ...
+       u = PGARandom01 (ctx, 0);
+       result = PGACrossoverSBX (ctx, p1, p2, u, &c1, &c2);
+
+    \endrst
+
+******************************************************************************/
 void PGACrossoverSBX
     (PGAContext *ctx, double p1, double p2, double u, double *c1, double *c2)
 {

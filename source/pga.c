@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,18 +37,20 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: pga.c: This file contains all the routines that are data structure
-*                  neutral
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, and David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains all the routines that are data structure neutral.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 *****************************************************************************/
 
 #include "pgapack.h"
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+
 /* Utility function to reset the hash for all individuals */
-void reset_hash (PGAContext *ctx, int pop)
+static void reset_hash (PGAContext *ctx, int pop)
 {
     int i = 0;
     if (ctx->ga.NoDuplicates) {
@@ -61,127 +63,161 @@ void reset_hash (PGAContext *ctx, int pop)
     }
 }
 
-/*U****************************************************************************
-  PGARun - Highest level routine to execute the genetic algorithm.  It
-  is called after PGACreate and PGASetup have been called.
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-  Category: Generation
+/*!****************************************************************************
+    \brief Highest level routine to execute the genetic algorithm.
+    \ingroup standard-api
 
-  Inputs:
-    ctx      - context variable
-    evaluate - a pointer to the user's evaluation function, which must
-               have the calling sequence shown in the example.
+    \param  ctx       context variable
+    \param  evaluate  a pointer to the user's evaluation function, which
+                      must have the calling sequence shown in the
+                      example
+    \return None
 
-  Outputs:
-    none
+    \rst
 
-  Example:
-    PGAContext *ctx,
-    double f(PGAContext *ctx, int p, int pop);
-    :
-    ctx = PGACreate(&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
-    PGASetUp(ctx);
-    PGARun(ctx, f);
-    PGADestroy(ctx);
+    Description
+    -----------
 
-****************************************************************************U*/
-void PGARun (PGAContext *ctx,
-             double (*evaluate)(PGAContext *c, int p, int pop, double *))
+    It is called after PGACreate and PGASetup have been called.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+      double f (PGAContext *ctx, int p, int pop, double *aux);
+
+      ctx = PGACreate (&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
+      PGASetUp (ctx);
+      PGARun (ctx, f);
+      PGADestroy (ctx);
+
+    \endrst
+
+******************************************************************************/
+void PGARun
+    ( PGAContext *ctx
+    , double (*evaluate)(PGAContext *c, int p, int pop, double *)
+    )
 {
      MPI_Comm comm;                  /* value of default communicator */
      int nprocs;                     /* number of processes in above  */
      int npops;                      /* number of populations         */
      int ndemes;                     /* number of demes               */
-     
 
-     PGADebugEntered("PGARun");
-     PGAFailIfNotSetUp("PGARun");
 
-     comm   = PGAGetCommunicator(ctx);
-     nprocs = PGAGetNumProcs    (ctx, comm);
-     npops  = PGAGetNumIslands  (ctx);
-     ndemes = PGAGetNumDemes    (ctx);
+     PGADebugEntered   ("PGARun");
+     PGAFailIfNotSetUp ("PGARun");
+
+     comm   = PGAGetCommunicator (ctx);
+     nprocs = PGAGetNumProcs     (ctx, comm);
+     npops  = PGAGetNumIslands   (ctx);
+     ndemes = PGAGetNumDemes     (ctx);
 
      /**********************************************************************/
      /*              Global model, one island, one deme                    */
      /**********************************************************************/
-     if     ( (npops == 1) && (ndemes == 1) ) {
-
-	 PGARunGM(ctx, evaluate, comm);
+     if ((npops == 1) && (ndemes == 1)) {
+         PGARunGM (ctx, evaluate, comm);
      }
-     
+
      /**********************************************************************/
      /*              Island model, > one island, one deme                  */
      /**********************************************************************/
-     else if( (npops > 1) && (ndemes == 1) ) {
-         if ( nprocs == 1 )
-             PGAError (ctx, "PGARun: island model with one process",
-                       PGA_FATAL, PGA_VOID, (void *) &nprocs);
-         if ( nprocs != npops) {
-             PGAError (ctx, "PGARun: island model no. processes != no. pops",
-                       PGA_FATAL, PGA_VOID, (void *) &nprocs);
+     else if ((npops > 1) && (ndemes == 1)) {
+         if (nprocs == 1) {
+             PGAError
+                ( ctx, "PGARun: island model with one process"
+                , PGA_FATAL, PGA_VOID, (void *) &nprocs
+                );
+         } else if (nprocs != npops) {
+             PGAError
+                ( ctx, "PGARun: island model no. processes != no. pops"
+                , PGA_FATAL, PGA_VOID, (void *) &nprocs
+                );
          }
-         PGARunIM(ctx,evaluate,comm);
+         PGARunIM (ctx, evaluate, comm);
      }
-             
+
      /**********************************************************************/
      /*              Neighborhood model, one island, > one deme            */
      /**********************************************************************/
-     else if( (npops == 1) && (ndemes > 1) ) {
-         if ( nprocs == 1 )
-             PGAError (ctx, "PGARun: neighborhood model with one process",
-                       PGA_FATAL, PGA_VOID, (void *) &nprocs);
-         if ( nprocs != ndemes)
-             PGAError (ctx, "PGARun: neighborhood model no. processes "
-                       "!= no. demes", PGA_FATAL, PGA_VOID, (void *) &nprocs);
-         PGARunNM(ctx,evaluate,comm);
+     else if ((npops == 1) && (ndemes > 1)) {
+         if (nprocs == 1) {
+             PGAError
+                ( ctx, "PGARun: neighborhood model with one process"
+                , PGA_FATAL, PGA_VOID, (void *) &nprocs
+                );
+         } else if (nprocs != ndemes) {
+             PGAError
+                ( ctx, "PGARun: neighborhood model no. processes != no. demes"
+                , PGA_FATAL, PGA_VOID, (void *) &nprocs
+                );
+         }
+         PGARunNM (ctx, evaluate, comm);
      }
-             
+
      /**********************************************************************/
      /*              Mixed model, > one island, > one deme                 */
      /**********************************************************************/
-     else if( (npops > 1) && (ndemes > 1) ) {
-         PGAError (ctx, "PGARun: Cannot execute mixed models",
-                   PGA_FATAL, PGA_VOID, (void *) &nprocs);
+     else if ((npops > 1) && (ndemes > 1)) {
+         PGAError
+            ( ctx, "PGARun: Cannot execute mixed models"
+            , PGA_FATAL, PGA_VOID, (void *) &nprocs
+            );
      }
 
      /**********************************************************************/
      /*                        E R R O R                                   */
      /**********************************************************************/
      else {
-         PGAError (ctx, "PGARun: Invalid combination of numislands,"
-                   "ndemes, and nprocs.",
-                   PGA_FATAL, PGA_VOID, (void *) &nprocs);
+         PGAError
+            ( ctx
+            , "PGARun: Invalid combination of numislands, ndemes, and nprocs"
+            , PGA_FATAL, PGA_VOID, (void *) &nprocs
+            );
      }
 
      /**********************************************************************/
      /*                         E X I T                                    */
      /**********************************************************************/
-     PGADebugExited("PGARun");
-     return;
+     PGADebugExited ("PGARun");
 }
 
 
-/*U****************************************************************************
-  PGARunMutationAndCrossover - Performs crossover and mutation from one
-  population to create the next.  Assumes PGASelect has been called.
+/*!****************************************************************************
+    \brief Perform crossover and mutation from one population to create
+           the next.
+    \ingroup explicit
 
-  Category: Generation
+    \param  ctx     context variable
+    \param  oldpop  symbolic constant of old population
+    \param  newpop  symbolic constant of new population
+    \return newpop is modified by side-effect
 
-  Inputs:
-    ctx - context variable
-    oldpop - symbolic constant of old population
-    newpop - symbolic constant of new population
+    \rst
 
-  Outputs:
-    newpop is modified by side-effect.
+    Description
+    -----------
 
-  Example:
-     PGAContext *ctx,
-    :
-    PGARunMutationAndCrossover (ctx, PGA_OLDPOP, PGA_NEWPOP);
+    Assumes PGASelect has been called.
 
-****************************************************************************U*/
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+
+      ...
+      PGARunMutationAndCrossover (ctx, PGA_OLDPOP, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
 void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
 {
     int i, j, n, m1, m2;
@@ -265,26 +301,35 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
 }
 
 
-/*U****************************************************************************
-  PGARunMutationOrCrossover - Performs crossover or mutation (but not both)
-  from one populationto create the next.  Assumes PGASelect has been called.
+/*!****************************************************************************
+    \brief Perform crossover or mutation (but not both) from one
+           population to create the next.
+    \ingroup explicit
+    \param  ctx     context variable
+    \param  oldpop  symbolic constant of old population
+    \param  newpop  symbolic constant of new population
+    \return newpop is modified by side-effect
 
-  Category: Generation
+    \rst
 
-  Inputs:
-    ctx - context variable
-    oldpop - symbolic constant of old population
-    newpop - symbolic constant of new population
+    Description
+    -----------
 
-  Outputs:
-    newpop is modified by side-effect.
+    Assumes PGASelect has been called.
 
-  Example:
-    PGAContext *ctx,
-    :
-    PGARunMutationOrCrossover (ctx, PGA_OLDPOP, PGA_NEWPOP);
+    Example
+    -------
 
-****************************************************************************U*/
+    .. code-block:: c
+
+      PGAContext *ctx;
+
+      ...
+      PGARunMutationOrCrossover (ctx, PGA_OLDPOP, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
 void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
 {
     int i, j, n, m1, m2;
@@ -349,9 +394,9 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
              n++;
 
              if (n < popsize) {
-                 PGACopyIndividual(ctx, m2, oldpop, PGA_TEMP2, newpop);
+                 PGACopyIndividual (ctx, m2, oldpop, PGA_TEMP2, newpop);
                  PGAMutate (ctx, PGA_TEMP2, newpop);
-                 while (PGADuplicate(ctx, PGA_TEMP2, newpop, newpop)) {
+                 while (PGADuplicate (ctx, PGA_TEMP2, newpop, newpop)) {
                      PGAChange (ctx, PGA_TEMP2, newpop);
                  }
                  PGACopyIndividual (ctx, PGA_TEMP2, newpop, n, newpop);
@@ -365,26 +410,35 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
 }
 
 
-/*U****************************************************************************
-  PGARunMutationOnly - Performs only mutation
-  Assumes PGASelect has been called.
+/*!****************************************************************************
+    \brief Perform only mutation
+    \ingroup explicit
 
-  Category: Generation
+    \param  ctx     context variable
+    \param  oldpop  symbolic constant of old population
+    \param  newpop  symbolic constant of new population
+    \return newpop is modified by side-effect
 
-  Inputs:
-    ctx - context variable
-    oldpop - symbolic constant of old population
-    newpop - symbolic constant of new population
+    \rst
 
-  Outputs:
-    newpop is modified by side-effect.
+    Description
+    -----------
 
-  Example:
-    PGAContext *ctx,
-    :
-    PGARunMutationOnly (ctx, PGA_OLDPOP, PGA_NEWPOP);
+    Assumes PGASelect has been called.
 
-****************************************************************************U*/
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+
+      ...
+      PGARunMutationOnly (ctx, PGA_OLDPOP, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
 void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
 {
     int i, j, n, m;
@@ -428,35 +482,48 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
 }
 
 
-/*U****************************************************************************
-  PGAUpdateGeneration - updates internal data structures for the next
-  genetic algorithm iteration, and checks if the termination conditions, both
-  user and PGAPack, have been met.  This routine must be called by both
-  master and slave processes at the end of each GA generation.
+/*!****************************************************************************
+    \brief Update internal data structures for the next genetic
+           algorithm iteration, and check if the termination
+           conditions, both user and PGAPack, have been met.
+    \ingroup explicit
 
-  Category: Generation
+    \param   ctx   context variable
+    \param   comm  an MPI communicator
+    \return  PGA_TRUE if the genetic algorithm has terminated, otherwise
+             PGA_FALSE
 
-  Inputs:
-     ctx  - context variable
-     comm - an MPI communicator
+    \rst
 
-  Outputs:
-     PGA_TRUE if the genetic algorithm has terminated, otherwise PGA_FALSE.
+    Description
+    -----------
 
-  Example:
-    PGAContext *ctx;
-    :
-    PGAUpdateGeneration(ctx, MPI_COMM_WORLD);
+    This routine must be called by both rank-0 and worker processes at
+    the end of each GA generation.
 
-****************************************************************************U*/
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+
+      ...
+      PGAUpdateGeneration (ctx, MPI_COMM_WORLD);
+
+    \endrst
+
+******************************************************************************/
 void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm)
 {
     PGAIndividual *temp;
     int rank;
 
     PGADebugEntered ("PGAUpdateGeneration");
-    PGADebugPrint (ctx, PGA_DEBUG_PRINTVAR,"PGAUpdateGeneration",
-                   "ga.iter = ", PGA_INT, (void *) &(ctx->ga.iter));
+    PGADebugPrint
+        ( ctx, PGA_DEBUG_PRINTVAR,"PGAUpdateGeneration"
+        , "ga.iter = ", PGA_INT, (void *) &(ctx->ga.iter)
+        );
 
     rank = PGAGetRank (ctx, comm);
 
@@ -501,22 +568,22 @@ void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm)
             PGA_NSGA_III_Replacement (ctx);
         }
 
-	if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) {
-	    PGAUpdateAverage(ctx, PGA_NEWPOP);
+        if (ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) {
+            PGAUpdateAverage(ctx, PGA_NEWPOP);
         }
 
-	if (ctx->rep.PrintOptions & PGA_REPORT_ONLINE) {
-	    PGAUpdateOnline(ctx, PGA_NEWPOP);
+        if (ctx->rep.PrintOptions & PGA_REPORT_ONLINE) {
+            PGAUpdateOnline(ctx, PGA_NEWPOP);
         }
 
-	if (ctx->rep.PrintOptions & PGA_REPORT_OFFLINE) {
-	    PGAUpdateOffline(ctx, PGA_NEWPOP);
+        if (ctx->rep.PrintOptions & PGA_REPORT_OFFLINE) {
+            PGAUpdateOffline(ctx, PGA_NEWPOP);
         }
 
 
         memcpy (oldbest, ctx->rep.Best, sizeof (oldbest));
         PGAUpdateBest (ctx, PGA_NEWPOP);
-	if ((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) || ctx->ga.restart) {
+        if ((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) || ctx->ga.restart) {
             double *best = ctx->rep.Best;
             int k;
             int equal = 1;
@@ -535,252 +602,240 @@ void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm)
             } else {
                 ctx->ga.ItersOfSame = 1;
             }
-	}
-
-	if (ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR)
-	    ctx->ga.PercentSame = PGAComputeSimilarity (ctx, PGA_NEWPOP);
-
-	/*  Clear this twice in case the user EOG calls PGASelect.  */
-	ctx->ga.SelectIndex = 0;
-
-	if (ctx->fops.EndOfGen) {
-	    (*ctx->fops.EndOfGen)(&ctx);
-        }
-	if (ctx->cops.EndOfGen) {
-	    (*ctx->cops.EndOfGen)(ctx);
         }
 
-	ctx->ga.SelectIndex = 0;
-	temp           = ctx->ga.oldpop;
-	ctx->ga.oldpop = ctx->ga.newpop;
-	ctx->ga.newpop = temp;
+        if (ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR) {
+            ctx->ga.PercentSame = PGAComputeSimilarity (ctx, PGA_NEWPOP);
+        }
+
+        /*  Clear this twice in case the user EOG calls PGASelect.  */
+        ctx->ga.SelectIndex = 0;
+
+        if (ctx->fops.EndOfGen) {
+            (*ctx->fops.EndOfGen)(&ctx);
+        }
+        if (ctx->cops.EndOfGen) {
+            (*ctx->cops.EndOfGen)(ctx);
+        }
+
+        ctx->ga.SelectIndex = 0;
+        temp           = ctx->ga.oldpop;
+        ctx->ga.oldpop = ctx->ga.newpop;
+        ctx->ga.newpop = temp;
     }
 
     PGADebugExited ("PGAUpdateGeneration");
 }
 
 
-/*U***************************************************************************
-   PGAGetDataType - Returns the data type used by the given context.
+/*!***************************************************************************
+    \brief Return the data type used by the given context.
+    \ingroup query
 
-   Category: Generation
+    \param   ctx  context variable
+    \return  The integer corresponding to the symbolic constant used to
+             specify the data type
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns the integer corresponding to the symbolic constant
-      used to specify the data type.
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int datatype;
-      :
-      datatype = PGAGetDataType(ctx);
-      switch (datatype) {
-      case PGA_DATATYPE_BINARY:
-          printf ("Data Type = PGA_DATATYPE_BINARY\n");
-          break;
-      case PGA_DATATYPE_CHARACTER:
-          printf ("Data Type = PGA_DATATYPE_CHARACTER\n");
-          break;
-      case PGA_DATATYPE_INTEGER:
-          printf ("Data Type = PGA_DATATYPE_INTEGER\n");
-          break;
-      case PGA_DATATYPE_REAL:
-          printf ("Data Type = PGA_DATATYPE_REAL\n");
-          break;
-      case PGA_DATATYPE_USER:
-          printf ("Data Type = PGA_DATATYPE_USER\n");
-          break;
-      }
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int datatype;
+
+       ...
+       datatype = PGAGetDataType (ctx);
+       switch (datatype) {
+       case PGA_DATATYPE_BINARY:
+           printf ("Data Type = PGA_DATATYPE_BINARY\n");
+           break;
+       case PGA_DATATYPE_CHARACTER:
+           printf ("Data Type = PGA_DATATYPE_CHARACTER\n");
+           break;
+       case PGA_DATATYPE_INTEGER:
+           printf ("Data Type = PGA_DATATYPE_INTEGER\n");
+           break;
+       case PGA_DATATYPE_REAL:
+           printf ("Data Type = PGA_DATATYPE_REAL\n");
+           break;
+       case PGA_DATATYPE_USER:
+           printf ("Data Type = PGA_DATATYPE_USER\n");
+           break;
+       }
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetDataType (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetDataType");
+    PGADebugEntered ("PGAGetDataType");
 
-    PGADebugExited("PGAGetDataType");
+    PGADebugExited  ("PGAGetDataType");
 
-    return(ctx->ga.datatype);
+    return ctx->ga.datatype;
 }
 
-/*U***************************************************************************
-   PGAGetOptDirFlag - Returns a symbolic constant that represents the
-   direction of optimization
+/*!***************************************************************************
+    \brief Return a symbolic constant that represents the direction of
+           optimization.
+    \ingroup query
+    \param   ctx  context variable
+    \return  The integer corresponding to the symbolic constant used to
+             specify the  direction of optimization
 
-   Category: Generation
+    \rst
 
-   Inputs:
-      ctx - context variable
+    Example
+    -------
 
-   Outputs:
-      Returns the integer corresponding to the symbolic constant
-      used to specify the  direction of optimization
+    .. code-block:: c
 
-   Example:
-      PGAContext *ctx;
-      int optdir;
-      :
-      optdir = PGAGetOptDirFlag(ctx);
-      switch (optdir) {
-      case PGA_MAXIMIZE:
-          printf ("Optimization direction = PGA_MAXIMIZE\n");
-          break;
-      case PGA_MINIMIZE:
-          printf ("Optimization direction = PGA_MINIMIZE\n");
-          break;
-      }
+       PGAContext *ctx;
+       int optdir;
 
-***************************************************************************U*/
+       ...
+       optdir = PGAGetOptDirFlag (ctx);
+       switch (optdir) {
+       case PGA_MAXIMIZE:
+           printf ("Optimization direction = PGA_MAXIMIZE\n");
+           break;
+       case PGA_MINIMIZE:
+           printf ("Optimization direction = PGA_MINIMIZE\n");
+           break;
+       }
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetOptDirFlag (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetOptDirFlag");
+    PGADebugEntered ("PGAGetOptDirFlag");
 
-    PGADebugExited("PGAGetOptDirFlag");
+    PGADebugExited  ("PGAGetOptDirFlag");
 
-    return(ctx->ga.optdir);
+    return ctx->ga.optdir;
 }
 
-/*U***************************************************************************
-   PGAGetStringLength - Returns the string length
+/*!***************************************************************************
+    \brief Return the string length
+    \ingroup query
+    \param   ctx  context variable
+    \return  The string length
 
-   Category: Generation
+    \rst
 
-   Inputs:
-      ctx - context variable
+    Example
+    -------
 
-   Outputs:
-      The string length
+    .. code-block:: c
 
-   Example:
-      PGAContext *ctx;
-      int stringlen;
-      :
-      stringlen = PGAGetStringLength(ctx);
+       PGAContext *ctx;
+       int stringlen;
 
-***************************************************************************U*/
+       ...
+       stringlen = PGAGetStringLength (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetStringLength (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetStringLength");
+    PGADebugEntered ("PGAGetStringLength");
 
-    PGADebugExited("PGAGetStringLength");
+    PGADebugExited  ("PGAGetStringLength");
 
-    return(ctx->ga.StringLen);
+    return ctx->ga.StringLen;
 }
 
-/*I***************************************************************************
-   PGAGetVariableStringLength - Returns the length of a variable length
-   string.
+/*!***************************************************************************
+    \brief Return the number of the current genetic algorithm generation.
+    \ingroup query
 
-   Category: Generation
+    \param   ctx  context variable
+    \return  The genetic algorithm generation number
 
-   Inputs:
-      ctx - context variable
-      p   - index into the population
-      pop - symbolic constant for the population
+    \rst
 
-   Outputs:
-      The string length
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int stringlen;
-      :
-      stringlen = PGAGetVariableStringLength(ctx, 0, PGA_NEWPOP);
+    .. code-block:: c
 
-***************************************************************************I*/
-int PGAGetVariableStringLength (PGAContext *ctx, int p, int pop)
-{
-    PGADebugEntered("PGAGetVariableStringLength");
+        PGAContext *ctx;
+        int g;
 
-    PGADebugExited("PGAGetVariableStringLength");
+        ...
+        g = PGAGetGAIterValue (ctx);
 
-    PGAError(ctx, "PGAGetVariableStringLength:  Variable length strings not "
-	     "currently supported.", PGA_FATAL, PGA_VOID, NULL);
-#if 0
-    ind = PGAGetIndividual(ctx, p, pop);
-    return(ind->StringLength);
-#endif
-    /*  Make the compilers be quiet.  */
-    return(0);
-}
+    \endrst
 
-/*U***************************************************************************
-  PGAGetGAIterValue - returns the number of the current genetic
-  algorithm generation
-
-   Category: Generation
-
-   Inputs:
-      ctx - context variable
-
-   Outputs:
-      The genetic algorithm generation number
-
-   Example:
-      PGAContext *ctx;
-      int g;
-      :
-      g = PGAGetGAIterValue(ctx);
-
-***************************************************************************U*/
+*****************************************************************************/
 int PGAGetGAIterValue (PGAContext *ctx)
 {
-    PGADebugEntered("PGAGetGAIterValue");
-    PGAFailIfNotSetUp("PGAGetGAIterValue");
+    PGADebugEntered   ("PGAGetGAIterValue");
+    PGAFailIfNotSetUp ("PGAGetGAIterValue");
 
-    PGADebugExited("PGAGetGAIterValue");
+    PGADebugExited ("PGAGetGAIterValue");
 
-    return(ctx->ga.iter);
+    return ctx->ga.iter;
 }
 
-/*U***************************************************************************
-  PGAGetEvalCount - returns the number of function evaluations
+/*!***************************************************************************
+    \brief Return the number of function evaluations so far.
+    \ingroup query
 
-   Category: Generation
+    \param   ctx  context variable
+    \return  The number of function evaluations
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      The number of function evaluations
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int g;
-      :
-      g = PGAGetEvalCount(ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+        PGAContext *ctx;
+        int g;
+
+        ...
+        g = PGAGetEvalCount (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetEvalCount (PGAContext *ctx)
 {
-    PGAFailIfNotSetUp("PGAGetEvalCount");
+    PGAFailIfNotSetUp ("PGAGetEvalCount");
 
-    return(ctx->rep.nevals);
+    return ctx->rep.nevals;
 }
 
-/*U****************************************************************************
-  PGASetMutationOrCrossoverFlag - A boolean flag to indicate if recombination
-  uses exactly one of crossover or mutation on selected strings.
-  Note: This is a legacy interface, use PGASetMixingType instead.
+/*!****************************************************************************
+    \brief Set a boolean flag to indicate if recombination uses exactly
+           one of crossover or mutation on selected strings.
+    \ingroup deprecated
 
-   Category: Generation
+    \param   ctx   context variable
+    \param   flag  PGA_TRUE (default) or PGA_FALSE
+    \return  None
 
-   Inputs:
-      ctx  - context variable
-      flag - PGA_TRUE (default) or PGA_FALSE
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      Do not use this for new code.
+    Note: This is a legacy interface, use :c:func:`PGASetMixingType` instead.
+    Do not use this for new code.
 
-****************************************************************************U*/
-void PGASetMutationOrCrossoverFlag( PGAContext *ctx, int flag)
+    \endrst
+
+******************************************************************************/
+void PGASetMutationOrCrossoverFlag (PGAContext *ctx, int flag)
 {
-    PGADebugEntered("PGASetMutationOrCrossoverFlag");
+    PGADebugEntered ("PGASetMutationOrCrossoverFlag");
 
     if (flag) {
         ctx->ga.MixingType = PGA_MIX_MUTATE_OR_CROSS;
@@ -788,28 +843,30 @@ void PGASetMutationOrCrossoverFlag( PGAContext *ctx, int flag)
         ctx->ga.MixingType = PGA_MIX_MUTATE_AND_CROSS;
     }
 
-    PGADebugExited("PGASetMutationOrCrossoverFlag");
+    PGADebugExited ("PGASetMutationOrCrossoverFlag");
 }
 
-/*U****************************************************************************
-  PGASetMutationAndCrossoverFlag - A boolean flag to indicate if
-  recombination uses both crossover and mutation on selected strings
-  Note: This is a legacy interface, use PGASetMixingType instead.
+/*!****************************************************************************
+    \brief Set a boolean flag to indicate if recombination uses both
+           crossover and mutation on selected strings.
+    \ingroup deprecated
 
-   Category: Generation
+    \param   ctx   context variable
+    \param   flag  PGA_TRUE (default) or PGA_FALSE
+    \return  None
 
-   Inputs:
-      ctx  - context variable
-      flag - PGA_TRUE (default) or PGA_FALSE
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      Do not use this for new code.
+    Note: This is a legacy interface, use :c:func:`PGASetMixingType` instead.
+    Do not use this for new code.
 
-****************************************************************************U*/
-void PGASetMutationAndCrossoverFlag( PGAContext *ctx, int flag)
+    \endrst
+
+******************************************************************************/
+void PGASetMutationAndCrossoverFlag (PGAContext *ctx, int flag)
 {
     PGADebugEntered ("PGASetMutationAndCrossoverFlag");
 
@@ -821,26 +878,27 @@ void PGASetMutationAndCrossoverFlag( PGAContext *ctx, int flag)
 
     PGADebugExited ("PGASetMutationAndCrossoverFlag");
 }
-/*U***************************************************************************
-   PGAGetMutationOrCrossoverFlag - Returns true if mutation only occurs when
-   crossover does not.
-   Note: This is a legacy interface. If mixing types other than
-   PGA_MIX_MUTATE_OR_CROSS and PGA_MIX_MUTATE_AND_CROSS have been set
-   this might return wrong values, use PGAGetMixingType instead.
+/*!***************************************************************************
+    \brief Return true if mutation only occurs when crossover does not.
+    \ingroup deprecated
 
-   Category: Generation
+    \param   ctx  context variable
+    \return  Return PGA_TRUE if mutation only occurs when crossover does
+             not, otherwise, returns PGA_FALSE
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns PGA_TRUE if mutation only occurs when crossover does not,
-      otherwise, returns PGA_FALSE.
+    Description
+    -----------
 
-   Example:
-      Do not use this for new code.
+    Note: This is a legacy interface. If mixing types other than
+    PGA_MIX_MUTATE_OR_CROSS and PGA_MIX_MUTATE_AND_CROSS have been set
+    this might return wrong values, use :c:func:`PGAGetMixingType` instead.
+    Do not use this for new code.
 
-***************************************************************************U*/
+    \endrst
+
+*****************************************************************************/
 int PGAGetMutationOrCrossoverFlag (PGAContext *ctx)
 {
     PGADebugEntered ("PGAGetMutationOrCrossoverFlag");
@@ -848,31 +906,32 @@ int PGAGetMutationOrCrossoverFlag (PGAContext *ctx)
 
     PGADebugExited ("PGAGetMutationOrCrossoverFlag");
 
-    return (ctx->ga.MixingType == PGA_MIX_MUTATE_OR_CROSS
+    return ( ctx->ga.MixingType == PGA_MIX_MUTATE_OR_CROSS
            ? PGA_TRUE : PGA_FALSE
            );
 }
 
-/*U***************************************************************************
-   PGAGetMutationAndCrossoverFlag - Returns true if mutation occurs only
-   when crossover does.
-   Note: This is a legacy interface. If mixing types other than
-   PGA_MIX_MUTATE_OR_CROSS and PGA_MIX_MUTATE_AND_CROSS have been set
-   this might return wrong values, use PGAGetMixingType instead.
+/*!***************************************************************************
+    \brief Return true if mutation occurs only when crossover does.
+    \ingroup deprecated
 
-   Category: Generation
+    \param   ctx  context variable
+    \return Return PGA_TRUE if mutation is applied to crossed-over strings,
+            otherwise, returns PGA_FALSE
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns PGA_TRUE if mutation is applied to crossed-over strings.
-      Otherwise, returns PGA_FALSE
+    Description
+    -----------
 
-   Example:
-      Do not use this for new code.
+    Note: This is a legacy interface. If mixing types other than
+    PGA_MIX_MUTATE_OR_CROSS and PGA_MIX_MUTATE_AND_CROSS have been set
+    this might return wrong values, use :c:func:`PGAGetMixingType` instead.
+    Do not use this for new code.
 
-***************************************************************************U*/
+    \endrst
+
+*****************************************************************************/
 int PGAGetMutationAndCrossoverFlag (PGAContext *ctx)
 {
     PGADebugEntered ("PGAGetMutationAndCrossoverFlag");
@@ -880,32 +939,34 @@ int PGAGetMutationAndCrossoverFlag (PGAContext *ctx)
 
     PGADebugExited ("PGAGetMutationAndCrossoverFlag");
 
-    return (ctx->ga.MixingType == PGA_MIX_MUTATE_AND_CROSS
+    return ( ctx->ga.MixingType == PGA_MIX_MUTATE_AND_CROSS
            ? PGA_TRUE : PGA_FALSE
            );
 }
 
-/*U****************************************************************************
-  PGASetMutationOnlyFlag - A boolean flag to indicate that recombination
-  uses mutation only.
-  Note: This is a legacy interface, use PGASetMixingType instead.
-  Note: This will override settings of PGASetMutationOrCrossoverFlag and
-  PGASetMutationAndCrossoverFlag and will set the default
-  (PGASetMutationAndCrossoverFlag) when using PGA_FALSE as the flag.
+/*!****************************************************************************
+    \brief Set a boolean flag to indicate that recombination uses mutation only.
+    \ingroup deprecated
 
-   Category: Generation
+    \param   ctx   context variable
+    \param   flag  PGA_TRUE (default) or PGA_FALSE
+    \return  None
 
-   Inputs:
-      ctx  - context variable
-      flag - PGA_TRUE (default) or PGA_FALSE
+    \rst
 
-   Outputs:
-      None
+    Description
+    -----------
 
-   Example:
-      Do not use this for new code.
+    Note: This is a legacy interface, use :c:func:`PGASetMixingType` instead.
+    Note: This will override settings of
+    :c:func:`PGASetMutationOrCrossoverFlag` and
+    :c:func:`PGASetMutationAndCrossoverFlag` and will set the default
+    (:c:func:`PGASetMutationOrCrossoverFlag`) when using PGA_FALSE as
+    the flag. Do not use this for new code.
 
-****************************************************************************U*/
+    \endrst
+
+******************************************************************************/
 void PGASetMutationOnlyFlag (PGAContext *ctx, int flag)
 {
     if (flag) {
@@ -915,49 +976,56 @@ void PGASetMutationOnlyFlag (PGAContext *ctx, int flag)
     }
 }
 
-/*U***************************************************************************
-   PGAGetMutationOnlyFlag - Returns true if only mutation is used
-   Note: This is a legacy interface, use PGAGetMixingType instead.
+/*!***************************************************************************
+    \brief Return PGA_TRUE if only mutation is used.
+    \ingroup deprecated
 
-   Category: Generation
+    \param   ctx  context variable
+    \return Return PGA_TRUE if only mutation is applied, otherwise,
+            return PGA_FALSE
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns PGA_TRUE if only mutation is applied.
-      Otherwise, returns PGA_FALSE
+    Description
+    -----------
 
-   Example:
-      Do not use this for new code.
+    Note: This is a legacy interface, use :c:func:`PGAGetMixingType` instead.
+    Do not use this for new code.
 
-***************************************************************************U*/
+    \endrst
+
+*****************************************************************************/
 int PGAGetMutationOnlyFlag (PGAContext *ctx)
 {
     PGAFailIfNotSetUp ("PGAGetMutationOnlyFlag");
     return (ctx->ga.MixingType == PGA_MIX_MUTATE_ONLY ? PGA_TRUE : PGA_FALSE);
 }
 
-/*U****************************************************************************
-  PGASetMixingType - Strategy for combining Mutation and Crossover
+/*!****************************************************************************
+    \brief Set strategy for combining mutation and crossover.
+    \ingroup init
 
-   Category: Generation
+    \param   ctx   context variable
+    \param   type  Type of Mutation/Crossover combination
+    \return  None
 
-   Inputs:
-      ctx  - context variable
-      type - Type of Mutation/Crossover combination
+    \rst
 
-   Outputs:
-      None
+    Example
+    -------
 
-   Example:
-      Set the genetic algorithm to use mutation only.
+    Set the genetic algorithm to use mutation only.
 
-      PGAContext *ctx;
-      :
-      PGASetMixingType (ctx, PGA_MIX_MUTATE_ONLY);
+    .. code-block:: c
 
-****************************************************************************U*/
+       PGAContext *ctx;
+
+       ...
+       PGASetMixingType (ctx, PGA_MIX_MUTATE_ONLY);
+
+    \endrst
+
+******************************************************************************/
 void PGASetMixingType (PGAContext *ctx, int type)
 {
     switch (type) {
@@ -977,28 +1045,32 @@ void PGASetMixingType (PGAContext *ctx, int type)
     }
 }
 
-/*U***************************************************************************
-   PGAGetMixingType - Returns the strategy setting for combination of
-   mutation and crossover
+/*!***************************************************************************
+    \brief Return the strategy setting for combination of mutation and
+           crossover.
+    \ingroup query
 
-   Category: Generation
+    \param   ctx  context variable
+    \return  Return the mixing type
 
-   Inputs:
-      ctx - context variable
+    \rst
 
-   Outputs:
-      Returns the mixing type.
+    Example
+    -------
 
-   Example:
-      PGAContext *ctx;
-      int mixtype;
-      :
-      mixtype = PGAGetMixingType (ctx);
+    .. code-block:: c
 
-***************************************************************************U*/
+       PGAContext *ctx;
+       int mixtype;
+
+       ...
+       mixtype = PGAGetMixingType (ctx);
+
+    \endrst
+
+*****************************************************************************/
 int PGAGetMixingType (PGAContext *ctx)
 {
     PGAFailIfNotSetUp ("PGAGetMixingType");
-    return (ctx->ga.MixingType);
+    return ctx->ga.MixingType;
 }
-

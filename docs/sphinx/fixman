@@ -1,0 +1,106 @@
+#!/usr/bin/python3
+
+import sys
+
+class Man_Fixer:
+
+    def __init__ (self, f_in, f_out):
+        self.f_in       = f_in
+        self.f_out      = f_out
+        self.saved      = None
+        self.sourcefile = None
+    # end def __init__
+
+    def output_saved (self):
+        if self.saved:
+            print (self.saved, file = self.f_out)
+        self.saved = None
+    # end def output_saved
+
+    def fixdoc (self):
+        th = None
+        name_seen = False
+        synopsis_seen = False
+        b_seen = False
+        for line in self.f_in:
+            line = line.rstrip ('\n')
+            if b_seen:
+                if line == '.sp':
+                    b_seen = False
+                else:
+                    continue
+            if line.startswith ('.TH'):
+                th = line
+                continue
+            if line == '.SH NAME':
+                assert th
+                name_seen = True
+                continue
+            if name_seen:
+                ths = th.split ()
+                pn  = ths [-1]
+                dt  = []
+                for i in range (-3, -8, -1):
+                    dt.append (ths [i])
+                    if ths [i].startswith ('"'):
+                        break
+                else:
+                    assert 0
+                dt  = ' '.join (reversed (dt))
+                n   = line.split (None, 1) [0]
+                if len (n) > 31:
+                    pn = '""'
+                    dt = '""'
+                print ('.TH "%s" "3" %s "" %s' % (n, dt, pn), file = self.f_out)
+                print ('.SH NAME', file = self.f_out)
+                name_seen = False
+                th = None
+            elif synopsis_seen and line.startswith ('.B'):
+                b_seen = True
+                synopsis_seen = False
+            elif line.startswith ('.INDENT'):
+                self.saved = None
+                continue
+            elif line.startswith ('.UNINDENT'):
+                self.saved = None
+                continue
+            elif line == '.SH FUNCTION DOCUMENTATION':
+                self.output_saved ()
+                line = '.SH SYNOPSIS'
+                synopsis_seen = True
+            elif line.startswith ('.SS '):
+                self.output_saved ()
+                line = '.SH ' + line.split (None, 1) [-1].upper ()
+            elif line == '.SS Example':
+                self.output_saved ()
+                line = '.SH EXAMPLE'
+            elif line.startswith ('.TP'):
+                # Delete the .TP for synopsis
+                if not synopsis_seen:
+                    self.saved = line
+                continue
+            elif line == '.B Parameters':
+                self.saved = None
+                line = '.SH PARAMETERS'
+            elif line == '.B Returns':
+                self.saved = None
+                line = '.SH RETURNS'
+            elif line == '.IP \\(bu 2':
+                self.saved = line
+                continue
+            elif line.startswith ('Defined in '):
+                self.saved = None
+                self.sourcefile = line [11:]
+                continue
+            elif line == '.SH COPYRIGHT' and self.sourcefile:
+                print ('.SH LOCATION', file = self.f_out)
+                print (self.sourcefile)
+            else:
+                self.output_saved ()
+            print (line, file = self.f_out)
+    # end def fixdoc
+# end class Man_Fixer
+
+if __name__ == '__main__':
+    mf = Man_Fixer (sys.stdin, sys.stdout)
+    mf.fixdoc ()

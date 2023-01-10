@@ -22,6 +22,16 @@ companion projects:
 Updates 
 =======
 
+Update Jan 2023:
+
+- Add Sphinx documentation
+- Generate manual pages from Sphinx docs, this has a lot of bug-fixes in
+  the manpages (e.g. wrong documentation of return value) and documents
+  some functions that did previously not have a manual page
+- Default for PGASetSumConstraintsFlag is now PGA_TRUE, works more
+  reliable, this is only relevant when using one of the NSGA multi
+  objective algorithms
+
 Update Dez 2022:
 
 - Bug fixes discovered during implementation of a regression test for

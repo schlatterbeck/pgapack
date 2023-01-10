@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -37,12 +37,18 @@ product, or process disclosed, or represents that its use would not infringe
 privately owned rights.
 */
 
-/*****************************************************************************
-*     FILE: debug.c: This file contains routines for debugging
-*
-*     Authors: David M. Levine, Philip L. Hallstrom, David M. Noelle,
-*              Brian P. Walenz
+/*!***************************************************************************
+* \file
+* This file contains routines for debugging.
+* \authors Authors:
+*          David M. Levine, Philip L. Hallstrom, David M. Noelle,
+*          Brian P. Walenz, Ralf Schlatterbeck
 ******************************************************************************/
+/*!***************************************************************************
+ *  \defgroup debug Debugging
+ *  \brief Functions for debugging function calls
+ *****************************************************************************/
+
 
 #include "pgapack.h"
 
@@ -100,6 +106,8 @@ privately owned rights.
 ******************************************************************************/
 
 #if OPTIMIZE==0
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+
 typedef struct
 {
     char *PGAFuncName;
@@ -124,7 +132,6 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGASetBinaryAllele",             110 },
         { "PGAGetBinaryAllele",             111 },
         { "PGABinaryHammingDistance",       120 },
-        { "PGABinaryPrint",                 121 },
         { "PGAGetBinaryInitProb",           122 },
         { "PGASetBinaryInitProb",           123 },
         { "PGABinaryGeneDistance",          124 },
@@ -188,8 +195,6 @@ PGAFuncRec PGAFuncIndex[] =
         /* create.c */
         { "PGACreate",                      300 },
         { "PGASetUp",                       301 },
-        { "PGACreatePop",                   302 },
-        { "PGACreateIndividual",            303 },
         { "PGAGetRandomInitFlag",           304 },
         { "PGASetRandomInitFlag",           305 },
         { "PGASetNumAuxEval",               306 },
@@ -287,7 +292,7 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGACheckStoppingConditions",     394 },
         { "PGASetMaxNoChangeValue",         395 },
         { "PGASetMaxSimilarityValue",       396 },
-	{ "PGADone",                        397 },
+        { "PGADone",                        397 },
 
 /* Fitness and Evaluation Routines 500 - 599 */
         /* evaluate.c */
@@ -295,8 +300,6 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGAGetRealFromGrayCode",         501 },
         { "PGAEncodeRealAsBinary",          502 },
         { "PGAEncodeRealAsGrayCode",        503 },
-        { "PGAMapIntegerToReal",            504 },
-        { "PGAMapRealToInteger",            505 },
         { "PGAEncodeIntegerAsBinary",       506 },
         { "PGAEncodeIntegerAsGrayCode",     507 },
         { "PGAGetIntegerFromBinary",        508 },
@@ -306,9 +309,9 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGASetEvaluationUpToDateFlag",   512 },
         { "PGAGetEvaluation",               513 },
         { "PGAGetEvaluationUpToDateFlag",   514 },
-	{ "PGAEvaluateSeq",                 515 },
-	{ "PGAEvaluateCoop",                516 },
-	{ "PGAEvaluateSlave",               517 },
+        { "PGAEvaluateSeq",                 515 },
+        { "PGAEvaluateCoop",                516 },
+        { "PGAEvaluateWorker",              517 },
         { "PGAGetAuxEvaluation",            518 },
 
         /* fitness.c */
@@ -333,7 +336,7 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGASendIndividual",              601 },
         { "PGAReceiveIndividual",           602 },
         { "PGASendReceiveIndividual",       603 },
-        { "PGAEvaluateMS",                  605 },
+        { "PGAEvaluateMP",                  605 },
         { "PGAGetRank",                     607 },
         { "PGAGetNumProcs",                 608 },
         { "PGASetCommunicator",             609 },
@@ -375,14 +378,10 @@ PGAFuncRec PGAFuncIndex[] =
 
         /* cmdline.c */
         { "PGAReadCmdLine",                 730 },
-        { "PGAParseDebugArg",               731 },
-        { "PGAStripArgs",                   732 },
 
         /* debug.c */
         { "PGADebugPrint",                  740 },
-        { "PGAGetDebugFlag",                741 },
         { "PGAPrintDebugOptions",           743 },
-        { "PGASetDebugLevel",               744 },
 
         /* random.c */
         { "PGARandomFlip",                  750 },
@@ -416,307 +415,34 @@ PGAFuncRec PGAFuncIndex[] =
         { NULL }
 };
 
-int func_compare (const void *f1, const void *f2)
+static int func_compare (const void *f1, const void *f2)
 {
     const PGAFuncRec *pf1 = f1;
     const PGAFuncRec *pf2 = f2;
     return strcmp (pf1->PGAFuncName, pf2->PGAFuncName);
 }
 
-/*I****************************************************************************
-   PGASortDebugIndex - Sort the index of function names alphabetically.
+/*!****************************************************************************
+    \brief Return the debug level of the named function.
+    \ingroup internal
 
-   Inputs:
+    \param   ctx        context variable
+    \param   funcname   the name of the function
+    \return  The debug level value of the function, that is, PGAFuncNum
+             associated with funcname in PGAFuncIndex
 
-   Output:
+    \rst
 
-   Example:
+    Description
+    -----------
 
-****************************************************************************I*/
-void PGASortFuncNameIndex(PGAContext *ctx)
-{
-    PGANumFcns = sizeof (PGAFuncIndex) / sizeof (PGAFuncRec) - 1;
-    qsort (PGAFuncIndex, PGANumFcns, sizeof(PGAFuncRec), func_compare);
-}
+    Internally, it performs a binary search on the run-time sorted list
+    of functions in PGAFuncIndex.
 
+    \endrst
 
-/*U****************************************************************************
-  PGADebugPrint - Write debugging information
-
-  Category: Debugging
-
-  Inputs:
-     ctx       - context variable
-     level     - a symbolic constant that maps to the type of print requested
-                 (e.g., an entry or exit print).  Valid values are
-                 PGA_DEBUG_ENTERED, PGA_DEBUG_EXIT, PGA_DEBUG_MALLOC,
-                 PGA_DEBUG_PRINTVAR, PGA_DEBUG_SEND, and PGA_DEBUG_RECV.
-     funcname  - the name of the function that called this routine
-     msg       - message to print
-     datatype  - a symbolic constant that maps to the data type of the
-                 parameter data.  Valid choices are PGA_INT, PGA_DOUBLE,
-                 PGA_CHAR and PGA_VOID (no data).
-     data      - a pointer, whose contents will be interpreted based upon the
-                 datatype parameter (or NULL, if PGA_VOID).
-
-  Outputs:
-     The debugging information is printed to stdout.
-
-  Example:
-     If the debugging level includes printing variables (level 82), print the
-     value of the integer variable num as a debugging tool in the routine
-     Add2Nums
-
-     PGAContext *ctx;
-     int num;
-     :
-     PGADebugPrint
-        (ctx, PGA_DEBUG_PRINTVAR, "Add2Nums", "num = ", PGA_INT, (void *) &num);
-
-****************************************************************************U*/
-void PGADebugPrint
-    ( PGAContext *ctx, int level
-    , char *funcname, char *msg, int datatype, void *data
-    )
-{
-    int rank;
-    FILE *fout = stdout;
-
-    /*  Added check if level > 10 so that PGAGetDebugFlag is only called
-     *  if it is _not_ a user debug level.
-     */
-
-    if (  ctx->debug.PGADebugFlags[0]
-       || ctx->debug.PGADebugFlags[level]
-       || ((level > 10) && PGAGetDebugFlag (ctx, funcname))
-       )
-    {
-        MPI_Comm_rank (MPI_COMM_WORLD, &rank);
-        switch (datatype)
-        {
-        case PGA_VOID:
-            fprintf (fout, "%4d: %-32s: %s\n", rank, funcname, msg);
-            break;
-        case PGA_INT:
-            switch (*(int *) data)
-            {
-            case PGA_TEMP1:
-                fprintf
-                    (fout, "%4d: %-32s: %s PGA_TEMP1\n" , rank, funcname, msg);
-                break;
-            case PGA_TEMP2:
-                fprintf
-                    (fout, "%4d: %-32s: %s PGA_TEMP2\n", rank, funcname, msg);
-                break;
-            case PGA_OLDPOP:
-                fprintf
-                    (fout, "%4d: %-32s: %s PGA_OLDPOP\n", rank, funcname, msg);
-                break;
-            case PGA_NEWPOP:
-                fprintf
-                    (fout, "%4d: %-32s: %s PGA_NEWPOP\n" , rank, funcname, msg);
-                break;
-            default:
-                fprintf
-                    ( fout, "%4d: %-32s: %s %d\n"
-                    , rank, funcname, msg, *(int *) data
-                    );
-                break;
-            }
-            break;
-        case PGA_DOUBLE:
-            fprintf
-                ( fout, "%4d: %-32s: %s %e\n"
-                , rank, funcname, msg, *(double *) data
-                );
-            break;
-        case PGA_CHAR:
-            fprintf
-                ( fout, "%4d: %-32s: %s %s\n"
-                , rank, funcname, msg,  (char *) data
-                );
-            break;
-        default:
-            fprintf
-                ( stderr, "PGADebugPrint: Invalid value of datatype: %d"
-                , datatype
-                );
-            exit (-1);
-            break;
-        }
-    }
-}
-
-/*U****************************************************************************
-   PGASetDebugLevel - Turn on a debug level.  Only valid if PGAPack
-   was compiled to include debugging calls.  See the user guide for details.
-
-   Category: Debugging
-
-   Inputs:
-      ctx   - context variable
-      level - the debug level to set to PGA_TRUE.
-
-   Outputs:
-      None
-
-   Example:
-      PGAContext *ctx;
-      :
-      PGASetDebugLevel(ctx, 70)
-
-****************************************************************************U*/
-void PGASetDebugLevel(PGAContext *ctx, int level)
-{
-    if ((level < 11) || (level > 100)) {
-        ctx->debug.PGADebugFlags[level] = PGA_TRUE;
-    } else {
-        /*  Call the appropriate routine to clear the set of levels.  */
-        switch (level) {
-        case 11:  PGASetDebugFlag11(ctx, PGA_TRUE); break;
-        case 20:  PGASetDebugFlag20(ctx, PGA_TRUE); break;
-        case 21:  PGASetDebugFlag21(ctx, PGA_TRUE); break;
-        case 30:  PGASetDebugFlag30(ctx, PGA_TRUE); break;
-        case 32:  PGASetDebugFlag32(ctx, PGA_TRUE); break;
-        case 34:  PGASetDebugFlag34(ctx, PGA_TRUE); break;
-        case 36:  PGASetDebugFlag36(ctx, PGA_TRUE); break;
-        case 40:  PGASetDebugFlag40(ctx, PGA_TRUE); break;
-        case 42:  PGASetDebugFlag42(ctx, PGA_TRUE); break;
-        case 44:  PGASetDebugFlag44(ctx, PGA_TRUE); break;
-        case 46:  PGASetDebugFlag46(ctx, PGA_TRUE); break;
-        case 48:  PGASetDebugFlag48(ctx, PGA_TRUE); break;
-        case 50:  PGASetDebugFlag50(ctx, PGA_TRUE); break;
-        case 52:  PGASetDebugFlag52(ctx, PGA_TRUE); break;
-        case 54:  PGASetDebugFlag54(ctx, PGA_TRUE); break;
-        case 56:  PGASetDebugFlag56(ctx, PGA_TRUE); break;
-        case 58:  PGASetDebugFlag58(ctx, PGA_TRUE); break;
-        case 60:  PGASetDebugFlag60(ctx, PGA_TRUE); break;
-        case 62:  PGASetDebugFlag62(ctx, PGA_TRUE); break;
-        case 64:  PGASetDebugFlag64(ctx, PGA_TRUE); break;
-        case 66:  PGASetDebugFlag66(ctx, PGA_TRUE); break;
-        }
-    }
-}
-
-/*U****************************************************************************
-   PGAClearDebugLevel - Turn off a debul level.  Only valid if PGAPack
-   was compiled to include debugging calls.  See the user guide for details.
-
-   Category: Debugging
-
-   Inputs:
-      ctx   - context variable
-      level - the debug level to set to PGA_FALSE.
-
-   Outputs:
-      None
-
-   Example:
-      PGAContext *ctx;
-      :
-      PGAClearDebugLevel(ctx, 70)
-
-****************************************************************************U*/
-void PGAClearDebugLevel(PGAContext *ctx, int level)
-{
-    if ((level < 11) || (level > 100)) {
-        ctx->debug.PGADebugFlags[level] = PGA_FALSE;
-    } else {
-        /*  Call the appropriate routine to clear the set of levels.  */
-        switch (level) {
-        case 11:  PGASetDebugFlag11(ctx, PGA_FALSE); break;
-        case 20:  PGASetDebugFlag20(ctx, PGA_FALSE); break;
-        case 21:  PGASetDebugFlag21(ctx, PGA_FALSE); break;
-        case 30:  PGASetDebugFlag30(ctx, PGA_FALSE); break;
-        case 32:  PGASetDebugFlag32(ctx, PGA_FALSE); break;
-        case 34:  PGASetDebugFlag34(ctx, PGA_FALSE); break;
-        case 36:  PGASetDebugFlag36(ctx, PGA_FALSE); break;
-        case 40:  PGASetDebugFlag40(ctx, PGA_FALSE); break;
-        case 42:  PGASetDebugFlag42(ctx, PGA_FALSE); break;
-        case 44:  PGASetDebugFlag44(ctx, PGA_FALSE); break;
-        case 46:  PGASetDebugFlag46(ctx, PGA_FALSE); break;
-        case 48:  PGASetDebugFlag48(ctx, PGA_FALSE); break;
-        case 50:  PGASetDebugFlag50(ctx, PGA_FALSE); break;
-        case 52:  PGASetDebugFlag52(ctx, PGA_FALSE); break;
-        case 54:  PGASetDebugFlag54(ctx, PGA_FALSE); break;
-        case 56:  PGASetDebugFlag56(ctx, PGA_FALSE); break;
-        case 58:  PGASetDebugFlag58(ctx, PGA_FALSE); break;
-        case 60:  PGASetDebugFlag60(ctx, PGA_FALSE); break;
-        case 62:  PGASetDebugFlag62(ctx, PGA_FALSE); break;
-        case 64:  PGASetDebugFlag64(ctx, PGA_FALSE); break;
-        case 66:  PGASetDebugFlag66(ctx, PGA_FALSE); break;
-        }
-    }
-}
-
-/*U****************************************************************************
-   PGASetDebugLevelByName - Turn on debugging of the named function.
-
-   Category: Debugging
-
-   Inputs:
-       ctx        - context variable
-       funcname   - name of the function to turn on debugging output
-
-   Outputs:
-
-   Example:
-       PGAContext *ctx;
-       :
-       PGASetDebugLevelByName(ctx, "PGAGetBinaryAllele");
-
-****************************************************************************U*/
-void PGASetDebugLevelByName(PGAContext *ctx, char *funcname)
-{
-    int  level;
-
-    level = PGAGetDebugLevelOfName(ctx, funcname);
-    ctx->debug.PGADebugFlags[level] = PGA_TRUE;
-}
-
-/*U****************************************************************************
-   PGAClearDebugLevelByName - Turn off debugging of the named function.
-
-   Category: Debugging
-
-   Inputs:
-       ctx        - context variable
-       funcname   - name of the function to turn on debugging output
-
-   Outputs:
-
-   Example:
-       PGAContext *ctx;
-       :
-       PGAClearDebugLevelByName(ctx, "PGAGetBinaryAllele");
-
-****************************************************************************U*/
-void PGAClearDebugLevelByName(PGAContext *ctx, char *funcname)
-{
-    int  level;
-
-    level = PGAGetDebugLevelOfName(ctx, funcname);
-    ctx->debug.PGADebugFlags[level] = PGA_FALSE;
-}
-
-
-/*I****************************************************************************
-   PGAGetDebugLevelOfName - returns the debug level of the named function
-   Internally, it performs a binary search on the run-time sorted list of
-   fucntions in PGAFuncIndex.
-
-   Inputs:
-       ctx       - context variable
-       funcname  - the name of the function
-
-   Outputs:
-       The debug level value of the function.  That is, PGAFuncNum associated
-       with funcname in PGAFuncIndex.
-
-   Example:
-
-
-****************************************************************************I*/
+******************************************************************************/
+static
 int PGAGetDebugLevelOfName (PGAContext *ctx, char *funcname)
 {
     PGAFuncRec x = { funcname };
@@ -728,50 +454,55 @@ int PGAGetDebugLevelOfName (PGAContext *ctx, char *funcname)
             , "PGAGetDebugFlag: Function missing from PGAFuncIndex: '%s'\n"
             , funcname
             );
-    } 
+    }
     return rec->PGAFuncNum;
 }
 
-/*I****************************************************************************
-  PGAGetDebugFlag - checks whether the flag to do a debug print in routine
-  funcname has been set.  Returns PGA_TRUE if so, otherwise PGA_FALSE.
-  If the name is not in the function name database, an error message is
-  printed and the program terminates.
+/*!****************************************************************************
+    \brief Check whether the flag to do a debug print in routine
+                 funcname has been set.
+    \ingroup internal
 
-  Inputs:
-     ctx      - context variable
-     funcname - name of the function in question
+    \param   ctx       context variable
+    \param   funcname  name of the function in question
+    \return  None
 
-  Outputs:
+    \rst
 
-  Example:
-     PGAContext *ctx;
-     int IsItSet;
+    Description
+    -----------
 
-     IsItSet = PGAGetDebugFlag(ctx, "PGAGetDebugFlags");
+    Returns PGA_TRUE if flag is set, otherwise PGA_FALSE.  If the name
+    is not in the function name database, an error message is printed
+    and the program terminates.
 
-****************************************************************************I*/
-int PGAGetDebugFlag(PGAContext *ctx, char *funcname)
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int IsItSet;
+
+       ...
+       IsItSet = PGAGetDebugFlag (ctx, "PGASetUp");
+    \endrst
+
+******************************************************************************/
+static
+int PGAGetDebugFlag (PGAContext *ctx, char *funcname)
 {
      int level;
 
-     level = PGAGetDebugLevelOfName(ctx, funcname);
-     return ctx->debug.PGADebugFlags[level];
+     level = PGAGetDebugLevelOfName (ctx, funcname);
+     return ctx->debug.PGADebugFlags [level];
 }
 
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag11 - Set the debug flags for all functions at debug level 11
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag11(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[300] = Flag; /*PGACreate*/
@@ -871,8 +602,7 @@ void PGASetDebugFlag11(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[534] = Flag; /*PGAGetFitnessCmaxValue*/
 
    ctx->debug.PGADebugFlags[604] = Flag; /*PGARunMS*/
-   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMS*/
-   ctx->debug.PGADebugFlags[606] = Flag; /*PGAEvaluateDoneMS*/
+   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMP*/
    ctx->debug.PGADebugFlags[607] = Flag; /*PGAGetRank*/
    ctx->debug.PGADebugFlags[608] = Flag; /*PGAGetNumProcs*/
    ctx->debug.PGADebugFlags[609] = Flag; /*PGASetCommunicator*/
@@ -895,10 +625,8 @@ void PGASetDebugFlag11(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[708] = Flag; /*PGADestroy*/
 
    ctx->debug.PGADebugFlags[740] = Flag; /*PGADebugPrint*/
-   ctx->debug.PGADebugFlags[741] = Flag; /*PGAGetDebugFlag*/
    ctx->debug.PGADebugFlags[742] = Flag; /*PGASetDebugFlag*/
    ctx->debug.PGADebugFlags[743] = Flag; /*PGAPrintDebugOptions*/
-   ctx->debug.PGADebugFlags[744] = Flag; /*PGASetDebugLevel*/
 
    ctx->debug.PGADebugFlags[800] = Flag; /*PGAHammingDistance*/
 
@@ -912,23 +640,14 @@ void PGASetDebugFlag11(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[830] = Flag; /*PGASetUserFunction*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag20 - Set the debug flags for all functions at debug level 20
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag20(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[604] = Flag; /*PGARunMS*/
-   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMS*/
-   ctx->debug.PGADebugFlags[606] = Flag; /*PGAEvaluateDoneMS*/
+   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMP*/
    ctx->debug.PGADebugFlags[607] = Flag; /*PGAGetRank*/
    ctx->debug.PGADebugFlags[608] = Flag; /*PGAGetNumProcs*/
    ctx->debug.PGADebugFlags[609] = Flag; /*PGASetCommunicator*/
@@ -941,18 +660,10 @@ void PGASetDebugFlag20(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[617] = Flag; /*PGARunNM*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag21 - Set the debug flags for all functions at debug level 21
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag21(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[600] = Flag; /*PGABuildDataType*/
@@ -960,8 +671,7 @@ void PGASetDebugFlag21(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[602] = Flag; /*PGAReceiveIndividual*/
    ctx->debug.PGADebugFlags[603] = Flag; /*PGASendReceiveIndividual*/
    ctx->debug.PGADebugFlags[604] = Flag; /*PGARunMS*/
-   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMS*/
-   ctx->debug.PGADebugFlags[606] = Flag; /*PGAEvaluateDoneMS*/
+   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMP*/
    ctx->debug.PGADebugFlags[607] = Flag; /*PGAGetRank*/
    ctx->debug.PGADebugFlags[608] = Flag; /*PGAGetNumProcs*/
    ctx->debug.PGADebugFlags[609] = Flag; /*PGASetCommunicator*/
@@ -975,18 +685,10 @@ void PGASetDebugFlag21(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[714] = Flag; /*PGACheckSum*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag30 - Set the debug flags for all functions at debug level 30
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag30(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[100] = Flag; /*PGABinaryCreateString*/
@@ -1002,24 +704,15 @@ void PGASetDebugFlag30(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[110] = Flag; /*PGASetBinaryAllele*/
    ctx->debug.PGADebugFlags[111] = Flag; /*PGAGetBinaryAllele*/
    ctx->debug.PGADebugFlags[120] = Flag; /*PGABinaryHammingDistance*/
-   ctx->debug.PGADebugFlags[121] = Flag; /*PGABinaryPrint*/
    ctx->debug.PGADebugFlags[122] = Flag; /*PGAGetBinaryInitProb*/
    ctx->debug.PGADebugFlags[123] = Flag; /*PGASetBinaryInitProb*/
    ctx->debug.PGADebugFlags[124] = Flag; /*PGABinaryGeneDistance*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag32 - Set the debug flags for all functions at debug level 32
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag32(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[150] = Flag; /*PGAIntegerCreateString*/
@@ -1046,18 +739,10 @@ void PGASetDebugFlag32(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[403] = Flag; /*PGAGetMutationBounceBackFlag*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag34 - Set the debug flags for all functions at debug level 34
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag34(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[200] = Flag; /*PGARealCreateString*/
@@ -1079,18 +764,10 @@ void PGASetDebugFlag34(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[224] = Flag; /*PGARealGeneDistance*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag36 - Set the debug flags for all functions at debug level 36
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag36(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[250] = Flag; /*PGACharacterCreateString*/
@@ -1109,18 +786,10 @@ void PGASetDebugFlag36(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[271] = Flag; /*PGACharacterGeneDistance*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag40 - Set the debug flags for all functions at debug level 40
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag40(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[100] = Flag; /*PGABinaryCreateString*/
@@ -1132,8 +801,6 @@ void PGASetDebugFlag40(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[270] = Flag; /*PGASetCharacterInitType*/
    ctx->debug.PGADebugFlags[300] = Flag; /*PGACreate*/
    ctx->debug.PGADebugFlags[301] = Flag; /*PGASetUp*/
-   ctx->debug.PGADebugFlags[302] = Flag; /*PGACreatePop*/
-   ctx->debug.PGADebugFlags[303] = Flag; /*PGACreateIndividual*/
    ctx->debug.PGADebugFlags[304] = Flag; /*PGAGetRandomInitFlag*/
    ctx->debug.PGADebugFlags[305] = Flag; /*PGASetRandomInitFlag*/
    ctx->debug.PGADebugFlags[150] = Flag; /*PGAIntegerCreateString*/
@@ -1151,18 +818,10 @@ void PGASetDebugFlag40(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[223] = Flag; /*PGAGetMaxRealInitValue*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag42 - Set the debug flags for all functions at debug level 42
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag42(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[378] = Flag; /*PGAGetTournamentSize*/
@@ -1179,18 +838,10 @@ void PGASetDebugFlag42(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[389] = Flag; /*PGASetPTournamentProb*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag44 - Set the debug flags for all functions at debug level 44
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag44(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[101] = Flag; /*PGABinaryMutation*/
@@ -1210,18 +861,10 @@ void PGASetDebugFlag44(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[401] = Flag; /*PGAGetMutationBoundedFlag*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag46 - Set the debug flags for all functions at debug level 46
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag46(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[102] = Flag; /*PGABinaryOneptCrossover*/
@@ -1245,18 +888,10 @@ void PGASetDebugFlag46(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[316] = Flag; /*PGASetUniformCrossoverProb*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag48 - Set the debug flags for all functions at debug level 48
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag48(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[110] = Flag; /*PGASetBinaryAllele*/
@@ -1271,8 +906,6 @@ void PGASetDebugFlag48(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[501] = Flag; /*PGAGetRealFromGrayCode*/
    ctx->debug.PGADebugFlags[502] = Flag; /*PGAEncodeRealAsBinary*/
    ctx->debug.PGADebugFlags[503] = Flag; /*PGAEncodeRealAsGrayCode*/
-   ctx->debug.PGADebugFlags[504] = Flag; /*PGAMapIntegerToReal*/
-   ctx->debug.PGADebugFlags[505] = Flag; /*PGAMapRealToInteger*/
    ctx->debug.PGADebugFlags[506] = Flag; /*PGAEncodeIntegerAsBinary*/
    ctx->debug.PGADebugFlags[507] = Flag; /*PGAEncodeIntegerAsGrayCode*/
    ctx->debug.PGADebugFlags[508] = Flag; /*PGAGetIntegerFromBinary*/
@@ -1282,23 +915,15 @@ void PGASetDebugFlag48(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[512] = Flag; /*PGASetEvaluationUpToDateFlag*/
    ctx->debug.PGADebugFlags[513] = Flag; /*PGAGetEvaluation*/
    ctx->debug.PGADebugFlags[514] = Flag; /*PGAGetEvaluationUpToDateFlag*/
-   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMS*/
+   ctx->debug.PGADebugFlags[605] = Flag; /*PGAEvaluateMP*/
    ctx->debug.PGADebugFlags[715] = Flag; /*PGAGetWorstIndex*/
    ctx->debug.PGADebugFlags[716] = Flag; /*PGAGetBestIndex*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag50 - Set the debug flags for all functions at debug level 50
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag50(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[520] = Flag; /*PGAFitness*/
@@ -1318,18 +943,10 @@ void PGASetDebugFlag50(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[534] = Flag; /*PGAGetFitnessCmaxValue*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag52 - Set the debug flags for all functions at debug level 52
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag52(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[107] = Flag; /*PGABinaryDuplicate*/
@@ -1342,18 +959,10 @@ void PGASetDebugFlag52(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[343] = Flag; /*PGAGetNoDuplicatesFlag*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag54 - Set the debug flags for all functions at debug level 54
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag54(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[370] = Flag; /*PGARestart*/
@@ -1365,22 +974,13 @@ void PGASetDebugFlag54(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[376] = Flag; /*PGASetRestartAlleleChangeProb*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag56 - Set the debug flags for all functions at debug level 56
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag56(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[105] = Flag; /*PGABinaryPrintString*/
-   ctx->debug.PGADebugFlags[121] = Flag; /*PGABinaryPrint*/
    ctx->debug.PGADebugFlags[155] = Flag; /*PGAIntegerPrintString*/
    ctx->debug.PGADebugFlags[205] = Flag; /*PGARealPrintString*/
    ctx->debug.PGADebugFlags[255] = Flag; /*PGACharacterPrintString*/
@@ -1394,18 +994,10 @@ void PGASetDebugFlag56(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[827] = Flag; /*PGASetPrintOptions*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag58 - Set the debug flags for all functions at debug level 58
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag58(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[390] = Flag; /*PGAGetStoppingRuleType*/
@@ -1418,36 +1010,20 @@ void PGASetDebugFlag58(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[397] = Flag; /*PGADone*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag60 - Set the debug flags for all functions at debug level 60
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag60(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[320] = Flag; /*PGASortPop*/
    ctx->debug.PGADebugFlags[324] = Flag; /*PGAGetSortedPopIndex*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag62 - Set the debug flags for all functions at debug level 62
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag62(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[750] = Flag; /*PGARandomFlip*/
@@ -1461,18 +1037,10 @@ void PGASetDebugFlag62(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[758] = Flag; /*PGARandomNextSample*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag64 - Set the debug flags for all functions at debug level 64
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag64(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[700] = Flag; /*PGAError*/
@@ -1484,22 +1052,12 @@ void PGASetDebugFlag64(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[707] = Flag; /*PGAGetMinMachineDoubleValue*/
    ctx->debug.PGADebugFlags[708] = Flag; /*PGADestroy*/
    ctx->debug.PGADebugFlags[730] = Flag; /*PGAReadCmdLine*/
-   ctx->debug.PGADebugFlags[731] = Flag; /*PGAParseDebugArg*/
-   ctx->debug.PGADebugFlags[732] = Flag; /*PGAStripArgs*/
 }
 
-/*I****************************************************************************
+/******************************************************************************
    PGASetDebugFlag66 - Set the debug flags for all functions at debug level 66
-
-   Inputs:
-       ctx  - Context variable
-       Flag - PGA_TRUE to enable or PGA_FALSE to disable
-
-   Outputs:
-
-   Example:
-
-****************************************************************************I*/
+******************************************************************************/
+static
 void PGASetDebugFlag66(PGAContext *ctx, int Flag)
 {
    ctx->debug.PGADebugFlags[710] = Flag; /*PGAMean*/
@@ -1515,64 +1073,390 @@ void PGASetDebugFlag66(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[720] = Flag; /*PGAUpdateOffline*/
    ctx->debug.PGADebugFlags[721] = Flag; /*PGAComputeSimilarity*/
 }
-#endif
 
-/*I****************************************************************************
-   PGAPrintDebugOptions - prints the list of available debug options
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-   Inputs:
-      ctx - context variable
+/*!****************************************************************************
+    \brief Sort the index of function names alphabetically.
+    \ingroup internal
 
-   Outputs:
-      list of available debug options
+    \param  ctx        context variable
+    \return None
 
-   Example:
-      PGAContext ctx;
-      :
-      PGAPrintDebugOptions(ctx);
-      
-****************************************************************************I*/
-void PGAPrintDebugOptions(PGAContext *ctx)
+    \rst
+
+    Description
+    -----------
+
+    Only used internally by PGACreate.
+
+    \endrst
+
+******************************************************************************/
+void PGASortFuncNameIndex(PGAContext *ctx)
 {
-    PGADebugEntered("PGAPrintDebugOptions");
-    
-#if OPTIMIZE==0
-    fprintf(stderr, "  0 Trace all debug prints\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, "  1 Reserved for the user\n");
-    fprintf(stderr, "    :                   :\n");
-    fprintf(stderr, " 10 Reserved for the user\n");
-    fprintf(stderr, " 11 Trace high-level functions\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, " 20 Trace high-level parallel functions\n");
-    fprintf(stderr, " 21 Trace all parallel functions\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, " 30 Trace BINARY    functions\n");
-    fprintf(stderr, " 32 Trace INTEGER   functions\n");
-    fprintf(stderr, " 34 Trace REAL      functions\n");
-    fprintf(stderr, " 36 Trace CHARACTER functions\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, " 40 Trace population creation functions\n");
-    fprintf(stderr, " 42 Trace select functions\n");
-    fprintf(stderr, " 44 Trace mutation functions\n");
-    fprintf(stderr, " 46 Trace crossover functions\n");
-    fprintf(stderr, " 48 Trace function evaluation functions\n");
-    fprintf(stderr, " 50 Trace fitness calculation  functions\n");
-    fprintf(stderr, " 52 Trace duplicate checking functions\n");
-    fprintf(stderr, " 54 Trace restart functions\n");
-    fprintf(stderr, " 56 Trace reporting functions\n");
-    fprintf(stderr, " 58 Trace stopping functions\n");
-    fprintf(stderr, " 60 Trace sorting functions\n");
-    fprintf(stderr, " 62 Trace random number functions\n");
-    fprintf(stderr, " 64 Trace system routines\n");
-    fprintf(stderr, " 66 Trace utility functions\n");
-    fprintf(stderr, "\n");
-    fprintf(stderr, " 80 Trace memory allocations\n");
-    fprintf(stderr, " 82 Trace variable print statements\n");
-#else
-    fprintf(stderr, " Optimized version; no debug options.\n");
-#endif
-    PGADestroy(ctx);
-    exit(0);
+    PGANumFcns = sizeof (PGAFuncIndex) / sizeof (PGAFuncRec) - 1;
+    qsort (PGAFuncIndex, PGANumFcns, sizeof(PGAFuncRec), func_compare);
 }
 
+/*!****************************************************************************
+    \brief Write debugging information
+    \ingroup debug
+
+    \param   ctx        context variable
+    \param   level      a symbolic constant that maps to the type of
+                        print requested (e.g., an entry or exit print).
+                        Valid values are PGA_DEBUG_ENTERED,
+                        PGA_DEBUG_EXIT, PGA_DEBUG_MALLOC,
+                        PGA_DEBUG_PRINTVAR, PGA_DEBUG_SEND, and
+                        PGA_DEBUG_RECV.
+    \param   funcname   the name of the function that called this routine
+    \param   msg        message to print
+    \param   datatype   a symbolic constant that maps to the data type of the
+                        parameter data.  Valid choices are PGA_INT,
+                        PGA_DOUBLE, PGA_CHAR and PGA_VOID (no data).
+    \param   data       a pointer, whose contents will be interpreted
+                        based upon the datatype parameter (or NULL, if
+                        PGA_VOID).
+    \return  The debugging information is printed to stdout
+
+    \rst
+
+    Example
+    -------
+
+    If the debugging level includes printing variables (level 82), print the
+    value of the integer variable num as a debugging tool in the routine
+    Add2Nums.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int num;
+
+       ...
+       PGADebugPrint
+          ( ctx, PGA_DEBUG_PRINTVAR
+          , "Add2Nums", "num = ", PGA_INT, (void *) &num
+          );
+    \endrst
+
+******************************************************************************/
+void PGADebugPrint
+    ( PGAContext *ctx, int level
+    , char *funcname, char *msg, int datatype, void *data
+    )
+{
+    int rank;
+    FILE *fout = stdout;
+
+    /*  Added check if level > 10 so that PGAGetDebugFlag is only called
+     *  if it is _not_ a user debug level.
+     */
+
+    if (  ctx->debug.PGADebugFlags[0]
+       || ctx->debug.PGADebugFlags[level]
+       || ((level > 10) && PGAGetDebugFlag (ctx, funcname))
+       )
+    {
+        MPI_Comm_rank (MPI_COMM_WORLD, &rank);
+        switch (datatype)
+        {
+        case PGA_VOID:
+            fprintf (fout, "%4d: %-32s: %s\n", rank, funcname, msg);
+            break;
+        case PGA_INT:
+            switch (*(int *) data)
+            {
+            case PGA_TEMP1:
+                fprintf
+                    (fout, "%4d: %-32s: %s PGA_TEMP1\n" , rank, funcname, msg);
+                break;
+            case PGA_TEMP2:
+                fprintf
+                    (fout, "%4d: %-32s: %s PGA_TEMP2\n", rank, funcname, msg);
+                break;
+            case PGA_OLDPOP:
+                fprintf
+                    (fout, "%4d: %-32s: %s PGA_OLDPOP\n", rank, funcname, msg);
+                break;
+            case PGA_NEWPOP:
+                fprintf
+                    (fout, "%4d: %-32s: %s PGA_NEWPOP\n" , rank, funcname, msg);
+                break;
+            default:
+                fprintf
+                    ( fout, "%4d: %-32s: %s %d\n"
+                    , rank, funcname, msg, *(int *) data
+                    );
+                break;
+            }
+            break;
+        case PGA_DOUBLE:
+            fprintf
+                ( fout, "%4d: %-32s: %s %e\n"
+                , rank, funcname, msg, *(double *) data
+                );
+            break;
+        case PGA_CHAR:
+            fprintf
+                ( fout, "%4d: %-32s: %s %s\n"
+                , rank, funcname, msg,  (char *) data
+                );
+            break;
+        default:
+            fprintf
+                ( stderr, "PGADebugPrint: Invalid value of datatype: %d"
+                , datatype
+                );
+            exit (-1);
+            break;
+        }
+    }
+}
+
+/*!****************************************************************************
+    \brief Turn on a debug level.
+    \ingroup debug
+
+    \param   ctx    context variable
+    \param   level  the debug level to set to PGA_TRUE.
+    \return  None
+
+    \rst
+
+    Description
+    -----------
+
+    Only does anything if PGAPack was compiled to include debugging
+    calls.  See the user guide for details.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetDebugLevel (ctx, 70);
+    \endrst
+
+******************************************************************************/
+void PGASetDebugLevel (PGAContext *ctx, int level)
+{
+    if ((level < 11) || (level > 100)) {
+        ctx->debug.PGADebugFlags[level] = PGA_TRUE;
+    } else {
+        /*  Call the appropriate routine to clear the set of levels.  */
+        switch (level) {
+        case 11:  PGASetDebugFlag11 (ctx, PGA_TRUE); break;
+        case 20:  PGASetDebugFlag20 (ctx, PGA_TRUE); break;
+        case 21:  PGASetDebugFlag21 (ctx, PGA_TRUE); break;
+        case 30:  PGASetDebugFlag30 (ctx, PGA_TRUE); break;
+        case 32:  PGASetDebugFlag32 (ctx, PGA_TRUE); break;
+        case 34:  PGASetDebugFlag34 (ctx, PGA_TRUE); break;
+        case 36:  PGASetDebugFlag36 (ctx, PGA_TRUE); break;
+        case 40:  PGASetDebugFlag40 (ctx, PGA_TRUE); break;
+        case 42:  PGASetDebugFlag42 (ctx, PGA_TRUE); break;
+        case 44:  PGASetDebugFlag44 (ctx, PGA_TRUE); break;
+        case 46:  PGASetDebugFlag46 (ctx, PGA_TRUE); break;
+        case 48:  PGASetDebugFlag48 (ctx, PGA_TRUE); break;
+        case 50:  PGASetDebugFlag50 (ctx, PGA_TRUE); break;
+        case 52:  PGASetDebugFlag52 (ctx, PGA_TRUE); break;
+        case 54:  PGASetDebugFlag54 (ctx, PGA_TRUE); break;
+        case 56:  PGASetDebugFlag56 (ctx, PGA_TRUE); break;
+        case 58:  PGASetDebugFlag58 (ctx, PGA_TRUE); break;
+        case 60:  PGASetDebugFlag60 (ctx, PGA_TRUE); break;
+        case 62:  PGASetDebugFlag62 (ctx, PGA_TRUE); break;
+        case 64:  PGASetDebugFlag64 (ctx, PGA_TRUE); break;
+        case 66:  PGASetDebugFlag66 (ctx, PGA_TRUE); break;
+        }
+    }
+}
+
+/*!****************************************************************************
+    \brief Turn off a debug level.
+    \ingroup debug
+
+    \param   ctx    context variable
+    \param   level  the debug level to set to PGA_FALSE.
+    \return  None
+
+    \rst
+
+    Description
+    -----------
+
+    Only does anything if PGAPack was compiled to include debugging
+    calls. See the user guide for details.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGAClearDebugLevel (ctx, 70);
+    \endrst
+
+******************************************************************************/
+void PGAClearDebugLevel (PGAContext *ctx, int level)
+{
+    if ((level < 11) || (level > 100)) {
+        ctx->debug.PGADebugFlags[level] = PGA_FALSE;
+    } else {
+        /*  Call the appropriate routine to clear the set of levels.  */
+        switch (level) {
+        case 11:  PGASetDebugFlag11 (ctx, PGA_FALSE); break;
+        case 20:  PGASetDebugFlag20 (ctx, PGA_FALSE); break;
+        case 21:  PGASetDebugFlag21 (ctx, PGA_FALSE); break;
+        case 30:  PGASetDebugFlag30 (ctx, PGA_FALSE); break;
+        case 32:  PGASetDebugFlag32 (ctx, PGA_FALSE); break;
+        case 34:  PGASetDebugFlag34 (ctx, PGA_FALSE); break;
+        case 36:  PGASetDebugFlag36 (ctx, PGA_FALSE); break;
+        case 40:  PGASetDebugFlag40 (ctx, PGA_FALSE); break;
+        case 42:  PGASetDebugFlag42 (ctx, PGA_FALSE); break;
+        case 44:  PGASetDebugFlag44 (ctx, PGA_FALSE); break;
+        case 46:  PGASetDebugFlag46 (ctx, PGA_FALSE); break;
+        case 48:  PGASetDebugFlag48 (ctx, PGA_FALSE); break;
+        case 50:  PGASetDebugFlag50 (ctx, PGA_FALSE); break;
+        case 52:  PGASetDebugFlag52 (ctx, PGA_FALSE); break;
+        case 54:  PGASetDebugFlag54 (ctx, PGA_FALSE); break;
+        case 56:  PGASetDebugFlag56 (ctx, PGA_FALSE); break;
+        case 58:  PGASetDebugFlag58 (ctx, PGA_FALSE); break;
+        case 60:  PGASetDebugFlag60 (ctx, PGA_FALSE); break;
+        case 62:  PGASetDebugFlag62 (ctx, PGA_FALSE); break;
+        case 64:  PGASetDebugFlag64 (ctx, PGA_FALSE); break;
+        case 66:  PGASetDebugFlag66 (ctx, PGA_FALSE); break;
+        }
+    }
+}
+
+/*!****************************************************************************
+    \brief Turn on debugging of the named function.
+    \ingroup debug
+
+    \param    ctx         context variable
+    \param    funcname    name of the function to turn on debugging output
+    \return   None
+
+    \rst
+
+    Example
+    -------
+
+    .. code-block:: c
+
+        PGAContext *ctx;
+
+        ...
+        PGASetDebugLevelByName (ctx, "PGAGetBinaryAllele");
+    \endrst
+
+******************************************************************************/
+void PGASetDebugLevelByName (PGAContext *ctx, char *funcname)
+{
+    int  level;
+
+    level = PGAGetDebugLevelOfName (ctx, funcname);
+    ctx->debug.PGADebugFlags [level] = PGA_TRUE;
+}
+
+/*!****************************************************************************
+    \brief Turn off debugging of the named function.
+    \ingroup debug
+
+    \param    ctx         context variable
+    \param    funcname    name of the function to turn off debugging output
+    \return   None
+
+    \rst
+
+    Example
+    -------
+
+    .. code-block:: c
+
+        PGAContext *ctx;
+
+        ...
+        PGAClearDebugLevelByName (ctx, "PGAGetBinaryAllele");
+    \endrst
+
+******************************************************************************/
+void PGAClearDebugLevelByName (PGAContext *ctx, char *funcname)
+{
+    int  level;
+
+    level = PGAGetDebugLevelOfName (ctx, funcname);
+    ctx->debug.PGADebugFlags [level] = PGA_FALSE;
+}
+#endif /* OPTIMIZE==0 */
+
+
+/*!****************************************************************************
+    \brief Print the list of available debug options and exit.
+
+    \param   ctx  context variable
+    \return  list of available debug options
+
+    \rst
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext ctx;
+
+       ...
+       PGAPrintDebugOptions (ctx);
+    \endrst
+
+******************************************************************************/
+void PGAPrintDebugOptions (PGAContext *ctx)
+{
+    PGADebugEntered ("PGAPrintDebugOptions");
+
+#if OPTIMIZE==0
+    fprintf (stderr, "  0 Trace all debug prints\n");
+    fprintf (stderr, "\n");
+    fprintf (stderr, "  1 Reserved for the user\n");
+    fprintf (stderr, "    :                   :\n");
+    fprintf (stderr, " 10 Reserved for the user\n");
+    fprintf (stderr, " 11 Trace high-level functions\n");
+    fprintf (stderr, "\n");
+    fprintf (stderr, " 20 Trace high-level parallel functions\n");
+    fprintf (stderr, " 21 Trace all parallel functions\n");
+    fprintf (stderr, "\n");
+    fprintf (stderr, " 30 Trace BINARY    functions\n");
+    fprintf (stderr, " 32 Trace INTEGER   functions\n");
+    fprintf (stderr, " 34 Trace REAL      functions\n");
+    fprintf (stderr, " 36 Trace CHARACTER functions\n");
+    fprintf (stderr, "\n");
+    fprintf (stderr, " 40 Trace population creation functions\n");
+    fprintf (stderr, " 42 Trace select functions\n");
+    fprintf (stderr, " 44 Trace mutation functions\n");
+    fprintf (stderr, " 46 Trace crossover functions\n");
+    fprintf (stderr, " 48 Trace function evaluation functions\n");
+    fprintf (stderr, " 50 Trace fitness calculation  functions\n");
+    fprintf (stderr, " 52 Trace duplicate checking functions\n");
+    fprintf (stderr, " 54 Trace restart functions\n");
+    fprintf (stderr, " 56 Trace reporting functions\n");
+    fprintf (stderr, " 58 Trace stopping functions\n");
+    fprintf (stderr, " 60 Trace sorting functions\n");
+    fprintf (stderr, " 62 Trace random number functions\n");
+    fprintf (stderr, " 64 Trace system routines\n");
+    fprintf (stderr, " 66 Trace utility functions\n");
+    fprintf (stderr, "\n");
+    fprintf (stderr, " 80 Trace memory allocations\n");
+    fprintf (stderr, " 82 Trace variable print statements\n");
+#else
+    fprintf (stderr, " Optimized version; no debug options.\n");
+#endif
+    PGADestroy (ctx);
+    exit (0);
+}

@@ -11,10 +11,10 @@ Permission is hereby granted to use, reproduce, prepare derivative works, and
 to redistribute to others. This software was authored by:
 
 D. Levine
-Mathematics and Computer Science Division 
+Mathematics and Computer Science Division
 Argonne National Laboratory Group
 
-with programming assistance of participants in Argonne National 
+with programming assistance of participants in Argonne National
 Laboratory's SERS program.
 
 GOVERNMENT LICENSE
@@ -152,7 +152,7 @@ int MPI_Comm_free(MPI_Comm *comm) {
 
 
 /*  Returns the rank of the current process in rank.  We return
- *  0 -- we are the master.
+ *  0 -- we are the rank-0 process.
  */
 int MPI_Comm_rank(MPI_Comm comm, int *rank) {
     *rank = 0;
@@ -253,7 +253,7 @@ int MPI_Type_create_struct(int count, int *array_of_blocklengths,
 
 
 /*  FORTRAN versions of some of the above functions.
- *  Most of these operate the same as above, we just need to make sure that 
+ *  Most of these operate the same as above, we just need to make sure that
  *  they are linked in properly, see f2c.c for details.
  */
 void mpi_get_address_(void **location, MPI_Aint *address) {
