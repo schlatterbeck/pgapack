@@ -1064,8 +1064,10 @@ MPI_Datatype PGABinaryBuildDatatype (PGAContext *ctx, int p, int pop)
     Description
     -----------
 
-    Note that this function is used in c:func:`PGAHammingDistance`
-    for implementing a generic hamming distance function.
+    Note that this function is used in c:func:`PGABinaryGeneDistance`
+    for implementing a generic genetic distance function. It is used in
+    the default setting of the PGA_USERFUNCTION_GEN_DISTANCE user
+    function for the binary data type.
 
 
     Example
@@ -1130,8 +1132,11 @@ int PGABinaryHammingDistance (PGAContext *ctx, PGABinary *s1, PGABinary *s2)
     Description
     -----------
 
-    For binary genes this is the Hamming distance.
-    Internal function.  Use PGAGeneDistance.
+    For binary genes this is the Hamming distance.  It is used in
+    the default setting of the PGA_USERFUNCTION_GEN_DISTANCE user
+    function for the binary data type.
+    Internal function.  Use the gene distance user function
+    :c:func:`PGAUserFunctionGeneDistance`.
 
     \endrst
 
@@ -1144,5 +1149,5 @@ double PGABinaryGeneDistance
 
      PGADebugEntered("PGABinaryGeneDistance");
      PGADebugExited("PGABinaryGeneDistance");
-     return PGABinaryHammingDistance (ctx, c1, c2);
+     return (double)PGABinaryHammingDistance (ctx, c1, c2);
 }

@@ -4,6 +4,7 @@ Iter #     Field      Value           Constraints
            Average    1.686518e+01
            Offline    1.226368e+01
            Online     3.846587e+01
+           Gene Dist. 7.951617e+00
 #   0: [  0.5371819], [   4.281232], [   5.639363], [  0.5794117]
 
 Iter #     Field      Value           Constraints
@@ -12,6 +13,7 @@ Iter #     Field      Value           Constraints
            Average    9.245814e+00
            Offline    8.198124e+00
            Online     2.453465e+01
+           Gene Dist. 7.382910e+00
 #   0: [  0.4371128], [   3.458064], [    8.45882], [  0.4441169]
 
 Iter #     Field      Value           Constraints
@@ -20,6 +22,7 @@ Iter #     Field      Value           Constraints
            Average    6.018807e+00
            Offline    6.760480e+00
            Online     1.866979e+01
+           Gene Dist. 5.823597e+00
 #   0: [  0.4371128], [   3.458064], [    8.45882], [  0.4441169]
 
 Iter #     Field      Value           Constraints
@@ -28,6 +31,7 @@ Iter #     Field      Value           Constraints
            Average    4.661390e+00
            Offline    6.019698e+00
            Online     1.529973e+01
+           Gene Dist. 4.881088e+00
 #   0: [  0.2314471], [   9.735275], [   9.199089], [  0.2946074]
 
 Iter #     Field      Value           Constraints
@@ -36,6 +40,7 @@ Iter #     Field      Value           Constraints
            Average    3.628433e+00
            Offline    5.436608e+00
            Online     1.300675e+01
+           Gene Dist. 4.435867e+00
 #   0: [  0.2144393], [   9.460412], [   8.547149], [  0.2450146]
 
 Iter #     Field      Value           Constraints
@@ -44,6 +49,7 @@ Iter #     Field      Value           Constraints
            Average    3.272903e+00
            Offline    5.000789e+00
            Online     1.139717e+01
+           Gene Dist. 3.207655e+00
 #   0: [  0.1723869], [   9.133364], [   9.067438], [  0.2409629]
 
 Iter #     Field      Value           Constraints
@@ -52,6 +58,7 @@ Iter #     Field      Value           Constraints
            Average    2.915365e+00
            Offline    4.662588e+00
            Online     1.019066e+01
+           Gene Dist. 3.190901e+00
 #   0: [  0.2150368], [   7.963101], [   8.315461], [  0.2521705]
 
 Iter #     Field      Value           Constraints
@@ -60,6 +67,7 @@ Iter #     Field      Value           Constraints
            Average    2.648362e+00
            Offline    4.400234e+00
            Online     9.255271e+00
+           Gene Dist. 1.876137e+00
 #   0: [  0.2186187], [   6.458652], [   9.213869], [  0.2411812]
 
 Iter #     Field      Value           Constraints
@@ -68,6 +76,7 @@ Iter #     Field      Value           Constraints
            Average    2.569881e+00
            Offline    4.187535e+00
            Online     8.509740e+00
+           Gene Dist. 1.754890e+00
 #   0: [  0.2293384], [   6.185598], [   9.067438], [  0.2409629]
 
 Iter #     Field      Value           Constraints
@@ -76,6 +85,7 @@ Iter #     Field      Value           Constraints
            Average    2.504329e+00
            Offline    4.016848e+00
            Online     7.909084e+00
+           Gene Dist. 1.080509e+00
 #   0: [  0.2280274], [   6.478012], [   8.813998], [  0.2425582]
 
 Iter #     Field      Value           Constraints
@@ -84,6 +94,7 @@ Iter #     Field      Value           Constraints
            Average    2.487712e+00
            Offline    3.876489e+00
            Online     7.414384e+00
+           Gene Dist. 1.127256e+00
 #   0: [  0.2280274], [    6.59011], [   8.694737], [  0.2420012]
 
 Iter #     Field      Value           Constraints
@@ -92,6 +103,7 @@ Iter #     Field      Value           Constraints
            Average    2.475523e+00
            Offline    3.758398e+00
            Online     7.001488e+00
+           Gene Dist. 9.424962e-01
 #   0: [  0.2249438], [   6.969325], [   8.346012], [  0.2445551]
 
 Iter #     Field      Value           Constraints
@@ -100,6 +112,7 @@ Iter #     Field      Value           Constraints
            Average    2.464303e+00
            Offline    3.656944e+00
            Online     6.651397e+00
+           Gene Dist. 7.900028e-01
 #   0: [  0.2351247], [   6.493834], [   8.469137], [   0.243632]
 
 Iter #     Field      Value           Constraints
@@ -108,6 +121,7 @@ Iter #     Field      Value           Constraints
            Average    2.428405e+00
            Offline    3.568093e+00
            Online     6.349750e+00
+           Gene Dist. 6.048699e-01
 #   0: [  0.2406064], [   6.274123], [   8.436676], [  0.2438486]
 
 Iter #     Field      Value           Constraints
@@ -116,6 +130,7 @@ Iter #     Field      Value           Constraints
            Average    2.412552e+00
            Offline    3.490414e+00
            Online     6.086643e+00
+           Gene Dist. 3.779356e-01
 #   0: [  0.2405297], [   6.339815], [   8.354522], [  0.2440419]
 
 Iter #     Field      Value           Constraints
@@ -124,6 +139,7 @@ Iter #     Field      Value           Constraints
            Average    2.399623e+00
            Offline    3.422052e+00
            Online     5.855599e+00
+           Gene Dist. 9.152641e-02
 #   0: [   0.240907], [   6.345419], [   8.309204], [  0.2443273]
 
 Iter #     Field      Value           Constraints
@@ -132,6 +148,7 @@ Iter #     Field      Value           Constraints
            Average    2.395547e+00
            Offline    3.361558e+00
            Online     5.651431e+00
+           Gene Dist. 3.652136e-02
 #   0: [  0.2409704], [   6.333878], [   8.307836], [  0.2444894]
 
 Iter #     Field      Value           Constraints
@@ -140,6 +157,7 @@ Iter #     Field      Value           Constraints
            Average    2.393629e+00
            Offline    3.307764e+00
            Online     5.469875e+00
+           Gene Dist. 1.064472e-01
 #   0: [  0.2412302], [   6.309881], [    8.32421], [  0.2443361]
 
 Iter #     Field      Value           Constraints
@@ -148,6 +166,7 @@ Iter #     Field      Value           Constraints
            Average    2.393045e+00
            Offline    3.259604e+00
            Online     5.307437e+00
+           Gene Dist. 1.209096e-01
 #   0: [  0.2417142], [   6.231268], [   8.379903], [  0.2440164]
 
 Iter #     Field      Value           Constraints
@@ -156,6 +175,7 @@ Iter #     Field      Value           Constraints
            Average    2.392588e+00
            Offline    3.216233e+00
            Online     5.161266e+00
+           Gene Dist. 1.349487e-01
 #   0: [   0.241862], [   6.162243], [   8.447086], [  0.2433449]
 
 Iter #     Field      Value           Constraints
@@ -164,6 +184,7 @@ Iter #     Field      Value           Constraints
            Average    2.392242e+00
            Offline    3.176990e+00
            Online     5.029040e+00
+           Gene Dist. 8.531011e-02
 #   0: [   0.241865], [   6.160992], [   8.448157], [  0.2433375]
 
 Iter #     Field      Value           Constraints
@@ -172,6 +193,7 @@ Iter #     Field      Value           Constraints
            Average    2.392128e+00
            Offline    3.141314e+00
            Online     4.908855e+00
+           Gene Dist. 1.617391e-02
 #   0: [   0.241826], [   6.173868], [   8.435743], [  0.2434539]
 
 Iter #     Field      Value           Constraints
@@ -180,6 +202,7 @@ Iter #     Field      Value           Constraints
            Average    2.391661e+00
            Offline    3.108698e+00
            Online     4.799133e+00
+           Gene Dist. 4.851638e-02
 #   0: [  0.2416787], [   6.216834], [   8.395124], [  0.2436707]
 
 Iter #     Field      Value           Constraints
@@ -188,6 +211,7 @@ Iter #     Field      Value           Constraints
            Average    2.391187e+00
            Offline    3.078785e+00
            Online     4.698560e+00
+           Gene Dist. 5.291507e-02
 #   0: [  0.2416016], [   6.256265], [   8.360661], [  0.2439161]
 
 Iter #     Field      Value           Constraints
@@ -196,6 +220,7 @@ Iter #     Field      Value           Constraints
            Average    2.390276e+00
            Offline    3.051239e+00
            Online     4.606026e+00
+           Gene Dist. 5.065678e-02
 #   0: [  0.2414119], [   6.307443], [    8.31269], [  0.2442364]
 
 Iter #     Field      Value           Constraints
@@ -204,6 +229,7 @@ Iter #     Field      Value           Constraints
            Average    2.389955e+00
            Offline    3.025784e+00
            Online     4.520598e+00
+           Gene Dist. 4.113733e-02
 #   0: [  0.2414167], [   6.314222], [   8.305599], [  0.2442788]
 
 Iter #     Field      Value           Constraints
@@ -212,6 +238,7 @@ Iter #     Field      Value           Constraints
            Average    2.389646e+00
            Offline    3.002214e+00
            Online     4.441504e+00
+           Gene Dist. 4.047443e-02
 #   0: [   0.241401], [    6.30352], [   8.314516], [  0.2442321]
 
 Iter #     Field      Value           Constraints
@@ -220,6 +247,7 @@ Iter #     Field      Value           Constraints
            Average    2.389355e+00
            Offline    2.980321e+00
            Online     4.368061e+00
+           Gene Dist. 1.590363e-02
 #   0: [  0.2414167], [   6.314222], [   8.302649], [  0.2442995]
 
 Iter #     Field      Value           Constraints
@@ -228,6 +256,7 @@ Iter #     Field      Value           Constraints
            Average    2.388788e+00
            Offline    2.959918e+00
            Online     4.299677e+00
+           Gene Dist. 6.978690e-03
 #   0: [  0.2414566], [   6.321928], [   8.293387], [  0.2443613]
 
 Iter #     Field      Value           Constraints
@@ -236,6 +265,7 @@ Iter #     Field      Value           Constraints
            Average    2.388584e+00
            Offline    2.940871e+00
            Online     4.235849e+00
+           Gene Dist. 4.632231e-03
 #   0: [  0.2415151], [    6.32204], [   8.291931], [  0.2443686]
 
 Iter #     Field      Value           Constraints
@@ -244,6 +274,7 @@ Iter #     Field      Value           Constraints
            Average    2.388412e+00
            Offline    2.923049e+00
            Online     4.176140e+00
+           Gene Dist. 9.927112e-04
 #   0: [  0.2414981], [   6.321251], [   8.292192], [  0.2443694]
 
 Iter #     Field      Value           Constraints
@@ -252,6 +283,7 @@ Iter #     Field      Value           Constraints
            Average    2.388321e+00
            Offline    2.906339e+00
            Online     4.120167e+00
+           Gene Dist. 6.147234e-04
 #   0: [  0.2415153], [   6.321323], [   8.291606], [  0.2443711]
 
 Iter #     Field      Value           Constraints
@@ -260,6 +292,7 @@ Iter #     Field      Value           Constraints
            Average    2.388248e+00
            Offline    2.890639e+00
            Online     4.067590e+00
+           Gene Dist. 3.655733e-04
 #   0: [  0.2415292], [   6.320766], [   8.291492], [  0.2443698]
 
 Iter #     Field      Value           Constraints
@@ -268,6 +301,7 @@ Iter #     Field      Value           Constraints
            Average    2.388136e+00
            Offline    2.875860e+00
            Online     4.018109e+00
+           Gene Dist. 8.905145e-04
 #   0: [  0.2415925], [   6.318474], [   8.291488], [  0.2443697]
 
 Iter #     Field      Value           Constraints
@@ -276,6 +310,7 @@ Iter #     Field      Value           Constraints
            Average    2.388055e+00
            Offline    2.861922e+00
            Online     3.971457e+00
+           Gene Dist. 7.179858e-04
 #   0: [  0.2416285], [   6.317402], [   8.291516], [  0.2443701]
 
 Iter #     Field      Value           Constraints
@@ -284,6 +319,7 @@ Iter #     Field      Value           Constraints
            Average    2.387904e+00
            Offline    2.848756e+00
            Online     3.927398e+00
+           Gene Dist. 1.260924e-03
 #   0: [  0.2417291], [   6.314222], [    8.29159], [  0.2443694]
 
 Iter #     Field      Value           Constraints
@@ -292,6 +328,7 @@ Iter #     Field      Value           Constraints
            Average    2.387776e+00
            Offline    2.836297e+00
            Online     3.885720e+00
+           Gene Dist. 6.739040e-04
 #   0: [  0.2417538], [   6.312892], [   8.291643], [  0.2443721]
 
 Iter #     Field      Value           Constraints
@@ -300,6 +337,7 @@ Iter #     Field      Value           Constraints
            Average    2.387674e+00
            Offline    2.824491e+00
            Online     3.846237e+00
+           Gene Dist. 2.726428e-03
 #   0: [  0.2418372], [   6.309672], [   8.291527], [  0.2443716]
 
 Iter #     Field      Value           Constraints
@@ -308,6 +346,7 @@ Iter #     Field      Value           Constraints
            Average    2.386971e+00
            Offline    2.813274e+00
            Online     3.808772e+00
+           Gene Dist. 7.914295e-03
 #   0: [  0.2423986], [    6.29023], [   8.293521], [  0.2443739]
 
 Iter #     Field      Value           Constraints
@@ -316,6 +355,7 @@ Iter #     Field      Value           Constraints
            Average    2.385956e+00
            Offline    2.802593e+00
            Online     3.773161e+00
+           Gene Dist. 1.861900e-02
 #   0: [  0.2430936], [   6.258602], [   8.300939], [  0.2443693]
 
 Iter #     Field      Value           Constraints
@@ -324,6 +364,7 @@ Iter #     Field      Value           Constraints
            Average    2.384359e+00
            Offline    2.792368e+00
            Online     3.739255e+00
+           Gene Dist. 1.845380e-02
 #   0: [  0.2442109], [   6.219465], [   8.300181], [  0.2443648]
 
 Iter #     Field      Value           Constraints
@@ -332,6 +373,7 @@ Iter #     Field      Value           Constraints
            Average    2.382328e+00
            Offline    2.782600e+00
            Online     3.706917e+00
+           Gene Dist. 6.300759e-03
 #   0: [  0.2443335], [   6.221533], [   8.292827], [  0.2443687]
 
 Iter #     Field      Value           Constraints
@@ -340,6 +382,7 @@ Iter #     Field      Value           Constraints
            Average    2.381637e+00
            Offline    2.773273e+00
            Online     3.676058e+00
+           Gene Dist. 2.239357e-03
 #   0: [  0.2443424], [   6.221059], [   8.291362], [  0.2443769]
 
 Iter #     Field      Value           Constraints
@@ -348,6 +391,7 @@ Iter #     Field      Value           Constraints
            Average    2.381492e+00
            Offline    2.764369e+00
            Online     3.646597e+00
+           Gene Dist. 1.340467e-03
 #   0: [  0.2443117], [   6.220488], [   8.292066], [  0.2443744]
 
 Iter #     Field      Value           Constraints
@@ -356,6 +400,7 @@ Iter #     Field      Value           Constraints
            Average    2.381394e+00
            Offline    2.755858e+00
            Online     3.618445e+00
+           Gene Dist. 1.949377e-03
 #   0: [  0.2443355], [    6.21937], [   8.292087], [  0.2443694]
 
 Iter #     Field      Value           Constraints
@@ -364,6 +409,7 @@ Iter #     Field      Value           Constraints
            Average    2.381289e+00
            Offline    2.747715e+00
            Online     3.591516e+00
+           Gene Dist. 1.240233e-03
 #   0: [  0.2443541], [   6.218279], [   8.292415], [  0.2443697]
 
 Iter #     Field      Value           Constraints
@@ -372,6 +418,7 @@ Iter #     Field      Value           Constraints
            Average    2.381243e+00
            Offline    2.739918e+00
            Online     3.565733e+00
+           Gene Dist. 1.543888e-03
 #   0: [  0.2443417], [   6.219573], [   8.291535], [   0.244369]
 
 Iter #     Field      Value           Constraints
@@ -380,6 +427,7 @@ Iter #     Field      Value           Constraints
            Average    2.381191e+00
            Offline    2.732444e+00
            Online     3.541025e+00
+           Gene Dist. 6.994116e-04
 #   0: [  0.2443647], [   6.218764], [   8.291513], [  0.2443697]
 
 Iter #     Field      Value           Constraints
@@ -388,6 +436,7 @@ Iter #     Field      Value           Constraints
            Average    2.381165e+00
            Offline    2.725275e+00
            Online     3.517325e+00
+           Gene Dist. 2.819087e-04
 #   0: [  0.2443685], [   6.218667], [    8.29148], [  0.2443698]
 
 Iter #     Field      Value           Constraints
@@ -396,6 +445,7 @@ Iter #     Field      Value           Constraints
            Average    2.381160e+00
            Offline    2.718392e+00
            Online     3.494575e+00
+           Gene Dist. 1.972736e-04
 #   0: [  0.2443685], [   6.218667], [    8.29148], [  0.2443698]
 
 Iter #     Field      Value           Constraints
@@ -404,6 +454,7 @@ Iter #     Field      Value           Constraints
            Average    2.381149e+00
            Offline    2.711780e+00
            Online     3.472717e+00
+           Gene Dist. 8.086809e-05
 #   0: [  0.2443698], [   6.218604], [   8.291466], [  0.2443699]
 
 Iter #     Field      Value           Constraints
@@ -412,6 +463,7 @@ Iter #     Field      Value           Constraints
            Average    2.381144e+00
            Offline    2.705421e+00
            Online     3.451701e+00
+           Gene Dist. 3.454263e-05
 #   0: [  0.2443686], [    6.21863], [   8.291467], [  0.2443697]
 
 Iter #     Field      Value           Constraints
@@ -420,6 +472,7 @@ Iter #     Field      Value           Constraints
            Average    2.381140e+00
            Offline    2.699303e+00
            Online     3.431479e+00
+           Gene Dist. 3.330490e-05
 #   0: [  0.2443694], [   6.218594], [   8.291468], [  0.2443695]
 
 Iter #     Field      Value           Constraints
@@ -428,6 +481,7 @@ Iter #     Field      Value           Constraints
            Average    2.381139e+00
            Offline    2.693411e+00
            Online     3.412007e+00
+           Gene Dist. 3.677326e-05
 #   0: [  0.2443689], [   6.218607], [   8.291475], [  0.2443691]
 
 Iter #     Field      Value           Constraints
@@ -436,6 +490,7 @@ Iter #     Field      Value           Constraints
            Average    2.381138e+00
            Offline    2.687733e+00
            Online     3.393243e+00
+           Gene Dist. 2.861322e-05
 #   0: [  0.2443689], [   6.218611], [   8.291477], [  0.2443689]
 
 Iter #     Field      Value           Constraints
@@ -444,6 +499,7 @@ Iter #     Field      Value           Constraints
            Average    2.381137e+00
            Offline    2.682258e+00
            Online     3.375151e+00
+           Gene Dist. 1.957820e-05
 #   0: [  0.2443689], [   6.218607], [   8.291474], [  0.2443691]
 
 Iter #     Field      Value           Constraints
@@ -452,6 +508,7 @@ Iter #     Field      Value           Constraints
            Average    2.381136e+00
            Offline    2.676975e+00
            Online     3.357693e+00
+           Gene Dist. 1.914089e-05
 #   0: [   0.244369], [     6.2186], [   8.291477], [   0.244369]
 
 Iter #     Field      Value           Constraints
@@ -460,6 +517,7 @@ Iter #     Field      Value           Constraints
            Average    2.381136e+00
            Offline    2.671874e+00
            Online     3.340839e+00
+           Gene Dist. 1.522660e-05
 #   0: [   0.244369], [     6.2186], [   8.291477], [   0.244369]
 
 Iter #     Field      Value           Constraints
@@ -468,6 +526,7 @@ Iter #     Field      Value           Constraints
            Average    2.381135e+00
            Offline    2.666947e+00
            Online     3.324556e+00
+           Gene Dist. 1.003280e-05
 #   0: [   0.244369], [     6.2186], [   8.291477], [   0.244369]
 
 Iter #     Field      Value           Constraints
@@ -476,6 +535,7 @@ Iter #     Field      Value           Constraints
            Average    2.381135e+00
            Offline    2.662183e+00
            Online     3.308817e+00
+           Gene Dist. 5.102306e-06
 #   0: [  0.2443689], [   6.218606], [   8.291474], [   0.244369]
 
 Iter #     Field      Value           Constraints
@@ -484,6 +544,7 @@ Iter #     Field      Value           Constraints
            Average    2.381135e+00
            Offline    2.657576e+00
            Online     3.293594e+00
+           Gene Dist. 4.786060e-06
 #   0: [  0.2443689], [   6.218607], [   8.291474], [  0.2443689]
 
 Iter #     Field      Value           Constraints
@@ -492,6 +553,7 @@ Iter #     Field      Value           Constraints
            Average    2.381135e+00
            Offline    2.653117e+00
            Online     3.278862e+00
+           Gene Dist. 2.666563e-06
 #   0: [  0.2443689], [   6.218607], [   8.291474], [  0.2443689]
 
 Iter #     Field      Value           Constraints
@@ -500,6 +562,7 @@ Iter #     Field      Value           Constraints
            Average    2.381134e+00
            Offline    2.648800e+00
            Online     3.264599e+00
+           Gene Dist. 2.374845e-06
 #   0: [  0.2443689], [   6.218608], [   8.291472], [   0.244369]
 
 Iter #     Field      Value           Constraints
@@ -508,6 +571,7 @@ Iter #     Field      Value           Constraints
            Average    2.381134e+00
            Offline    2.644618e+00
            Online     3.250782e+00
+           Gene Dist. 7.901760e-07
 #   0: [  0.2443689], [   6.218608], [   8.291472], [   0.244369]
 
 The Best Evaluation: 2.381134e+00 Constraints: 0.000000e+00.

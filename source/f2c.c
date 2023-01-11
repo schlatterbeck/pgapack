@@ -153,8 +153,6 @@ privately owned rights.
 #define pgasetmaxfitnessrank_            PGASETMAXFITNESSRANK
 #define pgasetfitnesscmaxvalue_          PGASETFITNESSCMAXVALUE
 #define pgagetfitnesscmaxvalue_          PGAGETFITNESSCMAXVALUE
-/* hamming.c */
-#define pgahammingdistance_              PGAHAMMINGDISTANCE
 /* integer.c */
 #define pgasetintegerallele_             PGASETINTEGERALLELE
 #define pgagetintegerallele_             PGAGETINTEGERALLELE
@@ -324,6 +322,7 @@ privately owned rights.
 #define pgagetbestreport_                PGAGETBESTREPORT
 #define pgagetbestreportindex_           PGAGETBESTREPORTINDEX
 #define pgautilhash_                     PGAUTILHASH
+#define pgagenedistance_                 PGAGENEDISTANCE
 
 #elif defined(FORTRANTWOUNDERSCORE)
 /* binary.c */
@@ -405,8 +404,6 @@ privately owned rights.
 #define pgasetmaxfitnessrank_            _pgasetmaxfitnessrank_
 #define pgasetfitnesscmaxvalue_          _pgasetfitnesscmaxvalue_
 #define pgagetfitnesscmaxvalue_          _pgagetfitnesscmaxvalue_
-/* hamming.c */
-#define pgahammingdistance_              _pgahammingdistance_
 /* integer.c */
 #define pgasetintegerallele_             _pgasetintegerallele_
 #define pgagetintegerallele_             _pgagetintegerallele_
@@ -576,6 +573,7 @@ privately owned rights.
 #define pgagetbestreport_                _pgagetbestreport_
 #define pgagetbestreportindex_           _pgagetbestreportindex_
 #define pgautilhash_                     _pgautilhash_
+#define pgagenedistance_                 _pgagenedistance_
 
 #elif !defined(FORTRANUNDERSCORE)
 /* binary.c */
@@ -657,8 +655,6 @@ privately owned rights.
 #define pgasetmaxfitnessrank_            pgasetmaxfitnessrank
 #define pgasetfitnesscmaxvalue_          pgasetfitnesscmaxvalue
 #define pgagetfitnesscmaxvalue_          pgagetfitnesscmaxvalue
-/* hamming.c */
-#define pgahammingdistance_              pgahammingdistance
 /* integer.c */
 #define pgasetintegerallele_             pgasetintegerallele
 #define pgagetintegerallele_             pgagetintegerallele
@@ -828,6 +824,7 @@ privately owned rights.
 #define pgagetbestreport_                pgagetbestreport
 #define pgagetbestreportindex_           pgagetbestreportindex
 #define pgautilhash_                     pgautilhash
+#define pgagenedistance_                 pgagenedistance
 #endif
 
 /* binary.c */
@@ -924,8 +921,6 @@ void pgasetfitnessmintype_(PGAContext **ftx, int *fitness_type);
 void pgasetmaxfitnessrank_(PGAContext **ftx, double *fitness_rank_max);
 void pgasetfitnesscmaxvalue_(PGAContext **ftx, double *val);
 double pgagetfitnesscmaxvalue_(PGAContext **ftx);
-/* hamming.c */
-double pgahammingdistance_(PGAContext **ftx, int *popindex);
 /* integer.c */
 void pgasetintegerallele_(PGAContext **ftx, int *p, int *pop, int *i,
      int *val);
@@ -1104,6 +1099,7 @@ int pgagetbestindex_ (PGAContext **ftx, int *pop);
 double pgagetbestreport_ (PGAContext **ftx, int *pop, int *idx);
 int pgagetbestreportindex_ (PGAContext **ftx, int *pop, int *idx);
 int pgautilhash_ (void *data, size_t *sz, int *initval);
+double pgagenedistance_ (PGAContext **ftx, int *popindex);
 
 /* binary.c */
 void pgasetbinaryallele_(PGAContext **ftx, int *p, int *pop, int *i,
@@ -1627,12 +1623,6 @@ void pgasetfitnesscmaxvalue_(PGAContext **ftx, double *val)
 double pgagetfitnesscmaxvalue_(PGAContext **ftx)
 {
      return PGAGetFitnessCmaxValue  (*ftx);
-}
-
-/* hamming.c */
-double pgahammingdistance_(PGAContext **ftx, int *popindex)
-{
-     return PGAHammingDistance  (*ftx, *popindex);
 }
 
 /* integer.c */
@@ -2595,5 +2585,10 @@ int pgautilhash_ (void *data, size_t *sz, int *initval)
 {
      int value = (int)PGAUtilHash (data, *sz, *initval);
      return value;
+}
+
+double pgagenedistance_ (PGAContext **ftx, int *popindex)
+{
+     return PGAGeneDistance (*ftx, *popindex);
 }
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

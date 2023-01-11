@@ -22,6 +22,19 @@ companion projects:
 Updates 
 =======
 
+2nd update Jan 2023:
+
+- Generalize mean hamming distance reporting to mean genetic distance
+  reporting. This now works with *all* data types not just binary. This
+  uses the already-existing genetic distance user function which is
+  implemented for all builtin data types and can be overridden to use
+  euclidian distance instead of the default manhattan distance for
+  integer and real data types.
+- Deprecated PGAHammingDistance in favor of PGAGeneDistance. There is a
+  backward-compatible define for C but not for Fortran. It's doubful
+  anybody has ever used this in custom code (it was mainly used in
+  built-in reporting of the hamming distance of binary strings).
+
 Update Jan 2023:
 
 - Add Sphinx documentation

@@ -395,9 +395,6 @@ PGAFuncRec PGAFuncIndex[] =
         { "PGARandomNextSample",            758 },
 
 /* Miscellaneous Routines 800 - 899 */
-        /* hamming.c */
-        { "PGAHammingDistance",             800 },
-
         /* report.c */
         { "PGAPrintPopulation",             820 },
         { "PGAPrintIndividual",             821 },
@@ -627,8 +624,6 @@ void PGASetDebugFlag11(PGAContext *ctx, int Flag)
    ctx->debug.PGADebugFlags[740] = Flag; /*PGADebugPrint*/
    ctx->debug.PGADebugFlags[742] = Flag; /*PGASetDebugFlag*/
    ctx->debug.PGADebugFlags[743] = Flag; /*PGAPrintDebugOptions*/
-
-   ctx->debug.PGADebugFlags[800] = Flag; /*PGAHammingDistance*/
 
    ctx->debug.PGADebugFlags[820] = Flag; /*PGAPrintPopulation*/
    ctx->debug.PGADebugFlags[822] = Flag; /*PGAPrintReport*/

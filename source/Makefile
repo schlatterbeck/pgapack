@@ -7,7 +7,6 @@ OBJS = $(PGA_LIB_DIR)/binary.o        \
       $(PGA_LIB_DIR)/duplcate.o      \
       $(PGA_LIB_DIR)/evaluate.o      \
       $(PGA_LIB_DIR)/fitness.o       \
-      $(PGA_LIB_DIR)/hamming.o       \
       $(PGA_LIB_DIR)/integer.o       \
       $(PGA_LIB_DIR)/linalg.o        \
       $(PGA_LIB_DIR)/mutation.o      \
