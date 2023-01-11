@@ -22,6 +22,14 @@ companion projects:
 Updates 
 =======
 
+2nd update Jan 2023:
+
+- Generalize mean hamming distance reporting to mean genetic distance
+  reporting. This now works with *all* data types not just binary. This
+  uses the already-existing genetic distance user function which is
+  implemented for all builtin data types and can be overridden to use
+  euclidian distance instead of the default manhattan distance.
+
 Update Jan 2023:
 
 - Add Sphinx documentation
