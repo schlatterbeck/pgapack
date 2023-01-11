@@ -317,9 +317,6 @@ c *** fitness
       external PGAGetMaxFitnessRank
       double precision PGAGetFitnessCmaxValue
       external PGAGetFitnessCmaxValue
-c *** hamming
-      double precision PGAHammingDistance
-      external PGAHammingDistance
 c *** integer
       integer PGAGetIntegerAllele
       external PGAGetIntegerAllele
@@ -502,4 +499,6 @@ c *** utility
       integer PGAUtilHash
       external PGAUtilHash
       integer PGA_INITIAL_HASH
+      double precision PGAGeneDistance
+      external PGAGeneDistance
       parameter (PGA_INITIAL_HASH = int (z'feedbeef'))

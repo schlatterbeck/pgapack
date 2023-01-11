@@ -2198,14 +2198,14 @@ and return the value calculated by {\tt f}.
 %*****************************************************************************
 
 \begin{sloppypar}
-{\tt PGASetPrintFrequencyValue(ctx,40)} will print population statistics every
+\verb+PGASetPrintFrequencyValue(ctx,40)+ will print population statistics every
 40 iterations.  The default is every ten iterations.  The best evaluation is
 {\em always} printed.  To print additional statistics, set the second argument
-of the function {\tt PGASetPrintOptions} to {\tt PGA\_REPORT\_ONLINE}, {\tt
-PGA\_REPORT\_OFFLINE}, {\tt PGA\_REPORT\_WORST}, {\tt PGA\_REPORT\_AVERAGE},
-{\tt PGA\_REPORT\_HAMMING}, or {\tt PGA\_REPORT\_STRING} to print the online
-analysis, offline analysis, worst evaluation, average evaluation, Hamming
-distance, or string itself, respectively.  {\tt PGASetPrintOptions} may be
+of the function \verb+PGASetPrintOptions+ to \verb+PGA_REPORT_ONLINE+,
+\verb+PGA_REPORT_OFFLINE+, \verb+PGA_REPORT_WORST+, \verb+PGA_REPORT_AVERAGE+,
+\verb+PGA_REPORT_GENE_DISTANCE+, or \verb+PGA_REPORT_STRING+ to print the online
+analysis, offline analysis, worst evaluation, average evaluation, genetic
+distance, or string itself, respectively.  \verb+PGASetPrintOptions+ may be
 called multiple times to specify multiple print options.
 \end{sloppypar}
 
@@ -2262,8 +2262,8 @@ the index of the most (least) fit member of population {\tt pop}.
 
 {\tt PGAUpdateOffline(ctx,pop)} ({\tt PGAUpdateOnline}) will update the offline
 (online) analysis based on the new generation's results.  {\tt
-PGAHammingDistance(ctx,pop)} returns a {\tt double}, which is the average
-Hamming distance between the {\em binary} strings in population {\tt pop}.
+PGAGeneDistance(ctx,pop)} returns a {\tt double}, which is the average
+genetic distance between the strings in population {\tt pop}.
 The function call
 \begin{verbatim}
 PGAError(ctx, "popindex=", PGA_FATAL, PGA_INT, (void *)&popindex)
@@ -2669,8 +2669,10 @@ switched and the standard \pga\ output printed.  Therefore, be sure to use
 suppressing the standard \pga\ generational output.
 
 The genetic difference function\label{gendiff} computes the genetic
-difference of two individuals. It is only used when restricted
-tournament selection is in use. There are implementations for the
+difference of two individuals. It is used when restricted
+tournament selection is in use. In addition it is used when reporting of
+genetic distance is selected by calling \verb+PGASetPrintOptions+ with
+\verb+PGA_REPORT_GENE_DISTANCE+.  There are implementations for the
 standard data types: For binary alleles it uses the hamming distance.
 For real- and integer valued genes it uses an allele-by-allele absolute
 value of the difference by default (also know as Manhattan distance),
@@ -3979,7 +3981,7 @@ Print best string
  &  \verb+PGA_FALSE+            & \verb+PGASetPrintOptions+             \\ \hline
 Print worst string
  &  \verb+PGA_FALSE+            & \verb+PGASetPrintOptions+             \\ \hline
-Print Hamming distance
+Print genetic distance
  &  \verb+PGA_FALSE+            & \verb+PGASetPrintOptions+             \\ \hline
 Randomly initialize population
  &  \verb+PGA_TRUE+             & \verb+PGASetRandomInitFlag+           \\ \hline
@@ -4155,12 +4157,12 @@ Fortran and C.
 
 \item Report Options
 \begin{itemize}
-\item {\tt PGA\_REPORT\_ONLINE}
-\item {\tt PGA\_REPORT\_OFFLINE}
-\item {\tt PGA\_REPORT\_HAMMING}
-\item {\tt PGA\_REPORT\_STRING}
-\item {\tt PGA\_REPORT\_WORST}
-\item {\tt PGA\_REPORT\_AVERAGE}
+\item \verb+PGA_REPORT_ONLINE+
+\item \verb+PGA_REPORT_OFFLINE+
+\item \verb+PGA_REPORT_GENE_DISTANCE+
+\item \verb+PGA_REPORT_STRING+
+\item \verb+PGA_REPORT_WORST+
+\item \verb+PGA_REPORT_AVERAGE+
 \end{itemize}
 
 \item Selection
@@ -4313,7 +4315,7 @@ int &  PGAGetTournamentWithReplacement(PGAContext *ctx) \\ \hline
 double &  PGAGetTruncationProportion(PGAContext *ctx) \\ \hline
 double &  PGAGetUniformCrossoverProb(PGAContext *ctx) \\ \hline
 int &  PGAGetWorstIndex(PGAContext *ctx, int pop) \\ \hline
-double &  PGAHammingDistance(PGAContext *ctx, int popindex) \\ \hline
+double &  PGAGeneDistance(PGAContext *ctx, int popindex) \\ \hline
 double &  PGAMean(PGAContext *ctx, double *a, int n) \\ \hline
 int &  PGAMutate(PGAContext *ctx, int p, int pop) \\ \hline
 \end{tabular}

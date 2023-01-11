@@ -409,7 +409,11 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  ****************************************/
 #define PGA_REPORT_ONLINE        1    /**< Print the online analysis       */
 #define PGA_REPORT_OFFLINE       2    /**< Print the offline analysis      */
-#define PGA_REPORT_HAMMING       4    /**< Print the Hamming distance      */
+#define PGA_REPORT_GENE_DISTANCE 4    /**< Print the genetic distance      */
+/** For backwards compatibility, this used to be defined only for binary
+ * strings.
+ */
+#define PGA_REPORT_HAMMING PGA_REPORT_GENE_DISTANCE
 #define PGA_REPORT_STRING        8    /**< Print the string                */
 #define PGA_REPORT_WORST         16   /**< Print the worst individual      */
 #define PGA_REPORT_AVERAGE       32   /**< Print average of the population */
@@ -807,11 +811,6 @@ struct PGAContext {
     PGAScratch             scratch;   /**< Scratch space             */
 };
 
-/*!***************************************************************************
- *  \defgroup deprecated Deprecated functions
- *  \brief Deprecated functions, see doc for replacement
- *****************************************************************************/
-
 #if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 /*****************************************
@@ -1012,12 +1011,6 @@ void PGASetFitnessMinType (PGAContext *ctx, int fitness_type);
 void PGASetMaxFitnessRank (PGAContext *ctx, double fitness_rank_max);
 void PGASetFitnessCmaxValue (PGAContext *ctx, double val);
 double PGAGetFitnessCmaxValue (PGAContext *ctx);
-
-/*****************************************
- *          hamming.c
- *****************************************/
-
-double PGAHammingDistance( PGAContext *ctx, int popindex);
 
 /*****************************************
  *          integer.c
@@ -1237,38 +1230,6 @@ int PGARandomNextSample(PGASampleState *state);
 void PGASetRealAllele (PGAContext *ctx, int p, int pop, int i, double value);
 double PGAGetRealAllele (PGAContext *ctx, int p, int pop, int i);
 void PGASetRealInitFraction (PGAContext *ctx, double *median, double *frac);
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
-
-/*!****************************************************************************
-    \brief Set the upper and lower bounds for randomly initializing
-           real-valued genes.
-    \ingroup deprecated
-    \param   ctx      context variable
-    \param   median   an array containing the mean value of the interval
-    \param   frac     an array containing the fraction of median to add and
-                      subtract to/from the median to define the interval
-    \return  None
-
-    \rst
-
-    Description
-    -----------
-
-    This function is deprecated due to wrong naming: The last parameter
-    was always a fraction, not a percentage. It is kept for backwards
-    compatibility, do not use for new code. Use
-    :c:func:`PGASetRealInitFraction` instead.
-
-    \endrst
-
-******************************************************************************/
-
-static inline void PGASetRealInitPercent
-    (PGAContext *ctx, double *median, double *frac)
-{
-    PGASetRealInitFraction (ctx, median, frac);
-}
-#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 void PGASetRealInitRange
     (PGAContext *ctx, const double *min, const double *max);
 double PGAGetMinRealInitValue (PGAContext *ctx, int i);
@@ -1406,10 +1367,73 @@ void PGAShuffle (PGAContext *ctx, int *list, int n);
 #define PGA_INITIAL_HASH 0xfeedbeefu
 PGAHash PGAUtilHash (const void *data, size_t len, PGAHash hashv);
 size_t PGAIndividualHashIndex (PGAContext *ctx, int p, int pop);
+double PGAGeneDistance (PGAContext *ctx, int pop);
+#define PGAHammingDistance(ctx, pop) PGAGeneDistance (ctx, pop)
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-#ifdef __cplusplus
-}
-#endif
+/*!***************************************************************************
+ *  \defgroup deprecated Deprecated functions
+ *  \brief Deprecated functions, see doc for replacement
+ *****************************************************************************/
 
+/*!****************************************************************************
+    \brief Set the upper and lower bounds for randomly initializing
+           real-valued genes.
+    \ingroup deprecated
+    \param   ctx      context variable
+    \param   median   an array containing the mean value of the interval
+    \param   frac     an array containing the fraction of median to add and
+                      subtract to/from the median to define the interval
+    \return  None
+
+    \rst
+
+    Description
+    -----------
+
+    This function is deprecated due to wrong naming: The last parameter
+    was always a fraction, not a percentage. It is kept for backwards
+    compatibility, do not use for new code. Use
+    :c:func:`PGASetRealInitFraction` instead.
+
+    \endrst
+
+******************************************************************************/
+
+static inline void PGASetRealInitPercent
+    (PGAContext *ctx, double *median, double *frac)
+{
+    PGASetRealInitFraction (ctx, median, frac);
+}
+
+/*!****************************************************************************
+    \brief Call the genetic distance user function.
+    \ingroup explicit
+    \param   ctx  context variable
+    \param   p1   first string index
+    \param   pop1 symbolic constant of the population the first string is in
+    \param   p2   second string index
+    \param   pop2 symbolic constant of the population the second string is in
+    \return  Genetic distance of the two strings
+
+    \rst
+
+    Description
+    -----------
+
+    Call the genetic distance user function.
+    This calls the data-type specific user function for computing the
+    genetic distance. For user-defined data types you need to register a
+    genetic distance user function with :c:func:`PGASetUserFunction`
+    with the constant PGA_USERFUNCTION_GEN_DISTANCE.
+
+    \endrst
+
+******************************************************************************/
+
+static inline double PGAUserFunctionGeneDistance
+    (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
+{
+    return ctx->cops.GeneDistance (ctx, p1, pop1, p2, pop2);
+}

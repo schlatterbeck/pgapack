@@ -1477,3 +1477,49 @@ size_t PGAIndividualHashIndex (PGAContext *ctx, int p, int pop)
     }
     return (size_t)(hash % ctx->ga.PopSize);
 }
+
+/*!****************************************************************************
+    \brief Calculate the mean genetic distance for a population.
+    \ingroup explicit
+    \param  ctx  context variable
+    \param  pop  symbolic constant of the population for which the
+                 genetic distance is to be calculated
+    \return The mean genetic distance in the population
+
+    \rst
+
+    Description
+    -----------
+
+    This function has effort :math:`O(n^2)` in the population size n.
+    It is very useful for detecting premature convergence and is used
+    when genetic distance reporting has been turned on with
+    PGA_REPORT_GENE_DISTANCE.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+        PGAContext *ctx;
+        double gd;
+
+        ...
+        gd = PGAGeneDistance (ctx, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+double PGAGeneDistance (PGAContext *ctx, int pop)
+{
+    int i, j, count = 0;
+    double sum_dist = 0;
+    for (i=0; i<ctx->ga.PopSize - 1; i++) {
+        for (j=i + 1; j<ctx->ga.PopSize; j++) {
+            sum_dist += PGAUserFunctionGeneDistance (ctx, i, pop, j, pop);
+            count++;
+        }
+    }
+    return sum_dist / count;
+}

@@ -93,13 +93,14 @@ int main (int argc, char **argv)
     PGASetMaxGAIterValue    (ctx, maxiter);
     PGASetNumAuxEval        (ctx, problem->nfunc - 1);
 
-    /* Extended reporting, HAMMING is only defined for binary strings */
+    /* Extended reporting */
     if (full_report) {
         PGASetPrintOptions (ctx, PGA_REPORT_ONLINE);
         PGASetPrintOptions (ctx, PGA_REPORT_OFFLINE);
         PGASetPrintOptions (ctx, PGA_REPORT_STRING);
         PGASetPrintOptions (ctx, PGA_REPORT_WORST);
         PGASetPrintOptions (ctx, PGA_REPORT_AVERAGE);
+        PGASetPrintOptions (ctx, PGA_REPORT_GENE_DISTANCE);
     }
     
     PGASetUp(ctx);

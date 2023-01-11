@@ -187,9 +187,8 @@ void PGAPrintReport (PGAContext *ctx, FILE *fp, int pop)
         }
     }
 
-    if (ctx->rep.PrintOptions & PGA_REPORT_HAMMING) {
-        fprintf
-            (fp, "           Hamming    %e\n", PGAHammingDistance (ctx, pop));
+    if (ctx->rep.PrintOptions & PGA_REPORT_GENE_DISTANCE) {
+        fprintf (fp, "           Gene Dist. %e\n", PGAGeneDistance (ctx, pop));
     }
     if (ctx->rep.PrintOptions & PGA_REPORT_STRING) {
         if (numaux == numcon) {
@@ -249,11 +248,13 @@ void PGAPrintReport (PGAContext *ctx, FILE *fp, int pop)
 
     May be called more than once to specify different report options.
     Valid choices are PGA_REPORT_AVERAGE, PGA_REPORT_OFFLINE,
-    PGA_REPORT_ONLINE, PGA_REPORT_WORST, PGA_REPORT_HAMMING, and
+    PGA_REPORT_ONLINE, PGA_REPORT_WORST, PGA_REPORT_GENE_DISTANCE, and
     PGA_REPORT_STRING to specify offline analysis, online analysis, the
-    worst string in the population, the Hamming distance of the
+    worst string in the population, the mean genetic distance of the
     population, and the actual allele values of the best string.  The
-    best string is always printed.
+    best string is always printed. Note that reporting of mean genetic
+    distance is quadratic in the population size and probably should be
+    used only when trying to diagnose premature convergence problems.
 
     Example
     -------
@@ -277,7 +278,7 @@ void PGASetPrintOptions (PGAContext *ctx, int option)
     case PGA_REPORT_OFFLINE:
     case PGA_REPORT_ONLINE:
     case PGA_REPORT_WORST:
-    case PGA_REPORT_HAMMING:
+    case PGA_REPORT_GENE_DISTANCE:
     case PGA_REPORT_STRING:
         ctx->rep.PrintOptions |= option;
         break;
@@ -706,7 +707,6 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-
     fprintf (fp, "    Copy to Next Population        : ");
     switch (ctx->ga.PopReplace)
     {
@@ -727,23 +727,12 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-
-    /*fprintf (fp, "    Stopping Rule (s)              :\n");
-    if ((ctx->ga.StoppingRule & PGA_STOP_MAXITER) == PGA_STOP_MAXITER)
-        fprintf (fp, "%50s", "Maximum iterations\n");
-    if ((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) == PGA_STOP_NOCHANGE)
-        fprintf (fp, "%49s", "No change in best\n");
-    if ((ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR) == PGA_STOP_TOOSIMILAR)
-        fprintf (fp, "%54s", "Population Homogeneity\n");
-    if (ctx->ga.StoppingRule == PGA_UNINITIALIZED_INT)
-        fprintf (fp, "%47s", "*UNINITIALIZED*\n");*/
-
     fprintf (fp, "    Stop: Maximum Iterations       : ");
-    if ((ctx->ga.StoppingRule & PGA_STOP_MAXITER) == PGA_STOP_MAXITER)
+    if ((ctx->ga.StoppingRule & PGA_STOP_MAXITER) == PGA_STOP_MAXITER) {
         fprintf (fp, "On\n");
-    else
+    } else {
         fprintf (fp, "Off\n");
-
+    }
 
     fprintf (fp, "        Maximum Iterations         : ");
     switch (ctx->ga.MaxIter)
@@ -756,13 +745,12 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-
     fprintf (fp, "    Stop: No Change                : ");
-    if ((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) == PGA_STOP_NOCHANGE)
+    if ((ctx->ga.StoppingRule & PGA_STOP_NOCHANGE) == PGA_STOP_NOCHANGE) {
         fprintf (fp, "On\n");
-    else
+    } else {
         fprintf (fp, "Off\n");
-
+    }
 
     fprintf (fp, "        Max No Change Iterations   : ");
     switch (ctx->ga.MaxNoChange)
@@ -776,11 +764,11 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
     }
 
     fprintf (fp, "    Stop: Too Similar              : ");
-    if ((ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR) == PGA_STOP_TOOSIMILAR)
+    if ((ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR) == PGA_STOP_TOOSIMILAR) {
         fprintf (fp, "On\n");
-    else
+    } else {
         fprintf (fp, "Off\n");
-
+    }
 
     fprintf (fp, "        Percent Similarity         : ");
     switch (ctx->ga.MaxSimilarity)
@@ -803,7 +791,6 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         fprintf (fp, "%d\n", ctx->ga.NumReplace);
         break;
     };
-
 
     fprintf (fp, "    Mixing Type                    : ");
     switch (ctx->ga.MixingType)
@@ -828,7 +815,6 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-
     fprintf (fp, "    Crossover Type                 : ");
     switch (ctx->ga.CrossoverType)
     {
@@ -849,20 +835,19 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-
     fprintf (fp, "    Crossover Probability          : ");
-    if (ctx->ga.CrossoverProb == PGA_UNINITIALIZED_DOUBLE)
+    if (ctx->ga.CrossoverProb == PGA_UNINITIALIZED_DOUBLE) {
         fprintf (fp, "*UNINITIALIZED*\n");
-    else
+    } else {
         fprintf (fp, "%f\n", ctx->ga.CrossoverProb);
-
+    }
 
     fprintf (fp, "    Uniform Crossover Prob.        : ");
-    if (ctx->ga.UniformCrossProb == PGA_UNINITIALIZED_DOUBLE)
+    if (ctx->ga.UniformCrossProb == PGA_UNINITIALIZED_DOUBLE) {
         fprintf (fp, "*UNINITIALIZED*\n");
-    else
+    } else {
         fprintf (fp, "%f\n", ctx->ga.UniformCrossProb);
-
+    }
 
     fprintf (fp, "    Mutation Type                  : ");
     switch (ctx->ga.datatype)
@@ -903,20 +888,19 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-
     fprintf (fp, "    Mutation Probability           : ");
-    if (ctx->ga.MutationProb == PGA_UNINITIALIZED_DOUBLE)
+    if (ctx->ga.MutationProb == PGA_UNINITIALIZED_DOUBLE) {
         fprintf (fp, "*UNINITIALIZED*\n");
-    else
+    } else {
         fprintf (fp, "%f\n", ctx->ga.MutationProb);
-
+    }
 
     fprintf (fp, "    Real Mutation Constant         : ");
-    if (ctx->ga.MutationProb == PGA_UNINITIALIZED_DOUBLE)
+    if (ctx->ga.MutateRealValue == PGA_UNINITIALIZED_DOUBLE) {
         fprintf (fp, "*UNINITIALIZED*\n");
-    else
+    } else {
         fprintf (fp, "%f\n", ctx->ga.MutateRealValue);
-
+    }
 
     fprintf (fp, "    Integer Mutation Constant      : ");
     switch (ctx->ga.MutateIntegerValue)
@@ -928,7 +912,6 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         fprintf (fp, "%d\n", ctx->ga.MutateIntegerValue);
         break;
     }
-
 
     fprintf (fp, "    Mutation Range Bounded         : ");
     switch (ctx->ga.MutateBoundedFlag)
@@ -946,7 +929,6 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         fprintf (fp, "!ERROR!  =(%d)?\n", ctx->ga.MutateBoundedFlag);
         break;
     };
-
 
     fprintf (fp, "    Selection Type                 : ");
     switch (ctx->ga.SelectType)
@@ -971,14 +953,12 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-
     fprintf (fp, "    Tournament Selection Param     : ");
-    if (ctx->ga.PTournamentProb == PGA_UNINITIALIZED_DOUBLE)
+    if (ctx->ga.PTournamentProb == PGA_UNINITIALIZED_DOUBLE) {
         fprintf (fp, "*UNINITIALIZED*\n");
-    else
+    } else {
         fprintf (fp, "%f\n", ctx->ga.PTournamentProb);
-
-
+    }
 
     fprintf (fp, "    Restart Operator               : ");
     switch (ctx->ga.restart)
@@ -1009,11 +989,11 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
     };
 
     fprintf (fp, "    Restart Allele Change Prob     : ");
-    if (ctx->ga.restartAlleleProb == PGA_UNINITIALIZED_DOUBLE)
+    if (ctx->ga.restartAlleleProb == PGA_UNINITIALIZED_DOUBLE) {
         fprintf (fp, "*UNINITIALIZED*\n");
-    else
+    } else {
         fprintf (fp, "%f\n", ctx->ga.restartAlleleProb);
-
+    }
 
     fprintf (fp, "    Allow Duplicates               : ");
     switch (ctx->ga.NoDuplicates)
@@ -1074,18 +1054,18 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
 
 
     fprintf (fp, "    Fitness Ranking Parameter      : ");
-    if (ctx->ga.FitnessRankMax == PGA_UNINITIALIZED_DOUBLE)
+    if (ctx->ga.FitnessRankMax == PGA_UNINITIALIZED_DOUBLE) {
         fprintf (fp, "*UNINITIALIZED*\n");
-    else
+    } else {
         fprintf (fp, "%f\n", ctx->ga.FitnessRankMax);
-
+    }
 
     fprintf (fp, "    Fitness CMAX Parameter         : ");
-    if (ctx->ga.FitnessCmaxValue == PGA_UNINITIALIZED_DOUBLE)
+    if (ctx->ga.FitnessCmaxValue == PGA_UNINITIALIZED_DOUBLE) {
         fprintf (fp, "*UNINITIALIZED*\n");
-    else
+    } else {
         fprintf (fp, "%f\n", ctx->ga.FitnessCmaxValue);
-
+    }
 
     fprintf (fp, "Algorithm Parameters (Dynamic)\n");
 
@@ -1156,10 +1136,11 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
     };
 
     fprintf (fp, "    Initialization Binary Prob     : ");
-    if (ctx->init.BinaryProbability == PGA_UNINITIALIZED_DOUBLE)
+    if (ctx->init.BinaryProbability == PGA_UNINITIALIZED_DOUBLE) {
         fprintf (fp, "*UNINITIALIZED*\n");
-    else
+    } else {
         fprintf (fp, "%f\n", ctx->init.BinaryProbability);
+    }
 
 
     fprintf (fp, "    Initialization Real            : ");
@@ -1227,9 +1208,6 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
         break;
     };
 
-    PGADebugExited ("PGAPrintContextVariable");
-
-
     /* par */
     fprintf (fp, "Parallel\n");
 
@@ -1287,12 +1265,13 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
     }*/
 
     fprintf (fp, "    Default Communicator           : ");
-    if (ctx->par.DefaultComm == MPI_COMM_NULL)
+    if (ctx->par.DefaultComm == MPI_COMM_NULL) {
         fprintf (fp, "NULL\n");
-    else if (ctx->par.DefaultComm == MPI_COMM_WORLD)
+    } else if (ctx->par.DefaultComm == MPI_COMM_WORLD) {
         fprintf (fp, "MPI_COMM_WORLD\n");
-    else
+    } else {
         fprintf (fp, "User Defined\n");
+    }
 
 
 
@@ -1311,34 +1290,42 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
     };
 
     fprintf (fp, "    Print Worst Evaluation         : ");
-    if ((ctx->rep.PrintOptions & PGA_REPORT_WORST) == PGA_REPORT_WORST)
+    if ((ctx->rep.PrintOptions & PGA_REPORT_WORST) == PGA_REPORT_WORST) {
         fprintf (fp, "On\n");
-    else
+    } else {
         fprintf (fp, "Off\n");
+    }
 
     fprintf (fp, "    Print Average Evaluation       : ");
-    if ((ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) == PGA_REPORT_AVERAGE)
+    if ((ctx->rep.PrintOptions & PGA_REPORT_AVERAGE) == PGA_REPORT_AVERAGE) {
         fprintf (fp, "On\n");
-    else
+    } else {
         fprintf (fp, "Off\n");
+    }
 
     fprintf (fp, "    Print Offline Statistics       : ");
-    if ((ctx->rep.PrintOptions & PGA_REPORT_OFFLINE) == PGA_REPORT_OFFLINE)
+    if ((ctx->rep.PrintOptions & PGA_REPORT_OFFLINE) == PGA_REPORT_OFFLINE) {
         fprintf (fp, "On\n");
-    else
+    } else {
         fprintf (fp, "Off\n");
+    }
 
     fprintf (fp, "    Print Online Statistics        : ");
-    if ((ctx->rep.PrintOptions & PGA_REPORT_ONLINE) == PGA_REPORT_ONLINE)
+    if ((ctx->rep.PrintOptions & PGA_REPORT_ONLINE) == PGA_REPORT_ONLINE) {
         fprintf (fp, "On\n");
-    else
+    } else {
         fprintf (fp, "Off\n");
+    }
 
-    fprintf (fp, "    Print Hamming Distance         : ");
-    if ((ctx->rep.PrintOptions & PGA_REPORT_HAMMING) == PGA_REPORT_HAMMING)
+    fprintf (fp, "    Print Genetic Distance         : ");
+    if ((ctx->rep.PrintOptions & PGA_REPORT_GENE_DISTANCE)
+        == PGA_REPORT_GENE_DISTANCE
+       )
+    {
         fprintf (fp, "On\n");
-    else
+    } else {
         fprintf (fp, "Off\n");
+    }
 
     /* system */
     fprintf (fp, "System\n");
@@ -1366,222 +1353,236 @@ void PGAPrintContextVariable (PGAContext *ctx, FILE *fp)
     };
 
     fprintf (fp, "    Maximum Double                 : ");
-    if (ctx->sys.PGAMaxDouble == PGA_UNINITIALIZED_DOUBLE)
+    if (ctx->sys.PGAMaxDouble == PGA_UNINITIALIZED_DOUBLE) {
         fprintf (fp, "*UNINITIALIZED*\n");
-    else
+    } else {
         fprintf (fp, "%e\n", ctx->sys.PGAMaxDouble);
+    }
 
     fprintf (fp, "    Minimum Double                 : ");
-    if (ctx->sys.PGAMinDouble == PGA_UNINITIALIZED_DOUBLE)
+    if (ctx->sys.PGAMinDouble == PGA_UNINITIALIZED_DOUBLE) {
         fprintf (fp, "*UNINITIALIZED*\n");
-    else
+    } else {
         fprintf (fp, "%e\n", ctx->sys.PGAMinDouble);
-
-
+    }
 
     /* ops */
     fprintf (fp, "Operations\n");
 
     fprintf (fp, "    CreateString  function         : ");
-    if (ctx->cops.CreateString == NULL)
+    if (ctx->cops.CreateString == NULL) {
         fprintf (fp, "NULL\n");
-    else if (ctx->cops.CreateString == PGABinaryCreateString)
+    } else if (ctx->cops.CreateString == PGABinaryCreateString) {
         fprintf (fp, "PGABinaryCreateString\n");
-    else if (ctx->cops.CreateString == PGAIntegerCreateString)
+    } else if (ctx->cops.CreateString == PGAIntegerCreateString) {
         fprintf (fp, "PGAIntegerCreateString\n");
-    else if (ctx->cops.CreateString == PGARealCreateString)
+    } else if (ctx->cops.CreateString == PGARealCreateString) {
         fprintf (fp, "PGARealCreateString\n");
-    else if (ctx->cops.CreateString == PGACharacterCreateString)
+    } else if (ctx->cops.CreateString == PGACharacterCreateString) {
         fprintf (fp, "PGACharacterCreateString\n");
-    else
+    } else {
         fprintf (fp, "C User Defined: %p\n", ctx->cops.CreateString);
-
+    }
 
     fprintf (fp, "    InitString    function         : ");
     if (ctx->cops.InitString) {
-        if (ctx->cops.InitString == PGABinaryInitString)
+        if (ctx->cops.InitString == PGABinaryInitString) {
             fprintf (fp, "PGABinaryInitString\n");
-        else if (ctx->cops.InitString == PGAIntegerInitString)
+        } else if (ctx->cops.InitString == PGAIntegerInitString) {
             fprintf (fp, "PGAIntegerInitString\n");
-        else if (ctx->cops.InitString == PGARealInitString)
+        } else if (ctx->cops.InitString == PGARealInitString) {
             fprintf (fp, "PGARealInitString\n");
-        else if (ctx->cops.InitString == PGACharacterInitString)
+        } else if (ctx->cops.InitString == PGACharacterInitString) {
             fprintf (fp, "PGACharacterInitString\n");
-        else
+        } else {
             fprintf (fp, "C User Defined: %p\n", ctx->cops.InitString);
+        }
     } else {
-        if (ctx->fops.InitString)
+        if (ctx->fops.InitString) {
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.InitString);
-        else
+        } else {
             fprintf (fp, "NULL\n");
+        }
     }
 
-
     fprintf (fp, "    BuildDatatype function         : ");
-    if (ctx->cops.BuildDatatype == NULL)
+    if (ctx->cops.BuildDatatype == NULL) {
         fprintf (fp, "NULL\n");
-    else if (ctx->cops.BuildDatatype == PGABinaryBuildDatatype)
+    } else if (ctx->cops.BuildDatatype == PGABinaryBuildDatatype) {
         fprintf (fp, "PGABinaryBuildDatatype\n");
-    else if (ctx->cops.BuildDatatype == PGAIntegerBuildDatatype)
+    } else if (ctx->cops.BuildDatatype == PGAIntegerBuildDatatype) {
         fprintf (fp, "PGAIntegerBuildDatatype\n");
-    else if (ctx->cops.BuildDatatype == PGARealBuildDatatype)
+    } else if (ctx->cops.BuildDatatype == PGARealBuildDatatype) {
         fprintf (fp, "PGARealBuildDatatype\n");
-    else if (ctx->cops.BuildDatatype == PGACharacterBuildDatatype)
+    } else if (ctx->cops.BuildDatatype == PGACharacterBuildDatatype) {
         fprintf (fp, "PGACharacterBuildDatatype\n");
-    else
+    } else {
         fprintf (fp, "C User Defined: %p\n", ctx->cops.BuildDatatype);
-
+    }
 
     fprintf (fp, "    Mutation      function         : ");
     if (ctx->cops.Mutation) {
-        if (ctx->cops.Mutation == PGABinaryMutation)
+        if (ctx->cops.Mutation == PGABinaryMutation) {
             fprintf (fp, "PGABinaryMutation\n");
-        else if (ctx->cops.Mutation == PGAIntegerMutation)
+        } else if (ctx->cops.Mutation == PGAIntegerMutation) {
             fprintf (fp, "PGAIntegerMutation\n");
-        else if (ctx->cops.Mutation == PGARealMutation)
+        } else if (ctx->cops.Mutation == PGARealMutation) {
             fprintf (fp, "PGARealMutation\n");
-        else if (ctx->cops.Mutation == PGACharacterMutation)
+        } else if (ctx->cops.Mutation == PGACharacterMutation) {
             fprintf (fp, "PGACharacterMutation\n");
-        else
+        } else {
             fprintf (fp, "C User Defined: %p\n", ctx->cops.Mutation);
+        }
     } else {
-        if (ctx->fops.Mutation)
+        if (ctx->fops.Mutation) {
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.Mutation);
-        else
+        } else {
             fprintf (fp, "NULL\n");
+        }
     }
-
 
     fprintf (fp, "    Crossover     function         : ");
     if (ctx->cops.Crossover) {
-        if (ctx->cops.Crossover == PGABinaryOneptCrossover)
+        if (ctx->cops.Crossover == PGABinaryOneptCrossover) {
             fprintf (fp, "PGABinaryOneptCrossover\n");
-        else if (ctx->cops.Crossover == PGAIntegerOneptCrossover)
+        } else if (ctx->cops.Crossover == PGAIntegerOneptCrossover) {
             fprintf (fp, "PGAIntegerOneptCrossover\n");
-        else if (ctx->cops.Crossover == PGARealOneptCrossover)
+        } else if (ctx->cops.Crossover == PGARealOneptCrossover) {
             fprintf (fp, "PGARealOneptCrossover\n");
-        else if (ctx->cops.Crossover == PGACharacterOneptCrossover)
+        } else if (ctx->cops.Crossover == PGACharacterOneptCrossover) {
             fprintf (fp, "PGACharacterOneptCrossover\n");
-        else if (ctx->cops.Crossover == PGABinaryTwoptCrossover)
+        } else if (ctx->cops.Crossover == PGABinaryTwoptCrossover) {
             fprintf (fp, "PGABinaryTwoptCrossover\n");
-        else if (ctx->cops.Crossover == PGAIntegerTwoptCrossover)
+        } else if (ctx->cops.Crossover == PGAIntegerTwoptCrossover) {
             fprintf (fp, "PGAIntegerTwoptCrossover\n");
-        else if (ctx->cops.Crossover == PGARealTwoptCrossover)
+        } else if (ctx->cops.Crossover == PGARealTwoptCrossover) {
             fprintf (fp, "PGARealTwoptCrossover\n");
-        else if (ctx->cops.Crossover == PGACharacterTwoptCrossover)
+        } else if (ctx->cops.Crossover == PGACharacterTwoptCrossover) {
             fprintf (fp, "PGACharacterTwoptCrossover\n");
-        else if (ctx->cops.Crossover == PGABinaryUniformCrossover)
+        } else if (ctx->cops.Crossover == PGABinaryUniformCrossover) {
             fprintf (fp, "PGABinarytUniformCrossover\n");
-        else if (ctx->cops.Crossover == PGAIntegerUniformCrossover)
+        } else if (ctx->cops.Crossover == PGAIntegerUniformCrossover) {
             fprintf (fp, "PGAIntegerUniformCrossover\n");
-        else if (ctx->cops.Crossover == PGARealUniformCrossover)
+        } else if (ctx->cops.Crossover == PGARealUniformCrossover) {
             fprintf (fp, "PGARealUniformCrossover\n");
-        else if (ctx->cops.Crossover == PGACharacterUniformCrossover)
+        } else if (ctx->cops.Crossover == PGACharacterUniformCrossover) {
             fprintf (fp, "PGACharacterUniformCrossover\n");
-        else
+        } else {
             fprintf (fp, "C User Defined: %p\n", ctx->cops.Crossover);
+        }
     } else {
-        if (ctx->fops.Crossover)
+        if (ctx->fops.Crossover) {
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.Crossover);
-        else
+        } else {
             fprintf (fp, "NULL\n");
+        }
     }
-
 
     fprintf (fp, "    PrintString   function         : ");
     if (ctx->cops.PrintString) {
-        if (ctx->cops.PrintString == PGABinaryPrintString)
+        if (ctx->cops.PrintString == PGABinaryPrintString) {
             fprintf (fp, "PGABinaryPrintString\n");
-        else if (ctx->cops.PrintString == PGAIntegerPrintString)
+        } else if (ctx->cops.PrintString == PGAIntegerPrintString) {
             fprintf (fp, "PGAIntegerPrintString\n");
-        else if (ctx->cops.PrintString == PGARealPrintString)
+        } else if (ctx->cops.PrintString == PGARealPrintString) {
             fprintf (fp, "PGARealPrintString\n");
-        else if (ctx->cops.PrintString == PGACharacterPrintString)
+        } else if (ctx->cops.PrintString == PGACharacterPrintString) {
             fprintf (fp, "PGACharacterPrintString\n");
-        else
+        } else {
             fprintf (fp, "C User Defined: %p\n", ctx->cops.PrintString);
+        }
     } else {
-        if (ctx->fops.PrintString)
+        if (ctx->fops.PrintString) {
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.PrintString);
-        else
+        } else {
             fprintf (fp, "NULL\n");
+        }
     }
-
 
     fprintf (fp, "    CopyString    function         : ");
     if (ctx->cops.CopyString) {
-        if (ctx->cops.CopyString == PGABinaryCopyString)
+        if (ctx->cops.CopyString == PGABinaryCopyString) {
             fprintf (fp, "PGABinaryCopyString\n");
-        else if (ctx->cops.CopyString == PGAIntegerCopyString)
+        } else if (ctx->cops.CopyString == PGAIntegerCopyString) {
             fprintf (fp, "PGAIntegerCopyString\n");
-        else if (ctx->cops.CopyString == PGARealCopyString)
+        } else if (ctx->cops.CopyString == PGARealCopyString) {
             fprintf (fp, "PGARealCopyString\n");
-        else if (ctx->cops.CopyString == PGACharacterCopyString)
+        } else if (ctx->cops.CopyString == PGACharacterCopyString) {
             fprintf (fp, "PGACharacterCopyString\n");
-        else
+        } else {
             fprintf (fp, "C User Defined: %p\n", ctx->cops.CopyString);
+        }
     } else {
-        if (ctx->fops.CopyString)
+        if (ctx->fops.CopyString) {
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.CopyString);
-        else
+        } else {
             fprintf (fp, "NULL\n");
+        }
     }
-
 
     fprintf (fp, "    Duplicate     function         : ");
     if (ctx->cops.Duplicate) {
-        if (ctx->cops.Duplicate == PGABinaryDuplicate)
+        if (ctx->cops.Duplicate == PGABinaryDuplicate) {
             fprintf (fp, "PGABinaryDuplicate\n");
-        else if (ctx->cops.Duplicate == PGAIntegerDuplicate)
+        } else if (ctx->cops.Duplicate == PGAIntegerDuplicate) {
             fprintf (fp, "PGAIntegerDuplicate\n");
-        else if (ctx->cops.Duplicate == PGARealDuplicate)
+        } else if (ctx->cops.Duplicate == PGARealDuplicate) {
             fprintf (fp, "PGARealDuplicate\n");
-        else if (ctx->cops.Duplicate == PGACharacterDuplicate)
+        } else if (ctx->cops.Duplicate == PGACharacterDuplicate) {
             fprintf (fp, "PGACharacterDuplicate\n");
-        else
+        } else {
             fprintf (fp, "C User Defined: %p\n", ctx->cops.Duplicate);
+        }
     } else {
-        if (ctx->fops.Duplicate)
+        if (ctx->fops.Duplicate) {
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.Duplicate);
-        else
+        } else {
             fprintf (fp, "NULL\n");
+        }
     }
 
-
     fprintf (fp, "    Stopping      function         : ");
-    if (ctx->cops.StopCond)
+    if (ctx->cops.StopCond) {
         fprintf (fp, "C User Defined: %p\n", ctx->cops.StopCond);
-    else
-        if (ctx->fops.StopCond)
+    } else {
+        if (ctx->fops.StopCond) {
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.StopCond);
-        else
+        } else {
             fprintf (fp, "PGACheckStoppingConditions\n");
-
+        }
+    }
 
     fprintf (fp, "    End of Generation function     : ");
-    if (ctx->cops.EndOfGen)
+    if (ctx->cops.EndOfGen) {
         fprintf (fp, "C User Defined: %p\n", ctx->cops.EndOfGen);
-    else
-        if (ctx->fops.EndOfGen)
+    } else {
+        if (ctx->fops.EndOfGen) {
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.EndOfGen);
-        else
+        } else {
             fprintf (fp, "NULL\n");
+        }
+    }
 
     fprintf (fp, "    Gene distance function         : ");
-    if (ctx->cops.GeneDistance)
+    if (ctx->cops.GeneDistance) {
         fprintf (fp, "C User Defined: %p\n", ctx->cops.GeneDistance);
-    else
-        if (ctx->fops.GeneDistance)
+    } else {
+        if (ctx->fops.GeneDistance) {
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.GeneDistance);
-        else
+        } else {
             fprintf (fp, "NULL\n");
+        }
+    }
 
     fprintf (fp, "    Pre-Evaluation function        : ");
-    if (ctx->cops.PreEval)
+    if (ctx->cops.PreEval) {
         fprintf (fp, "C User Defined: %p\n", ctx->cops.PreEval);
-    else
-        if (ctx->fops.PreEval)
+    } else {
+        if (ctx->fops.PreEval) {
             fprintf (fp, "Fortran User Defined: %p\n", ctx->fops.PreEval);
-        else
+        } else {
             fprintf (fp, "NULL\n");
+        }
+    }
+    PGADebugExited ("PGAPrintContextVariable");
 }

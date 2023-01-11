@@ -24,7 +24,7 @@ int main( int argc, char **argv ) {
     if (full_report) {
         PGASetPrintOptions (ctx, PGA_REPORT_ONLINE);
         PGASetPrintOptions (ctx, PGA_REPORT_OFFLINE);
-        PGASetPrintOptions (ctx, PGA_REPORT_HAMMING);
+        PGASetPrintOptions (ctx, PGA_REPORT_GENE_DISTANCE);
         PGASetPrintOptions (ctx, PGA_REPORT_STRING);
         PGASetPrintOptions (ctx, PGA_REPORT_WORST);
         PGASetPrintOptions (ctx, PGA_REPORT_AVERAGE);
