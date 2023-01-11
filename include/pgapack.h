@@ -1435,5 +1435,8 @@ static inline void PGASetRealInitPercent
 static inline double PGAUserFunctionGeneDistance
     (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 {
-    return ctx->cops.GeneDistance (ctx, p1, pop1, p2, pop2);
+    if (ctx->fops.GeneDistance) {
+        return (*ctx->fops.GeneDistance) (&ctx, &p1, &pop1, &p2, &pop2);
+    }
+    return (ctx->cops.GeneDistance) (ctx, p1, pop1, p2, pop2);
 }
