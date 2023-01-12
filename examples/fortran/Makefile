@@ -6,3 +6,5 @@ all: ${ALL}
 
 clean: 
 	rm -f ${ALL} *.o
+
+# vim: set noet :

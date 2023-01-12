@@ -27,3 +27,5 @@ testprogdertr: testprogdertr.c tprobs.a
 
 clean:
 	rm -f $(OBJS) tprobs.a $(PROGS)
+
+# vim: set noet :

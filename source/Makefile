@@ -54,3 +54,5 @@ clean:
 	rm -f $(OBJS)
 
 .PHONY: clean
+
+# vim: set noet :

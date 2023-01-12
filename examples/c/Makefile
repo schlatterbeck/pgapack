@@ -8,3 +8,5 @@ all: $(PROG)
 
 clean: 
 	rm -f $(PROG) *.o
+
+# vim: set noet :

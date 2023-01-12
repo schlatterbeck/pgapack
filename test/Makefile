@@ -58,3 +58,5 @@ clean: testclean
 	rm -f instverf instverf.o
 
 .PHONY: all clean unit
+
+# vim: set noet :

@@ -191,3 +191,5 @@ clobber: clean
 	rm -rf ${PGA_DIR}/lib
 
 .PHONY: all clean clobber
+
+# vim: set noet :

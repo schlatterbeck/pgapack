@@ -12,3 +12,5 @@ optimize: optimize.o $(OBJS)
 
 clean: 
 	rm -f $(OBJS) optimize
+
+# vim: set noet :

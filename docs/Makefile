@@ -26,7 +26,7 @@ user_guide.pdf: user_guide.ps
 	exiftool \
 	-Title="Users Guide to the PGAPack Parallel Genetic Algorithm Library" \
 	-Author="David Levine and contributors" \
-        user_guide.pdf
+	user_guide.pdf
 
 %.ppm: %.png
 	$(PNGTOPPM) $< > $@
@@ -37,7 +37,10 @@ user_guide.pdf: user_guide.ps
 clean:
 	rm -f user_guide.aux user_guide.bbl user_guide.blg user_guide.dvi \
 	    user_guide.idx user_guide.log user_guide.pdf user_guide.ps    \
-	    user_guide.toc refpoints.eps refpoints.ppm userguide_date.tex
+	    user_guide.toc refpoints.eps refpoints.ppm userguide_date.tex \
+	    user_guide.pdf_original
 
 
 .PRECIOUS: user_guide.ps
+
+# vim: set noet :
