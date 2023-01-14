@@ -193,7 +193,7 @@ typedef unsigned int    PGAHash;
 
 /*!***************************************
  * \defgroup const-bool Boolean
- * \brief Constancts for booleans.
+ * \brief Constants for booleans.
  * @{
  ****************************************/
 #define PGA_TRUE                   1 /**< True value  */
@@ -284,9 +284,9 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  * \brief Define when to stop, multiple conditions selectable.
  *  @{
  *****************************************/
-#define PGA_STOP_MAXITER        1    /**< Stop: for maximum iterations    */
-#define PGA_STOP_NOCHANGE       2    /**< Stop: no change in best string  */
-#define PGA_STOP_TOOSIMILAR     4    /**< Stop: homogeneous population    */
+#define PGA_STOP_MAXITER        1 /**< Stop: for maximum iterations (default) */
+#define PGA_STOP_NOCHANGE       2 /**< Stop: no change in best string  */
+#define PGA_STOP_TOOSIMILAR     4 /**< Stop: homogeneous population    */
 /*! @} */
 
 /*!***************************************
@@ -295,7 +295,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  *  @{
  *****************************************/
 #define PGA_CROSSOVER_ONEPT     1    /**< One point crossover              */
-#define PGA_CROSSOVER_TWOPT     2    /**< Two point crossover              */
+#define PGA_CROSSOVER_TWOPT     2    /**< Two point crossover (default)    */
 #define PGA_CROSSOVER_UNIFORM   3    /**< Uniform   crossover              */
 #define PGA_CROSSOVER_SBX       4    /**< Simulated binary crossover (SBX) */
 #define PGA_CROSSOVER_EDGE      5    /**< Edge Recombination               */
@@ -308,7 +308,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  *****************************************/
 #define PGA_SELECT_PROPORTIONAL 1    /**< proportional selection             */
 #define PGA_SELECT_SUS          2    /**< stochastic universal selection     */
-#define PGA_SELECT_TOURNAMENT   3    /**< tournament selection               */
+#define PGA_SELECT_TOURNAMENT   3    /**< tournament selection (default)     */
 #define PGA_SELECT_PTOURNAMENT  4    /**< probabilistic tournament selection */
 #define PGA_SELECT_TRUNCATION   5    /**< truncation selection               */
 #define PGA_SELECT_LINEAR       6    /**< linear selection                   */
@@ -319,9 +319,15 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  *  \brief Constants for fitness variants.
  *  @{
  *****************************************/
-#define PGA_FITNESS_RAW         1    /**< use raw fitness (evaluation)  */
-#define PGA_FITNESS_NORMAL      2    /**< linear normalization fitness  */
-#define PGA_FITNESS_RANKING     3    /**< linear ranking fitness        */
+/** use raw fitness (evaluation) (default) */
+#define PGA_FITNESS_RAW         1
+
+/** linear normalization fitness */
+#define PGA_FITNESS_NORMAL      2
+
+/** linear ranking fitness */
+#define PGA_FITNESS_RANKING     3
+
 /*! @} */
 
 /*!*********************************************
@@ -329,22 +335,43 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  *  \brief Constants for fitness minimization variants.
  *  @{
  ***********************************************/
-#define PGA_FITNESSMIN_RECIPROCAL  1 /**< reciprocal fitness */
-#define PGA_FITNESSMIN_CMAX        2 /**< cmax fitness       */
+#define PGA_FITNESSMIN_RECIPROCAL  1 /**< reciprocal fitness     */
+#define PGA_FITNESSMIN_CMAX        2 /**< cmax fitness (default) */
 /*! @} */
 
 /*!***************************************
- *  \defgroup const-mutation Mutation
- *  \brief Constants for mutation variants.
- *  @{
+    \defgroup const-mutation Mutation
+    \brief Constants for mutation variants.
+
+    \rst
+    The defaults for Integer and Real data types are noted in the docs
+    of the individual constants. For the Binary data type mutation is a
+    random flip. For the Character data type, mutation selects a random
+    character from the init range, see :c:func:`PGASetCharacterInitType`.
+    \endrst
+    @{
  *****************************************/
-#define PGA_MUTATION_CONSTANT   1    /**< Real/Integer: Fixed value          */
-#define PGA_MUTATION_RANGE      2    /**< Real/Integer: Uniform range        */
-#define PGA_MUTATION_UNIFORM    3    /**< Real: +- Uniform random no.        */
-#define PGA_MUTATION_GAUSSIAN   4    /**< Real: +- Gaussian random no.       */
-#define PGA_MUTATION_PERMUTE    5    /**< Integer: Permutation (swap)        */
-#define PGA_MUTATION_DE         6    /**< Differential Evolution (only real) */
-#define PGA_MUTATION_POLY       7    /**< Polynomial mutation                */
+/** Real/Integer: Fixed value */
+#define PGA_MUTATION_CONSTANT   1
+
+/** Real/Integer: Uniform range */
+#define PGA_MUTATION_RANGE      2
+
+/** Real: +- Uniform random no. */
+#define PGA_MUTATION_UNIFORM    3
+
+/** Real: +- Gaussian random number (default for Real data type) */
+#define PGA_MUTATION_GAUSSIAN   4
+
+/** Integer: Permutation (swap) (default for Integer data type) */
+#define PGA_MUTATION_PERMUTE    5
+
+/** Differential Evolution (only real) */
+#define PGA_MUTATION_DE         6
+
+/** Polynomial mutation */
+#define PGA_MUTATION_POLY       7
+
 /*! @} */
 
 /*!****************************************
@@ -363,10 +390,17 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  * The default is PGA_MIX_MUTATE_OR_CROSS also for legacy reasons.
  *  @{
  */
-#define PGA_MIX_MUTATE_OR_CROSS   1    /**< Either mutation or crossover */
-#define PGA_MIX_MUTATE_AND_CROSS  2    /**< Mutation only if crossover   */
-#define PGA_MIX_MUTATE_ONLY       3    /**< Only mutation                */
-#define PGA_MIX_TRADITIONAL       4    /**< Mutation after crossover     */
+/** Either mutation or crossover (default) */
+#define PGA_MIX_MUTATE_OR_CROSS   1
+
+/** Mutation only if crossover */
+#define PGA_MIX_MUTATE_AND_CROSS  2
+
+/** Only mutation */
+#define PGA_MIX_MUTATE_ONLY       3
+
+/** Mutation after crossover (also when no mutation occurs due to randomness) */
+#define PGA_MIX_TRADITIONAL       4
 /*! @} */
 
 /*!****************************************
@@ -374,9 +408,14 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  *  \brief Constants for Differential Evolution Variants.
  *  @{
  ******************************************/
-#define PGA_DE_VARIANT_RAND      1   /**< Standard DE from random string */
-#define PGA_DE_VARIANT_BEST      2   /**< Derive from best string */
-#define PGA_DE_VARIANT_EITHER_OR 3   /**< Either-or variant */
+/** Standard DE from random string (default) */
+#define PGA_DE_VARIANT_RAND      1
+
+/** Derive from best string */
+#define PGA_DE_VARIANT_BEST      2
+
+/** Either-or variant */
+#define PGA_DE_VARIANT_EITHER_OR 3
 /*! @} */
 
 /*!**************************************************
@@ -393,7 +432,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  *  \brief Constants for population replacement variants.
  *  @{
  *******************************************/
-#define PGA_POPREPL_BEST          1  /**< Select best   string                */
+#define PGA_POPREPL_BEST          1  /**< Select best   string (default)      */
 #define PGA_POPREPL_RANDOM_NOREP  2  /**< Select random string w/o replacement*/
 #define PGA_POPREPL_RANDOM_REP    3  /**< Select random string w/  replacement*/
 #define PGA_POPREPL_RTR           4  /**< Restricted tournament replacement   */
@@ -425,10 +464,10 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
  *  @{
  **************************************************/
 #define PGA_RINIT_PERCENT        1  /**< real percent offset               */
-#define PGA_RINIT_RANGE          2  /**< real range                        */
-#define PGA_IINIT_PERMUTE        1  /**< integer permutation               */
+#define PGA_RINIT_RANGE          2  /**< real range (default)              */
+#define PGA_IINIT_PERMUTE        1  /**< integer permutation (default)     */
 #define PGA_IINIT_RANGE          2  /**< integer range (nonunique)         */
-#define PGA_CINIT_LOWER          1  /**< all lowercase letters             */
+#define PGA_CINIT_LOWER          1  /**< all lowercase letters (default)   */
 #define PGA_CINIT_UPPER          2  /**< all uppercase letters             */
 #define PGA_CINIT_MIXED          3  /**< both upper and lower case letters */
 /*! @} */

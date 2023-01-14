@@ -371,7 +371,7 @@ int PGAGetMaxGAIterValue (PGAContext *ctx)
     Description
     -----------
 
-    The default value is 50.  The stopping rule PGA_STOP_NOCHANGE must
+    The default value is 100.  The stopping rule PGA_STOP_NOCHANGE must
     have been set by :c:func:`PGASetStoppingRuleType` for this function
     call to have any effect.
 

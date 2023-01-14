@@ -3,10 +3,11 @@
       double precision evaluate
       external         evaluate
       
-      integer(8)       ctx
-      integer          rank
-      integer          i, ierror
-      double precision lower(2), upper(2)
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
+      integer           rank
+      integer           i, ierror
+      double precision  lower(2), upper(2)
 
       data (lower(i), i=1,2)     / 0.1D0, 0.0D0 /
       data (upper(i), i=1,2)     / 1.0D0, 5.0D0 /
@@ -47,10 +48,11 @@
 
       double precision function evaluate(ctx, p, pop, aux)
       include          'pgapackf.h'
-      integer(8)       ctx
-      integer          p, pop
-      double precision aux(*)
-      double precision x1, x2
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
+      integer           p, pop
+      double precision  aux(*)
+      double precision  x1, x2
 
       x1 = PGAGetRealAllele (ctx, p, pop, 1)
       x2 = PGAGetRealAllele (ctx, p, pop, 2)

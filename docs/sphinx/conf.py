@@ -38,7 +38,8 @@ author = 'David M. Levine, Philip L. Hallstrom, David M. Noelle, Brian P. Walenz
 # ones.
 extensions = [
     'breathe',
-    'exhale'
+    'exhale',
+    #'sphinxfortran.fortran_domain'
 ]
 
 breathe_projects = {

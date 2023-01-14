@@ -133,7 +133,8 @@ int PGAMutate (PGAContext *ctx, int p, int pop)
     PGA_MUTATION_PERMUTE (Integer), PGA_MUTATION_DE (Real), and
     PGA_MUTATION_POLY (Real/Integer). The default for integer-valued strings
     conforms to how the strings were initialized.  The default for real-valued
-    strings is PGA_MUTATION_GAUSSIAN.  See the user guide for more details.
+    strings is PGA_MUTATION_GAUSSIAN.
+    See section :ref:`sec:mutation` of the user guide for more details.
 
     Example
     -------
@@ -242,7 +243,9 @@ int PGAGetMutationType (PGAContext *ctx)
     -----------
 
     The use of this value depends on the type of mutation being used.
-    The default value is 0.1.  See the user guide for more details.
+    The default value is 0.1 unless the mutation type is
+    ``PGA_MUTATION_CONSTANT`` in which case the default is 0.01.  See
+    section :ref:`sec:mutation` of the user guide for more details.
 
     Example
     -------
@@ -322,7 +325,8 @@ double PGAGetMutationRealValue (PGAContext *ctx)
     -----------
 
     The use of this value depends on the type of mutation being used.
-    The default value is 1.  See the user guide for more details.
+    The default value is 1.  See section :ref:`sec:mutation` of the user
+    guide for more details.
 
     Example
     -------
@@ -873,6 +877,12 @@ int PGAGetDEVariant (PGAContext *ctx)
 
     \rst
 
+    Description
+    -----------
+
+    The default for the scale factor F is 0.9. For details see section
+    :ref:`sec:mutation` in the user guide.
+
     Example
     -------
 
@@ -936,6 +946,13 @@ double PGAGetDEScaleFactor (PGAContext *ctx)
     \return None
 
     \rst
+
+    Description
+    -----------
+
+    The default for the aux factor K of Differential Evolution is
+    :math:`0.5 * (F + 1)` where :math:`F` is the Differential Evolution
+    scale factor, see :c:func:`PGASetDEScaleFactor`.
 
     Example
     -------
@@ -1002,6 +1019,12 @@ double PGAGetDEAuxFactor (PGAContext *ctx)
 
     \rst
 
+    Description
+    -----------
+
+    The default for the Differential Evolution crossover probability is
+    0.9.
+
     Example
     -------
 
@@ -1066,6 +1089,14 @@ double PGAGetDECrossoverProb (PGAContext *ctx)
 
     \rst
 
+    Description
+    -----------
+
+    By default jitter is turned off (the value is 0 by default).
+    Very small amounts (on the order of 0.001) have been
+    recommended for some problems like digital filter design.
+    See section :ref:`sec:mutation` of the user guide for details.
+
     Example
     -------
 
@@ -1074,7 +1105,7 @@ double PGAGetDECrossoverProb (PGAContext *ctx)
        PGAContext *ctx;
 
        ...
-       PGASetDEJitter (ctx, 0.75);
+       PGASetDEJitter (ctx, 0.001);
 
     \endrst
 
@@ -1130,6 +1161,14 @@ double PGAGetDEJitter (PGAContext *ctx)
     \return None
 
     \rst
+
+    Description
+    -----------
+
+    The default for this probability is 0.5, it is only used
+    when the either-or variant of Differential Evolution has
+    been selected by calling :c:func:`PGASetDEVariant` with
+    parameter ``PGA_DE_VARIANT_EITHER_OR``.
 
     Example
     -------
@@ -1195,6 +1234,13 @@ double PGAGetDEProbabilityEO (PGAContext *ctx)
     \return None
 
     \rst
+
+    Description
+    -----------
+
+    Some variants of Differential Evolution can specify the number
+    of differences that go into the new value of an allele. By
+    default this number is 1.
 
     Example
     -------
@@ -1328,6 +1374,14 @@ int PGAGetDECrossoverType (PGAContext *ctx)
 
     \rst
 
+    Description
+    -----------
+
+    By default dither is turned off (the value is 0 by default).
+    Quite large amounts (on the order of 0.5) are recommended
+    for some problems like digital filter design.
+    See section :ref:`sec:mutation` of the user guide for details.
+
     Example
     -------
 
@@ -1336,7 +1390,7 @@ int PGAGetDECrossoverType (PGAContext *ctx)
        PGAContext *ctx;
 
        ...
-       PGASetDEDither (ctx, 0.25);
+       PGASetDEDither (ctx, 0.5);
 
     \endrst
 
@@ -1345,7 +1399,7 @@ void PGASetDEDither (PGAContext *ctx, double val)
 {
     if (val < 0.0 || val > 1.0) {
         PGAError
-            ( ctx, "PGASetDEProbabilityEO: Invalid value of Dither:"
+            ( ctx, "PGASetDEDither: Invalid value of Dither:"
             , PGA_FATAL, PGA_DOUBLE, (void *) &val
             );
     } else {

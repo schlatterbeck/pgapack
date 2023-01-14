@@ -137,6 +137,11 @@ void PGARestart (PGAContext *ctx, int source_pop, int dest_pop)
 
     \rst
 
+    Description
+    -----------
+
+    By default no restart is performed.
+
     Example
     -------
 
@@ -214,6 +219,13 @@ int PGAGetRestartFlag (PGAContext *ctx)
 
     \rst
 
+    Description
+    -----------
+
+    By default no restarts are performed, see
+    :c:func:`PGASetRestartFlag`. If restarts are performed, the default
+    is after 50 iterations of no change.
+
     Example
     -------
 
@@ -289,6 +301,12 @@ int PGAGetRestartFrequencyValue (PGAContext *ctx)
 
     \rst
 
+    Description
+    -----------
+
+    By default the change probability for allele mutations during
+    restart is 0.5.
+
     Example
     -------
 
@@ -297,7 +315,7 @@ int PGAGetRestartFrequencyValue (PGAContext *ctx)
         PGAContext *ctx;
 
         ...
-        PGASetRestartAlleleChangeProb (ctx, 0.5);
+        PGASetRestartAlleleChangeProb (ctx, 0.7);
 
     \endrst
 

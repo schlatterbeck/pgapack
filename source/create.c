@@ -565,8 +565,7 @@ void PGACreatePop (PGAContext *ctx, int pop)
     switch (pop) {
     case PGA_OLDPOP:
         ctx->ga.oldpop = (PGAIndividual *)malloc
-            (sizeof(PGAIndividual) *
-                                                   (ctx->ga.PopSize + 2));
+            (sizeof(PGAIndividual) * (ctx->ga.PopSize + 2));
         if (ctx->ga.oldpop == NULL) {
             PGAError
                 ( ctx, "PGACreatePop: No room to allocate ctx->ga.oldpop"
@@ -861,7 +860,7 @@ void PGASetUp (PGAContext *ctx)
     }
 
     if (ctx->ga.NumReplace == PGA_UNINITIALIZED_INT) {
-        ctx->ga.NumReplace = (int) ceil(ctx->ga.PopSize * 0.1);
+        ctx->ga.NumReplace = (int) ceil (ctx->ga.PopSize * 0.1);
     }
 
     if (ctx->ga.NumReplace > ctx->ga.PopSize) {

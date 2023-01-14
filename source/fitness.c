@@ -589,7 +589,7 @@ void PGASetFitnessMinType (PGAContext *ctx, int fitness_type)
 
     The default value is 1.2.  The value must be from the interval
     [1.0, 2.0]. The fitness type must have been set to PGA_FITNESS_RANKING
-    with PGASetFitnessType for this function call to have any effect.
+    with :c:func:`PGASetFitnessType` for this function call to have any effect.
 
     Example
     -------

@@ -403,7 +403,10 @@ int PGAGetSortedPopIndex (PGAContext *ctx, int n)
     Description
     -----------
 
-    The default population size is 100.
+    The default population size is 100, unless reference directions or
+    reference points have been specified for NSGA-III replacement in
+    which case the default is the number of reference points plus the
+    number of reference directions.
 
     Example
     -------

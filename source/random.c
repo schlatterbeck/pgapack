@@ -395,7 +395,7 @@ int PGAGetRandomSeed (PGAContext *ctx)
     -----------
 
     The default is to initialize the seed randomly (from the time).
-    Specifying a seed exlicitly allows for reproducibility of runs.
+    Specifying a seed explicitly allows for reproducibility of runs.
 
     Example
     -------
