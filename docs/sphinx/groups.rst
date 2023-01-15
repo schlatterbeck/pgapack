@@ -1,4 +1,4 @@
-.. _sec:function-groups:
+.. _sec:function-group-standard:
 
 Function Groups Standard API
 ----------------------------
@@ -56,6 +56,8 @@ Deprecated
 .. doxygengroup:: deprecated
    :project: PGAPack
    :sort:
+
+.. _sec:function-group-explicit:
 
 Function Groups Explicit Usage
 ------------------------------
@@ -123,15 +125,17 @@ Utilities
    :project: PGAPack
    :sort:
 
+.. _sec:function-group-internal:
+
 Function Groups Internal Implementation
 ---------------------------------------
 
-.. _group:fun_bit:
+.. _group:fun-bit:
 
 Bit Manipulation
 ++++++++++++++++
 
-.. doxygengroup:: fun_bit
+.. doxygengroup:: fun-bit
 
 .. _group:internal:
 

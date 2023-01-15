@@ -148,8 +148,11 @@ also define the default values.
 C Bindings
 ~~~~~~~~~~
 
-See :ref:`sec:function-groups` for all functions used grouped into
-categories.
+See :ref:`sec:function-group-standard` for functions of the top-level
+API using :c:func:`PGARun`, for :ref:`chp:explicit` you want to consult
+the :ref:`sec:function-group-explicit` and if looking at the internal
+implementation the function calls are documented in
+:ref:`sec:function-group-internal`.
 
 .. _app:bindings-fortran:
 
