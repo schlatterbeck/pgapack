@@ -3,6 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. |_| unicode:: U+00A0 .. Non-breaking space
+   :trim:
+
 Users Guide to the PGAPack Parallel Genetic Algorithm Library
 =============================================================
 

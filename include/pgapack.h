@@ -1465,7 +1465,7 @@ static inline void PGASetRealInitPercent
     This calls the data-type specific user function for computing the
     genetic distance. For user-defined data types you need to register a
     genetic distance user function with :c:func:`PGASetUserFunction`
-    with the constant PGA_USERFUNCTION_GEN_DISTANCE.
+    with the constant :c:macro:`PGA_USERFUNCTION_GEN_DISTANCE`.
 
     \endrst
 

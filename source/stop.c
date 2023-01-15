@@ -48,21 +48,19 @@ privately owned rights.
 #include "pgapack.h"
 
 /*!****************************************************************************
-    \brief Return PGA_TRUE if the stopping conditions have been met,
-           otherwise return PGA_FALSE.
+    \brief Return true if the stopping conditions have been met.
     \ingroup explicit
-
     \param   ctx   context variable
     \param   comm  an MPI communicator
-    \return  return PGA_TRUE if at least one of the termination
-             conditions has been met, otherwise return PGA_FALSE
+    \return  return true if at least one of the termination
+             conditions has been met
 
     \rst
 
     Description
     -----------
 
-    Calls exactly one of the user defined C or fortran or system
+    Calls exactly one of the user defined C or Fortran or system
     :c:func:`PGACheckStoppingConditions` stopping condition functions.
 
     Example
@@ -107,23 +105,28 @@ int PGADone (PGAContext *ctx, MPI_Comm comm)
 }
 
 /*!****************************************************************************
-    \brief Return boolean to indicate if the PGAPack termination
-           conditions, PGA_STOP_MAXITER, PGA_STOP_TOOSIMILAR,
-           PGA_STOP_NOCHANGE, have been met.
+    \brief Return boolean to indicate if the configured PGAPack
+           termination conditions have been met.
     \ingroup standard-api
-
     \param   ctx   context variable
-    \return  return PGA_TRUE if at least one of the termination
-             conditions has been met, otherwise returns PGA_FALSE
+    \return  return true if at least one of the termination
+             conditions has been met
 
     \rst
+
+    Description
+    -----------
+
+    The default termination conditions are given in
+    :ref:`group:const-stop` and more details are found in section
+    :ref:`sec:stopping-criteria` of the user guide.
 
     Example
     -------
 
     Useful in a user-defined function that is registered as a stopping
     condition function. We can use this to keep the builtin stopping
-    conditions in addition to a user-define condition.
+    conditions in addition to a user-defined condition.
 
     .. code-block:: c
 
@@ -187,13 +190,15 @@ int PGACheckStoppingConditions (PGAContext *ctx)
     Description
     -----------
 
-    If called more than
-    once the different stopping criterion are ORed together.  Valid choices
-    are PGA_STOP_MAXITER, PGA_STOP_TOOSIMILAR, or PGA_STOP_NOCHANGE to
+    If called more than once the different stopping criterion are ORed
+    together.  Valid choices are :c:macro:`PGA_STOP_MAXITER`,
+    :c:macro:`PGA_STOP_TOOSIMILAR`, or :c:macro:`PGA_STOP_NOCHANGE` to
     specify iteration limit reached, population too similar, or no change in
     the best solution found in a given number of iterations, respectively.
     The default is to stop when a maximum iteration limit is reached (by
-    default, 1000 iterations).
+    default, 1000 iterations). The constants can be found in
+    :ref:`group:const-stop` and more details are in section
+    :ref:`sec:stopping-criteria` of the user guide.
 
     Example
     -------
@@ -233,7 +238,6 @@ void PGASetStoppingRuleType (PGAContext *ctx, int stoprule)
 /*!***************************************************************************
     \brief Return a symbolic constant that defines the termination criteria.
     \ingroup query
-
     \param   ctx  context variable
     \return  Return an integer which is an ORed mask of the symbolic constants
              used to specify the stopping rule(s).
@@ -274,8 +278,7 @@ int PGAGetStoppingRuleType (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    \brief Specify the maximum number of iterations for the stopping
-           rule PGA_STOP_MAXITER.
+    \brief Specify the maximum number of iterations.
     \ingroup init
 
     \param   ctx     context variable
@@ -287,8 +290,8 @@ int PGAGetStoppingRuleType (PGAContext *ctx)
     Description
     -----------
 
-    The rule PGA_STOP_MAXITER is the default stopping
-    rule and is always in effect.
+    The stopping rule :c:macro:`PGA_STOP_MAXITER` is the default
+    stopping rule and is always in effect.
     The default value is 1000 iterations.
 
     Example
@@ -325,7 +328,6 @@ void PGASetMaxGAIterValue (PGAContext *ctx, int maxiter)
 /*!***************************************************************************
     \brief Return the maximum number of iterations to run.
     \ingroup query
-
     \param   ctx  context variable
     \return  The maximum number of iterations to run
 
@@ -359,7 +361,6 @@ int PGAGetMaxGAIterValue (PGAContext *ctx)
     \brief Specify maximum number of iterations of no change in the
            evaluation function value of the best string before stopping.
     \ingroup init
-
     \param   ctx           context variable
     \param   max_no_change the maximum number of GA iterations allowed
                            with no change in the best evaluation
@@ -371,8 +372,9 @@ int PGAGetMaxGAIterValue (PGAContext *ctx)
     Description
     -----------
 
-    The default value is 100.  The stopping rule PGA_STOP_NOCHANGE must
-    have been set by :c:func:`PGASetStoppingRuleType` for this function
+    The default value is 100.  The stopping rule
+    :c:macro:`PGA_STOP_NOCHANGE` must have been set by
+    :c:func:`PGASetStoppingRuleType` for this function
     call to have any effect.
 
     Example
@@ -409,7 +411,6 @@ void PGASetMaxNoChangeValue (PGAContext *ctx, int max_no_change)
     \brief Specify the maximum percent of homogeneity of the population
            before stopping.
     \ingroup init
-
     \param   ctx             context variable
     \param   max_similarity  the maximum percent of the population that can
                              share the same evaluation function value
@@ -420,10 +421,12 @@ void PGASetMaxNoChangeValue (PGAContext *ctx, int max_no_change)
     Description
     -----------
 
-    The similarity measure is the same evaluation function value.  The
-    default value is 95 percent.  The stopping rule PGA_STOP_TOOSIMILAR
-    must have been set by :c:func:`PGASetStoppingRuleType` for this
-    function call to have any effect.
+    The similarity measure is the same evaluation function value. The
+    default value is that 95 percent of the population have the same
+    evaluation function value. The stopping rule
+    :c:macro:`PGA_STOP_TOOSIMILAR` must have been set by
+    :c:func:`PGASetStoppingRuleType` for this function call to have any
+    effect.
 
     Example
     -------
@@ -459,7 +462,6 @@ void PGASetMaxSimilarityValue (PGAContext *ctx, int max_similarity)
     \brief Get the maximum percent of homogeneity of the population
            before stopping.
     \ingroup query
-
     \param   ctx             context variable
     \return  the maximum percent of the population that can share the
              same evaluation function value

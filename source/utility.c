@@ -54,7 +54,6 @@ privately owned rights.
 /*!****************************************************************************
     \brief Shuffle a list.
     \ingroup utility
-
     \param  ctx   Context pointer
     \param  list  array of integers to shuffle
     \param  n     number of elements in array
@@ -98,7 +97,6 @@ void PGAShuffle (PGAContext *ctx, int *list, int n)
 /*!****************************************************************************
     \brief Calculates the mean value of an array of elements
     \ingroup utility
-
     \param  ctx   context variable
     \param  a     array to take the mean of
     \param  n     number of elements in array a
@@ -141,7 +139,6 @@ double PGAMean (PGAContext *ctx, double *a, int n)
 /*!****************************************************************************
     \brief Calculate the standard deviation of an array of elements
     \ingroup utility
-
     \param  ctx   context variable
     \param  a     array to take the standard deviation of
     \param  n     number of elements in array a
@@ -186,7 +183,6 @@ double PGAStddev (PGAContext *ctx, double *a, int n, double mean)
     \brief Mathematically round a double to an integer, using 0.5 as the
            cutoff value.
     \ingroup utility
-
     \param   ctx  context variable
     \param   x    the number to be rounded
     \return The rounded number
@@ -228,7 +224,6 @@ int PGARound (PGAContext *ctx, double x)
 /*!****************************************************************************
     \brief Copy individual source to individual dest.
     \ingroup explicit
-
     \param  src  Individual to copy
     \param  dst  Individual to copy ind1 to
     \return Individual dest is a copy of Individual source
@@ -285,7 +280,6 @@ void INDCopyIndividual (PGAIndividual *src, PGAIndividual *dst)
 /*!****************************************************************************
     \brief Copy string p1 in population pop1 to position p2 in population pop2.
     \ingroup explicit
-
     \param  ctx   context variable
     \param  p1    string to copy
     \param  pop1  symbolic constant of population containing string p1
@@ -326,7 +320,6 @@ void PGACopyIndividual (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 /*!****************************************************************************
     \brief Map a string to a number to be used as verification check.
     \ingroup utility
-
     \param  ctx     context variable
     \param  p       string index
     \param  pop     symbolic constant for the population
@@ -337,9 +330,9 @@ void PGACopyIndividual (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     Description
     -----------
 
-    The data type PGA_DATATYPE_USER is not supported.
-    See also the USER function PGAHash and the hash implementations for
-    individual data types.
+    The data type :c:macro:`PGA_DATATYPE_USER` is not supported.
+    See also the USER function PGAHash :c:macro:`PGA_USERFUNCTION_HASH`
+    and the hash implementations for individual data types.
 
     Example
     -------
@@ -410,7 +403,6 @@ int PGACheckSum (PGAContext *ctx, int p, int pop)
     \brief Return the index of the string with the worst evaluation
            function value in population pop.
     \ingroup standard-api
-
     \param  ctx  context variable
     \param  pop  symbolic constant of the population to find the worst string in
     \return Index of the string with the worst evaluation function value
@@ -461,7 +453,6 @@ int PGAGetWorstIndex (PGAContext *ctx, int pop)
     \brief Return the index of the string with the best evaluation
            function value in population pop
     \ingroup standard-api
-
     \param  ctx    context variable
     \param  popidx symbolic constant of the population to find the best
             string in
@@ -540,7 +531,6 @@ int PGAGetBestIndex (PGAContext *ctx, int popidx)
     \brief Return the best evaluation value in population pop
            for the given evaluation index.
     \ingroup standard-api
-
     \param  ctx  context variable
     \param  pop  symbolic constant of the population to find the best
                  eval, only PGA_OLDPOP is allowed
@@ -554,11 +544,11 @@ int PGAGetBestIndex (PGAContext *ctx, int popidx)
     Description
     -----------
 
-    The evaluation function index must be 0 < idx <= NumAuxEval. So for
-    single evaluation only the index 0 is allowed and the return is the
-    evaluation as from :c:func:`PGAGetBestIndex`. Note that this
-    accesses the pre-computed statistics and therefore only PGA_OLDPOP
-    is allowed for the population constant.
+    The evaluation function index must be 0 < ``idx`` <= ``NumAuxEval``.
+    So for single evaluation only the index 0 is allowed and the return
+    is the evaluation as from :c:func:`PGAGetBestIndex`. Note that this
+    accesses the pre-computed statistics and therefore only
+    :c:macro:`PGA_OLDPOP` is allowed for the population constant.
 
     Example
     -------
@@ -594,10 +584,9 @@ double PGAGetBestReport (PGAContext *ctx, int pop, int idx)
     \brief Return the index of the string with the best evaluation
            function value in population pop for the given evaluation index.
     \ingroup standard-api
-
     \param  ctx  context variable
     \param  pop  symbolic constant of the population to find the best
-                 string in only PGA_OLDPOP is allowed
+                 string in
     \param  idx  Index of the evaluation function, 0 for the one return
                  by your evaluation function 1 .. NumAuxEval for the
                  auxiliary evaluations
@@ -608,11 +597,11 @@ double PGAGetBestReport (PGAContext *ctx, int pop, int idx)
     Description
     -----------
 
-    The evaluation function index must be 0 < idx <= NumAuxEval. So for
-    single evaluation only the index 0 is allowed and the return is the
-    same as from PGAGetBestIndex. Note that this accesses the pre-computed
-    statistics and therefore only PGA_OLDPOP is allowed for the population
-    constant.
+    The evaluation function index must be 0 < ``idx`` <= ``NumAuxEval``.
+    So for single evaluation only the index 0 is allowed and the return
+    is the same as from :c:func:`PGAGetBestIndex`. Note that this
+    accesses the pre-computed statistics and therefore only
+    :c:macro:`PGA_OLDPOP` is allowed for the population constant.
 
     Example
     -------
@@ -649,7 +638,6 @@ int PGAGetBestReportIndex (PGAContext *ctx, int pop, int idx)
     \brief Return individual defined by population symbolic constant and
            population index.
     \ingroup allele
-
     \param  ctx  context variable
     \param  p    string index
     \param  pop  symbolic constant of the population the string is in
@@ -728,7 +716,6 @@ PGAIndividual *PGAGetIndividual (PGAContext *ctx, int p, int pop)
 /*!****************************************************************************
     \brief Updates the best fitness statistic for reporting.
     \ingroup internal
-
     \param  ctx   context variable
     \param  popix symbolic constant of the population
     \return None
@@ -740,7 +727,7 @@ PGAIndividual *PGAGetIndividual (PGAContext *ctx, int p, int pop)
 
     Note that in the presence of constraints if no individual without
     constraints is found, the best value (for all functions except
-    constraint functions) is NAN.
+    constraint functions) is ``NAN``.
 
     \endrst
 
@@ -834,7 +821,6 @@ void PGAUpdateBest (PGAContext *ctx, int popix)
 /*!****************************************************************************
     \brief Update the average fitness statistic for reporting.
     \ingroup internal
-
     \param  ctx  context variable
     \param  pop  symbolic constant of the population
     \return None
@@ -900,7 +886,6 @@ void PGAUpdateAverage (PGAContext *ctx, int pop)
 /*!****************************************************************************
     \brief Update the online value based on the results in the new generation.
     \ingroup internal
-
     \param  ctx  context variable
     \param  pop  symbolic constant of the population whose statistics to use
     \return Updates an internal field in the context variable
@@ -985,7 +970,6 @@ void PGAUpdateOnline (PGAContext *ctx, int pop)
 /*!****************************************************************************
     \brief Update the offline value based on the results in the new generation.
     \ingroup internal
-
     \param  ctx  context variable
     \param  pop  symbolic constant of the population whose statistics to use
     \return Updates an internal field in the context variable
@@ -1050,7 +1034,6 @@ void PGAUpdateOffline (PGAContext *ctx, int pop)
     \brief Compute the percentage of the population that have the same
            evaluation function.
     \ingroup internal
-
     \param  ctx      context variable
     \param  popindex symbolic constant of the population whose statistics to use
     \return returns a count of the number of  population members that
@@ -1117,7 +1100,6 @@ int PGAComputeSimilarity (PGAContext *ctx, int popindex)
 /*!****************************************************************************
     \brief Compare two individuals by evaluation.
     \ingroup utility
-
     \param  ind1   Pointer to first individual
     \param  ind2   Pointer to second individual
     \return
@@ -1221,7 +1203,6 @@ int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2)
 /*!****************************************************************************
     \brief Compare two strings for selection.
     \ingroup utility
-
     \param  ctx    context variable
     \param  p1     first string to compare
     \param  pop1   symbolic constant of population of first string
@@ -1257,13 +1238,14 @@ int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2)
     only the rank (as computed by the NSGA-II algorithm). Note that many
     individuals may have the same rank.
 
-    Note that PGAEvalCompare is now used in several contexts, including
-    finding the best evaluation. For very badly scaled problems, the
-    default fitness computation will degenerate if there are very large
-    evaluation values and very small ones. In that case the fitness will
-    not reflect the evaluation. Therefore PGAEvalCompare will now always
-    sort on evaluation values ignoring the fitness. This improves
-    Tournament selection for very badly scaled problems.
+    Note that :c:func:`PGAEvalCompare` is now used in several contexts,
+    including finding the best evaluation. For very badly scaled
+    problems, the default fitness computation will degenerate if there
+    are very large evaluation values and very small ones. In that case
+    the fitness will not reflect the evaluation. Therefore
+    :c:func:`PGAEvalCompare` will now always sort on evaluation values
+    ignoring the fitness. This improves Tournament selection for very
+    badly scaled problems.
 
     Example
     -------
@@ -1298,7 +1280,7 @@ int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     Description
     -----------
 
-    Used as the comparison function in qsort.
+    Used as the comparison function in ``qsort``.
 
     \endrst
 
@@ -1316,7 +1298,6 @@ int PGAEvalSortHelper (const void *a1, const void *a2)
 /*!****************************************************************************
     \brief Sort list of population indeces by evaluation.
     \ingroup utility
-
     \param  ctx    context variable
     \param  pop    symbolic constant of population to sort
     \param  idx    Array of integer indeces into population pop
@@ -1327,8 +1308,8 @@ int PGAEvalSortHelper (const void *a1, const void *a2)
     Description
     -----------
 
-    Note that the given list of indeces need not be initialized. It just
-    has to have the correct size of course.
+    Note that the given list ``idx`` of indeces need not be initialized.
+    It just has to have the correct size of course.
     Think of this as sorting individuals by "better" evaluation or
     increasing constraint violations. The best individals are sorted
     first.
@@ -1394,10 +1375,13 @@ do {                                     \
     Description
     -----------
 
-    This is Bob Jenkins' hash function as implemented in the uthash project
-    https://github.com/troydhanson/uthash/blob/master/src/uthash.h
+    This is Bob Jenkins' hash function as implemented in the
+    `uthash project`_.
     The last parameter is the previous hash (if hashing different
-    pieces), use PGA_INITIAL_HASH for the first hash.
+    pieces), use :c:macro:`PGA_INITIAL_HASH` for the first hash.
+
+    .. _`uthash project`:
+        https://github.com/troydhanson/uthash/blob/master/src/uthash.h
 
     \endrst
 
@@ -1447,7 +1431,6 @@ PGAHash PGAUtilHash (const void *data, size_t len, PGAHash hashv)
 /*!****************************************************************************
     \brief Compute Hash for individual in given population
     \ingroup internal
-
     \param   ctx   context variable
     \param   p     string index
     \param   pop   symbolic constant of the population containing string p
@@ -1491,10 +1474,10 @@ size_t PGAIndividualHashIndex (PGAContext *ctx, int p, int pop)
     Description
     -----------
 
-    This function has effort :math:`O(n^2)` in the population size n.
-    It is very useful for detecting premature convergence and is used
-    when genetic distance reporting has been turned on with
-    PGA_REPORT_GENE_DISTANCE.
+    This function has effort :math:`O(n^2)` in the population size
+    :math:`n`. It is very useful for detecting premature convergence and
+    is used when genetic distance reporting has been turned on with
+    :c:macro:`PGA_REPORT_GENE_DISTANCE`.
 
     Example
     -------

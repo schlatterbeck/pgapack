@@ -51,7 +51,6 @@ privately owned rights.
 /*!****************************************************************************
     \brief Reseed a population from the best string
     \ingroup explicit
-
     \param   ctx          context variable
     \param   source_pop   symbolic constant of the source population
     \param   dest_pop     symbolic constant of the destination population
@@ -130,7 +129,6 @@ void PGARestart (PGAContext *ctx, int source_pop, int dest_pop)
 /*!****************************************************************************
     \brief Specify whether the algorithm should employ the restart operator.
     \ingroup init
-
     \param   ctx  context variable
     \param   val  boolean variable
     \return  None
@@ -178,9 +176,8 @@ void PGASetRestartFlag (PGAContext *ctx, int val)
 /*!****************************************************************************
     \brief Return whether the algorithm should employ the restart operator.
     \ingroup query
-
     \param   ctx  context variable
-    \return  PGA_TRUE if restarting is enabled, otherwise PGA_FALSE
+    \return  true if restarting is enabled
 
     \rst
 
@@ -212,7 +209,6 @@ int PGAGetRestartFlag (PGAContext *ctx)
     \brief Specify the number of iterations of no change in the best
            string after which the algorithm should restart.
     \ingroup init
-
     \param    ctx      context variable
     \param    numiter  number of changeless iterations
     \return  None
@@ -260,7 +256,6 @@ void PGASetRestartFrequencyValue (PGAContext *ctx, int numiter)
     \brief Return the number of iterations of no change in the best
            string after which the algorithm should restart.
     \ingroup query
-
     \param    ctx      context variable
     \return  The number of iteration of no change required for a restart
 
@@ -294,7 +289,6 @@ int PGAGetRestartFrequencyValue (PGAContext *ctx)
     \brief Specify the probability with which an allele will be mutated
            during a restart.
     \ingroup init
-
     \param   ctx   context variable
     \param   prob  probability of mutation
     \return  None
@@ -340,7 +334,6 @@ void PGASetRestartAlleleChangeProb (PGAContext *ctx, double prob)
     \brief Return the probability with which an allele will be mutated
            during a restart.
     \ingroup query
-
     \param   ctx  context variable
     \return  The probability of mutating an allele during a restart
 

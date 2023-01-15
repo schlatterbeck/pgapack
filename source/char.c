@@ -48,9 +48,9 @@ privately owned rights.
 #include <pgapack.h>
 
 /*!****************************************************************************
-    \brief Sets the value of an allele in a PGA_DATATYPE_CHARACTER string.
+    \brief Sets the value of an allele in a string of the character data
+           type.
     \ingroup allele
-
     \param   ctx  context variable
     \param   p    string index
     \param   pop  symbolic constant of the population the string is in
@@ -63,7 +63,8 @@ privately owned rights.
     Example
     -------
 
-    Copies the alleles from member p in PGA_OLDPOP to member q in PGA_NEWPOP.
+    Copies the alleles from member ``p`` in :c:macro:`PGA_OLDPOP` to
+    member ``q`` in :c:macro:`PGA_NEWPOP`.
     Assumes the strings are of the same length.
 
     .. code-block:: c
@@ -86,20 +87,19 @@ void PGASetCharacterAllele (PGAContext *ctx, int p, int pop, int i, char val)
 {
     PGAIndividual *ind;
 
-    PGADebugEntered("PGASetCharacterAllele");
-    PGACheckDataType("PGASetCharacterAllele", PGA_DATATYPE_CHARACTER);
+    PGADebugEntered  ("PGASetCharacterAllele");
+    PGACheckDataType ("PGASetCharacterAllele", PGA_DATATYPE_CHARACTER);
 
-    ind = PGAGetIndividual ( ctx, p, pop );
+    ind = PGAGetIndividual (ctx, p, pop);
     ((PGACharacter *)ind->chrom)[i] = val;
 
-    PGADebugExited("PGASetCharacterAllele");
+    PGADebugExited ("PGASetCharacterAllele");
 }
 
 /*!****************************************************************************
-    \brief Return the value of character allele in a
-           PGA_DATATYPE_CHARACTER string.
+    \brief Return the value of character allele in a string of the
+           character data type.
     \ingroup allele
-
     \param   ctx  context variable
     \param   p    string index
     \param   pop  symbolic constant of the population the string is in
@@ -111,7 +111,8 @@ void PGASetCharacterAllele (PGAContext *ctx, int p, int pop, int i, char val)
     Example
     -------
 
-    Copies the alleles from member p in PGA_OLDPOP to member q in PGA_NEWPOP.
+    Copies the alleles from member ``p`` in :c:macro:`PGA_OLDPOP` to
+    member ``q`` in :c:macro:`PGA_NEWPOP`.
     Assumes the strings are of the same length.
 
     .. code-block:: c
@@ -160,8 +161,11 @@ char PGAGetCharacterAllele (PGAContext *ctx, int p, int pop, int i)
     Description
     -----------
 
-    Legal flags are PGA_CINIT_UPPER, PGA_CINIT_LOWER, and
-    PGA_CINIT_MIXED.  Default is PGA_CINIT_LOWER.
+    Legal flags are :c:macro:`PGA_CINIT_UPPER`,
+    :c:macro:`PGA_CINIT_LOWER`, and
+    :c:macro:`PGA_CINIT_MIXED`.  Default is :c:macro:`PGA_CINIT_LOWER`.
+    See :ref:`group:const-randinit` for the constants and section
+    :ref:`sec:initialization` of the user guide for details.
 
     Example
     -------
@@ -202,9 +206,8 @@ void PGASetCharacterInitType (PGAContext *ctx, int value)
 }
 
 /*!****************************************************************************
-    \brief Allocate memory for a string of type PGACharacter
+    \brief Allocate memory for a string of type character.
     \ingroup internal
-
     \param   ctx       context variable
     \param   p         string index
     \param   pop       symbolic constant of the population string p is in
@@ -225,7 +228,7 @@ void PGASetCharacterInitType (PGAContext *ctx, int value)
     -------
 
     Allocates memory and assigns the address of the allocated memory to
-    the string field (ind->chrom) of the individual.  Additionally, the
+    the string field ``ind->chrom`` of the individual.  Additionally, the
     string is initialized to zero.
 
     .. code-block:: c
@@ -287,7 +290,7 @@ void PGACharacterCreateString (PGAContext *ctx, int p, int pop, int initflag)
     Description
     -----------
 
-    This routine is called from PGAMutation.
+    This routine is called from :c:func:`PGAMutate`.
 
     Note that this function is set in :c:func:`PGASetUp` as the mutation
     user function for the char datatype by default.
@@ -371,8 +374,8 @@ int PGACharacterMutation (PGAContext *ctx, int p, int pop, double mr)
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``,
+    producing children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -440,8 +443,8 @@ void PGACharacterOneptCrossover
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -522,8 +525,8 @@ void PGACharacterTwoptCrossover
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -640,8 +643,8 @@ void PGACharacterPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
     Example
     -------
 
-    Copy character string x to y (both are implicitly assumed to be the same
-    length)
+    Copy character string ``x`` to ``y`` (both are implicitly assumed to
+    be the same length)
 
     .. code-block:: c
 
@@ -694,7 +697,7 @@ void PGACharacterCopyString
     Example
     -------
 
-    Compare string x with y to see if they are duplicates
+    Compare string ``x`` with ``y`` to see if they are duplicates
 
     .. code-block:: c
 
@@ -754,9 +757,8 @@ PGAHash PGACharacterHash (PGAContext *ctx, int p, int pop)
 }
 
 /*!****************************************************************************
-    \brief Randomly initialize a string of type PGACharacter
+    \brief Randomly initialize a string of type character.
     \ingroup internal
-
     \param   ctx  context variable
     \param   p    index of string to randomly initialize
     \param   pop  symbolic constant of the population string p is in
@@ -819,9 +821,8 @@ void PGACharacterInitString (PGAContext *ctx, int p, int pop)
 }
 
 /*!****************************************************************************
-    \brief Build an MPI_Datatype for a character string.
+    \brief Build an MPI datatype for a character string.
     \ingroup internal
-
     \param    ctx   context variable
     \param    p     index of the string to build a datatype from
     \param    pop   symbolic constant of the population string p is in
@@ -885,7 +886,7 @@ MPI_Datatype PGACharacterBuildDatatype (PGAContext *ctx, int p, int pop)
     -----------
 
     Return sum of the absolute values of the differences of each allele.
-    Internal function.  Use PGAGeneDistance.
+    Internal function.  Use :c:func:`PGAUserFunctionGeneDistance`.
 
     \endrst
 

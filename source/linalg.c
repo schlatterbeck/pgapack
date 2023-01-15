@@ -464,13 +464,13 @@ void LIN_dasdennis_allocated
     -----------
 
     It will re-alloc the exiting array pointer pointed to by
-    result (this must be a NULL pointer if no pre-existing points are
+    result (this must be a ``NULL`` pointer if no pre-existing points are
     given) and return the new number of points. Note that if there are no
-    pre-existing points, the pointer pointed to by result must be NULL
-    and nexist must be 0.
+    pre-existing points, the pointer pointed to by ``result`` must be
+    ``NULL`` and ``nexist`` must be 0.
     Optionally the points can be scaled (with 0 < scale <= 1) and shifted
     in the direction of a given point back onto the reference hyperplane.
-    This is not done if dir == NULL or scale == 1.
+    This is not done if ``dir == NULL`` or ``scale == 1``.
     A previously allocated result will be de-allocated in case of error.
     \endrst
 ******************************************************************/

@@ -51,20 +51,20 @@ privately owned rights.
 #include "pgapack.h"
 
 /*!****************************************************************************
-    \brief Flip a biased coin and return PGA_TRUE if the coin is a "winner",
-           otherwise, return PGA_FALSE.
+    \brief Flip a biased coin and return true if the coin is a "winner".
     \ingroup random
 
     \param   ctx  context variable
     \param   p    biased probability (.5 is a fair coin)
-    \return  PGA_TRUE or PGA_FALSE
+    \return  true if coin flip is a winner
 
     \rst
 
     Example
     -------
 
-    To return PGA_TRUE approximately seventy percent of the time, use
+    To return :c:macro:`PGA_TRUE` approximately seventy percent of the
+    time, use
 
     .. code-block:: c
 
@@ -100,7 +100,7 @@ int PGARandomFlip (PGAContext *ctx, double p)
     Example
     -------
 
-    Generate a value uniformly random from the interval [0,99]
+    Generate a value uniformly random from the interval :math:`[0,99]`
 
     .. code-block:: c
 
@@ -140,27 +140,22 @@ int PGARandomInterval (PGAContext *ctx, int start, int end)
     population.
 
     This is a C language implementation of the universal random number
-    generator proposed by G. Marsaglia and A. Zaman [1]_, [2]_ and
-    translated from F. James' version [3]_.
+    generator proposed by George Marsaglia, Arif Zaman, and Wai Wan Tsang
+    [MZT90]_ and translated from F. James' version [Jam90]_.
 
     This algorithm is a combination of a lagged Fibonacci and arithmetic
-    sequence (F. James) generator with period of 2^144.  It provides 32-bit
-    floating point numbers in the range from zero to one.  It is claimed to
-    be portable and provides bit-identical results on all machines with at
-    least 24-bit mantissas.
+    sequence (F. James) generator with period of :math:`2^{144}`.  It
+    provides 32-bit floating point numbers in the range from zero to
+    one.  It is claimed to be portable and provides bit-identical
+    results on all machines with at least 24-bit mantissas.
 
-    PGARandom01 should be initialized with a 32-bit integer seed such that
-    :math:`0 \le seed \le 900,000,000`.
+    :c:func:`PGARandom01` should be initialized with a 32-bit integer
+    seed such that :math:`0 \le seed \le 900,000,000`.
     Each of these 900,000,000 values gives rise to an independent
     sequence of :math:`\approx 10^{30}`.
 
     Warning on use of static storage class on thread shared memory
     machines.
-
-    .. [1] G. Marsaglia, A. Zaman, W. Tseng. Stat Prob. Letter 9 (1990) 35.
-    .. [2] G. Marsaglia, A. Zaman FSU-SCRI-87-50
-    .. [3] F. James.  A review of pseudorandom number generators.
-           Computer Physics Communication 60 (1990) 329--344
 
     Example
     -------
@@ -263,7 +258,6 @@ double PGARandom01 (PGAContext *ctx, int newseed)
 /*!****************************************************************************
     \brief Return a uniform random number on the interval [start,end]
     \ingroup random
-
     \param   ctx    context variable
     \param   start  starting (double) value of the interval
     \param   end    ending   (double) value of the interval
@@ -274,7 +268,7 @@ double PGARandom01 (PGAContext *ctx, int newseed)
     Example
     -------
 
-    Generate a uniform random number on the interval [-0.5, 1.5]
+    Generate a uniform random number on the interval :math:`[-0.5, 1.5]`
 
     .. code-block:: c
 
@@ -305,7 +299,6 @@ double PGARandomUniform (PGAContext *ctx, double start, double end)
 /*!****************************************************************************
     \brief Return an approximation to a Gaussian random number
     \ingroup random
-
     \param   ctx    context variable
     \param   mean   the mean of the Gaussian distribution
     \param   sigma  the standard deviation of the Gaussian distribution
@@ -350,7 +343,6 @@ double PGARandomGaussian (PGAContext *ctx, double mean, double sigma)
 /*!***************************************************************************
     \brief Return the integer the random number generator was seeded with.
     \ingroup query
-
     \param   ctx  context variable
     \return  The seed for the random number generator
 
@@ -384,7 +376,6 @@ int PGAGetRandomSeed (PGAContext *ctx)
 /*!****************************************************************************
     \brief Set a seed for the random number generator.
     \ingroup init
-
     \param   ctx   context variable
     \param   seed  seed  for the random number generator
     \return  None
@@ -442,7 +433,6 @@ static int sample_a2 (PGASampleState *state);
 /*!****************************************************************************
     \brief Init random sampling of k out of n without replacement.
     \ingroup random
-
     \param   ctx   context variable
     \param   state pointer to PGASampleState, needs to be allocated by caller
     \param   k     k of the k out of n
@@ -454,19 +444,15 @@ static int sample_a2 (PGASampleState *state);
     Description
     -----------
 
-    Algorithm from [1]_.
-    This is implemented as an iterator, i.e., this init method
-    that initializes n and k and a function
-    :c:func:`PGARandomNextSample`
-    that returns the next sample index. The algorithm guarantees that
-    sample indexes are returned sorted in index order.
-    Note that the CUTOFF is arbitrary and no measurements were performed
-    -- modern CPUs can probably iterate a lot when not accessing memory,
-    so this can probably be set a lot higher.
-
-    .. [1] Jeffrey Scott Vitter. An efficient algorithm for sequential
-           random sampling. ACM Transactions on Mathematical Software,
-           13(1):58-67, March 1987.
+    Algorithm from [Vit87]_.  This is implemented as an iterator, i.e.,
+    this init method that initializes ``n`` and ``k`` and a function
+    :c:func:`PGARandomNextSample` that returns the next sample index.
+    The algorithm guarantees that sample indexes are returned sorted in
+    index order.
+    Note that the internal implementation variable ``CUTOFF`` is
+    arbitrary and no measurements were performed -- modern CPUs can
+    probably iterate a lot when not accessing memory, so this can
+    probably be set a lot higher.
 
     Example
     -------

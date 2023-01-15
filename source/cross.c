@@ -66,7 +66,6 @@ privately owned rights.
     \param c2   the second child string
     \param pop2 symbolic constant of the population to contain string
                 c1 and c2
-
     \return c1 and c2 in pop2 are children of p1 and p2 in pop1.  p1 and
             p2 are not modified.
 
@@ -82,9 +81,9 @@ privately owned rights.
     Example
     -------
 
-    Perform crossover on the two parent strings mom and dad in population
-    PGA_OLDPOP, and insert the child strings, child1 and child1, in
-    population PGA_NEWPOP.
+    Perform crossover on the two parent strings ``mom`` and ``dad`` in
+    population :c:macro:`PGA_OLDPOP`, and insert the child strings,
+    ``child1`` and ``child1``, in population :c:macro:`PGA_NEWPOP`.
 
     .. code-block:: c
 
@@ -140,7 +139,6 @@ void PGACrossover ( PGAContext *ctx, int p1, int p2, int pop1,
 /*!***************************************************************************
     \brief Return the type of crossover selected.
     \ingroup query
-
     \param  ctx context variable
     \return Return the integer corresponding to the symbolic constant
             used to specify the crossover type.
@@ -193,7 +191,6 @@ int PGAGetCrossoverType (PGAContext *ctx)
 /*!***************************************************************************
     \brief Return the crossover probability.
     \ingroup query
-
     \param  ctx context variable
     \return The crossover probability
 
@@ -227,9 +224,7 @@ double PGAGetCrossoverProb (PGAContext *ctx)
 /*!***************************************************************************
     \brief Return the probability of an allele being selected from the
            first child string in uniform crossover.
-
     \ingroup query
-
     \param  ctx context variable
     \return The uniform crossover probability
 
@@ -272,12 +267,15 @@ double PGAGetUniformCrossoverProb (PGAContext *ctx)
     Description
     -----------
 
-    Valid   choices   are   PGA_CROSSOVER_ONEPT,   PGA_CROSSOVER_TWOPT,
-    or PGA_CROSSOVER_UNIFORM, PGA_CROSSOVER_SBX, and PGA_CROSSOVER_EDGE
+    Valid choices are :c:macro:`PGA_CROSSOVER_ONEPT`,
+    :c:macro:`PGA_CROSSOVER_TWOPT`, or :c:macro:`PGA_CROSSOVER_UNIFORM`,
+    :c:macro:`PGA_CROSSOVER_SBX`, and :c:macro:`PGA_CROSSOVER_EDGE`
     for one-point, two-point, uniform, simulated binary (SBX), and edge
-    crossover, respectively.  The default is PGA_CROSSOVER_TWOPT.
+    crossover, respectively.  The default is :c:macro:`PGA_CROSSOVER_TWOPT`.
     Edge crossover is only defined for integer genes and SBX is only
-    defined for integer and real genes.
+    defined for integer and real genes. See :ref:`group:const-crossover`
+    for the constants and section :ref:`sec:crossover` in the user guide
+    for details.
 
     Example
     -------
@@ -375,9 +373,9 @@ void PGASetCrossoverProb (PGAContext *ctx, double p)
     Description
     -----------
 
-    The default is 0.6.
-    The crossover type must have been set to PGA_CROSSOVER_UNIFORM with
-    :c:func:`PGASetCrossoverType` for this function call to have any effect.
+    The default is 0.6. The crossover type must have been set to
+    :c:macro:`PGA_CROSSOVER_UNIFORM` with :c:func:`PGASetCrossoverType`
+    for this function call to have any effect.
 
     Example
     -------
@@ -409,14 +407,14 @@ void PGASetUniformCrossoverProb (PGAContext *ctx, double p)
 }
 
 /*!****************************************************************************
-    \brief If this flag is set to PGA_TRUE, then for Integer and Real
+    \brief If this flag is set to true, then for Integer and Real
            strings with simulated binary crossover (SBX) crossed over
            values that exceed the bounds are confined to the bounds by
            setting them to the boundary.
     \ingroup init
 
     \param  ctx   context variable
-    \param  flag  either PGA_TRUE or PGA_FALSE
+    \param  flag  to indicate if strings should be constrained to boundary
     \return  None
 
     \rst
@@ -452,14 +450,20 @@ void PGASetCrossoverBoundedFlag (PGAContext *ctx, int flag)
 }
 
 /*!****************************************************************************
-    \brief Return PGA_TRUE or PGA_FALSE to indicate whether crossed
+    \brief Return boolean value to indicate whether crossed
            over strings remain in the range specified.
     \ingroup query
 
     \param  ctx  context variable
-    \returns  PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+    \returns boolean value indicating if strings remain in range
 
     \rst
+
+    Description
+    -----------
+
+    Return :c:macro:`PGA_TRUE` if restricted to the given range,
+    otherwise :c:macro:`PGA_FALSE`.
 
     Example
     -------
@@ -482,15 +486,14 @@ int PGAGetCrossoverBoundedFlag (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    \brief If this flag is set to PGA_TRUE, then for Integer and Real
+    \brief If this flag is set to true, then for Integer and Real
            strings with simulated binary crossover (SBX) crossed over
            values that exceed the bounds are confined to the bounds by
            bouncing them back to a random value between the boundary and
            the neares parent.
     \ingroup init
-
     \param  ctx   context variable
-    \param  flag  either PGA_TRUE or PGA_FALSE
+    \param  flag  to indicate whether out-of-range values should be bounced
     \return  None
 
     \rst
@@ -524,14 +527,21 @@ void PGASetCrossoverBounceBackFlag (PGAContext *ctx, int flag)
 }
 
 /*!****************************************************************************
-    \brief Return PGA_TRUE or PGA_FALSE to indicate whether crossed
-           over strings are bounced back when exceeding the bounds.
+    \brief Return boolean to indicate whether crossed over strings are
+           bounced back when exceeding the bounds.
     \ingroup query
-
     \param  ctx  context variable
-    \return  PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+    \return flag indicating whether out-of-range values are bounced back
+
 
     \rst
+
+    Description
+    -----------
+
+    Return :c:macro:`PGA_TRUE` if restricted to the given range by
+    bouncing out-of-range values back from the boundary, otherwise
+    :c:macro:`PGA_FALSE`.
 
     Example
     -------
@@ -555,9 +565,7 @@ int PGAGetCrossoverBounceBackFlag (PGAContext *ctx)
 
 /*!****************************************************************************
     \brief Set the eta parameter for simulated binary crossover (SBX).
-
     \ingroup init
-
     \param  ctx   context variable
     \param  eta   eta >= 0
     \return  None
@@ -588,9 +596,7 @@ void PGASetCrossoverSBXEta (PGAContext *ctx, double eta)
 
 /*!****************************************************************************
     \brief Return simulated binary crossover (SBX) eta value.
-
     \ingroup query
-
     \param  ctx  context variable
     \return  The SBX eta value
 
@@ -620,19 +626,20 @@ double PGAGetCrossoverSBXEta (PGAContext *ctx)
     \brief Compute random number for simulated binary crossover (SBX)
            polynomial distribution only once per string/individual.
     \ingroup init
-
     \param  ctx   context variable
-    \param  val   PGA_TRUE or PGA_FALSE, default is PGA_FALSE
-    \return  None
+    \param  val   flag indicating if random number is computed once per string
+    \return None
 
     \rst
 
     Description
     -----------
 
-    If set to PGA_TRUE all alleles will use the same
-    value which means that the resulting string will point into the same
-    direction as the vector between both parents.
+    If set to :c:macro:`PGA_TRUE` all alleles will use the same value
+    which means that the resulting string will point into the same
+    direction as the vector between both parents. The default is
+    :c:macro:`PGA_FALSE` indicating that a new random number is used for
+    each string.
 
     Example
     -------
@@ -659,7 +666,6 @@ void PGASetCrossoverSBXOncePerString (PGAContext *ctx, int val)
     \brief Return simulated binary crossover (SBX) setting if random number
            for SBX polynomial distribution is computed once per string.
     \ingroup query
-
     \param  ctx  context variable
     \return The SBX once-per-string value
 
@@ -689,7 +695,6 @@ int PGAGetCrossoverSBXOncePerString (PGAContext *ctx)
 /*!****************************************************************************
     \brief Cross over two parent alleles with simulated binary crossover (SBX).
     \ingroup internal
-
     \param   ctx context variable
     \param   p1  (double) Allele of first string
     \param   p2  (double) Allele of second string

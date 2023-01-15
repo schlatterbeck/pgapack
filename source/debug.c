@@ -422,11 +422,10 @@ static int func_compare (const void *f1, const void *f2)
 /*!****************************************************************************
     \brief Return the debug level of the named function.
     \ingroup internal
-
     \param   ctx        context variable
     \param   funcname   the name of the function
-    \return  The debug level value of the function, that is, PGAFuncNum
-             associated with funcname in PGAFuncIndex
+    \return  The debug level value of the function
+
 
     \rst
 
@@ -434,7 +433,7 @@ static int func_compare (const void *f1, const void *f2)
     -----------
 
     Internally, it performs a binary search on the run-time sorted list
-    of functions in PGAFuncIndex.
+    of functions in ``PGAFuncIndex`` and returns ``PGAFuncNum``.
 
     \endrst
 
@@ -459,7 +458,6 @@ int PGAGetDebugLevelOfName (PGAContext *ctx, char *funcname)
     \brief Check whether the flag to do a debug print in routine
                  funcname has been set.
     \ingroup internal
-
     \param   ctx       context variable
     \param   funcname  name of the function in question
     \return  None
@@ -469,9 +467,9 @@ int PGAGetDebugLevelOfName (PGAContext *ctx, char *funcname)
     Description
     -----------
 
-    Returns PGA_TRUE if flag is set, otherwise PGA_FALSE.  If the name
-    is not in the function name database, an error message is printed
-    and the program terminates.
+    Returns :c:macro:`PGA_TRUE` if flag is set, otherwise
+    :c:macro:`PGA_FALSE`. If the name is not in the function name
+    database, an error message is printed and the program terminates.
 
     Example
     -------
@@ -1083,7 +1081,7 @@ void PGASetDebugFlag66(PGAContext *ctx, int Flag)
     Description
     -----------
 
-    Only used internally by PGACreate.
+    Only used internally by :c:func:`PGACreate`.
 
     \endrst
 
@@ -1101,28 +1099,37 @@ void PGASortFuncNameIndex(PGAContext *ctx)
     \param   ctx        context variable
     \param   level      a symbolic constant that maps to the type of
                         print requested (e.g., an entry or exit print).
-                        Valid values are PGA_DEBUG_ENTERED,
-                        PGA_DEBUG_EXIT, PGA_DEBUG_MALLOC,
-                        PGA_DEBUG_PRINTVAR, PGA_DEBUG_SEND, and
-                        PGA_DEBUG_RECV.
     \param   funcname   the name of the function that called this routine
     \param   msg        message to print
     \param   datatype   a symbolic constant that maps to the data type of the
-                        parameter data.  Valid choices are PGA_INT,
-                        PGA_DOUBLE, PGA_CHAR and PGA_VOID (no data).
+                        parameter data
     \param   data       a pointer, whose contents will be interpreted
-                        based upon the datatype parameter (or NULL, if
-                        PGA_VOID).
+                        based upon the datatype parameter
     \return  The debugging information is printed to stdout
 
     \rst
+
+    Description
+    -----------
+
+    Valid values for ``level`` are :c:macro:`PGA_DEBUG_ENTERED`,
+    :c:macro:`PGA_DEBUG_EXIT`, :c:macro:`PGA_DEBUG_MALLOC`,
+    :c:macro:`PGA_DEBUG_PRINTVAR`, :c:macro:`PGA_DEBUG_SEND`, and
+    :c:macro:`PGA_DEBUG_RECV`. See :ref:`group:const-debug` for the
+    constants and chapter :ref:`chp:debug` in the user guide for details.
+
+    Valid values for the ``datatype`` argument are :c:macro:`PGA_INT`,
+    :c:macro:`PGA_DOUBLE`, :c:macro:`PGA_CHAR` and :c:macro:`PGA_VOID`
+    (no data). The parameter ``data`` should be NULL, for
+    :c:macro:`PGA_VOID`. See :ref:`group:const-err-print` for the
+    constants in the user guide for details.
 
     Example
     -------
 
     If the debugging level includes printing variables (level 82), print the
     value of the integer variable num as a debugging tool in the routine
-    Add2Nums.
+    ``Add2Nums``.
 
     .. code-block:: c
 
@@ -1213,9 +1220,8 @@ void PGADebugPrint
 /*!****************************************************************************
     \brief Turn on a debug level.
     \ingroup debug
-
     \param   ctx    context variable
-    \param   level  the debug level to set to PGA_TRUE.
+    \param   level  the debug level to set
     \return  None
 
     \rst
@@ -1273,9 +1279,8 @@ void PGASetDebugLevel (PGAContext *ctx, int level)
 /*!****************************************************************************
     \brief Turn off a debug level.
     \ingroup debug
-
     \param   ctx    context variable
-    \param   level  the debug level to set to PGA_FALSE.
+    \param   level  the debug level to turn off
     \return  None
 
     \rst
@@ -1333,7 +1338,6 @@ void PGAClearDebugLevel (PGAContext *ctx, int level)
 /*!****************************************************************************
     \brief Turn on debugging of the named function.
     \ingroup debug
-
     \param    ctx         context variable
     \param    funcname    name of the function to turn on debugging output
     \return   None
@@ -1394,7 +1398,6 @@ void PGAClearDebugLevelByName (PGAContext *ctx, char *funcname)
 
 /*!****************************************************************************
     \brief Print the list of available debug options and exit.
-
     \param   ctx  context variable
     \return  list of available debug options
 

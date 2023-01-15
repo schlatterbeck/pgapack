@@ -62,7 +62,6 @@ privately owned rights.
     \brief Creates an (internal) array of indices according to one of
            three criteria.
     \ingroup explicit
-
     \param   ctx  context variable
     \param   pop  symbolic constant of the population from which to
                   create the sorted array
@@ -74,15 +73,14 @@ privately owned rights.
     Description
     -----------
 
-    If PGA_POPREPL_BEST is used (the default) the array is
-    sorted from most fit to least fit.  If PGA_POPREPL_RANDOM_REP is
-    used the indices in the array are selected randomly with replacement.
-    If PGA_POPREPL_RANDOM_NOREP is used the indices in the array are selected
-    randomly without replacement.  The function
-    :c:func:`PGASetPopReplaceType` is used
-    to specify which strategy is used.  The indices of the sorted population
-    members may then be accessed from the internal array via
-    :c:func:`PGAGetSortedPopIndex`.
+    If :c:macro:`PGA_POPREPL_BEST` is used (the default) the array is
+    sorted from most fit to least fit. If :c:macro:`PGA_POPREPL_RANDOM_REP`
+    is used the indices in the array are selected randomly with replacement.
+    If :c:macro:`PGA_POPREPL_RANDOM_NOREP` is used the indices in the
+    array are selected randomly without replacement. The function
+    :c:func:`PGASetPopReplaceType` is used to specify which strategy is
+    used.  The indices of the sorted population members may then be
+    accessed from the internal array via :c:func:`PGAGetSortedPopIndex`.
     This routine is typically used during population replacement.
 
     Example
@@ -185,7 +183,6 @@ int PGAGetPopSize (PGAContext *ctx)
 /*!***************************************************************************
     \brief Return the maximum number of strings to replace in each generation.
     \ingroup query
-
     \param   ctx  context variable
     \return The maximum number number of strings to replace each generation
 
@@ -219,7 +216,6 @@ int PGAGetNumReplaceValue (PGAContext *ctx)
     \brief Return the symbolic constant used to determine which strings
            to copy from the old population to the new population.
     \ingroup query
-
     \param   ctx  context variable
     \return  The symbolic constant of the replacement strategy
 
@@ -276,12 +272,12 @@ int PGAGetPopReplaceType (PGAContext *ctx)
     Description
     -----------
 
-    This function will have no effect unless PGA_POPREPL_RTR was
-    specified as  the population replacement strategy with
+    This function will have no effect unless :c:macro:`PGA_POPREPL_RTR`
+    was specified as  the population replacement strategy with
     :c:func:`PGASetPopReplaceType`.
     The window size must be smaller than the population size.
-    The default is min (n, N/20) where n is the string length and N is
-    the population size.
+    The default is :math:`\min (n, N/20)` where :math:`n` is the string length
+    and :math:`N` is the population size.
 
     Example
     -------
@@ -340,7 +336,6 @@ int PGAGetRTRWindowSize (PGAContext *ctx)
     \brief Return a population string index from the array created by
            sorting of the population.
     \ingroup query
-
     \param   ctx       context variable
     \param   n         specified which index element is to be returned.
     \return  A population string index from the array created by
@@ -444,7 +439,6 @@ void PGASetPopSize (PGAContext *ctx, int popsize)
 /*!****************************************************************************
     \brief Specify the number of new strings to create each generation.
     \ingroup init
-
     \param   ctx          context variable
     \param   pop_replace  the number of population members to create
                           each generation
@@ -502,17 +496,20 @@ void PGASetNumReplaceValue (PGAContext *ctx, int pop_replace)
     Description
     -----------
 
-    Valid choices are PGA_POPREPL_BEST,
-    PGA_POPREPL_RANDOM_NOREP, or PGA_POPREPL_RANDOM_REP for copying the best
+    Valid choices are :c:macro:`PGA_POPREPL_BEST`,
+    :c:macro:`PGA_POPREPL_RANDOM_NOREP`, or
+    :c:macro:`PGA_POPREPL_RANDOM_REP` for copying the best
     strings, or  random string, with or without replacement, respectively,
     from the old population into the new population. Additional
-    replacement types are PGA_POPREPL_RTR for restricted tournament
-    replacement, PGA_POPREPL_PAIRWISE_BEST for pairwise comparison of
-    each individual in the old/new population, and PGA_POPREPL_NSGA_II
-    and PGA_POPREPL_NSGA_III
+    replacement types are :c:macro:`PGA_POPREPL_RTR` for restricted
+    tournament replacement, :c:macro:`PGA_POPREPL_PAIRWISE_BEST` for
+    pairwise comparison of each individual in the old/new population,
+    and :c:macro:`PGA_POPREPL_NSGA_II` and :c:macro:`PGA_POPREPL_NSGA_III`
     for multiobjective optimization using the Nondominated Sorting
     Genetic Algorithm (NSGA-II or NSGA-III).
-    The default is PGA_POPREPL_BEST.
+    The default is :c:macro:`PGA_POPREPL_BEST`.
+    See :ref:`group:const-poprep` for the constants and section
+    :ref:`sec:population-replacement` in the user guide for details.
 
     Example
     -------
@@ -555,7 +552,6 @@ void PGASetPopReplaceType (PGAContext *ctx, int pop_replace)
 /*!****************************************************************************
     \brief Set reference points on reference hyperplane for NSGA-III.
     \ingroup init
-
     \param   ctx      context variable
     \param   npoints  Number of points
     \param   points   Pointer to points
@@ -595,7 +591,7 @@ void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points)
 
 /*!****************************************************************************
     \brief Set reference directions for NSGA-III.
-
+    \ingroup standard-api
     \param   ctx    context variable
     \param   ndirs  Number of directions
     \param   dirs   Pointer to directions
@@ -613,7 +609,7 @@ void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points)
     from the origin to that point. During optimization the reference
     directions are mapped to the reference hyperplane and a scaled
     Das/Dennis hyperplane is constructed around that point.
-    Each direction consists of dimension double variables.
+    Each direction consists of ``dimension`` ``double`` variables.
 
     Example
     -------
@@ -652,7 +648,6 @@ void PGASetReferenceDirections
 /*!****************************************************************************
    \brief Perform restricted tournament replacement.
    \ingroup explicit
-
    \param   ctx          context variable
    \return  None
 
@@ -661,13 +656,13 @@ void PGASetReferenceDirections
    Description
    -----------
 
-   For each individual in PGA_NEWPOP we select a window of
-   individuals from PGA_OLDPOP, find the one genetically most like the
-   new candidate and replace the individual if the new candidate has
-   better evalutation. Note that we may not use the fitness here:
-   Fitness from two different populations are uncompareable!
-   After this populations are swapped (exchange of PGA_NEWPOP and
-   PGA_OLDPOP) for further processing.
+   For each individual in :c:macro:`PGA_NEWPOP` we select a window of
+   individuals from :c:macro:`PGA_OLDPOP`, find the one genetically most
+   like the new candidate and replace the individual if the new
+   candidate has better evalutation. Note that we may not use the
+   fitness here: Fitness from two different populations are
+   uncompareable! After this populations are swapped (exchange of
+   :c:macro:`PGA_NEWPOP` and :c:macro:`PGA_OLDPOP`) for further processing.
 
    Example
    -------
@@ -734,7 +729,6 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
 
     \brief Perform pairwise best replacement.
     \ingroup explicit
-
     \param   ctx          context variable
     \return  None
 
@@ -743,15 +737,15 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
     Description
     -----------
 
-    Compare individuals with same index in PGA_OLDPOP and PGA_NEWPOP and
-    select the one with better evalutation. Note that we may not use the
-    fitness here: Fitness from two different populations are
-    uncompareable!
+    Compare individuals with same index in :c:macro:`PGA_OLDPOP` and
+    :c:macro:`PGA_NEWPOP` and select the one with better evalutation.
+    Note that we may not use the fitness here: Fitness from two
+    different populations are uncompareable!
     This replacement strategy is used in evolutionary algorithms that
     modify a single individual and replace the parent if the offspring is
     better. A popular example is Differential Evolution (DE).
-    After this populations are swapped (exchange of PGA_NEWPOP and
-    PGA_OLDPOP) for further processing.
+    After this populations are swapped (exchange of
+    :c:macro:`PGA_NEWPOP` and :c:macro:`PGA_OLDPOP`) for further processing.
 
     Example
     -------

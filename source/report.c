@@ -51,7 +51,6 @@ privately owned rights.
 /*!****************************************************************************
     \brief Print genetic algorithm statistics.
     \ingroup reporting
-
     \param   ctx  context variable
     \param   fp   file pointer to print the output to
     \param   pop  symbolic constant of the population whose statistics
@@ -236,7 +235,6 @@ void PGAPrintReport (PGAContext *ctx, FILE *fp, int pop)
     \brief Set flags to indicate what GA statistics should be printed
            whenever output is printed.
     \ingroup init
-
     \param   ctx     context variable
     \param   option  symbolic constant to specify a print option
     \return  None
@@ -247,14 +245,17 @@ void PGAPrintReport (PGAContext *ctx, FILE *fp, int pop)
     -----------
 
     May be called more than once to specify different report options.
-    Valid choices are PGA_REPORT_AVERAGE, PGA_REPORT_OFFLINE,
-    PGA_REPORT_ONLINE, PGA_REPORT_WORST, PGA_REPORT_GENE_DISTANCE, and
-    PGA_REPORT_STRING to specify offline analysis, online analysis, the
-    worst string in the population, the mean genetic distance of the
-    population, and the actual allele values of the best string.  The
-    best string is always printed. Note that reporting of mean genetic
-    distance is quadratic in the population size and probably should be
-    used only when trying to diagnose premature convergence problems.
+    Valid choices are :c:macro:`PGA_REPORT_AVERAGE`,
+    :c:macro:`PGA_REPORT_OFFLINE`, :c:macro:`PGA_REPORT_ONLINE`,
+    :c:macro:`PGA_REPORT_WORST`, :c:macro:`PGA_REPORT_GENE_DISTANCE`, and
+    :c:macro:`PGA_REPORT_STRING` to specify offline analysis, online
+    analysis, the worst string in the population, the mean genetic
+    distance of the population, and the actual allele values of the best
+    string.  The best string is always printed. Note that reporting of
+    mean genetic distance is quadratic in the population size and
+    probably should be used only when trying to diagnose premature
+    convergence problems. See :ref:`group:const-rep` for the constants
+    and section :ref:`sec:report` in the user guide for details.
 
     Example
     -------
@@ -342,7 +343,6 @@ void PGASetPrintFrequencyValue (PGAContext *ctx, int print_freq)
 /*!***************************************************************************
     \brief Return how often to print statistics reports.
     \ingroup query
-
     \param   ctx  context variable
     \return  The frequency of printing output
 
@@ -376,7 +376,6 @@ int PGAGetPrintFrequencyValue (PGAContext *ctx)
     \brief Specify the precision in decimal places for printing
            evaluations of multi objective optimization.
     \ingroup init
-
     \param   ctx         context variable
     \param   prec        the precision
     \return  None
@@ -412,7 +411,6 @@ void PGASetMultiObjPrecision (PGAContext *ctx, int prec)
     \brief Return the precision for printing multi objective
            optimization evaluations.
     \ingroup query
-
     \param   ctx  context variable
     \return  The precision of printing multi objective evaluations
 
@@ -440,9 +438,7 @@ int PGAGetMultiObjPrecision (PGAContext *ctx)
 
 /*!****************************************************************************
     \brief Print each member of a population.
-
     \ingroup reporting
-
     \param   ctx  context variable
     \param   fp   file pointer to print the output to
     \param   pop  symbolic constant of the population to be printed
@@ -488,7 +484,6 @@ void PGAPrintPopulation (PGAContext *ctx, FILE *fp, int pop)
     \brief Print the allele values of a string and associated fields
            (evaluation, fitness, etc.) of a string.
     \ingroup reporting
-
     \param   ctx  context variable
     \param   fp   file pointer to print the output to
     \param   p    string index
@@ -534,7 +529,6 @@ void PGAPrintIndividual (PGAContext *ctx, FILE *fp, int p, int pop)
 /*!****************************************************************************
     \brief Write the allele values in a string to a file.
     \ingroup reporting
-
     \param   ctx  context variable
     \param   fp   pointer to file to write the string to
     \param   p    index of the string to write out
@@ -585,7 +579,6 @@ void PGAPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 /*!****************************************************************************
     \brief Print the value of all the fields in the context variable.
     \ingroup reporting
-
     \param   ctx  context variable
     \param   fp   file pointer to print the output to
     \return  The value of all the fields in the context variable are

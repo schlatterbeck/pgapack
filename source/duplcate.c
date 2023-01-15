@@ -52,27 +52,31 @@ privately owned rights.
     \brief Determine if a specified string is a duplicate of one already
            in an existing population.
     \ingroup explicit
-
     \param  ctx   context variable
     \param  p     string index
     \param  pop1  symbolic constant of the population containing string p
     \param  pop2  symbolic constant of the (possibly partial)
                   population containing strings to compare string p
                   against
-    \return Returns PGA_TRUE if PGAGetNoDuplicatesFlag() returns
-            PGA_TRUE and string p in population pop1 is a duplicate of
-            at least one strings already inserted into population pop2,
-            otherwise returns PGA_FALSE
+    \return Return true if duplicate
 
     \rst
+
+    Description
+    -----------
+
+    Return :c:macro:`PGA_TRUE` if :c:func:`PGAGetNoDuplicatesFlag`
+    returns :c:macro:`PGA_TRUE` and string ``p`` in population ``pop1``
+    is a duplicate of at least one strings already inserted into
+    population ``pop2``, otherwise return :c:macro:`PGA_FALSE`.
 
     Example
     -------
 
     Check the current to-be-inserted string if it is a copy of any of
-    the strings in PGA_NEWPOP. Note that the check relies on all
-    individuals in PGA_NEWPOP to also be inserted into the duplicate
-    hash, see :c:func:`PGAHashIndividual`.
+    the strings in :c:macro:`PGA_NEWPOP`. Note that the check relies on
+    all individuals in :c:macro:`PGA_NEWPOP` to also be inserted into
+    the duplicate hash, see :c:func:`PGAHashIndividual`.
 
     .. code-block:: c
 
@@ -123,7 +127,6 @@ int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
     \brief Repeatedly apply mutation to a string (with an increasing
            mutation rate) until one or more mutations have occurred.
     \ingroup explicit
-
     \param  ctx   context variable
     \param  p     string index
     \param  pop   symbolic constant of the population containing string p
@@ -134,16 +137,17 @@ int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
     Description
     -----------
 
-    This routine is usually used with PGADuplicate to modify a duplicate
-    string.  It is not intended to replace PGAMutation
+    This routine is usually used with :c:func:`PGADuplicate` to modify a
+    duplicate string.  It is not intended to replace
+    :c:func:`PGAMutate`.
 
     Example
     -------
 
     Check the current to-be-inserted string if it is a copy of any of
-    the strings in PGA_NEWPOP. Note that the check relies on all
-    individuals in PGA_NEWPOP to also be inserted into the duplicate
-    hash, see :c:func:`PGAHashIndividual`.
+    the strings in :c:macro:`PGA_NEWPOP`. Note that the check relies on
+    all individuals in :c:macro:`PGA_NEWPOP` to also be inserted into
+    the duplicate hash, see :c:func:`PGAHashIndividual`.
 
     .. code-block:: c
 
@@ -210,7 +214,6 @@ void PGAChange (PGAContext *ctx, int p, int pop)
 /*!****************************************************************************
     \brief Compute Hash for this individual and insert into hash-table
     \ingroup explicit
-
     \param   ctx   context variable
     \param   p     string index
     \param   pop   symbolic constant of the population containing string p
@@ -245,7 +248,6 @@ void PGAHashIndividual (PGAContext *ctx, int p, int pop)
     \brief A boolean flag to indicate if duplicate strings are allowed
            in the population.
     \ingroup init
-
     \param  ctx     context variable
     \param  no_dup  PGA_TRUE or PGA_FALSE
     \return None
@@ -255,13 +257,13 @@ void PGAHashIndividual (PGAContext *ctx, int p, int pop)
     Description
     -----------
 
-    Valid choices are PGA_TRUE and PGA_FALSE.  The default is PGA_FALSE:
-    allow duplicates.
+    Valid choices are :c:macro:`PGA_TRUE` and :c:macro:`PGA_FALSE`. The
+    default is :c:macro:`PGA_FALSE` allow duplicates.
 
     Example
     -------
 
-    Set the NoDuplicates flag to require that all strings are unique.
+    Set the ``NoDuplicates`` flag to require that all strings are unique.
 
     .. code-block:: c
 
@@ -297,7 +299,6 @@ void PGASetNoDuplicatesFlag (PGAContext *ctx, int no_dup)
     \brief Return PGA_TRUE if duplicates are not allowed, else return
            PGA_FALSE.
     \ingroup query
-
     \param  ctx  context variable
     \return The value of the NoDuplicates flag
 

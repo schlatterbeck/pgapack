@@ -7,6 +7,11 @@ Bibliography
             Second International Conference on Genetic Algorithms and
             Their Applications,* pages 14–21, Hillsdale, New Jersey,
             1987. Lawrence Erlbaum Associates.
+.. [BH91]   Thomas Bäck and Frank Hoffmeister. Extended selection
+            mechanisms in genetic algorithms. In Richard K. Belew and
+            Lashon B. Booker, editors, Proceedings of the Fourth
+            International Conference on Genetic Algorithms (ICGA), pages
+            92–99. Morgan Kaufmann, San Diego, CA, July 1991.
 .. [BDR19]  Julian Blank, Kalyanmoy Deb, and Proteek Chandan Roy.
             Investigating the normalization procedure of NSGA-III. In
             Kalyanmoy Deb, Erik Goodman, Carlos A. Coello Coello,
@@ -50,12 +55,21 @@ Bibliography
             January 2000.
 .. [Fly72]  M. Flynn. Some computer organizations and their effectiveness.
             *IEEE Transactions on Computers,* 21:948–960, 1972.
+.. [GB89]   John J. Grefenstette and James E. Baker. How genetic
+            algorithms work: a critical look at implicit parallelism. In
+            Schaffer [Sch89], pages 20–27.
+.. [GD91]   David E. Goldberg and Kalyanmoy Deb. A comparative analysis
+            of selection schemes used in genetic algorithms. In Gregory J.
+            E. Rawlins, editor, Foundation of Genetic Algorithms (FOGA) 1,
+            volume 1, pages 69–93. Elsevier, 1991.
 .. [GKD89]  David E. Goldberg, Bradley Korb, and Kalyanmoy Deb. Messy
             genetic algorithms: Motivation, analysis, and first results.
             *Complex Systems,* 3(5):493–530, 1989.
 .. [GLS94]  W. Gropp, E. Lusk, and A. Skjellum. *Using MPI Portable
             Parallel Programming with the Message-Passing Interface.*
             The MIT Press, Cambrigde, 1994.
+.. [Gol89]  David E. Goldberg. *Genetic Algorithms in Search,
+            Optimization & Machine Learning.* Addison Wesley, October 1989.
 .. [Har94]  Georges Harik. Finding multiple solutions in problems of
             bounded difficulty. IlliGAL Report 94002, Illinois Genetic
             Algorithm Lab, May 1994.
@@ -69,6 +83,8 @@ Bibliography
             August 1996. Morgan Kaufmann.
 .. [Hol92]  J. Holland. *Adaption in Natural and Artificial Systems.*
             MIT Press, Cambrigde, 1992.
+.. [Jam90]  F. James. A review of pseudorandom number generators.
+            *Computer Physics Communications,* 60(3):329–344, October 1990.
 .. [JD14]   Himanshu Jain and Kalyanmoy Deb. An evolutionary many-objective
             optimization algorithm using reference-point-based
             nondominated sorting approach, part II: Handling constraints
@@ -80,6 +96,9 @@ Bibliography
             interface standard. *International Journal of Supercomputing
             Applications,* 8(3/4), 1994.
 .. [MPIC23] `MPICH`_ homepage, last visited 2023-01-15.
+.. [MZT90]  George Marsaglia, Arif Zaman, and Wai Wan Tsang. Toward
+            a universal random number generator. *Statistics &
+            Probability Letters,* 9(1):35-39, January 1990.
 .. [OMPI23] `Open MPI`_ homepage, last visited 2023-01-15.
 .. [Pel05]  Martin Pelikan. *Hierarchical Bayesian Optimization Algorithm:
             Toward a New Generation of Evolutionary Algorithms,* volume
@@ -132,6 +151,9 @@ Bibliography
             with an archive and gradient-based mutation. In *IEEE
             Congress on Evolutionary Computation (CEC),* Barcelona,
             Spain, July 2010.
+.. [Vit87]  Jeffrey Scott Vitter. An efficient algorithm for sequential
+            random sampling. ACM Transactions on Mathematical Software,
+            13(1):58–67, March 1987.
 .. [Whi89]  Darrell Whitley. The GENITOR algorithm and selection pressure:
             Why rank-based allocation of reproductive trials is best. In
             Schaffer [Sch89]_, pages 116-121.

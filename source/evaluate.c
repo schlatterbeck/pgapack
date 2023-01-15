@@ -53,9 +53,7 @@ privately owned rights.
 
 /*!****************************************************************************
     \brief Maps the value v defined on [a,b] to r defined on [l,u].
-
     \ingroup internal
-
     \param  ctx   context variable
     \param  v     value from original interval (usually the decoded bit string)
     \param  a     lower bound of integer interval
@@ -77,17 +75,16 @@ privately owned rights.
     Example
     -------
 
-    Map a five bit (that is, an integer with a range of [0, 31]) integer v
-    to a real in the range [0, 3.14].
+    Map a five bit (that is, an integer with a range of [0, 31]) integer
+    5 to a real in the range [0, 3.14].
 
     .. code-block:: c
 
         PGAContext *ctx;
         double x;
-        int v;
 
         ...
-        x = PGAMapIntegerToReal (ctx, v, 0, 31, 0.0, 3.14);
+        x = PGAMapIntegerToReal (ctx, 5, 0, 31, 0.0, 3.14);
 
     \endrst
 
@@ -159,7 +156,7 @@ static int PGAMapRealToInteger
     \param   val   the (user) evaluation value to assign to string p
     \param   aux   Auxiliary evaluations
     \return  Sets the evaluation function value of string p and the
-             EvalUpToDate flag (to PGA_TRUE) via side effect
+             EvalUpToDate flag via side effect
 
     \rst
 
@@ -169,13 +166,13 @@ static int PGAMapRealToInteger
     This uses a trick for implementing optional arguments in C. The real
     function to use is without leading underscore. There is a
     macro that makes the last argument optional.
-    Also sets the evaluation up to date flag to PGA_TRUE.
+    Also sets the evaluation up to date flag to :c:macro:`PGA_TRUE`.
 
     Example
     -------
 
-    Set the evaluation function value of string p in population PGA_NEWPOP
-    to 123.456.
+    Set the evaluation function value of string ``p`` in population
+    :c:macro:`PGA_NEWPOP` to 123.456.
 
     .. code-block:: c
 
@@ -370,16 +367,14 @@ double *PGAGetAuxEvaluation (PGAContext *ctx, int p, int pop)
 }
 
 /*!****************************************************************************
-    \brief Set the flag associated with a string to PGA_TRUE or
-           PGA_FALSE to indicate whether the evaluate function value is
+    \brief Set the flag to indicate whether the evaluate function value is
            up-to-date or not.
     \ingroup evaluation
-
     \param  ctx    context variable
     \param  p      string index
     \param  pop    symbolic constant of the population string p is in
     \param  status boolean for whether up-to-date
-    \return Sets the EvalUpToDate associated with the evaluation
+    \return Sets the flag associated with the evaluation
             function value of string p via side effect
 
     \rst
@@ -387,15 +382,16 @@ double *PGAGetAuxEvaluation (PGAContext *ctx, int p, int pop)
     Description
     -----------
 
-    Note that this flag is always set to PGA_TRUE when PGASetEvaluation
-    is called.
+    Note that this flag is always set to :c:macro:`PGA_TRUE` when
+    :c:func:`_PGASetEvaluation` is called.
 
     Example
     -------
 
-    Set the evaluation function flag for string p in population
-    PGA_NEWPOP to PGA_FALSE (as might happen after, for example, calling
-    a hill-climbing routine that modified this string).
+    Set the evaluation function flag for string ``p`` in population
+    :c:macro:`PGA_NEWPOP` to :c:macro:`PGA_FALSE` (as might happen
+    after, for example, calling a hill-climbing routine that modified
+    this string).
 
     .. code-block:: c
 
@@ -445,15 +441,14 @@ void PGASetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop, int status)
 }
 
 /*!***************************************************************************
-    \brief Return PGA_TRUE/PGA_FALSE to indicate whether the evaluate function
+    \brief Return boolean to indicate whether the evaluate function
            value is up to date
     \ingroup evaluation
 
     \param   ctx  context variable
     \param   p    string index
     \param   pop  symbolic constant of the population the string is in
-    \return  Return PGA_TRUE if the evaluate function value is up to date,
-             otherwise, return PGA_FALSE
+    \return  Return true if the evaluate function value is up to date
 
     \rst
 
@@ -513,9 +508,10 @@ int PGAGetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop)
     Example
     -------
 
-    Decode a real value from the string p in population PGA_NEWPOP.  The
-    value to decode lies on the interval [-10,20] and is represented
-    using the 20 bits in bit positions 10--29.
+    Decode a real value from the string ``p`` in population
+    :c:macro:`PGA_NEWPOP`.  The value to decode lies on the interval
+    :math:`[-10,20]` and is represented using the 20 bits in bit positions
+    10--29.
 
     .. code-block:: c
 
@@ -598,9 +594,10 @@ double PGAGetRealFromBinary
     Example
     -------
 
-    Decode a real value from the string p in population PGA_NEWPOP.
-    The value to decode lies on the interval [-10,20] and is represented
-    using the 20 bits in bit positions 10--29.
+    Decode a real value from the string ``p`` in population
+    :c:macro:`PGA_NEWPOP`.  The value to decode lies on the interval
+    :math:`[-10,20]` and is represented using the 20 bits in bit
+    positions 10--29.
 
     .. code-block:: c
 
@@ -682,8 +679,8 @@ double PGAGetRealFromGrayCode
     Example
     -------
 
-    Encode 3.14 from the interval [0,10] in 30 bits in bit positions
-    0--29 in string p in population PGA_NEWPOP.
+    Encode 3.14 from the interval :math:`[0,10]` in 30 bits in bit
+    positions 0--29 in string ``p`` in population :c:macro:`PGA_NEWPOP`.
 
     .. code-block:: c
 
@@ -751,7 +748,6 @@ void PGAEncodeRealAsBinary
 /*!****************************************************************************
     \brief Encode a real value as a binary reflected Gray code sequence.
     \ingroup allele
-
     \param  ctx    context variable
     \param  p      string index
     \param  pop    symbolic constant of the population the string is in
@@ -767,9 +763,9 @@ void PGAEncodeRealAsBinary
     Example
     -------
 
-    Encode 3.14 from the interval [0,10] in 30 bits in bit positions
-    0--29 in string p in population PGA_NEWPOP as a binary reflected Gray
-    code sequence.
+    Encode 3.14 from the interval :math:`[0,10]` in 30 bits in bit
+    positions 0--29 in string ``p`` in population :c:macro:`PGA_NEWPOP`
+    as a binary reflected Gray code sequence.
 
     .. code-block:: c
 
@@ -852,7 +848,8 @@ void PGAEncodeRealAsGrayCode
     Example
     -------
 
-    Get an integer j from bits 10--29 of string p in population PGA_NEWPOP.
+    Get an integer ``j`` from bits 10--29 of string ``p`` in population
+    :c:macro:`PGA_NEWPOP`.
 
     .. code-block:: c
 
@@ -933,8 +930,8 @@ unsigned int PGAGetIntegerFromBinary
     Example
     -------
 
-    Get an integer j from bits 10--29 of string p in population PGA_NEWPOP.
-    The string is encoded in Gray code.
+    Get an integer ``j`` from bits 10--29 of string ``p`` in population
+    :c:macro:`PGA_NEWPOP`.  The string is encoded in Gray code.
 
     .. code-block:: c
 
@@ -1030,8 +1027,8 @@ unsigned int PGAGetIntegerFromGrayCode
     Example
     -------
 
-    Encode an integer 7 in 20 bits in bit positions 0--19 in string p
-    in population PGA_NEWPOP.
+    Encode an integer 7 in 20 bits in bit positions 0--19 in string
+    ``p`` in population :c:macro:`PGA_NEWPOP`.
 
     .. code-block:: c
 
@@ -1106,7 +1103,6 @@ void PGAEncodeIntegerAsBinary
 /*!****************************************************************************
     \brief Encode a real value as a binary reflected Gray code sequence.
     \ingroup allele
-
     \param  ctx    context variable
     \param  p      string index
     \param  pop    symbolic constant of the population the string is in
@@ -1121,8 +1117,8 @@ void PGAEncodeIntegerAsBinary
     Example
     -------
 
-    Encode an integer 7 in 20 bits in bit positions  0--19 in string p in
-    population PGA_NEWPOP using Gray code.
+    Encode an integer 7 in 20 bits in bit positions 0--19 in string
+    ``p`` in population :c:macro:`PGA_NEWPOP` using Gray code.
 
     .. code-block:: c
 
