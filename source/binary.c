@@ -61,7 +61,10 @@ privately owned rights.
  *****************************************************************************/
 /*!***************************************************************************
  *  \defgroup explicit Functions for explicit usage
- *  \brief See description of explicit usage in user guide
+ *  \brief These functions are needed when explicitly programming the GA.
+ *  \rsts
+ *  See chapter :ref:`chp:explicit` for more details.
+ *  \endrst
  *****************************************************************************/
 /*!***************************************************************************
  *  \defgroup internal Functions for internal usage

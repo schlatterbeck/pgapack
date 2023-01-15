@@ -307,7 +307,7 @@ Communicators
 
 Almost all MPI functions require a *communicator*. If MPI routines are
 called directly, the user must supply a communicator. Also, if any of
-PGAPack’s parallel routines, other than ``PGARun``, are used, the user
+PGAPack’s parallel routines, other than :c:func:`PGARun`, are used, the user
 must supply a communicator as well.
 
 A communicator combines the notions of context and group. A *context* is
@@ -335,17 +335,17 @@ primary consideration has to do with whether one or all processors do
 I/O. Consider the following two code fragments, keeping in mind that
 they are being executed simultaneously by *multiple* processes:
 
-::
+.. code-block:: c
 
-   ctx = PGACreate(&argc, argv, PGA_DATATYPE_BINARY, 30, PGA_MINIMIZE) 
+   ctx = PGACreate (&argc, argv, PGA_DATATYPE_BINARY, 30, PGA_MINIMIZE) 
 
 and
 
-::
+.. code-block:: c
 
    int len;
-   scanf("%d",&len);
-   ctx = PGACreate(&argc, argv, PGA_DATATYPE_BINARY, len, PGA_MINIMIZE);
+   scanf ("%d",&len);
+   ctx = PGACreate (&argc, argv, PGA_DATATYPE_BINARY, len, PGA_MINIMIZE);
 
 In the first case, all processes will receive the value of 30 for the
 string length since it is a constant. In the second case, however, the
@@ -357,7 +357,7 @@ variable. Since some of these fields may be set by using values
 specified at run time, we suggest that your I/O that reads in
 PGAPack parameters be done as follows:
 
-::
+.. code-block:: c
 
    #include "pgapack.h"
    double evaluate (PGAContext *ctx, int p, int pop, double *aux);
@@ -406,21 +406,16 @@ the same size as an ``int`` declaration in C and everything works
 properly. For floating-point numbers, however, we have found at least
 one inconsistency. The requirement is for the Fortran floating-point
 number to be the same size as a C ``double``. On most machines a Fortran
-``double precision`` declaration is the equivalent size. On the Cray
-T3D, however, by default, the Fortran data type ``double precision`` is
-not supported and must be handled as described below.
+``double precision`` declaration is the equivalent size.
 
 Since Fortran does not support pointers, an ``integer`` variable is used
 to hold the address of the context variable (and possibly MPI
 communicator addresses as well). Therefore, a Fortran ``integer`` must
 be “large enough” to hold an address on the machine. For all 32-bit
 address space machines we have tested this is the case. On machines with
-a 64-bit address space, however, this may not be true. In particular,
-the size of a Fortran ``integer`` on the Silicon Graphics Power
-Challenge and DEC Alpha (but *not* the Cray T3D) is 32-bits and is not
-large enough to hold a machine address. The solution on these machines
-is to use the (nonstandard, but supported) Fortran declaration
-``integer*8`` for the context variable.
+a 64-bit address space, however, this may not be true. Therefore we use
+constructs in Fortran to select an integer data type that is large
+enough, see chapter :ref:`chp:fortran` for details.
 
 Startup
 ~~~~~~~
@@ -429,179 +424,24 @@ The MPI standard provides for *source code* portability. However, the
 MPI standard does *not* specify how an MPI program shall be started or
 how the number of processes in the computation is specified. These will
 vary according to the computer being used and the choice of MPI
-implementation. The notes below are from our experiences testing
-PGAPack on different machines.
-
-Silicon Graphics Challenge
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The Silicon Graphics Challenge is a 32-bit symmetric multiprocessor. We
-used ``MPICH`` with the ``ch_shmem`` device and the ``ncc`` C compiler.
-Several warnings were received
-
-::
-
-   warning(3262): parameter "ctx" declared and never referenced
-   warning(3141): cast between pointer-to-object and pointer-to-function
-
-but the library was successfully built. To run a parallel
-PGAPack program, use either
-
-::
-
-   a.out -np nprocs
-
-or ``MPICH``\ ’s ``mpirun`` command.
-
-Silicon Graphics Power Challenge
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The Silicon Graphics Power Challenge is similar to the Challenge, except
-that it has a 64-bit address space. On this machine the size of an
-integer (``int`` in C and ``integer`` in Fortran) is not the same as the
-size of an address. Fortran users should use the declaration
-``integer*8`` for the context variable (and ``integer`` for other
-Fortran integer declarations). See also Chapter :ref:`chp:fortran`.
-
-We used ``MPICH`` with the ``ch_p4`` device and the the MIPSpro C
-compiler (``cc``). We found a bug in ``pca``, the Power C Analyzer, and
-recommend not using it for now. (To do this do not specify the ``-pca``
-switch to ``cc``). To run a parallel PGAPack program, use
-
-::
-
-   a.out -np nprocs
-
-or ``MPICH``\ ’s ``mpirun`` command.
-
-Cray T3D
-^^^^^^^^
-
-The Cray T3D has a 64-bit address space. However, the size of an integer
-on the T3D is the same as the size of an address, and therefore no
-special considerations are needed for declaring the context variable in
-Fortran.
-
-On the T3D a C ``double`` is 64 bits. The Fortran ``double precision``
-data type, however, is not supported (by default). One workaround is to
-declare all floating-point numbers ``REAL``, as these are 64 bits on the
-T3D. The other workaround is to use the compiler switch ``-dp``.
-
-To compile for a Cray T3D, cross compilation is done on a front-end
-machine (a Cray C90 in our case). Set Cray’s ``TARGET`` environment
-variable so the compiler, linker, etc., will know which architecture to
-compile for.
-
-::
-
-   setenv TARGET cray-t3d
-
-An alternative is to use “-T cray-t3d” with ``cc`` and “-C cray-t3d”
-with ``cf77``. Another alternative is to explicitly use the cross
-compilers (``/mpp/bin/cc`` and ``/mpp/bin/cf77``) and linker
-(``/mpp/bin/mppldr``).
-
-We used the MPI in ``/usr/local/mpp/lib/libmpi.a``. Adding ``-lmpi`` in
-your link step may also find the MPI library. If a successful T3D
-executable was built, the command “file a.out” should say “MPP
-absolute.”
-
-To run a parallel PGAPack program, use
-
-::
-
-   a.out -npes nprocs
-
-where ``nprocs`` is a power of two.
-
-Intel Paragon
-^^^^^^^^^^^^^
-
-We used ``MPICH`` with the ``ch_nx`` device and compiled with
-``cc -nx``. To run a parallel PGAPack program, use
-
-::
-
-   a.out -sz nprocs
-
-or ``MPICH``\ ’s ``mpirun`` command.
-
-IBM SP2
-^^^^^^^
-
-We tested the IBM SP2 using both ``MPICH`` with the ``ch_eui`` device,
-and IBM’s research MPI, MPI-F. We compiled PGAPack with ``xlc`` and
-linked with ``mpCC``. Execution required setting a number of environment
-variables. We were successful with the following, but this may vary with
-the system software installed on the SP you are using.
-
-::
-
-   setenv MP_HOSTFILE /sphome/hostfile
-   setenv MP_PROCS       np
-   setenv MP_EUILIB      us
-   setenv MP_INFOLEVEL    0
-   setenv MP_HOLD_STDIN YES
-   setenv MP_PULSE        0
-   a.out
-
-Convex Exemplar
-^^^^^^^^^^^^^^^
-
-We used ``MPICH`` with the ``ch_shmem`` device. Be sure to compile (the
-Fortran examples) with ``fort77``, not ``f77``. Also, you must link with
-``/usr/lib/libU77.a`` *last* to satisfy ``iargc`` and ``getarg``. This
-*must* be done *manually* in the prototype makefiles
-``./examples/fortran/Makefile.in`` and ``./examples/mgh/Makefile.in``
-*before* running ``configure``. To run a parallel PGAPack program using
-``MPICH`` use the ``mpirun`` command.
-
-Sun SparcStation
-^^^^^^^^^^^^^^^^
-
-We used ``MPICH`` with the ``ch_p4`` device and the GNU C compiler
-``gcc``. The ``instverf`` test program was run using 4 processes with:
-
-::
-
-   /usr/local/mpi/bin/mpirun instverf -arch sun4 -np 4
-
-Silicon Graphics Workstation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-We used ``MPICH`` with the ``ch_p4`` device and ``mpirun`` command, the
-``cc`` C compiler, and ``f77`` Fortran compiler.
-
-IBM/RS6000 Workstation
-^^^^^^^^^^^^^^^^^^^^^^
-
-We have successfully run PGAPack on both single workstations and
-networks of workstations using the ``MPICH`` implementation with the
-``ch_p4`` device.
-
-Hewlett Packard Workstation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-We used ``MPICH`` with the ``ch_shmem`` device and ``mpirun`` command,
-the ``gcc`` C compiler, and ``fort77`` Fortran compiler.
-
-DEC Alpha Workstation
-^^^^^^^^^^^^^^^^^^^^^
-
-DEC Alpha workstations have a 64-bit address space. On this machine the
-size of an integer (``int`` in C and ``integer`` in Fortran) is not the
-same as the size of an address. Fortran users should use the declaration
-``integer*8`` for the context variable (and ``integer`` for other
-Fortran integer declarations). See also Chapter :ref:`chp:fortran`.
+implementation. This section used to have documentation about a lot of
+machines that no longer exist today. We refer you to the documentation
+of OpenMPI [OMPI23]_ or MPICH [MPIC23]_ or the documentation of whatever
+MPI implementation you are using.
 
 .. _chp:problems:
 
 Common Problems
 ---------------
 
--  When reading input value to be used as parameters in ``PGASet``
-   calls, the ``PGAset`` calls themselves may not be executed until
-   *after* ``PGACreate`` has been called.
+This collects some problems seen over the years, some may be specific to
+MPI versions or variants that are no longer in use, since it is hard to
+know what is still relevant all information has been left in.
+
+-  When reading input value to be used as parameters in
+   :ref:`PGASet <group:init>` calls, the :ref:`PGAset <group:init>`
+   calls themselves may not be executed until *after*
+   :c:func:`PGACreate` has been called.
 
 -  In C, when reading input parameters which are of type ``double``, the
    ``scanf`` conversion specification should be of the form ``%lf``,
@@ -624,9 +464,9 @@ Common Problems
    careful to make sure that they pass a ``double precision`` constant
    or variable.
 
--  ``PGACreate`` removes command line arguments. One consequence is that
-   if ``PGACreate`` is called twice in the same program (unusual, but
-   legal), the second ``PGACreate`` call will *not* receive the
+-  :c:func:`PGACreate` removes command line arguments. One consequence is that
+   if :c:func:`PGACreate` is called twice in the same program (unusual, but
+   legal), the second :c:func:`PGACreate` call will *not* receive the
    command-line arguments.
 
 -  If one includes ``mpi.h`` (or ``mpif.h``) when it should not be,
@@ -662,7 +502,7 @@ Common Problems
    We have also seen the following error from not including ``bmpif.h``
    in the main program:
 
-   ::
+   .. code-block:: none
 
       PGACreate: Invalid value of datatype: 0
       PGAError: Fatal
@@ -671,7 +511,7 @@ Common Problems
    one must have a correct processor group file (``procgroup``). The
    error message
 
-   ::
+   .. code-block:: none
 
       (ptera-36%)a.out
       p0_18429:  p4_error: open error on procgroup file (procgroup): 0
@@ -686,7 +526,7 @@ Common Problems
 -  When compiling the ``examples`` directory we have seen “multiply
    defined” error messages. For example:
 
-   ::
+   .. code-block:: none
 
       Making C examples
         Compiling classic
@@ -699,4 +539,7 @@ Common Problems
    a new, parallel version of PGAPack. The “fake” MPI stub routines are
    in the sequential library and have name conflicts when a “real” MPI
    library is referenced. The solution is to delete the old ``.a`` file
-   and rerun ``make install``.
+   and rerun ``make install``. The ``Makefile`` target ``clobber`` takes
+   care of deleting all exiting libraries::
+
+     make clobber

@@ -89,7 +89,8 @@ privately owned rights.
     It *may* be called when using a native datatype to replace the built-in
     functions PGAPack has for that datatype (For example, if the Integer data
     type is used for a traveling salesperson problem, the user may want to
-    provide their own custom crossover operator).  See the user guide and the
+    provide their own custom crossover operator).  See chapters
+    :ref:`chp:custom1` and :ref:`chp:new-data` in the user guide and the
     examples in the examples directory for more details.
 
     Example

@@ -1224,7 +1224,7 @@ void PGADebugPrint
     -----------
 
     Only does anything if PGAPack was compiled to include debugging
-    calls.  See the user guide for details.
+    calls. See chapter :ref:`chp:debug` in the user guide for details.
 
     Example
     -------
@@ -1284,7 +1284,7 @@ void PGASetDebugLevel (PGAContext *ctx, int level)
     -----------
 
     Only does anything if PGAPack was compiled to include debugging
-    calls. See the user guide for details.
+    calls. See chapter :ref:`chp:debug` in the user guide for details.
 
     Example
     -------

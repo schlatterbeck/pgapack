@@ -79,6 +79,8 @@ Bibliography
 .. [MPI94]  Message Passing Interface Forum. MPI: A message-passing
             interface standard. *International Journal of Supercomputing
             Applications,* 8(3/4), 1994.
+.. [MPIC23] `MPICH`_ homepage, last visited 2023-01-15.
+.. [OMPI23] `Open MPI`_ homepage, last visited 2023-01-15.
 .. [Pel05]  Martin Pelikan. *Hierarchical Bayesian Optimization Algorithm:
             Toward a New Generation of Evolutionary Algorithms,* volume
             170 of *Studies in Fuzziness and Soft Computing.* Springer, 2005.
@@ -142,3 +144,5 @@ Bibliography
 
 .. _`stackoverflow Article`:
     https://stackoverflow.com/questions/3170239/fortran-integer4-vs-integer4-vs-integerkind-4
+.. _`Open MPI`: https://www.open-mpi.org/
+.. _`MPICH`: https://www.mpich.org/

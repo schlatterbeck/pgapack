@@ -62,8 +62,8 @@ privately owned rights.
     Description
     -----------
 
-    The type of mutation depends on the data type.  Refer to the user
-    guide for data-specific examples.
+    The type of mutation depends on the data type.  Refer to section
+    :ref:`sec:mutation` in the user guide for data-specific examples.
 
     Example
     -------
@@ -134,7 +134,7 @@ int PGAMutate (PGAContext *ctx, int p, int pop)
     PGA_MUTATION_POLY (Real/Integer). The default for integer-valued strings
     conforms to how the strings were initialized.  The default for real-valued
     strings is PGA_MUTATION_GAUSSIAN.
-    See section :ref:`sec:mutation` of the user guide for more details.
+    See section :ref:`sec:mutation` in the user guide for more details.
 
     Example
     -------
@@ -245,7 +245,7 @@ int PGAGetMutationType (PGAContext *ctx)
     The use of this value depends on the type of mutation being used.
     The default value is 0.1 unless the mutation type is
     ``PGA_MUTATION_CONSTANT`` in which case the default is 0.01.  See
-    section :ref:`sec:mutation` of the user guide for more details.
+    section :ref:`sec:mutation` in the user guide for more details.
 
     Example
     -------
@@ -1095,7 +1095,7 @@ double PGAGetDECrossoverProb (PGAContext *ctx)
     By default jitter is turned off (the value is 0 by default).
     Very small amounts (on the order of 0.001) have been
     recommended for some problems like digital filter design.
-    See section :ref:`sec:mutation` of the user guide for details.
+    See section :ref:`sec:mutation` in the user guide for details.
 
     Example
     -------
@@ -1380,7 +1380,7 @@ int PGAGetDECrossoverType (PGAContext *ctx)
     By default dither is turned off (the value is 0 by default).
     Quite large amounts (on the order of 0.5) are recommended
     for some problems like digital filter design.
-    See section :ref:`sec:mutation` of the user guide for details.
+    See section :ref:`sec:mutation` in the user guide for details.
 
     Example
     -------
