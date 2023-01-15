@@ -381,8 +381,6 @@ for Fortran, a variable to handle an error return code (``ierror``).
          call MPI_Init(ierror)
          call MPI_Comm_rank(MPI_COMM_WORLD, myid, ierror)
 
-   c     Process 0 has a dialog with the user and broadcasts the user's 
-   c     parameters to all other processes
          if (myid .eq. 0) then
             print *, 'String length?'
             read  *, len
