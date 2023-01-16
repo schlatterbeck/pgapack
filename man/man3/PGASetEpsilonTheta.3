@@ -27,17 +27,17 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetEpsilonTheta" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetEpsilonTheta" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetEpsilonTheta \- Set the theta generation value that is used for initializing the epsilon constraint. 
 .SH SYNOPSIS
-.B void  PGASetEpsilonTheta(\fI\%PGAContext\fP  *ctx, int  n) 
+.B void  PGASetEpsilonTheta(\fI\%PGAContext\fP  *ctx, int  theta) 
 .sp
 .SH DESCRIPTION
 .sp
 The initial population is sorted by constraint violation and the
-individual with index theta is used for initializing the epsilon_0
-for the epsilon constraint method.
+individual with index \fBtheta\fP is used for initializing the initial
+epsilon for the epsilon constraint method.
 .SH EXAMPLE
 .sp
 .nf
@@ -54,7 +54,7 @@ PGASetEpsilonTheta (ctx, n);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBn\fP \-\- population index theta 
+\fBtheta\fP \-\- population index 
 .SH RETURNS
 None
 .SH LOCATION

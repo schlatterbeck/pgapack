@@ -27,12 +27,18 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetDEDither" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetDEDither" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetDEDither \- Set the Differential Evolution dither range (+/-). 
 .SH SYNOPSIS
 .B void  PGASetDEDither(\fI\%PGAContext\fP  *ctx, double  val) 
 .sp
+.SH DESCRIPTION
+.sp
+By default dither is turned off (the value is 0 by default).
+Quite large amounts (on the order of 0.5) are recommended
+for some problems like digital filter design.
+See section \fI\%Mutation\fP in the user guide for details.
 .SH EXAMPLE
 .sp
 .nf
@@ -40,7 +46,7 @@ PGASetDEDither \- Set the Differential Evolution dither range (+/-).
 PGAContext *ctx;
 
 \&...
-PGASetDEDither (ctx, 0.25);
+PGASetDEDither (ctx, 0.5);
 .ft P
 .fi
 

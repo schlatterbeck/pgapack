@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetRTRWindowSize" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetRTRWindowSize" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetRTRWindowSize \- Set window size used for restricted tournament replacement. 
 .SH SYNOPSIS
@@ -35,12 +35,12 @@ PGASetRTRWindowSize \- Set window size used for restricted tournament replacemen
 .sp
 .SH DESCRIPTION
 .sp
-This function will have no effect unless PGA_POPREPL_RTR was
-specified as  the population replacement strategy with
+This function will have no effect unless \fI\%PGA_POPREPL_RTR\fP
+was specified as  the population replacement strategy with
 \fI\%PGASetPopReplaceType()\fP\&.
 The window size must be smaller than the population size.
-The default is min (n, N/20) where n is the string length and N is
-the population size.
+The default is \emin (n, N/20) where n is the string length
+and N is the population size.
 .SH EXAMPLE
 .sp
 .nf

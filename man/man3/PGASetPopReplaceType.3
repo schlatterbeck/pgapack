@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetPopReplaceType" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetPopReplaceType" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetPopReplaceType \- Choose method of replacing strings in the new population. 
 .SH SYNOPSIS
@@ -35,17 +35,20 @@ PGASetPopReplaceType \- Choose method of replacing strings in the new population
 .sp
 .SH DESCRIPTION
 .sp
-Valid choices are PGA_POPREPL_BEST,
-PGA_POPREPL_RANDOM_NOREP, or PGA_POPREPL_RANDOM_REP for copying the best
+Valid choices are \fI\%PGA_POPREPL_BEST\fP,
+\fI\%PGA_POPREPL_RANDOM_NOREP\fP, or
+\fI\%PGA_POPREPL_RANDOM_REP\fP for copying the best
 strings, or  random string, with or without replacement, respectively,
 from the old population into the new population. Additional
-replacement types are PGA_POPREPL_RTR for restricted tournament
-replacement, PGA_POPREPL_PAIRWISE_BEST for pairwise comparison of
-each individual in the old/new population, and PGA_POPREPL_NSGA_II
-and PGA_POPREPL_NSGA_III
+replacement types are \fI\%PGA_POPREPL_RTR\fP for restricted
+tournament replacement, \fI\%PGA_POPREPL_PAIRWISE_BEST\fP for
+pairwise comparison of each individual in the old/new population,
+and \fI\%PGA_POPREPL_NSGA_II\fP and \fI\%PGA_POPREPL_NSGA_III\fP
 for multiobjective optimization using the Nondominated Sorting
 Genetic Algorithm (NSGA\-II or NSGA\-III).
-The default is PGA_POPREPL_BEST.
+The default is \fI\%PGA_POPREPL_BEST\fP\&.
+See \fI\%Constants for Population Replacement Strategies\fP for the constants and section
+\fI\%Population Replacement\fP in the user guide for details.
 .SH EXAMPLE
 .sp
 .nf

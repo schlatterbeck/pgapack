@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetUserFunction" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetUserFunction" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetUserFunction \- Specify the name of a user-written function to provide a specific GA capability (e.g., crossover, mutation, etc.). 
 .SH SYNOPSIS
@@ -38,47 +38,50 @@ PGASetUserFunction \- Specify the name of a user-written function to provide a s
 This function \fImust\fP be used when using a non\-native
 datatype and must be called once for each of:
 .IP \(bu 2
-PGA_USERFUNCTION_CREATESTRING     \-\- String creation
+\fI\%PGA_USERFUNCTION_CREATESTRING\fP     \-\- String creation
 .IP \(bu 2
-PGA_USERFUNCTION_MUTATION         \-\- Mutation
+\fI\%PGA_USERFUNCTION_MUTATION\fP         \-\- Mutation
 .IP \(bu 2
-PGA_USERFUNCTION_CROSSOVER        \-\- Crossover
+\fI\%PGA_USERFUNCTION_CROSSOVER\fP        \-\- Crossover
 .IP \(bu 2
-PGA_USERFUNCTION_PRINTSTRING      \-\- String Output
+\fI\%PGA_USERFUNCTION_PRINTSTRING\fP      \-\- String Output
 .IP \(bu 2
-PGA_USERFUNCTION_COPYSTRING       \-\- Duplication
+\fI\%PGA_USERFUNCTION_COPYSTRING\fP       \-\- Duplication
 .IP \(bu 2
-PGA_USERFUNCTION_DUPLICATE        \-\- Duplicate Checking
+\fI\%PGA_USERFUNCTION_DUPLICATE\fP        \-\- Duplicate Checking
 .IP \(bu 2
-PGA_USERFUNCTION_GEN_DISTANCE     \-\- Genetic Distance
+\fI\%PGA_USERFUNCTION_GEN_DISTANCE\fP     \-\- Genetic Distance
 .IP \(bu 2
-PGA_USERFUNCTION_INITSTRING       \-\- Initialization
+\fI\%PGA_USERFUNCTION_INITSTRING\fP       \-\- Initialization
 .IP \(bu 2
-PGA_USERFUNCTION_BUILDDATATYPE    \-\- MPI Datatype creation
+\fI\%PGA_USERFUNCTION_BUILDDATATYPE\fP    \-\- MPI Datatype creation
 .IP \(bu 2
-PGA_USERFUNCTION_STOPCOND         \-\- Stopping conditions
+\fI\%PGA_USERFUNCTION_STOPCOND\fP         \-\- Stopping conditions
 .IP \(bu 2
-PGA_USERFUNCTION_ENDOFGEN         \-\-
+\fI\%PGA_USERFUNCTION_ENDOFGEN\fP         \-\-
 Auxiliary functions at the end of each generation
 .IP \(bu 2
-PGA_USERFUNCTION_PRE_EVAL         \-\-
+\fI\%PGA_USERFUNCTION_PRE_EVAL\fP         \-\-
 Auxiliary functions before evaluation but after crossover and
 mutation
 .IP \(bu 2
-PGA_USERFUNCTION_HASH             \-\- Hashing of genes
+\fI\%PGA_USERFUNCTION_HASH\fP             \-\- Hashing of genes
 .IP \(bu 2
-PGA_USERFUNCTION_SERIALIZE        \-\- Serialize userdefined gene
+\fI\%PGA_USERFUNCTION_SERIALIZE\fP        \-\- Serialize userdefined gene
 .IP \(bu 2
-PGA_USERFUNCTION_DESERIALIZE      \-\- Deserialize userdefined gene
+\fI\%PGA_USERFUNCTION_DESERIALIZE\fP      \-\-
+Deserialize userdefined gene
 .IP \(bu 2
-PGA_USERFUNCTION_SERIALIZE_FREE   \-\- Free serialized version
+\fI\%PGA_USERFUNCTION_SERIALIZE_FREE\fP   \-\- Free serialized version
 .IP \(bu 2
-PGA_USERFUNCTION_CHROM_FREE       \-\- Free chromosome
+\fI\%PGA_USERFUNCTION_CHROM_FREE\fP       \-\- Free chromosome
 .sp
 It \fImay\fP be called when using a native datatype to replace the built\-in
 functions PGAPack has for that datatype (For example, if the Integer data
 type is used for a traveling salesperson problem, the user may want to
-provide their own custom crossover operator).  See the user guide and the
+provide their own custom crossover operator).  See
+\fI\%Constants for User Functions\fP for the constants and chapters
+\fI\%Custom Usage: Native Data Types\fP and \fI\%Custom Usage: New Data Types\fP in the user guide and the
 examples in the examples directory for more details.
 .SH EXAMPLE
 .sp

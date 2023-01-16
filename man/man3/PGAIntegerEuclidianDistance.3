@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAIntegerEuclidianDistance" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAIntegerEuclidianDistance" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAIntegerEuclidianDistance \- Compute genetic distance of two strings. 
 .SH SYNOPSIS
@@ -39,7 +39,7 @@ This uses the Euclidian distance metric, the square\-root of the sum
 of all squared differences of each allele. It can be used to
 override the default integer genetic distance function (which uses a
 manhattan distance metric) using \fI\%PGASetUserFunction()\fP with
-the PGA_USERFUNCTION_GEN_DISTANCE setting.
+the \fI\%PGA_USERFUNCTION_GEN_DISTANCE\fP setting.
 .SH EXAMPLE
 .sp
 Override genetic distance function:

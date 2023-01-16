@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetCrossoverType" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetCrossoverType" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetCrossoverType \- Specify the type of crossover to use. 
 .SH SYNOPSIS
@@ -35,12 +35,15 @@ PGASetCrossoverType \- Specify the type of crossover to use.
 .sp
 .SH DESCRIPTION
 .sp
-Valid   choices   are   PGA_CROSSOVER_ONEPT,   PGA_CROSSOVER_TWOPT,
-or PGA_CROSSOVER_UNIFORM, PGA_CROSSOVER_SBX, and PGA_CROSSOVER_EDGE
+Valid choices are \fI\%PGA_CROSSOVER_ONEPT\fP,
+\fI\%PGA_CROSSOVER_TWOPT\fP, or \fI\%PGA_CROSSOVER_UNIFORM\fP,
+\fI\%PGA_CROSSOVER_SBX\fP, and \fI\%PGA_CROSSOVER_EDGE\fP
 for one\-point, two\-point, uniform, simulated binary (SBX), and edge
-crossover, respectively.  The default is PGA_CROSSOVER_TWOPT.
+crossover, respectively.  The default is \fI\%PGA_CROSSOVER_TWOPT\fP\&.
 Edge crossover is only defined for integer genes and SBX is only
-defined for integer and real genes.
+defined for integer and real genes. See \fI\%Crossover Constants\fP
+for the constants and section \fI\%Crossover\fP in the user guide
+for details.
 .SH EXAMPLE
 .sp
 Use uniform crossover when crossingover strings.

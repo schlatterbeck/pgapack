@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetBestReportIndex" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetBestReportIndex" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAGetBestReportIndex \- Return the index of the string with the best evaluation function value in population pop for the given evaluation index. 
 .SH SYNOPSIS
@@ -35,11 +35,11 @@ PGAGetBestReportIndex \- Return the index of the string with the best evaluation
 .sp
 .SH DESCRIPTION
 .sp
-The evaluation function index must be 0 < idx <= NumAuxEval. So for
-single evaluation only the index 0 is allowed and the return is the
-same as from PGAGetBestIndex. Note that this accesses the pre\-computed
-statistics and therefore only PGA_OLDPOP is allowed for the population
-constant.
+The evaluation function index must be 0 < \fBidx\fP <= \fBNumAuxEval\fP\&.
+So for single evaluation only the index 0 is allowed and the return
+is the same as from \fI\%PGAGetBestIndex()\fP\&. Note that this
+accesses the pre\-computed statistics and therefore only
+\fI\%PGA_OLDPOP\fP is allowed for the population constant.
 .SH EXAMPLE
 .sp
 .nf
@@ -57,7 +57,7 @@ best = PGAGetBestReportIndex (ctx, PGA_OLDPOP, 1);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBpop\fP \-\- symbolic constant of the population to find the best string in only PGA_OLDPOP is allowed 
+\fBpop\fP \-\- symbolic constant of the population to find the best string in 
 .IP \(bu 2
 \fBidx\fP \-\- Index of the evaluation function, 0 for the one return by your evaluation function 1 .. NumAuxEval for the auxiliary evaluations 
 .SH RETURNS

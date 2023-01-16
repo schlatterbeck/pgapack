@@ -219,12 +219,16 @@ void PGASetIntegerAllele (PGAContext *ctx, int p, int pop, int i, int val)
 
     \rst
 
+    Description
+    -----------
+
+    Assumes the data type is :c:macro:`PGA_DATATYPE_INTEGER`.
+
     Example
     -------
 
     Returns the value of integer allele ``i`` of string ``p`` in
-    population :c:macro:`PGA_NEWPOP`.  Assumes the data type is
-    :c:macro:`PGA_DATATYPE_INTEGER`.
+    population :c:macro:`PGA_NEWPOP`.
 
     .. code-block:: c
 

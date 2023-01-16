@@ -27,17 +27,30 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGADebugPrint" "3" "2023-01-09" "" "PGAPack"
+.TH "PGADebugPrint" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGADebugPrint \- Write debugging information. 
 .SH SYNOPSIS
 .B void  PGADebugPrint(\fI\%PGAContext\fP  *ctx, int  level, char  *funcname, char  *msg, int  datatype, void  *data) 
 .sp
+.SH DESCRIPTION
+.sp
+Valid values for \fBlevel\fP are \fI\%PGA_DEBUG_ENTERED\fP,
+\fI\%PGA_DEBUG_EXIT\fP, \fI\%PGA_DEBUG_MALLOC\fP,
+\fI\%PGA_DEBUG_PRINTVAR\fP, \fI\%PGA_DEBUG_SEND\fP, and
+\fI\%PGA_DEBUG_RECV\fP\&. See \fI\%Debugging Constants\fP for the
+constants and chapter \fI\%Debugging Tools\fP in the user guide for details.
+.sp
+Valid values for the \fBdatatype\fP argument are \fI\%PGA_INT\fP,
+\fI\%PGA_DOUBLE\fP, \fI\%PGA_CHAR\fP and \fI\%PGA_VOID\fP
+(no data). The parameter \fBdata\fP should be NULL, for
+\fI\%PGA_VOID\fP\&. See \fI\%Constants for Error Printing\fP for the
+constants in the user guide for details.
 .SH EXAMPLE
 .sp
 If the debugging level includes printing variables (level 82), print the
 value of the integer variable num as a debugging tool in the routine
-Add2Nums.
+\fBAdd2Nums\fP\&.
 .sp
 .nf
 .ft C
@@ -57,15 +70,15 @@ PGADebugPrint
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBlevel\fP \-\- a symbolic constant that maps to the type of print requested (e.g., an entry or exit print). Valid values are PGA_DEBUG_ENTERED, PGA_DEBUG_EXIT, PGA_DEBUG_MALLOC, PGA_DEBUG_PRINTVAR, PGA_DEBUG_SEND, and PGA_DEBUG_RECV. 
+\fBlevel\fP \-\- a symbolic constant that maps to the type of print requested (e.g., an entry or exit print). 
 .IP \(bu 2
 \fBfuncname\fP \-\- the name of the function that called this routine 
 .IP \(bu 2
 \fBmsg\fP \-\- message to print 
 .IP \(bu 2
-\fBdatatype\fP \-\- a symbolic constant that maps to the data type of the parameter data. Valid choices are PGA_INT, PGA_DOUBLE, PGA_CHAR and PGA_VOID (no data). 
+\fBdatatype\fP \-\- a symbolic constant that maps to the data type of the parameter data 
 .IP \(bu 2
-\fBdata\fP \-\- a pointer, whose contents will be interpreted based upon the datatype parameter (or NULL, if PGA_VOID). 
+\fBdata\fP \-\- a pointer, whose contents will be interpreted based upon the datatype parameter 
 .SH RETURNS
 The debugging information is printed to stdout
 .SH LOCATION

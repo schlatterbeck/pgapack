@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetSelectType" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetSelectType" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetSelectType \- Specify the type of selection to use. 
 .SH SYNOPSIS
@@ -35,12 +35,15 @@ PGASetSelectType \- Specify the type of selection to use.
 .sp
 .SH DESCRIPTION
 .sp
-Valid choices
-are PGA_SELECT_PROPORTIONAL, PGA_SELECT_SUS, PGA_SELECT_TOURNAMENT,
-PGA_SELECT_PTOURNAMENT, PGA_SELECT_TRUNCATION, and PGA_SELECT_LINEAR
-for proportional, stochastic universal selection,
-tournament, probabilistic tournament selection, truncation selection
-and linear selection, respectively.  The default is PGA_SELECT_TOURNAMENT.
+Valid choices are \fI\%PGA_SELECT_PROPORTIONAL\fP,
+\fI\%PGA_SELECT_SUS\fP, \fI\%PGA_SELECT_TOURNAMENT\fP,
+\fI\%PGA_SELECT_PTOURNAMENT\fP, \fI\%PGA_SELECT_TRUNCATION\fP,
+and \fI\%PGA_SELECT_LINEAR\fP for proportional, stochastic
+universal selection, tournament, probabilistic tournament selection,
+truncation selection and linear selection, respectively.  The
+default is \fI\%PGA_SELECT_TOURNAMENT\fP\&. See
+\fI\%Constants for Selection Types\fP for the constants and section
+\fI\%Selection\fP in the user guide for details.
 .SH EXAMPLE
 .sp
 .nf

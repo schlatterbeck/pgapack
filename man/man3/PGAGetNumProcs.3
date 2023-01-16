@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetNumProcs" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetNumProcs" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAGetNumProcs \- Return the size of communicator comm in processes. 
 .SH SYNOPSIS
@@ -35,8 +35,8 @@ PGAGetNumProcs \- Return the size of communicator comm in processes.
 .sp
 .SH DESCRIPTION
 .sp
-If comm is NULL or a sequential version of PGAPack is used,
-PGAGetNumProcs returns 1.
+If \fBcomm\fP is \fBNULL\fP or a sequential version of PGAPack is used,
+1 is returned.
 .SH EXAMPLE
 .sp
 .nf

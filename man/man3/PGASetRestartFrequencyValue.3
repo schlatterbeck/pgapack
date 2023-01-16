@@ -27,12 +27,17 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetRestartFrequencyValue" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetRestartFrequencyValue" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetRestartFrequencyValue \- Specify the number of iterations of no change in the best string after which the algorithm should restart. 
 .SH SYNOPSIS
 .B void  PGASetRestartFrequencyValue(\fI\%PGAContext\fP  *ctx, int  numiter) 
 .sp
+.SH DESCRIPTION
+.sp
+By default no restarts are performed, see
+\fI\%PGASetRestartFlag()\fP\&. If restarts are performed, the default
+is after 50 iterations of no change.
 .SH EXAMPLE
 .sp
 .nf

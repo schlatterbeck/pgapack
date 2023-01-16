@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGABuildDatatypeHeader" "3" "2023-01-09" "" "PGAPack"
+.TH "PGABuildDatatypeHeader" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGABuildDatatypeHeader \- Common part for building an MPI datatype for an individual. 
 .SH SYNOPSIS
@@ -35,8 +35,9 @@ PGABuildDatatypeHeader \- Common part for building an MPI datatype for an indivi
 .sp
 .SH DESCRIPTION
 .sp
-Returns by side effect a partially filled array of counts, displs,
-types. The returned index will be max PGA_MPI_HEADER_ELEMENTS.
+Returns by side effect a partially filled array of \fBcounts\fP,
+\fBdispls\fP, \fBtypes\fP\&. The returned index will be max
+\fI\%PGA_MPI_HEADER_ELEMENTS\fP\&.
 This means callers may use a statically allocated buffer.
 .SH EXAMPLE
 .sp

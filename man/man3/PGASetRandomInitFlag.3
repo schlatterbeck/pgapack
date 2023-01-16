@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetRandomInitFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetRandomInitFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetRandomInitFlag \- A boolean flag to indicate whether to randomly initialize alleles. 
 .SH SYNOPSIS
@@ -35,8 +35,8 @@ PGASetRandomInitFlag \- A boolean flag to indicate whether to randomly initializ
 .sp
 .SH DESCRIPTION
 .sp
-Legal values are PGA_TRUE and PGA_FALSE.  Default
-is PGA_TRUE: randomly initialize alleles.
+Legal values are \fI\%PGA_TRUE\fP and \fI\%PGA_FALSE\fP\&.  Default
+is \fI\%PGA_TRUE\fP: randomly initialize alleles.
 .SH EXAMPLE
 .sp
 Set the initialization routine to initialize all alleles to zero:
@@ -55,7 +55,7 @@ PGASetRandomInitFlag (ctx,PGA_FALSE);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBflag\fP \-\- either PGA_TRUE or PGA_FALSE 
+\fBflag\fP \-\- indicates whether random initialization should be performed 
 .SH RETURNS
 None
 .SH LOCATION

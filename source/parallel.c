@@ -75,7 +75,7 @@ privately owned rights.
     Description
     -----------
 
-    It is called after :c:func:`PGACreate` and :c:func:`PGASetup` have
+    It is called after :c:func:`PGACreate` and :c:func:`PGASetUp` have
     been called. If a ``NULL`` communicator is given, a sequential
     execution method is used, otherwise, work is divided among the
     processors in the communicator.

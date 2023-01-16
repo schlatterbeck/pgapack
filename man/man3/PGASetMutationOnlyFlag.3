@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetMutationOnlyFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetMutationOnlyFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetMutationOnlyFlag \- Set a boolean flag to indicate that recombination uses mutation only. 
 .SH SYNOPSIS
@@ -39,15 +39,15 @@ Note: This is a legacy interface, use \fI\%PGASetMixingType()\fP instead.
 Note: This will override settings of
 \fI\%PGASetMutationOrCrossoverFlag()\fP and
 \fI\%PGASetMutationAndCrossoverFlag()\fP and will set the default
-(\fI\%PGASetMutationOrCrossoverFlag()\fP) when using PGA_FALSE as
-the flag. Do not use this for new code.
+(\fI\%PGASetMutationOrCrossoverFlag()\fP) when using
+\fI\%PGA_FALSE\fP as the flag. Do not use this for new code.
 
  
 .SH PARAMETERS
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBflag\fP \-\- PGA_TRUE (default) or PGA_FALSE 
+\fBflag\fP \-\- to indicate if only mutation is used 
 .SH RETURNS
 None
 .SH LOCATION

@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAFitness" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAFitness" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAFitness \- Map the user's evaluation function value to a fitness value. 
 .SH SYNOPSIS
@@ -41,11 +41,14 @@ is translated to a maximization problem if the user\(aqs optimization
 direction was minimization.  This positive sequence is then mapped
 to a fitness value using linear ranking, linear normalization
 fitness, or the identity (i.e., the evaluation function value).
-This routine is usually used after \fI\%PGAEvaluate()\fP is called.
+See \fI\%Constants for Fitness Types\fP in the user guide for allowed
+values. This routine is usually used after \fI\%PGAEvaluate()\fP is
+called.
 .SH EXAMPLE
 .sp
-Calculate the fitness of all strings in population PGA_NEWPOP after
-calling PGAEvaluate to calculate the strings evaluation value.
+Calculate the fitness of all strings in population
+\fI\%PGA_NEWPOP\fP after calling \fI\%PGAEvaluate()\fP to
+calculate the strings evaluation value.
 .sp
 .nf
 .ft C

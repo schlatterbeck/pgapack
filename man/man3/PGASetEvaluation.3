@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "_PGASetEvaluation" "3" "2023-01-09" "" "PGAPack"
+.TH "_PGASetEvaluation" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 _PGASetEvaluation \- Set the evaluation function value for a string to a specified value. 
 .SH SYNOPSIS
@@ -38,11 +38,11 @@ _PGASetEvaluation \- Set the evaluation function value for a string to a specifi
 This uses a trick for implementing optional arguments in C. The real
 function to use is without leading underscore. There is a
 macro that makes the last argument optional.
-Also sets the evaluation up to date flag to PGA_TRUE.
+Also sets the evaluation up to date flag to \fI\%PGA_TRUE\fP\&.
 .SH EXAMPLE
 .sp
-Set the evaluation function value of string p in population PGA_NEWPOP
-to 123.456.
+Set the evaluation function value of string \fBp\fP in population
+\fI\%PGA_NEWPOP\fP to 123.456.
 .sp
 .nf
 .ft C
@@ -76,7 +76,7 @@ PGASetEvaluation (ctx, p, PGA_NEWPOP, 123.456, aux);
 .IP \(bu 2
 \fBaux\fP \-\- Auxiliary evaluations 
 .SH RETURNS
-Sets the evaluation function value of string p and the EvalUpToDate flag (to PGA_TRUE) via side effect
+Sets the evaluation function value of string p and the EvalUpToDate flag via side effect
 .SH LOCATION
 \fI\%File evaluate.c\fP
 .SH COPYRIGHT

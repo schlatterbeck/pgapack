@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetFitnessMinType" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetFitnessMinType" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetFitnessMinType \- Set the type of algorithm used if a minimization problem is specified to determine how values are remapped for maximization. 
 .SH SYNOPSIS
@@ -35,10 +35,13 @@ PGASetFitnessMinType \- Set the type of algorithm used if a minimization problem
 .sp
 .SH DESCRIPTION
 .sp
-Valid choices are PGA_FITNESSMIN_RECIPROCAL and PGA_FITNESSMIN_CMAX to do
-the mapping using the reciprocal of the evaluation function, or by
-subtracting the worst evaluation function value from each evaluation
-function value, respectively.  The default is PGA_FITNESSMIN_CMAX.
+Valid choices are \fI\%PGA_FITNESSMIN_RECIPROCAL\fP and
+\fI\%PGA_FITNESSMIN_CMAX\fP to do the mapping using the
+reciprocal of the evaluation function, or by subtracting the worst
+evaluation function value from each evaluation function value,
+respectively.  The default is \fI\%PGA_FITNESSMIN_CMAX\fP\&.
+See \fI\%Constants for Fitness Minimization Strategies\fP for the constants and section
+\fI\%String Evaluation and Fitness\fP in the user guide for details.
 .SH EXAMPLE
 .sp
 .nf

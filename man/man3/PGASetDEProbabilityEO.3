@@ -27,12 +27,18 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetDEProbabilityEO" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetDEProbabilityEO" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGASetDEProbabilityEO \- Set the either-or probability for PGA_DE_VARIANT_EITHER_OR of Differential Evolution. 
+PGASetDEProbabilityEO \- Set the either-or probability of Differential Evolution. 
 .SH SYNOPSIS
 .B void  PGASetDEProbabilityEO(\fI\%PGAContext\fP  *ctx, double  val) 
 .sp
+.SH DESCRIPTION
+.sp
+The default for this probability is 0.5, it is only used
+when the either\-or variant of Differential Evolution has
+been selected by calling \fI\%PGASetDEVariant()\fP with
+parameter \fBPGA_DE_VARIANT_EITHER_OR\fP\&.
 .SH EXAMPLE
 .sp
 .nf

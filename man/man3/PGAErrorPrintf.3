@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAErrorPrintf" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAErrorPrintf" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAErrorPrintf \- Report error messages using printf-like interface. 
 .SH SYNOPSIS
@@ -36,9 +36,11 @@ PGAErrorPrintf \- Report error messages using printf-like interface.
 .SH DESCRIPTION
 .sp
 Prints out the message supplied, and optional parameters.
-Uses a printf\-style interface. Terminates if PGA_FATAL.
-Note that compared to \fI\%PGAError()\fP msg and level are
-exchanged, seems more natural.
+Uses a printf\-style interface. Terminates if \fI\%PGA_FATAL\fP\&.
+Note that compared to \fI\%PGAError()\fP \fBmsg\fP and \fBlevel\fP are
+exchanged, seems more natural.  See \fI\%Constants for Error Printing Flags\fP
+for the \fBlevel\fP constants and \fI\%Miscellaneous\fP in the user
+guide for more information.
 .SH EXAMPLE
 .sp
 .nf
@@ -57,7 +59,7 @@ PGAErrorPrintf (ctx, PGA_FATAL, "A Fatal Error!");
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBlevel\fP \-\- PGA_WARNING or PGA_FATAL to indicate the error\(aqs severity 
+\fBlevel\fP \-\- indicate the error\(aqs severity 
 .IP \(bu 2
 \fBfmt\fP \-\- the printf\-style format to print 
 .IP \(bu 2

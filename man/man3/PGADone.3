@@ -27,15 +27,15 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGADone" "3" "2023-01-09" "" "PGAPack"
+.TH "PGADone" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGADone \- Return PGA_TRUE if the stopping conditions have been met, otherwise return PGA_FALSE. 
+PGADone \- Return true if the stopping conditions have been met. 
 .SH SYNOPSIS
 .B int  PGADone(\fI\%PGAContext\fP  *ctx, MPI_Comm  comm) 
 .sp
 .SH DESCRIPTION
 .sp
-Calls exactly one of the user defined C or fortran or system
+Calls exactly one of the user defined C or Fortran or system
 \fI\%PGACheckStoppingConditions()\fP stopping condition functions.
 .SH EXAMPLE
 .sp
@@ -55,7 +55,7 @@ PGADone (ctx, comm);
 .IP \(bu 2
 \fBcomm\fP \-\- an MPI communicator 
 .SH RETURNS
-return PGA_TRUE if at least one of the termination conditions has been met, otherwise return PGA_FALSE
+return true if at least one of the termination conditions has been met
 .SH LOCATION
 \fI\%File stop.c\fP
 .SH COPYRIGHT

@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetIntegerInitPermute" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetIntegerInitPermute" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetIntegerInitPermute \- Set a flag to tell the initialization routines to set each integer-valued gene to a random permutation of the values given by an upper and lower bound. 
 .SH SYNOPSIS
@@ -37,8 +37,9 @@ PGASetIntegerInitPermute \- Set a flag to tell the initialization routines to se
 .sp
 The length of the interval must be the same
 as the string length.  This is the default strategy for initializing
-integer\-valued strings. The default interval is [0,L\-1] where L is the
-string length.  No string initialization is done by this call.
+integer\-valued strings. The default interval is [0,L\-1]
+where L is the string length.  No string initialization is
+done by this call.
 .SH EXAMPLE
 .sp
 Set the initialization routines to set each gene to a random and

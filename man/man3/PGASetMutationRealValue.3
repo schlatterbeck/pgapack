@@ -27,16 +27,18 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetMutationRealValue" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetMutationRealValue" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGASetMutationRealValue \- Set multiplier to mutate PGA_DATATYPE_REAL strings with. 
+PGASetMutationRealValue \- Set multiplier to mutate strings of data type real with. 
 .SH SYNOPSIS
 .B void  PGASetMutationRealValue(\fI\%PGAContext\fP  *ctx, double  val) 
 .sp
 .SH DESCRIPTION
 .sp
 The use of this value depends on the type of mutation being used.
-The default value is 0.1.  See the user guide for more details.
+The default value is 0.1 unless the mutation type is
+\fI\%PGA_MUTATION_CONSTANT\fP in which case the default is 0.01.
+See section \fI\%Mutation\fP in the user guide for more details.
 .SH EXAMPLE
 .sp
 .nf

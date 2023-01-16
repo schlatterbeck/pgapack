@@ -27,12 +27,18 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetDEJitter" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetDEJitter" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetDEJitter \- Set the jitter for Differential Evolution. 
 .SH SYNOPSIS
 .B void  PGASetDEJitter(\fI\%PGAContext\fP  *ctx, double  val) 
 .sp
+.SH DESCRIPTION
+.sp
+By default jitter is turned off (the value is 0 by default).
+Very small amounts (on the order of 0.001) have been
+recommended for some problems like digital filter design.
+See section \fI\%Mutation\fP in the user guide for details.
 .SH EXAMPLE
 .sp
 .nf
@@ -40,7 +46,7 @@ PGASetDEJitter \- Set the jitter for Differential Evolution.
 PGAContext *ctx;
 
 \&...
-PGASetDEJitter (ctx, 0.75);
+PGASetDEJitter (ctx, 0.001);
 .ft P
 .fi
 

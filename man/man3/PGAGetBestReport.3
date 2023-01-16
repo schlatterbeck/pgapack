@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetBestReport" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetBestReport" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAGetBestReport \- Return the best evaluation value in population pop for the given evaluation index. 
 .SH SYNOPSIS
@@ -35,11 +35,11 @@ PGAGetBestReport \- Return the best evaluation value in population pop for the g
 .sp
 .SH DESCRIPTION
 .sp
-The evaluation function index must be 0 < idx <= NumAuxEval. So for
-single evaluation only the index 0 is allowed and the return is the
-evaluation as from \fI\%PGAGetBestIndex()\fP\&. Note that this
-accesses the pre\-computed statistics and therefore only PGA_OLDPOP
-is allowed for the population constant.
+The evaluation function index must be 0 < \fBidx\fP <= \fBNumAuxEval\fP\&.
+So for single evaluation only the index 0 is allowed and the return
+is the evaluation as from \fI\%PGAGetBestIndex()\fP\&. Note that this
+accesses the pre\-computed statistics and therefore only
+\fI\%PGA_OLDPOP\fP is allowed for the population constant.
 .SH EXAMPLE
 .sp
 .nf

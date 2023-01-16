@@ -27,12 +27,15 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetRestartFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetRestartFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetRestartFlag \- Specify whether the algorithm should employ the restart operator. 
 .SH SYNOPSIS
 .B void  PGASetRestartFlag(\fI\%PGAContext\fP  *ctx, int  val) 
 .sp
+.SH DESCRIPTION
+.sp
+By default no restart is performed.
 .SH EXAMPLE
 .sp
 .nf

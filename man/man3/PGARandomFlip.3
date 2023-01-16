@@ -27,15 +27,16 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGARandomFlip" "3" "2023-01-09" "" "PGAPack"
+.TH "PGARandomFlip" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGARandomFlip \- Flip a biased coin and return PGA_TRUE if the coin is a "winner", otherwise, return PGA_FALSE. 
+PGARandomFlip \- Flip a biased coin and return true if the coin is a "winner". 
 .SH SYNOPSIS
 .B int  PGARandomFlip(\fI\%PGAContext\fP  *ctx, double  p) 
 .sp
 .SH EXAMPLE
 .sp
-To return PGA_TRUE approximately seventy percent of the time, use
+To return \fI\%PGA_TRUE\fP approximately seventy percent of the
+time, use
 .sp
 .nf
 .ft C
@@ -54,7 +55,7 @@ bit = PGARandomFlip (ctx, 0.7)
 .IP \(bu 2
 \fBp\fP \-\- biased probability (.5 is a fair coin) 
 .SH RETURNS
-PGA_TRUE or PGA_FALSE
+true if coin flip is a winner
 .SH LOCATION
 \fI\%File random.c\fP
 .SH COPYRIGHT

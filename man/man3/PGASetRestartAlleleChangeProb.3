@@ -27,12 +27,16 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetRestartAlleleChangeProb" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetRestartAlleleChangeProb" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetRestartAlleleChangeProb \- Specify the probability with which an allele will be mutated during a restart. 
 .SH SYNOPSIS
 .B void  PGASetRestartAlleleChangeProb(\fI\%PGAContext\fP  *ctx, double  prob) 
 .sp
+.SH DESCRIPTION
+.sp
+By default the change probability for allele mutations during
+restart is 0.5.
 .SH EXAMPLE
 .sp
 .nf
@@ -40,7 +44,7 @@ PGASetRestartAlleleChangeProb \- Specify the probability with which an allele wi
 PGAContext *ctx;
 
 \&...
-PGASetRestartAlleleChangeProb (ctx, 0.5);
+PGASetRestartAlleleChangeProb (ctx, 0.7);
 .ft P
 .fi
 

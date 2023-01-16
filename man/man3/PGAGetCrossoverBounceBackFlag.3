@@ -27,12 +27,17 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetCrossoverBounceBackFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetCrossoverBounceBackFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGAGetCrossoverBounceBackFlag \- Return PGA_TRUE or PGA_FALSE to indicate whether crossed over strings are bounced back when exceeding the bounds. 
+PGAGetCrossoverBounceBackFlag \- Return boolean to indicate whether crossed over strings are bounced back when exceeding the bounds. 
 .SH SYNOPSIS
 .B int  PGAGetCrossoverBounceBackFlag(\fI\%PGAContext\fP  *ctx) 
 .sp
+.SH DESCRIPTION
+.sp
+Return \fI\%PGA_TRUE\fP if restricted to the given range by
+bouncing out\-of\-range values back from the boundary, otherwise
+\fI\%PGA_FALSE\fP\&.
 .SH EXAMPLE
 .sp
 .nf
@@ -50,7 +55,7 @@ val = PGAGetCrossoverBounceBackFlag (ctx);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .SH RETURNS
-PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+flag indicating whether out\-of\-range values are bounced back
 .SH LOCATION
 \fI\%File cross.c\fP
 .SH COPYRIGHT

@@ -27,16 +27,16 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetMaxGAIterValue" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetMaxGAIterValue" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGASetMaxGAIterValue \- Specify the maximum number of iterations for the stopping rule PGA_STOP_MAXITER. 
+PGASetMaxGAIterValue \- Specify the maximum number of iterations. 
 .SH SYNOPSIS
 .B void  PGASetMaxGAIterValue(\fI\%PGAContext\fP  *ctx, int  maxiter) 
 .sp
 .SH DESCRIPTION
 .sp
-The rule PGA_STOP_MAXITER is the default stopping
-rule and is always in effect.
+The stopping rule \fI\%PGA_STOP_MAXITER\fP is the default
+stopping rule and is always in effect.
 The default value is 1000 iterations.
 .SH EXAMPLE
 .sp

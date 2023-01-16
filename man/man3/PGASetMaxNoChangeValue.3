@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetMaxNoChangeValue" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetMaxNoChangeValue" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetMaxNoChangeValue \- Specify maximum number of iterations of no change in the evaluation function value of the best string before stopping. 
 .SH SYNOPSIS
@@ -35,8 +35,9 @@ PGASetMaxNoChangeValue \- Specify maximum number of iterations of no change in t
 .sp
 .SH DESCRIPTION
 .sp
-The default value is 50.  The stopping rule PGA_STOP_NOCHANGE must
-have been set by \fI\%PGASetStoppingRuleType()\fP for this function
+The default value is 100.  The stopping rule
+\fI\%PGA_STOP_NOCHANGE\fP must have been set by
+\fI\%PGASetStoppingRuleType()\fP for this function
 call to have any effect.
 .SH EXAMPLE
 .sp

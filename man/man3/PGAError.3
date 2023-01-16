@@ -27,14 +27,18 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAError" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAError" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAError \- Report error messages. 
 .SH SYNOPSIS
 .B void  PGAError(\fI\%PGAContext\fP  *ctx, char  *msg, int  level, int  datatype, void  *data) 
 .sp
-Prints out the message supplied, and the value of a piece of data. Terminates if PGA_FATAL.
+.SH DESCRIPTION
 .sp
+Prints out the message supplied, and the value of a piece of data.
+Terminates if \fI\%PGA_FATAL\fP\&. See \fI\%Constants for Error Printing Flags\fP
+for the \fBlevel\fP constants and \fI\%Miscellaneous\fP in the user
+guide for more information.
 .SH EXAMPLE
 .sp
 .nf
@@ -59,7 +63,7 @@ PGAError (ctx, "A Fatal Error!", PGA_FATAL, PGA_VOID, NULL);
 .IP \(bu 2
 \fBmsg\fP \-\- the error message to print 
 .IP \(bu 2
-\fBlevel\fP \-\- PGA_WARNING or PGA_FATAL to indicate the error\(aqs severity 
+\fBlevel\fP \-\- indicate the error\(aqs severity 
 .IP \(bu 2
 \fBdatatype\fP \-\- the data type of the following argument 
 .IP \(bu 2

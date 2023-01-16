@@ -27,16 +27,19 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetIntegerAllele" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetIntegerAllele" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGAGetIntegerAllele \- Return the value of allele i of member p in population pop, assume the data type is PGA_DATATYPE_INTEGER. 
+PGAGetIntegerAllele \- Return the value of allele i of member p in population pop. 
 .SH SYNOPSIS
 .B int  PGAGetIntegerAllele(\fI\%PGAContext\fP  *ctx, int  p, int  pop, int  i) 
 .sp
+.SH DESCRIPTION
+.sp
+Assumes the data type is \fI\%PGA_DATATYPE_INTEGER\fP\&.
 .SH EXAMPLE
 .sp
-Returns the value of the ith integer allele of string p
-in population PGA_NEWPOP.
+Returns the value of integer allele \fBi\fP of string \fBp\fP in
+population \fI\%PGA_NEWPOP\fP\&.
 .sp
 .nf
 .ft C

@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGARunGM" "3" "2023-01-09" "" "PGAPack"
+.TH "PGARunGM" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGARunGM \- High-level routine to execute the genetic algorithm using the global model. 
 .SH SYNOPSIS
@@ -35,9 +35,10 @@ PGARunGM \- High-level routine to execute the genetic algorithm using the global
 .sp
 .SH DESCRIPTION
 .sp
-It is called after PGACreate and PGASetup have been called.
-If a NULL communicator is given, a sequential execution method is used,
-otherwise, work is divided among the processors in the communicator.
+It is called after \fI\%PGACreate()\fP and \fI\%PGASetUp()\fP have
+been called. If a \fBNULL\fP communicator is given, a sequential
+execution method is used, otherwise, work is divided among the
+processors in the communicator.
 .SH EXAMPLE
 .sp
 .nf
