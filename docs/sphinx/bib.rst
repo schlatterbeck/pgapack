@@ -60,7 +60,7 @@ Bibliography
             Schaffer [Sch89], pages 20–27.
 .. [GD91]   David E. Goldberg and Kalyanmoy Deb. A comparative analysis
             of selection schemes used in genetic algorithms. In Gregory J.
-            E. Rawlins, editor, Foundation of Genetic Algorithms (FOGA) 1,
+            E. Rawlins, editor, Foundations of Genetic Algorithms (FOGA 1),
             volume 1, pages 69–93. Elsevier, 1991.
 .. [GKD89]  David E. Goldberg, Bradley Korb, and Kalyanmoy Deb. Messy
             genetic algorithms: Motivation, analysis, and first results.

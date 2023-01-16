@@ -100,10 +100,10 @@ PGAPack C programs *must* include the header file ``pgapack.h``. The
 PGAPack program. It initializes the context variable, ``ctx``. The
 parameters to :c:func:`PGACreate` are the arguments to the program (given by
 ``argc`` and ``argv``), the data type selected
-(``PGA_DATATYPE_BINARY``), the string length (``100``), and the
-direction of optimization (``PGA_MAXIMIZE``). The :c:func:`PGASetUp` call
-initializes all parameters and function pointers not explicitly set by
-the user to default values.
+(:c:macro:`PGA_DATATYPE_BINARY`), the string length (``100``), and the
+direction of optimization (:c:macro:`PGA_MAXIMIZE`). The
+:c:func:`PGASetUp` call initializes all parameters and function pointers
+not explicitly set by the user to default values.
 
 :c:func:`PGARun` executes the genetic algorithm. Its second argument is the
 name of a user-defined function (``evaluate``) that will be called to
@@ -232,14 +232,15 @@ The algorithm is described in more detail in
 section :ref:`sec:mutation`. Since in PGAPack the DE
 algorithm is implemented in a mutation strategy, typically for DE a
 strategy with only mutation is selected, see :c:func:`PGASetMixingType` with
-option ``PGA_MIX_MUTATE_ONLY`` in section :ref:`sec:population-replacement`.
+option :c:macro:`PGA_MIX_MUTATE_ONLY` in
+section :ref:`sec:population-replacement`.
 
 DE applies selection pressure during population replacement: A
 newly-mutated string replaces its parent if it has the same or a better
 fitness. There is no selection mechanism during the selection phase like
 in other EAs. To emulate this (non-) selection, PGAPack introduces a new
 selection type, linear selection, enabled with the parameter
-``PGA_SELECT_LINEAR`` of :c:func:`PGASetPopReplaceType`
+:c:macro:`PGA_SELECT_LINEAR` of :c:func:`PGASetPopReplaceType`
 which just returns all individuals in
 sequence and is no selection operator in the genetic-algorithm sense
 because no selection pressure is applied. More details of the selection
@@ -262,7 +263,7 @@ operator for DE are given in section :ref:`sec:selection`.
 
 For the population replacement strategy the pairwise-best replacement
 type is introduced for DE, enabled with the parameter
-``PGA_POPREPL_PAIRWISE_BEST`` of :c:func:`PGASetPopReplaceType`,
+:c:macro:`PGA_POPREPL_PAIRWISE_BEST` of :c:func:`PGASetPopReplaceType`,
 which can also be used in other EA variants
 due to the modular nature of PGAPack, more details are given in
 section :ref:`sec:population-replacement`. Typical settings for

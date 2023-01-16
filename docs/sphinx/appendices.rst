@@ -12,120 +12,120 @@ Default Values
 
 .. table:: PGAPack Default Values
 
- +----------------------+--------------------+-----------------------------------------+
- | Population size      | 100                | :c:func:`PGASetPopSize`                 |
- +----------------------+--------------------+-----------------------------------------+
- | Maximum iterations   | 1000               | :c:func:`PGASetMaxGAIterValue`          |
- +----------------------+--------------------+-----------------------------------------+
- | Maximum no change    | 100                | :c:func:`PGASetMaxNoChangeValue`        |
- | iters                |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Max. population      | 95                 | :c:func:`PGASetMaxSimilarityValue`      |
- | homogeneity before   |                    |                                         |
- | stopping             |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Number of new        | 10% of population  | :c:func:`PGASetNumReplaceValue`         |
- | strings to generate  | size (10)          |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Probability of       | 0.85               | :c:func:`PGASetCrossoverProb`           |
- | crossover            |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Uniform crossover    | 0.6                | :c:func:`PGASetUniformCrossoverProb`    |
- | bias                 |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Mutation probability | 1/L                | :c:func:`PGASetMutationProb`            |
- +----------------------+--------------------+-----------------------------------------+
- | Real mutation        | 0.1 or 0.01        | :c:func:`PGASetMutationRealValue`       |
- | constant             |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Integer mutation     | 1                  | :c:func:`PGASetMutationIntegerValue`    |
- | constant             |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Mutation range       | ``PGA_FALSE``      | :c:func:`PGASetMutationBoundedFlag`     |
- | bounded              |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Probabilistic binary | 0.6                | :c:func:`PGASetPTournamentProb`         |
- | tournament parameter |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Use restart operator | ``PGA_FALSE``      | :c:func:`PGASetRestartFlag`             |
- +----------------------+--------------------+-----------------------------------------+
- | Restart frequency    | 50                 | :c:func:`PGASetRestartFrequencyValue`   |
- +----------------------+--------------------+-----------------------------------------+
- | Restart allele       | 0.5                | :c:func:`PGASetRestartAlleleChangeProb` |
- | mutation rate        |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Allow no duplicate   | ``PGA_FALSE``      | :c:func:`PGASetNoDuplicatesFlag`        |
- | strings              |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Multiplier for       | 1.01               | :c:func:`PGASetFitnessCmaxValue`        |
- | minimization         |                    |                                         |
- | problems             |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Parameter MAX in     | 1.2                | :c:func:`PGASetMaxFitnessRank`          |
- | fitness by ranking   |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Frequency of         | 10                 | :c:func:`PGASetPrintFrequencyValue`     |
- | statistics printing  |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Print strings        | ``PGA_FALSE``      | :c:func:`PGASetPrintOptions`            |
- +----------------------+--------------------+-----------------------------------------+
- | Print offline        | ``PGA_FALSE``      | :c:func:`PGASetPrintOptions`            |
- | statistics           |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Print online         | ``PGA_FALSE``      | :c:func:`PGASetPrintOptions`            |
- | statistics           |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Print best string    | ``PGA_FALSE``      | :c:func:`PGASetPrintOptions`            |
- +----------------------+--------------------+-----------------------------------------+
- | Print worst string   | ``PGA_FALSE``      | :c:func:`PGASetPrintOptions`            |
- +----------------------+--------------------+-----------------------------------------+
- | Print genetic        | ``PGA_FALSE``      | :c:func:`PGASetPrintOptions`            |
- | distance             |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Randomly initialize  | ``PGA_TRUE``       | :c:func:`PGASetRandomInitFlag`          |
- | population           |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Probability of       | 0.5                | :c:func:`PGASetBinaryInitProb`          |
- | initializing a bit   |                    |                                         |
- | to one               |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | How to initialize    | Range              | :c:func:`PGASetRealInitRange`           |
- | real strings         |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Real initialization  | :math:`[0,1]`      | :c:func:`PGASetRealInitRange`           |
- | range                |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | How to initialize    | Permutation        | :c:func:`PGASetIntegerInitPermute`      |
- | integer strings      |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Integer              | :math:`[0,L-1]`    | :c:func:`PGASetIntegerInitPermute`      |
- | initialization range |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Seed random number   | ``PGA_TRUE``       | :c:func:`PGASetRandomSeed`              |
- | with clock           |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | Default MPI          | ``MPI_COMM_WORLD`` | :c:func:`PGASetCommunicator`            |
- | communicator         |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | DE scale factor      | 0.9                | :c:func:`PGASetDEScaleFactor`           |
- | :math:`F`            |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | DE auxiliary factor  | :math:`0.5 \cdot   | :c:func:`PGASetDEAuxFactor`             |
- | :math:`K`            | (F + 1)`           | `                                       |
- +----------------------+--------------------+-----------------------------------------+
- | DE Crossover prob    | 0.9                | :c:func:`PGASetDECrossoverProb`         |
- | :math:`Cr`           |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | DE Dither            | 0.0                | :c:func:`PGASetDEDither`                |
- +----------------------+--------------------+-----------------------------------------+
- | DE Jitter            | 0.0                | :c:func:`PGASetDEJitter`                |
- +----------------------+--------------------+-----------------------------------------+
- | DE Either/Or         | 0.5                | :c:func:`PGASetDEProbabilityEO`         |
- | Probability          |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
- | DE Number of         | 1                  | :c:func:`PGASetDENumDiffs`              |
- | differences          |                    |                                         |
- +----------------------+--------------------+-----------------------------------------+
+ +----------------------+----------------------+-----------------------------------------+
+ | Population size      | 100                  | :c:func:`PGASetPopSize`                 |
+ +----------------------+----------------------+-----------------------------------------+
+ | Maximum iterations   | 1000                 | :c:func:`PGASetMaxGAIterValue`          |
+ +----------------------+----------------------+-----------------------------------------+
+ | Maximum no change    | 100                  | :c:func:`PGASetMaxNoChangeValue`        |
+ | iters                |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Max. population      | 95                   | :c:func:`PGASetMaxSimilarityValue`      |
+ | homogeneity before   |                      |                                         |
+ | stopping             |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Number of new        | 10% of population    | :c:func:`PGASetNumReplaceValue`         |
+ | strings to generate  | size (10)            |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Probability of       | 0.85                 | :c:func:`PGASetCrossoverProb`           |
+ | crossover            |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Uniform crossover    | 0.6                  | :c:func:`PGASetUniformCrossoverProb`    |
+ | bias                 |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Mutation probability | 1/L                  | :c:func:`PGASetMutationProb`            |
+ +----------------------+----------------------+-----------------------------------------+
+ | Real mutation        | 0.1 or 0.01          | :c:func:`PGASetMutationRealValue`       |
+ | constant             |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Integer mutation     | 1                    | :c:func:`PGASetMutationIntegerValue`    |
+ | constant             |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Mutation range       | :c:macro:`PGA_FALSE` | :c:func:`PGASetMutationBoundedFlag`     |
+ | bounded              |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Probabilistic binary | 0.6                  | :c:func:`PGASetPTournamentProb`         |
+ | tournament parameter |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Use restart operator | :c:macro:`PGA_FALSE` | :c:func:`PGASetRestartFlag`             |
+ +----------------------+----------------------+-----------------------------------------+
+ | Restart frequency    | 50                   | :c:func:`PGASetRestartFrequencyValue`   |
+ +----------------------+----------------------+-----------------------------------------+
+ | Restart allele       | 0.5                  | :c:func:`PGASetRestartAlleleChangeProb` |
+ | mutation rate        |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Allow no duplicate   | :c:macro:`PGA_FALSE` | :c:func:`PGASetNoDuplicatesFlag`        |
+ | strings              |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Multiplier for       | 1.01                 | :c:func:`PGASetFitnessCmaxValue`        |
+ | minimization         |                      |                                         |
+ | problems             |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Parameter MAX in     | 1.2                  | :c:func:`PGASetMaxFitnessRank`          |
+ | fitness by ranking   |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Frequency of         | 10                   | :c:func:`PGASetPrintFrequencyValue`     |
+ | statistics printing  |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Print strings        | :c:macro:`PGA_FALSE` | :c:func:`PGASetPrintOptions`            |
+ +----------------------+----------------------+-----------------------------------------+
+ | Print offline        | :c:macro:`PGA_FALSE` | :c:func:`PGASetPrintOptions`            |
+ | statistics           |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Print online         | :c:macro:`PGA_FALSE` | :c:func:`PGASetPrintOptions`            |
+ | statistics           |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Print best string    | :c:macro:`PGA_FALSE` | :c:func:`PGASetPrintOptions`            |
+ +----------------------+----------------------+-----------------------------------------+
+ | Print worst string   | :c:macro:`PGA_FALSE` | :c:func:`PGASetPrintOptions`            |
+ +----------------------+----------------------+-----------------------------------------+
+ | Print genetic        | :c:macro:`PGA_FALSE` | :c:func:`PGASetPrintOptions`            |
+ | distance             |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Randomly initialize  | :c:macro:`PGA_TRUE`  | :c:func:`PGASetRandomInitFlag`          |
+ | population           |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Probability of       | 0.5                  | :c:func:`PGASetBinaryInitProb`          |
+ | initializing a bit   |                      |                                         |
+ | to one               |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | How to initialize    | Range                | :c:func:`PGASetRealInitRange`           |
+ | real strings         |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Real initialization  | :math:`[0,1]`        | :c:func:`PGASetRealInitRange`           |
+ | range                |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | How to initialize    | Permutation          | :c:func:`PGASetIntegerInitPermute`      |
+ | integer strings      |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Integer              | :math:`[0,L-1]`      | :c:func:`PGASetIntegerInitPermute`      |
+ | initialization range |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Seed random number   | :c:macro:`PGA_TRUE`  | :c:func:`PGASetRandomSeed`              |
+ | with clock           |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | Default MPI          | ``MPI_COMM_WORLD``   | :c:func:`PGASetCommunicator`            |
+ | communicator         |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | DE scale factor      | 0.9                  | :c:func:`PGASetDEScaleFactor`           |
+ | :math:`F`            |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | DE auxiliary factor  | :math:`0.5 \cdot     | :c:func:`PGASetDEAuxFactor`             |
+ | :math:`K`            | (F + 1)`             | `                                       |
+ +----------------------+----------------------+-----------------------------------------+
+ | DE Crossover prob    | 0.9                  | :c:func:`PGASetDECrossoverProb`         |
+ | :math:`Cr`           |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | DE Dither            | 0.0                  | :c:func:`PGASetDEDither`                |
+ +----------------------+----------------------+-----------------------------------------+
+ | DE Jitter            | 0.0                  | :c:func:`PGASetDEJitter`                |
+ +----------------------+----------------------+-----------------------------------------+
+ | DE Either/Or         | 0.5                  | :c:func:`PGASetDEProbabilityEO`         |
+ | Probability          |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
+ | DE Number of         | 1                    | :c:func:`PGASetDENumDiffs`              |
+ | differences          |                      |                                         |
+ +----------------------+----------------------+-----------------------------------------+
 
 .. _chp:function-bindings:
 

@@ -127,7 +127,7 @@ Header File and Symbolic Constants
 The PGAPack header file contains symbolic constants and type definitions
 for all functions and should be included in any file (or function or
 subroutine in Fortran) that calls a PGAPack function. For example,
-``PGA_CROSSOVER_UNIFORM`` is a symbolic constant that is used as an
+:c:macro:`PGA_CROSSOVER_UNIFORM` is a symbolic constant that is used as an
 argument to the function :c:func:`PGASetCrossoverType` to specify uniform
 crossover. In C the header file is ``pgapack.h``. In Fortran it is
 ``pgapackf.h``
@@ -319,7 +319,7 @@ replacement. It can be used for single-objective optimization, too, both
 with and without constraints. If constraints are present, by default the
 constraint violations are summed. An alternative is to use nondominated
 sorting for constraints, too. This can be switched on by setting
-:c:func:`PGASetSumConstraintsFlag` to ``PGA_FALSE``.
+:c:func:`PGASetSumConstraintsFlag` to :c:macro:`PGA_FALSE`.
 
 The second is the Nondominated Sorting Genetic Algorithm for
 many-objective optimization, NSGA-III [DJ14]_,
@@ -415,10 +415,10 @@ specify that each generation a new population is created consisting of
 ten strings created via recombination, and the 190 most fit strings from
 the old population. The 190 strings can also be selected randomly, with
 or without replacement, by setting the second argument of
-:c:func:`PGASetPopReplaceType` to ``PGA_POPREPL_RANDOM_REP`` or
-``PGA_POPREPL_RANDOM_NOREP``, respectively.
+:c:func:`PGASetPopReplaceType` to :c:macro:`PGA_POPREPL_RANDOM_REP` or
+:c:macro:`PGA_POPREPL_RANDOM_NOREP`, respectively.
 
-For selecting restricted tournament replacement ``PGA_POPREPL_RTR`` is
+For selecting restricted tournament replacement :c:macro:`PGA_POPREPL_RTR` is
 used. The default for the window size (number of members of the old
 population that are chosen for comparison with a new candidate) is
 min :math:`(n, N/20)` where :math:`n` is the string length and :math:`N`
@@ -433,12 +433,12 @@ which individuals in the old population are replaced. Since restricted
 tournament replacement is an elitist strategy the overall fitness never
 dimishes with this replacement strategy.
 
-For pairwise best replacement ``PGA_POPREPL_PAIRWISE_BEST`` is used as
+For pairwise best replacement :c:macro:`PGA_POPREPL_PAIRWISE_BEST` is used as
 the replacement type. Like restricted tournament replacement it is an
 elitist strategy.
 
-For NSGA-II replacement ``PGA_POPREPL_NSGA_II`` is used. For NSGA-II
-replacement ``PGA_POPREPL_NSGA_III`` is used. The number of auxiliary
+For NSGA-II replacement :c:macro:`PGA_POPREPL_NSGA_II` is used. For NSGA-II
+replacement :c:macro:`PGA_POPREPL_NSGA_III` is used. The number of auxiliary
 evaluation function can be set with :c:func:`PGASetNumAuxEval` and the number
 of constraints can be set with :c:func:`PGASetNumConstraint`. If the
 difference between the two is :math:`>0` (i.e. the number of objectives
@@ -460,7 +460,7 @@ strategy). A GRGA can be implemented by setting
 size is 100). Setting :c:func:`PGASetNumReplaceValue` to one less than the
 population size will result in an elitist GRGA, where the most fit
 string is always copied to the new population (since
-``PGA_POPREPL_BEST`` is the default population replacement strategy).
+:c:macro:`PGA_POPREPL_BEST` is the default population replacement strategy).
 
 Traditionally, strings created through recombination first undergo
 crossover and then mutation. Some practitioners [Dav91]_
@@ -469,18 +469,19 @@ PGAPack applies mutation only to strings that did *not* undergo
 crossover.
 
 This is equivalent to setting :c:func:`PGASetMixingType` to
-``PGA_MIX_MUTATE_OR_CROSS`` which is also the default. To have strings
+:c:macro:`PGA_MIX_MUTATE_OR_CROSS` which is also the default. To have strings
 undergo *both* crossover and mutation, one should set
-:c:func:`PGASetMixingType` to ``PGA_MIX_TRADITIONAL``. Note that there is also
-a mode that will not mutate strings that are not also crossed over. This
-can be enabled by setting :c:func:`PGASetMixingType` to
-``PGA_MIX_MUTATE_AND_CROSS``.
+:c:func:`PGASetMixingType` to :c:macro:`PGA_MIX_TRADITIONAL`. Note that
+there is also a mode that will not mutate strings that are not also
+crossed over. This can be enabled by setting :c:func:`PGASetMixingType`
+to :c:macro:`PGA_MIX_MUTATE_AND_CROSS`.
 
 If an evolutionary algorithm variant without crossover is used or if
 special crossover techniques with more that two parents should be
 applied, all the logic can be implemented in a custom crossover operator
-and the :c:func:`PGASetMixingType` can be set to ``PGA_MIX_MUTATE_ONLY``. In
-this mode no crossover is performed at all.
+and the :c:func:`PGASetMixingType` can be set to
+:c:macro:`PGA_MIX_MUTATE_ONLY`. In this mode no crossover is performed
+at all.
 
 There is also a legacy interface which should *not* be used for new
 code. Functions used in that interface are:
@@ -532,22 +533,21 @@ section :ref:`sec:evaluation`.
 The choice of stopping rule is set by :c:func:`PGASetStoppingRuleType`. For
 example, :c:func:`PGASetStoppingRuleType` with parameters
 ``(ctx, PGA_STOP_MAXITER)`` is the
-default. Other choices are ``PGA_STOP_TOOSIMILAR`` and
-``PGA_STOP_NOCHANGE`` for population too similar and no change in the
+default. Other choices are :c:macro:`PGA_STOP_TOOSIMILAR` and
+:c:macro:`PGA_STOP_NOCHANGE` for population too similar and no change in the
 best solution found, respectively. :c:func:`PGASetStoppingRuleType` may be
 called more than once. The different stopping rules specified are
 *or*\ ed together.
 
-If ``PGA_STOP_MAXITER`` is one of the stopping rules,
+If :c:macro:`PGA_STOP_MAXITER` is one of the stopping rules,
 :c:func:`PGASetMaxGAIterValue` with parameters ``(ctx, 500)``
-will change the maximum iteration
-limit to 500. If ``PGA_STOP_NOCHANGE`` is one of the stopping rules,
-:c:func:`PGASetMaxNoChangeValue` with parameters ``(ctx, 50)``
-will change from 100 (the default)
-to 50 the maximum number of iterations in which no change in the best
-evaluation is allowed before the GA stops. If ``PGA_STOP_TOOSIMILAR`` is
-one of the stopping rules, :c:func:`PGASetMaxSimilarityValue` with
-parameters ``(ctx, 99)`` will
+will change the maximum iteration limit to 500. If
+:c:macro:`PGA_STOP_NOCHANGE` is one of the stopping rules,
+:c:func:`PGASetMaxNoChangeValue` with parameters ``(ctx, 50)`` will
+change from 100 (the default) to 50 the maximum number of iterations in
+which no change in the best evaluation is allowed before the GA stops.
+If :c:macro:`PGA_STOP_TOOSIMILAR` is one of the stopping rules,
+:c:func:`PGASetMaxSimilarityValue` with parameters ``(ctx, 99)`` will
 change from 95 to 99 the percentage of the population allowed to have
 the same evaluation function value before the GA stops.
 
@@ -558,8 +558,9 @@ Initialization
 
 Strings are either initialized randomly (the default), or set to zero.
 The choice is specified by setting the second argument of
-:c:func:`PGASetRandomInitFlag` to either ``PGA_TRUE`` or ``PGA_FALSE``,
-respectively. Random initialization depends on the datatype.
+:c:func:`PGASetRandomInitFlag` to either :c:macro:`PGA_TRUE` or
+:c:macro:`PGA_FALSE`, respectively. Random initialization depends on the
+datatype.
 
 If binary-valued strings are used, each gene is set to ``1`` or ``0``
 with an equal probability. To set the probability of randomly setting a
@@ -629,8 +630,8 @@ If character-valued strings are used,
 :c:func:`PGASetCharacterInitType` with parameters ``(ctx, PGA_CINIT_UPPER)``
 will set the allele
 values to uppercase alphabetic characters chosen uniformly randomly.
-Other options are ``PGA_CINIT_LOWER`` for lower case letters only (the
-default) and ``PGA_CINIT_MIXED`` for mixed case letters, respectively.
+Other options are :c:macro:`PGA_CINIT_LOWER` for lower case letters only (the
+default) and :c:macro:`PGA_CINIT_MIXED` for mixed case letters, respectively.
 
 .. _sec:selection:
 
@@ -677,17 +678,17 @@ degenerates to a random walk.
 
 In addition, for tournament selection it can be specified if the
 selection is *with* or *without* replacement using the function
-:c:func:`PGASetTournamentWithReplacement` with a parameter of ``PGA_FALSE`` or
-``PGA_TRUE``. Sampling without replacement guarantees that for :math:`n`
-tournaments, each individual participates in the same number of
-tournaments (as long as :math:`n` multiplied by the tournament size is a
-multiple of the population size) [GKD89]_. This was
-later re-invented by Sokolov and Whitley under the name *Unbiased
-Tournament Selection* [SW05]_.
+:c:func:`PGASetTournamentWithReplacement` with a parameter of
+:c:macro:`PGA_FALSE` or :c:macro:`PGA_TRUE`. Sampling without
+replacement guarantees that for :math:`n` tournaments, each individual
+participates in the same number of tournaments (as long as :math:`n`
+multiplied by the tournament size is a multiple of the population size)
+[GKD89]_. This was later re-invented by Sokolov and Whitley under the
+name *Unbiased Tournament Selection* [SW05]_.
 
 The default sampling is ``with`` replacement as if
 :c:func:`PGASetTournamentWithReplacement` had been called with the parameter
-``PGA_TRUE``. The probabilistic tournament selection is always binary
+:c:macro:`PGA_TRUE`. The probabilistic tournament selection is always binary
 (two participants in the tournament), the default probability that the
 string that wins the tournament is selected is 0.6. It may be set to
 0.8, for example, with :c:func:`PGASetPTournamentProb` with parameters
@@ -714,17 +715,17 @@ by the NSGA-II (or -III) population replacement algorithm.
 Most selection schemes (except stochastic universal selection) already
 return a randomized sequence. In previous implementations *all*
 sequences got an additional randomization step. By default this is no
-longer the case (exect for ``PGA_SELECT_SUS``). You can enable the
-previous behavior by setting it to ``PGA_TRUE`` with
+longer the case (exect for :c:macro:`PGA_SELECT_SUS`). You can enable the
+previous behavior by setting it to :c:macro:`PGA_TRUE` with
 :c:func:`PGASetRandomizeSelect`. Note that even with this flag set, the
 sequence returned by the linear selection scheme is never randomized.
 This has adverse effects on crossover with linear selection: With this
 scheme the same two adjacent population members are always crossed over
 which makes crossover almost ineffective. Linear selection is typically
 only useful when using special mutation operators most often with
-:c:func:`PGASetMixingType` set to ``PGA_MIX_MUTATE_ONLY``. If you need a
-randomized sequence without selection pressure, use tournament selection
-without replacement with a tournament size of one.
+:c:func:`PGASetMixingType` set to :c:macro:`PGA_MIX_MUTATE_ONLY`. If you
+need a randomized sequence without selection pressure, use tournament
+selection without replacement with a tournament size of one.
 
 .. _sec:crossover:
 
@@ -776,7 +777,7 @@ Crossover types that may yield child individuals outside the range of
 the parents (currently only SBX) may want to call
 :c:func:`PGASetCrossoverBoundedFlag` or
 :c:func:`PGASetCrossoverBounceBackFlag` with
-the context variable and ``PGA_TRUE`` to select an algorithm that keeps
+the context variable and :c:macro:`PGA_TRUE` to select an algorithm that keeps
 the child alleles within the bounds of the initialization ranges of the
 gene for each allele. These parameters work analogous to
 :c:func:`PGASetMutationBoundedFlag` and :c:func:`PGASetMutationBounceBackFlag`
@@ -810,39 +811,41 @@ range.
 
 The mutation operator for integer-valued strings may be changed
 irrespective of how the strings were initialized. If
-:c:func:`PGASetMutationType` is set to ``PGA_MUTATION_RANGE``, gene :math:`i`
-will be replaced with a value selected uniformly randomly from the
-initialization range. If the strings were initialized to a permutation,
-the minimum and maximum values of the permutation define the range. If
-:c:func:`PGASetMutationType` is set to ``PGA_MUTATION_PERMUTE``, gene
-:math:`i` will be swapped with a randomly selected gene. If
-:c:func:`PGASetMutationType` is set to ``PGA_MUTATION_CONSTANT``, a constant
-integer value (by default one) will be added (subtracted) to (from) the
-existing allele value. The constant value may be set to 34, for example,
-with :c:func:`PGASetMutationIntegerValue` with parameters ``(ctx, 34)``.
+:c:func:`PGASetMutationType` is set to :c:macro:`PGA_MUTATION_RANGE`,
+gene :math:`i` will be replaced with a value selected uniformly randomly
+from the initialization range. If the strings were initialized to a
+permutation, the minimum and maximum values of the permutation define
+the range. If :c:func:`PGASetMutationType` is set to
+:c:macro:`PGA_MUTATION_PERMUTE`, gene :math:`i` will be swapped with a
+randomly selected gene. If :c:func:`PGASetMutationType` is set to
+:c:macro:`PGA_MUTATION_CONSTANT`, a constant integer value (by default
+one) will be added (subtracted) to (from) the existing allele value. The
+constant value may be set to 34, for example, with
+:c:func:`PGASetMutationIntegerValue` with parameters ``(ctx, 34)``.
 
 Three of the real-valued mutation operators are of the form
 :math:`v \leftarrow v \pm p \times v`, where :math:`v` is the existing
 allele value. They vary by how :math:`p` is selected. First, if
-:c:func:`PGASetMutationType` is set to ``PGA_MUTATION_CONSTANT``,
+:c:func:`PGASetMutationType` is set to :c:macro:`PGA_MUTATION_CONSTANT`,
 :math:`p` is the constant value 0.01.  It may be set to .02, for
 example, with :c:func:`PGASetMutationRealValue` with parameters
 ``(ctx, .02)``. Second, if :c:func:`PGASetMutationType`
-is set to ``PGA_MUTATION_UNIFORM``, :math:`p` is selected uniformly from
-the interval :math:`(0,.1)`. To select :math:`p` uniformly from the
-interval :math:`(0,1)` call :c:func:`PGASetMutationRealValue` with
-parameters ``(ctx, 1)``. Third, if :c:func:`PGASetMutationType` is set
-to ``PGA_MUTATION_GAUSSIAN``, :math:`p` is selected from a Gaussian
-distribution (this is the default real-valued mutation operator) with
-mean 0 and standard deviation 0.1. To select :math:`p` from a Gaussian
-distribution with mean 0 and standard deviation 0.5 call
-:c:func:`PGASetMutationRealValue` with parameters ``(ctx, .5)``. Finally, if
-:c:func:`PGASetMutationType` is set to ``PGA_MUTATION_RANGE``, gene :math:`i`
-will be replaced with a value selected uniformly random from the
-initialization range of that gene.
+is set to :c:macro:`PGA_MUTATION_UNIFORM`, :math:`p` is selected
+uniformly from the interval :math:`(0,.1)`. To select :math:`p`
+uniformly from the interval :math:`(0,1)` call
+:c:func:`PGASetMutationRealValue` with parameters ``(ctx, 1)``. Third,
+if :c:func:`PGASetMutationType` is set to :c:macro:`PGA_MUTATION_GAUSSIAN`,
+:math:`p` is selected from a Gaussian distribution (this is the default
+real-valued mutation operator) with mean 0 and standard deviation 0.1.
+To select :math:`p` from a Gaussian distribution with mean 0 and
+standard deviation 0.5 call :c:func:`PGASetMutationRealValue` with
+parameters ``(ctx, .5)``. Finally, if :c:func:`PGASetMutationType` is
+set to :c:macro:`PGA_MUTATION_RANGE`, gene :math:`i` will be replaced
+with a value selected uniformly random from the initialization range of
+that gene.
 
 For integer and real genes there is a polynomial mutation operator
-selected with the mutation type constant ``PGA_MUTATION_POLY``
+selected with the mutation type constant :c:macro:`PGA_MUTATION_POLY`
 [DG96]_. It works by drawing a random number from a
 polynomial probabilty density function for a fixed mutation interval.
 The mutation interval by default is between the current allele value and
@@ -859,7 +862,7 @@ the mutated values stays to the parent. You can set this parameter with
 :c:func:`PGASetMutationPolyEta`, the default is 100 [DD14]_.
 
 For Differential Evolution (DE), the strategy is implemented as the
-mutation type ``PGA_MUTATION_DE``. Note that for the full
+mutation type :c:macro:`PGA_MUTATION_DE`. Note that for the full
 DE algorithm not just a special mutation type is needed, see
 section :ref:`sec:differential-evolution` for an introduction. You
 typically want to chose mutation only, linear selection, and
@@ -893,8 +896,8 @@ is then combined via crossover with the member :math:`i` of the population,
 *not* the normal genetic algorithm crossover (from
 section :ref:`sec:crossover`), in fact when using DE, crossover is
 typically turned off by setting :c:func:`PGASetMixingType` to
-``PGA_MIX_MUTATE_ONLY``. Instead DE uses its own crossover
-implementation within the ``PGA_MUTATION_DE`` mutation implementation.
+:c:macro:`PGA_MIX_MUTATE_ONLY`. Instead DE uses its own crossover
+implementation within the :c:macro:`PGA_MUTATION_DE` mutation implementation.
 For each vector element (allele), a random variable with a crossover
 probability specified by :c:func:`PGASetDECrossoverProb` (default 0.9) is
 chosen. In the default binomial crossover variant of DE this variable
@@ -962,11 +965,12 @@ there is a corellation between allele positions, exponential crossover
 may be beneficial [TF14]_.
 
 The DE variant (the second tuple element) can be selected with
-:c:func:`PGASetDEVariant` and defaults to ``PGA_DE_VARIANT_RAND``. The
-different variants are documented in group :ref:`group:const-de-variant`.
-Another variant is the *best* variant which uses the current best
-individual for modification according to equation :eq:`de/best/1`. This
-variant is selected with the contant ``PGA_DE_VARIANT_BEST``.
+:c:func:`PGASetDEVariant` and defaults to :c:macro:`PGA_DE_VARIANT_RAND`.
+The different variants are documented in group
+:ref:`group:const-de-variant`.  Another variant is the *best* variant
+which uses the current best individual for modification according to
+equation :eq:`de/best/1`. This variant is selected with the contant
+:c:macro:`PGA_DE_VARIANT_BEST`.
 
 .. math::
    :label: de/best/1
@@ -974,7 +978,7 @@ variant is selected with the contant ``PGA_DE_VARIANT_BEST``.
    V_{i,g} = X_{\text{best},g} + F \cdot (X_{r_1,g} - X_{r_2,g})
 
 A third variant called *either-or* [PSL05]_ is
-selected with the constant ``PGA_DE_VARIANT_EITHER_OR``. It randomly
+selected with the constant :c:macro:`PGA_DE_VARIANT_EITHER_OR`. It randomly
 selects among a mutation operator and a recombination operator according
 to equation :eq:`de/either-or/1`.
 
@@ -1016,7 +1020,7 @@ a new factor :math:`F_j`, the index :math:`j` denoting the allele while
 
 The same applies for dither, but in the case of dither the factor is
 either applied anew for each individual (when setting
-:c:func:`PGASetDEDitherPerIndividual` to ``PGA_TRUE``) or only once per
+:c:func:`PGASetDEDitherPerIndividual` to :c:macro:`PGA_TRUE`) or only once per
 generation (the default being once per generation), note that for the
 case where the dither is applied once per generation the index :math:`i`
 of :math:`K_{\text{jit}}{}` in equation :eq:`dither` would refer the
@@ -1059,8 +1063,8 @@ work well or not work at all with a non-elitist replacement scheme. Due
 to the high disruption, if not retaining at least one best individual in
 each generation, it is very likely that the search will diverge. Good
 choices for an elitist strategy are the two elitist replacement schemes
-:c:func:`PGA_POPREPL_PAIRWISE_BEST` (which is the standard replacement scheme
-for Differential Evolution) and ``PGA_POPREPL_RTR``. The latter may help
+:c:macro:`PGA_POPREPL_PAIRWISE_BEST` (which is the standard replacement scheme
+for Differential Evolution) and :c:macro:`PGA_POPREPL_RTR`. The latter may help
 if the algorithm stagnates due to premature convergence. In that case
 RTR can help to retain more genetic diversity. For details see
 section :ref:`sec:population-replacement`.
@@ -1232,7 +1236,7 @@ evaluation of a string, however, may reflect a minimization problem
 and/or be negative. Most modern selection algorithms (e.g. the default
 tournament variants) directly compare individuals and will directly use
 the users evaluation. There are two selection mechanisms,
-``PGA_SELECT_SUS`` and ``PGA_SELECT_PROPORTIONAL`` which need a
+:c:macro:`PGA_SELECT_SUS` and :c:macro:`PGA_SELECT_PROPORTIONAL` which need a
 nonnegative and monotonically increasing fitness. *Only for these* the
 user’s *evaluation value* is mapped to a nonnegative and monotonically
 increasing *fitness value*.
@@ -1249,13 +1253,13 @@ defines the type, these are documented in group
 :ref:`group:const-fitness` and allow the identity, linear ranking, or linear
 normalization, respectively.
 
-Note that ``PGA_FITNESS_RAW`` and ``PGA_FITNESS_NORMAL`` are subject to
-overflows if you have very large (or very small negative) fitness
-values. If this occurs, an error message is printed and the program
-terminates. Letting the search continue with such an overflow would map
-many *different* evaluation values to the *same* fitness. For such
-ill-conditioned problems you should use the ranking variant
-``PGA_FITNESS_RANKING``.
+Note that :c:macro:`PGA_FITNESS_RAW` and :c:macro:`PGA_FITNESS_NORMAL`
+are subject to overflows if you have very large (or very small negative)
+fitness values. If this occurs, an error message is printed and the
+program terminates. Letting the search continue with such an overflow
+would map many *different* evaluation values to the *same* fitness. For
+such ill-conditioned problems you should use the ranking variant
+:c:macro:`PGA_FITNESS_RANKING`.
 
 A *linear rank* fitness function [Bak87]_, [Whi89]_ is given by
 
@@ -1280,14 +1284,14 @@ to positive values for a maximization problem.
 
 If the direction of optimization is minimization, the values are
 remapped for maximization. Calling the function
-:c:func`PGASetFitnessMinType` with parameters ``(ctx, PGA_FITNESSMIN_CMAX)``
+:c:func:`PGASetFitnessMinType` with parameters ``(ctx, PGA_FITNESSMIN_CMAX)``
 will remap by subtracting the worst evaluation value from each
 evaluation value (this is the default). The worst evaluation value is
 multiplied by 1.01 before the subtraction so that the worst string has a
 nonzero fitness. Calling the function :c:func:`PGASetFitnessCmaxValue`
 with parameters ``(ctx, 1.2)`` will change the
-multiplier to 1.2 Alternatively, if ``PGA_FITNESSMIN_RECIPROCAL`` is
-specified the remapping is done by using the reciprocal of the
+multiplier to 1.2 Alternatively, if :c:macro:`PGA_FITNESSMIN_RECIPROCAL`
+is specified the remapping is done by using the reciprocal of the
 evaluation function.
 
 Note that for algorithms that can directly compare individuals in the
@@ -1306,7 +1310,7 @@ Accessing Allele Values
 
 For each of the native data types, PGAPack provides a matched pair of
 functions that allow the user to read or write (change) any allele
-value. If the data type is ``PGA_DATATYPE_BINARY``
+value. If the data type is :c:macro:`PGA_DATATYPE_BINARY`
 
 .. code-block:: c
 
@@ -1321,7 +1325,7 @@ in population ``pop`` to ``1``, use
 
    PGASetBinaryAllele (ctx, p, pop, i, 1);
 
-If the data type is ``PGA_DATATYPE_INTEGER``
+If the data type is :c:macro:`PGA_DATATYPE_INTEGER`
 
 .. code-block:: c
 
@@ -1336,7 +1340,7 @@ in population ``pop`` to 34, use
 
    PGASetIntegerAllele (ctx, p, pop, i, 1, 34);
 
-If the data type is ``PGA_DATATYPE_REAL``
+If the data type is :c:macro:`PGA_DATATYPE_REAL`
 
 .. code-block:: c
 
@@ -1351,7 +1355,7 @@ in population ``pop`` to 123.456, use
 
    PGASetRealAllele (ctx, p, pop, i, 1, 123.456);
 
-If the data type is ``PGA_DATATYPE_CHARACTER``
+If the data type is :c:macro:`PGA_DATATYPE_CHARACTER`
 
 .. code-block:: c
 
@@ -1580,7 +1584,7 @@ coin. For example,
 
   PGARandomFlip (ctx, .7)
 
-will return ``PGA_TRUE`` approximately 70% of the time.  Calling
+will return :c:macro:`PGA_TRUE` approximately 70% of the time.  Calling
 :c:func:`PGARandomInterval` with parameters ``(ctx, -10, 30)`` will
 return an integer value generated uniformly on :math:`[-10,30]`.
 :c:func:`PGARandomUniform` with parameters ``(ctx, -50., 50.)`` will
@@ -1631,8 +1635,8 @@ call
 
 will print the message “popindex=-1” (assuming the value of ``popindex``
 is -1) and then exit PGAPack. If the third argument had been
-``PGA_WARNING`` instead, execution would have continued, see group
-:ref:`group:const-printflags`. In addition to ``PGA_INT``, valid data
+:c:macro:`PGA_WARNING` instead, execution would have continued, see group
+:ref:`group:const-printflags`. In addition to :c:macro:`PGA_INT`, valid data
 types are documented in group :ref:`group:const-err-print`.  There is
 also a ``printf``-style error printing function :c:func:`PGAErrorPrintf`.
 
@@ -1687,14 +1691,14 @@ string length is the value specified to :c:func:`PGACreate` and returned by
 Formally, string :math:`p` in population :math:`pop` is referred to by
 the 2-tuple ``(p, pop)`` and the value of gene :math:`i` in that string
 by the 3-tuple ``(i, p, pop)``. In PGAPack, ``pop`` *must* be one of the
-two symbolic constants ``PGA_OLDPOP`` or ``PGA_NEWPOP`` to refer to the
-old or new population, respectively. At the end of each GA iteration,
-the function :c:func:`PGAUpdateGeneration` makes sure these symbolic constants
-are remapped to the correct population. The string index ``p`` must be
-either an integer between 0 and :math:`P-1` (or 1 and :math:`P` in
-Fortran) or one of the symbolic constants ``PGA_TEMP1`` or
-``PGA_TEMP2``, to reference one of the two temporary locations,
-respectively.
+two symbolic constants :c:macro:`PGA_OLDPOP` or :c:macro:`PGA_NEWPOP` to
+refer to the old or new population, respectively. At the end of each GA
+iteration, the function :c:func:`PGAUpdateGeneration` makes sure these
+symbolic constants are remapped to the correct population. The string
+index ``p`` must be either an integer between 0 and :math:`P-1` (or 1
+and :math:`P` in Fortran) or one of the symbolic constants
+:c:macro:`PGA_TEMP1` or :c:macro:`PGA_TEMP2`, to reference one of the
+two temporary locations, respectively.
 
 Simple Sequential Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1707,7 +1711,7 @@ example because it uses :c:func:`PGARunMutationAndCrossover` to encapsulate
 the recombination step. The :c:func:`PGACreate` and :c:func:`PGASetUp` functions
 were discussed in the last chapter. :c:func:`PGASetUp` creates and randomly
 initializes the initial population. This population, referred to
-initially by the symbolic constant ``PGA_OLDPOP``, is evaluated by the
+initially by the symbolic constant :c:macro:`PGA_OLDPOP`, is evaluated by the
 :c:func:`PGAEvaluate` function. The third argument to :c:func:`PGAEvaluate`
 is the name of the user’s evaluation function. The function prototype
 for ``evaluate`` must be as shown in Figure :ref:`example:simple-example`
@@ -1716,19 +1720,20 @@ and discussed earlier in Sections :ref:`sec:big-picture` and 
 evaluation function values into fitness values.
 
 The ``while`` loop runs the genetic algorithm. :c:func:`PGADone` returns
-``PGA_TRUE`` if any of the specified stopping criteria have been met,
-otherwise ``PGA_FALSE``. :c:func:`PGASelect` performs selection on population
-``PGA_OLDPOP``. :c:func:`PGARunMutationAndCrossover` uses the selected strings
-to create the new population by applying the crossover and mutation
-operators. :c:func:`PGAEvaluate` and :c:func:`PGAFitness` evaluate and map to
-fitness values the newly created population. :c:func:`PGAUpdateGeneration`
-updates the GA iteration count and resets several important internal
-arrays (don’t forget to call it!). :c:func:`PGAPrintReport` writes out genetic
+:c:macro:`PGA_TRUE` if any of the specified stopping criteria have been met,
+otherwise :c:macro:`PGA_FALSE`. :c:func:`PGASelect` performs selection
+on population :c:macro:`PGA_OLDPOP`.  :c:func:`PGARunMutationAndCrossover`
+uses the selected strings to create the new population by applying the
+crossover and mutation operators.  :c:func:`PGAEvaluate` and
+:c:func:`PGAFitness` evaluate and map to fitness values the newly
+created population.  :c:func:`PGAUpdateGeneration` updates the GA
+iteration count and resets several important internal arrays (don’t
+forget to call it!).  :c:func:`PGAPrintReport` writes out genetic
 algorithm statistics according to the report options specified. Note
-that the argument to :c:func:`PGAPrintReport` is the old population, since
-after :c:func:`PGAUpdateGeneration` is called, the newly created population is
-in ``PGA_OLDPOP``. Finally, :c:func:`PGADestroy` releases any memory allocated
-by PGAPack when execution is complete.
+that the argument to :c:func:`PGAPrintReport` is the old population,
+since after :c:func:`PGAUpdateGeneration` is called, the newly created
+population is in :c:macro:`PGA_OLDPOP`. Finally, :c:func:`PGADestroy`
+releases any memory allocated by PGAPack when execution is complete.
 
 The functions :c:func:`PGADone`, :c:func:`PGAUpdateGeneration`, and
 :c:func:`PGAEvaluate` take an MPI communicator (see
@@ -1842,9 +1847,9 @@ selected by :c:func:`PGASelect`. :c:func:`PGARandomFlip` flips a coin
 biased by the crossover probability to determine whether the selected
 strings should undergo crossover and mutation or should be copied
 directly into the new population. ``PGACrossover`` uses the parent
-strings ``m1`` and ``m2`` from population ``PGA_OLDPOP`` to create two
-child strings in the temporary locations ``PGA_TEMP1`` and ``PGA_TEMP2``
-in ``PGA_NEWPOP`` population.
+strings ``m1`` and ``m2`` from population :c:macro:`PGA_OLDPOP` to create two
+child strings in the temporary locations :c:macro:`PGA_TEMP1` and
+:c:macro:`PGA_TEMP2` in :c:macro:`PGA_NEWPOP` population.
 
 :c:func:`PGAMutate` mutates the child strings and :c:func:`PGACopyIndividual`,
 then copies them into the new population. If the strings do not undergo
@@ -1853,7 +1858,7 @@ unchanged. The rest of the steps are the same as those in
 Figure :ref:`example:simple-example`, *except* that for illustrative
 purposes we call :c:func:`PGAPrintReport` *before*
 :c:func:`PGAUpdateGeneration`. In that case we use population
-``PGA_NEWPOP`` as the population pointer.
+:c:macro:`PGA_NEWPOP` as the population pointer.
 
 Explicit PGAPack Functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1880,19 +1885,19 @@ parameters ``(ctx, oldpop, newpop)``, where the best string from
 population ``oldpop`` is used to initialize population ``newpop``.
 
 The function :c:func:`PGADuplicate` with parameters
-``(ctx, p, PGA_NEWPOP, PGA_NEWPOP)`` returns ``PGA_TRUE`` if
-string ``p`` in population ``PGA_NEWPOP`` is a duplicate of any of the
-strings in population ``PGA_NEWPOP`` which were inserted into the hash
+``(ctx, p, PGA_NEWPOP, PGA_NEWPOP)`` returns :c:macro:`PGA_TRUE` if
+string ``p`` in population :c:macro:`PGA_NEWPOP` is a duplicate of any of the
+strings in population :c:macro:`PGA_NEWPOP` which were inserted into the hash
 table using :c:func:`PGAHashIndividual`. Note that this function is defined
-only for population ``PGA_NEWPOP``.
+only for population :c:macro:`PGA_NEWPOP`.
 
 Calling :c:func:`PGAHashIndividual` with parameters ``(ctx, p, PGA_NEWPOP)``
-hashes individual ``p`` in population ``PGA_NEWPOP`` for duplicate
+hashes individual ``p`` in population :c:macro:`PGA_NEWPOP` for duplicate
 checking.
 
 Function :c:func:`PGAChange` with parameters ``(ctx, p, PGA_OLDPOP)``
 repeatedly applies the mutation operator to string ``p`` in population
-``PGA_OLDPOP`` until at least one mutation has occurred.
+:c:macro:`PGA_OLDPOP` until at least one mutation has occurred.
 
 All functions related to duplicate checking do nothing if duplicate
 checking has not been enabled with :c:func:`PGASetNoDuplicatesFlag`, the
@@ -1908,7 +1913,7 @@ user must manage these values explicitly.
 Calling :c:func:`PGAEvaluate` with parameters
 ``(ctx, PGA_NEWPOP, evaluate, comm)`` will execute the user’s
 evaluation function, ``evaluate``, on each string in population
-``PGA_NEWPOP`` that has changed (for example, from crossover) since its
+:c:macro:`PGA_NEWPOP` that has changed (for example, from crossover) since its
 last evaluation. :c:func:`PGAEvaluate` will set both the evaluation function
 value and associated Boolean flag automatically. The argument ``comm``
 is an MPI communicator. Valid values are ``NULL`` for an explicitly
@@ -1924,8 +1929,8 @@ evaluation function values. It is an error to call :c:func:`PGAFitness` if
 
 These same three values may be read also.  :c:func:`PGAGetEvaluation`
 returns the evaluation function value.
-:c:func:`PGAGetEvaluationUpToDateFlag` returns ``PGA_TRUE`` or
-``PGA_FALSE`` to indicate whether the evaluation is up to date with the
+:c:func:`PGAGetEvaluationUpToDateFlag` returns :c:macro:`PGA_TRUE` or
+:c:macro:`PGA_FALSE` to indicate whether the evaluation is up to date with the
 actual string or not, respectively. If PGAPack was compiled for
 debugging, :c:func:`PGAGetEvaluation` will print a warning message if
 the evaluation is not up to date.  :c:func:`PGAGetFitness` returns the
@@ -1936,11 +1941,11 @@ explicitly set the evaluation function value and associated Boolean flag
 (fitness values can be calculated *only* by calling :c:func:`PGAFitness`).
 :c:func:`PGASetEvaluation` with parameters ``(ctx, p, PGA_OLDPOP, 123.4)``
 will set the evaluation function value to 123.4 and the associated
-Boolean flag to ``PGA_TRUE``. The Boolean flag may be set independently
+Boolean flag to :c:macro:`PGA_TRUE`. The Boolean flag may be set independently
 with :c:func:`PGASetEvaluationUpToDateFlag`. For example,
 :c:func:`PGASetEvaluationUpToDateFlag` with parameters
 ``(ctx, p, PGA_OLDPOP, PGA_FALSE)`` sets the status of the Boolean flag
-of string ``p`` in population ``PGA_OLDPOP`` to out of date.
+of string ``p`` in population :c:macro:`PGA_OLDPOP` to out of date.
 
 :c:func:`PGAMean` with parameters ``(ctx, a, n)`` returns the mean of
 the ``n`` values in array ``a``. :c:func:`PGAStddev` with parameters
@@ -1952,9 +1957,9 @@ of string p as given by the sorted array ``order`` of length ``n``.
 :c:func:`PGAGetPrintFrequency` returns the frequency with which GA
 statistics are reported. :c:func:`PGAGetWorstIndex` with parameters
 ``(ctx, PGA_OLDPOP)`` returns the index of the string in population
-``PGA_OLDPOP`` with the worst evaluation function value.
+:c:macro:`PGA_OLDPOP` with the worst evaluation function value.
 :c:func:`PGAGetBestIndex` with parameters ``(ctx, PGA_OLDPOP)`` returns
-the index of the string in population ``PGA_OLDPOP`` with the best
+the index of the string in population :c:macro:`PGA_OLDPOP` with the best
 evaluation function value.
 
 .. _chp:custom1:
@@ -1976,18 +1981,18 @@ Basics
 
 .. table:: Customizeable Functions: Native Data Types
 
-      ==================== =================================
-      Initialization       ``PGA_USERFUNCTION_INITSTRING``
-      Crossover            ``PGA_USERFUNCTION_CROSSOVER``
-      Mutation             ``PGA_USERFUNCTION_MUTATION``
-      Duplicate Checking   ``PGA_USERFUNCTION_DUPLICATE``
-      Hashing              ``PGA_USERFUNCTION_HASH``
-      String Printing      ``PGA_USERFUNCTION_PRINTSTRING``
-      Termination Criteria ``PGA_USERFUNCTION_STOPCOND``
-      End of generation    ``PGA_USERFUNCTION_ENDOFGEN``
-      Genetic distance     ``PGA_USERFUNCTION_GEN_DISTANCE``
-      Pre-Evaluate Hook    ``PGA_USERFUNCTION_PRE_EVAL``
-      ==================== =================================
+      ==================== ========================================
+      Initialization       :c:macro:`PGA_USERFUNCTION_INITSTRING`
+      Crossover            :c:macro:`PGA_USERFUNCTION_CROSSOVER`
+      Mutation             :c:macro:`PGA_USERFUNCTION_MUTATION`
+      Duplicate Checking   :c:macro:`PGA_USERFUNCTION_DUPLICATE`
+      Hashing              :c:macro:`PGA_USERFUNCTION_HASH`
+      String Printing      :c:macro:`PGA_USERFUNCTION_PRINTSTRING`
+      Termination Criteria :c:macro:`PGA_USERFUNCTION_STOPCOND`
+      End of generation    :c:macro:`PGA_USERFUNCTION_ENDOFGEN`
+      Genetic distance     :c:macro:`PGA_USERFUNCTION_GEN_DISTANCE`
+      Pre-Evaluate Hook    :c:macro:`PGA_USERFUNCTION_PRE_EVAL`
+      ==================== ========================================
 
 In PGAPack, high-level (data-structure-neutral) functions call
 data-structure-specific functions that correspond to the data type used.
@@ -2017,7 +2022,7 @@ functions. A specific example is given below.
 Checking the termination criteria requires some discussion. The function
 :c:func:`PGADone` will *either* check to see if the standard stopping criteria
 (see Section :ref:`sec:stopping-criteria`) have been met, or call
-the user function specified by ``PGA_USERFUNCTION_STOPCOND``. If you
+the user function specified by :c:macro:`PGA_USERFUNCTION_STOPCOND`. If you
 wish to have the user function check for the standard stopping criteria
 in addition to whatever else it does, it should call
 :c:func:`PGACheckStoppingConditions`. Do *not* call :c:func:`PGADone` as this
@@ -2027,18 +2032,18 @@ process (see Chapter :ref:`chp:parallel`).
 
 The end of generation function (which is null by default) may be used
 for gathering statistics about the GA, displaying custom output,
-or even call a hill-climber, etc.
-This function is called after all generational computation is complete,
-but before the population pointers (``PGA_NEWPOP``, ``PGA_OLDPOP``) have
-been switched and the standard PGAPack output printed. Therefore, be
-sure to use ``PGA_NEWPOP`` as the population pointer. There is no
-mechanism for suppressing the standard PGAPack generational output.
+or even call a hill-climber, etc.  This function is called after all
+generational computation is complete, but before the population pointers
+(:c:macro:`PGA_NEWPOP`, :c:macro:`PGA_OLDPOP`) have been switched and
+the standard PGAPack output printed. Therefore, be sure to use
+:c:macro:`PGA_NEWPOP` as the population pointer. There is no mechanism
+for suppressing the standard PGAPack generational output.
 
 The genetic distance function computes the genetic distance
 of two individuals. It is used when restricted tournament selection is
 in use. In addition it is used when reporting of genetic distance is
 selected by calling :c:func:`PGASetPrintOptions` with
-``PGA_REPORT_GENE_DISTANCE``. There are implementations for the standard
+:c:macro:`PGA_REPORT_GENE_DISTANCE`. There are implementations for the standard
 data types: For binary alleles it uses the hamming distance. For real-
 and integer valued genes it uses an allele-by-allele absolute value of
 the difference by default (also know as Manhattan distance), i.e.
@@ -2090,27 +2095,27 @@ parallel implementation.
 
 .. table::  Calling Sequences for Customizable Functions
 
-      +-----------------------------------+-------------+---------------------------------------------------+
-      | ``PGA_USERFUNCTION_INITSTRING``   | ``void``    | ``(PGAContext*, int, int)``                       |
-      +-----------------------------------+-------------+---------------------------------------------------+
-      | ``PGA_USERFUNCTION_CROSSOVER``    | ``void``    | ``(PGAContext*, int, int, int, int, int, int)``   |
-      +-----------------------------------+-------------+---------------------------------------------------+
-      | ``PGA_USERFUNCTION_MUTATION``     | ``int``     | ``(PGAContext*, int, int, double)``               |
-      +-----------------------------------+-------------+---------------------------------------------------+
-      | ``PGA_USERFUNCTION_DUPLICATE``    | ``int``     | ``(PGAContext*, int, int, int, int)``             |
-      +-----------------------------------+-------------+---------------------------------------------------+
-      | ``PGA_USERFUNCTION_HASH``         | ``PGAHash`` | ``(PGAContext*, int, int)``                       |
-      +-----------------------------------+-------------+---------------------------------------------------+
-      | ``PGA_USERFUNCTION_PRINTSTRING``  | ``void``    | ``(PGAContext*, FILE *, int, int)``               |
-      +-----------------------------------+-------------+---------------------------------------------------+
-      | ``PGA_USERFUNCTION_STOPCOND``     | ``int``     | ``(PGAContext*)``                                 |
-      +-----------------------------------+-------------+---------------------------------------------------+
-      | ``PGA_USERFUNCTION_ENDOFGEN``     | ``void``    | ``(PGAContext*)``                                 |
-      +-----------------------------------+-------------+---------------------------------------------------+
-      | ``PGA_USERFUNCTION_GEN_DISTANCE`` | ``double``  | ``(PGAContext*, int, int, int, int)``             |
-      +-----------------------------------+-------------+---------------------------------------------------+
-      | ``PGA_USERFUNCTION_PRE_EVAL``     | ``void``    | ``(PGAContext*, int)``                            |
-      +-----------------------------------+-------------+---------------------------------------------------+
+      +------------------------------------------+-------------+---------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_INITSTRING`   | ``void``    | ``(PGAContext*, int, int)``                       |
+      +------------------------------------------+-------------+---------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_CROSSOVER`    | ``void``    | ``(PGAContext*, int, int, int, int, int, int)``   |
+      +------------------------------------------+-------------+---------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_MUTATION`     | ``int``     | ``(PGAContext*, int, int, double)``               |
+      +------------------------------------------+-------------+---------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_DUPLICATE`    | ``int``     | ``(PGAContext*, int, int, int, int)``             |
+      +------------------------------------------+-------------+---------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_HASH`         | ``PGAHash`` | ``(PGAContext*, int, int)``                       |
+      +------------------------------------------+-------------+---------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_PRINTSTRING`  | ``void``    | ``(PGAContext*, FILE *, int, int)``               |
+      +------------------------------------------+-------------+---------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_STOPCOND`     | ``int``     | ``(PGAContext*)``                                 |
+      +------------------------------------------+-------------+---------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_ENDOFGEN`     | ``void``    | ``(PGAContext*)``                                 |
+      +------------------------------------------+-------------+---------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_GEN_DISTANCE` | ``double``  | ``(PGAContext*, int, int, int, int)``             |
+      +------------------------------------------+-------------+---------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_PRE_EVAL`     | ``void``    | ``(PGAContext*, int)``                            |
+      +------------------------------------------+-------------+---------------------------------------------------+
 
 Example Problem: C
 ~~~~~~~~~~~~~~~~~~
@@ -2248,69 +2253,70 @@ Basics
 
 .. table::  Functions Required for New Data Types
 
-      ================== ==================================
-      Memory allocation  ``PGA_USERFUNCTION_CREATESTRING``
-      Memory free        ``PGA_USERFUNCTION_CHROM_FREE``
-      String packing     ``PGA_USERFUNCTION_BUILDDATATYPE``
-      Mutation           ``PGA_USERFUNCTION_MUTATION``
-      Crossover          ``PGA_USERFUNCTION_CROSSOVER``
-      String printing    ``PGA_USERFUNCTION_PRINTSTRING``
-      String copying     ``PGA_USERFUNCTION_COPYSTRING``
-      Duplicate checking ``PGA_USERFUNCTION_DUPLICATE``
-      Hashing            ``PGA_USERFUNCTION_HASH``
-      ================== ==================================
+      ================== ==========================================
+      Memory allocation  :c:macro:`PGA_USERFUNCTION_CREATESTRING`
+      Memory free        :c:macro:`PGA_USERFUNCTION_CHROM_FREE`
+      String packing     :c:macro:`PGA_USERFUNCTION_BUILDDATATYPE`
+      Mutation           :c:macro:`PGA_USERFUNCTION_MUTATION`
+      Crossover          :c:macro:`PGA_USERFUNCTION_CROSSOVER`
+      String printing    :c:macro:`PGA_USERFUNCTION_PRINTSTRING`
+      String copying     :c:macro:`PGA_USERFUNCTION_COPYSTRING`
+      Duplicate checking :c:macro:`PGA_USERFUNCTION_DUPLICATE`
+      Hashing            :c:macro:`PGA_USERFUNCTION_HASH`
+      ================== ==========================================
 
 .. _tab:serialization-functions:
 
 .. table::  Serialization API
 
-      ================== ===================================
-      Serialization      ``PGA_USERFUNCTION_SERIALIZE``
-      Free serialization ``PGA_USERFUNCTION_SERIALIZE_FREE``
-      Deserialization    ``PGA_USERFUNCTION_DESERIALIZE``
-      ================== ===================================
+      ================== ===========================================
+      Serialization      :c:macro:`PGA_USERFUNCTION_SERIALIZE`
+      Free serialization :c:macro:`PGA_USERFUNCTION_SERIALIZE_FREE`
+      Deserialization    :c:macro:`PGA_USERFUNCTION_DESERIALIZE`
+      ================== ===========================================
 
-To create a new data type, you must (1) specify ``PGA_DATATYPE_USER``
+To create a new data type, you must (1) specify :c:macro:`PGA_DATATYPE_USER`
 for the datatype in the :c:func:`PGACreate` call and (2) for *each* entry in
 Table :ref:`tab:new-functions`, call :c:func:`PGASetUserFunction` to
 specify the function that will perform the given operation on the new
-data type. If the data type is ``PGA_DATATYPE_USER``, the string length
+data type. If the data type is :c:macro:`PGA_DATATYPE_USER`, the string length
 specified to :c:func:`PGACreate` can be whatever the user desires. It will be
 returned by :c:func:`PGAGetStringLength` but is not otherwise used in the
 data-structure-neutral functions of PGAPack.
 
 When specifying a user function for string creation (with
-``PGA_USERFUNCTION_CREATESTRING``, by default the string is freed using
+:c:macro:`PGA_USERFUNCTION_CREATESTRING`, by default the string is freed using
 the ``free`` function. If memory allocation uses different mechanisms, a
 user function for freeing a chromosome can be specified with
-``PGA_USERFUNCTION_CHROM_FREE``.
+:c:macro:`PGA_USERFUNCTION_CHROM_FREE`.
 
 Instead of specifying a user function for building an ``MPI`` data type,
 you can *instead* specify user functions for a serialization API
 summarized in table :ref:`tab:serialization-functions`. The user
-function for serialization ``PGA_USERFUNCTION_SERIALIZE`` is used on the
+function for serialization :c:macro:`PGA_USERFUNCTION_SERIALIZE` is used on the
 sending side. The function for deserialization
-``PGA_USERFUNCTION_DESERIALIZE`` is used at the receiving side. With the
+:c:macro:`PGA_USERFUNCTION_DESERIALIZE` is used at the receiving side. With the
 serialization API it is possible to send/receive variable-length data
 types. The serialization must reserve memory for the serialized
 representation. If it uses memory allocation with ``malloc``, the
 default is to call ``free`` when the serialized value is no longer
 needed. If a memory allocation system not compatible with ``free`` is
-used, the user function ``PGA_USERFUNCTION_SERIALIZE_FREE`` must be
+used, the user function :c:macro:`PGA_USERFUNCTION_SERIALIZE_FREE` must be
 defined. When using the serialization API a user function
-``PGA_USERFUNCTION_BUILDDATATYPE`` *must not* be defined.
+:c:macro:`PGA_USERFUNCTION_BUILDDATATYPE` *must not* be defined.
 
 The calling sequences for the functions in
 Table :ref:`tab:new-functions` are given in
 Table :ref:`tab:new-functions1`. Template routines for these
 functions are in the file ``./examples/templates/uf_new.c``.
 
-The functions ``PGA_USERFUNCTION_DUPLICATE`` and ``PGA_USERFUNCTION_HASH``
-for user defined data types are needed only when duplicate checking is
-enabled with :c:func:`PGASetNoDuplicatesFlag`.  Note that for duplicate
-checking to work, usually *both*, the hashing and the duplicate function
-need to be defined. An example is given in ``examples/c/namefull.c`` for
-C and ``examples/fortran/namefull.f`` for Fortran. These define a hash
+The functions :c:macro:`PGA_USERFUNCTION_DUPLICATE` and
+:c:macro:`PGA_USERFUNCTION_HASH` for user defined data types are needed
+only when duplicate checking is enabled with
+:c:func:`PGASetNoDuplicatesFlag`.  Note that for duplicate checking to
+work, usually *both*, the hashing and the duplicate function need to be
+defined. An example is given in ``examples/c/namefull.c`` for C and
+``examples/fortran/namefull.f`` for Fortran. These define a hash
 function and a duplicate check (comparison) function that treat all
 non-matching characters alike. When implementing a hash function for
 user defined datatypes the function :c:func:`PGAUtilHash` in
@@ -2320,27 +2326,27 @@ user defined datatypes the function :c:func:`PGAUtilHash` in
 
 .. table::  Calling Sequences for New Data Type Functions
 
-  +-------------------------------------+------------+---------------------------------------------------+
-  | ``PGA_USERFUNCTION_CREATESTRING``   | ``void``   | ``(PGAContext*, int, int, int)``                  |
-  +-------------------------------------+------------+---------------------------------------------------+
-  | ``PGA_USERFUNCTION_BUILDDATATYPE``  | ``int``    | ``(PGAContext*, int, int)``                       |
-  +-------------------------------------+------------+---------------------------------------------------+
-  | ``PGA_USERFUNCTION_SERIALIZE``      | ``size_t`` | ``(PGAContext*, int, int, const void **)``        |
-  +-------------------------------------+------------+---------------------------------------------------+
-  | ``PGA_USERFUNCTION_DESERIALIZE``    | ``void``   | ``(PGAContext*, int, int, const void *, size_t)`` |
-  +-------------------------------------+------------+---------------------------------------------------+
-  | ``PGA_USERFUNCTION_SERIALIZE_FREE`` | ``void``   | ``(void *)``                                      |
-  +-------------------------------------+------------+---------------------------------------------------+
-  | ``PGA_USERFUNCTION_MUTATION``       | ``int``    | ``(PGAContext*, int, int, double)``               |
-  +-------------------------------------+------------+---------------------------------------------------+
-  | ``PGA_USERFUNCTION_CROSSOVER``      | ``void``   | ``(PGAContext*, int, int, int, int, int, int)``   |
-  +-------------------------------------+------------+---------------------------------------------------+
-  | ``PGA_USERFUNCTION_PRINTSTRING``    | ``void``   | ``(PGAContext*, FILE *, int, int)``               |
-  +-------------------------------------+------------+---------------------------------------------------+
-  | ``PGA_USERFUNCTION_COPYSTRING``     | ``int``    | ``(PGAContext*, int, int, int, int)``             |
-  +-------------------------------------+------------+---------------------------------------------------+
-  | ``PGA_USERFUNCTION_DUPLICATE``      | ``int``    | ``(PGAContext*, int, int, int, int)``             |
-  +-------------------------------------+------------+---------------------------------------------------+
+  +--------------------------------------------+------------+---------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_CREATESTRING`   | ``void``   | ``(PGAContext*, int, int, int)``                  |
+  +--------------------------------------------+------------+---------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_BUILDDATATYPE`  | ``int``    | ``(PGAContext*, int, int)``                       |
+  +--------------------------------------------+------------+---------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_SERIALIZE`      | ``size_t`` | ``(PGAContext*, int, int, const void **)``        |
+  +--------------------------------------------+------------+---------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_DESERIALIZE`    | ``void``   | ``(PGAContext*, int, int, const void *, size_t)`` |
+  +--------------------------------------------+------------+---------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_SERIALIZE_FREE` | ``void``   | ``(void *)``                                      |
+  +--------------------------------------------+------------+---------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_MUTATION`       | ``int``    | ``(PGAContext*, int, int, double)``               |
+  +--------------------------------------------+------------+---------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_CROSSOVER`      | ``void``   | ``(PGAContext*, int, int, int, int, int, int)``   |
+  +--------------------------------------------+------------+---------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_PRINTSTRING`    | ``void``   | ``(PGAContext*, FILE *, int, int)``               |
+  +--------------------------------------------+------------+---------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_COPYSTRING`     | ``int``    | ``(PGAContext*, int, int, int, int)``             |
+  +--------------------------------------------+------------+---------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_DUPLICATE`      | ``int``    | ``(PGAContext*, int, int, int, int)``             |
+  +--------------------------------------------+------------+---------------------------------------------------+
 
 While PGAPack requires that the user supply all the functions in
 Table :ref:`tab:new-functions`, your program may not require the
@@ -2460,11 +2466,11 @@ pointer, no cast is necessary.
 
 The value of ``InitFlag`` is passed by PGAPack to the user’s string
 creation routine. It specifies whether to randomly initialize the string
-or set it to zero. By default, ``PGA_OLDPOP`` (except for ``PGA_TEMP1``
-and ``PGA_TEMP1`` which are set to zero) is randomly initialized, and
-``PGA_NEWPOP`` is set to zero. This choice may be changed with the
-:c:func:`PGASetRandomInitFlag` function discussed in
-Section :ref:`sec:initialization`.)
+or set it to zero. By default, :c:macro:`PGA_OLDPOP` (except for
+:c:macro:`PGA_TEMP1` and :c:macro:`PGA_TEMP1` which are set to zero) is
+randomly initialized, and :c:macro:`PGA_NEWPOP` is set to zero. This
+choice may be changed with the :c:func:`PGASetRandomInitFlag` function
+discussed in Section :ref:`sec:initialization`.)
 
 .. _example1:new-datatype-mutation:
 
