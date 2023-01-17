@@ -1,5 +1,7 @@
 import os
 from xml.etree import ElementTree
+import subprocess
+# Stuff for monkey-patching
 import inspect
 import ast
 import exhale
@@ -7,7 +9,11 @@ import exhale.graph
 import exhale.utils
 import exhale.configs
 import exhale.parse
-import subprocess
+import breathe.directives.content_block
+import breathe.renderer.sphinxrenderer
+from docutils.parsers.rst.directives import flag
+from docutils.nodes import Node
+from typing import List
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -219,6 +225,21 @@ def monkey_patch ():
            == 'Classes and Structs'
            )
     mod.body [0].body [3].body [5].value.elts [1].elts [0].value = 'Structs'
+    exec (compile (mod, '<string>', 'exec'), d)
+    setattr (cls, n, d [n])
+
+    cls = breathe.directives.content_block.DoxygenGroupDirective
+    cls.option_spec.update (sort = flag)
+
+    cls = breathe.renderer.sphinxrenderer.SphinxRenderer
+    d   = dict (List = List, Node = Node)
+    n   = 'visit_sectiondef'
+    fun = getattr (cls, n)
+    txt = src (fun).split ('\n')
+    assert txt [6].lstrip ().startswith ('# Get all the memberdef info')
+    txt.insert (7, "    if 'sort' in options:")
+    txt.insert (8, "        node.memberdef.sort(key=lambda x: x.name)")
+    mod = ast.parse (src (fun))
     exec (compile (mod, '<string>', 'exec'), d)
     setattr (cls, n, d [n])
 # end def monkey_patch

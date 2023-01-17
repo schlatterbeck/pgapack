@@ -1,5 +1,6 @@
 sphinx>=4.5
-breathe>=4.32.0
+# Should be fixed when latest is released for group sorting feature
+breathe==4.34.0
 exhale>=0.3.2
 sphinx_rtd_theme
 # exhale requirements
