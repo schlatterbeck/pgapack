@@ -7,6 +7,7 @@ import exhale.graph
 import exhale.utils
 import exhale.configs
 import exhale.parse
+import subprocess
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -30,6 +31,11 @@ project = 'PGAPack'
 copyright = '1996-2022, David M. Levine, Philip L. Hallstrom, David M. Noelle, Brian P. Walenz, Dirk Eddelbuettel, Ralf Schlatterbeck'
 author = 'David M. Levine, Philip L. Hallstrom, David M. Noelle, Brian P. Walenz, Dirk Eddelbuettel, Ralf Schlatterbeck'
 
+# On readthedocs we need to run doxygen first
+
+read_the_docs_build = os.environ.get ('READTHEDOCS', None) == 'True'
+if read_the_docs_build:
+    subprocess.call ('doxygen', shell=True)
 
 # -- General configuration ---------------------------------------------------
 
