@@ -1415,7 +1415,7 @@ void PGAIntegerEdgeCrossover
 
 /*!****************************************************************************
     \brief Set edges that have to be present.
-    \ingroup init
+    \ingroup standard-api
 
     \param   ctx        context variable
     \param   n          Number of edges
@@ -1927,7 +1927,7 @@ double PGAIntegerGeneDistance
 
 /*!****************************************************************************
     \brief Compute genetic distance of two strings.
-    \ingroup init
+    \ingroup standard-api
 
     \param   ctx    context variable
     \param   p1     first string index

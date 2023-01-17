@@ -591,7 +591,7 @@ void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points)
 
 /*!****************************************************************************
     \brief Set reference directions for NSGA-III.
-    \ingroup standard-api
+    \ingroup init
     \param   ctx    context variable
     \param   ndirs  Number of directions
     \param   dirs   Pointer to directions

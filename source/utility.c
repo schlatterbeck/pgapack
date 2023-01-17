@@ -402,7 +402,7 @@ int PGACheckSum (PGAContext *ctx, int p, int pop)
 /*!***************************************************************************
     \brief Return the index of the string with the worst evaluation
            function value in population pop.
-    \ingroup standard-api
+    \ingroup query
     \param  ctx  context variable
     \param  pop  symbolic constant of the population to find the worst string in
     \return Index of the string with the worst evaluation function value
@@ -452,7 +452,7 @@ int PGAGetWorstIndex (PGAContext *ctx, int pop)
 /*!***************************************************************************
     \brief Return the index of the string with the best evaluation
            function value in population pop
-    \ingroup standard-api
+    \ingroup query
     \param  ctx    context variable
     \param  popidx symbolic constant of the population to find the best
             string in
@@ -530,7 +530,7 @@ int PGAGetBestIndex (PGAContext *ctx, int popidx)
 /*!***************************************************************************
     \brief Return the best evaluation value in population pop
            for the given evaluation index.
-    \ingroup standard-api
+    \ingroup query
     \param  ctx  context variable
     \param  pop  symbolic constant of the population to find the best
                  eval, only PGA_OLDPOP is allowed
@@ -583,7 +583,7 @@ double PGAGetBestReport (PGAContext *ctx, int pop, int idx)
 /*!***************************************************************************
     \brief Return the index of the string with the best evaluation
            function value in population pop for the given evaluation index.
-    \ingroup standard-api
+    \ingroup query
     \param  ctx  context variable
     \param  pop  symbolic constant of the population to find the best
                  string in

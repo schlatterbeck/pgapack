@@ -61,7 +61,7 @@ static void ChromFree (PGAIndividual *ind)
 
 /*!****************************************************************************
     \brief Create an uninitialized context variable.
-    \ingroup init
+    \ingroup standard-api
     \param   argc      Address of the count of the number of command
                        line arguments
     \param   argv      Array of command line arguments
@@ -608,7 +608,7 @@ void PGACreatePop (PGAContext *ctx, int pop)
 /*!****************************************************************************
     \brief Set all uninitialized variables to default values and
            initialize some internal arrays.
-    \ingroup init
+    \ingroup standard-api
     \param   ctx  context variable
     \return  Uninitialized values in the context variable are set to
              defaults, and set values are checked for legality

@@ -1446,7 +1446,7 @@ double PGARealGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 
 /*!****************************************************************************
     \brief Compute genetic difference of two strings.
-    \ingroup init
+    \ingroup standard-api
     \param   ctx    context variable
     \param   p1     first string index
     \param   pop1   symbolic constant of the population the first string is in
