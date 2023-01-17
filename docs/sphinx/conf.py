@@ -9,11 +9,15 @@ import exhale.graph
 import exhale.utils
 import exhale.configs
 import exhale.parse
+import breathe
+import breathe.directives
+import breathe.renderer
 import breathe.directives.content_block
 import breathe.renderer.sphinxrenderer
 from docutils.parsers.rst.directives import flag
 from docutils.nodes import Node
-from typing import List
+from docutils import nodes
+from typing import List, cast
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -232,16 +236,20 @@ def monkey_patch ():
     cls.option_spec.update (sort = flag)
 
     cls = breathe.renderer.sphinxrenderer.SphinxRenderer
-    d   = dict (List = List, Node = Node)
+    d   = dict \
+        ( List = List, Node = Node, cast = cast, nodes = nodes
+        , RenderContext = breathe.renderer.RenderContext
+        )
     n   = 'visit_sectiondef'
     fun = getattr (cls, n)
     txt = src (fun).split ('\n')
     assert txt [6].lstrip ().startswith ('# Get all the memberdef info')
     txt.insert (7, "    if 'sort' in options:")
     txt.insert (8, "        node.memberdef.sort(key=lambda x: x.name)")
-    mod = ast.parse (src (fun))
+    mod = ast.parse ('\n'.join (txt))
     exec (compile (mod, '<string>', 'exec'), d)
     setattr (cls, n, d [n])
+    cls.methods ['sectiondef'] = d [n]
 # end def monkey_patch
 
 monkey_patch ()
