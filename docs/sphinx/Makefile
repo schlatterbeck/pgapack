@@ -22,6 +22,10 @@ html: .stamp-doxygen
 
 man: .stamp-doxygen
 
+latex: .stamp-doxygen
+
+latexpdf: .stamp-doxygen
+
 fixedman: man man/man3
 	$(MAKE) fixedman2
 

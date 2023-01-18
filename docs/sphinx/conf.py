@@ -55,6 +55,7 @@ if read_the_docs_build:
 extensions = [
     'breathe',
     'exhale',
+    'sphinxcontrib.inkscapeconverter',
     #'sphinxfortran.fortran_domain'
 ]
 

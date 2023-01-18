@@ -3,6 +3,8 @@ sphinx>=4.5
 breathe==4.34.0
 exhale>=0.3.2
 sphinx_rtd_theme
+# For .svg files with latex
+sphinxcontrib-svg2pdfconverter
 # exhale requirements
 beautifulsoup4
 lxml
