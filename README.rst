@@ -19,8 +19,16 @@ companion projects:
   libraries supported by Debian):
   https://github.com/schlatterbeck/debian-pgapack
 
+Documentation is on `Read the Docs`_.
+
 Updates 
 =======
+
+3rd update Jan 2023:
+
+- Now the user-guide is converted to sphinx. The old LaTeX version can
+  still be built but will vanish eventually
+- You can access the documentation on `Read the Docs`_ now.
 
 2nd update Jan 2023:
 
@@ -556,3 +564,4 @@ of maintaining a working automake environment seems not justified.
 .. _`examples/nsgaii/crowdingplot`:
     https://github.com/schlatterbeck/pgapack/blob/master/examples/nsgaii/crowdingplot
 .. _`bug in constant declarations`: https://godbolt.org/z/ahMrv4r1E
+.. _`Read the Docs`: https://pgapack.readthedocs.io/en/latest/
