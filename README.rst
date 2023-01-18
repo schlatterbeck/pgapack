@@ -303,15 +303,66 @@ specified by the ARCH_TYPE variable below.
 Documentation
 =============
 
-* The PGAPack users guide is in ``./docs/user_guide.pdf`` after building the
-  guide from sources (see ``Makefile``). The old original version was
-  preserved as ``docs/user_guide-orig.ps`` |--| it is recommended to use the
-  latest version that had some fixes and documentation updates for newer
-  features.
-* Man pages for PGAPack functions are in the ``./man`` directory.
-* Installation instructions are in this ``README.rst`` file and the
-  users guide.
+* Documentation is now on `Read the Docs`_.
+* The PGAPack users guide which used to be in LaTeX is now converted to
+  Sphinx with cross-links to a reference documentation.
+* The old LaTeX version is still available in the directory ``docs`` but
+  no longer built by default. The ancient original documentation is
+  still preserved as ``docs/user_guide-orig.ps`` for historical reasons.
+  It is not recommended for a reference.
+* Man pages for PGAPack functions are in the ``./man`` directory. They
+  are created automatically from the Sphinx documentation in
+  ``docs/sphinx`` using some postprocessing from the manual page export
+  of Sphinx. But the man-pages are still checked into git and only
+  rebuilt when something changes. The reason is that the manpages should
+  be easily installable.
+* For building the man page sources a Sphinx setup is needed, see below in
+  `Building the documentation`_.
+* Installation instructions are in this ``README.rst`` file.
 * Example problems are in the ``./examples`` directory.
+
+Building the documentation
+--------------------------
+
+To build the Sphinx documentation you should install into a `Sphinx
+virtual environment`_: This uses a Python virtual environment and
+installs Sphinx and all the necessary addons into this environment.
+In addition to Sphinx proper you also need the additional packages in
+``docs/sphinx/requirements.txt``. You can install with::
+
+ pip install -r docs/sphinx/requirements.txt
+
+But be sure that you have activated the virtual environment before
+issuing this command, otherwise you install into the global python
+interpreter or your user configuration.
+
+After this you can change to ``docs/sphinx`` directory and build the
+html documentation with::
+
+ make html
+
+Alternatively you can build manual pages with the target ``fixedman``
+and a pdf file with the target ``latexpdf``. The default if no target is
+given is to build all three. The latter can also be achieved by::
+
+ make documentation
+
+from the top-level. Note that you need to have the sphinx virtual
+environment activated for this to work. This is also the reason why the
+documentation is no longer built by default with the default make target
+from the top-level Makefile.
+
+Currently the Sphinx documentation uses some hacks by modifying
+subprograms in memory while building the documentation. The Python
+community calls this `monkey patching`_. This is because exhale
+hard-codes some of the section headings in the documentation and I did
+not want to have 'Classes' when the code is in C which doesn't have
+classes. And I like the functions in the function groups sorted by name
+which originally was not supported by breathe but a patch from me has
+been accepted and I expect this to be available in a future version.
+In short this means that you may be unable to build the documentation
+when a new version comes along. Please open a bug report on github if
+this occurs to you.
 
 
 Installation Requirements
@@ -565,3 +616,6 @@ of maintaining a working automake environment seems not justified.
     https://github.com/schlatterbeck/pgapack/blob/master/examples/nsgaii/crowdingplot
 .. _`bug in constant declarations`: https://godbolt.org/z/ahMrv4r1E
 .. _`Read the Docs`: https://pgapack.readthedocs.io/en/latest/
+.. _`Sphinx virtual environment`:
+    https://www.sphinx-doc.org/en/master/usage/installation.html#using-virtual-environments
+.. _`monkey patching`: https://en.wikipedia.org/wiki/Monkey_patch
