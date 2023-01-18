@@ -30,3 +30,5 @@ clean:
 	$(MAKE) -C sequence clean
 
 .PHONY: all C Fortran clean
+
+# vim: set noet :

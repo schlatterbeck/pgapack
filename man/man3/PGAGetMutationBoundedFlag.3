@@ -27,9 +27,9 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetMutationBoundedFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetMutationBoundedFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGAGetMutationBoundedFlag \- Return PGA_TRUE or PGA_FALSE to indicate whether mutated integer strings remain in the initialization range. 
+PGAGetMutationBoundedFlag \- Return flag to indicate whether mutated integer strings remain in the initialization range. 
 .SH SYNOPSIS
 .B int  PGAGetMutationBoundedFlag(\fI\%PGAContext\fP  *ctx) 
 .sp
@@ -54,7 +54,7 @@ val = PGAGetMutationBoundedFlag (ctx);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .SH RETURNS
-PGA_TRUE if restricted to the given range, otherwise PGA_FALSE
+true if restricted to the given range
 .SH LOCATION
 \fI\%File mutation.c\fP
 .SH COPYRIGHT

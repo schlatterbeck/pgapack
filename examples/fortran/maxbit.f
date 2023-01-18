@@ -11,8 +11,9 @@ c
 c     
 c     user main program
 c     
-      integer(8)      ctx
-      integer         ierror
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
+      integer           ierror
 
       call MPI_Init(ierror)
 
@@ -37,7 +38,8 @@ c     pop - which population to refer to
 c     
       double precision function NumberOfSetBits(ctx, p, pop) 
       include    'pgapackf.h'
-      integer(8)      ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer     p, pop
       integer     i, nbits, stringlen
 

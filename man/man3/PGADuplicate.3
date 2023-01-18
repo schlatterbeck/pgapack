@@ -27,18 +27,24 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGADuplicate" "3" "2023-01-09" "" "PGAPack"
+.TH "PGADuplicate" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGADuplicate \- Determine if a specified string is a duplicate of one already in an existing population. 
 .SH SYNOPSIS
 .B int  PGADuplicate(\fI\%PGAContext\fP  *ctx, int  p, int  pop1, int  pop2) 
 .sp
+.SH DESCRIPTION
+.sp
+Return \fI\%PGA_TRUE\fP if \fI\%PGAGetNoDuplicatesFlag()\fP
+returns \fI\%PGA_TRUE\fP and string \fBp\fP in population \fBpop1\fP
+is a duplicate of at least one strings already inserted into
+population \fBpop2\fP, otherwise return \fI\%PGA_FALSE\fP\&.
 .SH EXAMPLE
 .sp
 Check the current to\-be\-inserted string if it is a copy of any of
-the strings in PGA_NEWPOP. Note that the check relies on all
-individuals in PGA_NEWPOP to also be inserted into the duplicate
-hash, see \fI\%PGAHashIndividual()\fP\&.
+the strings in \fI\%PGA_NEWPOP\fP\&. Note that the check relies on
+all individuals in \fI\%PGA_NEWPOP\fP to also be inserted into
+the duplicate hash, see \fI\%PGAHashIndividual()\fP\&.
 .sp
 .nf
 .ft C
@@ -63,7 +69,7 @@ while (PGADuplicate (ctx, p, PGA_NEWNEW, PGA_NEWPOP)) {
 .IP \(bu 2
 \fBpop2\fP \-\- symbolic constant of the (possibly partial) population containing strings to compare string p against 
 .SH RETURNS
-Returns PGA_TRUE if \fI\%PGAGetNoDuplicatesFlag()\fP returns PGA_TRUE and string p in population pop1 is a duplicate of at least one strings already inserted into population pop2, otherwise returns PGA_FALSE
+Return true if duplicate
 .SH LOCATION
 \fI\%File duplcate.c\fP
 .SH COPYRIGHT

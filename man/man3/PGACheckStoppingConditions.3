@@ -27,17 +27,22 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGACheckStoppingConditions" "3" "2023-01-09" "" "PGAPack"
+.TH "PGACheckStoppingConditions" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGACheckStoppingConditions \- Return boolean to indicate if the PGAPack termination conditions, PGA_STOP_MAXITER, PGA_STOP_TOOSIMILAR, PGA_STOP_NOCHANGE, have been met. 
+PGACheckStoppingConditions \- Return boolean to indicate if the configured PGAPack termination conditions have been met. 
 .SH SYNOPSIS
 .B int  PGACheckStoppingConditions(\fI\%PGAContext\fP  *ctx) 
 .sp
+.SH DESCRIPTION
+.sp
+The default termination conditions are given in
+\fI\%Constants for Stopping Conditions\fP and more details are found in section
+\fI\%Stopping Criteria\fP of the user guide.
 .SH EXAMPLE
 .sp
 Useful in a user\-defined function that is registered as a stopping
 condition function. We can use this to keep the builtin stopping
-conditions in addition to a user\-define condition.
+conditions in addition to a user\-defined condition.
 .sp
 .nf
 .ft C
@@ -56,7 +61,7 @@ int StopCond (PGAContext *ctx)
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .SH RETURNS
-return PGA_TRUE if at least one of the termination conditions has been met, otherwise returns PGA_FALSE
+return true if at least one of the termination conditions has been met
 .SH LOCATION
 \fI\%File stop.c\fP
 .SH COPYRIGHT

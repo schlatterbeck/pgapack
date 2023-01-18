@@ -50,7 +50,6 @@ privately owned rights.
 /*!****************************************************************************
     \brief Compute total value over all constraint violations.
     \ingroup standard-api
-
     \param  ind    Pointer to Individual
     \return Computed or cached total value over all constraint violations
 
@@ -98,7 +97,7 @@ double INDGetAuxTotal (PGAIndividual *ind)
 
 /*!****************************************************************************
     \brief Compute total value over all constraint violations.
-
+    \ingroup query
     \param  ctx    context variable
     \param  p      index of individual
     \param  pop    population
@@ -149,7 +148,6 @@ static int  PGASelectTruncation   (PGAContext *ctx, int pop);
     \brief Perform genetic algorithm selection using the defined
            selection scheme.
     \ingroup explicit
-
     \param  ctx    context variable
     \param  popix  symbolic constant of population to select from
     \return An array used by \ref PGASelectNextIndex is
@@ -164,14 +162,17 @@ static int  PGASelectTruncation   (PGAContext *ctx, int pop);
     The selection scheme used is either the default selection scheme or
     that specified with :c:func:`PGASetSelectType`.
 
-    Valid selection
-    methods are proportional, stochastic universal, tournament, probabilistic
-    tournament selection, truncation selection, or linear selection,
-    PGA_SELECT_PROPORTIONAL, PGA_SELECT_SUS, PGA_SELECT_TOURNAMENT,
-    PGA_SELECT_PTOURNAMENT, PGA_SELECT_TRUNCATION, PGA_SELECT_LINEAR
+    Valid selection methods are proportional, stochastic universal,
+    tournament, probabilistic tournament selection, truncation
+    selection, or linear selection with macros
+    :c:macro:`PGA_SELECT_PROPORTIONAL`, :c:macro:`PGA_SELECT_SUS`,
+    :c:macro:`PGA_SELECT_TOURNAMENT`, :c:macro:`PGA_SELECT_PTOURNAMENT`,
+    :c:macro:`PGA_SELECT_TRUNCATION`, :c:macro:`PGA_SELECT_LINEAR`
     respectively. This function updates an internal array with the
-    indices of members of popix selected for recombination.  These indices
-    may be accessed with :c:func:`PGASelectNextIndex`.
+    indices of members of ``popix`` selected for recombination.  These
+    indices may be accessed with :c:func:`PGASelectNextIndex`.
+    See :ref:`group:const-selection` for the constants and section
+    :ref:`sec:selection` in the user guide for details.
 
 
     Example
@@ -264,7 +265,6 @@ void PGASelect (PGAContext *ctx, int popix)
 /*!****************************************************************************
     \brief Return the index of next individual in internal array.
     \ingroup explicit
-
     \param  ctx     context variable
     \param  popix   the population index, typically PGA_OLDPOP
     \return A population index for the next selected creature
@@ -321,12 +321,15 @@ int PGASelectNextIndex (PGAContext *ctx, int popix)
     Description
     -----------
 
-    Valid choices
-    are PGA_SELECT_PROPORTIONAL, PGA_SELECT_SUS, PGA_SELECT_TOURNAMENT,
-    PGA_SELECT_PTOURNAMENT, PGA_SELECT_TRUNCATION, and PGA_SELECT_LINEAR
-    for proportional, stochastic universal selection,
-    tournament, probabilistic tournament selection, truncation selection
-    and linear selection, respectively.  The default is PGA_SELECT_TOURNAMENT.
+    Valid choices are :c:macro:`PGA_SELECT_PROPORTIONAL`,
+    :c:macro:`PGA_SELECT_SUS`, :c:macro:`PGA_SELECT_TOURNAMENT`,
+    :c:macro:`PGA_SELECT_PTOURNAMENT`, :c:macro:`PGA_SELECT_TRUNCATION`,
+    and :c:macro:`PGA_SELECT_LINEAR` for proportional, stochastic
+    universal selection, tournament, probabilistic tournament selection,
+    truncation selection and linear selection, respectively.  The
+    default is :c:macro:`PGA_SELECT_TOURNAMENT`. See
+    :ref:`group:const-selection` for the constants and section
+    :ref:`sec:selection` in the user guide for details.
 
     Example
     -------
@@ -369,7 +372,6 @@ void PGASetSelectType (PGAContext *ctx, int select_type)
 /*!***************************************************************************
     \brief Return the type of selection selected.
     \ingroup query
-
     \param   ctx  context variable
     \return  Return the integer corresponding to the symbolic constant
              used to specify the type of selection specified
@@ -422,7 +424,6 @@ int PGAGetSelectType (PGAContext *ctx)
     \brief Specify the probability that the string that wins a binary
            tournament will be selected.
     \ingroup init
-
     \param   ctx              context variable
     \param   ptournament_prob the probability of selecting the better string
     \return  None
@@ -432,9 +433,9 @@ int PGAGetSelectType (PGAContext *ctx)
     Description
     -----------
 
-    This function will have no effect
-    unless PGA_SELECT_PTOURNAMENT was specified as the type of selection to
-    use with :c:func:`PGASetSelectType`.  The default value is 0.6.
+    This function will have no effect unless :c:macro:`PGA_SELECT_PTOURNAMENT`
+    was specified as the type of selection to use with
+    :c:func:`PGASetSelectType`.  The default value is 0.6.
 
     Example
     -------
@@ -462,7 +463,6 @@ void PGASetPTournamentProb (PGAContext *ctx, double ptournament_prob)
     \brief Return the probability of selecting the best string in a
            probabilistic binary tournament.
     \ingroup query
-
     \param   ctx  context variable
     \return  The probabilistic binary tournament selection probability
 
@@ -495,7 +495,6 @@ double PGAGetPTournamentProb (PGAContext *ctx)
 /*!****************************************************************************
     \brief Specify the number of participants in a non-probabilistic Tournament.
     \ingroup init
-
     \param   ctx               context variable
     \param   tournament_size   the size of the tournament
     \return  None
@@ -505,9 +504,10 @@ double PGAGetPTournamentProb (PGAContext *ctx)
     Description
     -----------
 
-    This function will have no effect unless PGA_SELECT_TOURNAMENT was
-    specified as the type of selection to use with :c:func:`PGASetSelectType`.
-    The default value is 2.
+    This function will have no effect unless
+    :c:macro:`PGA_SELECT_TOURNAMENT` was specified as the type of
+    selection to use with :c:func:`PGASetSelectType`.  The default value
+    is 2.
 
     Example
     -------
@@ -534,7 +534,6 @@ void PGASetTournamentSize (PGAContext *ctx, double tournament_size)
 /*!***************************************************************************
     \brief Return the number of participants in a tournament
     \ingroup query
-
     \param   ctx  context variable
     \return  The number of participants in a non probabilistic tournament
 
@@ -566,9 +565,8 @@ double PGAGetTournamentSize (PGAContext *ctx)
 /*!****************************************************************************
     \brief Specify if tournament is with or without replacement.
     \ingroup init
-
     \param   ctx  context variable
-    \param   v    The value, PGA_TRUE or PGA_FALSE
+    \param   v    flag indicating if replacement is used
     \return  None
 
     \rst
@@ -577,8 +575,9 @@ double PGAGetTournamentSize (PGAContext *ctx)
     -----------
 
     This function will have no effect unless
-    PGA_SELECT_TOURNAMENT was specified as the type of selection to use
-    with :c:func:`PGASetSelectType`. The default value is PGA_TRUE.
+    :c:macro:`PGA_SELECT_TOURNAMENT` was specified as the type of
+    selection to use with :c:func:`PGASetSelectType`. The default value
+    is :c:macro:`PGA_TRUE` indicating tournament with replacement.
 
     Example
     -------
@@ -599,12 +598,11 @@ void PGASetTournamentWithReplacement (PGAContext *ctx, int v)
 }
 
 /*!***************************************************************************
-    \brief Return the setting for tournament sampling: with replacement
-           returns PGA_TRUE, without replacement returns PGA_FALSE.
+    \brief Return the setting for tournament sampling, true if with
+           replacement.
     \ingroup query
-
     \param   ctx  context variable
-    \return  The setting of tournament with/without replacement, PGA_TRUE
+    \return  The setting of tournament with/without replacement, true
              if with replacement
 
     \rst
@@ -632,7 +630,6 @@ int PGAGetTournamentWithReplacement (PGAContext *ctx)
     \brief Specify the proportion of selected individuals for truncation
            selection.
     \ingroup init
-
     \param   ctx         context variable
     \param   proportion  The value, 0 < proportion <= 1
     \return  None
@@ -642,9 +639,10 @@ int PGAGetTournamentWithReplacement (PGAContext *ctx)
     Description
     -----------
 
-    This function will have no
-    effect unless PGA_SELECT_TRUNCATION was specified as the type of
-    selection to use with :c:func:`PGASetSelectType`. The default value is 0.5.
+    This function will have no effect unless
+    :c:macro:`PGA_SELECT_TRUNCATION` was specified as the type of
+    selection to use with :c:func:`PGASetSelectType`. The default value
+    is 0.5.
 
     Example
     -------
@@ -669,7 +667,6 @@ void PGASetTruncationProportion (PGAContext *ctx, double proportion)
     \brief Return the proportion of best individuals selected in
            truncation selection.
     \ingroup query
-
     \param   ctx  context variable
     \return  Proportion of best individuals selected in truncation selection
 
@@ -699,9 +696,8 @@ double PGAGetTruncationProportion (PGAContext *ctx)
     \brief Specify if during PGASelect the chosen individuals should be
            randomized again.
     \ingroup init
-
     \param   ctx  context variable
-    \param   v    The value, PGA_FALSE or PGA_TRUE
+    \param   v    flag, true if randomized again
     \return  None
 
     \rst
@@ -709,11 +705,12 @@ double PGAGetTruncationProportion (PGAContext *ctx)
     Description
     -----------
 
-    All selection schemes except
-    PGA_SELECT_SUS already return the individuals in randomized order,
-    previously this was randomized again. With this method you can
-    re-enable the randomization for selection schemes other than
-    PGA_SELECT_SUS (for which a randomization step is always performed).
+    All selection schemes except :c:macro:`PGA_SELECT_SUS` already
+    return the individuals in randomized order, previously this was
+    randomized again. With this method you can re-enable the
+    randomization for selection schemes other than
+    :c:macro:`PGA_SELECT_SUS` (for which a randomization step is always
+    performed).
 
     Example
     -------
@@ -736,22 +733,21 @@ void PGASetRandomizeSelect (PGAContext *ctx, int v)
 /*!***************************************************************************
     \brief Return the setting for additional select randomization.
     \ingroup query
-
     \param   ctx  context variable
-    \return  The setting of select randomization (PGA_TRUE or PGA_FALSE)
+    \return  The setting of select randomization, true if on
 
     \rst
 
     Description
     -----------
 
-    This function will return PGA_TRUE if a second randomization step
-    after selection is performed. All selection schemes except
-    PGA_SELECT_SUS already return the individuals in randomized order,
-    previously  this  was randomized  again.  With this method you can
-    find out if the randomization for selection schemes other than
-    PGA_SELECT_SUS (for which a randomization step is always performed)
-    is turned on.
+    This function will return :c:macro:`PGA_TRUE` if a second
+    randomization step after selection is performed. All selection
+    schemes except :c:macro:`PGA_SELECT_SUS` already return the
+    individuals in randomized order, previously  this  was randomized
+    again.  With this method you can find out if the randomization for
+    selection schemes other than :c:macro:`PGA_SELECT_SUS` (for which a
+    randomization step is always performed)
 
 
     Example
@@ -780,21 +776,20 @@ int PGAGetRandomizeSelect (PGAContext *ctx)
     \brief Select a parent for the next generation using a linear search
            through a (fitness) weighted 'roulette wheel'.
     \ingroup internal
-
     \param  ctx    context variable
     \param  pop    pointer to first individual of population
     \return index of the selected string
 
     \rst
+    .. |_| unicode:: U+00A0 .. Non-breaking space
+       :trim:
 
     Description
     -----------
 
     The probability of selection of individual :math:`i` with fitness
-    :math:`f_i` is given by [1]_
+    :math:`f_i` is given by Goldberg [Gol89]_, p. |_| 11 as
     :math:`p_i = \frac{f_i}{\sum_{i} f_i}`
-
-    .. [1] D. Goldberg, Genetic Algorithms, p. 11
 
     Example
     -------
@@ -839,21 +834,19 @@ static int PGASelectProportional (PGAContext *ctx, PGAIndividual *pop)
 /*!****************************************************************************
     \brief A select routine using stochastic universal sampling
     \ingroup internal
-
     \param  ctx    context variable
     \param  pop    pointer to first individual of population
     \return the array ga.selected [] created via side effect.
 
     \rst
+    .. |_| unicode:: U+00A0 .. Non-breaking space
+       :trim:
 
     Description
     -----------
 
-    Perform stochastic universal sampling selection [1]_.
+    Perform stochastic universal sampling selection [Bak87]_, p. |_| 16.
     This routine creates the entire selected population with one call.
-
-    .. [1] J. Baker, Reducing Bias and Inefficiency in the Selection
-           Algorithm.  Second GA conference, pp 14-21 (page 16)
 
     Example
     -------
@@ -905,7 +898,6 @@ static void PGASelectSUS (PGAContext *ctx, PGAIndividual *pop)
 /*!****************************************************************************
     \brief Choose N strings randomly and return the one with best evaluation.
     \ingroup internal
-
     \param  ctx  context variable
     \param  pop  symbolic constant of population to select from
     \return index of the selected string
@@ -918,14 +910,8 @@ static void PGASelectSUS (PGAContext *ctx, PGAIndividual *pop)
     The configuration parameter N is the value set with
     :c:func:`PGASetTournamentSize`, the default is 2.
     The selection happens *with* replacement.
-    This is a generalization of Goldbergs description [1]_,
-    for the generalization see, e.g. [2]_.
-
-    .. [1] D. E. Goldberg, Genetic Algorithms, p. 121
-    .. [2] D. E. Goldberg and K. Deb.
-           A Comparative Analysis of Selection Schemes Used in Genetic
-           Algorithms, in Gregory J. E. Rawlins (Ed.) Foundation of
-           Genetic Algorithms (FOGA) 1, pp. 69-93, 1991.
+    This is a generalization of Goldbergs description [Gol89]_,
+    for the generalization see, e.g. in Goldberg and Deb [GD91]_.
 
     Example
     -------
@@ -963,7 +949,6 @@ int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
 /*!****************************************************************************
     \brief Choose N strings randomly and return the one with best evaluation.
     \ingroup internal
-
     \param  ctx  context variable
     \param  pop  symbolic constant of population to select from
     \return index of the selected string
@@ -980,11 +965,7 @@ int PGASelectTournamentWithReplacement (PGAContext *ctx, int pop)
     size of 2, each individual is participating in exactly two
     tournaments. This does *not* mean that a single individual cannot be
     returned more than once. For implementation notes on the algorithm
-    see [1]_, p. 504.
-
-    .. [1]  David E. Goldberg, Bradley Korb, and Kalyanmoy Deb. Messy
-            genetic algorithms: Motivation, analysis, and first results.
-            Complex Systems, 3(5):493–530, 1989.
+    see [GKD89]_, p. 504.
 
     Example
     -------
@@ -1051,7 +1032,6 @@ int PGASelectTournamentWithoutReplacement (PGAContext *ctx, int pop)
     \brief Choose all strings that are not already copied to the next
            generation due to elitist strategies.
     \ingroup internal
-
     \param  ctx    context variable
     \param  pop    pointer to first individual of population
     \return index of the selected string
@@ -1094,7 +1074,6 @@ static int PGASelectLinear (PGAContext *ctx, PGAIndividual *pop)
 /*!****************************************************************************
     \brief Choose the best k strings and return them in random order.
     \ingroup internal
-
     \param  ctx  context variable
     \param  pop  symbolic constant of population to select from
     \return index of the selected string
@@ -1154,7 +1133,6 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
 /*!****************************************************************************
     \brief Choose N strings randomly and return the one with best evaluation.
     \ingroup internal
-
     \param  ctx  context variable
     \param  pop  symbolic constant of population to select from
     \return index of the selected string
@@ -1198,20 +1176,18 @@ static int PGASelectTournament (PGAContext *ctx, int pop)
     \brief Choose two strings randomly and return the one with better
            evaluation with a specified probability.
     \ingroup internal
-
-
     \param  ctx  context variable
     \param  pop  symbolic constant of population to select from
     \return index of the selected string
 
     \rst
+    .. |_| unicode:: U+00A0 .. Non-breaking space
+       :trim:
 
     Description
     -----------
 
-    See description in [1]_
-
-    .. [1] D. Goldberg, Genetic Algorithms, p. 121
+    See description in Goldbergs classic book [Gol89]_, p. |_| 121.
 
     Example
     -------

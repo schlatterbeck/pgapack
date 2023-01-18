@@ -27,16 +27,17 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetMutationIntegerValue" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetMutationIntegerValue" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGASetMutationIntegerValue \- Set multiplier to mutate PGA_DATATYPE_INTEGER strings with. 
+PGASetMutationIntegerValue \- Set multiplier to mutate data type integer strings with. 
 .SH SYNOPSIS
 .B void  PGASetMutationIntegerValue(\fI\%PGAContext\fP  *ctx, int  val) 
 .sp
 .SH DESCRIPTION
 .sp
 The use of this value depends on the type of mutation being used.
-The default value is 1.  See the user guide for more details.
+The default value is 1.  See section \fI\%Mutation\fP of the user
+guide for more details.
 .SH EXAMPLE
 .sp
 .nf

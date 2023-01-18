@@ -68,7 +68,6 @@ static void reset_hash (PGAContext *ctx, int pop)
 /*!****************************************************************************
     \brief Highest level routine to execute the genetic algorithm.
     \ingroup standard-api
-
     \param  ctx       context variable
     \param  evaluate  a pointer to the user's evaluation function, which
                       must have the calling sequence shown in the
@@ -80,7 +79,8 @@ static void reset_hash (PGAContext *ctx, int pop)
     Description
     -----------
 
-    It is called after PGACreate and PGASetup have been called.
+    It is called after :c:func:`PGACreate` and :c:func:`PGASetup` have
+    been called.
 
     Example
     -------
@@ -192,7 +192,6 @@ void PGARun
     \brief Perform crossover and mutation from one population to create
            the next.
     \ingroup explicit
-
     \param  ctx     context variable
     \param  oldpop  symbolic constant of old population
     \param  newpop  symbolic constant of new population
@@ -203,7 +202,7 @@ void PGARun
     Description
     -----------
 
-    Assumes PGASelect has been called.
+    Assumes :c:func:`PGASelect` has been called.
 
     Example
     -------
@@ -315,7 +314,7 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
     Description
     -----------
 
-    Assumes PGASelect has been called.
+    Assumes :c:func:`PGASelect` has been called.
 
     Example
     -------
@@ -413,7 +412,6 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
 /*!****************************************************************************
     \brief Perform only mutation
     \ingroup explicit
-
     \param  ctx     context variable
     \param  oldpop  symbolic constant of old population
     \param  newpop  symbolic constant of new population
@@ -424,7 +422,7 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
     Description
     -----------
 
-    Assumes PGASelect has been called.
+    Assumes :c:func:`PGASelect` has been called.
 
     Example
     -------
@@ -487,7 +485,6 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
            algorithm iteration, and check if the termination
            conditions, both user and PGAPack, have been met.
     \ingroup explicit
-
     \param   ctx   context variable
     \param   comm  an MPI communicator
     \return  PGA_TRUE if the genetic algorithm has terminated, otherwise
@@ -631,7 +628,6 @@ void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm)
 /*!***************************************************************************
     \brief Return the data type used by the given context.
     \ingroup query
-
     \param   ctx  context variable
     \return  The integer corresponding to the symbolic constant used to
              specify the data type
@@ -753,7 +749,6 @@ int PGAGetStringLength (PGAContext *ctx)
 /*!***************************************************************************
     \brief Return the number of the current genetic algorithm generation.
     \ingroup query
-
     \param   ctx  context variable
     \return  The genetic algorithm generation number
 
@@ -786,7 +781,6 @@ int PGAGetGAIterValue (PGAContext *ctx)
 /*!***************************************************************************
     \brief Return the number of function evaluations so far.
     \ingroup query
-
     \param   ctx  context variable
     \return  The number of function evaluations
 
@@ -817,9 +811,9 @@ int PGAGetEvalCount (PGAContext *ctx)
     \brief Set a boolean flag to indicate if recombination uses exactly
            one of crossover or mutation on selected strings.
     \ingroup deprecated
-
     \param   ctx   context variable
-    \param   flag  PGA_TRUE (default) or PGA_FALSE
+    \param   flag  to indicate if mutation uses exactly one of crossover
+                   or mutation
     \return  None
 
     \rst
@@ -850,7 +844,6 @@ void PGASetMutationOrCrossoverFlag (PGAContext *ctx, int flag)
     \brief Set a boolean flag to indicate if recombination uses both
            crossover and mutation on selected strings.
     \ingroup deprecated
-
     \param   ctx   context variable
     \param   flag  PGA_TRUE (default) or PGA_FALSE
     \return  None
@@ -883,8 +876,7 @@ void PGASetMutationAndCrossoverFlag (PGAContext *ctx, int flag)
     \ingroup deprecated
 
     \param   ctx  context variable
-    \return  Return PGA_TRUE if mutation only occurs when crossover does
-             not, otherwise, returns PGA_FALSE
+    \return  Return true if mutation only occurs when crossover does not
 
     \rst
 
@@ -892,8 +884,9 @@ void PGASetMutationAndCrossoverFlag (PGAContext *ctx, int flag)
     -----------
 
     Note: This is a legacy interface. If mixing types other than
-    PGA_MIX_MUTATE_OR_CROSS and PGA_MIX_MUTATE_AND_CROSS have been set
-    this might return wrong values, use :c:func:`PGAGetMixingType` instead.
+    :c:macro:`PGA_MIX_MUTATE_OR_CROSS` and
+    :c:macro:`PGA_MIX_MUTATE_AND_CROSS` have been set this might return
+    wrong values, use :c:func:`PGAGetMixingType` instead.
     Do not use this for new code.
 
     \endrst
@@ -914,10 +907,8 @@ int PGAGetMutationOrCrossoverFlag (PGAContext *ctx)
 /*!***************************************************************************
     \brief Return true if mutation occurs only when crossover does.
     \ingroup deprecated
-
     \param   ctx  context variable
-    \return Return PGA_TRUE if mutation is applied to crossed-over strings,
-            otherwise, returns PGA_FALSE
+    \return Return true if mutation is applied to crossed-over strings
 
     \rst
 
@@ -925,8 +916,9 @@ int PGAGetMutationOrCrossoverFlag (PGAContext *ctx)
     -----------
 
     Note: This is a legacy interface. If mixing types other than
-    PGA_MIX_MUTATE_OR_CROSS and PGA_MIX_MUTATE_AND_CROSS have been set
-    this might return wrong values, use :c:func:`PGAGetMixingType` instead.
+    :c:macro:`PGA_MIX_MUTATE_OR_CROSS` and
+    :c:macro:`PGA_MIX_MUTATE_AND_CROSS` have been set this might return
+    wrong values, use :c:func:`PGAGetMixingType` instead.
     Do not use this for new code.
 
     \endrst
@@ -949,7 +941,7 @@ int PGAGetMutationAndCrossoverFlag (PGAContext *ctx)
     \ingroup deprecated
 
     \param   ctx   context variable
-    \param   flag  PGA_TRUE (default) or PGA_FALSE
+    \param   flag  to indicate if only mutation is used
     \return  None
 
     \rst
@@ -961,8 +953,8 @@ int PGAGetMutationAndCrossoverFlag (PGAContext *ctx)
     Note: This will override settings of
     :c:func:`PGASetMutationOrCrossoverFlag` and
     :c:func:`PGASetMutationAndCrossoverFlag` and will set the default
-    (:c:func:`PGASetMutationOrCrossoverFlag`) when using PGA_FALSE as
-    the flag. Do not use this for new code.
+    (:c:func:`PGASetMutationOrCrossoverFlag`) when using
+    :c:macro:`PGA_FALSE` as the flag. Do not use this for new code.
 
     \endrst
 
@@ -977,12 +969,11 @@ void PGASetMutationOnlyFlag (PGAContext *ctx, int flag)
 }
 
 /*!***************************************************************************
-    \brief Return PGA_TRUE if only mutation is used.
+    \brief Return true if only mutation is used.
     \ingroup deprecated
 
     \param   ctx  context variable
-    \return Return PGA_TRUE if only mutation is applied, otherwise,
-            return PGA_FALSE
+    \return flag to indicate if only mutation is applied
 
     \rst
 
@@ -1049,7 +1040,6 @@ void PGASetMixingType (PGAContext *ctx, int type)
     \brief Return the strategy setting for combination of mutation and
            crossover.
     \ingroup query
-
     \param   ctx  context variable
     \return  Return the mixing type
 

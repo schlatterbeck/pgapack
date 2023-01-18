@@ -17,7 +17,8 @@ c
 
       common /data/     BinLen, NumCoords, Lower, Upper, gray_on
 
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           testnum, maxiter, ierror
 
 
@@ -57,7 +58,8 @@ c
 
       double precision function GetTerm(ctx, p, pop, t, problem) 
       include           'pgapackf.h'
-      integer(8)         ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18)  ctx
       integer            p, pop, t, problem, len
       integer            gray_on, BinLen(5), NumCoords(5)
       double precision   Lower(5), Upper(5)
@@ -83,7 +85,8 @@ c
 
       double precision function dejong1(ctx, p, pop) 
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p, pop
       double precision  GetTerm
       external          GetTerm 
@@ -107,7 +110,8 @@ c
 
       double precision function dejong2(ctx, p, pop) 
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p, pop
       double precision  GetTerm
       external          GetTerm
@@ -128,7 +132,8 @@ c
 
       double precision function dejong3(ctx, p, pop) 
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p, pop, i
       double precision  GetTerm
       external          GetTerm
@@ -153,7 +158,8 @@ c
 
       double precision function dejong4(ctx, p, pop) 
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p, pop
       double precision  GetTerm
       external          GetTerm
@@ -177,7 +183,8 @@ c
 
       double precision function dejong5(ctx, p, pop) 
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p, pop, i, j
       double precision  GetTerm
       external          GetTerm
@@ -243,7 +250,8 @@ c
       subroutine printResultInterpretation(ctx, problem)
       include          'pgapackf.h'
       include          'mpif.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           problem, best, i
       double precision  GetTerm
       external          GetTerm
@@ -251,7 +259,7 @@ c
       double precision  Lower(5), Upper(5)
       common /data/     BinLen, NumCoords, Lower, Upper, gray_on
       double precision  value
-      integer(8) comm
+      integer(kind=k18) comm
 
 
       comm = PGAGetCommunicator(ctx)

@@ -173,7 +173,9 @@ all:
 	mkdir -p $(PGA_LIB_DIR)
 	$(MAKE) -C source
 	$(MAKE) -C examples
-	$(MAKE) -C docs
+
+documentation:
+	$(MAKE) -C docs/sphinx
 
 test: all
 	$(MAKE) -C test test
@@ -182,12 +184,15 @@ testclean:
 	$(MAKE) -C test testclean
 
 clean:
-	$(MAKE) -C source   clean
-	$(MAKE) -C examples clean
-	$(MAKE) -C test     clean
-	$(MAKE) -C docs     clean
+	$(MAKE) -C source      clean
+	$(MAKE) -C examples    clean
+	$(MAKE) -C test        clean
+	$(MAKE) -C docs        clean
+	$(MAKE) -C docs/sphinx clean
 
 clobber: clean
 	rm -rf ${PGA_DIR}/lib
 
 .PHONY: all clean clobber
+
+# vim: set noet :

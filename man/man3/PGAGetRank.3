@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetRank" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetRank" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAGetRank \- Return the rank of the processor in communicator comm. 
 .SH SYNOPSIS
@@ -35,8 +35,8 @@ PGAGetRank \- Return the rank of the processor in communicator comm.
 .sp
 .SH DESCRIPTION
 .sp
-If comm is NULL or a sequential version of PGAPack is used,
-PGAGetRank returns 0.
+If \fBcomm\fP is \fBNULL\fP or a sequential version of PGAPack is used,
+0 is returned.
 .SH EXAMPLE
 .sp
 .nf

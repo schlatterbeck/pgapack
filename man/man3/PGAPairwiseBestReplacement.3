@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAPairwiseBestReplacement" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAPairwiseBestReplacement" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAPairwiseBestReplacement \- Perform pairwise best replacement. 
 .SH SYNOPSIS
@@ -35,15 +35,15 @@ PGAPairwiseBestReplacement \- Perform pairwise best replacement.
 .sp
 .SH DESCRIPTION
 .sp
-Compare individuals with same index in PGA_OLDPOP and PGA_NEWPOP and
-select the one with better evalutation. Note that we may not use the
-fitness here: Fitness from two different populations are
-uncompareable!
+Compare individuals with same index in \fI\%PGA_OLDPOP\fP and
+\fI\%PGA_NEWPOP\fP and select the one with better evalutation.
+Note that we may not use the fitness here: Fitness from two
+different populations are uncompareable!
 This replacement strategy is used in evolutionary algorithms that
 modify a single individual and replace the parent if the offspring is
 better. A popular example is Differential Evolution (DE).
-After this populations are swapped (exchange of PGA_NEWPOP and
-PGA_OLDPOP) for further processing.
+After this populations are swapped (exchange of
+\fI\%PGA_NEWPOP\fP and \fI\%PGA_OLDPOP\fP) for further processing.
 .SH EXAMPLE
 .sp
 .nf

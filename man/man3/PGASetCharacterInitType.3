@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetCharacterInitType" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetCharacterInitType" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetCharacterInitType \- Sets a flag to specify whether the character strings will be exclusively lowercase, exclusively uppercase, or a mixure of both cases. 
 .SH SYNOPSIS
@@ -35,8 +35,11 @@ PGASetCharacterInitType \- Sets a flag to specify whether the character strings 
 .sp
 .SH DESCRIPTION
 .sp
-Legal flags are PGA_CINIT_UPPER, PGA_CINIT_LOWER, and
-PGA_CINIT_MIXED.  Default is PGA_CINIT_LOWER.
+Legal flags are \fI\%PGA_CINIT_UPPER\fP,
+\fI\%PGA_CINIT_LOWER\fP, and
+\fI\%PGA_CINIT_MIXED\fP\&.  Default is \fI\%PGA_CINIT_LOWER\fP\&.
+See \fI\%Constants for Random Initialization of Genes\fP for the constants and section
+\fI\%Initialization\fP of the user guide for details.
 .SH EXAMPLE
 .sp
 Set program to generate exclusively uppercase letters.

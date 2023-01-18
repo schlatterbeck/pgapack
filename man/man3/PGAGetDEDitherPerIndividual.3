@@ -27,9 +27,9 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetDEDitherPerIndividual" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetDEDitherPerIndividual" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGAGetDEDitherPerIndividual \- Return PGA_TRUE or PGA_FALSE to indicate whether the dither is applied anew for each individual or if the value is re-used for all individuals in one generation. 
+PGAGetDEDitherPerIndividual \- Return boolean flag to indicate whether the dither is applied anew for each individual or if the value is re-used for all individuals in one generation. 
 .SH SYNOPSIS
 .B int  PGAGetDEDitherPerIndividual(\fI\%PGAContext\fP  *ctx) 
 .sp
@@ -50,7 +50,7 @@ val = PGAGetDEDitherPerIndividual (ctx);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .SH RETURNS
-PGA_TRUE if dither is applied for each individual
+flag to indicate if dither is applied for each individual
 .SH LOCATION
 \fI\%File mutation.c\fP
 .SH COPYRIGHT

@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetMutationType" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetMutationType" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetMutationType \- Set type of mutation to use. 
 .SH SYNOPSIS
@@ -41,12 +41,18 @@ In character\-valued strings, one alphabetic character is replaced with
 another chosen uniformly randomly.  The alphabetic characters will be lower,
 upper, or mixed case depending on how the strings were initialized.
 .sp
-Valid choices are PGA_MUTATION_CONSTANT (Real/Integer), PGA_MUTATION_RANGE
-(Real/Integer), PGA_MUTATION_UNIFORM (Real), PGA_MUTATION_GAUSSIAN (Real),
-PGA_MUTATION_PERMUTE (Integer), PGA_MUTATION_DE (Real), and
-PGA_MUTATION_POLY (Real/Integer). The default for integer\-valued strings
-conforms to how the strings were initialized.  The default for real\-valued
-strings is PGA_MUTATION_GAUSSIAN.  See the user guide for more details.
+Valid choices are \fI\%PGA_MUTATION_CONSTANT\fP (Real/Integer),
+\fI\%PGA_MUTATION_RANGE\fP (Real/Integer),
+\fI\%PGA_MUTATION_UNIFORM\fP (Real),
+\fI\%PGA_MUTATION_GAUSSIAN\fP (Real),
+\fI\%PGA_MUTATION_PERMUTE\fP (Integer),
+\fI\%PGA_MUTATION_DE\fP (Real), and
+\fI\%PGA_MUTATION_POLY\fP (Real/Integer).
+The default for integer\-valued strings conforms to how the strings
+were initialized.  The default for real\-valued strings is
+\fI\%PGA_MUTATION_GAUSSIAN\fP\&.
+See \fI\%Constants for Mutation Types\fP for the constants and section
+\fI\%Mutation\fP in the user guide for more details.
 .SH EXAMPLE
 .sp
 .nf

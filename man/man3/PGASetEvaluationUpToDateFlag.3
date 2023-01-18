@@ -27,21 +27,22 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetEvaluationUpToDateFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetEvaluationUpToDateFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGASetEvaluationUpToDateFlag \- Set the flag associated with a string to PGA_TRUE or PGA_FALSE to indicate whether the evaluate function value is up-to-date or not. 
+PGASetEvaluationUpToDateFlag \- Set the flag to indicate whether the evaluate function value is up-to-date or not. 
 .SH SYNOPSIS
 .B void  PGASetEvaluationUpToDateFlag(\fI\%PGAContext\fP  *ctx, int  p, int  pop, int  status) 
 .sp
 .SH DESCRIPTION
 .sp
-Note that this flag is always set to PGA_TRUE when PGASetEvaluation
-is called.
+Note that this flag is always set to \fI\%PGA_TRUE\fP when
+\fI\%_PGASetEvaluation()\fP is called.
 .SH EXAMPLE
 .sp
-Set the evaluation function flag for string p in population
-PGA_NEWPOP to PGA_FALSE (as might happen after, for example, calling
-a hill\-climbing routine that modified this string).
+Set the evaluation function flag for string \fBp\fP in population
+\fI\%PGA_NEWPOP\fP to \fI\%PGA_FALSE\fP (as might happen
+after, for example, calling a hill\-climbing routine that modified
+this string).
 .sp
 .nf
 .ft C
@@ -64,7 +65,7 @@ PGASetEvaluationUpToDateFlag (ctx, p, PGA_NEWPOP, PGA_FALSE);
 .IP \(bu 2
 \fBstatus\fP \-\- boolean for whether up\-to\-date 
 .SH RETURNS
-Sets the EvalUpToDate associated with the evaluation function value of string p via side effect
+Sets the flag associated with the evaluation function value of string p via side effect
 .SH LOCATION
 \fI\%File evaluate.c\fP
 .SH COPYRIGHT

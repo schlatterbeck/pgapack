@@ -27,15 +27,17 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetBinaryInitProb" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetBinaryInitProb" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGASetBinaryInitProb \- Specify the probability of initializing an allele to "1" when creating a PGA_DATATYPE_BINARY string. 
+PGASetBinaryInitProb \- Specify the probability of initializing an allele to "1" for the binary data type. 
 .SH SYNOPSIS
 .B void  PGASetBinaryInitProb(\fI\%PGAContext\fP  *ctx, double  p) 
 .sp
 .SH DESCRIPTION
 .sp
 The default value is 0.5.
+This is used during string creation of a
+\fI\%PGA_DATATYPE_BINARY\fP string.
 .SH EXAMPLE
 .sp
 Set approximately 1 percent of all binary alleles to "1" when randomly

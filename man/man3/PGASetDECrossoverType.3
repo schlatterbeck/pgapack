@@ -27,12 +27,19 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetDECrossoverType" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetDECrossoverType" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetDECrossoverType \- Set the crossover type for Differential Evolution. 
 .SH SYNOPSIS
 .B void  PGASetDECrossoverType(\fI\%PGAContext\fP  *ctx, int  val) 
 .sp
+.SH DESCRIPTION
+.sp
+Differential Evolution supports the crossover types
+\fI\%PGA_DE_CROSSOVER_BIN\fP and \fI\%PGA_DE_CROSSOVER_EXP\fP,
+the default is \fI\%PGA_DE_CROSSOVER_BIN\fP\&. See
+\fI\%Differential Evolution Crossover Constants\fP for the constants and section
+\fI\%Mutation\fP of the user guide for details.
 .SH EXAMPLE
 .sp
 .nf

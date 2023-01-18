@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetMaxSimilarityValue" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetMaxSimilarityValue" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetMaxSimilarityValue \- Specify the maximum percent of homogeneity of the population before stopping. 
 .SH SYNOPSIS
@@ -35,10 +35,12 @@ PGASetMaxSimilarityValue \- Specify the maximum percent of homogeneity of the po
 .sp
 .SH DESCRIPTION
 .sp
-The similarity measure is the same evaluation function value.  The
-default value is 95 percent.  The stopping rule PGA_STOP_TOOSIMILAR
-must have been set by \fI\%PGASetStoppingRuleType()\fP for this
-function call to have any effect.
+The similarity measure is the same evaluation function value. The
+default value is that 95 percent of the population have the same
+evaluation function value. The stopping rule
+\fI\%PGA_STOP_TOOSIMILAR\fP must have been set by
+\fI\%PGASetStoppingRuleType()\fP for this function call to have any
+effect.
 .SH EXAMPLE
 .sp
 .nf

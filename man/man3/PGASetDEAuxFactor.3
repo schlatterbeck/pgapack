@@ -27,12 +27,17 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetDEAuxFactor" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetDEAuxFactor" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetDEAuxFactor \- Set the auxiliary factor K for Differential Evolution. 
 .SH SYNOPSIS
 .B void  PGASetDEAuxFactor(\fI\%PGAContext\fP  *ctx, double  val) 
 .sp
+.SH DESCRIPTION
+.sp
+The default for the aux factor K of Differential Evolution is
+0.5 * (F + 1) where F is the Differential Evolution
+scale factor, see \fI\%PGASetDEScaleFactor()\fP\&.
 .SH EXAMPLE
 .sp
 .nf

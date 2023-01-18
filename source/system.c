@@ -54,19 +54,24 @@ char PGAProgram [100];    /* Holds argv[0] for PGAUsage() call */
 /*!****************************************************************************
     \brief Report error messages.
     \ingroup reporting
-
-    Prints out the message supplied, and
-    the value of a piece of data.  Terminates if PGA_FATAL.
-
     \param   ctx       context variable
     \param   msg       the error message to print
-    \param   level     PGA_WARNING or PGA_FATAL to indicate the error's severity
+    \param   level     indicate the error's severity
     \param   datatype  the data type of the following argument
     \param   data      the address of the data to be written out, cast as a void
                        pointer
     \return  None
 
     \rst
+
+    Description
+    -----------
+
+    Prints out the message supplied, and the value of a piece of data.
+    Terminates if :c:macro:`PGA_FATAL`. See :ref:`group:const-printflags`
+    for the ``level`` constants and :ref:`subsec:other` in the user
+    guide for more information.
+
 
     Example
     -------
@@ -117,9 +122,8 @@ void PGAError (PGAContext *ctx, char *msg, int level, int datatype, void *data)
 /*!****************************************************************************
     \brief Report error messages using printf-like interface.
     \ingroup reporting
-
     \param   ctx       context variable
-    \param   level     PGA_WARNING or PGA_FATAL to indicate the error's severity
+    \param   level     indicate the error's severity
     \param   fmt       the printf-style format to print
     \param   ...       additional parameters depending on format string in msg
     \return  None
@@ -130,9 +134,11 @@ void PGAError (PGAContext *ctx, char *msg, int level, int datatype, void *data)
     -----------
 
     Prints out the message supplied, and optional parameters.
-    Uses a printf-style interface. Terminates if PGA_FATAL.
-    Note that compared to :c:func:`PGAError` msg and level are
-    exchanged, seems more natural.
+    Uses a printf-style interface. Terminates if :c:macro:`PGA_FATAL`.
+    Note that compared to :c:func:`PGAError` ``msg`` and ``level`` are
+    exchanged, seems more natural.  See :ref:`group:const-printflags`
+    for the ``level`` constants and :ref:`subsec:other` in the user
+    guide for more information.
 
     Example
     -------
@@ -166,7 +172,6 @@ void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...)
     \brief Deallocate memory for this instance of PGAPack, if this
            context initialized MPI, finalize MPI as well.
     \ingroup standard-api
-
     \param   ctx    context variable
     \return  None
 
@@ -255,7 +260,6 @@ void PGADestroy (PGAContext *ctx)
 /*!***************************************************************************
     \brief Return the largest integer of the current machine
     \ingroup query
-
     \param   ctx  context variable
     \return  The largest integer of the given machine
 
@@ -287,7 +291,6 @@ int PGAGetMaxMachineIntValue (PGAContext *ctx)
 /*!***************************************************************************
     \brief Return the smallest integer of the current machine
     \ingroup query
-
     \param   ctx  context variable
     \return  The smallest integer of the given machine
 
@@ -319,7 +322,6 @@ int PGAGetMinMachineIntValue (PGAContext *ctx)
 /*!***************************************************************************
     \brief Return the largest double of the current machine
     \ingroup query
-
     \param   ctx  context variable
     \return  The largest double of the given machine
 
@@ -351,7 +353,6 @@ double PGAGetMaxMachineDoubleValue (PGAContext *ctx)
 /*!***************************************************************************
     \brief Return the smallest double of the current machine.
     \ingroup query
-
     \param   ctx  context variable
     \return  The smallest double of the given machine
 
@@ -384,7 +385,6 @@ double PGAGetMinMachineDoubleValue (PGAContext *ctx)
 /*!****************************************************************************
     \brief Print list of available parameters and quit
     \ingroup reporting
-
     \param   ctx  context variable
     \return  print list of available parameters
 
@@ -429,7 +429,6 @@ void PGAUsage (PGAContext *ctx)
 /*!****************************************************************************
     \brief Print PGAPack version number
     \ingroup notimplemented
-
     \param   ctx  context variable
     \return  print PGAPack version number
 

@@ -27,12 +27,16 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetDEScaleFactor" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetDEScaleFactor" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetDEScaleFactor \- Set the scale factor F for Differential Evolution. 
 .SH SYNOPSIS
 .B void  PGASetDEScaleFactor(\fI\%PGAContext\fP  *ctx, double  val) 
 .sp
+.SH DESCRIPTION
+.sp
+The default for the scale factor F is 0.9. For details see section
+\fI\%Mutation\fP in the user guide.
 .SH EXAMPLE
 .sp
 .nf

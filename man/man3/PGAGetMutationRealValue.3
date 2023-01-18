@@ -27,9 +27,9 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetMutationRealValue" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetMutationRealValue" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGAGetMutationRealValue \- Return the value of the multiplier used to mutate PGA_DATATYPE_REAL strings with. 
+PGAGetMutationRealValue \- Return the value of the multiplier used to mutate strings of data type real with. 
 .SH SYNOPSIS
 .B double  PGAGetMutationRealValue(\fI\%PGAContext\fP  *ctx) 
 .sp
@@ -50,7 +50,7 @@ val = PGAGetMutationRealValue (ctx);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .SH RETURNS
-The value of the multiplier used to mutate PGA_DATATYPE_REAL strings with
+The value of the multiplier
 .SH LOCATION
 \fI\%File mutation.c\fP
 .SH COPYRIGHT

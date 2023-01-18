@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetRandomizeSelect" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetRandomizeSelect" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetRandomizeSelect \- Specify if during PGASelect the chosen individuals should be randomized again. 
 .SH SYNOPSIS
@@ -35,11 +35,12 @@ PGASetRandomizeSelect \- Specify if during PGASelect the chosen individuals shou
 .sp
 .SH DESCRIPTION
 .sp
-All selection schemes except
-PGA_SELECT_SUS already return the individuals in randomized order,
-previously this was randomized again. With this method you can
-re\-enable the randomization for selection schemes other than
-PGA_SELECT_SUS (for which a randomization step is always performed).
+All selection schemes except \fI\%PGA_SELECT_SUS\fP already
+return the individuals in randomized order, previously this was
+randomized again. With this method you can re\-enable the
+randomization for selection schemes other than
+\fI\%PGA_SELECT_SUS\fP (for which a randomization step is always
+performed).
 .SH EXAMPLE
 .sp
 .nf
@@ -56,7 +57,7 @@ PGASetRandomizeSelect (ctx, PGA_TRUE);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBv\fP \-\- The value, PGA_FALSE or PGA_TRUE 
+\fBv\fP \-\- flag, true if randomized again 
 .SH RETURNS
 None
 .SH LOCATION

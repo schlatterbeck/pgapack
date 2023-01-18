@@ -27,9 +27,9 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetMutationOnlyFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetMutationOnlyFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGAGetMutationOnlyFlag \- Return PGA_TRUE if only mutation is used. 
+PGAGetMutationOnlyFlag \- Return true if only mutation is used. 
 .SH SYNOPSIS
 .B int  PGAGetMutationOnlyFlag(\fI\%PGAContext\fP  *ctx) 
 .sp
@@ -43,7 +43,7 @@ Do not use this for new code.
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .SH RETURNS
-Return PGA_TRUE if only mutation is applied, otherwise, return PGA_FALSE
+flag to indicate if only mutation is applied
 .SH LOCATION
 \fI\%File pga.c\fP
 .SH COPYRIGHT

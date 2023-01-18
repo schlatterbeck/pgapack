@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASelect" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASelect" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASelect \- Perform genetic algorithm selection using the defined selection scheme. 
 .SH SYNOPSIS
@@ -38,14 +38,17 @@ PGASelect \- Perform genetic algorithm selection using the defined selection sch
 The selection scheme used is either the default selection scheme or
 that specified with \fI\%PGASetSelectType()\fP\&.
 .sp
-Valid selection
-methods are proportional, stochastic universal, tournament, probabilistic
-tournament selection, truncation selection, or linear selection,
-PGA_SELECT_PROPORTIONAL, PGA_SELECT_SUS, PGA_SELECT_TOURNAMENT,
-PGA_SELECT_PTOURNAMENT, PGA_SELECT_TRUNCATION, PGA_SELECT_LINEAR
+Valid selection methods are proportional, stochastic universal,
+tournament, probabilistic tournament selection, truncation
+selection, or linear selection with macros
+\fI\%PGA_SELECT_PROPORTIONAL\fP, \fI\%PGA_SELECT_SUS\fP,
+\fI\%PGA_SELECT_TOURNAMENT\fP, \fI\%PGA_SELECT_PTOURNAMENT\fP,
+\fI\%PGA_SELECT_TRUNCATION\fP, \fI\%PGA_SELECT_LINEAR\fP
 respectively. This function updates an internal array with the
-indices of members of popix selected for recombination.  These indices
-may be accessed with \fI\%PGASelectNextIndex()\fP\&.
+indices of members of \fBpopix\fP selected for recombination.  These
+indices may be accessed with \fI\%PGASelectNextIndex()\fP\&.
+See \fI\%Constants for Selection Types\fP for the constants and section
+\fI\%Selection\fP in the user guide for details.
 .SH EXAMPLE
 .sp
 .nf

@@ -18,7 +18,8 @@ c
       integer           NumCoords(3)
       common /data/     Lower, Upper, NumCoords
 
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           testnum, maxiter, i, ierror
       double precision  l(20), u(20)
 
@@ -63,7 +64,8 @@ c     Yes, it's ugly, but it does work...
 
       double precision function griewank(ctx, p, pop)
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p, pop, i, len
       double precision  allele, sum, product
 
@@ -83,7 +85,8 @@ c     Yes, it's ugly, but it does work...
 
       double precision function rastrigin(ctx, p, pop)
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p, pop, i, len
       double precision  allele, sum
 
@@ -103,7 +106,8 @@ c     Yes, it's ugly, but it does work...
 
       double precision function schwefel(ctx, p, pop)
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p, pop, i, len
       double precision  allele, sum
 

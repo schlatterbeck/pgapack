@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetMutationOrCrossoverFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetMutationOrCrossoverFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAGetMutationOrCrossoverFlag \- Return true if mutation only occurs when crossover does not. 
 .SH SYNOPSIS
@@ -36,8 +36,9 @@ PGAGetMutationOrCrossoverFlag \- Return true if mutation only occurs when crosso
 .SH DESCRIPTION
 .sp
 Note: This is a legacy interface. If mixing types other than
-PGA_MIX_MUTATE_OR_CROSS and PGA_MIX_MUTATE_AND_CROSS have been set
-this might return wrong values, use \fI\%PGAGetMixingType()\fP instead.
+\fI\%PGA_MIX_MUTATE_OR_CROSS\fP and
+\fI\%PGA_MIX_MUTATE_AND_CROSS\fP have been set this might return
+wrong values, use \fI\%PGAGetMixingType()\fP instead.
 Do not use this for new code.
 
  
@@ -45,7 +46,7 @@ Do not use this for new code.
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .SH RETURNS
-Return PGA_TRUE if mutation only occurs when crossover does not, otherwise, returns PGA_FALSE
+Return true if mutation only occurs when crossover does not
 .SH LOCATION
 \fI\%File pga.c\fP
 .SH COPYRIGHT

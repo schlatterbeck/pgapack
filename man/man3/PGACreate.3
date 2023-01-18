@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGACreate" "3" "2023-01-09" "" "PGAPack"
+.TH "PGACreate" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGACreate \- Create an uninitialized context variable. 
 .SH SYNOPSIS
@@ -37,6 +37,17 @@ PGACreate \- Create an uninitialized context variable.
 .sp
 The Fortran version of this function call contains only the last
 three arguments.
+.sp
+The \fBdatatype\fP must be one of \fI\%PGA_DATATYPE_BINARY\fP,
+\fI\%PGA_DATATYPE_CHARACTER\fP, \fI\%PGA_DATATYPE_INTEGER\fP,
+\fI\%PGA_DATATYPE_REAL\fP, or \fI\%PGA_DATATYPE_USER\fP to
+specify binary\-valued, character\-valued, integer\-valued,
+real\-valued, or a user\-defined datatype, respectively. See
+\fI\%Constants for Datatypes\fP for the constants and types.
+.sp
+The \fBmaxormin\fP parameter must be one of \fI\%PGA_MAXIMIZE\fP or
+\fI\%PGA_MINIMIZE\fP for maximization or minimization, respectively.
+See \fI\%Constants for Optimization Direction\fP for the constants.
 .SH EXAMPLE
 .sp
 In C:
@@ -78,11 +89,11 @@ c       Run the GA here
 .IP \(bu 2
 \fBargv\fP \-\- Array of command line arguments 
 .IP \(bu 2
-\fBdatatype\fP \-\- The data type used for the strings. Must be one of PGA_DATATYPE_BINARY, PGA_DATATYPE_CHARACTER, PGA_DATATYPE_INTEGER, PGA_DATATYPE_REAL, or PGA_DATATYPE_USER to specify binary\-valued, character\-valued, integer\-valued, real\-valued, or a user\-defined datatype, respectively 
+\fBdatatype\fP \-\- The data type used for the strings 
 .IP \(bu 2
 \fBlen\fP \-\- The string length (number of genes) 
 .IP \(bu 2
-\fBmaxormin\fP \-\- The direction of optimization. Must be one of PGA_MAXIMIZE or PGA_MINIMIZE for maximization or minimization, respectively. 
+\fBmaxormin\fP \-\- The direction of optimization. 
 .SH RETURNS
 A pointer to the context variable
 .SH LOCATION

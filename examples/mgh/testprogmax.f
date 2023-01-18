@@ -5,9 +5,10 @@
 
       external evaluate
 
-      double precision evaluate
-      integer(8)       ctx
-      integer          len, nprob, maxiter, ierror, myid
+      double precision  evaluate
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
+      integer           len, nprob, maxiter, ierror, myid
 
       common nprob
 
@@ -94,8 +95,9 @@
       include 'pgapackf.h'
 
       double precision x(100), f
-      integer(8)       ctx
-      integer          pop, p, i, stringlen, nprob
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
+      integer           pop, p, i, stringlen, nprob
 
       common nprob
 

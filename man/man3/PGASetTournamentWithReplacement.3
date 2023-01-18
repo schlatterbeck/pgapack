@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetTournamentWithReplacement" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetTournamentWithReplacement" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetTournamentWithReplacement \- Specify if tournament is with or without replacement. 
 .SH SYNOPSIS
@@ -36,8 +36,9 @@ PGASetTournamentWithReplacement \- Specify if tournament is with or without repl
 .SH DESCRIPTION
 .sp
 This function will have no effect unless
-PGA_SELECT_TOURNAMENT was specified as the type of selection to use
-with \fI\%PGASetSelectType()\fP\&. The default value is PGA_TRUE.
+\fI\%PGA_SELECT_TOURNAMENT\fP was specified as the type of
+selection to use with \fI\%PGASetSelectType()\fP\&. The default value
+is \fI\%PGA_TRUE\fP indicating tournament with replacement.
 .SH EXAMPLE
 .sp
 .nf
@@ -54,7 +55,7 @@ PGASetTournamentWithReplacement (ctx, PGA_FALSE);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBv\fP \-\- The value, PGA_TRUE or PGA_FALSE 
+\fBv\fP \-\- flag indicating if replacement is used 
 .SH RETURNS
 None
 .SH LOCATION

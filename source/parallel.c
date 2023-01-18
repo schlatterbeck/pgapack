@@ -64,7 +64,6 @@ privately owned rights.
     \brief High-level routine to execute the genetic algorithm using the
            global model.
     \ingroup explicit
-
     \param  ctx       context variable
     \param  evaluate  a pointer to the user's evaluation function, which must
                       have the calling sequence shown in the example
@@ -76,9 +75,10 @@ privately owned rights.
     Description
     -----------
 
-    It is called after PGACreate and PGASetup have been called.
-    If a NULL communicator is given, a sequential execution method is used,
-    otherwise, work is divided among the processors in the communicator.
+    It is called after :c:func:`PGACreate` and :c:func:`PGASetUp` have
+    been called. If a ``NULL`` communicator is given, a sequential
+    execution method is used, otherwise, work is divided among the
+    processors in the communicator.
 
     Example
     -------
@@ -302,7 +302,6 @@ void PGARunGM
 /*!****************************************************************************
     \brief Sequential internal evalution function.
     \ingroup internal
-
     \param   ctx       context variable
     \param   pop       symbolic constant of the population to be evaluated
     \param   evaluate  a pointer to a function to evaluate a string.
@@ -444,7 +443,6 @@ void PGASendEvaluation (PGAContext *ctx, int p, int pop, int dest, int tag,
 /*!****************************************************************************
     \brief Receive evaluation and aux eval from another process
     \ingroup internal
-
     \param  ctx     contex variable
     \param  p       index of an individual
     \param  pop     symbolic constant of the population
@@ -460,7 +458,7 @@ void PGASendEvaluation (PGAContext *ctx, int p, int pop, int dest, int tag,
     -------
 
     Receive evaluation from sub-process and place it into the first
-    temporary location in PGA_NEWPOP.
+    temporary location in :c:macro:`PGA_NEWPOP`.
 
     .. code-block:: c
 
@@ -491,7 +489,6 @@ void PGAReceiveEvaluation
 /*!****************************************************************************
     \brief Cooperative internal evaluation function.
     \ingroup internal
-
     \param   ctx      context variable
     \param   pop      symbolic constant of the population to be evaluated
     \param   evaluate a pointer to a function to evaluate a string.
@@ -581,8 +578,8 @@ static void PGAEvaluateCoop
 
 
 /*!****************************************************************************
-    Internal evaluation function, multiprocessing version.
-
+    \brief Internal evaluation function, multiprocessing version.
+    \ingroup internal
     \param   ctx      context variable
     \param   pop      symbolic constant of the population to be evaluated
     \param   comm     an MPI communicator
@@ -729,7 +726,7 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
 
     Sit around and wait for a string to eval to show up, then evaluate
     it and return the evaluation.  Terminates when it receives
-    PGA_COMM_DONEWITHEVALS.
+    :c:macro:`PGA_COMM_DONEWITHEVALS`.
 
     \endrst
 
@@ -780,7 +777,6 @@ static void PGAEvaluateWorker
     \brief Call a user-specified function to return an evaluation of
            each string in the population.
     \ingroup explicit
-
     \param   ctx      context variable
     \param   pop      symbolic constant of the population to be evaluated
     \param   evaluate a pointer to a function to evaluate a string.
@@ -798,16 +794,16 @@ static void PGAEvaluateWorker
     :c:func:`PGASetEvaluationUpToDateFlag`.
 
     The user-specified function will be called once for each string in
-    population pop that requires evaluation.  This function must return
-    a double (the evaluation function value) and must fit the prototype::
+    population ``pop`` that requires evaluation.  This function must return
+    a ``double`` (the evaluation function value) and must fit the prototype::
 
         double evaluate (PGAContext *c, int p, int pop, double *aux);
 
     Example
     -------
 
-    Evaluate all strings in population PGA_NEWPOP using the user-defined
-    evaluation function Energy.
+    Evaluate all strings in population :c:macro:`PGA_NEWPOP` using the
+    user-defined evaluation function ``Energy``.
 
     .. code-block:: c
 
@@ -856,7 +852,6 @@ void PGAEvaluate
 /*!****************************************************************************
     \brief Build an MPI datatype for string p in population pop.
     \ingroup explicit
-
     \param  ctx      context variable
     \param  p        index of an individual
     \param  pop      symbolic constant of the population
@@ -892,7 +887,6 @@ MPI_Datatype PGABuildDatatype(PGAContext *ctx, int p, int pop)
 /*!****************************************************************************
     \brief Common part for building an MPI datatype for an individual
     \ingroup explicit
-
     \param  ctx       context variable
     \param  p         index of string
     \param  pop       symbolic constant of the population string p is in
@@ -906,8 +900,9 @@ MPI_Datatype PGABuildDatatype(PGAContext *ctx, int p, int pop)
     Description
     -----------
 
-    Returns by side effect a partially filled array of counts, displs,
-    types. The returned index will be max PGA_MPI_HEADER_ELEMENTS.
+    Returns by side effect a partially filled array of ``counts``,
+    ``displs``, ``types``. The returned index will be max
+    :c:macro:`PGA_MPI_HEADER_ELEMENTS`.
     This means callers may use a statically allocated buffer.
 
     Example
@@ -972,7 +967,6 @@ int PGABuildDatatypeHeader
 /*!****************************************************************************
     \brief Build datatype from serialized data.
     \ingroup internal
-
     \param  ctx  context variable
     \param  p    index of string
     \param  pop  symbolic constant of the population string p is in
@@ -1017,7 +1011,6 @@ MPI_Datatype PGASerializedBuildDatatype (PGAContext *ctx, int p, int pop)
 /*!****************************************************************************
     \brief Transmit an individual to another process.
     \ingroup explicit
-
     \param  ctx   context variable
     \param  p     index of an individual
     \param  pop   symbolic constant of the population
@@ -1089,7 +1082,6 @@ void PGASendIndividual
 /*!****************************************************************************
     \brief Receive an individual from another process.
     \ingroup explicit
-
     \param  ctx     contex variable
     \param  p       index of an individual
     \param  pop     symbolic constant of the population
@@ -1177,7 +1169,6 @@ void PGAReceiveIndividual
     \brief Send an individual to a process, while receiving a different
            individual from a different process.
     \ingroup explicit
-
     \param  ctx        context variable
     \param  send_p     index of string to send
     \param  send_pop   symbolic constant of population to send from
@@ -1198,8 +1189,8 @@ void PGAReceiveIndividual
     -------
 
     A dedicated process is being used to perform an optimization algorithm
-    on the strings.  Send a new string, s, to the process, while receiving an
-    optimized string, r, from it.
+    on the strings.  Send a new string, ``s``, to the process, while
+    receiving an optimized string, ``r``, from it.
 
     .. code-block:: c
 
@@ -1250,7 +1241,6 @@ void PGASendReceiveIndividual
 /*!****************************************************************************
     \brief Execute the island model genetic algorithm
     \ingroup notimplemented
-
     \param  ctx       context variable
     \param  evaluate  a pointer to the user's evaluation function, which must
                       have the calling sequence shown in the example.
@@ -1263,8 +1253,8 @@ void PGASendReceiveIndividual
     -----------
 
     Not yet implemented.
-    Based on ctx->par.topology this routine will need to create the
-    appropriate communicator out of comm.
+    Based on ``ctx->par.topology`` this routine will need to create the
+    appropriate communicator out of ``comm``.
 
     Example
     -------
@@ -1299,7 +1289,6 @@ void PGARunIM
 /*!****************************************************************************
     \brief Execute a neighborhood model genetic algorithm
     \ingroup notimplemented
-
     \param  ctx       context variable
     \param  evaluate  a pointer to the user's evaluation function, which must
                       have the calling sequence shown in the example.
@@ -1312,8 +1301,8 @@ void PGARunIM
     -----------
 
     Not yet implemented.
-    Based on ctx->par.topology this routine will need to create the
-    appropriate communicator out of comm.
+    Based on ``ctx->par.topology`` this routine will need to create the
+    appropriate communicator out of ``comm``.
 
     Example
     -------
@@ -1349,7 +1338,6 @@ void PGARunNM
 /*!****************************************************************************
     \brief Return the rank of the processor in communicator comm.
     \ingroup parallel
-
     \param   ctx   context variable structure pointer
     \param   comm  an MPI communicator
     \return  The rank of this processor
@@ -1359,8 +1347,8 @@ void PGARunNM
     Description
     -----------
 
-    If comm is NULL or a sequential version of PGAPack is used,
-    PGAGetRank returns 0.
+    If ``comm`` is ``NULL`` or a sequential version of PGAPack is used,
+    0 is returned.
 
     Example
     -------
@@ -1400,7 +1388,6 @@ int PGAGetRank (PGAContext *ctx, MPI_Comm comm)
 /*!****************************************************************************
     \brief Return the size of communicator comm in processes.
     \ingroup parallel
-
     \param   ctx   context variable structure pointer
     \param   comm  an MPI communicator
     \return  The numbers of processors in communicator comm
@@ -1410,8 +1397,8 @@ int PGAGetRank (PGAContext *ctx, MPI_Comm comm)
     Description
     -----------
 
-    If comm is NULL or a sequential version of PGAPack is used,
-    PGAGetNumProcs returns 1.
+    If ``comm`` is ``NULL`` or a sequential version of PGAPack is used,
+    1 is returned.
 
     Example
     -------
@@ -1450,7 +1437,6 @@ int PGAGetNumProcs (PGAContext *ctx, MPI_Comm comm)
 /*!****************************************************************************
     \brief Set the number of islands to use in an island model GA.
     \ingroup notimplemented
-
     \param   ctx  context variable
     \param   n    number of islands
     \return  None
@@ -1501,7 +1487,6 @@ void PGASetNumIslands( PGAContext *ctx, int n)
 /*!***************************************************************************
    \brief Returns the number of islands to use in an island model
    \ingroup notimplemented
-
    \param   ctx  context variable
    \return  The number of islands to use in an island model
 
@@ -1584,7 +1569,6 @@ void PGASetNumDemes( PGAContext *ctx, int numdemes)
 /*!***************************************************************************
     \brief Returns the number of demes to use in a neighborhood model.
     \ingroup notimplemented
-
     \param   ctx  context variable
     \return  The number of demes to use in a neighborhood model
 
@@ -1618,7 +1602,6 @@ int PGAGetNumDemes (PGAContext *ctx)
 /*!****************************************************************************
     \brief Set the default communicator to use when PGARun is called.
     \ingroup init
-
     \param   ctx     context variable
     \param   comm    communicator to use
     \return  None
@@ -1628,7 +1611,7 @@ int PGAGetNumDemes (PGAContext *ctx)
     Description
     -----------
 
-    Does not necessarily need to be MPI_COMM_WORLD (which is the
+    Does not necessarily need to be ``MPI_COMM_WORLD`` (which is the
     default).
 
     Example
@@ -1663,7 +1646,6 @@ void PGASetCommunicator (PGAContext *ctx, MPI_Comm comm)
 /*!****************************************************************************
     \brief Returns the default communicator used when PGARun is called.
     \ingroup query
-
     \param   ctx     context variable
     \return  The default communicator
 

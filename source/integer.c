@@ -178,8 +178,8 @@ static void assert_has_edges (PGAContext *ctx, PGAInteger *a)
     Example
     -------
 
-    Set the value of the ith allele of string p in population PGA_NEWPOP
-    to 64.
+    Set the value of allele ``i`` of string ``p`` in population
+    :c:macro:`PGA_NEWPOP` to 64.
 
     .. code-block:: c
 
@@ -208,8 +208,7 @@ void PGASetIntegerAllele (PGAContext *ctx, int p, int pop, int i, int val)
 }
 
 /*!****************************************************************************
-    \brief Return the value of allele i of member p in population pop,
-           assume the data type is PGA_DATATYPE_INTEGER.
+    \brief Return the value of allele i of member p in population pop.
     \ingroup allele
 
     \param   ctx  context variable
@@ -220,11 +219,16 @@ void PGASetIntegerAllele (PGAContext *ctx, int p, int pop, int i, int val)
 
     \rst
 
+    Description
+    -----------
+
+    Assumes the data type is :c:macro:`PGA_DATATYPE_INTEGER`.
+
     Example
     -------
 
-    Returns the value of the ith integer allele of string p
-    in population PGA_NEWPOP.
+    Returns the value of integer allele ``i`` of string ``p`` in
+    population :c:macro:`PGA_NEWPOP`.
 
     .. code-block:: c
 
@@ -272,8 +276,9 @@ int PGAGetIntegerAllele (PGAContext *ctx, int p, int pop, int i)
 
     The length of the interval must be the same
     as the string length.  This is the default strategy for initializing
-    integer-valued strings. The default interval is [0,L-1] where L is the
-    string length.  No string initialization is done by this call.
+    integer-valued strings. The default interval is :math:`[0,L-1]`
+    where :math:`L` is the string length.  No string initialization is
+    done by this call.
 
     Example
     -------
@@ -339,9 +344,9 @@ void PGASetIntegerInitPermute (PGAContext *ctx, int min, int max)
     Example
     -------
 
-    Set the initialization routines to select a value for gene i
-    uniformly randomly from the interval [0,i].  Assumes all strings
-    are of the same length.
+    Set the initialization routines to select a value for gene ``i``
+    uniformly randomly from the interval :math:`[0,i]`.  Assumes all
+    strings are of the same length.
 
     .. code-block:: c
 
@@ -390,9 +395,8 @@ void PGASetIntegerInitRange (PGAContext *ctx, const int *min, const int *max)
 
 /*!***************************************************************************
     \brief Return the type of scheme used to randomly initialize strings
-           of data type PGA_DATATYPE_INTEGER.
+           of data type integer.
     \ingroup query
-
     \param    ctx  context variable
     \return Returns the integer corresponding to the symbolic constant
             used to specify the scheme used to initialize integer strings.
@@ -527,7 +531,6 @@ int PGAGetMaxIntegerInitValue (PGAContext *ctx, int i)
     \brief Allocate memory for a string of type PGAInteger, and
            initializes or clears the string according to initflag.
     \ingroup internal
-
     \param   ctx       context variable
     \param   p         string index
     \param   pop       symbolic constant of the population string p is in
@@ -548,7 +551,7 @@ int PGAGetMaxIntegerInitValue (PGAContext *ctx, int i)
     -------
 
     Allocates and clears memory and assigns the address of the allocated
-    memory to the string field (ind->chrom) of the individual.
+    memory to the string field ``ind->chrom`` of the individual.
 
     .. code-block:: c
 
@@ -611,7 +614,7 @@ initflag)
     Description
     -----------
 
-    This routine is called from :c:func`PGAMutation`.
+    This routine is called from :c:func:`PGAMutate`.
 
     Note that this function is set in :c:func:`PGASetUp` as the mutation
     user function for the integer datatype by default.
@@ -719,7 +722,6 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
     \brief Perform one-point crossover on two parent strings producing
            two children via side-effect.
     \ingroup internal
-
     \param   ctx   context variable
     \param   p1    the first parent string
     \param   p2    the second parent string
@@ -743,8 +745,8 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``,
+    producing children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -816,8 +818,8 @@ void PGAIntegerOneptCrossover
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -904,8 +906,8 @@ void PGAIntegerTwoptCrossover
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -978,8 +980,8 @@ void PGAIntegerUniformCrossover
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -1293,8 +1295,8 @@ static void next_edge (PGAContext *ctx, PGAInteger *child, PGAInteger idx)
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -1413,7 +1415,7 @@ void PGAIntegerEdgeCrossover
 
 /*!****************************************************************************
     \brief Set edges that have to be present.
-    \ingroup init
+    \ingroup standard-api
 
     \param   ctx        context variable
     \param   n          Number of edges
@@ -1538,7 +1540,7 @@ void PGAIntegerSetFixedEdges
     Example
     -------
 
-    Write member p in population PGA_NEWPOP to stdout.
+    Write member ``p`` in population :c:macro:`PGA_NEWPOP` to ``stdout``.
 
     .. code-block:: c
 
@@ -1720,7 +1722,7 @@ static void compute_idx
 
 
 /*!****************************************************************************
-    \brief Randomly initialize a string of type PGAInteger.
+    \brief Randomly initialize a string of data type integer.
     \ingroup internal
 
     \param   ctx  context variable
@@ -1838,7 +1840,7 @@ void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
 }
 
 /*!****************************************************************************
-    \brief Build an MPI datatype for a string of type PGA_DATATYPE_INTEGER.
+    \brief Build an MPI datatype for a string of data type integer.
     \ingroup internal
 
     \param    ctx  context variable
@@ -1902,7 +1904,7 @@ MPI_Datatype PGAIntegerBuildDatatype (PGAContext *ctx, int p, int pop)
     Description
     -----------
     Sum of the absolute values of the differences of each allele.
-    Internal function.  Use PGAGeneDistance.
+    Internal function.  Use :c:func:`PGAUserFunctionGeneDistance`.
 
     \endrst
 
@@ -1925,7 +1927,7 @@ double PGAIntegerGeneDistance
 
 /*!****************************************************************************
     \brief Compute genetic distance of two strings.
-    \ingroup init
+    \ingroup standard-api
 
     \param   ctx    context variable
     \param   p1     first string index
@@ -1943,7 +1945,7 @@ double PGAIntegerGeneDistance
     of all squared differences of each allele. It can be used to
     override the default integer genetic distance function (which uses a
     manhattan distance metric) using :c:func:`PGASetUserFunction` with
-    the PGA_USERFUNCTION_GEN_DISTANCE setting.
+    the :c:macro:`PGA_USERFUNCTION_GEN_DISTANCE` setting.
 
     Example
     -------

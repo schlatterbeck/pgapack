@@ -27,12 +27,16 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetDECrossoverProb" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetDECrossoverProb" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetDECrossoverProb \- Set the crossover probability for Differential Evolution. 
 .SH SYNOPSIS
 .B void  PGASetDECrossoverProb(\fI\%PGAContext\fP  *ctx, double  val) 
 .sp
+.SH DESCRIPTION
+.sp
+The default for the Differential Evolution crossover probability is
+0.9.
 .SH EXAMPLE
 .sp
 .nf

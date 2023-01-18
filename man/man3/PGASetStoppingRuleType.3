@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetStoppingRuleType" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetStoppingRuleType" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetStoppingRuleType \- Specify a stopping criterion. 
 .SH SYNOPSIS
@@ -35,13 +35,15 @@ PGASetStoppingRuleType \- Specify a stopping criterion.
 .sp
 .SH DESCRIPTION
 .sp
-If called more than
-once the different stopping criterion are ORed together.  Valid choices
-are PGA_STOP_MAXITER, PGA_STOP_TOOSIMILAR, or PGA_STOP_NOCHANGE to
+If called more than once the different stopping criterion are ORed
+together.  Valid choices are \fI\%PGA_STOP_MAXITER\fP,
+\fI\%PGA_STOP_TOOSIMILAR\fP, or \fI\%PGA_STOP_NOCHANGE\fP to
 specify iteration limit reached, population too similar, or no change in
 the best solution found in a given number of iterations, respectively.
 The default is to stop when a maximum iteration limit is reached (by
-default, 1000 iterations).
+default, 1000 iterations). The constants can be found in
+\fI\%Constants for Stopping Conditions\fP and more details are in section
+\fI\%Stopping Criteria\fP of the user guide.
 .SH EXAMPLE
 .sp
 .nf

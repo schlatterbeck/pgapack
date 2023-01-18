@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetCrossoverSBXOncePerString" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetCrossoverSBXOncePerString" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetCrossoverSBXOncePerString \- Compute random number for simulated binary crossover (SBX) polynomial distribution only once per string/individual. 
 .SH SYNOPSIS
@@ -35,9 +35,11 @@ PGASetCrossoverSBXOncePerString \- Compute random number for simulated binary cr
 .sp
 .SH DESCRIPTION
 .sp
-If set to PGA_TRUE all alleles will use the same
-value which means that the resulting string will point into the same
-direction as the vector between both parents.
+If set to \fI\%PGA_TRUE\fP all alleles will use the same value
+which means that the resulting string will point into the same
+direction as the vector between both parents. The default is
+\fI\%PGA_FALSE\fP indicating that a new random number is used for
+each string.
 .SH EXAMPLE
 .sp
 .nf
@@ -54,7 +56,7 @@ PGASetCrossoverSBXOncePerString (ctx, PGA_TRUE);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBval\fP \-\- PGA_TRUE or PGA_FALSE, default is PGA_FALSE 
+\fBval\fP \-\- flag indicating if random number is computed once per string 
 .SH RETURNS
 None
 .SH LOCATION

@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetRandomizeSelect" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetRandomizeSelect" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAGetRandomizeSelect \- Return the setting for additional select randomization. 
 .SH SYNOPSIS
@@ -35,13 +35,13 @@ PGAGetRandomizeSelect \- Return the setting for additional select randomization.
 .sp
 .SH DESCRIPTION
 .sp
-This function will return PGA_TRUE if a second randomization step
-after selection is performed. All selection schemes except
-PGA_SELECT_SUS already return the individuals in randomized order,
-previously  this  was randomized  again.  With this method you can
-find out if the randomization for selection schemes other than
-PGA_SELECT_SUS (for which a randomization step is always performed)
-is turned on.
+This function will return \fI\%PGA_TRUE\fP if a second
+randomization step after selection is performed. All selection
+schemes except \fI\%PGA_SELECT_SUS\fP already return the
+individuals in randomized order, previously  this  was randomized
+again.  With this method you can find out if the randomization for
+selection schemes other than \fI\%PGA_SELECT_SUS\fP (for which a
+randomization step is always performed)
 .SH EXAMPLE
 .sp
 .nf
@@ -59,7 +59,7 @@ v = PGAGetRandomizeSelect (ctx);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .SH RETURNS
-The setting of select randomization (PGA_TRUE or PGA_FALSE)
+The setting of select randomization, true if on
 .SH LOCATION
 \fI\%File select.c\fP
 .SH COPYRIGHT

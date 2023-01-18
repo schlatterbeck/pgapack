@@ -61,21 +61,13 @@ static void ChromFree (PGAIndividual *ind)
 
 /*!****************************************************************************
     \brief Create an uninitialized context variable.
-    \ingroup init
-
+    \ingroup standard-api
     \param   argc      Address of the count of the number of command
                        line arguments
     \param   argv      Array of command line arguments
-    \param   datatype  The data type used for the strings.  Must be one
-                       of PGA_DATATYPE_BINARY, PGA_DATATYPE_CHARACTER,
-                       PGA_DATATYPE_INTEGER, PGA_DATATYPE_REAL, or
-                       PGA_DATATYPE_USER to specify binary-valued,
-                       character-valued, integer-valued, real-valued,
-                       or a user-defined datatype, respectively
+    \param   datatype  The data type used for the strings
     \param   len       The string length (number of genes)
-    \param   maxormin  The direction of optimization. Must be one of
-                       PGA_MAXIMIZE or PGA_MINIMIZE for maximization or
-                       minimization, respectively.
+    \param   maxormin  The direction of optimization.
     \return  A pointer to the context variable
 
     \rst
@@ -85,6 +77,17 @@ static void ChromFree (PGAIndividual *ind)
 
     The Fortran version of this function call contains only the last
     three arguments.
+
+    The ``datatype`` must be one of :c:macro:`PGA_DATATYPE_BINARY`,
+    :c:macro:`PGA_DATATYPE_CHARACTER`, :c:macro:`PGA_DATATYPE_INTEGER`,
+    :c:macro:`PGA_DATATYPE_REAL`, or :c:macro:`PGA_DATATYPE_USER` to
+    specify binary-valued, character-valued, integer-valued,
+    real-valued, or a user-defined datatype, respectively. See
+    :ref:`group:const-datatype` for the constants and types.
+
+    The ``maxormin`` parameter must be one of :c:macro:`PGA_MAXIMIZE` or
+    :c:macro:`PGA_MINIMIZE` for maximization or minimization, respectively.
+    See :ref:`group:const-opt-dir` for the constants.
 
     Example
     -------
@@ -466,9 +469,8 @@ PGAContext *PGACreate
 /*!****************************************************************************
     \brief Initialize to zero various data structures of an individual
            and call the appropriate function to create and initialize
-           the string for the specific data type
+           the string for the specific data type.
     \ingroup internal
-
     \param   ctx       Context variable
     \param   p         String index
     \param   pop       Symbolic constant of the population string p is in
@@ -565,8 +567,7 @@ void PGACreatePop (PGAContext *ctx, int pop)
     switch (pop) {
     case PGA_OLDPOP:
         ctx->ga.oldpop = (PGAIndividual *)malloc
-            (sizeof(PGAIndividual) *
-                                                   (ctx->ga.PopSize + 2));
+            (sizeof(PGAIndividual) * (ctx->ga.PopSize + 2));
         if (ctx->ga.oldpop == NULL) {
             PGAError
                 ( ctx, "PGACreatePop: No room to allocate ctx->ga.oldpop"
@@ -607,8 +608,7 @@ void PGACreatePop (PGAContext *ctx, int pop)
 /*!****************************************************************************
     \brief Set all uninitialized variables to default values and
            initialize some internal arrays.
-    \ingroup init
-
+    \ingroup standard-api
     \param   ctx  context variable
     \return  Uninitialized values in the context variable are set to
              defaults, and set values are checked for legality
@@ -861,7 +861,7 @@ void PGASetUp (PGAContext *ctx)
     }
 
     if (ctx->ga.NumReplace == PGA_UNINITIALIZED_INT) {
-        ctx->ga.NumReplace = (int) ceil(ctx->ga.PopSize * 0.1);
+        ctx->ga.NumReplace = (int) ceil (ctx->ga.PopSize * 0.1);
     }
 
     if (ctx->ga.NumReplace > ctx->ga.PopSize) {
@@ -1666,9 +1666,9 @@ void PGASetUp (PGAContext *ctx)
     \brief A boolean flag to indicate whether to randomly initialize
            alleles.
     \ingroup init
-
     \param   ctx   context variable
-    \param   flag  either PGA_TRUE or PGA_FALSE
+    \param   flag  indicates whether random initialization should be
+                   performed
     \return  None
 
     \rst
@@ -1676,8 +1676,8 @@ void PGASetUp (PGAContext *ctx)
     Description
     -----------
 
-    Legal values are PGA_TRUE and PGA_FALSE.  Default
-    is PGA_TRUE: randomly initialize alleles.
+    Legal values are :c:macro:`PGA_TRUE` and :c:macro:`PGA_FALSE`.  Default
+    is :c:macro:`PGA_TRUE`: randomly initialize alleles.
 
     Example
     -------
@@ -1717,10 +1717,8 @@ void PGASetRandomInitFlag (PGAContext *ctx, int flag)
     \brief Return true/false to indicate whether or not alleles are
            randomly initialized.
     \ingroup query
-
     \param   ctx  context variable
-    \return  Return PGA_TRUE if alleles are randomly initialized,
-             otherwise return PGA_FALSE
+    \return  Return true if alleles are randomly initialized
 
     \rst
 
@@ -1755,7 +1753,6 @@ int PGAGetRandomInitFlag (PGAContext *ctx)
 /*!****************************************************************************
     \brief Initialize the number of auxiliary evaluations
     \ingroup init
-
     \param   ctx       context variable
     \param   n         Number of auxiliary evaluations
     \return  None
@@ -1819,7 +1816,6 @@ int PGAGetNumAuxEval (PGAContext *ctx)
 /*!****************************************************************************
     \brief Initialize the number of constraints.
     \ingroup init
-
     \param   ctx       context variable
     \param   n         Number of constraints
     \return  None
@@ -1862,7 +1858,6 @@ void PGASetNumConstraint (PGAContext *ctx, int n)
 /*!****************************************************************************
     \brief Get the number of constraints.
     \ingroup query
-
     \param   ctx       context variable
     \return  Number of constraints
 
@@ -1906,9 +1901,9 @@ int PGAGetNumConstraint (PGAContext *ctx)
     constraint optimization can be turned on by this option. By default
     constraints are summed and the sum in minimized. This is also done
     if no NSGA replacement scheme is in use. If summing is disabled by
-    setting this configuration to PGA_FALSE, constraints are minimized
-    using nondominated sorting. Note that nondominated sorting for
-    constrains may not work very well on many problems.
+    setting this configuration to :c:macro:`PGA_FALSE`, constraints are
+    minimized using nondominated sorting. Note that nondominated sorting
+    for constrains may not work very well on many problems.
 
     Example
     -------
@@ -1942,7 +1937,6 @@ void PGASetSumConstraintsFlag (PGAContext *ctx, int n)
     \brief Query if constraints are summed or optimized by NSGA-II
            nondominated sorting
     \ingroup query
-
     \param   ctx       context variable
     \return  sum constraints flag
 
@@ -1974,8 +1968,7 @@ int PGAGetSumConstraintsFlag (PGAContext *ctx)
 
 
     \param   ctx       context variable
-    \param   gen       Epsilon contraint generation, must be below the value
-                       set with PGASetMaxGAIterValue
+    \param   gen       Epsilon contraint generation
     \return  None
 
     \rst
@@ -1984,6 +1977,8 @@ int PGAGetSumConstraintsFlag (PGAContext *ctx)
     -----------
 
     The default is 0 (no Epsilon Contraint method is used).
+    The parameter ``gen`` must be below the value set with
+    :c:func:`PGASetMaxGAIterValue`.
 
     Example
     -------
@@ -2007,7 +2002,6 @@ void PGASetEpsilonGeneration (PGAContext *ctx, int gen)
     \brief Get value of the generation until which constraints are
            relaxed via the Epsilon Contraint method.
     \ingroup query
-
     \param   ctx       context variable
     \return  The epsilon generation
 
@@ -2102,7 +2096,7 @@ double PGAGetEpsilonExponent (PGAContext *ctx)
     \ingroup init
 
     \param   ctx       context variable
-    \param   n         population index theta
+    \param   theta     population index
     \return  None
 
     \rst
@@ -2111,8 +2105,8 @@ double PGAGetEpsilonExponent (PGAContext *ctx)
     -----------
 
     The initial population is sorted by constraint violation and the
-    individual with index theta is used for initializing the epsilon_0
-    for the epsilon constraint method.
+    individual with index ``theta`` is used for initializing the initial
+    epsilon for the epsilon constraint method.
 
     Example
     -------
@@ -2126,14 +2120,14 @@ double PGAGetEpsilonExponent (PGAContext *ctx)
     \endrst
 
 ******************************************************************************/
-void PGASetEpsilonTheta (PGAContext *ctx, int n)
+void PGASetEpsilonTheta (PGAContext *ctx, int theta)
 {
-    if (n < 1) {
+    if (theta < 1) {
         PGAError ( ctx, "PGASetUp: EpsilonTheta must be >= 1"
                  , PGA_FATAL, PGA_VOID, NULL
                  );
     }
-    ctx->ga.EpsilonTheta = n;
+    ctx->ga.EpsilonTheta = theta;
 }
 
 /*!****************************************************************************
@@ -2167,7 +2161,6 @@ int PGAGetEpsilonTheta (PGAContext *ctx)
 /*!****************************************************************************
     \brief Set output file name for printing statistics etc.
     \ingroup init
-
     \param   ctx       context variable
     \param   name      output filename
     \return  None

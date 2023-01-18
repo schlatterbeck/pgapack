@@ -43,8 +43,9 @@ c     Also, this is common, sunce we need it in EvalName.
       character*70     Name
       common /global/  Name
 
-      integer(8)      ctx
-      integer         ierror
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
+      integer           ierror
 
 
       call MPI_Init(ierror)
@@ -99,8 +100,9 @@ c     using all printable ASCII characters for the range.
 c
       subroutine N_InitString(ctx, p, pop) 
       include   'pgapackf.h'
-      integer(8)      ctx
-      integer         p, pop, i
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
+      integer           p, pop, i
     
       do i=PGAGetStringLength(ctx), 1, -1
          call PGASetCharacterAllele(ctx, p, pop, i,
@@ -120,7 +122,8 @@ c
       include          'pgapackf.h'
       character         Name(70)
       common /global/   Name
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p1, p2, pop1, c1, c2, pop2
       integer           i, length
       character         a, b
@@ -157,7 +160,8 @@ c
       include          'pgapackf.h'
       character         Name(70)
       common /global/   Name
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p1, pop1, p2, pop2
       integer           i, match
       character         a, b, c
@@ -192,12 +196,13 @@ c
       character         Name(70)
       common /global/   Name
       character         s(70)
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p, pop
       integer           i
-      integer(8)        l
+      integer(kind=k18) l
       character         a, b, c
-      integer(8)        r
+      integer(kind=k18) r
 
       do i=PGAGetStringLength(ctx), 1, -1
          a = PGAGetCharacterAllele(ctx, p, pop, i)
@@ -227,7 +232,8 @@ c
       include          'pgapackf.h'
       character         Name(70)
       common /global/   Name
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p, pop, i, count
       double precision  mr
 
@@ -254,7 +260,8 @@ c     we would print to the file "file".
 c     
       subroutine N_PrintString(ctx, file, p, pop)
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           file, p, pop
       character         string(70)
 
@@ -275,7 +282,8 @@ c     the string yet.
 c
       integer function N_StopCond(ctx) 
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           done, best
 
 
@@ -305,7 +313,8 @@ c     print string function to print the best string.
 c
       subroutine N_EndOfGeneration(ctx)
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           best
 
       best = PGAGetBestIndex(ctx, PGA_NEWPOP)
@@ -326,7 +335,8 @@ c     the characters matching Name.
 c
       double precision function EvalName(ctx, p, pop)
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p, pop, i, count
       character         Name(70)
       common /global/   Name

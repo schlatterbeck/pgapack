@@ -61,7 +61,10 @@ privately owned rights.
  *****************************************************************************/
 /*!***************************************************************************
  *  \defgroup explicit Functions for explicit usage
- *  \brief See description of explicit usage in user guide
+ *  \brief These functions are needed when explicitly programming the GA.
+ *  \rsts
+ *  See chapter :ref:`chp:explicit` for more details.
+ *  \endrst
  *****************************************************************************/
 /*!***************************************************************************
  *  \defgroup internal Functions for internal usage
@@ -93,7 +96,8 @@ privately owned rights.
     Example
     -------
 
-    Copies the alleles from member p in PGA_OLDPOP to member q in PGA_NEWPOP.
+    Copies the alleles from member ``p`` in :c:macro:`PGA_OLDPOP` to member
+    ``q`` in :c:macro:`PGA_NEWPOP`.
 
     .. code-block:: c
 
@@ -134,11 +138,8 @@ void PGASetBinaryAllele (PGAContext *ctx, int p, int pop, int i, int val)
 }
 
 /*!****************************************************************************
-    \brief Return the value of a (binary) allele in a
-           PGA_DATATYPE_BINARY string.
-
+    \brief Return the value of a (binary) allele.
     \ingroup allele
-
     \param  ctx  context variable
     \param  p    string index
     \param  pop  symbolic constant of the population the string is in
@@ -147,10 +148,17 @@ void PGASetBinaryAllele (PGAContext *ctx, int p, int pop, int i, int val)
 
     \rst
 
+    Description
+    -----------
+    
+    Applies to the binary data type, set with parameter
+    :c:macro:`PGA_DATATYPE_BINARY` of :c:func:`PGACreate`.
+
     Example
     -------
 
-    Copies the alleles from member p in PGA_OLDPOP to member q PGA_NEWPOP.
+    Copies the alleles from member ``p`` in :c:macro:`PGA_OLDPOP` to
+    member ``q`` :c:macro:`PGA_NEWPOP`.
     Assumes the strings are of the same length.
 
     .. code-block:: c
@@ -187,11 +195,9 @@ int PGAGetBinaryAllele (PGAContext *ctx, int p, int pop, int i)
 }
 
 /*!****************************************************************************
-    \brief Specify the probability of initializing an allele to "1" when
-           creating a PGA_DATATYPE_BINARY string.
-
+    \brief Specify the probability of initializing an allele to "1"
+           for the binary data type.
     \ingroup init
-
     \param   ctx  context variable
     \param   p    the binary initialization probability
     \return  None
@@ -202,6 +208,8 @@ int PGAGetBinaryAllele (PGAContext *ctx, int p, int pop, int i)
     -----------
 
     The default value is 0.5.
+    This is used during string creation of a
+    :c:macro:`PGA_DATATYPE_BINARY` string.
 
     Example
     -------
@@ -238,13 +246,20 @@ void PGASetBinaryInitProb (PGAContext *ctx, double p)
 
 /*!***************************************************************************
     \brief Return the probability that an allele will be randomly
-           initialized to "1" in a PGA_DATATYPE_BINARY string.
+           initialized to "1" for data type binary.
+
     \ingroup query
 
     \param  ctx  context variable
     \return The probability that a bit will be randomly initialized to one
 
     \rst
+
+    Description
+    -----------
+
+    This is used during string creation of a
+    :c:macro:`PGA_DATATYPE_BINARY` string.
 
     Example
     -------
@@ -272,10 +287,8 @@ double PGAGetBinaryInitProb (PGAContext *ctx)
 
 
 /*!****************************************************************************
-    \brief Allocate a PGA_DATATYPE_BINARY string for member p of
-           population pop.
+    \brief Allocate a binary string for member p of population pop.
     \ingroup internal
-
     \param   ctx       context variable
     \param   p         string index
     \param   pop       symbolic constant of the population string p is in
@@ -286,8 +299,9 @@ double PGAGetBinaryInitProb (PGAContext *ctx)
 
     Description
     -----------
-    If initflag is PGA_TRUE, randomly initialize all alleles, otherwise
-    clear all alleles.
+    If initflag is :c:macro:`PGA_TRUE`, randomly initialize all alleles,
+    otherwise clear all alleles. Applies to
+    :c:macro:`PGA_DATATYPE_BINARY` strings.
 
     Note that this function is set in :c:func:`PGASetUp` as the create
     string user function for the binary datatype by default.
@@ -295,7 +309,8 @@ double PGAGetBinaryInitProb (PGAContext *ctx)
     Example
     -------
 
-    Allocates and clears alleles for all strings in PGA_NEWPOP
+    Allocates and clears alleles for all strings in
+    :c:macro:`PGA_NEWPOP`.
 
     .. code-block:: c
 
@@ -360,7 +375,7 @@ void PGABinaryCreateString (PGAContext *ctx, int p, int pop, int initflag)
     Description
     -----------
 
-    This routine is called from PGAMutation.
+    This routine is called from :c:func:`PGAMutate`.
 
     Note that this function is set in :c:func:`PGASetUp` as the mutation
     user function for the binary datatype by default.
@@ -368,8 +383,8 @@ void PGABinaryCreateString (PGAContext *ctx, int p, int pop, int initflag)
     Example
     -------
 
-    Mutates string p in population PGA_NEWPOP with a probability of 0.001
-    for each bit.
+    Mutates string ``p`` in population :c:macro:`PGA_NEWPOP` with a
+    probability of 0.001 for each bit.
 
     .. code-block:: c
 
@@ -441,8 +456,8 @@ int PGABinaryMutation (PGAContext *ctx, int p, int pop, double mr)
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -539,8 +554,8 @@ void PGABinaryOneptCrossover
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -670,8 +685,8 @@ void PGABinaryTwoptCrossover
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -731,11 +746,12 @@ void PGABinaryUniformCrossover
     -----------
 
     Puts the binary
-    representation of the bit string pointed to by chrom into a character
+    representation of the bit string pointed to by ``chrom`` into a character
     string and writes that out. Assumes the maximum length of string to
-    print is WL, and that all bits are in the same word.
+    print is ``WL``, and that all bits are in the same word.
 
-    Internal function.  Use PGABinaryPrintString to print a binary string.
+    Internal function.  Use :c:func:`PGABinaryPrintString` to print a
+    binary string.
     \endrst
 
 ******************************************************************************/
@@ -758,7 +774,6 @@ void PGABinaryPrint (PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb)
 /*!****************************************************************************
     \brief Write a bit string to a file.
     \ingroup internal
-
     \param   ctx  context variable
     \param   fp   file pointer to file to write bit string to
     \param   p    index of the string to write out
@@ -770,7 +785,7 @@ void PGABinaryPrint (PGAContext *ctx, FILE *fp, PGABinary *chrom, int nb)
     Example
     -------
 
-    Write string s to stdout.
+    Write string ``s`` to stdout.
 
     .. code-block:: c
 
@@ -815,7 +830,6 @@ void PGABinaryPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 /*!****************************************************************************
     \brief Copy one bit string to another.
     \ingroup internal
-
     \param   ctx   context variable
     \param   p1    string to copy
     \param   pop1  symbolic constant of population containing string p1
@@ -834,8 +848,8 @@ void PGABinaryPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
     Example
     -------
 
-    Copy bit string x to y (both are implicitly assumed to have the same
-    length).
+    Copy bit string ``x`` to ``y`` (both are implicitly assumed to have
+    the same length).
 
     .. code-block:: c
 
@@ -885,7 +899,8 @@ void PGABinaryCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     Example
     -------
 
-    Compare bit string x with y and print a message if they are the same.
+    Compare bit string ``x`` with ``y`` and print a message if they are
+    the same.
 
     .. code-block:: c
 
@@ -948,7 +963,7 @@ PGAHash PGABinaryHash (PGAContext *ctx, int p, int pop)
 }
 
 /*!****************************************************************************
-    \brief Randomly initialize a string of type PGABinary.
+    \brief Randomly initialize a string of the binary data type.
     \ingroup internal
 
     \param   ctx  context variable
@@ -1001,7 +1016,7 @@ void PGABinaryInitString (PGAContext *ctx, int p, int pop)
 }
 
 /*!****************************************************************************
-    \brief Build an MPI_Datatype for a binary string datatype.
+    \brief Build an MPI datatype for a binary string datatype.
     \ingroup internal
 
     \param    ctx   context variable
@@ -1064,16 +1079,16 @@ MPI_Datatype PGABinaryBuildDatatype (PGAContext *ctx, int p, int pop)
     Description
     -----------
 
-    Note that this function is used in c:func:`PGABinaryGeneDistance`
+    Note that this function is used in :c:func:`PGABinaryGeneDistance`
     for implementing a generic genetic distance function. It is used in
-    the default setting of the PGA_USERFUNCTION_GEN_DISTANCE user
-    function for the binary data type.
+    the default setting of the :c:macro:`PGA_USERFUNCTION_GEN_DISTANCE`
+    user function for the binary data type.
 
 
     Example
     -------
 
-    Return the Hamming distance between bit strings x and y.
+    Return the Hamming distance between bit strings ``x`` and ``y``.
 
     .. code-block:: c
 
@@ -1133,8 +1148,8 @@ int PGABinaryHammingDistance (PGAContext *ctx, PGABinary *s1, PGABinary *s2)
     -----------
 
     For binary genes this is the Hamming distance.  It is used in
-    the default setting of the PGA_USERFUNCTION_GEN_DISTANCE user
-    function for the binary data type.
+    the default setting of the :c:macro:`PGA_USERFUNCTION_GEN_DISTANCE`
+    user function for the binary data type.
     Internal function.  Use the gene distance user function
     :c:func:`PGAUserFunctionGeneDistance`.
 

@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASortPop" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASortPop" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASortPop \- Creates an (internal) array of indices according to one of three criteria. 
 .SH SYNOPSIS
@@ -35,15 +35,14 @@ PGASortPop \- Creates an (internal) array of indices according to one of three c
 .sp
 .SH DESCRIPTION
 .sp
-If PGA_POPREPL_BEST is used (the default) the array is
-sorted from most fit to least fit.  If PGA_POPREPL_RANDOM_REP is
-used the indices in the array are selected randomly with replacement.
-If PGA_POPREPL_RANDOM_NOREP is used the indices in the array are selected
-randomly without replacement.  The function
-\fI\%PGASetPopReplaceType()\fP is used
-to specify which strategy is used.  The indices of the sorted population
-members may then be accessed from the internal array via
-\fI\%PGAGetSortedPopIndex()\fP\&.
+If \fI\%PGA_POPREPL_BEST\fP is used (the default) the array is
+sorted from most fit to least fit. If \fI\%PGA_POPREPL_RANDOM_REP\fP
+is used the indices in the array are selected randomly with replacement.
+If \fI\%PGA_POPREPL_RANDOM_NOREP\fP is used the indices in the
+array are selected randomly without replacement. The function
+\fI\%PGASetPopReplaceType()\fP is used to specify which strategy is
+used.  The indices of the sorted population members may then be
+accessed from the internal array via \fI\%PGAGetSortedPopIndex()\fP\&.
 This routine is typically used during population replacement.
 .SH EXAMPLE
 .sp

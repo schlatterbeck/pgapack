@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetPrintOptions" "3" "2023-01-11" "" "PGAPack"
+.TH "PGASetPrintOptions" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetPrintOptions \- Set flags to indicate what GA statistics should be printed whenever output is printed. 
 .SH SYNOPSIS
@@ -36,14 +36,17 @@ PGASetPrintOptions \- Set flags to indicate what GA statistics should be printed
 .SH DESCRIPTION
 .sp
 May be called more than once to specify different report options.
-Valid choices are PGA_REPORT_AVERAGE, PGA_REPORT_OFFLINE,
-PGA_REPORT_ONLINE, PGA_REPORT_WORST, PGA_REPORT_GENE_DISTANCE, and
-PGA_REPORT_STRING to specify offline analysis, online analysis, the
-worst string in the population, the mean genetic distance of the
-population, and the actual allele values of the best string.  The
-best string is always printed. Note that reporting of mean genetic
-distance is quadratic in the population size and probably should be
-used only when trying to diagnose premature convergence problems.
+Valid choices are \fI\%PGA_REPORT_AVERAGE\fP,
+\fI\%PGA_REPORT_OFFLINE\fP, \fI\%PGA_REPORT_ONLINE\fP,
+\fI\%PGA_REPORT_WORST\fP, \fI\%PGA_REPORT_GENE_DISTANCE\fP, and
+\fI\%PGA_REPORT_STRING\fP to specify offline analysis, online
+analysis, the worst string in the population, the mean genetic
+distance of the population, and the actual allele values of the best
+string.  The best string is always printed. Note that reporting of
+mean genetic distance is quadratic in the population size and
+probably should be used only when trying to diagnose premature
+convergence problems. See \fI\%Constants for Reporting\fP for the constants
+and section \fI\%Report Options\fP in the user guide for details.
 .SH EXAMPLE
 .sp
 .nf

@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetMutationProb" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetMutationProb" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetMutationProb \- Specify the probability that a given allele will be mutated. 
 .SH SYNOPSIS
@@ -36,8 +36,8 @@ PGASetMutationProb \- Specify the probability that a given allele will be mutate
 .SH DESCRIPTION
 .sp
 If this is called without calling \fI\%PGASetMutationType()\fP, the
-default mutation type is PGA_MUTATION_FIXED.  The default probability is
-the reciprocal of the string length.
+default mutation type is \fI\%PGA_MUTATION_CONSTANT\fP\&. The default
+probability is the reciprocal of the string length.
 .SH EXAMPLE
 .sp
 .nf

@@ -58,7 +58,7 @@ extern char PGAProgram[100];
 #if OPTIMIZE==0
 /*!****************************************************************************
     \brief Routine to parse debug command line options, and set the
-           appropriate debug level (via PGASetDebugLevel).
+           appropriate debug level.
     \ingroup internal
 
     \param   ctx  context variable
@@ -70,7 +70,8 @@ extern char PGAProgram[100];
     Description
     -----------
 
-    Internal function.  Called only by PGAReadCmdLine.
+    Internal function.  Called only by :c:func:`PGAReadCmdLine`.
+    Uses :c:func:`PGASetDebugLevel` for setting the debug level.
 
     \endrst
 
@@ -172,7 +173,7 @@ static void PGAParseDebugArg (PGAContext *ctx, char *st)
     Description
     -----------
 
-    Internal function.  Called only by PGAReadCmdLine.
+    Internal function.  Called only by :c:func:`PGAReadCmdLine`.
 
     \endrst
 

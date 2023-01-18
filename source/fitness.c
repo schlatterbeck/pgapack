@@ -98,7 +98,6 @@ static void remap_to_positive (PGAContext *ctx, PGAIndividual *pop)
 /*!****************************************************************************
     \brief Map the user's evaluation function value to a fitness value.
     \ingroup evaluation
-
     \param  ctx      context variable
     \param  popindex symbolic constant of the population to calculate
                      fitness for
@@ -116,13 +115,16 @@ static void remap_to_positive (PGAContext *ctx, PGAIndividual *pop)
     direction was minimization.  This positive sequence is then mapped
     to a fitness value using linear ranking, linear normalization
     fitness, or the identity (i.e., the evaluation function value).
-    This routine is usually used after :c:func:`PGAEvaluate` is called.
+    See :ref:`group:const-fitness` in the user guide for allowed
+    values. This routine is usually used after :c:func:`PGAEvaluate` is
+    called.
 
     Example
     -------
 
-    Calculate the fitness of all strings in population PGA_NEWPOP after
-    calling PGAEvaluate to calculate the strings evaluation value.
+    Calculate the fitness of all strings in population
+    :c:macro:`PGA_NEWPOP` after calling :c:func:`PGAEvaluate` to
+    calculate the strings evaluation value.
 
     .. code-block:: c
 
@@ -244,7 +246,7 @@ void PGAFitness (PGAContext *ctx, int popindex)
     Example
     -------
 
-    Determine the rank of string p.
+    Determine the rank of string ``p``.
 
     .. code-block:: c
 
@@ -480,10 +482,13 @@ double PGAGetMaxFitnessRank (PGAContext *ctx)
     Description
     -----------
 
-    Valid choices are PGA_FITNESS_RAW, PGA_FITNESS_NORMAL, or
-    PGA_FITNESS_RANKING for raw fitness (the evaluation function value),
-    linear normalization, or linear ranking, respectively.  The default
-    is PGA_FITNESS_RAW.
+    Valid choices are :c:macro:`PGA_FITNESS_RAW`,
+    :c:macro:`PGA_FITNESS_NORMAL`, or :c:macro:`PGA_FITNESS_RANKING` for
+    raw fitness (the evaluation function value), linear normalization,
+    or linear ranking, respectively.  The default is
+    :c:macro:`PGA_FITNESS_RAW`. See :ref:`group:const-fitness` for the
+    constants and section :ref:`sec:evaluation` in the user guide for
+    details.
 
     Example
     -------
@@ -534,10 +539,13 @@ void PGASetFitnessType (PGAContext *ctx, int fitness_type)
     Description
     -----------
 
-    Valid choices are PGA_FITNESSMIN_RECIPROCAL and PGA_FITNESSMIN_CMAX to do
-    the mapping using the reciprocal of the evaluation function, or by
-    subtracting the worst evaluation function value from each evaluation
-    function value, respectively.  The default is PGA_FITNESSMIN_CMAX.
+    Valid choices are :c:macro:`PGA_FITNESSMIN_RECIPROCAL` and
+    :c:macro:`PGA_FITNESSMIN_CMAX` to do the mapping using the
+    reciprocal of the evaluation function, or by subtracting the worst
+    evaluation function value from each evaluation function value,
+    respectively.  The default is :c:macro:`PGA_FITNESSMIN_CMAX`.
+    See :ref:`group:const-fitness-min` for the constants and section
+    :ref:`sec:evaluation` in the user guide for details.
 
     Example
     -------
@@ -588,8 +596,9 @@ void PGASetFitnessMinType (PGAContext *ctx, int fitness_type)
     -----------
 
     The default value is 1.2.  The value must be from the interval
-    [1.0, 2.0]. The fitness type must have been set to PGA_FITNESS_RANKING
-    with PGASetFitnessType for this function call to have any effect.
+    :math:`[1.0, 2.0]`. The fitness type must have been set to
+    :c:macro:`PGA_FITNESS_RANKING` with :c:func:`PGASetFitnessType` for
+    this function call to have any effect.
 
     Example
     -------
@@ -634,11 +643,11 @@ void PGASetMaxFitnessRank (PGAContext *ctx, double max)
     Description
     -----------
 
-    The fitness function is of the form u(x) = K - (rank * sigma) with
-    the constant K equal to the mean of the evaluation functions, and
-    the decrement sigma equal to the standard deviation of the same [1]_.
-
-    .. [1] L. Davis, Handbook of Genetic Algorithms, pg. 33
+    The fitness function is of the form
+    :math:`u(x) = K - (\text{rank} \cdot \sigma)` with the constant
+    :math:`K` equal to the mean of the evaluation functions, and the
+    decrement :math:`\sigma` equal to the standard deviation of the same
+    as defined by Davis [Dav91]_, p.\ 33.
 
     \endrst
 
@@ -690,18 +699,22 @@ static void PGAFitnessLinearNormal (PGAContext *ctx, int popindex)
             side effect
 
     \rst
+    .. |_| unicode:: U+00A0 .. Non-breaking space
+       :trim:
+
 
     Description
     -----------
 
-    The fitness function is of the form [1]_, [2]_, [3]_, [4]_
-    1/N * (max - (max-min) * ((i-1)/(N-1)))
-    where min = 2-max and 1 <= max <= 2.
+    The fitness function is of the form
 
-    .. [1]    J. Baker: Adaptive selection methods for GAs
-    .. [2]    J. Baker: Extended selection mechanism in GAs
-    .. [3]    J. Grefenstette: A critical look at implicit parallelism
-    .. [4]    D. Whitley's linear() function on pp. 121 of ICGA
+    .. math::
+
+        \frac{1}{N} \cdot \left(\max - (\max-\min) * \frac{i-1}{N-1}\right)
+
+    where :math:`\min = 2-\max` and :math:`1 \le \max \le 2`.
+    See Baker [Bak87]_, Bäck and Hoffmeister [BH91]_, Grefenstette and
+    Baker [GB89]_ and Whitley's ``linear`` function on p. |_| 121 in [Whi89]_.
 
     \endrst
 
@@ -745,7 +758,6 @@ static void PGAFitnessLinearRank (PGAContext *ctx, int popindex)
     \brief Calculate fitness in the case of a minimization problem using
            the reciprocal of the evaluation function.
     \ingroup internal
-
     \param  ctx   context variable
     \param  pop   population pointer to calculate fitness for
     \return Calculates the fitness for each string in the population via
@@ -757,7 +769,7 @@ static void PGAFitnessLinearRank (PGAContext *ctx, int popindex)
     -----------
 
     This is a power law
-    u(x) = (a f(x) + b)^k with a=1, b=0, k=-1
+    :math:`u(x) = (a f(x) + b)^k` with :math:`a=1, b=0, k=-1`.
 
     \endrst
 
@@ -800,7 +812,7 @@ static void PGAFitnessMinReciprocal (PGAContext *ctx, PGAIndividual *pop)
     -----------
 
     This is a dynamic linear fitness function
-    u(x) = a f(x) + b(t) with a=-1, b(t) = 1.1 * max f(x)
+    :math:`u(x) = a f(x) + b(t)` with :math:`a=-1, b(t) = 1.1 * \max f(x)`
 
     \endrst
 ******************************************************************************/

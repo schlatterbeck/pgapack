@@ -27,9 +27,9 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetCrossoverBoundedFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetCrossoverBoundedFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGASetCrossoverBoundedFlag \- If this flag is set to PGA_TRUE, then for Integer and Real strings with simulated binary crossover (SBX) crossed over values that exceed the bounds are confined to the bounds by setting them to the boundary. 
+PGASetCrossoverBoundedFlag \- If this flag is set to true, then for Integer and Real strings with simulated binary crossover (SBX) crossed over values that exceed the bounds are confined to the bounds by setting them to the boundary. 
 .SH SYNOPSIS
 .B void  PGASetCrossoverBoundedFlag(\fI\%PGAContext\fP  *ctx, int  flag) 
 .sp
@@ -49,7 +49,7 @@ PGASetCrossoverBoundedFlag (ctx, PGA_TRUE);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBflag\fP \-\- either PGA_TRUE or PGA_FALSE 
+\fBflag\fP \-\- to indicate if strings should be constrained to boundary 
 .SH RETURNS
 None
 .SH LOCATION

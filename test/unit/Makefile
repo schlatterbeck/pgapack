@@ -25,3 +25,5 @@ clean:
 
 clobber: clean
 	rm -f $(VRFY)
+
+# vim: set noet :

@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGACrossover" "3" "2023-01-09" "" "PGAPack"
+.TH "PGACrossover" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGACrossover \- Perform crossover on two parent strings to create two child strings (via side-effect). 
 .SH SYNOPSIS
@@ -39,9 +39,9 @@ The type of crossover performed is either the default or that
 specified by \fI\%PGASetCrossoverType()\fP\&.
 .SH EXAMPLE
 .sp
-Perform crossover on the two parent strings mom and dad in population
-PGA_OLDPOP, and insert the child strings, child1 and child1, in
-population PGA_NEWPOP.
+Perform crossover on the two parent strings \fBmom\fP and \fBdad\fP in
+population \fI\%PGA_OLDPOP\fP, and insert the child strings,
+\fBchild1\fP and \fBchild1\fP, in population \fI\%PGA_NEWPOP\fP\&.
 .sp
 .nf
 .ft C
@@ -68,7 +68,7 @@ PGACrossover (ctx, mom, dad, PGA_OLDPOP, child1, child2, PGA_NEWPOP);
 .IP \(bu 2
 \fBc2\fP \-\- the second child string 
 .IP \(bu 2
-\fBpop2\fP \-\- symbolic constant of the population to contain string c1 and c2
+\fBpop2\fP \-\- symbolic constant of the population to contain string c1 and c2 
 .SH RETURNS
 c1 and c2 in pop2 are children of p1 and p2 in pop1. p1 and p2 are not modified.
 .SH LOCATION

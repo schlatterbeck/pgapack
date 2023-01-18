@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetPopSize" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetPopSize" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetPopSize \- Specify the size of the genetic algorithm population. 
 .SH SYNOPSIS
@@ -35,7 +35,10 @@ PGASetPopSize \- Specify the size of the genetic algorithm population.
 .sp
 .SH DESCRIPTION
 .sp
-The default population size is 100.
+The default population size is 100, unless reference directions or
+reference points have been specified for NSGA\-III replacement in
+which case the default is the number of reference points plus the
+number of reference directions.
 .SH EXAMPLE
 .sp
 .nf

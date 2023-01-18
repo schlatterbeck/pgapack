@@ -51,7 +51,6 @@ privately owned rights.
     \brief Specify the name of a user-written function to provide a
            specific GA capability (e.g., crossover, mutation, etc.).
     \ingroup init
-
     \param   ctx       context variable
     \param   constant  symbolic constant of the user function to set
     \param   f         name of the function to use
@@ -65,31 +64,34 @@ privately owned rights.
     This function *must* be used when using a non-native
     datatype and must be called once for each of:
 
-    -   PGA_USERFUNCTION_CREATESTRING     -- String creation
-    -   PGA_USERFUNCTION_MUTATION         -- Mutation
-    -   PGA_USERFUNCTION_CROSSOVER        -- Crossover
-    -   PGA_USERFUNCTION_PRINTSTRING      -- String Output
-    -   PGA_USERFUNCTION_COPYSTRING       -- Duplication
-    -   PGA_USERFUNCTION_DUPLICATE        -- Duplicate Checking
-    -   PGA_USERFUNCTION_GEN_DISTANCE     -- Genetic Distance
-    -   PGA_USERFUNCTION_INITSTRING       -- Initialization
-    -   PGA_USERFUNCTION_BUILDDATATYPE    -- MPI Datatype creation
-    -   PGA_USERFUNCTION_STOPCOND         -- Stopping conditions
-    -   PGA_USERFUNCTION_ENDOFGEN         --
-        Auxiliary functions at the end of each generation
-    -   PGA_USERFUNCTION_PRE_EVAL         --
-        Auxiliary functions before evaluation but after crossover and
-        mutation
-    -   PGA_USERFUNCTION_HASH             -- Hashing of genes
-    -   PGA_USERFUNCTION_SERIALIZE        -- Serialize userdefined gene
-    -   PGA_USERFUNCTION_DESERIALIZE      -- Deserialize userdefined gene
-    -   PGA_USERFUNCTION_SERIALIZE_FREE   -- Free serialized version
-    -   PGA_USERFUNCTION_CHROM_FREE       -- Free chromosome
+    - :c:macro:`PGA_USERFUNCTION_CREATESTRING`     -- String creation
+    - :c:macro:`PGA_USERFUNCTION_MUTATION`         -- Mutation
+    - :c:macro:`PGA_USERFUNCTION_CROSSOVER`        -- Crossover
+    - :c:macro:`PGA_USERFUNCTION_PRINTSTRING`      -- String Output
+    - :c:macro:`PGA_USERFUNCTION_COPYSTRING`       -- Duplication
+    - :c:macro:`PGA_USERFUNCTION_DUPLICATE`        -- Duplicate Checking
+    - :c:macro:`PGA_USERFUNCTION_GEN_DISTANCE`     -- Genetic Distance
+    - :c:macro:`PGA_USERFUNCTION_INITSTRING`       -- Initialization
+    - :c:macro:`PGA_USERFUNCTION_BUILDDATATYPE`    -- MPI Datatype creation
+    - :c:macro:`PGA_USERFUNCTION_STOPCOND`         -- Stopping conditions
+    - :c:macro:`PGA_USERFUNCTION_ENDOFGEN`         --
+      Auxiliary functions at the end of each generation
+    - :c:macro:`PGA_USERFUNCTION_PRE_EVAL`         --
+      Auxiliary functions before evaluation but after crossover and
+      mutation
+    - :c:macro:`PGA_USERFUNCTION_HASH`             -- Hashing of genes
+    - :c:macro:`PGA_USERFUNCTION_SERIALIZE`        -- Serialize userdefined gene
+    - :c:macro:`PGA_USERFUNCTION_DESERIALIZE`      --
+      Deserialize userdefined gene
+    - :c:macro:`PGA_USERFUNCTION_SERIALIZE_FREE`   -- Free serialized version
+    - :c:macro:`PGA_USERFUNCTION_CHROM_FREE`       -- Free chromosome
 
     It *may* be called when using a native datatype to replace the built-in
     functions PGAPack has for that datatype (For example, if the Integer data
     type is used for a traveling salesperson problem, the user may want to
-    provide their own custom crossover operator).  See the user guide and the
+    provide their own custom crossover operator).  See
+    :ref:`group:const-ufun` for the constants and chapters
+    :ref:`chp:custom1` and :ref:`chp:new-data` in the user guide and the
     examples in the examples directory for more details.
 
     Example

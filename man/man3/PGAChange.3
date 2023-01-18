@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAChange" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAChange" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAChange \- Repeatedly apply mutation to a string (with an increasing mutation rate) until one or more mutations have occurred. 
 .SH SYNOPSIS
@@ -35,14 +35,15 @@ PGAChange \- Repeatedly apply mutation to a string (with an increasing mutation 
 .sp
 .SH DESCRIPTION
 .sp
-This routine is usually used with PGADuplicate to modify a duplicate
-string.  It is not intended to replace PGAMutation
+This routine is usually used with \fI\%PGADuplicate()\fP to modify a
+duplicate string.  It is not intended to replace
+\fI\%PGAMutate()\fP\&.
 .SH EXAMPLE
 .sp
 Check the current to\-be\-inserted string if it is a copy of any of
-the strings in PGA_NEWPOP. Note that the check relies on all
-individuals in PGA_NEWPOP to also be inserted into the duplicate
-hash, see \fI\%PGAHashIndividual()\fP\&.
+the strings in \fI\%PGA_NEWPOP\fP\&. Note that the check relies on
+all individuals in \fI\%PGA_NEWPOP\fP to also be inserted into
+the duplicate hash, see \fI\%PGAHashIndividual()\fP\&.
 .sp
 .nf
 .ft C

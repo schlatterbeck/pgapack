@@ -27,15 +27,20 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetBinaryAllele" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetBinaryAllele" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGAGetBinaryAllele \- Return the value of a (binary) allele in a PGA_DATATYPE_BINARY string. 
+PGAGetBinaryAllele \- Return the value of a (binary) allele. 
 .SH SYNOPSIS
 .B int  PGAGetBinaryAllele(\fI\%PGAContext\fP  *ctx, int  p, int  pop, int  i) 
 .sp
+.SH DESCRIPTION
+.sp
+Applies to the binary data type, set with parameter
+\fI\%PGA_DATATYPE_BINARY\fP of \fI\%PGACreate()\fP\&.
 .SH EXAMPLE
 .sp
-Copies the alleles from member p in PGA_OLDPOP to member q PGA_NEWPOP.
+Copies the alleles from member \fBp\fP in \fI\%PGA_OLDPOP\fP to
+member \fBq\fP \fI\%PGA_NEWPOP\fP\&.
 Assumes the strings are of the same length.
 .sp
 .nf

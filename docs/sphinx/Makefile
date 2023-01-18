@@ -15,12 +15,16 @@ MAN_STAGE1     = ${wildcard $(MAN_PATH1)/*.3a}
 MAN_STAGE1_3   = ${patsubst %.3a,%.3,$(MAN_STAGE1)}
 MAN_STAGE2     = ${subst $(MAN_PATH1),$(MAN_PATH2),$(MAN_STAGE1_3)}
 
-all: html fixedman
+all: html fixedman latexpdf
 	@echo Done
 
 html: .stamp-doxygen
 
 man: .stamp-doxygen
+
+latex: .stamp-doxygen
+
+latexpdf: .stamp-doxygen
 
 fixedman: man man/man3
 	$(MAKE) fixedman2

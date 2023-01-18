@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAClearDebugLevel" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAClearDebugLevel" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAClearDebugLevel \- Turn off a debug level. 
 .SH SYNOPSIS
@@ -36,7 +36,7 @@ PGAClearDebugLevel \- Turn off a debug level.
 .SH DESCRIPTION
 .sp
 Only does anything if PGAPack was compiled to include debugging
-calls. See the user guide for details.
+calls. See chapter \fI\%Debugging Tools\fP in the user guide for details.
 .SH EXAMPLE
 .sp
 .nf
@@ -53,7 +53,7 @@ PGAClearDebugLevel (ctx, 70);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBlevel\fP \-\- the debug level to set to PGA_FALSE. 
+\fBlevel\fP \-\- the debug level to turn off 
 .SH RETURNS
 None
 .SH LOCATION

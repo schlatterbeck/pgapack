@@ -27,9 +27,9 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetTournamentWithReplacement" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetTournamentWithReplacement" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGAGetTournamentWithReplacement \- Return the setting for tournament sampling: with replacement returns PGA_TRUE, without replacement returns PGA_FALSE. 
+PGAGetTournamentWithReplacement \- Return the setting for tournament sampling, true if with replacement. 
 .SH SYNOPSIS
 .B int  PGAGetTournamentWithReplacement(\fI\%PGAContext\fP  *ctx) 
 .sp
@@ -50,7 +50,7 @@ v = PGAGetTournamentWithReplacement (ctx);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .SH RETURNS
-The setting of tournament with/without replacement, PGA_TRUE if with replacement
+The setting of tournament with/without replacement, true if with replacement
 .SH LOCATION
 \fI\%File select.c\fP
 .SH COPYRIGHT

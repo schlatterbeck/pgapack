@@ -4,9 +4,10 @@
       integer          myMutation
       external         evaluate, myMutation
       
-      integer(8)       ctx
-      integer          i, ierror
-      integer          lower(10), upper(10)
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
+      integer           i, ierror
+      integer           lower(10), upper(10)
 
       do i=1, 10
          lower(i) = 1
@@ -32,7 +33,8 @@
 
       integer function myMutation(ctx, p, pop, pm)
       include          'pgapackf.h'
-      integer(8)        ctx
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
       integer           p, pop
       double precision  pm
       integer           stringlen, i, k, count
@@ -53,9 +55,10 @@
 
       double precision function evaluate(ctx, p, pop)
       include          'pgapackf.h'
-      integer(8)       ctx
-      integer          p, pop
-      integer          stringlen, i, sum
+      integer,parameter :: k18 = selected_int_kind(18)
+      integer(kind=k18) ctx
+      integer           p, pop
+      integer           stringlen, i, sum
 
       sum = 0
       stringlen = PGAGetStringLength(ctx)

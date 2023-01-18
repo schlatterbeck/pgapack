@@ -27,12 +27,16 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetCrossoverBoundedFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetCrossoverBoundedFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGAGetCrossoverBoundedFlag \- Return PGA_TRUE or PGA_FALSE to indicate whether crossed over strings remain in the range specified. 
+PGAGetCrossoverBoundedFlag \- Return boolean value to indicate whether crossed over strings remain in the range specified. 
 .SH SYNOPSIS
 .B int  PGAGetCrossoverBoundedFlag(\fI\%PGAContext\fP  *ctx) 
 .sp
+.SH DESCRIPTION
+.sp
+Return \fI\%PGA_TRUE\fP if restricted to the given range,
+otherwise \fI\%PGA_FALSE\fP\&.
 .SH EXAMPLE
 .sp
 .nf
@@ -50,7 +54,7 @@ val = PGAGetCrossoverBoundedFlag (ctx);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .SH RETURNS
-PGA_TRUE if restricted to the given range, otherwise PGA_FALSE.
+boolean value indicating if strings remain in range
 .SH LOCATION
 \fI\%File cross.c\fP
 .SH COPYRIGHT

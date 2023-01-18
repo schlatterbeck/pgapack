@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAEvaluate" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAEvaluate" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAEvaluate \- Call a user-specified function to return an evaluation of each string in the population. 
 .SH SYNOPSIS
@@ -41,8 +41,8 @@ signaled the string\(aqs evaluation is out\-of\-date by a call to
 \fI\%PGASetEvaluationUpToDateFlag()\fP\&.
 .sp
 The user\-specified function will be called once for each string in
-population pop that requires evaluation.  This function must return
-a double (the evaluation function value) and must fit the prototype:
+population \fBpop\fP that requires evaluation.  This function must return
+a \fBdouble\fP (the evaluation function value) and must fit the prototype:
 .sp
 .nf
 .ft C
@@ -51,8 +51,8 @@ double evaluate (PGAContext *c, int p, int pop, double *aux);
 .fi
 .SH EXAMPLE
 .sp
-Evaluate all strings in population PGA_NEWPOP using the user\-defined
-evaluation function Energy.
+Evaluate all strings in population \fI\%PGA_NEWPOP\fP using the
+user\-defined evaluation function \fBEnergy\fP\&.
 .sp
 .nf
 .ft C

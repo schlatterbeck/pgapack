@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetEpsilonGeneration" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetEpsilonGeneration" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetEpsilonGeneration \- Configure the generation until which constraints are relaxed via the Epsilon Contraint method. 
 .SH SYNOPSIS
@@ -36,6 +36,8 @@ PGASetEpsilonGeneration \- Configure the generation until which constraints are 
 .SH DESCRIPTION
 .sp
 The default is 0 (no Epsilon Contraint method is used).
+The parameter \fBgen\fP must be below the value set with
+\fI\%PGASetMaxGAIterValue()\fP\&.
 .SH EXAMPLE
 .sp
 .nf
@@ -52,7 +54,7 @@ PGASetEpsilonGeneration (ctx, 50);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBgen\fP \-\- Epsilon contraint generation, must be below the value set with PGASetMaxGAIterValue 
+\fBgen\fP \-\- Epsilon contraint generation 
 .SH RETURNS
 None
 .SH LOCATION

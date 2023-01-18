@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetRestartFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetRestartFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGAGetRestartFlag \- Return whether the algorithm should employ the restart operator. 
 .SH SYNOPSIS
@@ -50,7 +50,7 @@ val = PGAGetRestartFlag (ctx);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .SH RETURNS
-PGA_TRUE if restarting is enabled, otherwise PGA_FALSE
+true if restarting is enabled
 .SH LOCATION
 \fI\%File restart.c\fP
 .SH COPYRIGHT

@@ -27,15 +27,16 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetCharacterAllele" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetCharacterAllele" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGASetCharacterAllele \- Sets the value of an allele in a PGA_DATATYPE_CHARACTER string. 
+PGASetCharacterAllele \- Sets the value of an allele in a string of the character data type. 
 .SH SYNOPSIS
 .B void  PGASetCharacterAllele(\fI\%PGAContext\fP  *ctx, int  p, int  pop, int  i, char  val) 
 .sp
 .SH EXAMPLE
 .sp
-Copies the alleles from member p in PGA_OLDPOP to member q in PGA_NEWPOP.
+Copies the alleles from member \fBp\fP in \fI\%PGA_OLDPOP\fP to
+member \fBq\fP in \fI\%PGA_NEWPOP\fP\&.
 Assumes the strings are of the same length.
 .sp
 .nf

@@ -62,8 +62,8 @@ privately owned rights.
     Description
     -----------
 
-    The type of mutation depends on the data type.  Refer to the user
-    guide for data-specific examples.
+    The type of mutation depends on the data type.  Refer to section
+    :ref:`sec:mutation` in the user guide for data-specific examples.
 
     Example
     -------
@@ -112,7 +112,6 @@ int PGAMutate (PGAContext *ctx, int p, int pop)
 /*!****************************************************************************
     \brief Set type of mutation to use.
     \ingroup init
-
     \param  ctx            context variable
     \param  mutation_type  symbolic constant to specify the mutation type
     \return None
@@ -128,12 +127,18 @@ int PGAMutate (PGAContext *ctx, int p, int pop)
     another chosen uniformly randomly.  The alphabetic characters will be lower,
     upper, or mixed case depending on how the strings were initialized.
 
-    Valid choices are PGA_MUTATION_CONSTANT (Real/Integer), PGA_MUTATION_RANGE
-    (Real/Integer), PGA_MUTATION_UNIFORM (Real), PGA_MUTATION_GAUSSIAN (Real),
-    PGA_MUTATION_PERMUTE (Integer), PGA_MUTATION_DE (Real), and
-    PGA_MUTATION_POLY (Real/Integer). The default for integer-valued strings
-    conforms to how the strings were initialized.  The default for real-valued
-    strings is PGA_MUTATION_GAUSSIAN.  See the user guide for more details.
+    Valid choices are :c:macro:`PGA_MUTATION_CONSTANT` (Real/Integer),
+    :c:macro:`PGA_MUTATION_RANGE` (Real/Integer),
+    :c:macro:`PGA_MUTATION_UNIFORM` (Real),
+    :c:macro:`PGA_MUTATION_GAUSSIAN` (Real),
+    :c:macro:`PGA_MUTATION_PERMUTE` (Integer),
+    :c:macro:`PGA_MUTATION_DE` (Real), and
+    :c:macro:`PGA_MUTATION_POLY` (Real/Integer).
+    The default for integer-valued strings conforms to how the strings
+    were initialized.  The default for real-valued strings is
+    :c:macro:`PGA_MUTATION_GAUSSIAN`.
+    See :ref:`group:const-mutation` for the constants and section
+    :ref:`sec:mutation` in the user guide for more details.
 
     Example
     -------
@@ -176,7 +181,6 @@ void PGASetMutationType (PGAContext *ctx, int mutation_type)
 /*!***************************************************************************
     \brief Return the type of mutation used.
     \ingroup query
-
     \param  ctx  context variable
     \return Returns the integer corresponding to the symbolic constant
             used to specify the type of mutation specified
@@ -229,7 +233,7 @@ int PGAGetMutationType (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    \brief Set multiplier to mutate PGA_DATATYPE_REAL strings with.
+    \brief Set multiplier to mutate strings of data type real with.
     \ingroup init
 
     \param  ctx  context variable
@@ -242,7 +246,9 @@ int PGAGetMutationType (PGAContext *ctx)
     -----------
 
     The use of this value depends on the type of mutation being used.
-    The default value is 0.1.  See the user guide for more details.
+    The default value is 0.1 unless the mutation type is
+    :c:macro:`PGA_MUTATION_CONSTANT` in which case the default is 0.01.
+    See section :ref:`sec:mutation` in the user guide for more details.
 
     Example
     -------
@@ -275,12 +281,11 @@ void PGASetMutationRealValue (PGAContext *ctx, double val)
 
 /*!***************************************************************************
     \brief Return the value of the multiplier used to mutate
-           PGA_DATATYPE_REAL strings with.
+           strings of data type real with.
     \ingroup query
 
     \param  ctx  context variable
-    \return The value of the multiplier used to mutate PGA_DATATYPE_REAL
-            strings with
+    \return The value of the multiplier
 
     \rst
 
@@ -309,7 +314,7 @@ double PGAGetMutationRealValue (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    \brief Set multiplier to mutate PGA_DATATYPE_INTEGER strings with.
+    \brief Set multiplier to mutate data type integer strings with.
     \ingroup init
 
     \param  ctx  context variable
@@ -322,7 +327,8 @@ double PGAGetMutationRealValue (PGAContext *ctx)
     -----------
 
     The use of this value depends on the type of mutation being used.
-    The default value is 1.  See the user guide for more details.
+    The default value is 1.  See section :ref:`sec:mutation` of the user
+    guide for more details.
 
     Example
     -------
@@ -356,12 +362,11 @@ void PGASetMutationIntegerValue (PGAContext *ctx, int val)
 
 /*!***************************************************************************
     \brief Return the value of the multiplier used to mutate
-           PGA_DATATYPE_INTEGER strings with.
+           data type integer strings with.
     \ingroup query
 
     \param  ctx  context variable
-    \return The value of the multiplier used to mutate
-            PGA_DATATYPE_INTEGER strings with
+    \return The value of the multiplier
 
     \rst
 
@@ -390,14 +395,14 @@ int PGAGetMutationIntegerValue (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    \brief If this flag is set to PGA_TRUE, then for Integer and Real
+    \brief If this flag is set to true, then for Integer and Real
            strings whenever a gene is mutated, if it underflows
            (overflows) the lower (upper) bound it is reset to the lower
            (upper) bound.
     \ingroup init
 
     \param  ctx   context variable
-    \param  val   either PGA_TRUE or PGA_FALSE
+    \param  val   flag to indicate if mutation is bounded
     \return None
 
     \rst
@@ -405,9 +410,9 @@ int PGAGetMutationIntegerValue (PGAContext *ctx)
     Description
     -----------
 
-    In this way all allele values remain within the range the integer strings
-    were initialized on.  If this flag is PGA_FALSE (the default), the alleles
-    may take any values.
+    When this is enabled, all allele values remain within the range the
+    integer strings were initialized on.  If this flag is
+    :c:macro:`PGA_FALSE` (the default), the alleles may take any values.
 
     Example
     -------
@@ -444,13 +449,13 @@ void PGASetMutationBoundedFlag (PGAContext *ctx, int val)
 
 
 /*!****************************************************************************
-    \brief Return PGA_TRUE or PGA_FALSE to indicate whether mutated
-           integer strings remain in the initialization range.
+    \brief Return flag to indicate whether mutated integer strings
+           remain in the initialization range.
 
     \ingroup query
 
     \param  ctx  context variable
-    \return PGA_TRUE if restricted to the given range, otherwise PGA_FALSE
+    \return true if restricted to the given range
 
     \rst
 
@@ -483,7 +488,7 @@ int PGAGetMutationBoundedFlag (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    \brief If this flag is set to PGA_TRUE, then for Integer and Real
+    \brief If this flag is set to true, then for Integer and Real
            strings whenever a gene is mutated, if it underflows
            (overflows) the lower (upper) bound it is reset to a random
            value between the old value and the violated bound.
@@ -498,9 +503,11 @@ int PGAGetMutationBoundedFlag (PGAContext *ctx)
     Description
     -----------
 
-    In this way all allele values remain within the range the strings
-    were initialized on.  If this flag is PGA_FALSE (the default), the alleles
-    may take any values. See also :c:func:`PGASetMutationBoundedFlag`.
+    When this flag is set, all allele values remain within the range the
+    strings were initialized on by bouncing values that violate the
+    bound back from the boundary.  If this flag is :c:macro:`PGA_FALSE`
+    (the default), the alleles may take any values. See also
+    :c:func:`PGASetMutationBoundedFlag`.
 
     Example
     -------
@@ -537,13 +544,12 @@ void PGASetMutationBounceBackFlag (PGAContext *ctx, int val)
 
 
 /*!****************************************************************************
-    \brief Return PGA_TRUE or PGA_FALSE to indicate whether mutated
-           strings remain within the initialization range by bouncing
-           them from the boundary.
+    \brief Return flag to indicate whether mutated strings remain within
+           the initialization range by bouncing them from the boundary.
     \ingroup query
 
     \param  ctx  context variable
-    \return PGA_TRUE if restricted to the given range, otherwise PGA_FALSE
+    \return true if restricted to the given range
 
     \rst
 
@@ -574,7 +580,6 @@ int PGAGetMutationBounceBackFlag (PGAContext *ctx)
 /*!****************************************************************************
     \brief Specify the probability that a given allele will be mutated.
     \ingroup init
-
     \param  ctx           context variable
     \param  mutation_prob the mutation probability
     \return None
@@ -585,8 +590,8 @@ int PGAGetMutationBounceBackFlag (PGAContext *ctx)
     -----------
 
     If this is called without calling :c:func:`PGASetMutationType`, the
-    default mutation type is PGA_MUTATION_FIXED.  The default probability is
-    the reciprocal of the string length.
+    default mutation type is :c:macro:`PGA_MUTATION_CONSTANT`. The default
+    probability is the reciprocal of the string length.
 
     Example
     -------
@@ -620,7 +625,6 @@ void PGASetMutationProb (PGAContext *ctx, double mutation_prob)
 /*!***************************************************************************
     \brief Return the probability of mutation.
     \ingroup query
-
     \param  ctx  context variable
     \return The mutation probability
 
@@ -651,7 +655,6 @@ double PGAGetMutationProb (PGAContext *ctx)
 /*!****************************************************************************
     \brief Set Eta for polynomial mutation.
     \ingroup init
-
     \param  ctx  context variable
     \param  eta  the polynomial mutation eta
     \return None
@@ -685,7 +688,6 @@ void PGASetMutationPolyEta (PGAContext *ctx, double eta)
 /*!***************************************************************************
     \brief Return the Eta for polynomial mutation.
     \ingroup query
-
     \param  ctx  context variable
     \return The eta for polynomial mutation
 
@@ -714,7 +716,6 @@ double PGAGetMutationPolyEta (PGAContext *ctx)
 /*!****************************************************************************
     \brief Specify the constant for polynomial mutation.
     \ingroup init
-
     \param  ctx  context variable
     \param  v    the polynomial mutation constant
     \return None
@@ -748,7 +749,6 @@ void PGASetMutationPolyValue (PGAContext *ctx, double v)
 /*!***************************************************************************
     \brief Return the value for polynomial mutation.
     \ingroup query
-
     \param  ctx  context variable
     \return The value for polynomial mutation
 
@@ -778,10 +778,8 @@ double PGAGetMutationPolyValue (PGAContext *ctx)
 /*!****************************************************************************
     \brief Set the variant used for Differential Evolution.
     \ingroup init
-
     \param  ctx     context variable
-    \param  variant symbolic constant, currently one of PGA_DE_VARIANT_RAND,
-                    PGA_DE_VARIANT_BEST, PGA_DE_VARIANT_EITHER_OR
+    \param  variant symbolic constant for variant
     \return None
 
     \rst
@@ -789,7 +787,12 @@ double PGAGetMutationPolyValue (PGAContext *ctx)
     Description
     -----------
 
-    Only used if the mutation type is PGA_MUTATION_DE.
+    Only used if the mutation type is Differential Evolution
+    :c:macro:`PGA_MUTATION_DE`. The possible variants are
+    :c:macro:`PGA_DE_VARIANT_RAND`, :c:macro:`PGA_DE_VARIANT_BEST`, and
+    :c:macro:`PGA_DE_VARIANT_EITHER_OR`. See
+    :ref:`group:const-de-variant` for the constants and section
+    :ref:`sec:mutation` in the user guide for details.
 
     Example
     -------
@@ -825,7 +828,6 @@ void PGASetDEVariant (PGAContext *ctx, int variant)
 /*!***************************************************************************
     \brief Return the variant of Differential Evolution
     \ingroup query
-
     \param  ctx  context variable
     \return Returns the integer corresponding to the symbolic constant
             used to specify the variant of differential evolution
@@ -866,12 +868,17 @@ int PGAGetDEVariant (PGAContext *ctx)
 /*!****************************************************************************
     \brief Set the scale factor F for Differential Evolution
     \ingroup init
-
     \param  ctx  context variable
     \param  val  the scale factor
     \return None
 
     \rst
+
+    Description
+    -----------
+
+    The default for the scale factor :math:`F` is 0.9. For details see section
+    :ref:`sec:mutation` in the user guide.
 
     Example
     -------
@@ -936,6 +943,13 @@ double PGAGetDEScaleFactor (PGAContext *ctx)
     \return None
 
     \rst
+
+    Description
+    -----------
+
+    The default for the aux factor :math:`K` of Differential Evolution is
+    :math:`0.5 * (F + 1)` where :math:`F` is the Differential Evolution
+    scale factor, see :c:func:`PGASetDEScaleFactor`.
 
     Example
     -------
@@ -1002,6 +1016,12 @@ double PGAGetDEAuxFactor (PGAContext *ctx)
 
     \rst
 
+    Description
+    -----------
+
+    The default for the Differential Evolution crossover probability is
+    0.9.
+
     Example
     -------
 
@@ -1066,6 +1086,14 @@ double PGAGetDECrossoverProb (PGAContext *ctx)
 
     \rst
 
+    Description
+    -----------
+
+    By default jitter is turned off (the value is 0 by default).
+    Very small amounts (on the order of 0.001) have been
+    recommended for some problems like digital filter design.
+    See section :ref:`sec:mutation` in the user guide for details.
+
     Example
     -------
 
@@ -1074,7 +1102,7 @@ double PGAGetDECrossoverProb (PGAContext *ctx)
        PGAContext *ctx;
 
        ...
-       PGASetDEJitter (ctx, 0.75);
+       PGASetDEJitter (ctx, 0.001);
 
     \endrst
 
@@ -1121,8 +1149,7 @@ double PGAGetDEJitter (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    \brief Set the either-or probability for PGA_DE_VARIANT_EITHER_OR of
-           Differential Evolution.
+    \brief Set the either-or probability of Differential Evolution.
     \ingroup init
 
     \param  ctx  context variable
@@ -1130,6 +1157,14 @@ double PGAGetDEJitter (PGAContext *ctx)
     \return None
 
     \rst
+
+    Description
+    -----------
+
+    The default for this probability is 0.5, it is only used
+    when the either-or variant of Differential Evolution has
+    been selected by calling :c:func:`PGASetDEVariant` with
+    parameter ``PGA_DE_VARIANT_EITHER_OR``.
 
     Example
     -------
@@ -1196,6 +1231,13 @@ double PGAGetDEProbabilityEO (PGAContext *ctx)
 
     \rst
 
+    Description
+    -----------
+
+    Some variants of Differential Evolution can specify the number
+    of differences that go into the new value of an allele. By
+    default this number is 1.
+
     Example
     -------
 
@@ -1260,6 +1302,15 @@ int PGAGetDENumDiffs (PGAContext *ctx)
 
     \rst
 
+    Description
+    -----------
+
+    Differential Evolution supports the crossover types
+    :c:macro:`PGA_DE_CROSSOVER_BIN` and :c:macro:`PGA_DE_CROSSOVER_EXP`,
+    the default is :c:macro:`PGA_DE_CROSSOVER_BIN`. See
+    :ref:`group:const-de-cross` for the constants and section
+    :ref:`sec:mutation` of the user guide for details.
+
     Example
     -------
 
@@ -1292,7 +1343,6 @@ void PGASetDECrossoverType (PGAContext *ctx, int val)
 /*!***************************************************************************
     \brief Return the Differential Evolution crossover type.
     \ingroup query
-
     \param  ctx  context variable
     \return The value of the Differential Evolution crossover type
 
@@ -1321,12 +1371,19 @@ int PGAGetDECrossoverType (PGAContext *ctx)
 /*!****************************************************************************
     \brief Set the Differential Evolution dither range (+/-).
     \ingroup init
-
     \param  ctx  context variable
     \param  val  the dither range
     \return None
 
     \rst
+
+    Description
+    -----------
+
+    By default dither is turned off (the value is 0 by default).
+    Quite large amounts (on the order of 0.5) are recommended
+    for some problems like digital filter design.
+    See section :ref:`sec:mutation` in the user guide for details.
 
     Example
     -------
@@ -1336,7 +1393,7 @@ int PGAGetDECrossoverType (PGAContext *ctx)
        PGAContext *ctx;
 
        ...
-       PGASetDEDither (ctx, 0.25);
+       PGASetDEDither (ctx, 0.5);
 
     \endrst
 
@@ -1345,7 +1402,7 @@ void PGASetDEDither (PGAContext *ctx, double val)
 {
     if (val < 0.0 || val > 1.0) {
         PGAError
-            ( ctx, "PGASetDEProbabilityEO: Invalid value of Dither:"
+            ( ctx, "PGASetDEDither: Invalid value of Dither:"
             , PGA_FATAL, PGA_DOUBLE, (void *) &val
             );
     } else {
@@ -1356,7 +1413,6 @@ void PGASetDEDither (PGAContext *ctx, double val)
 /*!***************************************************************************
     \brief Return the Differential Evolution dither value.
     \ingroup query
-
     \param  ctx  context variable
     \return The value of the Differential Evolution dither
 
@@ -1385,9 +1441,8 @@ double PGAGetDEDither (PGAContext *ctx)
 /*!****************************************************************************
     \brief Set if Differential Evolution dither is per individual.
     \ingroup init
-
     \param  ctx   context variable
-    \param  val   either PGA_TRUE or PGA_FALSE
+    \param  val   boolean flag
     \return None
 
     \rst
@@ -1395,11 +1450,12 @@ double PGAGetDEDither (PGAContext *ctx)
     Description
     -----------
 
-    If this is set to PGA_TRUE, then for Differential Evolution if the
-    Dither value is non-zero we produce a new random value to add to the
-    scale factor F *for each individual*.
-    Otherwise if the flag is not set (PGA_FALSE), then we produce a new
-    value in each generation, the same value for *all* individuals.
+    If this is set to :c:macro:`PGA_TRUE`, then for Differential
+    Evolution if the dither value is non-zero we produce a new random
+    value to add to the scale factor :math:`F` *for each individual*.
+    Otherwise if the flag is not set (:c:macro:`PGA_FALSE`), then we
+    produce a new value in each generation, the same value for *all*
+    individuals.
 
     Example
     -------
@@ -1432,13 +1488,12 @@ void PGASetDEDitherPerIndividual (PGAContext *ctx, int val)
 
 
 /*!****************************************************************************
-    \brief Return PGA_TRUE or PGA_FALSE to indicate whether the dither
-           is applied anew for each individual or if the value is
-           re-used for all individuals in one generation.
+    \brief Return boolean flag to indicate whether the dither is applied
+           anew for each individual or if the value is re-used for all
+           individuals in one generation.
     \ingroup query
-
     \param  ctx  context variable
-    \return PGA_TRUE if dither is applied for each individual
+    \return flag to indicate if dither is applied for each individual
 
     \rst
 

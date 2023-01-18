@@ -27,9 +27,9 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetEvaluationUpToDateFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetEvaluationUpToDateFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGAGetEvaluationUpToDateFlag \- Return PGA_TRUE/PGA_FALSE to indicate whether the evaluate function value is up to date. 
+PGAGetEvaluationUpToDateFlag \- Return boolean to indicate whether the evaluate function value is up to date. 
 .SH SYNOPSIS
 .B int  PGAGetEvaluationUpToDateFlag(\fI\%PGAContext\fP  *ctx, int  p, int  pop) 
 .sp
@@ -57,7 +57,7 @@ if (PGAGetEvaluationUpToDateFlag (ctx)) {
 .IP \(bu 2
 \fBpop\fP \-\- symbolic constant of the population the string is in 
 .SH RETURNS
-Return PGA_TRUE if the evaluate function value is up to date, otherwise, return PGA_FALSE
+Return true if the evaluate function value is up to date
 .SH LOCATION
 \fI\%File evaluate.c\fP
 .SH COPYRIGHT

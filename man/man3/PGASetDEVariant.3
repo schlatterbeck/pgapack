@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetDEVariant" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetDEVariant" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetDEVariant \- Set the variant used for Differential Evolution. 
 .SH SYNOPSIS
@@ -35,7 +35,12 @@ PGASetDEVariant \- Set the variant used for Differential Evolution.
 .sp
 .SH DESCRIPTION
 .sp
-Only used if the mutation type is PGA_MUTATION_DE.
+Only used if the mutation type is Differential Evolution
+\fI\%PGA_MUTATION_DE\fP\&. The possible variants are
+\fI\%PGA_DE_VARIANT_RAND\fP, \fI\%PGA_DE_VARIANT_BEST\fP, and
+\fI\%PGA_DE_VARIANT_EITHER_OR\fP\&. See
+\fI\%Constants for Differential Evolution Variants\fP for the constants and section
+\fI\%Mutation\fP in the user guide for details.
 .SH EXAMPLE
 .sp
 .nf
@@ -52,7 +57,7 @@ PGASetDEVariant (ctx, PGA_DE_VARIANT_BEST);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBvariant\fP \-\- symbolic constant, currently one of PGA_DE_VARIANT_RAND, PGA_DE_VARIANT_BEST, PGA_DE_VARIANT_EITHER_OR 
+\fBvariant\fP \-\- symbolic constant for variant 
 .SH RETURNS
 None
 .SH LOCATION

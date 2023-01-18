@@ -27,12 +27,16 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetBinaryInitProb" "3" "2023-01-09" "" "PGAPack"
+.TH "PGAGetBinaryInitProb" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
-PGAGetBinaryInitProb \- Return the probability that an allele will be randomly initialized to "1" in a PGA_DATATYPE_BINARY string. 
+PGAGetBinaryInitProb \- Return the probability that an allele will be randomly initialized to "1" for data type binary. 
 .SH SYNOPSIS
 .B double  PGAGetBinaryInitProb(\fI\%PGAContext\fP  *ctx) 
 .sp
+.SH DESCRIPTION
+.sp
+This is used during string creation of a
+\fI\%PGA_DATATYPE_BINARY\fP string.
 .SH EXAMPLE
 .sp
 .nf

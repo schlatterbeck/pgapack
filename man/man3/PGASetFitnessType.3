@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetFitnessType" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetFitnessType" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetFitnessType \- Set the type of fitness algorithm to use. 
 .SH SYNOPSIS
@@ -35,10 +35,13 @@ PGASetFitnessType \- Set the type of fitness algorithm to use.
 .sp
 .SH DESCRIPTION
 .sp
-Valid choices are PGA_FITNESS_RAW, PGA_FITNESS_NORMAL, or
-PGA_FITNESS_RANKING for raw fitness (the evaluation function value),
-linear normalization, or linear ranking, respectively.  The default
-is PGA_FITNESS_RAW.
+Valid choices are \fI\%PGA_FITNESS_RAW\fP,
+\fI\%PGA_FITNESS_NORMAL\fP, or \fI\%PGA_FITNESS_RANKING\fP for
+raw fitness (the evaluation function value), linear normalization,
+or linear ranking, respectively.  The default is
+\fI\%PGA_FITNESS_RAW\fP\&. See \fI\%Constants for Fitness Types\fP for the
+constants and section \fI\%String Evaluation and Fitness\fP in the user guide for
+details.
 .SH EXAMPLE
 .sp
 .nf

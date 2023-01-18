@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGARandom01" "3" "2023-01-09" "" "PGAPack"
+.TH "PGARandom01" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGARandom01 \- Generate a uniform random number on the interval [0,1). 
 .SH SYNOPSIS
@@ -40,31 +40,22 @@ sequence.  Otherwise, the second argument is used as a new seed for the
 population.
 .sp
 This is a C language implementation of the universal random number
-generator proposed by G. Marsaglia and A. Zaman [1], [2] and
-translated from F. James\(aq version [3]\&.
+generator proposed by George Marsaglia, Arif Zaman, and Wai Wan Tsang
+\fI\%[MZT90]\fP and translated from F. James\(aq version \fI\%[Jam90]\fP\&.
 .sp
 This algorithm is a combination of a lagged Fibonacci and arithmetic
-sequence (F. James) generator with period of 2^144.  It provides 32\-bit
-floating point numbers in the range from zero to one.  It is claimed to
-be portable and provides bit\-identical results on all machines with at
-least 24\-bit mantissas.
+sequence (F. James) generator with period of 2^{144}\&.  It
+provides 32\-bit floating point numbers in the range from zero to
+one.  It is claimed to be portable and provides bit\-identical
+results on all machines with at least 24\-bit mantissas.
 .sp
-PGARandom01 should be initialized with a 32\-bit integer seed such that
-0 \ele seed \ele 900,000,000\&.
+\fI\%PGARandom01()\fP should be initialized with a 32\-bit integer
+seed such that 0 \ele seed \ele 900,000,000\&.
 Each of these 900,000,000 values gives rise to an independent
 sequence of \eapprox 10^{30}\&.
 .sp
 Warning on use of static storage class on thread shared memory
 machines.
-.IP [1] 5
-.IP G. 3
-Marsaglia, A. Zaman, W. Tseng. Stat Prob. Letter 9 (1990) 35.
-.IP [2] 5
-.IP G. 3
-Marsaglia, A. Zaman FSU\-SCRI\-87\-50
-.IP [3] 5
-F. James.  A review of pseudorandom number generators.
-Computer Physics Communication 60 (1990) 329\-\-344
 .SH EXAMPLE
 .sp
 To get the next random number use

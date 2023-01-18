@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetDEDitherPerIndividual" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetDEDitherPerIndividual" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetDEDitherPerIndividual \- Set if Differential Evolution dither is per individual. 
 .SH SYNOPSIS
@@ -35,11 +35,12 @@ PGASetDEDitherPerIndividual \- Set if Differential Evolution dither is per indiv
 .sp
 .SH DESCRIPTION
 .sp
-If this is set to PGA_TRUE, then for Differential Evolution if the
-Dither value is non\-zero we produce a new random value to add to the
-scale factor F \fIfor each individual\fP\&.
-Otherwise if the flag is not set (PGA_FALSE), then we produce a new
-value in each generation, the same value for \fIall\fP individuals.
+If this is set to \fI\%PGA_TRUE\fP, then for Differential
+Evolution if the dither value is non\-zero we produce a new random
+value to add to the scale factor F \fIfor each individual\fP\&.
+Otherwise if the flag is not set (\fI\%PGA_FALSE\fP), then we
+produce a new value in each generation, the same value for \fIall\fP
+individuals.
 .SH EXAMPLE
 .sp
 .nf
@@ -56,7 +57,7 @@ PGASetDEDitherPerIndividual (ctx, PGA_TRUE);
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
 .IP \(bu 2
-\fBval\fP \-\- either PGA_TRUE or PGA_FALSE 
+\fBval\fP \-\- boolean flag 
 .SH RETURNS
 None
 .SH LOCATION

@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "LIN_dasdennis" "3" "2023-01-09" "" "PGAPack"
+.TH "LIN_dasdennis" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 LIN_dasdennis \- Allocate memory and compute Das & Dennis points. 
 .SH SYNOPSIS
@@ -36,13 +36,13 @@ LIN_dasdennis \- Allocate memory and compute Das & Dennis points.
 .SH DESCRIPTION
 .sp
 It will re\-alloc the exiting array pointer pointed to by
-result (this must be a NULL pointer if no pre\-existing points are
+result (this must be a \fBNULL\fP pointer if no pre\-existing points are
 given) and return the new number of points. Note that if there are no
-pre\-existing points, the pointer pointed to by result must be NULL
-and nexist must be 0.
+pre\-existing points, the pointer pointed to by \fBresult\fP must be
+\fBNULL\fP and \fBnexist\fP must be 0.
 Optionally the points can be scaled (with 0 < scale <= 1) and shifted
 in the direction of a given point back onto the reference hyperplane.
-This is not done if dir == NULL or scale == 1.
+This is not done if \fBdir == NULL\fP or \fBscale == 1\fP\&.
 A previously allocated result will be de\-allocated in case of error.
 
  

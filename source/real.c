@@ -82,7 +82,6 @@ static void bouncheck
     \brief Set the value of real-valued allele i in string p in
            population pop
     \ingroup allele
-
     \param   ctx  context variable
     \param   p    string index
     \param   pop  symbolic constant of the population the string is in
@@ -95,8 +94,8 @@ static void bouncheck
     Example
     -------
 
-    Sets the value of the ith allele of string p in population PGA_NEWPOP
-    to 1.57
+    Sets the value of allele ``i`` of string ``p`` in population
+    :c:macro:`PGA_NEWPOP` to 1.57
 
     .. code-block:: c
 
@@ -140,8 +139,8 @@ void PGASetRealAllele (PGAContext *ctx, int p, int pop, int i, double val)
     Example
     -------
 
-    Returns the value of the ith real-valued allele of string p
-    in population PGA_NEWPOP
+    Returns the value of real-valued allele ``i`` of string ``p``
+    in population :c:macro:`PGA_NEWPOP`
 
     .. code-block:: c
 
@@ -175,7 +174,6 @@ double PGAGetRealAllele (PGAContext *ctx, int p, int pop, int i)
     \brief Set the upper and lower bounds for randomly initializing
            real-valued genes.
     \ingroup init
-
     \param   ctx      context variable
     \param   median   an array containing the mean value of the interval
     \param   frac     an array containing the fraction of median to add and
@@ -196,7 +194,7 @@ double PGAGetRealAllele (PGAContext *ctx, int p, int pop, int i)
     -------
 
     Set the initialization routines to select a value for each real-valued
-    gene i uniformly randomly from the interval [i-v,i+v], where
+    gene ``i`` uniformly randomly from the interval :math:`[i-v,i+v]`, where
     :math:`v = i/2`.
     Assumes all strings are the same length.
 
@@ -265,7 +263,7 @@ void PGASetRealInitFraction (PGAContext *ctx, double *median, double *frac)
     -------
 
     Set the initialization routines to select a value for each real-valued
-    gene i uniformly randomly from the interval [-10.,i]
+    gene :math:`i` uniformly randomly from the interval :math:`[-10.,i]`
     Assumes all strings are of the same length.
 
     .. code-block:: c
@@ -316,7 +314,6 @@ void PGASetRealInitRange (PGAContext *ctx, const double *min, const double *max)
     \brief Returns the minimum value used to randomly initialize allele
            i in a real string.
     \ingroup query
-
     \param   ctx  context variable
     \param   i    an allele position
     \return  The minimum value used to randomly initialize allele i
@@ -358,7 +355,6 @@ double PGAGetMinRealInitValue (PGAContext *ctx, int i)
     \brief Return the maximum value used to randomly initialize allele i
            in a real string.
     \ingroup query
-
     \param   ctx  context variable
     \param   i    an allele position
     \return  The maximum value used to randomly initialize allele i
@@ -398,9 +394,8 @@ double PGAGetMaxRealInitValue (PGAContext *ctx, int i)
 
 /*!***************************************************************************
     \brief Return the type of scheme used to randomly initialize strings
-           of data type PGA_DATATYPE_REAL.
+           of data type real.
     \ingroup query
-
     \param  ctx  context variable
     \return Returns the integer corresponding to the symbolic constant
             used to specify the scheme used to initialize real strings
@@ -440,15 +435,12 @@ int PGAGetRealInitType (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    \brief Allocate memory for a string of type PGAReal.
+    \brief Allocate memory for a string of type real.
     \ingroup internal
-
     \param   ctx       context variable
     \param   p         string index
     \param   pop       symbolic constant of the population string p is in
-    \param   initflag  A true/false flag used in conjunction with
-                       ctx->ga.RandomInit to initialize the string
-                       either randomly or set to zero
+    \param   initflag  A boolean flag to indicate random initialization
     \return  None
 
     \rst
@@ -458,12 +450,15 @@ int PGAGetRealInitType (PGAContext *ctx)
 
     Note that this function is set in :c:func:`PGASetUp` as the create
     string user function for the real datatype by default.
+    Parameter ``initflag`` is used in conjunction with
+    ``ctx->ga.RandomInit`` to initialize the string either randomly or
+    set to zero.
 
     Example
     -------
 
     Allocates memory and assigns the address of the allocated memory to
-    the real string field (ind->chrom) of the individual.  Also, clears
+    the real string field ``ind->chrom`` of the individual.  Also, clears
     the string.
 
     .. code-block:: c
@@ -511,7 +506,6 @@ void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
 /*!****************************************************************************
     \brief Randomly mutates a floating point string with probability mr.
     \ingroup internal
-
     \param   ctx  context variable
     \param   p    string index
     \param   pop  symbolic constant of the population string p is in
@@ -524,19 +518,19 @@ void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
     -----------
 
     Three of the four mutation operators are of the form
-    :math:`v = v +- p*v`.
-    That is, the new value of v (allele i) is the old value + or - a
-    percentage, p, of the old value. There are three possibilities for
-    choosing p: (1) constant value (0.01 by default), (2) selected
-    uniformly on (0,UB) (UB is .1 by default), and (3) selected from a
-    Gaussian distribution (with mean 0 and standard deviation .1 be
-    default).  The change to an allele, :math:`p*v`, is added or
-    subtracted to the old value with a probability of .5. The fourth
-    option is to replace v with a value selected uniformly random from
-    the initialization range of that gene. Alleles to mutate are
-    randomly selected.  The value set by the routine
-    PGASetMutationRealValue is used as p, UB, and sigma in cases 1,2,
-    and 3, respectively.
+    :math:`v = v +- p \cdot v`.
+    That is, the new value of :math:`v` (allele :math:`i`) is the old
+    value + or - a percentage, :math:`p`, of the old value. There are
+    three possibilities for choosing :math:`p`: (1) constant value (0.01
+    by default), (2) selected uniformly on :math:`(0,\text{UB})`
+    (UB is .1 by default), and (3) selected from a Gaussian distribution
+    (with mean 0 and standard deviation .1 be default).  The change to
+    an allele, :math:`p \cdot v`, is added or subtracted to the old value with
+    a probability of .5. The fourth option is to replace :math:`v` with a value
+    selected uniformly random from the initialization range of that
+    gene. Alleles to mutate are randomly selected.  The value set by the
+    routine :c:func:`PGASetMutationRealValue` is used as :math:`p`, UB,
+    and sigma in cases 1, 2, and 3, respectively.
 
     Note that this function is set in :c:func:`PGASetUp` as the mutation
     user function for the real datatype by default.
@@ -544,8 +538,8 @@ void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
     Example
     -------
 
-    Sets the value of the ith gene of string p in population PGA_NEWPOP
-    to one.
+    Mutate string ``p`` in population :c:macro:`PGA_NEWPOP` with
+    probability 0.001.
 
     .. code-block:: c
 
@@ -829,7 +823,6 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
            strings, producing (via side effect) the crossed children
            child1 and child2.
     \ingroup internal
-
     \param   ctx   context variable
     \param   p1    the first parent string
     \param   p2    the second parent string
@@ -853,8 +846,8 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -897,7 +890,6 @@ void PGARealOneptCrossover
     \brief Perform two-point crossover on two parent strings producing
            two children via side-effect.
     \ingroup internal
-
     \param   ctx   context variable
     \param   p1    the first parent string
     \param   p2    the second parent string
@@ -921,8 +913,8 @@ void PGARealOneptCrossover
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -980,7 +972,6 @@ void PGARealTwoptCrossover
     \brief Perform uniform crossover on two parent strings producing two
            children via side-effect
     \ingroup internal
-
     \param   ctx   context variable
     \param   p1    the first parent string
     \param   p2    the second parent string
@@ -1004,8 +995,8 @@ void PGARealTwoptCrossover
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -1050,7 +1041,6 @@ void PGARealUniformCrossover
     \brief Perform simulated binary crossover (SBX) on two parent
            strings producing two children via side-effect.
     \ingroup internal
-
     \param   ctx   context variable
     \param   p1    the first parent string
     \param   p2    the second parent string
@@ -1074,8 +1064,8 @@ void PGARealUniformCrossover
     Example
     -------
 
-    Performs crossover on the two parent strings m and d, producing
-    children s and b.
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
 
     .. code-block:: c
 
@@ -1132,7 +1122,6 @@ void PGARealSBXCrossover
 /*!****************************************************************************
     \brief Write a real-valued string to a file.
     \ingroup internal
-
     \param   ctx  context variable
     \param   fp   file pointer to file to write the string to
     \param   p    index of the string to write out
@@ -1144,7 +1133,7 @@ void PGARealSBXCrossover
     Example
     -------
 
-    Write string s to stdout.
+    Write string ``s`` to ``stdout``.
 
     .. code-block:: c
 
@@ -1190,7 +1179,6 @@ void PGARealPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
 /*!****************************************************************************
     \brief Copy one real-valued string string to another
     \ingroup internal
-
     \param   ctx   context variable
     \param   p1    string to copy
     \param   pop1  symbolic constant of population containing string p1
@@ -1210,7 +1198,7 @@ void PGARealPrintString (PGAContext *ctx, FILE *fp, int p, int pop)
     Example
     -------
 
-    Copy string x to y.
+    Copy string ``x`` in old population to ``y`` in new population.
 
     .. code-block:: c
 
@@ -1241,7 +1229,6 @@ void PGARealCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     \brief Returns true if real-valued string a is a duplicate of
            real-valued string b, else returns false.
     \ingroup internal
-
     \param   ctx   context variable
     \param   p1    string index of the first string to compare
     \param   pop1  symbolic constant of the population string p1 is in
@@ -1260,7 +1247,7 @@ void PGARealCopyString (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     Example
     -------
 
-    Compare strings x with y to see if they are duplicates.
+    Compare strings ``x`` with ``y`` to see if they are duplicates.
 
     .. code-block:: c
 
@@ -1296,7 +1283,6 @@ int PGARealDuplicate (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 /*!****************************************************************************
     \brief Return hash value of given gene.
     \ingroup internal
-
     \param   ctx   context variable
     \param   p     string index of the string to hash
     \param   pop   symbolic constant of the population string p is in
@@ -1322,9 +1308,8 @@ PGAHash PGARealHash (PGAContext *ctx, int p, int pop)
 }
 
 /*!****************************************************************************
-    PGARealInitString - randomly initialize a string of type PGAReal
+    \brief Randomly initialize a string of type real.
     \ingroup internal
-
     \param   ctx  context variable
     \param   p    index of string to randomly initialize
     \param   pop  symbolic constant of the population string p is in
@@ -1370,7 +1355,6 @@ void PGARealInitString (PGAContext *ctx, int p, int pop)
 /*!****************************************************************************
     \brief Build an MPI datatype for a string.
     \ingroup internal
-
     \param   ctx    context variable
     \param   p      index of string
     \param   pop    symbolic constant of population string p is in
@@ -1440,7 +1424,7 @@ MPI_Datatype PGARealBuildDatatype (PGAContext *ctx, int p, int pop)
 
     Sum of the absolute values of the differences of each allele.
     So this is a Manhattan distance (mainly for performance reasons).
-    Internal function.  Use PGAGeneDistance.
+    Internal function.  Use :c:func:`PGAUserFunctionGeneDistance`.
 
     \endrst
 
@@ -1462,8 +1446,7 @@ double PGARealGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
 
 /*!****************************************************************************
     \brief Compute genetic difference of two strings.
-    \ingroup init
-
+    \ingroup standard-api
     \param   ctx    context variable
     \param   p1     first string index
     \param   pop1   symbolic constant of the population the first string is in
@@ -1480,7 +1463,7 @@ double PGARealGeneDistance (PGAContext *ctx, int p1, int pop1, int p2, int pop2)
     of all squared differences of each allele. It can be used to
     override the default real genetic distance function (which uses a
     manhattan distance metric) using :c:func:`PGASetUserFunction` with
-    the PGA_USERFUNCTION_GEN_DISTANCE setting.
+    the :c:macro:`PGA_USERFUNCTION_GEN_DISTANCE` setting.
 
     Example
     -------

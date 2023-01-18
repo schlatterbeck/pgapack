@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetSumConstraintsFlag" "3" "2023-01-09" "" "PGAPack"
+.TH "PGASetSumConstraintsFlag" "3" "2023-01-16" "" "PGAPack"
 .SH NAME
 PGASetSumConstraintsFlag \- Configure if constraints are summed for minimization or use nondominated sorting for optimization. 
 .SH SYNOPSIS
@@ -40,9 +40,9 @@ scheme is configured. In that case, using nondominated sorting for
 constraint optimization can be turned on by this option. By default
 constraints are summed and the sum in minimized. This is also done
 if no NSGA replacement scheme is in use. If summing is disabled by
-setting this configuration to PGA_FALSE, constraints are minimized
-using nondominated sorting. Note that nondominated sorting for
-constrains may not work very well on many problems.
+setting this configuration to \fI\%PGA_FALSE\fP, constraints are
+minimized using nondominated sorting. Note that nondominated sorting
+for constrains may not work very well on many problems.
 .SH EXAMPLE
 .sp
 .nf
