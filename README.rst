@@ -336,6 +336,10 @@ But be sure that you have activated the virtual environment before
 issuing this command, otherwise you install into the global python
 interpreter or your user configuration.
 
+You also need install doxygen, latexmk, texlive-latex-extra, inkscape for pdf file generation
+  
+  sudo apt install doxygen latexmk texlive-latex-extra inkscape
+
 After this you can change to ``docs/sphinx`` directory and build the
 html documentation with::
 
