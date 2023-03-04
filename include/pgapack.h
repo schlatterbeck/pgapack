@@ -1479,3 +1479,8 @@ static inline double PGAUserFunctionGeneDistance
     }
     return (ctx->cops.GeneDistance) (ctx, p1, pop1, p2, pop2);
 }
+
+	
+#ifdef __cplusplus
+}
+#endif
