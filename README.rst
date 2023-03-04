@@ -516,6 +516,32 @@ installation steps are as follows.
     parallel computer.  If the MPICH implementation was used the ``mpirun``
     command can be used to execute a parallel program on most systems.
 
+Using OpenMPI (Linux) 
+-------------------------
+
+1. Install openmpi::
+
+    sudo apt install libopenmpi-dev
+
+2. Run::
+
+    make MPI=openmpi 
+    
+3. Execute a simple test problem in examples/c folder::
+ 
+   Sequential version::
+    
+        ./maxbit
+        
+   Parallel version::
+
+        mpirun -np 4 ./maxbit
+        
+   If you want Open MPI to default to the number of hardware threads instead of the number of processor cores, use the --use-hwthread-cpus option::
+   
+        mpirun --use-hwthread-cpus ./maxbit
+   
+
 Compiling without Fortran
 -------------------------
 
