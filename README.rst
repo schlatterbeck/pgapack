@@ -21,7 +21,7 @@ companion projects:
 
 Documentation is on `Read the Docs`_.
 
-Updates 
+Updates
 =======
 
 3rd update Jan 2023:
@@ -53,7 +53,7 @@ Update Jan 2023:
   reliable, this is only relevant when using one of the NSGA multi
   objective algorithms
 
-Update Dez 2022:
+Update Dec 2022:
 
 - Bug fixes discovered during implementation of a regression test for
   the python wrapper
@@ -179,7 +179,7 @@ First Update December 2021:
   individuals being copied (which have the same evaluation but might have
   different genetic material).
 - Add auxiliary evaluations, currently only used for constrained
-  optimization from a paper by Deb, 2000 (see user guide for citation). 
+  optimization from a paper by Deb, 2000 (see user guide for citation).
   To find out about the new feature see the user guide, section 4.9
   "String Evaluation and Fitness". You may also want to look at the
   examples in examples/deb.
@@ -250,7 +250,7 @@ Introduction
 ============
 
 PGAPack is a general-purpose, data-structure-neutral, parallel genetic
-algorithm library developed at Argonne National Laboratory.  
+algorithm library developed at Argonne National Laboratory.
 Key features are:
 
 - Callable from Fortran or C.
@@ -283,7 +283,7 @@ The latest version can be obtained from github at
 https://github.com/schlatterbeck/pgapack
 
 The distribution contains all source code, installation instructions,
-users guide, and a collection of examples in C and Fortran. 
+users guide, and a collection of examples in C and Fortran.
 
 Older versions of the distribution are still available by anonymous ftp
 from ftp://ftp.mcs.anl.gov/pub/pgapack
@@ -297,7 +297,7 @@ Computational Environment
 
 PGAPack is written in ANSI C and uses the MPI message passing interface
 and should run on most uniprocessors, parallel computers, and workstation
-networks.  PGAPack has been tested on the workstations and parallel computers 
+networks.  PGAPack has been tested on the workstations and parallel computers
 specified by the ARCH_TYPE variable below.
 
 Documentation
@@ -420,7 +420,7 @@ installation steps are as follows.
     alpha          for DEC Alpha workstations,
     linux          for machines running Linux,
     freebsd        for machines running FreeBSD,
-    generic        for generic 32-bit machines, 
+    generic        for generic 32-bit machines,
     powerchallenge for the Silicon Graphics Power Challenge Array,
     challenge      for the Silicon Graphics Challenge,
     t3d            for the Cray T3D,
@@ -500,9 +500,9 @@ installation steps are as follows.
       setenv MANPATH "$MANPATH"":/home/pgapack/man"
 
 4.  Execute a simple test problem
-    
+
     Sequential version::
-    
+
         C:        ``/usr/local/pga/examples/c/maxbit``
         Fortran:  ``/usr/local/pga/examples/fortran/maxbit``
 
@@ -511,7 +511,7 @@ installation steps are as follows.
         C:        ``mpirun -np 4 /usr/local/pga/examples/c/maxbit``
         Fortran:  ``mpirun -np 4 /usr/local/pga/examples/fortran/maxbit``
 
-    If a parallel version of PGAPack was used, the actual commands to execute 
+    If a parallel version of PGAPack was used, the actual commands to execute
     a parallel program depend on the particular MPI implementation and
     parallel computer.  If the MPICH implementation was used the ``mpirun``
     command can be used to execute a parallel program on most systems.
@@ -535,6 +535,39 @@ If you add the ``test`` target::
 
 Only the tests that do not need a Fortran compiler are run.
 
+
+Using OpenMPI (Debian, Ubuntu Linux)
+====================================
+
+1. Install openmpi::
+
+    sudo apt install libopenmpi-dev
+
+2. Run::
+
+    make MPI=openmpi
+
+3. Execute a simple test problem in examples/c folder:
+
+   - Sequential version::
+
+        ./maxbit
+
+   - Parallel version::
+
+        mpirun -np 4 ./maxbit
+
+   If you want Open MPI to default to the number of hardware threads
+   instead of the number of processor cores, use the ``--use-hwthread-cpus``
+   option::
+
+        mpirun --use-hwthread-cpus ./maxbit
+
+   Don't be surprised when the parallel version actually runs *slower*
+   than the sequential version *on this problem*: The parallel version
+   needs additional communication overhead which results in faster
+   execution only when the execution time of the evaluation is large
+   compared to the communication overhead.
 
 Structure of the Distribution Directory
 =======================================
