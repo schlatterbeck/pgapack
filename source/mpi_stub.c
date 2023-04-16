@@ -123,54 +123,74 @@ privately owned rights.
 /*  Places the address of "location" into "address"
  *  In FORTRAN, does not return anything.
  */
-int MPI_Get_address(void *location, MPI_Aint *address) {
+int MPI_Get_address (void *location, MPI_Aint *address)
+{
     *address = (MPI_Aint)NULL;
-    return(0);
+    return 0;
 }
 
+/* Abort */
+int MPI_Abort (MPI_Comm comm, int errcode)
+{
+    exit (errcode);
+    /* notreached */
+    return 0;
+}
 
 /*  Broadcast "buf" to all processes.
  *  FORTRAN adds integer ierror to the end of the parameters.
  */
-int MPI_Bcast(void *buf, int count, MPI_Datatype datatype, int root, MPI_Comm comm) {
-    return(0);
+int MPI_Bcast
+    ( void *buf
+    , int count
+    , MPI_Datatype datatype
+    , int root
+    , MPI_Comm comm
+    )
+{
+    return 0;
 }
 
 
 /*  Duplicates communicator "comm" into "newcomm"
  *  FORTRAN has a third parameter, integer ie, and does not return anything.
  */
-int MPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm) {
-    return(0);
+int MPI_Comm_dup (MPI_Comm comm, MPI_Comm *newcomm)
+{
+    return 0;
 }
 
 
 /*  Frees a communicator.   */
-int MPI_Comm_free(MPI_Comm *comm) {
-    return(0);
+int MPI_Comm_free (MPI_Comm *comm)
+{
+    return 0;
 }
 
 
 /*  Returns the rank of the current process in rank.  We return
  *  0 -- we are the rank-0 process.
  */
-int MPI_Comm_rank(MPI_Comm comm, int *rank) {
+int MPI_Comm_rank (MPI_Comm comm, int *rank)
+{
     *rank = 0;
-    return(0);
+    return 0;
 }
 
 
 /*  Returns the number of processors that are in communicator comm
  *  in size.  Always 1.
  */
-int MPI_Comm_size(MPI_Comm comm, int *size) {
+int MPI_Comm_size (MPI_Comm comm, int *size)
+{
     *size = 1;
-    return(0);
+    return 0;
 }
 
 /*  Finalizes MPI.  */
-int MPI_Finalize(void) {
-    return(0);
+int MPI_Finalize (void)
+{
+    return 0;
 }
 
 /* We're always finalized */
@@ -184,15 +204,17 @@ int MPI_Finalized (int *fin)
 /*  Initializes MPI.
  *  Ideally, we should parse the command-line and remove MPI arguments.
  */
-int MPI_Init(int *argc, char ***argv) {
-    return(0);
+int MPI_Init (int *argc, char ***argv)
+{
+    return 0;
 }
 
 
 /*  Returns 1 in flag if MPI is already running.  It is.  */
-int MPI_Initialized(int *flag) {
+int MPI_Initialized (int *flag)
+{
     *flag = 1;
-    return(0);
+    return 0;
 }
 
 
@@ -200,55 +222,89 @@ int MPI_Initialized(int *flag) {
  *  source of the message, status->MPI_TAG to the tag, and status->MPI_ERROR
  *  to 0.
  */
-int MPI_Probe(int source, int tag, MPI_Comm comm, MPI_Status *status) {
+int MPI_Probe (int source, int tag, MPI_Comm comm, MPI_Status *status)
+{
     status->MPI_SOURCE = source;
     status->MPI_TAG    = tag;
     status->MPI_ERROR  = 0;
-    return(0);
+    return 0;
 }
 
 
 /*  Send a message to a process.  */
-int MPI_Send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm) {
-    return(0);
+int MPI_Send
+    ( void* buf
+    , int count
+    , MPI_Datatype datatype
+    , int dest
+    , int tag
+    , MPI_Comm comm
+    )
+{
+    return 0;
 }
 
 
 /*  Receive a message from a source. */
-int MPI_Recv(void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status) {
+int MPI_Recv
+    ( void* buf
+    , int count
+    , MPI_Datatype datatype
+    , int source
+    , int tag
+    , MPI_Comm comm
+    , MPI_Status *status
+    )
+{
     status->MPI_SOURCE = source;
     status->MPI_TAG    = tag;
     status->MPI_ERROR  = 0;
-    return(0);
+    return 0;
 }
 
 
-int MPI_Sendrecv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
-                 int dest, int sendtag, void *recvbuf, int recvcount,
-                  MPI_Datatype recvtype, int source, int recvtag,
-                  MPI_Comm comm, MPI_Status *status) {
+int MPI_Sendrecv
+    ( void *sendbuf
+    , int sendcount
+    , MPI_Datatype sendtype
+    , int dest
+    , int sendtag
+    , void *recvbuf
+    , int recvcount
+    , MPI_Datatype recvtype
+    , int source
+    , int recvtag
+    , MPI_Comm comm
+    , MPI_Status *status
+    )
+{
     status->MPI_SOURCE = source;
     status->MPI_TAG    = recvtag;
     status->MPI_ERROR  = 0;
-    return(0);
+    return 0;
 }
 
 
-int MPI_Type_commit(MPI_Datatype *datatype) {
-    return(0);
+int MPI_Type_commit (MPI_Datatype *datatype)
+{
+    return 0;
 }
 
 
-int MPI_Type_free(MPI_Datatype *datatype) {
-    return(0);
+int MPI_Type_free (MPI_Datatype *datatype)
+{
+    return 0;
 }
 
 
-int MPI_Type_create_struct(int count, int *array_of_blocklengths,
-                           MPI_Aint *array_of_displacements,
-                           MPI_Datatype *array_of_types,
-                           MPI_Datatype *newtype) {
-    return(0);
+int MPI_Type_create_struct
+    ( int count
+    , int *array_of_blocklengths
+    , MPI_Aint *array_of_displacements
+    , MPI_Datatype *array_of_types
+    , MPI_Datatype *newtype)
+{
+    return 0;
 }
 
 
@@ -256,61 +312,100 @@ int MPI_Type_create_struct(int count, int *array_of_blocklengths,
  *  Most of these operate the same as above, we just need to make sure that
  *  they are linked in properly, see f2c.c for details.
  */
-void mpi_get_address_(void **location, MPI_Aint *address) {
+void mpi_get_address_ (void **location, MPI_Aint *address)
+{
     *address = (MPI_Aint)NULL;
 }
 
-void mpi_bcast_(void **n, int *com, MPI_Datatype *dt, int *r, MPI_Comm *c, int *ie) {
+void mpi_bcast_
+    ( void **n
+    , int *com
+    , MPI_Datatype *dt
+    , int *r
+    , MPI_Comm *c
+    , int *ie
+    )
+{
     *ie = 0;
 }
 
-void mpi_comm_dup_(MPI_Comm *comm, MPI_Comm **newcomm, int *ie) {
+void mpi_comm_dup_ (MPI_Comm *comm, MPI_Comm **newcomm, int *ie)
+{
     *ie = 0;
 }
 
-void mpi_comm_free_(MPI_Comm **comm, int *ie) {
+void mpi_comm_free_ (MPI_Comm **comm, int *ie)
+{
     *ie = 0;
 }
 
-void mpi_comm_rank_(MPI_Comm *comm, int *rank, int *ie) {
+void mpi_comm_rank_ (MPI_Comm *comm, int *rank, int *ie)
+{
     *rank = 0;
     *ie = 0;
 }
 
-void mpi_comm_size_(MPI_Comm *comm, int *size, int *ie) {
+void mpi_comm_size_ (MPI_Comm *comm, int *size, int *ie)
+{
     *size = 1;
     *ie = 0;
 }
 
-void mpi_finalize_(int *ie) {
+void mpi_finalize_ (int *ie)
+{
     *ie = 0;
 }
 
-void mpi_init_(int *ie) {
+void mpi_init_ (int *ie)
+{
     *ie = 0;
 }
 
-void mpi_initialized_(int *flag, int *ie) {
+void mpi_initialized_ (int *flag, int *ie)
+{
     *flag = 1;
     *ie = 0;
 }
 
-void mpi_probe_(int *source, int *tag, MPI_Comm *comm, MPI_Status *status,
-               int *ie) {
+void mpi_probe_
+    ( int *source
+    , int *tag
+    , MPI_Comm *comm
+    , MPI_Status *status
+    , int *ie
+    )
+{
     status->MPI_SOURCE = *source;
     status->MPI_TAG    = *tag;
     status->MPI_ERROR  = 0;
     *ie = 0;
 }
 
-void mpi_send_(void *buf, int *count, MPI_Datatype *datatype, int *dest,
-              int *tag, MPI_Comm *comm, int *ie) {
+void mpi_send_
+    ( void *buf
+    , int *count
+    , MPI_Datatype *datatype
+    , int *dest
+    , int *tag
+    , MPI_Comm *comm
+    , int *ie
+    )
+{
     *ie = 0;
 }
 
 
-void mpi_recv_(void *buf, int *count, MPI_Datatype *datatype, int *source,
-              int *tag, MPI_Comm *comm, MPI_Status *status, int *ie) {
+void mpi_recv_
+    ( void *buf
+    , int *count
+    , MPI_Datatype *datatype
+    , int *source
+    , int *tag
+    , MPI_Comm *comm
+    , MPI_Status *status
+    , int *ie
+    )
+{
     status->MPI_SOURCE = *source;
     status->MPI_TAG    = *tag;
     status->MPI_ERROR  = 0;
@@ -318,27 +413,47 @@ void mpi_recv_(void *buf, int *count, MPI_Datatype *datatype, int *source,
 }
 
 
-void mpi_sendrecv_(void *sendbuf, int *sendcount, MPI_Datatype *sendtype,
-                  int *dest, int *sendtag, void *recvbuf, int *recvcount,
-                  MPI_Datatype *recvtype, int *source, int *recvtag,
-                  MPI_Comm *comm, MPI_Status *status, int *ie) {
+void mpi_sendrecv_
+    ( void *sendbuf
+    , int *sendcount
+    , MPI_Datatype *sendtype
+    , int *dest
+    , int *sendtag
+    , void *recvbuf
+    , int *recvcount
+    , MPI_Datatype *recvtype
+    , int *source
+    , int *recvtag
+    , MPI_Comm *comm
+    , MPI_Status *status
+    , int *ie
+    )
+{
     status->MPI_SOURCE = *source;
     status->MPI_TAG    = *recvtag;
     status->MPI_ERROR  = 0;
     *ie = 0;
 }
 
-void mpi_type_commit_(MPI_Datatype **datatype, int *ie) {
+void mpi_type_commit_ (MPI_Datatype **datatype, int *ie)
+{
     *ie = 0;
 }
 
-void mpi_type_free_(MPI_Datatype **datatype, int *ie) {
+void mpi_type_free_ (MPI_Datatype **datatype, int *ie)
+{
     *ie = 0;
 }
 
 
-void mpi_type_create_struct_(int *count, int **array_of_blocklengths,
-                    MPI_Aint **array_of_displacements,
-                    MPI_Datatype **array_of_types, MPI_Datatype **newtype, int *ie) {
+void mpi_type_create_struct_
+    ( int *count
+    , int **array_of_blocklengths
+    , MPI_Aint **array_of_displacements
+    , MPI_Datatype **array_of_types
+    , MPI_Datatype **newtype
+    , int *ie
+    )
+{
     *ie = 0;
 }

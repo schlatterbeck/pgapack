@@ -43,21 +43,25 @@ typedef struct {
 #define MPI_STATUS_IGNORE   (void *)NULL
 
 /*  Declare prototypes for the MPI functions.  */
-int MPI_Get_address(void *, MPI_Aint *);
-int MPI_Bcast(void *, int, MPI_Datatype, int, MPI_Comm);
-int MPI_Comm_dup(MPI_Comm, MPI_Comm *);
-int MPI_Comm_free(MPI_Comm *);
-int MPI_Comm_rank(MPI_Comm, int *);
-int MPI_Comm_size(MPI_Comm, int *);
-int MPI_Finalize(void);
-int MPI_Finalized(int *);
-int MPI_Init(int *, char ***);
-int MPI_Initialized(int *);
-int MPI_Probe(int, int, MPI_Comm, MPI_Status *);
-int MPI_Send(void *, int, MPI_Datatype, int, int, MPI_Comm);
+int MPI_Abort (MPI_Comm, int);
+int MPI_Get_address (void *, MPI_Aint *);
+int MPI_Bcast (void *, int, MPI_Datatype, int, MPI_Comm);
+int MPI_Comm_dup (MPI_Comm, MPI_Comm *);
+int MPI_Comm_free (MPI_Comm *);
+int MPI_Comm_rank (MPI_Comm, int *);
+int MPI_Comm_size (MPI_Comm, int *);
+int MPI_Finalize (void);
+int MPI_Finalized (int *);
+int MPI_Init (int *, char ***);
+int MPI_Initialized (int *);
+int MPI_Probe (int, int, MPI_Comm, MPI_Status *);
+int MPI_Send (void *, int, MPI_Datatype, int, int, MPI_Comm);
 int MPI_Recv(void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status *);
-int MPI_Sendrecv(void *, int, MPI_Datatype, int, int, void *, int,
-	         MPI_Datatype, int, int, MPI_Comm, MPI_Status *);
-int MPI_Type_commit(MPI_Datatype *);
-int MPI_Type_free(MPI_Datatype *);
-int MPI_Type_create_struct(int, int *, MPI_Aint *, MPI_Datatype *, MPI_Datatype *);
+int MPI_Sendrecv
+    ( void *, int, MPI_Datatype, int, int, void *, int
+    , MPI_Datatype, int, int, MPI_Comm, MPI_Status *
+    );
+int MPI_Type_commit (MPI_Datatype *);
+int MPI_Type_free (MPI_Datatype *);
+int MPI_Type_create_struct
+    (int, int *, MPI_Aint *, MPI_Datatype *, MPI_Datatype *);
