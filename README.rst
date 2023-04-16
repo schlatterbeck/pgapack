@@ -24,6 +24,11 @@ Documentation is on `Read the Docs`_.
 Updates
 =======
 
+Apr 2023:
+
+- Add MPI_Abort to the fake mpi wrapper
+- Add missing MPI_Finalize() prototype to fakempi include
+
 3rd update Jan 2023:
 
 - Now the user-guide is converted to sphinx. The old LaTeX version can
