@@ -174,12 +174,14 @@ class Graphics:
             if self.args.plot_dominated:
                 df = pd.DataFrame ()
                 for n, axis in enumerate (axes):
-                    df [self.labels [axis]] = dat.get_axis_data (n, True)
+                    idx = self.axes [n]
+                    df [self.labels [axis]] = dat.get_axis_data (idx, True)
                 df ['run'] = 'dominated'
                 pdf = pd.concat ((pdf, df), ignore_index = True)
             df = pd.DataFrame ()
             for n, axis in enumerate (axes):
-                df [self.labels [axis]] = dat.get_axis_data (n)
+                idx = self.axes [n]
+                df [self.labels [axis]] = dat.get_axis_data (idx)
             color_idx  = str (datnum + 1)
             df ['run'] = color_idx
             cmap [color_idx] = self.colormap [datnum % 10]
