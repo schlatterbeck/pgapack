@@ -43,7 +43,7 @@ class Opt_Log:
         return self._mask
     # end def mask
 
-    def get_axis_data (self, idx, dominated = False):
+    def get_axis_data (self, idx, dominated = False, expr = None):
         """ Get the points for a certain coordinate index.
             Default is to get non-dominated points
         """
@@ -51,7 +51,9 @@ class Opt_Log:
         if not dominated:
             mask = ~mask
         coord = self.coord.T [mask].T
-        return coord [idx]
+        if expr is None:
+            return coord [idx]
+        return eval (expr, None, dict (axis = coord [idx]))
     # end def get_axis_data
 
     def pareto_dominance (self, other):
@@ -150,11 +152,17 @@ class Graphics:
             ax.set_zlabel (self.args.z_label)
         plt.title (self.args.title)
         for n, dat in enumerate (self.data):
-            args = [dat.get_axis_data (a) for a in self.axes]
+            args = []
+            for n, a in enumerate (self.axes):
+                xp = getattr (self.args, 'expr_' + 'xyz' [n])
+                args.append (dat.get_axis_data (a, expr = xp))
             kw ['edgecolors'] = 'C%d' % (n % 10)
             ax.scatter (*args, **kw)
             if self.args.plot_dominated:
-                args = [dat.get_axis_data (a, True) for a in self.axes]
+                args = []
+                for n, a in enumerate (self.axes):
+                    xp = getattr (self.args, 'expr_' + 'xyz' [n])
+                    args.append (dat.get_axis_data (a, True, expr = xp))
                 kw ['edgecolors'] = 'k'
                 ax.scatter (*args, **kw)
         plt.show ()
@@ -175,13 +183,16 @@ class Graphics:
                 df = pd.DataFrame ()
                 for n, axis in enumerate (axes):
                     idx = self.axes [n]
-                    df [self.labels [axis]] = dat.get_axis_data (idx, True)
+                    xp  = getattr (self.args, 'expr_' + axis, None)
+                    df [self.labels [axis]] = dat.get_axis_data \
+                        (idx, True, expr = xp)
                 df ['run'] = 'dominated'
                 pdf = pd.concat ((pdf, df), ignore_index = True)
             df = pd.DataFrame ()
             for n, axis in enumerate (axes):
                 idx = self.axes [n]
-                df [self.labels [axis]] = dat.get_axis_data (idx)
+                xp  = getattr (self.args, 'expr_' + axis, None)
+                df [self.labels [axis]] = dat.get_axis_data (idx, expr = xp)
             color_idx  = str (datnum + 1)
             df ['run'] = color_idx
             cmap [color_idx] = self.colormap [datnum % 10]
@@ -272,6 +283,21 @@ cmd.add_argument \
     ( "-k", "--plot-dominated"
     , action  = 'store_true'
     , help    = "Plot dominated points (in black)"
+    )
+cmd.add_argument \
+    ( "--expr-x"
+    , help    = 'Expression to apply to x-dimension, free variable is '
+                'called "axis"'
+    )
+cmd.add_argument \
+    ( "--expr-y"
+    , help    = 'Expression to apply to y-dimension, free variable is '
+                'called "axis"'
+    )
+cmd.add_argument \
+    ( "--expr-z"
+    , help    = 'Expression to apply to z-dimension, free variable is '
+                'called "axis"'
     )
 cmd.add_argument \
     ( "-x", "--x-axis"
