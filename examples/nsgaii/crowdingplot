@@ -144,8 +144,10 @@ class Graphics:
         ax  = fig.add_subplot (111, **axa)
         if self.args.big_filled_blobs:
             kw = {}
+            colortag = 'facecolors'
         else:
             kw = dict (facecolors = 'none', linewidths = 0.5, s = 12)
+            colortag = 'edgecolors'
         ax.set_xlabel (self.args.x_label)
         ax.set_ylabel (self.args.y_label)
         if self.args.plot3d:
@@ -153,17 +155,18 @@ class Graphics:
         plt.title (self.args.title)
         for n, dat in enumerate (self.data):
             args = []
-            for n, a in enumerate (self.axes):
-                xp = getattr (self.args, 'expr_' + 'xyz' [n])
+            for nx, a in enumerate (self.axes):
+                xp = getattr (self.args, 'expr_' + 'xyz' [nx])
                 args.append (dat.get_axis_data (a, expr = xp))
-            kw ['edgecolors'] = 'C%d' % (n % 10)
+            kw [colortag] = 'C%d' % (n % 10)
+            print (kw [colortag])
             ax.scatter (*args, **kw)
             if self.args.plot_dominated:
                 args = []
-                for n, a in enumerate (self.axes):
-                    xp = getattr (self.args, 'expr_' + 'xyz' [n])
+                for nx, a in enumerate (self.axes):
+                    xp = getattr (self.args, 'expr_' + 'xyz' [nx])
                     args.append (dat.get_axis_data (a, True, expr = xp))
-                kw ['edgecolors'] = 'k'
+                kw [colortag] = 'k'
                 ax.scatter (*args, **kw)
         plt.show ()
     # end def plot_matplotlib
