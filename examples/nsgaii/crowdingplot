@@ -159,7 +159,6 @@ class Graphics:
                 xp = getattr (self.args, 'expr_' + 'xyz' [nx])
                 args.append (dat.get_axis_data (a, expr = xp))
             kw [colortag] = 'C%d' % (n % 10)
-            print (kw [colortag])
             ax.scatter (*args, **kw)
             if self.args.plot_dominated:
                 args = []
