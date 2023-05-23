@@ -437,7 +437,7 @@ For pairwise best replacement :c:macro:`PGA_POPREPL_PAIRWISE_BEST` is used as
 the replacement type. Like restricted tournament replacement it is an
 elitist strategy.
 
-For NSGA-II replacement :c:macro:`PGA_POPREPL_NSGA_II` is used. For NSGA-II
+For NSGA-II replacement :c:macro:`PGA_POPREPL_NSGA_II` is used. For NSGA-III
 replacement :c:macro:`PGA_POPREPL_NSGA_III` is used. The number of auxiliary
 evaluation function can be set with :c:func:`PGASetNumAuxEval` and the number
 of constraints can be set with :c:func:`PGASetNumConstraint`. If the
