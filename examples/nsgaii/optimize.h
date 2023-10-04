@@ -22,6 +22,7 @@ struct multi_problem
     double dither;              /* Dither for differential evolution */
     double jitter;              /* Jitter for differential evolution */
     double crossover_prob;      /* Crossover probability for DE */
+    int precision;              /* Precision for multi-objective printing */
     double (*f [])(double *);   /* Functions: 0th is the first objective */
 };
 

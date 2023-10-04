@@ -99,6 +99,7 @@ int main (int argc, char **argv)
     PGASetNumConstraint      (ctx, problem->nconstraint);
     PGASetSumConstraintsFlag (ctx, sum_constraints);
     PGASetNoDuplicatesFlag   (ctx, PGA_TRUE);
+    PGASetMultiObjPrecision  (ctx, problem->precision ? problem->precision:14);
     if (problem->dither) {
         PGASetDEDither       (ctx, 0.5);
     }

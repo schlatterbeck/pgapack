@@ -31,4 +31,5 @@ struct multi_problem tnk =
 , .enforce_bounds = 1
 , .f              = { &f1, &f2, &g1, &g2 }
 , .name           = "Tanaka et. al. (TNK)"
+, .precision      = 12
 };
