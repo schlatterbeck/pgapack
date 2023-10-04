@@ -53,6 +53,13 @@ privately owned rights.
 static void reset_hash (PGAContext *ctx, int pop)
 {
     int i = 0;
+    /* These population replacemente algorithms don't need a reset */
+    if (  ctx->ga.PopReplace == PGA_POPREPL_RTR
+       || ctx->ga.PopReplace == PGA_POPREPL_PAIRWISE_BEST
+       )
+    {
+        return;
+    }
     if (ctx->ga.NoDuplicates) {
         PGAIndividual *ind = PGAGetIndividual (ctx, 0, pop);
         size_t hashsize = sizeof (PGAIndividual *) * ctx->ga.PopSize;
@@ -222,6 +229,9 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
     int i, j, n, m1, m2;
     int popsize, numreplace;
     double pc;
+    int do_hash = (  ctx->ga.PopReplace != PGA_POPREPL_RTR
+                  && ctx->ga.PopReplace != PGA_POPREPL_PAIRWISE_BEST
+                  );
 
     PGADebugEntered ("PGARunMutationAndCrossover");
 
@@ -254,22 +264,26 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
             PGACrossover (ctx, m1, m2, oldpop, PGA_TEMP1, PGA_TEMP2, newpop);
 
             /*** mutate and copy first string to new population ***/
-            PGAMutate (ctx, PGA_TEMP1, newpop);
-            while (PGADuplicate (ctx, PGA_TEMP1, newpop, newpop)) {
-                PGAChange (ctx, PGA_TEMP1, newpop);
-            }
             PGACopyIndividual (ctx, PGA_TEMP1, newpop, n, newpop);
-            PGAHashIndividual (ctx, n, newpop);
+            PGAMutate (ctx, n, newpop);
+            if (do_hash) {
+                while (PGADuplicate (ctx, n, newpop, newpop)) {
+                    PGAChange (ctx, n, newpop);
+                }
+                PGAHashIndividual (ctx, n, newpop);
+            }
             n++;
 
             if (n < popsize) {
                 /*** mutate and copy second string to new population ***/
-                PGAMutate (ctx, PGA_TEMP2, newpop);
-                while (PGADuplicate (ctx, PGA_TEMP2, newpop, newpop)) {
-                    PGAChange (ctx, PGA_TEMP2, newpop);
-                }
                 PGACopyIndividual (ctx, PGA_TEMP2, newpop, n, newpop);
-                PGAHashIndividual (ctx, n, newpop);
+                PGAMutate (ctx, n, newpop);
+                if (do_hash) {
+                    while (PGADuplicate (ctx, n, newpop, newpop)) {
+                        PGAChange (ctx, n, newpop);
+                    }
+                    PGAHashIndividual (ctx, n, newpop);
+                }
                 n++;
             }
         } else {
@@ -277,20 +291,24 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
             if (ctx->ga.MixingType == PGA_MIX_TRADITIONAL) {
                 PGAMutate (ctx, n, newpop);
             }
-            while (PGADuplicate (ctx, n, newpop, newpop)) {
-                PGAChange (ctx, n, newpop);
+            if (do_hash) {
+                while (PGADuplicate (ctx, n, newpop, newpop)) {
+                    PGAChange (ctx, n, newpop);
+                }
+                PGAHashIndividual (ctx, n, newpop);
             }
-            PGAHashIndividual (ctx, n, newpop);
             n++;
             if (n < ctx->ga.PopSize) {
                 PGACopyIndividual (ctx, m2, oldpop, n, newpop);
                 if (ctx->ga.MixingType == PGA_MIX_TRADITIONAL) {
                     PGAMutate (ctx, n, newpop);
                 }
-                while (PGADuplicate (ctx, n, newpop, newpop)) {
-                    PGAChange (ctx, n, newpop);
+                if (do_hash) {
+                    while (PGADuplicate (ctx, n, newpop, newpop)) {
+                        PGAChange (ctx, n, newpop);
+                    }
+                    PGAHashIndividual (ctx, n, newpop);
                 }
-                PGAHashIndividual (ctx, n, newpop);
                 n++;
             }
         }
@@ -334,6 +352,9 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
     int i, j, n, m1, m2;
     int popsize, numreplace;
     double pc;
+    int do_hash = (  ctx->ga.PopReplace != PGA_POPREPL_RTR
+                  && ctx->ga.PopReplace != PGA_POPREPL_PAIRWISE_BEST
+                  );
 
     PGADebugEntered ("PGARunMutationOrCrossover");
 
@@ -364,42 +385,48 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
         m2 = PGASelectNextIndex (ctx, oldpop);
         if (PGARandomFlip (ctx, pc)) {
             PGACrossover (ctx, m1, m2, oldpop, PGA_TEMP1, PGA_TEMP2, newpop);
+            PGACopyIndividual (ctx, PGA_TEMP1, newpop, n, newpop);
 
             /*** copy first string to new population ***/
-            while (PGADuplicate(ctx, PGA_TEMP1, newpop,  newpop)) {
-                PGAChange (ctx, PGA_TEMP1, newpop);
+            if (do_hash) {
+                while (PGADuplicate(ctx, n, newpop,  newpop)) {
+                    PGAChange (ctx, n, newpop);
+                }
+                PGAHashIndividual (ctx, n, newpop);
             }
-            PGACopyIndividual (ctx, PGA_TEMP1, newpop, n, newpop);
-            PGAHashIndividual (ctx, n, newpop);
             n++;
 
             if (n < popsize) {
                  /*** copy second string to new population ***/
-                 while (PGADuplicate(ctx, PGA_TEMP2, newpop,  newpop)) {
-                     PGAChange (ctx, PGA_TEMP2, newpop);
-                 }
                  PGACopyIndividual (ctx, PGA_TEMP2, newpop, n, newpop);
-                 PGAHashIndividual (ctx, n, newpop);
+                 if (do_hash) {
+                     while (PGADuplicate(ctx, n, newpop,  newpop)) {
+                         PGAChange (ctx, n, newpop);
+                     }
+                     PGAHashIndividual (ctx, n, newpop);
+                 }
                  n++;
             }
         } else {
-             PGACopyIndividual (ctx, m1, oldpop, PGA_TEMP1, newpop);
-             PGAMutate (ctx, PGA_TEMP1, newpop);
-             while (PGADuplicate (ctx, PGA_TEMP1, newpop, newpop)) {
-                 PGAChange (ctx, PGA_TEMP1, newpop);
+             PGACopyIndividual (ctx, m1, oldpop, n, newpop);
+             PGAMutate (ctx, n, newpop);
+             if (do_hash) {
+                 while (PGADuplicate (ctx, n, newpop, newpop)) {
+                     PGAChange (ctx, n, newpop);
+                 }
+                 PGAHashIndividual (ctx, n, newpop);
              }
-             PGACopyIndividual (ctx, PGA_TEMP1, newpop, n, newpop);
-             PGAHashIndividual (ctx, n, newpop);
              n++;
 
              if (n < popsize) {
-                 PGACopyIndividual (ctx, m2, oldpop, PGA_TEMP2, newpop);
-                 PGAMutate (ctx, PGA_TEMP2, newpop);
-                 while (PGADuplicate (ctx, PGA_TEMP2, newpop, newpop)) {
-                     PGAChange (ctx, PGA_TEMP2, newpop);
+                 PGACopyIndividual (ctx, m2, oldpop, n, newpop);
+                 PGAMutate (ctx, n, newpop);
+                 if (do_hash) {
+                     while (PGADuplicate (ctx, n, newpop, newpop)) {
+                         PGAChange (ctx, n, newpop);
+                     }
+                     PGAHashIndividual (ctx, n, newpop);
                  }
-                 PGACopyIndividual (ctx, PGA_TEMP2, newpop, n, newpop);
-                 PGAHashIndividual (ctx, n, newpop);
                  n++;
              }
         }
@@ -441,6 +468,9 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
 {
     int i, j, n, m;
     int popsize, numreplace;
+    int do_hash = (  ctx->ga.PopReplace != PGA_POPREPL_RTR
+                  && ctx->ga.PopReplace != PGA_POPREPL_PAIRWISE_BEST
+                  );
 
     PGADebugEntered ("PGARunMutationOnly");
 
@@ -469,10 +499,12 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
         m = PGASelectNextIndex (ctx, oldpop);
         PGACopyIndividual (ctx, m, oldpop, n, newpop);
         PGAMutate (ctx, n, newpop);
-        while (PGADuplicate (ctx, n, newpop, newpop)) {
-            PGAChange (ctx, n, newpop);
+        if (do_hash) {
+            while (PGADuplicate (ctx, n, newpop, newpop)) {
+                PGAChange (ctx, n, newpop);
+            }
+            PGAHashIndividual (ctx, n, newpop);
         }
-        PGAHashIndividual (ctx, n, newpop);
         n++;
     }
 

@@ -93,7 +93,6 @@ privately owned rights.
 ******************************************************************************/
 int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
 {
-    int RetVal = PGA_FALSE;
     PGADebugEntered ("PGADuplicate");
 
     if (ctx->ga.NoDuplicates) {
@@ -101,7 +100,7 @@ int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
         size_t idx = PGAIndividualHashIndex (ctx, p, pop1);
         PGAIndividual *ind = NULL;
 
-        assert (pop2 == PGA_NEWPOP);
+        assert (pop2 == PGA_NEWPOP || pop2 == PGA_OLDPOP);
         for (ind = ctx->scratch.hashed [idx]; ind; ind = ind->next_hash) {
             p2 = ind - ind->pop;
 
@@ -119,7 +118,7 @@ int PGADuplicate (PGAContext *ctx, int p, int pop1, int pop2)
         }
     }
     PGADebugExited ("PGADuplicate");
-    return RetVal;
+    return PGA_FALSE;
 }
 
 
@@ -241,6 +240,43 @@ void PGAHashIndividual (PGAContext *ctx, int p, int pop)
             ind->next_hash = ctx->scratch.hashed [idx];
         }
         ctx->scratch.hashed [idx] = ind;
+    }
+}
+
+/*!****************************************************************************
+    \brief Compute Hash for this individual and remove from hash-table
+    \ingroup explicit
+    \param   ctx   context variable
+    \param   p     string index
+    \param   pop   symbolic constant of the population containing string p
+    \return  Computes hash of given individual and removes it from hash table
+
+    \rst
+
+    Description
+    -----------
+
+    Calls :c:func:`PGAIndividualHashIndex` for the hash value and
+    removes it from the correct hash bucket.
+
+    \endrst
+
+******************************************************************************/
+void PGAUnHashIndividual (PGAContext *ctx, int p, int pop)
+{
+    if (ctx->ga.NoDuplicates) {
+        PGAIndividual *ind = PGAGetIndividual (ctx, p, pop);
+        PGAIndividual **ptr = NULL;
+        size_t idx = PGAIndividualHashIndex (ctx, p, pop);
+
+        for (ptr=&ctx->scratch.hashed [idx]; *ptr; ptr=&((*ptr)->next_hash)) {
+            if (*ptr == ind) {
+                *ptr = (*ptr)->next_hash;
+                ind->next_hash = NULL;
+                return;
+            }
+        }
+        assert (0);
     }
 }
 

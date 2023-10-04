@@ -18,7 +18,7 @@ int myMutation (PGAContext *ctx, int p, int pop, double mr)
             count++;
         }
     }
-    return (double)count;
+    return count;
 }
 
 double evaluate (PGAContext *ctx, int p, int pop, double *dummy)
@@ -38,6 +38,15 @@ double evaluate (PGAContext *ctx, int p, int pop, double *dummy)
 void end_of_gene (PGAContext *ctx)
 {
     PGAPrintPopulation (ctx, stdout, PGA_NEWPOP);
+}
+
+void pre_eval (PGAContext *ctx, int pop)
+{
+    static int seen = 0;
+    if (!seen) {
+        PGAPrintPopulation (ctx, stdout, pop);
+        seen = 1;
+    }
 }
 
 /*  Get an integer parameter from the user.  Since this is
@@ -109,6 +118,7 @@ int main (int argc, char **argv)
         PGASetNoDuplicatesFlag (ctx, PGA_TRUE);
     }
     if (verbose) {
+        PGASetUserFunction (ctx, PGA_USERFUNCTION_PRE_EVAL, pre_eval);
         PGASetUserFunction (ctx, PGA_USERFUNCTION_ENDOFGEN, end_of_gene);
     }
 

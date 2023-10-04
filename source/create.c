@@ -533,6 +533,20 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
     }
 
     (*ctx->cops.CreateString)(ctx, p, pop, initflag);
+    /* For these we need to set up the hash and avoid duplicates in the
+     * first generation:
+     */
+    if (  initflag && ctx->ga.NoDuplicates
+       && (  ctx->ga.PopReplace == PGA_POPREPL_RTR
+          || ctx->ga.PopReplace == PGA_POPREPL_PAIRWISE_BEST
+          )
+       )
+    {
+        while (PGADuplicate (ctx, p, pop, pop)) {
+            PGAChange (ctx, p, pop);
+        }
+        PGAHashIndividual (ctx, p, pop);
+    }
 }
 
 /*!****************************************************************************

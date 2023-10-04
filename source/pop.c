@@ -680,8 +680,8 @@ void PGASetReferenceDirections
 void PGARestrictedTournamentReplacement (PGAContext *ctx)
 {
     int i, j;
-    int popsize = PGAGetPopSize(ctx);
-    int numreplace = PGAGetNumReplaceValue(ctx);
+    int popsize = PGAGetPopSize (ctx);
+    int numreplace = PGAGetNumReplaceValue (ctx);
     PGASampleState state;
     PGAIndividual *temp;
     int oldpop = PGA_OLDPOP;
@@ -690,9 +690,13 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
     PGADebugEntered ("PGARestrictedTournamentReplacement");
     for (i=popsize - numreplace; i<popsize; i++) {
         double dist = -1.0;
-        int closest = 0;
+        int closest = -1;
         PGARandomSampleInit
             (ctx, &state, ctx->ga.RTRWindowSize, ctx->ga.PopSize);
+        /* Avoid duplicates */
+        if (PGADuplicate (ctx, i, PGA_NEWPOP, PGA_OLDPOP)) {
+            continue;
+        }
         for (j=0; j<ctx->ga.RTRWindowSize; j++) {
             double d;
             int idx = PGARandomNextSample (&state);
@@ -708,11 +712,16 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
                 closest = idx;
             }
         }
+        assert (closest >= 0);
 
         /* If new population individual is better */
         if (PGAEvalCompare (ctx, i, PGA_NEWPOP, closest, PGA_OLDPOP) <= 0) {
+            /* Remove old individual from hash */
+            PGAUnHashIndividual (ctx, closest, PGA_OLDPOP);
             /* Copy i in PGA_NEWPOP to closest in PGA_OLDPOP */
             PGACopyIndividual (ctx, i, PGA_NEWPOP, closest, PGA_OLDPOP);
+            /* Add new individual to hash */
+            PGAHashIndividual (ctx, closest, PGA_OLDPOP);
         }
     }
     /* Exchange old/newpop, will be done again by PGAUpdateGeneration,
@@ -722,7 +731,7 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
     temp           = ctx->ga.oldpop;
     ctx->ga.oldpop = ctx->ga.newpop;
     ctx->ga.newpop = temp;
-    PGADebugExited("PGARestrictedTournamentReplacement");
+    PGADebugExited ("PGARestrictedTournamentReplacement");
 }
 
 /*!****************************************************************************
@@ -763,8 +772,8 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx)
 void PGAPairwiseBestReplacement (PGAContext *ctx)
 {
     int i;
-    int popsize = PGAGetPopSize(ctx);
-    int numreplace = PGAGetNumReplaceValue(ctx);
+    int popsize = PGAGetPopSize (ctx);
+    int numreplace = PGAGetNumReplaceValue (ctx);
     PGAIndividual *temp;
 
     PGADebugEntered ("PGAPairwiseBestReplacement");

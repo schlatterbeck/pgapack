@@ -981,6 +981,7 @@ void PGAChange (PGAContext *ctx, int p, int pop);
 void PGASetNoDuplicatesFlag (PGAContext *ctx, int no_dup);
 int PGAGetNoDuplicatesFlag (PGAContext *ctx);
 void PGAHashIndividual (PGAContext *ctx, int p, int pop);
+void PGAUnHashIndividual (PGAContext *ctx, int p, int pop);
 
 /*****************************************
  *          evaluate.c
