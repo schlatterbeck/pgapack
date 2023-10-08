@@ -9,6 +9,7 @@ PROG_F := \
 PROG_C := $(PFX)/c/udtstr                                                 \
     $(PFX)/c/classic $(PFX)/c/dejong $(PFX)/c/example $(PFX)/c/maxbit   \
     $(PFX)/c/maxchar $(PFX)/c/maxint $(PFX)/c/name $(PFX)/c/namefull    \
+    $(PFX)/c/maxint-de
 # If we don't have a fortran compiler use only C examples
 ifeq (,${FC})
     PROG := $(PROG_C)

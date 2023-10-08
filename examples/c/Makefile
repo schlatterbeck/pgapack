@@ -1,5 +1,5 @@
 PROG=classic dejong example maxbit maxchar maxint name namefull udtstr \
-    leastsquare deb10 maxint_de
+    leastsquare deb10 maxint-de
 
 all: $(PROG)
 
