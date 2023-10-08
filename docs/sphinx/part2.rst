@@ -866,9 +866,9 @@ mutation type :c:macro:`PGA_MUTATION_DE`. Note that for the full
 DE algorithm not just a special mutation type is needed, see
 section :ref:`sec:differential-evolution` for an introduction. You
 typically want to chose mutation only, linear selection, and
-pairwise-best replacement. For DE, real-valued genes are typically
-called *vectors* (because a gene is a vector of real-valued alleles), we
-use that term in the following.
+pairwise-best replacement. For DE, real- and integer-valued genes are
+typically called *vectors* (because a gene is a vector of real- or
+integeer-valued alleles), we use that term in the following.
 
 The default strategy of DE is to compute the distance of a pair of
 random vectors in the population and add this difference to a

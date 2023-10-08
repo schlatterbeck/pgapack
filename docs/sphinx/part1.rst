@@ -225,10 +225,10 @@ Differential Evolution
 
 Differential Evolution (DE) is an evolutionary algorithm (EA) invented
 by Price and Storn in the 1990’s [SP95]_, [SP97]_, [PSL05]_. It
-is used with floating-point genes and uses differences of individuals
-(floating-point vectors) which are added to another vector to form a
-*donor* vector which is then crossed-over with an existing individual.
-The algorithm is described in more detail in
+is used with floating-point and integer genes and uses differences of
+individuals (floating-point vectors) which are added to another vector
+to form a *donor* vector which is then crossed-over with an existing
+individual.  The algorithm is described in more detail in
 section :ref:`sec:mutation`. Since in PGAPack the DE
 algorithm is implemented in a mutation strategy, typically for DE a
 strategy with only mutation is selected, see :c:func:`PGASetMixingType` with
