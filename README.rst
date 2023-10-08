@@ -24,6 +24,12 @@ Documentation is on `Read the Docs`_.
 Updates
 =======
 
+Oct 2023:
+
+- Add Differential Evolution with integer genes
+- Fix feature interaction bug with population replacement RTR or
+  population replacement pairwise best and the no duplicates flag.
+
 Apr 2023:
 
 - Add MPI_Abort to the fake mpi wrapper
