@@ -778,12 +778,20 @@ void PGAPairwiseBestReplacement (PGAContext *ctx)
 
     PGADebugEntered ("PGAPairwiseBestReplacement");
     for (i=popsize - numreplace; i<popsize; i++) {
+        /* Avoid duplicates */
+        if (PGADuplicate (ctx, i, PGA_NEWPOP, PGA_OLDPOP)) {
+            continue;
+        }
         /* Note the '<=' comparison, differential evolution can walk across
          * areas with equal evaluation this way
          */
         if (PGAEvalCompare (ctx, i, PGA_NEWPOP, i, PGA_OLDPOP) <= 0) {
+            /* Remove old individual from hash */
+            PGAUnHashIndividual (ctx, i, PGA_OLDPOP);
             /* Copy i in PGA_NEWPOP to i in PGA_OLDPOP */
             PGACopyIndividual (ctx, i, PGA_NEWPOP, i, PGA_OLDPOP);
+            /* Add new individual to hash */
+            PGAHashIndividual (ctx, i, PGA_OLDPOP);
         }
     }
     /* Exchange old/newpop, will be done again by PGAUpdateGeneration,
