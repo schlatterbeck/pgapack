@@ -26,10 +26,8 @@ struct multi_problem zdt4 =
 { .dimension      = 10
 , .nfunc          = 2
 , .nconstraint    = 0
-, .lower          = (double []){ 0, -5, -5, -5, -5, -5, -5, -5, -5, -5
-  }
-, .upper          = (double []){ 1,  5,  5,  5,  5,  5,  5,  5,  5,  5
-  }
+, .lower          = (double []){ 0, -5, -5, -5, -5, -5, -5, -5, -5, -5 }
+, .upper          = (double []){ 1,  5,  5,  5,  5,  5,  5,  5,  5,  5 }
 , .enforce_bounds = 1
 , .dither         = 0.5
 , .jitter         = 0.005

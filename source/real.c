@@ -560,100 +560,16 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
     double val = 0.0;
     /* The following are used for DE variants */
     int midx = 0;
-    int do_best = (ctx->ga.DEVariant == PGA_DE_VARIANT_BEST);
-    int nrand  = 2 * ctx->ga.DENumDiffs + (!do_best);
     int maxidx = 2 * ctx->ga.DENumDiffs + 1;
     DECLARE_DYNARRAY (PGAReal *, indivs, maxidx);
     int do_crossover = 1;
-    static double de_dither = 0.0;
-    static int last_iter = -1;
-
+    double de_dither = 0.0;
 
     PGADebugEntered ("PGARealMutation");
+
     if (ctx->ga.MutationType == PGA_MUTATION_DE) {
         DECLARE_DYNARRAY (int, idx, maxidx);
-        PGASampleState sstate;
-        int best = 0;
-        int avoid = 1;
-        if (do_best) {
-            best = PGAGetBestIndex (ctx, PGA_OLDPOP);
-        }
-
-        if (ctx->ga.DEDither > 0) {
-            if (ctx->ga.DEDitherPerIndividual || last_iter != ctx->ga.iter) {
-                de_dither = ctx->ga.DEDither * (PGARandom01 (ctx, 0) - 0.5);
-                last_iter = ctx->ga.iter;
-            }
-        }
-
-        /* We rely on the fact that we operate on an individual of
-         * PGA_NEWPOP and take data from PGA_OLDPOP. Assert this is the
-         * case.
-         */
-        if (pop != PGA_NEWPOP) {
-            PGAError
-                ( ctx, "PGARealMutation: Invalid value of pop:"
-                , PGA_FATAL, PGA_INT, (void *) &(pop)
-                );
-        }
-
-        /* for BEST strategy we have to avoid collision with running
-         * index p *and* the best individual
-         */
-        if (do_best && best != p) {
-            avoid = 2;
-        }
-        /* Use (PopSize - avoid) to avoid collision with running index
-         * and with the best index (unless this is the same)
-         * We may use this form of selection of the indeces needed for
-         * DE for linear selection, for other selection schemes we use
-         * the selected individuals and re-sample if we get collisions.
-         */
-        if (ctx->ga.SelectType == PGA_SELECT_LINEAR) {
-            PGARandomSampleInit (ctx, &sstate, nrand, ctx->ga.PopSize - avoid);
-            for (i=0; i<nrand; i++) {
-                int rawidx = PGARandomNextSample (&sstate);
-                /* Avoid collision with p and optionally best, samples
-                 * are drawn with reduced upper bound, see
-                 * PGARandomSampleInit above
-                 */
-                if (rawidx >= p) {
-                    rawidx += 1;
-                }
-                /* The best individual can be in the part of the old
-                 * population that is copied verbatim to the new
-                 * population. In that case never increment the index
-                 */
-                if (do_best && best != p && rawidx >= best) {
-                    rawidx += 1;
-                }
-                idx [i] = rawidx;
-            }
-        } else {
-            for (i=0; i<nrand; i++) {
-                do {
-                    idx [i] = PGASelectNextIndex (ctx, PGA_OLDPOP);
-                } while
-                    (  idx [i] == p
-                    || (do_best && idx [i] == best)
-                    || (i > 0 && idx [i] == idx [i-1])
-                    || (i > 1 && idx [i] == idx [i-2])
-                    || (i > 2 && idx [i] == idx [i-3])
-                    || (i > 3 && idx [i] == idx [i-4])
-                    );
-            }
-        }
-        /* Since indices from PGARandomNextSample are
-         * returned in order we need to shuffle
-         */
-        PGAShuffle (ctx, idx, nrand);
-        /* Now we have a list of shuffled indexes that do not
-         * collide with one-another or with p or best
-         * Add best index as last to the list if do_best
-         */
-        if (do_best) {
-            idx [maxidx - 1] = best;
-        }
+        de_dither = PGASetupDE (ctx, p, pop, maxidx, idx);
         for (i=0; i<maxidx; i++) {
             indivs [i] = (PGAReal *)
                 PGAGetIndividual (ctx, idx [i], PGA_OLDPOP)->chrom;

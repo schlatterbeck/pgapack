@@ -1151,6 +1151,7 @@ void PGASetMutationPolyEta (PGAContext *ctx, double eta);
 double PGAGetMutationPolyEta (PGAContext *ctx);
 void PGASetMutationPolyValue (PGAContext *ctx, double c);
 double PGAGetMutationPolyValue (PGAContext *ctx);
+double PGASetupDE (PGAContext *ctx, int p, int pop, int maxidx, int *idx);
 
 /*****************************************
  *          parallel.c

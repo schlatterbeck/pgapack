@@ -627,12 +627,30 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
     PGAInteger *c;
     int i, j, temp;
     int count = 0;
+    /* The following are used for DE variants */
+    int midx = 0;
+    int maxidx = 2 * ctx->ga.DENumDiffs + 1;
+    DECLARE_DYNARRAY (PGAInteger *, indivs, maxidx);
+    int do_crossover = 1;
+    static double de_dither = 0.0;
 
     PGADebugEntered ("PGAIntegerMutation");
+
+    if (ctx->ga.MutationType == PGA_MUTATION_DE) {
+        DECLARE_DYNARRAY (int, idx, maxidx);
+        de_dither = PGASetupDE (ctx, p, pop, maxidx, idx);
+        for (i=0; i<maxidx; i++) {
+            indivs [i] = (PGAInteger *)
+                PGAGetIndividual (ctx, idx [i], PGA_OLDPOP)->chrom;
+        }
+        /* Index of allele that is mutated in any case */
+        midx = PGARandomInterval (ctx, 0, ctx->ga.StringLen - 1);
+    }
 
     c = (PGAInteger *)PGAGetIndividual (ctx, p, pop)->chrom;
     for (i=0; i<ctx->ga.StringLen; i++) {
         int old_value = c [i];
+        int idx = i;
         /* Do not permute fixed edges */
         if (  ctx->ga.n_edges
            && (get_edge (ctx, c [i]) || rev_edge (ctx, c [i]))
@@ -642,7 +660,7 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
         }
 
         /* randomly choose an allele   */
-        if ( PGARandomFlip(ctx, mr) ) {
+        if (ctx->ga.MutationType == PGA_MUTATION_DE || PGARandomFlip (ctx, mr)){
             /* apply appropriate mutation operator */
             switch (ctx->ga.MutationType) {
             case PGA_MUTATION_CONSTANT:
@@ -697,6 +715,75 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
                 }
                 break;
               }
+            case PGA_MUTATION_DE:
+                switch (ctx->ga.DECrossoverType) {
+                case PGA_DE_CROSSOVER_BIN:
+                    do_crossover =
+                        (  idx == midx
+                        || PGARandomFlip (ctx, ctx->ga.DECrossoverProb)
+                        );
+                    break;
+                case PGA_DE_CROSSOVER_EXP:
+                    /* The first index copied is midx, then all indices
+                     * are copied while the coin flip is valid
+                     */
+                    if (do_crossover) {
+                        idx = (midx + i) % ctx->ga.StringLen;
+                        if (i > 0) {
+                            do_crossover =
+                                (PGARandomFlip (ctx, ctx->ga.DECrossoverProb));
+                        }
+                    }
+                    break;
+                default:
+                    PGAError
+                        ( ctx, "PGAIntegerMutation: Invalid DE crossover type:"
+                        , PGA_FATAL, PGA_INT
+                        , (void *) &(ctx->ga.DECrossoverType)
+                        );
+                    break;
+                }
+                if (do_crossover){
+                    double f = ctx->ga.DEScaleFactor + de_dither;
+                    if (ctx->ga.DEJitter > 0) {
+                        f += ctx->ga.DEJitter * (PGARandom01 (ctx, 0) - 0.5);
+                    }
+                    switch (ctx->ga.DEVariant) {
+                    case PGA_DE_VARIANT_RAND:
+                    case PGA_DE_VARIANT_BEST:
+                        /* the last element is either a random individual
+                         * or the best depending on variant
+                         */
+                        c [idx] = indivs [maxidx - 1][idx];
+                        /* Add difference vectors */
+                        for (j=0; j < (maxidx - 1); j+=2) {
+                            c [idx] += (int)round
+                                (f * (indivs [j][idx] - indivs [j+1][idx]));
+                        }
+                        break;
+                    case PGA_DE_VARIANT_EITHER_OR:
+                        /* We use only 1 difference and ignore DENumDiffs */
+                        if (PGARandom01 (ctx, 0) < ctx->ga.DEProbabilityEO) {
+                            c [idx] = indivs [0][idx] + (int)round
+                                (f * (indivs [1][idx] - indivs [2][idx]));
+                        } else {
+                            double k = ctx->ga.DEAuxFactor;
+                            c [idx] = indivs [0][idx] + (int)round
+                                (k * ( indivs [1][idx] + indivs [2][idx]
+                                     - 2 * indivs [0][idx]
+                                     )
+                                );
+                        }
+                        break;
+                    default:
+                        PGAError(ctx, "PGAIntegerMutation: Invalid value of "
+                                 "ga.DEVariant:", PGA_FATAL, PGA_INT,
+                                 (void *) &(ctx->ga.DEVariant));
+                        break;
+                    }
+                    count++;
+                }
+                break;
             default:
                 PGAError
                     ( ctx
