@@ -309,6 +309,66 @@ int PGASelectNextIndex (PGAContext *ctx, int popix)
 }
 
 /*!****************************************************************************
+    \brief Return the index of next individual in internal array taking
+           into account the genetic distance if negative assortative
+           mating (NAM) is configured.
+    \ingroup explicit
+    \param  ctx     context variable
+    \param  p1      Index of first individual selected
+    \param  popix   the population index, typically PGA_OLDPOP
+    \return A population index for the next selected creature taking NAM
+            into account
+
+    \rst
+
+    Description
+    -----------
+
+    Select the next index out of NAMWindow items that is genetically
+    most distant from the first selected individual given in p1. Ties
+    are broken by considering better evaluation.
+
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+      int l;
+
+      ...
+      l = PGASelectNextNAMIndex (ctx, PGA_OLDPOP);
+
+    \endrst
+
+******************************************************************************/
+int PGASelectNextNAMIndex (PGAContext *ctx, int p1, int popix)
+{
+    int i;
+    int maxidx = 0;
+    double maxdist = -1;
+    if (ctx->ga.NAMWindow <= 1) {
+        return PGASelectNextIndex (ctx, popix);
+    }
+    for (i=0; i<ctx->ga.NAMWindow; i++) {
+        double dist;
+        int idx = PGASelectNextIndex (ctx, popix);
+        dist = PGAUserFunctionGeneDistance (ctx, p1, popix, idx, popix);
+        if (dist > maxdist) {
+            maxdist = dist;
+            maxidx  = idx;
+        } else if (dist == maxdist) {
+            /* Chose the one with better eval (lower is better) */
+            if (PGAEvalCompare (ctx, p1, popix, idx, popix) > 0) {
+                maxidx  = idx;
+            }
+        }
+    }
+    return maxidx;
+}
+
+/*!****************************************************************************
     \brief Specify the type of selection to use.
     \ingroup init
 
@@ -1223,4 +1283,73 @@ int PGASelectPTournament (PGAContext *ctx, int pop)
 
     PGADebugExited ("PGASelectPTournament");
     return RetVal;
+}
+
+/*!****************************************************************************
+    \brief Set window size for negative assortative mating (NAM).
+    \ingroup init
+    \param  ctx   context variable
+    \param  wsize window size
+    \return None
+
+    \rst
+    Description
+    -----------
+
+    On selection select first individual as configured, for the second
+    individual draw wsize individuals and select the one that has the
+    largest genetic difference to the first individual. The default
+    window size 1 doesn't use NAM. See description [FR01]_.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+
+      ...
+      PGASetNAMWindowSize (ctx, 3);
+
+    \endrst
+
+******************************************************************************/
+void PGASetNAMWindowSize (PGAContext *ctx, int wsize)
+{
+    ctx->ga.NAMWindow = wsize;
+}
+
+/*!****************************************************************************
+    \brief Get window size for negative assortative mating (NAM).
+    \ingroup query
+    \param  ctx   context variable
+    \return Window size for NAM
+
+    \rst
+    Description
+    -----------
+
+    On selection select first individual as configured, for the second
+    individual draw wsize individuals and select the one that has the
+    largest genetic difference to the first individual. The default
+    window size 1 doesn't use NAM. See description [FR01]_.
+    This gets the currently configured NAM window size.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx,
+      int wsize;
+
+      ...
+      wsize = PGAGetNAMWindowSize (ctx);
+
+    \endrst
+
+******************************************************************************/
+int PGAGetNAMWindowSize (PGAContext *ctx)
+{
+    return ctx->ga.NAMWindow;
 }

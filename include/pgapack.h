@@ -637,6 +637,7 @@ typedef struct {
     double FitnessCmaxValue; /**< Cmax value used to convert minimizations  */
     double restartAlleleProb;/**< prob of changing an allele in a restart   */
     double TruncProportion;  /**< proportion for truncation selection       */
+    int NAMWindow;           /**< Win size for negative assortative mating  */
     int restart;             /**< whether to use the restart operator       */
     int restartFreq;         /**< frequency with which to restart           */
     int *selected;           /**< array of indices for selection            */
@@ -1330,6 +1331,7 @@ double PGAGetRestartAlleleChangeProb(PGAContext *ctx);
 
 void PGASelect (PGAContext *ctx, int popix);
 int PGASelectNextIndex (PGAContext *ctx, int popix);
+int PGASelectNextNAMIndex (PGAContext *ctx, int p1, int popix);
 void PGASetSelectType (PGAContext *ctx, int select_type);
 int PGAGetSelectType (PGAContext *ctx);
 void PGASetPTournamentProb (PGAContext *ctx, double ptournament_prob);
@@ -1344,6 +1346,8 @@ void PGASetRandomizeSelect (PGAContext *ctx, int value);
 int PGAGetRandomizeSelect (PGAContext *ctx);
 double INDGetAuxTotal (PGAIndividual *ind);
 double PGAGetAuxTotal (PGAContext *ctx, int p, int pop);
+void PGASetNAMWindowSize (PGAContext *ctx, int wsize);
+int PGAGetNAMWindowSize (PGAContext *ctx);
 
 /*****************************************
  *          stop.c

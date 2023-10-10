@@ -258,9 +258,14 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
     pc = PGAGetCrossoverProb (ctx);
     /*** reproduce to create the rest of the new population ***/
     while (n < popsize) {
+        int flip = PGARandomFlip (ctx, pc);
         m1 = PGASelectNextIndex (ctx, oldpop);
-        m2 = PGASelectNextIndex (ctx, oldpop);
-        if (PGARandomFlip (ctx, pc)) {
+        if (flip) {
+            m2 = PGASelectNextNAMIndex (ctx, m1, oldpop);
+        } else {
+            m2 = PGASelectNextIndex (ctx, oldpop);
+        }
+        if (flip) {
             PGACrossover (ctx, m1, m2, oldpop, PGA_TEMP1, PGA_TEMP2, newpop);
 
             /*** mutate and copy first string to new population ***/
@@ -381,9 +386,14 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
     pc = PGAGetCrossoverProb (ctx);
     /*** reproduce to create the rest of the new population ***/
     while (n < popsize) {
+        int flip = PGARandomFlip (ctx, pc);
         m1 = PGASelectNextIndex (ctx, oldpop);
-        m2 = PGASelectNextIndex (ctx, oldpop);
-        if (PGARandomFlip (ctx, pc)) {
+        if (flip) {
+            m2 = PGASelectNextNAMIndex (ctx, m1, oldpop);
+        } else {
+            m2 = PGASelectNextIndex (ctx, oldpop);
+        }
+        if (flip) {
             PGACrossover (ctx, m1, m2, oldpop, PGA_TEMP1, PGA_TEMP2, newpop);
             PGACopyIndividual (ctx, PGA_TEMP1, newpop, n, newpop);
 
