@@ -784,6 +784,34 @@ gene for each allele. These parameters work analogous to
 for mutation. For the bounce-back implementation the parent *nearer* to
 the initialisation boundary is used for each check.
 
+Negative Assortative Mating
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When selecting parents for crossover, the default is to use the two
+parents chosed by the selection scheme in use, see section
+:ref:`selection`. It was observed early [ES91]_ that genetic diversity
+can be maintained (avoiding premature convergence) by enforcing a lower
+bound on the genetic distance of parents. Later Fernandes and Rosa
+researched several variants of mating restrictions [FR01]_. The negative
+assortative mating (NAM) selects the first parent as usual but draws a
+set of candidate second parents of which the one with the largest
+genetic distance to the first parent is selected. The window size for
+this set can be set with :c:func:`PGASetNAMWindowSize`, a minimum of two
+and a maximum of the population size minus two should be selected to
+turn this feature on. The default is to use the standard selection
+(window size 1). Originally Fernandes and Rosa used the hamming distance
+for computing the genetic distance, but they also investigated an
+application specific metric [FTMR01]_. PGAPack uses the genetic
+distance, see :ref:`sec:basics` which by default uses the hamming
+distance for binary genes and the manhattan distance for integer and
+real genes.
+
+The negative assortative mating is for selection what the restricted
+tournament replacement scheme is for replacement: The latter selects the
+genetically *closest* individual for replacement which also results in
+preserving genetic diversity.
+
+
 .. _sec:mutation:
 
 Mutation
@@ -2040,7 +2068,8 @@ the standard PGAPack output printed. Therefore, be sure to use
 for suppressing the standard PGAPack generational output.
 
 The genetic distance function computes the genetic distance
-of two individuals. It is used when restricted tournament selection is
+of two individuals. It is used, e.g.,  when restricted tournament
+selection or negative assortative mating is
 in use. In addition it is used when reporting of genetic distance is
 selected by calling :c:func:`PGASetPrintOptions` with
 :c:macro:`PGA_REPORT_GENE_DISTANCE`. There are implementations for the standard

@@ -24,6 +24,11 @@ Documentation is on `Read the Docs`_.
 Updates
 =======
 
+2nd update Oct 2023:
+
+- Implement Negative Assortative Mating, a mating restriction that tries
+  to mate individuals with large genetic distance.
+
 Oct 2023:
 
 - Add Differential Evolution with integer genes

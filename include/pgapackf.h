@@ -457,6 +457,8 @@ c *** select
       external PGAGetRandomizeSelect
       double precision PGAGetAuxTotal
       external PGAGetAuxTotal
+      integer PGAGetNAMWindowSize
+      external PGAGetNAMWindowSize
 c *** stop
       integer PGADone
       external PGADone

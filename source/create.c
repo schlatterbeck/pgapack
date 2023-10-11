@@ -303,6 +303,7 @@ PGAContext *PGACreate
     ctx->ga.OutputFile         = stdout;
     ctx->ga.OutFileName        = NULL;
     ctx->ga.CustomData         = NULL;
+    ctx->ga.NAMWindow          = PGA_UNINITIALIZED_INT;
 
     /* Fixed edges for Edge Crossover */
     ctx->ga.n_edges            = 0;
@@ -1197,6 +1198,18 @@ void PGASetUp (PGAContext *ctx)
 
     if (ctx->ga.restartAlleleProb == PGA_UNINITIALIZED_DOUBLE) {
         ctx->ga.restartAlleleProb = 0.5;
+    }
+
+    /* Negative assortative mating */
+    if (ctx->ga.NAMWindow == PGA_UNINITIALIZED_INT) {
+        ctx->ga.NAMWindow = 1;
+    }
+
+    if (ctx->ga.NAMWindow > ctx->ga.PopSize - 2) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetUp: NAM window size must be <= PopSize - 2"
+            );
     }
 
 
