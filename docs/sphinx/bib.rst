@@ -7,6 +7,9 @@ Bibliography
             Second International Conference on Genetic Algorithms and
             Their Applications,* pages 14–21, Hillsdale, New Jersey,
             1987. Lawrence Erlbaum Associates.
+.. [BB91]   Richard K. Belew and Lashon B. Booker, editors. Proceedings
+            of the Fourth International Conference on Genetic Algorithms
+            (ICGA). Morgan Kaufmann, San Diego, CA, July 1991.
 .. [BH91]   Thomas Bäck and Frank Hoffmeister. Extended selection
             mechanisms in genetic algorithms. In Richard K. Belew and
             Lashon B. Booker, editors, Proceedings of the Fourth
@@ -20,6 +23,8 @@ Bibliography
             Optimization, 10th International Conference (EMO),* volume
             11411 of *Lecture Notes in Computer Science,* pages 229–240.
             Springer, East Lansing, MI, USA, March 2019.
+.. [CEC01]  IEEE Congress on Evolutionary Computation (CEC). IEEE, Seoul,
+            South Korea, May 2001.
 .. [DD14]   Kalyanmoy Deb and Debayan Deb. Analysing mutation schemes
             for real-parameter genetic algorithms. *International
             Journal of Artificial Intelligence and Soft Computing,*
@@ -48,6 +53,9 @@ Bibliography
             A fast and elitist multiobjective genetic algorithm: NSGA-II.
             *IEEE Transactions on Evolutionary Computation,* 6(2):182–197,
             April 2002.
+.. [ES91]   Larry J. Eshelman and J. David Schaffer. Preventing premature
+            convergence in genetic algorithms by preventing incest. In
+            Belew and Booker [BB91], pages 115–122.
 .. [FKTL00] Vladimir Filipović, Jozef Kratica, Dušan Tošić, and Ivana Ljubić.
             Fine grained tournament selection for the simple plant
             location problem. In *5th Online World Conference on Soft
@@ -55,6 +63,13 @@ Bibliography
             January 2000.
 .. [Fly72]  M. Flynn. Some computer organizations and their effectiveness.
             *IEEE Transactions on Computers,* 21:948–960, 1972.
+.. [FR01]   Carlos Fernandes and Agostinho Rosa. A study on non-random
+            mating and varying population size in genetic algorithms using
+            a royal road function. In [CEC01], pages 60–66.
+.. [FTMR01] Carlos Fernandes, Rui Tavares, Cristian Munteanu, and Agostinho
+            Rosa. Using assortative mating in genetic algorithms for vector
+            quantization problems. In Proceedings of the 2001 ACM symposium
+            on Applied computing (SAC ’01), pages 361–365, March 2001.
 .. [GB89]   John J. Grefenstette and James E. Baker. How genetic
             algorithms work: a critical look at implicit parallelism. In
             Schaffer [Sch89], pages 20–27.
