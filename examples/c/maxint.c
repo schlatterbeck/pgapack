@@ -91,13 +91,14 @@ int GetYN (char *query)
 int main (int argc, char **argv)
 {
     PGAContext *ctx;
-    int         len, maxiter, rtr = 0, nodup = 0, verbose = 0;
+    int         len, maxiter, rtr = 0, nam = 0, nodup = 0, verbose = 0;
 
     MPI_Init (&argc, &argv);
 
     len     = GetIntegerParameter ("String length?\n");
     maxiter = GetIntegerParameter ("How many iterations?\n");
     rtr     = GetYN ("Use restricted tournament replacement?\n");
+    nam     = GetYN ("Use negative assortative mating (NAM)?\n");
     nodup   = GetYN ("Avoid duplicates?\n");
     verbose = GetYN ("Verbose reporting?\n");
 
@@ -113,6 +114,9 @@ int main (int argc, char **argv)
     PGASetPrintOptions (ctx, PGA_REPORT_AVERAGE);
     if (rtr) {
        PGASetPopReplaceType (ctx, PGA_POPREPL_RTR);
+    }
+    if (nam) {
+       PGASetNAMWindowSize (ctx, 10);
     }
     if (nodup) {
         PGASetNoDuplicatesFlag (ctx, PGA_TRUE);
