@@ -169,6 +169,40 @@ void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...)
 }
 
 /*!****************************************************************************
+    \brief Deallocate memory for given PGAIndividual
+    \ingroup internal
+    \param   ctx    context variable
+    \param   ind    individual
+    \return  None
+
+    \rst
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+      PGAIndividual *ind;
+
+      ...
+      PGAFreeIndividual (ctx, ind);
+
+    \endrst
+
+******************************************************************************/
+static void PGAFreeIndividual (PGAContext *ctx, PGAIndividual *ind)
+{
+    ctx->cops.ChromFree (ind);
+    if (ind->auxeval != NULL) {
+        free (ind->auxeval);
+    }
+    if (ind->normalized != NULL) {
+        free (ind->normalized);
+    }
+}
+
+/*!****************************************************************************
     \brief Deallocate memory for this instance of PGAPack, if this
            context initialized MPI, finalize MPI as well.
     \ingroup standard-api
@@ -202,20 +236,54 @@ void PGADestroy (PGAContext *ctx)
     if (ctx->sys.SetUpCalled) {
         /*  Free the population...fly little birdies!  You're FREE!!!  */
         for (i=0; i<ctx->ga.PopSize + 2; i++) {
-            ctx->cops.ChromFree (ctx->ga.oldpop + i);
-            ctx->cops.ChromFree (ctx->ga.newpop + i);
+            PGAFreeIndividual (ctx, ctx->ga.oldpop + i);
+            PGAFreeIndividual (ctx, ctx->ga.newpop + i);
         }
         free (ctx->ga.oldpop);
         free (ctx->ga.newpop);
 
         /*  Free the scratch space.  */
         free (ctx->scratch.intscratch);
+        free (ctx->scratch.dblscratch);
         if (ctx->scratch.permute != NULL) {
             free (ctx->scratch.permute);
         }
-        free (ctx->scratch.dblscratch);
+        if (ctx->scratch.dominance != NULL) {
+            free (ctx->scratch.dominance);
+        }
+        if (ctx->scratch.hashed != NULL) {
+            free (ctx->scratch.hashed);
+        }
+        if (ctx->scratch.edgemap != NULL) {
+            free (ctx->scratch.edgemap);
+        }
         free (ctx->ga.selected);
         free (ctx->ga.sorted);
+        /* Reporting */
+        free (ctx->rep.Average);
+        free (ctx->rep.Best);
+        free (ctx->rep.BestIdx);
+        free (ctx->rep.Offline);
+        free (ctx->rep.Online);
+        /* nsga-iii */
+        if (ctx->ga.extreme != NULL) {
+            free (ctx->ga.extreme);
+        }
+        if (ctx->ga.utopian != NULL) {
+            free (ctx->ga.utopian);
+        }
+        if (ctx->ga.nadir != NULL) {
+            free (ctx->ga.nadir);
+        }
+        if (ctx->ga.worst != NULL) {
+            free (ctx->ga.worst);
+        }
+        if (ctx->ga.normdirs != NULL) {
+            free (ctx->ga.normdirs);
+        }
+        if (ctx->ga.refpoints != NULL) {
+            free (ctx->ga.refpoints);
+        }
         /* Need to close output file if we opened it */
         if (  ctx->ga.OutFileName != NULL
            && PGAGetRank (ctx, MPI_COMM_WORLD) == 0
