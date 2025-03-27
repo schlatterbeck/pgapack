@@ -559,6 +559,14 @@ void PGASetPopReplaceType (PGAContext *ctx, int pop_replace)
 
     \rst
 
+    Description
+    -----------
+
+    Reference points should be allocated by :c:func:`LIN_dasdennis`.
+    They are freed when calling :c:func:`PGADestroy`. If no explicit
+    reference points are set a default will be computed by
+    :c:func:`PGASetUp`.
+
     Example
     -------
 

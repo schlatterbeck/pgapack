@@ -372,6 +372,12 @@ resulting points are then passed into the function
    npoints = LIN_dasdennis (3, 1, &result, npoints, 0.5, point);
    PGASetReferencePoints (ctx, npoints, result);
 
+Note that if :c:func:`PGASetReferencePoints` is not called by the user,
+reference points are automatically allocated when calling :c:func:`PGASetUp`.
+All reference points are freed when calling :c:func:`PGADestroy`, so
+reference points must always be allocated using malloc (which is done
+when using :c:func:`LIN_dasdennis`).
+
 For defining reference directions, the function
 :c:func:`PGASetReferenceDirections` is used. It gets the number of directions
 and the vector of directions (each direction is a vector of the
