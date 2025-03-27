@@ -284,6 +284,13 @@ void PGADestroy (PGAContext *ctx)
         if (ctx->ga.refpoints != NULL) {
             free (ctx->ga.refpoints);
         }
+        /* Fixed edges for edge crossover */
+        if (ctx->ga.edges != NULL) {
+            free (ctx->ga.edges);
+        }
+        if (ctx->ga.r_edge != NULL) {
+            free (ctx->ga.r_edge);
+        }
         /* Need to close output file if we opened it */
         if (  ctx->ga.OutFileName != NULL
            && PGAGetRank (ctx, MPI_COMM_WORLD) == 0
@@ -297,6 +304,9 @@ void PGADestroy (PGAContext *ctx)
                     , strerror (errno)
                     );
             }
+        }
+        if (ctx->ga.OutFileName != NULL) {
+            free (ctx->ga.OutFileName);
         }
     }
 
