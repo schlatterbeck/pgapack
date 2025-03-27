@@ -19,6 +19,10 @@ else
     TEST := $(TEST_C) $(TEST_F)
 endif
 VRFY := $(patsubst %.data,%.vrfy,$(TEST))
+# Enable valgrind tests only for serial version
+ifeq ($(MPI),serial)
+MDBG := $(patsubst %.data,%.mdbg,$(TEST))
+endif
 
 # You can override this on the command-line.
 # Mainly needed for running tests in parallel mode with mpirun.
@@ -36,7 +40,7 @@ all: test
 %: %.c
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 
-test: unit $(VRFY)
+test: unit $(VRFY) $(MDBG)
 
 unit:
 	make -C unit
@@ -45,14 +49,27 @@ instverf.vrfy: instverf instverf.data
 	./runtest instverf > instverf.vrfy
 	test $$(grep 'was successful' instverf.vrfy | wc -l) -eq 5
 
+# Valgrind memory tests, we require no errors and no leaks
+instverf.mdbg: instverf instverf.data
+	./runtest -m instverf > instverf.vrfy-m 2> instverf.mdbg
+	test $$(grep 'was successful' instverf.vrfy-m | wc -l) -eq 5
+	grep -q 'ERROR SUMMARY: 0 errors from 0 contexts' instverf.mdbg
+	grep -q 'All heap blocks were freed' instverf.mdbg
+
 %.vrfy: %.data $(PROG)
 	./runtest $< | diff $< - > $@
+
+# Valgrind memory tests, we require no errors and no leaks
+%.mdbg: %.data $(PROG)
+	./runtest -m $< 2> $*.mdbg | diff $< - > $*.vrfy-m
+	grep -q 'ERROR SUMMARY: 0 errors from 0 contexts' $*.mdbg
+	grep -q 'All heap blocks were freed -- no leaks are possible' $*.mdbg
 
 %.data:
 	./runtest $@ > $@
 
 testclean:
-	rm -f *.vrfy
+	rm -f *.vrfy *.vrfy-m *.mdbg
 	make -C unit clobber
 
 clean: testclean

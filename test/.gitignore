@@ -1,2 +1,4 @@
 instverf
 *.vrfy
+*.vrfy-m
+*.mdbg

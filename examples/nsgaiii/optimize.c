@@ -120,5 +120,9 @@ int main (int argc, char **argv)
     }
     PGARun     (ctx, evaluate);
     PGADestroy (ctx);
+    /* p is freed by PGADestroy if we called PGASetReferencePoints */
+    if (refdir) {
+        free (p);
+    }
     return 0;
 }

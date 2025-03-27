@@ -146,6 +146,8 @@ int main (int argc, char **argv)
 
     PGARun (ctx, evaluate);
     PGADestroy (ctx);
+    free (lower);
+    free (upper);
 
     MPI_Finalize ();
 

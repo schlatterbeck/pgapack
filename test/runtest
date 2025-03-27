@@ -6,6 +6,28 @@
 # passed to stdin of the example. We remove as many lines from the input
 # as we have parameters: The C and fortran examples have different
 # questions (whitespace).
+# The script takes an optional '-m' option for memory-debugging with
+# valgrind. Note that this is currently only supported for the serial
+# MPI version.
+
+memdebug=0
+while getopts m flag ; do
+    case "$flag" in
+        m) memdebug=1
+        ;;
+        *) exit 1
+        ;;
+    esac
+done
+shift $(expr $OPTIND - 1)
+
+if [ "$memdebug" -ne 0 ]; then
+    if [ -n "$MPI" -a "$MPI" != serial ]; then
+        echo "Memory debug option '-m' only with MPI=serial" 1>&2
+        exit 1
+    fi
+    mpicmd=valgrind
+fi
 
 if [ -n "$MPI" -a "$MPI" != serial ]; then
     nproc=-np
