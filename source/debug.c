@@ -450,8 +450,12 @@ int PGAGetDebugLevelOfName (PGAContext *ctx, char *funcname)
             , "PGAGetDebugFlag: Function missing from PGAFuncIndex: '%s'\n"
             , funcname
             );
+    } else {
+        /* Put this in an else clause to avoid spurious NULL deref warning */
+        return rec->PGAFuncNum;
     }
-    return rec->PGAFuncNum;
+    /* not reached, PGAErrorPrintf with flag PGA_FATAL exits */
+    return 0;
 }
 
 /*!****************************************************************************
