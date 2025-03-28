@@ -180,6 +180,9 @@ documentation:
 test: all
 	$(MAKE) -C test test
 
+valgrind: all
+	$(MAKE) -C test valgrind
+
 testclean:
 	$(MAKE) -C test testclean
 

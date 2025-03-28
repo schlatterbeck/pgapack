@@ -7,8 +7,9 @@
 # as we have parameters: The C and fortran examples have different
 # questions (whitespace).
 # The script takes an optional '-m' option for memory-debugging with
-# valgrind. Note that this is currently only supported for the serial
-# MPI version.
+# valgrind.
+
+VALGRIND="valgrind --track-origins=yes --leak-check=full"
 
 memdebug=0
 while getopts m flag ; do
@@ -21,12 +22,8 @@ while getopts m flag ; do
 done
 shift $(expr $OPTIND - 1)
 
-if [ "$memdebug" -ne 0 ]; then
-    if [ -n "$MPI" -a "$MPI" != serial ]; then
-        echo "Memory debug option '-m' only with MPI=serial" 1>&2
-        exit 1
-    fi
-    mpicmd=valgrind
+if [ -n "$MPI" -a "$MPI" = serial -a "$memdebug" -ne 0 ]; then
+    mpicmd="${VALGRIND}"
 fi
 
 if [ -n "$MPI" -a "$MPI" != serial ]; then
@@ -39,7 +36,11 @@ if [ -n "$MPI" -a "$MPI" != serial ]; then
     if [ "$MPI" = lam ] ; then
         file=""
     fi
-    mpicmd="mpirun ${file} ${nproc} ${MPI_NUM_PROCESS}"
+    if [ "$memdebug" -ne 0 ]; then
+        mpicmd="mpirun.${MPI} ${file} ${nproc} ${MPI_NUM_PROCESS} ${VALGRIND}"
+    else
+        mpicmd="mpirun.${MPI} ${file} ${nproc} ${MPI_NUM_PROCESS}"
+    fi
 fi
 
 fn=$(basename $1 .data)

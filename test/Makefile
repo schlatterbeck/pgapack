@@ -19,10 +19,7 @@ else
     TEST := $(TEST_C) $(TEST_F)
 endif
 VRFY := $(patsubst %.data,%.vrfy,$(TEST))
-# Enable valgrind tests only for serial version
-ifeq ($(MPI),serial)
 MDBG := $(patsubst %.data,%.mdbg,$(TEST))
-endif
 
 # You can override this on the command-line.
 # Mainly needed for running tests in parallel mode with mpirun.
@@ -40,7 +37,9 @@ all: test
 %: %.c
 	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 
-test: unit $(VRFY) $(MDBG)
+test: unit $(VRFY)
+
+valgrind: $(MDBG)
 
 unit:
 	make -C unit
