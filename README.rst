@@ -540,21 +540,21 @@ installation steps are as follows.
 
     Sequential version:
 
-        C::
+    - C::
 
             examples/c/maxbit
 
-        Fortran::
+    - Fortran::
 
             examples/fortran/maxbit
 
     Parallel version:
 
-        C::
+    - C::
 
             mpirun -np 4 examples/c/maxbit
 
-        Fortran::
+    - Fortran::
 
             mpirun -np 4 examples/fortran/maxbit
 
@@ -564,7 +564,7 @@ installation steps are as follows.
     command can be used to execute a parallel program. The options to
     ``mpirun``, however differ slightly between versions.
 
-4.  Install
+4.  Install::
 
       make MPI=$MPIVERSION install
 
@@ -639,7 +639,7 @@ Using OpenMPI (Debian, Ubuntu Linux)
 
     make MPI=openmpi
 
-    Optionally run tests::
+   Optionally run tests::
 
     make MPI=openmpi test
 
