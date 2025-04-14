@@ -80,8 +80,8 @@ $(PGA_LIB_DIR)/lib$(PGA_LIB).a: $(OBJS)
 ifeq (${SHAREDLIBS},yes)
 $(SHLIB): $(OBJS)
 	$(CC) $(SHARED) $(OBJS) -o $(SHLIB)
-	ln -s $(SHLIBFILE) $(PGA_LIB_DIR)/lib$(PGA_LIB).so.$(MAJOR)
-	ln -s $(SHLIBFILE) $(PGA_LIB_DIR)/lib$(PGA_LIB).so
+	ln -sf $(SHLIBFILE) $(PGA_LIB_DIR)/lib$(PGA_LIB).so.$(MAJOR)
+	ln -sf $(SHLIBFILE) $(PGA_LIB_DIR)/lib$(PGA_LIB).so
 endif
 
 $(PGA_LIB_DIR)/%.o: %.c
