@@ -36,7 +36,7 @@ MINOR 		:= $(word 2,$(subst ., ,$(subst -, ,$(v_git))))
 PATCHLEVEL      := $(or $(word 2,$(subst -, ,$(v_git))),0)
 VERSION         := $(MAJOR).$(MINOR).$(PATCHLEVEL)
 ifeq (${PCFILE},)
-PCFILE          := pgapack.pc
+PCFILE          := pgapack-$(MPI).pc
 endif
 # Target triplet
 ifeq (${TARGET_TRIPLET},)
@@ -102,7 +102,8 @@ ifeq (${MPI},serial)
 	$(INSTALL) -d $(INSTALL_INCDIR)/fakempi
 	$(INSTALL_PLAIN) ../fakempi/mpi.h $(INSTALL_INCDIR)/fakempi/mpi.h
 endif
-	$(INSTALL) -m 0644 $(PGA_LIB_DIR)/$(PCFILE) $(INSTALL_LIBDIR)/pkgconfig/
+	$(INSTALL) -m 0644 -T $(PGA_LIB_DIR)/$(PCFILE) \
+	    $(INSTALL_LIBDIR)/pkgconfig/pgapack.pc
 	ldconfig
 
 # pkgconf config file
