@@ -28,13 +28,14 @@ update April 2025:
 
 - Fix memory leaks and add valgrind target to Makefile. Note that the
   memory leaks only involved allocating some memory at the start and
-  never freeing it -- there was no memory leaked during the run. Thanks
+  never freeing it |--| there was no memory leaked during the run. Thanks
   to Joachim Comes for providing debug traces and static checks for
   tracking the memory leaks.
 - Add install target and create a .pc file for pkg-config.
 - Fix the 'soname' for the shared library, seems like so far pgapack
   (but not mpi) was linked statically. We now run the tests against the
   shared lib.
+- Document visualization of multi-objective optimization
 
 2nd update Oct 2023:
 
@@ -537,15 +538,25 @@ installation steps are as follows.
 
 3.  Execute a simple test problem
 
-    Sequential version::
+    Sequential version:
 
-        C:        ``examples/c/maxbit``
-        Fortran:  ``examples/fortran/maxbit``
+        C::
 
-    Parallel version::
+            examples/c/maxbit
 
-        C:        ``mpirun -np 4 examples/c/maxbit``
-        Fortran:  ``mpirun -np 4 examples/fortran/maxbit``
+        Fortran::
+
+            examples/fortran/maxbit
+
+    Parallel version:
+
+        C::
+
+            mpirun -np 4 examples/c/maxbit
+
+        Fortran::
+
+            mpirun -np 4 examples/fortran/maxbit
 
     If a parallel version of PGAPack was used, the actual commands to execute
     a parallel program depend on the particular MPI implementation and
@@ -567,6 +578,34 @@ installation steps are as follows.
    and the necessary libraries for linking with::
 
       pkg-config --libs pgapack
+
+   So for building a simple example program you can use::
+
+      cc -O3 $(pkg-config --cflags pgapack) my-example.c \
+        $(pkg-config --libs pgapack) -lm
+
+6. For multi-objective Optimization you may want to visualize the
+   output. The outputs of all the examples (often with multiple
+   different inputs) are in the ``.data`` files in the ``test``
+   directory. You can, e.g., plot the output of one of the NSGA-II
+   tests::
+
+    examples/nsgaii/crowdingplot test/nsgaii_optimize_2.data
+
+   or one of the NSGA-III tests::
+
+    examples/nsgaii/crowdingplot -3 test/nsgaiii_optimize_10_7.data
+
+   If you have plotly_ installed, you can also send these graphics to
+   the browser::
+
+    examples/nsgaii/crowdingplot -S test/nsgaii_optimize_2.data
+    examples/nsgaii/crowdingplot -S -3 test/nsgaiii_optimize_10_7.data
+
+   In all these graphics a dot is one solution |--| all the solutions have
+   been found in a *single run* of the multi-objective optimization. We
+   plot the different objectives against each other, so we get an
+   impression of the pareto front.
 
 
 Compiling without Fortran
@@ -714,3 +753,4 @@ of maintaining a working automake environment seems not justified.
 .. _`Sphinx virtual environment`:
     https://www.sphinx-doc.org/en/master/usage/installation.html#using-virtual-environments
 .. _`monkey patching`: https://en.wikipedia.org/wiki/Monkey_patch
+.. _`plotly`: https://plotly.com/
