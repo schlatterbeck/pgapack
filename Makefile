@@ -81,7 +81,7 @@ ifeq (${DEBUG},1)
     PGA_LIB = pgapack-debug
 else
     CFLAGS += ${OPT}
-    PGA_LIB = pgapack
+    PGA_LIB = pgapack-$(MPI)
 endif
 
 # We still support the old "ARCH_TYPE" setting.

@@ -24,6 +24,7 @@ OBJS = $(PGA_LIB_DIR)/binary.o        \
       $(PGA_LIB_DIR)/utility.o $(PGA_LIB_DIR)/f2c.o $(MPI_STUB)
 
 INSTALL=install
+INSTALL_PLAIN=install -m 0644
 
 ########################################################
 #                    The Target                        #
@@ -43,14 +44,31 @@ TARGET_TRIPLET:=$(shell ./triplet)
 endif
 REL_LIBDIR=lib/$(TARGET_TRIPLET)
 INSTALL_LIBDIR=$(PREFIX)/$(REL_LIBDIR)
+INSTALL_INCDIR=$(PREFIX)/include/pgapack-$(MPI)
 ifeq (${SHAREDLIBS},yes)
-SHLIBFILE = lib$(PGA_LIB)-$(MPI).so.$(VERSION)
+SHLIBFILE = lib$(PGA_LIB).so.$(VERSION)
 SHLIB = $(PGA_LIB_DIR)/$(SHLIBFILE)
-SHARED = -shared -Wl,-soname,lib$(PGA_LIB)-$(MPI).so.$(MAJOR)
+SHARED = -shared -Wl,-soname,lib$(PGA_LIB).so.$(MAJOR)
 SHLIB_INSTALL = $(INSTALL) $(SHLIB) $(INSTALL_LIBDIR) && \
-    ln -sf $(SHLIBFILE) $(INSTALL_LIBDIR)/lib$(PGA_LIB)-$(MPI).so
+    ln -sf $(SHLIBFILE) $(INSTALL_LIBDIR)/lib$(PGA_LIB).so
 else
 SHLIB_INSTALL = true
+endif
+
+ifeq (${MPI},serial)
+FAKEMPI_OPT='-I$${includedir}/fakempi'
+REQUIRES=
+else
+ifeq (${MPI},openmpi)
+REQUIRES=Requires: ompi
+else ifeq (${MPI},mpich)
+REQUIRES=Requires: mpich
+else ifeq (${MPI},lam)
+# lam doesn't seem to have a .pc file
+REQUIRES=
+else
+REQUIRES=Requires: mpi
+endif
 endif
 
 all: $(PGA_LIB_DIR)/lib$(PGA_LIB).a $(SHLIB) $(PCFILE)
@@ -62,6 +80,8 @@ $(PGA_LIB_DIR)/lib$(PGA_LIB).a: $(OBJS)
 ifeq (${SHAREDLIBS},yes)
 $(SHLIB): $(OBJS)
 	$(CC) $(SHARED) $(OBJS) -o $(SHLIB)
+	ln -s $(SHLIBFILE) $(PGA_LIB_DIR)/lib$(PGA_LIB).so.$(MAJOR)
+	ln -s $(SHLIBFILE) $(PGA_LIB_DIR)/lib$(PGA_LIB).so
 endif
 
 $(PGA_LIB_DIR)/%.o: %.c
@@ -72,27 +92,32 @@ clean:
 
 install: all
 	$(INSTALL) -d $(INSTALL_LIBDIR)/pkgconfig
-	$(INSTALL) -d $(PREFIX)/include/pgapack-$(MPI)
+	$(INSTALL) -d $(INSTALL_INCDIR)
 	$(SHLIB_INSTALL)
 	$(INSTALL) -T $(PGA_LIB_DIR)/lib$(PGA_LIB).a \
-	    $(INSTALL_LIBDIR)/lib$(PGA_LIB)-$(MPI).a
-	$(INSTALL) ../include/pgapack.h $(PREFIX)/include/pgapack-$(MPI)/
-	$(INSTALL) ../include/pgapackf.h $(PREFIX)/include/pgapack-$(MPI)/
+	    $(INSTALL_LIBDIR)/lib$(PGA_LIB).a
+	$(INSTALL_PLAIN) ../include/pgapack.h $(INSTALL_INCDIR)/
+	$(INSTALL_PLAIN) ../include/pgapackf.h $(INSTALL_INCDIR)/
+ifeq (${MPI},serial)
+	$(INSTALL) -d $(INSTALL_INCDIR)/fakempi
+	$(INSTALL_PLAIN) ../fakempi/mpi.h $(INSTALL_INCDIR)/fakempi/mpi.h
+endif
 	$(INSTALL) -m 0644 $(PCFILE) $(INSTALL_LIBDIR)/pkgconfig/
 	ldconfig
 
 # pkgconf config file
-$(PCFILE): Makefile
+$(PCFILE):
 	echo Name: PGAPack                                    > $@
 	echo Description: Parallel Genetic Algorithm Package >> $@
 	echo Version: $(VERSION)                             >> $@
-	echo Requires: mpi                                   >> $@
+	echo $(REQUIRES)                                     >> $@
 	echo prefix=$(PREFIX)                                >> $@
 	echo 'includedir=$${prefix}/include/pgapack-'$(MPI)  >> $@
 	echo 'libdir=$${prefix}/'$(REL_LIBDIR)               >> $@
 	echo 'Libs: -L$${libdir} -lpgapack-'$(MPI)           >> $@
-	echo 'Cflags: -I$${includedir}'                      >> $@
+	echo 'Cflags: -I$${includedir}' $(FAKEMPI_OPT)       >> $@
 
-.PHONY: clean
+# Always re-create $(PCFILE)
+.PHONY: clean $(PCFILE)
 
 # vim: set noet :

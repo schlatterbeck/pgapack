@@ -31,6 +31,8 @@ ifeq (,${MPI_NUM_PROCESS})
     MPI_NUM_PROCESS := 4
 endif
 export MPI_NUM_PROCESS
+# Test against the not-yet-installed shared libs
+export LD_LIBRARY_PATH=$(PGA_LIB_DIR)
 
 all: test
 

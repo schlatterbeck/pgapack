@@ -24,6 +24,18 @@ Documentation is on `Read the Docs`_.
 Updates
 =======
 
+update April 2025:
+
+- Fix memory leaks and add valgrind target to Makefile. Note that the
+  memory leaks only involved allocating some memory at the start and
+  never freeing it -- there was no memory leaked during the run. Thanks
+  to Joachim Comes for providing debug traces and static checks for
+  tracking the memory leaks.
+- Add install target and create a .pc file for pkg-config.
+- Fix the 'soname' for the shared library, seems like so far pgapack
+  (but not mpi) was linked statically. We now run the tests against the
+  shared lib.
+
 2nd update Oct 2023:
 
 - Implement Negative Assortative Mating, a mating restriction that tries
@@ -423,7 +435,9 @@ installation steps are as follows.
 
     replacing ``$MPIVERSION`` with either ``serial``, ``openmpi``,
     ``mpich``, or ``lam``.  If this doesn't work, you can specify
-    ``MPI_LIB`` and/or ``MPI_INCLUDE`` in addition.
+    ``MPI_LIB`` and/or ``MPI_INCLUDE`` in addition. When not specifying
+    ``MPI=$MPIVERSION`` we try to guess the MPI library to use (using
+    pkg-config), if no MPI library is found, the serial version is built.
     The original targets of the old configure were preserved for
     historical reasons, so you may want to build with::
 
@@ -538,6 +552,18 @@ installation steps are as follows.
     parallel computer.  If the MPICH implementation was used the ``mpirun``
     command can be used to execute a parallel program on most systems.
 
+5. Build your own programs
+
+   For building your own programs, you can compute the necessary
+   compiler flags (CFLAGS) with::
+
+      pkg-config --cflags pgapack
+
+   and the necessary libraries for linking with::
+
+      pkg-config --libs pgapack
+
+
 Compiling without Fortran
 -------------------------
 
@@ -569,6 +595,10 @@ Using OpenMPI (Debian, Ubuntu Linux)
 
     make MPI=openmpi
 
+    Optionally run tests::
+
+    make MPI=openmpi test
+
 3. Execute a simple test problem in examples/c folder:
 
    - Sequential version::
@@ -589,7 +619,8 @@ Using OpenMPI (Debian, Ubuntu Linux)
    than the sequential version *on this problem*: The parallel version
    needs additional communication overhead which results in faster
    execution only when the execution time of the evaluation is large
-   compared to the communication overhead.
+   compared to the communication overhead. This is not the case for this
+   (very simple) problem.
 
 Structure of the Distribution Directory
 =======================================

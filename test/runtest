@@ -12,9 +12,12 @@
 VALGRIND="valgrind --track-origins=yes --leak-check=full"
 
 memdebug=0
-while getopts m flag ; do
+verbose=0
+while getopts mv flag ; do
     case "$flag" in
         m) memdebug=1
+        ;;
+        v) verbose=1
         ;;
         *) exit 1
         ;;
@@ -29,17 +32,22 @@ fi
 if [ -n "$MPI" -a "$MPI" != serial ]; then
     nproc=-np
     fileopt=-f
-    if [ "$MPI" = openmpi ] ; then
+    # For now asume that MPI=default means openmpi
+    if [ "$MPI" = openmpi -o "$MPI" = default ] ; then
         fileopt="--hostfile"
     fi
     file="${fileopt} ${MPI_MACHINEFILE}"
     if [ "$MPI" = lam ] ; then
         file=""
     fi
+    MPIRUN=mpirun.${MPI}
+    if [ "${MPI}" = default ]; then
+        MPIRUN=mpirun
+    fi
     if [ "$memdebug" -ne 0 ]; then
-        mpicmd="mpirun.${MPI} ${file} ${nproc} ${MPI_NUM_PROCESS} ${VALGRIND}"
+        mpicmd="${MPIRUN} ${file} ${nproc} ${MPI_NUM_PROCESS} ${VALGRIND}"
     else
-        mpicmd="mpirun.${MPI} ${file} ${nproc} ${MPI_NUM_PROCESS}"
+        mpicmd="${MPIRUN} ${file} ${nproc} ${MPI_NUM_PROCESS}"
     fi
 fi
 
@@ -47,6 +55,9 @@ fn=$(basename $1 .data)
 args=$(echo $fn | sed 's/_/ /g')
 set $args
 if [ "$fn" = instverf ]; then
+    if [ "$verbose" -ne 0 ]; then
+        echo ${mpicmd} instverf 1>&2
+    fi
     ${mpicmd} instverf
 else
     dir=$1
@@ -63,8 +74,17 @@ else
             '(' "$cmd" = maxbit -o "$cmd" = example -o "$cmd" = deb10 ')' \
             ')' \
         ]; then
+        if [ "$verbose" -ne 0 ]; then
+            echo ${mpicmd} ../examples/$dir/$cmd $@ 1>&2
+        fi
         ${mpicmd} ../examples/$dir/$cmd $@
     else
+        if [ "$verbose" -ne 0 ]; then
+            for arg in $@; do
+                echo "$arg" 1>&2
+            done
+            echo '|' ${mpicmd} ../examples/$dir/$cmd | grep -v '\?' 1>&2
+        fi
         for arg in $@; do
             echo "$arg"
         done | ${mpicmd} ../examples/$dir/$cmd | grep -v '\?'
