@@ -1,4 +1,5 @@
       include 'pgapackf.h'
+      include 'mpif.h'
 
       double precision evaluate
       external         evaluate
