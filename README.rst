@@ -591,7 +591,7 @@ Using OpenMPI (Debian, Ubuntu Linux)
 
     sudo apt install libopenmpi-dev
 
-2. Run::
+2. Make::
 
     make MPI=openmpi
 
