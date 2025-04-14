@@ -429,9 +429,13 @@ When installing PGAPack you make two choices: whether to build a sequential
 installation steps are as follows.
 
 1.  Check out from github
-2.  Run ::
+2.  Make ::
 
       make MPI=$MPIVERSION
+
+    Optionally run tests::
+
+      make MPI=$MPIVERSION test
 
     replacing ``$MPIVERSION`` with either ``serial``, ``openmpi``,
     ``mpich``, or ``lam``.  If this doesn't work, you can specify
@@ -531,26 +535,27 @@ installation steps are as follows.
     is not the number of bits in an unsigned long (e.g. if you have a
     different size of character).
 
-3.  Add PGAPack's man pages to your man page path::
-
-      setenv MANPATH "$MANPATH"":/home/pgapack/man"
-
-4.  Execute a simple test problem
+3.  Execute a simple test problem
 
     Sequential version::
 
-        C:        ``/usr/local/pga/examples/c/maxbit``
-        Fortran:  ``/usr/local/pga/examples/fortran/maxbit``
+        C:        ``examples/c/maxbit``
+        Fortran:  ``examples/fortran/maxbit``
 
     Parallel version::
 
-        C:        ``mpirun -np 4 /usr/local/pga/examples/c/maxbit``
-        Fortran:  ``mpirun -np 4 /usr/local/pga/examples/fortran/maxbit``
+        C:        ``mpirun -np 4 examples/c/maxbit``
+        Fortran:  ``mpirun -np 4 examples/fortran/maxbit``
 
     If a parallel version of PGAPack was used, the actual commands to execute
     a parallel program depend on the particular MPI implementation and
-    parallel computer.  If the MPICH implementation was used the ``mpirun``
-    command can be used to execute a parallel program on most systems.
+    parallel computer.  For most MPI implementations the ``mpirun``
+    command can be used to execute a parallel program. The options to
+    ``mpirun``, however differ slightly between versions.
+
+4.  Install
+
+      make MPI=$MPIVERSION install
 
 5. Build your own programs
 
@@ -599,15 +604,19 @@ Using OpenMPI (Debian, Ubuntu Linux)
 
     make MPI=openmpi test
 
-3. Execute a simple test problem in examples/c folder:
+3. Install::
+
+    make MPI=openmpi install
+
+4. Execute a simple test problem in examples/c folder:
 
    - Sequential version::
 
-        ./maxbit
+        examples/c/maxbit
 
    - Parallel version::
 
-        mpirun -np 4 ./maxbit
+        mpirun -np 4 examples/c/maxbit
 
    If you want Open MPI to default to the number of hardware threads
    instead of the number of processor cores, use the ``--use-hwthread-cpus``
