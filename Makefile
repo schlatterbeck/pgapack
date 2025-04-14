@@ -1,3 +1,8 @@
+# Install prefix
+ifeq (,${PREFIX})
+PREFIX  = /usr/local
+endif
+#
 RM      = /bin/rm -f
 PGA_DIR = ${CURDIR}
 
@@ -168,6 +173,7 @@ export PGA_LIB_DIR
 export RANLIB
 export MPI
 export SHAREDLIBS
+export PREFIX
 
 all:
 	mkdir -p $(PGA_LIB_DIR)
@@ -195,6 +201,9 @@ clean:
 
 clobber: clean
 	rm -rf ${PGA_DIR}/lib
+
+install: all
+	$(MAKE) -C source install
 
 .PHONY: all clean clobber
 

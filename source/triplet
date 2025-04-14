@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -z "$CC" ]; then
+CC=gcc
+true
+fi
+tp=$($CC -dumpmachine)
+if [ -z "$tp" ]; then
+    tp=$(bash --version | head -1 | cut -d'(' -f2- | cut -d' ' -f2 | tr -d '()')
+fi
+tp=$(echo "$tp" | sed 's/^\([^-]*\)-[^-]*\(-[^-]*-[^-]*$\)/\1\2/')
+echo "$tp"

@@ -23,6 +23,8 @@ OBJS = $(PGA_LIB_DIR)/binary.o        \
       $(PGA_LIB_DIR)/user.o          \
       $(PGA_LIB_DIR)/utility.o $(PGA_LIB_DIR)/f2c.o $(MPI_STUB)
 
+INSTALL=install
+
 ########################################################
 #                    The Target                        #
 ########################################################
@@ -31,12 +33,27 @@ v_git           := $(shell git describe)
 MAJOR 		:= $(firstword $(subst ., ,$(v_git)))
 MINOR 		:= $(word 2,$(subst ., ,$(subst -, ,$(v_git))))
 PATCHLEVEL      := $(or $(word 2,$(subst -, ,$(v_git))),0)
+VERSION         := $(MAJOR).$(MINOR).$(PATCHLEVEL)
+ifeq (${PCFILE},)
+PCFILE          := pgapack.pc
+endif
+# Target triplet
+ifeq (${TARGET_TRIPLET},)
+TARGET_TRIPLET:=$(shell ./triplet)
+endif
+REL_LIBDIR=lib/$(TARGET_TRIPLET)
+INSTALL_LIBDIR=$(PREFIX)/$(REL_LIBDIR)
 ifeq (${SHAREDLIBS},yes)
-SHLIB = $(PGA_LIB_DIR)/lib$(PGA_LIB)-$(MPI).so.$(MAJOR).$(MINOR).$(PATCHLEVEL)
-SHARED = -shared -Wl,-soname,$(PGA_LIB)-$(MPI).so.$(MAJOR)
+SHLIBFILE = lib$(PGA_LIB)-$(MPI).so.$(VERSION)
+SHLIB = $(PGA_LIB_DIR)/$(SHLIBFILE)
+SHARED = -shared -Wl,-soname,lib$(PGA_LIB)-$(MPI).so.$(MAJOR)
+SHLIB_INSTALL = $(INSTALL) $(SHLIB) $(INSTALL_LIBDIR) && \
+    ln -sf $(SHLIBFILE) $(INSTALL_LIBDIR)/lib$(PGA_LIB)-$(MPI).so
+else
+SHLIB_INSTALL = true
 endif
 
-all: $(PGA_LIB_DIR)/lib$(PGA_LIB).a $(SHLIB)
+all: $(PGA_LIB_DIR)/lib$(PGA_LIB).a $(SHLIB) $(PCFILE)
 
 $(PGA_LIB_DIR)/lib$(PGA_LIB).a: $(OBJS)
 	ar rv $(PGA_LIB_DIR)/lib$(PGA_LIB).a $(OBJS)
@@ -51,7 +68,30 @@ $(PGA_LIB_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(PCFILE)
+
+install: all
+	$(INSTALL) -d $(INSTALL_LIBDIR)/pkgconfig
+	$(INSTALL) -d $(PREFIX)/include/pgapack-$(MPI)
+	$(SHLIB_INSTALL)
+	$(INSTALL) -T $(PGA_LIB_DIR)/lib$(PGA_LIB).a \
+	    $(INSTALL_LIBDIR)/lib$(PGA_LIB)-$(MPI).a
+	$(INSTALL) ../include/pgapack.h $(PREFIX)/include/pgapack-$(MPI)/
+	$(INSTALL) ../include/pgapackf.h $(PREFIX)/include/pgapack-$(MPI)/
+	$(INSTALL) -m 0644 $(PCFILE) $(INSTALL_LIBDIR)/pkgconfig/
+	ldconfig
+
+# pkgconf config file
+$(PCFILE): Makefile
+	echo Name: PGAPack                                    > $@
+	echo Description: Parallel Genetic Algorithm Package >> $@
+	echo Version: $(VERSION)                             >> $@
+	echo Requires: mpi                                   >> $@
+	echo prefix=$(PREFIX)                                >> $@
+	echo 'includedir=$${prefix}/include/pgapack-'$(MPI)  >> $@
+	echo 'libdir=$${prefix}/'$(REL_LIBDIR)               >> $@
+	echo 'Libs: -L$${libdir} -lpgapack-'$(MPI)           >> $@
+	echo 'Cflags: -I$${includedir}'                      >> $@
 
 .PHONY: clean
 

@@ -1,6 +1,7 @@
 *.o
 *.a
 *.bak
+*.pc
 lib
 .*.swp
 .nfs*
