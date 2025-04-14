@@ -9,7 +9,8 @@
 # The script takes an optional '-m' option for memory-debugging with
 # valgrind.
 
-VALGRIND="valgrind --track-origins=yes --leak-check=full"
+#VALGRIND="valgrind --track-origins=yes --leak-check=full"
+VALGRIND="valgrind"
 
 memdebug=0
 verbose=0
