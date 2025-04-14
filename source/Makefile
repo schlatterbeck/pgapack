@@ -71,7 +71,7 @@ REQUIRES=Requires: mpi
 endif
 endif
 
-all: $(PGA_LIB_DIR)/lib$(PGA_LIB).a $(SHLIB) $(PCFILE)
+all: $(PGA_LIB_DIR)/lib$(PGA_LIB).a $(SHLIB) $(PGA_LIB_DIR)/$(PCFILE)
 
 $(PGA_LIB_DIR)/lib$(PGA_LIB).a: $(OBJS)
 	ar rv $(PGA_LIB_DIR)/lib$(PGA_LIB).a $(OBJS)
@@ -102,7 +102,7 @@ ifeq (${MPI},serial)
 	$(INSTALL) -d $(INSTALL_INCDIR)/fakempi
 	$(INSTALL_PLAIN) ../fakempi/mpi.h $(INSTALL_INCDIR)/fakempi/mpi.h
 endif
-	$(INSTALL) -m 0644 $(PCFILE) $(INSTALL_LIBDIR)/pkgconfig/
+	$(INSTALL) -m 0644 $(PGA_LIB_DIR)/$(PCFILE) $(INSTALL_LIBDIR)/pkgconfig/
 	ldconfig
 
 # pkgconf config file
@@ -116,6 +116,9 @@ $(PCFILE):
 	echo 'libdir=$${prefix}/'$(REL_LIBDIR)               >> $@
 	echo 'Libs: -L$${libdir} -lpgapack-'$(MPI)           >> $@
 	echo 'Cflags: -I$${includedir}' $(FAKEMPI_OPT)       >> $@
+
+$(PGA_LIB_DIR)/$(PCFILE): $(PCFILE)
+	cp $< $@
 
 # Always re-create $(PCFILE)
 .PHONY: clean $(PCFILE)
