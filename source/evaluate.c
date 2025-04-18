@@ -458,9 +458,10 @@ void PGASetEvaluationUpToDateFlag (PGAContext *ctx, int p, int pop, int status)
     .. code-block:: c
 
         PGAContext *ctx;
+        int p;
 
         ...
-        if (PGAGetEvaluationUpToDateFlag (ctx)) {
+        if (PGAGetEvaluationUpToDateFlag (ctx, p, PGA_NEWPOP)) {
             printf ("Evaluation function value current\n");
         } else {
             printf ("Evaluation function value out-of-date\n");

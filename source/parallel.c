@@ -331,14 +331,23 @@ static void PGAEvaluateSeq
     for (p=0; p<ctx->ga.PopSize; p++) {
         if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
             double *aux = PGAGetAuxEvaluation (ctx, p, pop);
-            if (ctx->sys.UserFortran) {
+            if (ctx->fops.Hillclimb) {
                 int fp = p + 1;
-                e = (*((double(*)(void *, void *, void *, void *))evaluate))
-                    (&ctx, &fp, &pop, aux);
-            } else {
-                e = (*evaluate)(ctx, p, pop, aux);
+                (*ctx->fops.Hillclimb)(&ctx, &fp, &pop);
+            } else if (ctx->cops.Hillclimb) {
+                (*ctx->cops.Hillclimb)(ctx, p, pop);
             }
-            PGASetEvaluation (ctx, p, pop, e, aux);
+            /* Hillclimbing may have computed evaluation */
+            if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
+                if (ctx->sys.UserFortran) {
+                    int fp = p + 1;
+                    e = (*((double(*)(void *, void *, void *, void *))evaluate))
+                        (&ctx, &fp, &pop, aux);
+                } else {
+                    e = (*evaluate)(ctx, p, pop, aux);
+                }
+                PGASetEvaluation (ctx, p, pop, e, aux);
+            }
             ctx->rep.nevals++;
         }
     }
@@ -541,14 +550,23 @@ static void PGAEvaluateCoop
         }
         if (p<ctx->ga.PopSize) {
             double *aux = PGAGetAuxEvaluation (ctx, p, pop);
-            if (ctx->sys.UserFortran == PGA_TRUE) {
+            if (ctx->fops.Hillclimb) {
                 fp = p+1;
-                e = (*((double(*)(void *, void *, void *, void *))evaluate))
-                    (&ctx, &fp, &pop, aux);
-            } else {
-                e = (*evaluate)(ctx, p, pop, aux);
+                (*ctx->fops.Hillclimb)(&ctx, &fp, &pop);
+            } else if (ctx->cops.Hillclimb) {
+                (*ctx->cops.Hillclimb)(ctx, p, pop);
             }
-            PGASetEvaluation (ctx, p, pop, e, aux);
+            /* Hillclimbing may have computed evaluation */
+            if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
+                if (ctx->sys.UserFortran == PGA_TRUE) {
+                    fp = p+1;
+                    e = (*((double(*)(void *, void *, void *, void *))evaluate))
+                        (&ctx, &fp, &pop, aux);
+                } else {
+                    e = (*evaluate)(ctx, p, pop, aux);
+                }
+                PGASetEvaluation (ctx, p, pop, e, aux);
+            }
             ctx->rep.nevals++;
 #if DEBUG_EVAL
             fprintf (stdout, "%4d: %10.8e Local\n", p, e);
@@ -559,6 +577,10 @@ static void PGAEvaluateCoop
         if (q >= 0) {
             PGAReceiveEvaluation
                 (ctx, q, pop, 1, PGA_COMM_EVALOFSTRING, comm, &stat);
+            if (ctx->fops.Hillclimb || ctx->cops.Hillclimb) {
+                PGAReceiveIndividual
+                    (ctx, q, pop, 1, PGA_COMM_STRINGTOEVAL, comm, &stat);
+            }
             PGASetEvaluationUpToDateFlag (ctx, q, pop, PGA_TRUE);
             ctx->rep.nevals++;
 #if DEBUG_EVAL
@@ -652,26 +674,31 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
      *  will return an evaluation and get a new one immediately.
      */
     while(k<ctx->ga.PopSize) {
+        int src = -1;
         /*  Receive the next evaluated string.  */
         PGAReceiveEvaluation
             ( ctx, PGA_TEMP1, pop
             , MPI_ANY_SOURCE, PGA_COMM_EVALOFSTRING, comm, &stat
             );
-        p = work [stat.MPI_SOURCE];
+        src = stat.MPI_SOURCE;
+        p = work [src];
         PGASetEvaluation (ctx, p, pop, tmp1->evalue, tmp1->auxeval);
+        if (ctx->fops.Hillclimb || ctx->cops.Hillclimb) {
+            PGAReceiveIndividual
+                (ctx, p, pop, src, PGA_COMM_STRINGTOEVAL, comm, &stat);
+        }
         ctx->rep.nevals++;
 #if DEBUG_EVAL
         fprintf
             ( stdout
             , "%4d: %10.8e Worker %d  Sent %d\n"
-            , work[stat.MPI_SOURCE], e, stat.MPI_SOURCE, k
+            , work[src], e, src, k
             );
         fflush (stdout);
 #endif
         /*  Immediately send another string to be evaluated.  */
-        work [stat.MPI_SOURCE] = k;
-        PGASendIndividual
-            (ctx, k, pop, stat.MPI_SOURCE, PGA_COMM_STRINGTOEVAL, comm);
+        work [src] = k;
+        PGASendIndividual (ctx, k, pop, src, PGA_COMM_STRINGTOEVAL, comm);
 
         /*  Find the next unevaluated individual  */
         k++;
@@ -682,19 +709,25 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
 
     /*  All strings have been sent out.  Wait for them to be done.  */
     while (sentout > 0) {
+        int src = -1;
         PGAReceiveEvaluation
             ( ctx, PGA_TEMP1, pop
             , MPI_ANY_SOURCE, PGA_COMM_EVALOFSTRING, comm, &stat
             );
-        p = work [stat.MPI_SOURCE];
+        src = stat.MPI_SOURCE;
+        p = work [src];
         PGASetEvaluation (ctx, p, pop, tmp1->evalue, tmp1->auxeval);
+        if (ctx->fops.Hillclimb || ctx->cops.Hillclimb) {
+            PGAReceiveIndividual
+                (ctx, p, pop, src, PGA_COMM_STRINGTOEVAL, comm, &stat);
+        }
         ctx->rep.nevals++;
         sentout--;
 #if DEBUG_EVAL
         fprintf
             ( stdout
             , "%4d: %10.8e Worker %d\n"
-            , work [stat.MPI_SOURCE], e, stat.MPI_SOURCE
+            , work [src], e, src
             );
         fflush (stdout);
 #endif
@@ -756,15 +789,27 @@ static void PGAEvaluateWorker
             (ctx, PGA_TEMP1, pop, 0, PGA_COMM_STRINGTOEVAL, comm, &stat);
 
         aux = PGAGetAuxEvaluation (ctx, PGA_TEMP1, pop);
-        if (ctx->sys.UserFortran == PGA_TRUE) {
-            e = (*((double(*)(void *, void *, void *, void *))evaluate))
-                (&ctx, &k, &pop, aux);
-        } else {
-            e = (*evaluate)(ctx, PGA_TEMP1, pop, aux);
+        if (ctx->fops.Hillclimb) {
+            (*ctx->fops.Hillclimb)(&ctx, &k, &pop);
+        } else if (ctx->cops.Hillclimb) {
+            (*ctx->cops.Hillclimb)(ctx, PGA_TEMP1, pop);
         }
-        PGASetEvaluation (ctx, PGA_TEMP1, pop, e, aux);
+        /* Hillclimbing may have computed evaluation */
+        if (!PGAGetEvaluationUpToDateFlag (ctx, PGA_TEMP1, pop)) {
+            if (ctx->sys.UserFortran == PGA_TRUE) {
+                e = (*((double(*)(void *, void *, void *, void *))evaluate))
+                    (&ctx, &k, &pop, aux);
+            } else {
+                e = (*evaluate)(ctx, PGA_TEMP1, pop, aux);
+            }
+            PGASetEvaluation (ctx, PGA_TEMP1, pop, e, aux);
+        }
 
         PGASendEvaluation (ctx, PGA_TEMP1, pop, 0, PGA_COMM_EVALOFSTRING, comm);
+        /* We need to send the modified Individual back */
+        if (ctx->fops.Hillclimb || ctx->cops.Hillclimb) {
+            PGASendIndividual (ctx, k, pop, 0, PGA_COMM_STRINGTOEVAL, comm);
+        }
         MPI_Probe (0, MPI_ANY_TAG, comm, &stat);
     }
     MPI_Recv (&k, 1, MPI_INT, 0, PGA_COMM_DONEWITHEVALS, comm, &stat);

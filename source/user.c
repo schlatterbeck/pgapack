@@ -73,26 +73,35 @@ privately owned rights.
     - :c:macro:`PGA_USERFUNCTION_GEN_DISTANCE`     -- Genetic Distance
     - :c:macro:`PGA_USERFUNCTION_INITSTRING`       -- Initialization
     - :c:macro:`PGA_USERFUNCTION_BUILDDATATYPE`    -- MPI Datatype creation
+    - :c:macro:`PGA_USERFUNCTION_HASH`             -- Hashing of genes
+    - :c:macro:`PGA_USERFUNCTION_CHROM_FREE`       -- Free chromosome
+
+    The following need to be defined for serializing strings for
+    transmission:
+    - :c:macro:`PGA_USERFUNCTION_SERIALIZE`        -- Serialize userdefined gene
+    - :c:macro:`PGA_USERFUNCTION_DESERIALIZE`      --
+      Deserialize userdefined gene
+    - :c:macro:`PGA_USERFUNCTION_SERIALIZE_FREE`   -- Free serialized version
+
+    The following functions are always optional:
+
     - :c:macro:`PGA_USERFUNCTION_STOPCOND`         -- Stopping conditions
     - :c:macro:`PGA_USERFUNCTION_ENDOFGEN`         --
       Auxiliary functions at the end of each generation
     - :c:macro:`PGA_USERFUNCTION_PRE_EVAL`         --
       Auxiliary functions before evaluation but after crossover and
       mutation
-    - :c:macro:`PGA_USERFUNCTION_HASH`             -- Hashing of genes
-    - :c:macro:`PGA_USERFUNCTION_SERIALIZE`        -- Serialize userdefined gene
-    - :c:macro:`PGA_USERFUNCTION_DESERIALIZE`      --
-      Deserialize userdefined gene
-    - :c:macro:`PGA_USERFUNCTION_SERIALIZE_FREE`   -- Free serialized version
-    - :c:macro:`PGA_USERFUNCTION_CHROM_FREE`       -- Free chromosome
+    - :c:macro:`PGA_USERFUNCTION_HILLCLIMB`        -- Hillclimbing
 
-    It *may* be called when using a native datatype to replace the built-in
-    functions PGAPack has for that datatype (For example, if the Integer data
-    type is used for a traveling salesperson problem, the user may want to
-    provide their own custom crossover operator).  See
-    :ref:`group:const-ufun` for the constants and chapters
-    :ref:`chp:custom1` and :ref:`chp:new-data` in the user guide and the
-    examples in the examples directory for more details.
+    Some of these functions *may* be called when using a native datatype
+    to replace the built-in functions PGAPack has for that datatype (For
+    example, if the Integer data type is used for a traveling
+    salesperson problem, the user may want to provide their own custom
+    crossover operator).  See :ref:`group:const-ufun` for the constants
+    and chapters :ref:`chp:custom1` (for custom functions used with the
+    builtin data types) and :ref:`chp:new-data` (for defining new data
+    types) in the user guide and the examples in the examples directory
+    for more details.
 
     Example
     -------
@@ -281,6 +290,13 @@ void PGASetUserFunction (PGAContext *ctx, int constant, void *f)
             ctx->fops.Hash = (PGAHash(*)(void *, void *, void *))f;
         } else {
             ctx->cops.Hash = (PGAHash(*)(PGAContext *, int, int))f;
+        }
+        break;
+      case PGA_USERFUNCTION_HILLCLIMB:
+        if (ctx->sys.UserFortran) {
+            ctx->fops.Hillclimb = (void(*)(void *, void *, void *))f;
+        } else {
+            ctx->cops.Hillclimb = (void(*)(PGAContext *, int, int))f;
         }
         break;
       default:

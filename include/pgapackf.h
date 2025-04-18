@@ -236,6 +236,8 @@ c *** Yes, this is the same as DIFFERENCE above
       parameter ( PGA_USERFUNCTION_SERIALIZE_FREE =    16)
       integer PGA_USERFUNCTION_CHROM_FREE
       parameter ( PGA_USERFUNCTION_CHROM_FREE =        17)
+      integer PGA_USERFUNCTION_HILLCLIMB
+      parameter ( PGA_USERFUNCTION_HILLCLIMB =         18)
 
 c *** TAGS
       integer PGA_COMM_STRINGTOEVAL

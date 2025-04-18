@@ -496,7 +496,8 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_USERFUNCTION_DESERIALIZE             15 /**< De-serialization    */
 #define PGA_USERFUNCTION_SERIALIZE_FREE          16 /**< Free serialization  */
 #define PGA_USERFUNCTION_CHROM_FREE              17 /**< Free chromosome     */
-#define PGA_NUM_USERFUNCTIONS                    17 /**< Count               */
+#define PGA_USERFUNCTION_HILLCLIMB               18 /**< Hillclimbing        */
+#define PGA_NUM_USERFUNCTIONS                    18 /**< Count               */
 /*! @} */
 
 /*!*******************************************
@@ -709,6 +710,8 @@ typedef struct {
     void         (*SerializeFree)(void *);
     /** Freeing a chromosome */
     void         (*ChromFree)(PGAIndividual *ind);
+    /** Hillclimbing *before* evalution */
+    void         (*Hillclimb)(PGAContext *, int, int);
 } PGACOperations;
 
 /*!*****************************************
@@ -737,6 +740,8 @@ typedef struct {
     void         (*PreEval)(void *, void *);
     /** Hash of an Individual, needed for duplicate checking */
     PGAHash      (*Hash)(void *, void *, void *);
+    /** Hillclimbing *before* evalution */
+    void         (*Hillclimb)(void *, void *, void *);
 } PGAFortranOperations;
 
 /** Status during random sampling of k out of n without replacement.

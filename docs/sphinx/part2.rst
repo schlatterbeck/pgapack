@@ -1545,7 +1545,7 @@ This may be done as follows.
    double f        (double x1, double x2, double x3);
    int main (int argc, char **argv)
    {
-       PGAContext *ctx; 
+       PGAContext *ctx;
        ctx = PGACreate (&argc, argv, PGA_DATATYPE_BINARY, 40, PGA_MINIMIZE);
        PGASetUp        (ctx);
        PGARun          (ctx, grayfunc);
@@ -1786,13 +1786,13 @@ version of this example is given in Section :ref:`sec:par-explicit-usage`.
 
    int main (int argc, char **argv)
    {
-       PGAContext *ctx; 
+       PGAContext *ctx;
 
        ctx = PGACreate (&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
        PGASetUp    (ctx);
        PGAEvaluate (ctx, PGA_OLDPOP, evaluate, NULL);
        PGAFitness  (ctx, PGA_OLDPOP);
-       
+
        while (!PGADone(ctx, NULL)) {
            PGASelect                  (ctx, PGA_OLDPOP);
            PGARunMutationAndCrossover (ctx, PGA_OLDPOP, PGA_NEWPOP);
@@ -1818,7 +1818,7 @@ Complex Example
 
    int main (int argc, char **argv)
    {
-       PGAContext *ctx; 
+       PGAContext *ctx;
        int i, j, n, m1, m2, popsize, numreplace;
        double probcross;
 
@@ -1829,7 +1829,7 @@ Complex Example
        numreplace = PGAGetNumReplaceValue (ctx);
        PGAEvaluate (ctx, PGA_OLDPOP, evaluate, NULL);
        PGAFitness (ctx, PGA_OLDPOP          );
-       
+
        while (!PGADone (ctx, NULL)) {
            PGASelect  (ctx, PGA_OLDPOP);
            PGASortPop (ctx, PGA_OLDPOP);
@@ -1838,9 +1838,9 @@ Complex Example
                j = PGAGetSortedPopIndex (ctx, i);
                PGACopyIndividual (ctx, j, PGA_OLDPOP, i, PGA_NEWPOP);
            }
-           while (n < popsize) { 
+           while (n < popsize) {
                m1 = PGASelectNextIndex (ctx, PGA_OLDPOP);
-               m2 = PGASelectNextIndex (ctx, PGA_OLDPOP);        
+               m2 = PGASelectNextIndex (ctx, PGA_OLDPOP);
                if (PGARandomFlip (ctx, probcross)) {
                    PGACrossover (ctx, m1, m2, PGA_OLDPOP, PGA_TEMP1, PGA_TEMP2, PGA_NEWPOP);
                    PGAMutate (ctx, PGA_TEMP1, PGA_NEWPOP);
@@ -2026,6 +2026,7 @@ Basics
       End of generation    :c:macro:`PGA_USERFUNCTION_ENDOFGEN`
       Genetic distance     :c:macro:`PGA_USERFUNCTION_GEN_DISTANCE`
       Pre-Evaluate Hook    :c:macro:`PGA_USERFUNCTION_PRE_EVAL`
+      Hillclimbing         :c:macro:`PGA_USERFUNCTION_HILLCLIMB`
       ==================== ========================================
 
 In PGAPack, high-level (data-structure-neutral) functions call
@@ -2036,8 +2037,8 @@ defaults and set the function pointers to execute their functions
 instead. The functions the user can substitute for are initialization,
 crossover, mutation, checking for duplicate strings, string printing,
 termination criteria, a generic function called at the end of each GA
-iteration, and another generic function called *before* evaluation but
-after mutation and crossover.
+iteration, another generic function called *before* evaluation but
+after mutation and crossover, and hillclimbing.
 
 The function call
 :c:func:`PGASetUserFunction` with parameters
@@ -2048,10 +2049,16 @@ functions that can be customized for use with a native datatype. The
 first column describes the functionality, and the second column the
 symbolic constant for use with :c:func:`PGASetUserFunction`. The calling
 sequence for these functions is fixed and *must* follow the function
-prototypes in Table :ref:`tab:custom-functions`. The files
-``./examples/templates/uf_native.c`` and
-``./examples/templates/uf_native.f`` contain template routines for these
-functions. A specific example is given below.
+prototypes in Table :ref:`tab:custom-functions`.
+In this table the parameter name ``p`` or ``p1``, ``p2`` is the index
+of a population member. The name ``pop`` (or ``pop1``, ``pop2``)
+indicates a population (either the old population :c:macro:`PGA_OLDPOP`
+or the new population :c:macro:`PGA_NEWPOP`). The custom crossover
+function gets two parent individuals and is supposed to produce two
+child individuals. The calling sequence is ``p1``, ``p2``, ``pop1``,
+``c1``, ``c2``, ``pop2`` where ``p1`` and ``p2`` are the parent indeces,
+``c1`` and ``c2`` are the child indeces, ``pop1`` is the parent
+population and ``pop2`` is the child population.
 
 Checking the termination criteria requires some discussion. The function
 :c:func:`PGADone` will *either* check to see if the standard stopping criteria
@@ -2062,7 +2069,24 @@ in addition to whatever else it does, it should call
 :c:func:`PGACheckStoppingConditions`. Do *not* call :c:func:`PGADone` as this
 will cause an infinite loop to occur. Note that in a parallel program
 :c:func:`PGACheckStoppingConditions` should only be called by the rank-0
-process (see Chapter :ref:`chp:parallel`).
+process (see Chapter :ref:`chp:parallel`). A typical implementation of a
+function that checks complex stopping criteria will typically look like
+the following in C::
+
+ int stopcond (PGAContext *ctx)
+ {
+    int best = PGAGetBestIndex (ctx, PGA_OLDPOP);
+    if (complex_stopping_criterion) {
+        return PGA_TRUE;
+    }
+    return PGACheckStoppingConditions (ctx);
+ }
+
+Note how the function checks some condition on the old population
+:c:macro:`PGA_OLDPOP` and defaults to checking the normal stopping
+criteria if the complex stopping condition is not met. For the standard
+usage the function is always called when the populations have been
+switched, so :c:macro:`PGA_OLDPOP` should always be used.
 
 The end of generation function (which is null by default) may be used
 for gathering statistics about the GA, displaying custom output,
@@ -2070,7 +2094,10 @@ or even call a hill-climber, etc.  This function is called after all
 generational computation is complete, but before the population pointers
 (:c:macro:`PGA_NEWPOP`, :c:macro:`PGA_OLDPOP`) have been switched and
 the standard PGAPack output printed. Therefore, be sure to use
-:c:macro:`PGA_NEWPOP` as the population pointer. There is no mechanism
+:c:macro:`PGA_NEWPOP` as the population pointer.
+
+The string printing function can be used to customize what is printed
+when PGAPack decides to print a string. There is currently no mechanism
 for suppressing the standard PGAPack generational output.
 
 The genetic distance function computes the genetic distance
@@ -2126,31 +2153,51 @@ work because each parallel instance would use a separate cache. The pre
 evaluation user function is called only in the rank-0 instance for a
 parallel implementation.
 
+The hillclimbing function can be used to call a hillclimbing algorithm
+on newly generated individuals *before the are evaluated*. In the
+parallel version the hillclimber is called in the parallel processes, so
+hillclimbing occurs in parallel. If the hillclimber already computes the
+evaluation it should set the :c:func:`PGASetEvaluationUpToDateFlag` on
+the individual (setting the evaluation with :c:func:`PGASetEvaluation
+also sets the flag). This avoids a call to the evaluation function. An
+example hillclimber is given in ``./examples/maxbit-hc.c`` -- it
+randomly sets one of the bits to ``1``. Note that in this case the
+evaluation is not computed and the evaluation is called by PGAPack.
+When this example is run in a parallel version it will terminate after a
+different number of generations each time it is run (it stops when all
+bits are ``1``). Since the hillclimber sets a random bit to ``1`` and
+each parallel process has its own random number generator the random bit
+is different for each parallel process. Since the assignment of
+evaluations to processes is random we get different results on each
+execution.
+
 .. _tab:custom-functions:
 
 .. table::  Calling Sequences for Customizable Functions
 
-      +------------------------------------------+-------------+---------------------------------------------------+
-      | :c:macro:`PGA_USERFUNCTION_INITSTRING`   | ``void``    | ``(PGAContext*, int, int)``                       |
-      +------------------------------------------+-------------+---------------------------------------------------+
-      | :c:macro:`PGA_USERFUNCTION_CROSSOVER`    | ``void``    | ``(PGAContext*, int, int, int, int, int, int)``   |
-      +------------------------------------------+-------------+---------------------------------------------------+
-      | :c:macro:`PGA_USERFUNCTION_MUTATION`     | ``int``     | ``(PGAContext*, int, int, double)``               |
-      +------------------------------------------+-------------+---------------------------------------------------+
-      | :c:macro:`PGA_USERFUNCTION_DUPLICATE`    | ``int``     | ``(PGAContext*, int, int, int, int)``             |
-      +------------------------------------------+-------------+---------------------------------------------------+
-      | :c:macro:`PGA_USERFUNCTION_HASH`         | ``PGAHash`` | ``(PGAContext*, int, int)``                       |
-      +------------------------------------------+-------------+---------------------------------------------------+
-      | :c:macro:`PGA_USERFUNCTION_PRINTSTRING`  | ``void``    | ``(PGAContext*, FILE *, int, int)``               |
-      +------------------------------------------+-------------+---------------------------------------------------+
-      | :c:macro:`PGA_USERFUNCTION_STOPCOND`     | ``int``     | ``(PGAContext*)``                                 |
-      +------------------------------------------+-------------+---------------------------------------------------+
-      | :c:macro:`PGA_USERFUNCTION_ENDOFGEN`     | ``void``    | ``(PGAContext*)``                                 |
-      +------------------------------------------+-------------+---------------------------------------------------+
-      | :c:macro:`PGA_USERFUNCTION_GEN_DISTANCE` | ``double``  | ``(PGAContext*, int, int, int, int)``             |
-      +------------------------------------------+-------------+---------------------------------------------------+
-      | :c:macro:`PGA_USERFUNCTION_PRE_EVAL`     | ``void``    | ``(PGAContext*, int)``                            |
-      +------------------------------------------+-------------+---------------------------------------------------+
+      +------------------------------------------+-------------+-------------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_INITSTRING`   | ``void``    | ``(PGAContext*, int p, int pop)``                     |
+      +------------------------------------------+-------------+-------------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_CROSSOVER`    | ``void``    | ``(PGAContext*, int, int, int, int, int, int)``       |
+      +------------------------------------------+-------------+-------------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_MUTATION`     | ``int``     | ``(PGAContext*, int p, int pop, double prob)``        |
+      +------------------------------------------+-------------+-------------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_DUPLICATE`    | ``int``     | ``(PGAContext*, int p, int pop1, int p2, int pop2)``  |
+      +------------------------------------------+-------------+-------------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_HASH`         | ``PGAHash`` | ``(PGAContext*, int p, int pop)``                     |
+      +------------------------------------------+-------------+-------------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_PRINTSTRING`  | ``void``    | ``(PGAContext*, FILE *, int p, int pop)``             |
+      +------------------------------------------+-------------+-------------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_STOPCOND`     | ``int``     | ``(PGAContext*)``                                     |
+      +------------------------------------------+-------------+-------------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_ENDOFGEN`     | ``void``    | ``(PGAContext*)``                                     |
+      +------------------------------------------+-------------+-------------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_GEN_DISTANCE` | ``double``  | ``(PGAContext*, int p1, int pop1, int p2, int pop2)`` |
+      +------------------------------------------+-------------+-------------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_PRE_EVAL`     | ``void``    | ``(PGAContext*, int pop)``                            |
+      +------------------------------------------+-------------+-------------------------------------------------------+
+      | :c:macro:`PGA_USERFUNCTION_HILLCLIMB`    | ``void``    | ``(PGAContext*, int p, int pop)``                     |
+      +------------------------------------------+-------------+-------------------------------------------------------+
 
 Example Problem: C
 ~~~~~~~~~~~~~~~~~~
@@ -2181,7 +2228,7 @@ generates a random integer on the interval :math:`[1,L]`.
 
    int main (int argc, char **argv)
    {
-        PGAContext *ctx; 
+        PGAContext *ctx;
         int i, maxiter;
         ctx = PGACreate (&argc, argv, PGA_DATATYPE_INTEGER, 10, PGA_MAXIMIZE);
         PGASetUserFunction       (ctx, PGA_USERFUNCTION_MUTATION, myMutation);
@@ -2239,7 +2286,7 @@ Figure :ref:`example:maxbit-custom` written in Fortran.
          call MPI_Finalize(ierror)
          stop
          end
-         
+
          integer function myMutation(ctx, p, pop, pm)
          include          'pgapackf.h'
          integer           ctx, p, pop
@@ -2319,7 +2366,7 @@ specified to :c:func:`PGACreate` can be whatever the user desires. It will be
 returned by :c:func:`PGAGetStringLength` but is not otherwise used in the
 data-structure-neutral functions of PGAPack.
 
-When specifying a user function for string creation (with
+When specifying a user function for string creation with
 :c:macro:`PGA_USERFUNCTION_CREATESTRING`, by default the string is freed using
 the ``free`` function. If memory allocation uses different mechanisms, a
 user function for freeing a chromosome can be specified with
@@ -2361,27 +2408,29 @@ user defined datatypes the function :c:func:`PGAUtilHash` in
 
 .. table::  Calling Sequences for New Data Type Functions
 
-  +--------------------------------------------+------------+---------------------------------------------------+
-  | :c:macro:`PGA_USERFUNCTION_CREATESTRING`   | ``void``   | ``(PGAContext*, int, int, int)``                  |
-  +--------------------------------------------+------------+---------------------------------------------------+
-  | :c:macro:`PGA_USERFUNCTION_BUILDDATATYPE`  | ``int``    | ``(PGAContext*, int, int)``                       |
-  +--------------------------------------------+------------+---------------------------------------------------+
-  | :c:macro:`PGA_USERFUNCTION_SERIALIZE`      | ``size_t`` | ``(PGAContext*, int, int, const void **)``        |
-  +--------------------------------------------+------------+---------------------------------------------------+
-  | :c:macro:`PGA_USERFUNCTION_DESERIALIZE`    | ``void``   | ``(PGAContext*, int, int, const void *, size_t)`` |
-  +--------------------------------------------+------------+---------------------------------------------------+
-  | :c:macro:`PGA_USERFUNCTION_SERIALIZE_FREE` | ``void``   | ``(void *)``                                      |
-  +--------------------------------------------+------------+---------------------------------------------------+
-  | :c:macro:`PGA_USERFUNCTION_MUTATION`       | ``int``    | ``(PGAContext*, int, int, double)``               |
-  +--------------------------------------------+------------+---------------------------------------------------+
-  | :c:macro:`PGA_USERFUNCTION_CROSSOVER`      | ``void``   | ``(PGAContext*, int, int, int, int, int, int)``   |
-  +--------------------------------------------+------------+---------------------------------------------------+
-  | :c:macro:`PGA_USERFUNCTION_PRINTSTRING`    | ``void``   | ``(PGAContext*, FILE *, int, int)``               |
-  +--------------------------------------------+------------+---------------------------------------------------+
-  | :c:macro:`PGA_USERFUNCTION_COPYSTRING`     | ``int``    | ``(PGAContext*, int, int, int, int)``             |
-  +--------------------------------------------+------------+---------------------------------------------------+
-  | :c:macro:`PGA_USERFUNCTION_DUPLICATE`      | ``int``    | ``(PGAContext*, int, int, int, int)``             |
-  +--------------------------------------------+------------+---------------------------------------------------+
+  +--------------------------------------------+------------------+-----------------------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_CREATESTRING`   | ``void``         | ``(PGAContext*, int p, int pop, int flag)``                     |
+  +--------------------------------------------+------------------+-----------------------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_CHROM_FREE`     | ``void``         | ``(PGAContext*)``                                               |
+  +--------------------------------------------+------------------+-----------------------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_BUILDDATATYPE`  | ``MPI_Datatype`` | ``(PGAContext*, int p, int pop)``                               |
+  +--------------------------------------------+------------------+-----------------------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_MUTATION`       | ``int``          | ``(PGAContext*, int p, int pop, double prob)``                  |
+  +--------------------------------------------+------------------+-----------------------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_CROSSOVER`      | ``void``         | ``(PGAContext*, int, int, int, int, int, int)``                 |
+  +--------------------------------------------+------------------+-----------------------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_PRINTSTRING`    | ``void``         | ``(PGAContext*, FILE *, int p, int pop)``                       |
+  +--------------------------------------------+------------------+-----------------------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_COPYSTRING`     | ``int``          | ``(PGAContext*, int p1, int pop1, int p2, int pop2)``           |
+  +--------------------------------------------+------------------+-----------------------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_DUPLICATE`      | ``int``          | ``(PGAContext*, int p1, int pop1, int p2, int pop2)``           |
+  +--------------------------------------------+------------------+-----------------------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_SERIALIZE`      | ``size_t``       | ``(PGAContext*, int p, int pop, const void **ser)``             |
+  +--------------------------------------------+------------------+-----------------------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_DESERIALIZE`    | ``void``         | ``(PGAContext*, int p, int pop, const void *ser, size_t size)`` |
+  +--------------------------------------------+------------------+-----------------------------------------------------------------+
+  | :c:macro:`PGA_USERFUNCTION_SERIALIZE_FREE` | ``void``         | ``(void *)freeme``                                              |
+  +--------------------------------------------+------------------+-----------------------------------------------------------------+
 
 While PGAPack requires that the user supply all the functions in
 Table :ref:`tab:new-functions`, your program may not require the
@@ -2730,7 +2779,7 @@ population to apply it to.
 
 PGAPack supports hybrid schemes in the following ways:
 
--  By passing, the context variable as a parameter to the user’s
+-  By passing the context variable as a parameter to the user's
    hill-climbing function, the user has access to solution and parameter
    values, debug flags, and other information.
 
@@ -2761,10 +2810,22 @@ PGAPack supports hybrid schemes in the following ways:
    functions have an optional fifth argument ``aux``, that allows to get
    or set the auxiliary evaluations, see section :ref:`sec:evaluation`.
 
-One way to run a hybrid GA and use :c:func:`PGARun` is to use the
+
+The preferred way to run a hybrid GA and use :c:func:`PGARun` is to use the
 :c:func:`PGASetUserFunction` discussed in Chapter :ref:`chp:custom1` to
-specify a user function to be called at the end of each GA iteration. A
-more flexible approach would be for the user to call the high-level
+specify a user function to be called before evaluation of a new
+individual using :c:macro:`PGA_USERFUNCTION_HILLCLIMB`. An example can
+be found in ``./examples/maxbit-hc.c``. When using a parallel version
+this is called in the parallel processes and so the hillclimbing is also
+parallelized. The hillclimbing function can chose to evaluate the given
+individual. Then it has to set the evaluation using
+:c:func:`PGASetEvaluation` (this will also set the up-to-date flag, so
+an extra call to :c:func:`PGASetEvaluationUpToDateFlag` is not needed.
+When the up-to-date flag is set, this signals to PGAPack that the
+evaluation is already done. If no evaluation is performed, the
+evaluation function is called by PGAPack after the hillclimber.
+
+A more flexible approach would be for the user to call the high-level
 PGAPack functions, and their hillclimber to explicitly specify the steps
 of the hybrid GA.
 
@@ -2794,7 +2855,7 @@ changes a string, since the value of this flag determines whether
 
         ctx = PGACreate (&argc, argv, PGA_DATATYPE_BINARY, 100, PGA_MAXIMIZE);
         PGASetUp (ctx);
-        PGAEvaluate (ctx, PGA_OLDPOP, evaluate, NULL);  
+        PGAEvaluate (ctx, PGA_OLDPOP, evaluate, NULL);
         PGAFitness (ctx, PGA_OLDPOP);
         while (!PGADone (ctx, NULL)) {
             PGASelect                  (ctx, PGA_OLDPOP);

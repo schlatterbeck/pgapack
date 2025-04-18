@@ -7,6 +7,38 @@
 
 double NumberOfSetBits (PGAContext *, int, int, double *);
 
+/* User defined hillclimber: We get a random bit index and if the bit is
+ * 0 se set it to 1
+ */
+/*******************************************************************
+*               user defined hillclimber                           *
+*   ctx - contex variable                                          *
+*   p   - chromosome index in population                           *
+*   pop - which population to refer to                             *
+*   We get a random bit index and set the bit to 1                 *
+*   Most hillclimbers make use of problem knowledge: We know a 1   *
+*   is better.                                                     *
+*******************************************************************/
+void hillclimb (PGAContext *ctx, int p, int pop)
+{
+    int len = PGAGetStringLength (ctx);
+    int idx = PGARandomInterval (ctx, 0, len - 1);
+    PGASetBinaryAllele (ctx, p, pop, idx, 1);
+}
+
+/*******************************************************************
+*               user defined stopping check                        *
+*   ctx - contex variable                                          *
+*******************************************************************/
+int stopcond (PGAContext *ctx)
+{
+    int best = PGAGetBestIndex (ctx, PGA_OLDPOP);
+    if (PGAGetEvaluation (ctx, best, PGA_OLDPOP) == PGAGetStringLength (ctx)) {
+        return PGA_TRUE;
+    }
+    return PGACheckStoppingConditions (ctx);
+}
+
 /*******************************************************************
 *                   user main program                              *
 *******************************************************************/
@@ -21,6 +53,8 @@ int main (int argc, char **argv)
     
     ctx = PGACreate (&argc, argv, PGA_DATATYPE_BINARY, 256, PGA_MAXIMIZE);
     PGASetRandomSeed (ctx, 1);
+    PGASetUserFunction (ctx, PGA_USERFUNCTION_HILLCLIMB, hillclimb);
+    PGASetUserFunction (ctx, PGA_USERFUNCTION_STOPCOND, stopcond);
     /* Extended reporting */
     if (full_report) {
         PGASetPrintOptions (ctx, PGA_REPORT_ONLINE);
