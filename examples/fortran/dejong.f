@@ -37,6 +37,7 @@ c
 
       call PGASetMaxGAIterValue(ctx, maxiter)
       call PGASetRandomSeed(ctx, 1)
+      if (testnum .eq. 4) call PGASetRandomDeterministic(ctx, 1)
     
       call PGASetUp(ctx)
 
