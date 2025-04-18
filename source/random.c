@@ -154,9 +154,6 @@ int PGARandomInterval (PGAContext *ctx, int start, int end)
     Each of these 900,000,000 values gives rise to an independent
     sequence of :math:`\approx 10^{30}`.
 
-    Warning on use of static storage class on thread shared memory
-    machines.
-
     Example
     -------
 
@@ -179,12 +176,7 @@ double PGARandom01 (PGAContext *ctx, int newseed)
     /* initialization variables */
     int ij, kl, i, j, k, l, m, ii, jj;
     float s, t;
-
-    /* random number variables */
-    static int seed=1;      /* default seed if none specified */
-    static int i96, j96;
-    static float u [97], uni, c, cd, cm;
-
+    PGARandomState *st = ctx->randstate;
 
     PGADebugEntered ("PGARandom01");
 
@@ -192,9 +184,9 @@ double PGARandom01 (PGAContext *ctx, int newseed)
 
     if (newseed != 0) {
 
-        seed = newseed % 900000000;
-        ij   = seed / 30082;
-        kl   = seed - 30082 * ij;
+        st->seed = newseed % 900000000;
+        ij   = st->seed / 30082;
+        kl   = st->seed - 30082 * ij;
         i    = ((ij/177) % 177) + 2;
         j    = ( ij      % 177) + 2;
         k    = ((kl/169) % 178) + 1;
@@ -218,41 +210,41 @@ double PGARandom01 (PGAContext *ctx, int newseed)
                 t *= .5;
             }
 
-            u [ii] = s;
+            st->u [ii] = s;
         }
 
-        c   = 362436.  /16777216.;
-        cd  = 7654321. /16777216.;
-        cm  = 16777213./16777216.;
-        i96 = 96;
-        j96 = 32;
+        st->c   = 362436.  /16777216.;
+        st->cd  = 7654321. /16777216.;
+        st->cm  = 16777213./16777216.;
+        st->i96 = 96;
+        st->j96 = 32;
     }
 
     /* random number generation */
-    uni = u [i96] - u [j96];
-    if (uni < 0.) {
-        uni += 1.0;
+    st->uni = st->u [st->i96] - st->u [st->j96];
+    if (st->uni < 0.) {
+        st->uni += 1.0;
     }
-    u [i96] = uni;
-    i96--;
-    if (i96 < 0) {
-        i96 = 96;
+    st->u [st->i96] = st->uni;
+    st->i96--;
+    if (st->i96 < 0) {
+        st->i96 = 96;
     }
-    j96--;
-    if (j96 < 0) {
-        j96 = 96;
+    st->j96--;
+    if (st->j96 < 0) {
+        st->j96 = 96;
     }
-    c   -= cd;
-    if (c < 0.) {
-        c += cm;
+    st->c   -= st->cd;
+    if (st->c < 0.) {
+        st->c += st->cm;
     }
-    uni -= c;
-    if (uni < 0.) {
-        uni += 1.0;
+    st->uni -= st->c;
+    if (st->uni < 0.) {
+        st->uni += 1.0;
     }
 
     PGADebugExited ("PGARandom01");
-    return (double) uni;
+    return (double) st->uni;
 }
 
 /*!****************************************************************************
@@ -421,6 +413,58 @@ void PGASetRandomSeed (PGAContext *ctx, int seed)
     }
 
     PGADebugExited ("PGASetRandomSeed");
+}
+
+/*!****************************************************************************
+    \brief Set flag that a deterministic random seed should be used in
+    parallel processes
+    \ingroup init
+    \param   ctx   context variable
+    \return  None
+
+    \rst
+
+    Description
+    -----------
+
+    By default each parallel MPI process uses its own random number
+    generator. So when using random numbers in evaluation or
+    hillclimbing the random numbers we get are not reproduceable because
+    it is a stochastic process which parallel process evaluates which
+    individual. When this function is called we set a flag that uses a
+    second random number generator which is deterministically re-seeded
+    from the rank-0 process for each evaluation. The net effect is that
+    hillclimbing runs (or evaluations that depend on random numbers) can
+    be made deterministic (when using the PGAPack random number
+    generator) when running again with the same random seed.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetRandomDeterministic (ctx, PGA_TRUE);
+
+    \endrst
+
+******************************************************************************/
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+#define MAX_PROCESSORS 2048
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+void PGASetRandomDeterministic (PGAContext *ctx, int flag)
+{
+
+    PGAFailIfSetUp  ("PGASetRandomDeterministic");
+
+    if (flag) {
+        ctx->init.RandomDeterministic = PGA_TRUE;
+    } else {
+        ctx->init.RandomDeterministic = PGA_FALSE;
+    }
 }
 
 

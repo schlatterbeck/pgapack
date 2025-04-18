@@ -298,6 +298,15 @@ void PGARunGM
     PGADebugExited ("PGARunGM");
 }
 
+/* Create seeds for alternate rand generator in intscratch */
+static void gen_randseeds (PGAContext *ctx)
+{
+    int p;
+    for (p=0; p<ctx->ga.PopSize; p++) {
+        ctx->scratch.intscratch [p] = PGARandomInterval (ctx, 1, 0x7FFFFFFF);
+    }
+}
+
 
 /*!****************************************************************************
     \brief Sequential internal evalution function.
@@ -327,10 +336,18 @@ static void PGAEvaluateSeq
 
     PGADebugEntered ("PGAEvaluateSeq");
 
+    if (ctx->init.RandomDeterministic) {
+        gen_randseeds (ctx);
+        ctx->randstate = &ctx->rand2;
+    }
     /*  Standard sequential evaluation.  */
     for (p=0; p<ctx->ga.PopSize; p++) {
         if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
             double *aux = PGAGetAuxEvaluation (ctx, p, pop);
+            /* seed alternative rand generator */
+            if (ctx->init.RandomDeterministic) {
+                PGARandom01 (ctx, ctx->scratch.intscratch [p]);
+            }
             if (ctx->fops.Hillclimb) {
                 int fp = p + 1;
                 (*ctx->fops.Hillclimb)(&ctx, &fp, &pop);
@@ -350,6 +367,9 @@ static void PGAEvaluateSeq
             }
             ctx->rep.nevals++;
         }
+    }
+    if (ctx->init.RandomDeterministic) {
+        ctx->randstate = &ctx->rand1;
     }
     PGADebugExited ("PGAEvaluateSeq");
 }
@@ -450,6 +470,38 @@ void PGASendEvaluation (PGAContext *ctx, int p, int pop, int dest, int tag,
 }
 
 /*!****************************************************************************
+    \brief Transmit random seed
+    \ingroup internal
+
+    \param  ctx   context variable
+    \param  seed  random seed
+    \param  dest  ID of the process where this is going
+    \param  comm  MPI communicator
+
+    \rst
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+      int dest, seed;
+
+      ...
+      PGASendRandSeed (ctx, seed, dest, comm);
+
+    \endrst
+
+******************************************************************************/
+static
+void PGASendRandSeed
+    (PGAContext *ctx, int seed, int dest, MPI_Comm comm)
+{
+    MPI_Send (&seed, 1, MPI_INT, dest, PGA_COMM_RANDOM_SEED, comm);
+}
+
+/*!****************************************************************************
     \brief Receive evaluation and aux eval from another process
     \ingroup internal
     \param  ctx     contex variable
@@ -496,6 +548,43 @@ void PGAReceiveEvaluation
 }
 
 /*!****************************************************************************
+    \brief Receive random seed
+    \ingroup internal
+    \param  ctx     contex variable
+    \param  source  ID of the process from which to receive
+    \param  comm    an MPI communicator
+    \param  status  pointer to an MPI status structure
+    \return seed
+
+    \rst
+
+    Example
+    -------
+
+    Receive seed from main-process
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+      MPI_Comm    comm;
+      MPI_Status  stat;
+
+      ...
+      int seed = PGAReceiveRandSeed (ctx, 0, comm, &stat);
+
+    \endrst
+
+******************************************************************************/
+static
+int PGAReceiveRandSeed
+    (PGAContext *ctx, int source, MPI_Comm comm, MPI_Status *status)
+{
+    int seed;
+    MPI_Recv (&seed, 1, MPI_INT, source, PGA_COMM_RANDOM_SEED, comm, status);
+    return seed;
+}
+
+/*!****************************************************************************
     \brief Cooperative internal evaluation function.
     \ingroup internal
     \param   ctx      context variable
@@ -535,12 +624,19 @@ static void PGAEvaluateCoop
 
     ind = PGAGetIndividual (ctx, 0, pop);
 
+    if (ctx->init.RandomDeterministic) {
+        gen_randseeds (ctx);
+    }
     for (p=0; p<ctx->ga.PopSize;) {
         while ((p<ctx->ga.PopSize) && (ind+p)->evaluptodate) {
             p++;
         }
-        if (p<ctx->ga.PopSize) {
+        if (p < ctx->ga.PopSize) {
             PGASendIndividual (ctx, p, pop, 1, PGA_COMM_STRINGTOEVAL, comm);
+            if (ctx->init.RandomDeterministic) {
+                int seed = ctx->scratch.intscratch [p];
+                PGASendRandSeed (ctx, seed, 1, comm);
+            }
             q = p;
         }
         p++;
@@ -550,6 +646,10 @@ static void PGAEvaluateCoop
         }
         if (p<ctx->ga.PopSize) {
             double *aux = PGAGetAuxEvaluation (ctx, p, pop);
+            if (ctx->init.RandomDeterministic) {
+                ctx->randstate = &ctx->rand2;
+                PGARandom01 (ctx, ctx->scratch.intscratch [p]);
+            }
             if (ctx->fops.Hillclimb) {
                 fp = p+1;
                 (*ctx->fops.Hillclimb)(&ctx, &fp, &pop);
@@ -566,6 +666,9 @@ static void PGAEvaluateCoop
                     e = (*evaluate)(ctx, p, pop, aux);
                 }
                 PGASetEvaluation (ctx, p, pop, e, aux);
+            }
+            if (ctx->init.RandomDeterministic) {
+                ctx->randstate = &ctx->rand1;
             }
             ctx->rep.nevals++;
 #if DEBUG_EVAL
@@ -644,11 +747,18 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
     s = 1;
     ind = PGAGetIndividual (ctx, 0, pop);
 
+    if (ctx->init.RandomDeterministic) {
+        gen_randseeds (ctx);
+    }
     /*  Send strings to all processes, since they are all unused.  */
     for (k=0; ((k<ctx->ga.PopSize) && (s<size)); k++) {
         if ((ind+k)->evaluptodate == PGA_FALSE) {
             work[s] = k;
             PGASendIndividual (ctx, k, pop, s, PGA_COMM_STRINGTOEVAL, comm);
+            if (ctx->init.RandomDeterministic) {
+                int seed = ctx->scratch.intscratch [k];
+                PGASendRandSeed (ctx, seed, s, comm);
+            }
 #if DEBUG_EVAL
             fprintf (stdout, "%4d: Sent to worker %d.\n", k, s);
             fflush  (stdout);
@@ -699,6 +809,10 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
         /*  Immediately send another string to be evaluated.  */
         work [src] = k;
         PGASendIndividual (ctx, k, pop, src, PGA_COMM_STRINGTOEVAL, comm);
+        if (ctx->init.RandomDeterministic) {
+            int seed = ctx->scratch.intscratch [k];
+            PGASendRandSeed (ctx, seed, src, comm);
+        }
 
         /*  Find the next unevaluated individual  */
         k++;
@@ -787,6 +901,11 @@ static void PGAEvaluateWorker
         double *aux;
         PGAReceiveIndividual
             (ctx, PGA_TEMP1, pop, 0, PGA_COMM_STRINGTOEVAL, comm, &stat);
+        if (ctx->init.RandomDeterministic) {
+            int seed = PGAReceiveRandSeed (ctx, 0, comm, &stat);
+            ctx->randstate = &ctx->rand2;
+            PGARandom01 (ctx, seed);
+        }
 
         aux = PGAGetAuxEvaluation (ctx, PGA_TEMP1, pop);
         if (ctx->fops.Hillclimb) {
@@ -803,6 +922,9 @@ static void PGAEvaluateWorker
                 e = (*evaluate)(ctx, PGA_TEMP1, pop, aux);
             }
             PGASetEvaluation (ctx, PGA_TEMP1, pop, e, aux);
+        }
+        if (ctx->init.RandomDeterministic) {
+            ctx->randstate = &ctx->rand1;
         }
 
         PGASendEvaluation (ctx, PGA_TEMP1, pop, 0, PGA_COMM_EVALOFSTRING, comm);

@@ -248,6 +248,7 @@ privately owned rights.
 #define pgarandomgaussian_               PGARANDOMGAUSSIAN
 #define pgagetrandomseed_                PGAGETRANDOMSEED
 #define pgasetrandomseed_                PGASETRANDOMSEED
+#define pgasetrandomdeterministic_       PGASETRANDOMDETERMINISTIC
 /* real.c */
 #define pgasetrealallele_                PGASETREALALLELE
 #define pgagetrealallele_                PGAGETREALALLELE
@@ -499,6 +500,7 @@ privately owned rights.
 #define pgarandomgaussian_               _pgarandomgaussian_
 #define pgagetrandomseed_                _pgagetrandomseed_
 #define pgasetrandomseed_                _pgasetrandomseed_
+#define pgasetrandomdeterministic_       _pgasetrandomdeterministic_
 /* real.c */
 #define pgasetrealallele_                _pgasetrealallele_
 #define pgagetrealallele_                _pgagetrealallele_
@@ -750,6 +752,7 @@ privately owned rights.
 #define pgarandomgaussian_               pgarandomgaussian
 #define pgagetrandomseed_                pgagetrandomseed
 #define pgasetrandomseed_                pgasetrandomseed
+#define pgasetrandomdeterministic_       pgasetrandomdeterministic
 /* real.c */
 #define pgasetrealallele_                pgasetrealallele
 #define pgagetrealallele_                pgagetrealallele
@@ -1021,6 +1024,7 @@ double pgarandomuniform_(PGAContext **ftx, double *start, double *end);
 double pgarandomgaussian_(PGAContext **ftx, double *mean, double *sigma);
 int pgagetrandomseed_(PGAContext **ftx);
 void pgasetrandomseed_(PGAContext **ftx, int *seed);
+void pgasetrandomdeterministic_(PGAContext **ftx, int *seed);
 /* real.c */
 void pgasetrealallele_(PGAContext **ftx, int *p, int *pop, int *i,
      double *val);
@@ -2102,6 +2106,12 @@ void pgasetrandomseed_(PGAContext **ftx, int *seed)
 {
      PGASetRandomSeed  (*ftx, *seed);
 }
+
+void pgasetrandomdeterministic_(PGAContext **ftx, int *RandomBoolean)
+{
+     PGASetRandomDeterministic  (*ftx, *RandomBoolean);
+}
+
 
 /* real.c */
 void pgasetrealallele_(PGAContext **ftx, int *p, int *pop, int *i,

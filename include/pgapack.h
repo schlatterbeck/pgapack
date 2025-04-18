@@ -509,6 +509,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_COMM_EVALOFSTRING        2 /**< MPI tag for returning evaluation */
 #define PGA_COMM_DONEWITHEVALS       3 /**< MPI tag for ending parallel eval */
 #define PGA_COMM_SERIALIZE_SIZE      4 /**< MPI tag for serialized data size */
+#define PGA_COMM_RANDOM_SEED         5 /**< MPI tag for random seed          */
 /*! @} */
 
 /*!***************************************
@@ -822,6 +823,7 @@ typedef struct {
     double *RealMin;               /**< minimum of range of reals            */
     double *RealMax;               /**< maximum of range of reals            */
     int    RandomSeed;             /**< integer to seed random numbers with  */
+    int    RandomDeterministic;    /**< use 2nd rand generator during eval   */
 } PGAInitialize;
 
 /*!***************************************
@@ -839,6 +841,15 @@ typedef struct {
     void          *serialized;         /**< tmp pointer for serialized data */
 } PGAScratch;
 
+/*!***************************************
+ * \brief Random number generator state
+ *****************************************/
+typedef struct {
+    int seed;
+    int i96, j96;
+    float u [97], uni, c, cd, cm;
+} PGARandomState;
+
 /*!****************************************
  * \brief   Context Structure.
  * This is the central data structure,
@@ -854,6 +865,9 @@ struct PGAContext {
     PGADebug               debug;     /**< Debug printing            */
     PGAInitialize          init;      /**< Initialization            */
     PGAScratch             scratch;   /**< Scratch space             */
+    PGARandomState         rand1;     /**< Default random no generator state */
+    PGARandomState         rand2;     /**< Alt random no generator state */
+    PGARandomState        *randstate; /**< Current random no state   */
 };
 
 #if !defined(DOXYGEN_SHOULD_SKIP_THIS)
@@ -1269,6 +1283,7 @@ int PGAGetRandomSeed(PGAContext *ctx);
 void PGASetRandomSeed(PGAContext *ctx, int seed);
 void PGARandomSampleInit(PGAContext *ctx, PGASampleState *state, int k, int n);
 int PGARandomNextSample(PGASampleState *state);
+void PGASetRandomDeterministic (PGAContext *ctx, int flag);
 
 /*****************************************
  *          real.c

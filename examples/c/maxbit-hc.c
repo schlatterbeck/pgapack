@@ -55,6 +55,7 @@ int main (int argc, char **argv)
     PGASetRandomSeed (ctx, 1);
     PGASetUserFunction (ctx, PGA_USERFUNCTION_HILLCLIMB, hillclimb);
     PGASetUserFunction (ctx, PGA_USERFUNCTION_STOPCOND, stopcond);
+    PGASetRandomDeterministic (ctx, PGA_TRUE);
     /* Extended reporting */
     if (full_report) {
         PGASetPrintOptions (ctx, PGA_REPORT_ONLINE);

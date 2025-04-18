@@ -139,6 +139,11 @@ PGAContext *PGACreate
         exit (-1);
     }
     memset (ctx, 0, sizeof (*ctx));
+    /* Default random number generator state */
+    ctx->randstate = &ctx->rand1;
+    /* These are later overridden by PGARandom01 calls */
+    ctx->rand1.seed = 1;
+    ctx->rand2.seed = 1;
 
 
     /*  We use this (indirectly) in PGAReadCmdLine -- in processing
