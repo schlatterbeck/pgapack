@@ -264,9 +264,9 @@ void _PGASetEvaluation
 
     .. code-block:: c
 
-       const double *p;
+       const double *aux;
        ...
-       eval = PGAGetEvaluation (ctx, p, PGA_NEWPOP, &p);
+       eval = PGAGetEvaluation (ctx, p, PGA_NEWPOP, &aux);
 
     \endrst
 

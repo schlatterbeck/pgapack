@@ -1517,8 +1517,9 @@ void PGAIntegerEdgeCrossover
     -----------
 
     This is used only in Edge Crossover.
-    Note: The edges data structure is copied and must be freed by the
-    caller. It is admissible that the edges data is in automatic
+    Note: The edges data structure passed into the function is copied
+    and ownership remains with the caller.
+    It is admissible that the edges data is in automatic
     variables allocated on the stack.
 
     Example

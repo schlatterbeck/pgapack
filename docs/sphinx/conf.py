@@ -38,8 +38,7 @@ from typing import List, cast
 # -- Project information -----------------------------------------------------
 
 project = 'PGAPack'
-copyright = '1996-2025, David M. Levine, Philip L. Hallstrom, David M. Noelle, Brian P. Walenz, Dirk Eddelbuettel, Ralf Schlatterbeck'
-author = 'David M. Levine, Philip L. Hallstrom, David M. Noelle, Brian P. Walenz, Dirk Eddelbuettel, Ralf Schlatterbeck'
+author  = 'David M. Levine, Philip L. Hallstrom, David M. Noelle, Brian P. Walenz, Dirk Eddelbuettel, Ralf Schlatterbeck'
 
 # On readthedocs we need to run doxygen first
 
@@ -265,3 +264,5 @@ def get_popen (cmd):
 # end def get_popen
 
 today = get_popen ('git show -s --format=%cd --date=format:%Y-%m-%d')
+year  = get_popen ('git show -s --format=%cd --date=format:%Y')
+copyright = '1996-' + year + ', ' + author

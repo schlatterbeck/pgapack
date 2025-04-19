@@ -78,6 +78,7 @@ privately owned rights.
 
     The following need to be defined for serializing strings for
     transmission:
+
     - :c:macro:`PGA_USERFUNCTION_SERIALIZE`        -- Serialize userdefined gene
     - :c:macro:`PGA_USERFUNCTION_DESERIALIZE`      --
       Deserialize userdefined gene

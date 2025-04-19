@@ -33,6 +33,8 @@ PREDEFINED            += PGADebugEntered(a)
 PREDEFINED            += PGADebugExited(a)
 PREDEFINED            += PGACheckDataType(a,b)
 PREDEFINED            += INDEX(a,b,c,d)
+PREDEFINED            += _PGAGetEvaluation=PGAGetEvaluation
+PREDEFINED            += _PGASetEvaluation=PGASetEvaluation
 ALIASES                = "rst=\verbatim embed:rst"
 ALIASES               += "rsts=\verbatim embed:rst:leading-asterisk"
 ALIASES               += "endrst=\endverbatim"

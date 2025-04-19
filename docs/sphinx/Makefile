@@ -27,12 +27,7 @@ latex: .stamp-doxygen
 latexpdf: .stamp-doxygen
 
 fixedman: man man/man3
-	$(MAKE) fixedman2
-
-fixedman2: $(MAN_STAGE2)
-	cp $(MAN_PATH2)/_PGAGetEvaluation.3 $(MAN_PATH2)/PGAGetEvaluation.3
-	cp $(MAN_PATH2)/_PGASetEvaluation.3 $(MAN_PATH2)/PGASetEvaluation.3
-	@echo Stage2 done
+	@echo man pages done
 
 .stamp-doxygen: $(SOURCE) $(INCLUDE) Doxyfile
 	doxygen
@@ -48,7 +43,7 @@ $(MAN_PATH2):
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-.PHONY: help Makefile clean fixedman2 fixedman $(MAN_STAGE1)
+.PHONY: help Makefile clean fixedman $(MAN_STAGE1)
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
