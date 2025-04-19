@@ -24,6 +24,16 @@ Documentation is on `Read the Docs`_.
 Updates
 =======
 
+2nd update April 2025:
+
+- Implement new hillclimbing user-function: For the parallel version
+  this is called in parallel on all evaluated individuals
+- Implement deterministic random number generator for the parallel case:
+  This is achieved by re-seeding a second random number generator for
+  the evaluation and hillclimbing functions so that we can consisten
+  random numbers in the hillclimber (or in the evaluation function) even
+  when running the parallel version.
+
 update April 2025:
 
 - Fix memory leaks and add valgrind target to Makefile. Note that the
