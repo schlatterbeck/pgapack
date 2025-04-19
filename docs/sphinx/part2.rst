@@ -281,6 +281,9 @@ of informal testing and results reported in the GA literature. *They are
 by no means optimal*, and additional experimentation with other values
 may well yield better performance on any given problem.
 
+.. [#] :c:func:`PGADestroy` will also call ``MPI_finalize``, if MPI was
+       started by :c:func:`PGACreate`.
+
 .. _sec:population-replacement:
 
 Population Replacement
@@ -795,7 +798,7 @@ Negative Assortative Mating
 
 When selecting parents for crossover, the default is to use the two
 parents chosed by the selection scheme in use, see section
-:ref:`selection`. It was observed early [ES91]_ that genetic diversity
+:ref:`sec:selection`. It was observed early [ES91]_ that genetic diversity
 can be maintained (avoiding premature convergence) by enforcing a lower
 bound on the genetic distance of parents. Later Fernandes and Rosa
 researched several variants of mating restrictions [FR01]_. The negative
@@ -1482,6 +1485,11 @@ To encode 564 as a 12-bit binary string in the substring defined by bits
       ``7``     ``111``                      ``100``
       ========= ============================ =========
 
+.. [#] Even though only ten bits are necessary to encode 564, the user may
+       want to allow the GA any value between :math:`[0,4095]`, hence the
+       twelve bits.
+.. [#] Technically, this is known as a Hamming cliff.
+
 .. _subsec:encode-real:
 
 Representing a Real Value with a Binary String
@@ -1608,11 +1616,29 @@ with the same seed each time, for example,
 
   PGASetRandomSeed (ctx, 1);
 
+In a parallel version of PGAPack setting a random seed is not enough to
+get reproduceable random numbers when randomness is used in either the
+evaluation function [#dJ]_ or a hillclimber.
+
+When a hillclimber running in a parallel process uses randomness, by
+default each run will return a different result. In the
+``examples/c/maxbit-hc.c`` example the hillclimber sets a random bit to
+``1``. Since each parallel process has its own random number generator
+the random bit would be different for each parallel process.  To get
+deterministic random numbers [#vN]_ we can call
+
+.. code-block:: c
+
+  PGASetRandomDeterministic (ctx, PGA_TRUE);
+
+to make PGAPack use a mechanism where a second random number generator
+is seeded from the main one for each individual in a way that is the
+same for parallel and serial execution.
+
 :c:func:`PGARandom01` with second parameter 0 will return a random
-number generated uniformly on :math:`[0,1]`. If the second argument is
-not :math`0`, it will be used to reseed the random number sequence.
-:c:func:`PGARandomFlip` flips a biased
-coin. For example,
+number generated uniformly on the range :math:`[0,1]`. If the second
+argument is not :math:`0`, it will be used to reseed the random number
+sequence.  :c:func:`PGARandomFlip` flips a biased coin. For example,
 
 .. code-block:: c
 
@@ -1626,6 +1652,17 @@ return a real value generated uniformly randomly on the interval
 :math:`[-50,50]`.  :c:func:`PGARandomGaussian` with parameters
 ``(ctx, 0., 1.)`` will return a real value generated from a Gaussian
 distribution with mean zero and standard deviation one.
+
+.. [#dJ] DeJong's test function F4 [DeJ75]_ in ``examples/c/dejong.c`` and
+    ``examples/fortran/dejong.f`` uses the random number generator in
+    the evaluation function to simulated noisy measurements with
+    gaussian noise added to the evaluation. It is usually not common to
+    use a random generator in the evaluation function.
+
+.. [#vN] John von Neumann once remarked "Any one who considers
+    arithmetical methods of producing random digits is, of course, in a
+    state of sin." [vN51]_ So please take the concept of deterministic
+    random numbers with a grain of salt.
 
 .. _subsec:print-functions:
 
@@ -2158,18 +2195,20 @@ on newly generated individuals *before the are evaluated*. In the
 parallel version the hillclimber is called in the parallel processes, so
 hillclimbing occurs in parallel. If the hillclimber already computes the
 evaluation it should set the :c:func:`PGASetEvaluationUpToDateFlag` on
-the individual (setting the evaluation with :c:func:`PGASetEvaluation
+the individual (setting the evaluation with :c:func:`PGASetEvaluation`
 also sets the flag). This avoids a call to the evaluation function. An
-example hillclimber is given in ``./examples/maxbit-hc.c`` -- it
+example hillclimber is given in ``./examples/c/maxbit-hc.c`` -- it
 randomly sets one of the bits to ``1``. Note that in this case the
 evaluation is not computed and the evaluation is called by PGAPack.
 When this example is run in a parallel version it will terminate after a
 different number of generations each time it is run (it stops when all
-bits are ``1``). Since the hillclimber sets a random bit to ``1`` and
-each parallel process has its own random number generator the random bit
-is different for each parallel process. Since the assignment of
-evaluations to processes is random we get different results on each
-execution.
+bits are ``1``). Note that the example sets
+
+.. code-block:: c
+
+  PGASetRandomDeterministic (ctx, PGA_TRUE);
+
+as detailed in section :ref:`subsec:random`.
 
 .. _tab:custom-functions:
 
@@ -2815,7 +2854,7 @@ The preferred way to run a hybrid GA and use :c:func:`PGARun` is to use the
 :c:func:`PGASetUserFunction` discussed in Chapter :ref:`chp:custom1` to
 specify a user function to be called before evaluation of a new
 individual using :c:macro:`PGA_USERFUNCTION_HILLCLIMB`. An example can
-be found in ``./examples/maxbit-hc.c``. When using a parallel version
+be found in ``./examples/c/maxbit-hc.c``. When using a parallel version
 this is called in the parallel processes and so the hillclimbing is also
 parallelized. The hillclimbing function can chose to evaluate the given
 individual. Then it has to set the evaluation using
@@ -2898,6 +2937,9 @@ parallel implementation uses a controller/responder algorithm in which one
 process, the *controller*, executes all steps of the genetic algorithm
 *except* the function evaluations. The function evaluations are executed
 by the *responder* processes [#]_.
+
+.. [#] In the special case of exactly two processes, the controller executes
+       function evaluations as well.
 
 .. _sec:par-basic-usage:
 
@@ -3329,14 +3371,3 @@ when the debug level of five is specified.
 
 Note that we use ``MPI_COMM_WORLD`` (1) for the random number seed and
 (2) for :c:func:`PGADebugPrint` calls.
-
-.. [#] :c:func:`PGADestroy` will also call ``MPI_finalize``, if MPI was
-       started by :c:func:`PGACreate`.
-.. [#] Even though only ten bits are necessary to encode 564, the user may
-       want to allow the GA any value between :math:`[0,4095]`, hence the
-       twelve bits.
-.. [#] Technically, this is known as a Hamming cliff.
-.. [#] In the special case of exactly two processes, the controller executes
-       function evaluations as well.
-.. [#] More generally, these issues arise whenever the size of a Fortran
-       integer is less than the size of a pointer.

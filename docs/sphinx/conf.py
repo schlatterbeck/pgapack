@@ -38,7 +38,7 @@ from typing import List, cast
 # -- Project information -----------------------------------------------------
 
 project = 'PGAPack'
-copyright = '1996-2022, David M. Levine, Philip L. Hallstrom, David M. Noelle, Brian P. Walenz, Dirk Eddelbuettel, Ralf Schlatterbeck'
+copyright = '1996-2025, David M. Levine, Philip L. Hallstrom, David M. Noelle, Brian P. Walenz, Dirk Eddelbuettel, Ralf Schlatterbeck'
 author = 'David M. Levine, Philip L. Hallstrom, David M. Noelle, Brian P. Walenz, Dirk Eddelbuettel, Ralf Schlatterbeck'
 
 # On readthedocs we need to run doxygen first

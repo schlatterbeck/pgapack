@@ -41,6 +41,9 @@ Bibliography
 .. [Deb00]  Kalyanmoy Deb. An efficient constraint handling method for
             genetic algorithms. *Computer Methods in Applied Mechanics
             and Engineering,* 186(2–4):311–338, June 2000.
+.. [DeJ75]  Kenneth Alan De Jong. An Analysis of the Behavior of a Class
+            of Genetic Adaptive Systems. Dissertation, University of
+            Michigan, 1975.
 .. [DG96]   Kalyanmoy Deb and Mayank Goyal. A combined genetic adaptive
             search (GeneAS) for engineering design. *Computer Science and
             Informatics,* 26(4):30–45, 1996.
@@ -55,7 +58,7 @@ Bibliography
             April 2002.
 .. [ES91]   Larry J. Eshelman and J. David Schaffer. Preventing premature
             convergence in genetic algorithms by preventing incest. In
-            Belew and Booker [BB91], pages 115–122.
+            Belew and Booker [BB91]_, pages 115–122.
 .. [FKTL00] Vladimir Filipović, Jozef Kratica, Dušan Tošić, and Ivana Ljubić.
             Fine grained tournament selection for the simple plant
             location problem. In *5th Online World Conference on Soft
@@ -65,7 +68,7 @@ Bibliography
             *IEEE Transactions on Computers,* 21:948–960, 1972.
 .. [FR01]   Carlos Fernandes and Agostinho Rosa. A study on non-random
             mating and varying population size in genetic algorithms using
-            a royal road function. In [CEC01], pages 60–66.
+            a royal road function. In [CEC01]_, pages 60–66.
 .. [FTMR01] Carlos Fernandes, Rui Tavares, Cristian Munteanu, and Agostinho
             Rosa. Using assortative mating in genetic algorithms for vector
             quantization problems. In Proceedings of the 2001 ACM symposium
@@ -169,6 +172,12 @@ Bibliography
 .. [Vit87]  Jeffrey Scott Vitter. An efficient algorithm for sequential
             random sampling. ACM Transactions on Mathematical Software,
             13(1):58–67, March 1987.
+.. [vN51]   John von Neumann. Various techniques used in connection with
+            random digits. In A. S. Householder, G. E. Forsythe, and
+            H.  H. Germond, editors, Monte Carlo Method, volume 12 of
+            National Bureau of Standards Applied Mathematics Series,
+            chapter 13, pages 36–38. US Government Printing Office,
+            Washington, DC, June 1951.
 .. [Whi89]  Darrell Whitley. The GENITOR algorithm and selection pressure:
             Why rank-based allocation of reproductive trials is best. In
             Schaffer [Sch89]_, pages 116-121.
