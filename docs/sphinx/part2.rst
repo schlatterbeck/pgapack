@@ -2858,7 +2858,7 @@ be found in ``./examples/c/maxbit-hc.c``. When using a parallel version
 this is called in the parallel processes and so the hillclimbing is also
 parallelized. The hillclimbing function can chose to evaluate the given
 individual. Then it has to set the evaluation using
-:c:func:`PGASetEvaluation` (this will also set the up-to-date flag, so
+:c:func:`PGASetEvaluation`, this will also set the up-to-date flag, so
 an extra call to :c:func:`PGASetEvaluationUpToDateFlag` is not needed.
 When the up-to-date flag is set, this signals to PGAPack that the
 evaluation is already done. If no evaluation is performed, the
