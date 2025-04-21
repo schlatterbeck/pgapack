@@ -30,7 +30,7 @@ Updates
   this is called in parallel on all evaluated individuals
 - Implement deterministic random number generator for the parallel case:
   This is achieved by re-seeding a second random number generator for
-  the evaluation and hillclimbing functions so that we can consisten
+  the evaluation and hillclimbing functions so that we get consistent
   random numbers in the hillclimber (or in the evaluation function) even
   when running the parallel version.
 
