@@ -237,7 +237,9 @@ First Update December 2021:
 - Tested MPI on a multiprocessor machine (a bunch of Orange-Pi computers
   acting as a (slow :-) multiprocessor). Works fine with Debian's
   OpenMPI and MPICH MPI implementations. Does not work for me with LAM,
-  there is a debian bug-report #1000446.
+  there is a debian bug-report `#1000446`_.
+
+.. _`#1000446`: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1000446
 
 Updated September 2020:
 
