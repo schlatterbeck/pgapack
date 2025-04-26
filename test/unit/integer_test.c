@@ -14,6 +14,42 @@ PGAInteger pop [][6] =
 };
 int popsize = sizeof (pop) / (sizeof (PGAInteger) * 6);
 
+void seq_ops_test (int argc, char **argv)
+{
+    int l = 10;
+    int i, j;
+    PGAInteger *parent0, *parent1;
+    PGAContext *ctx = PGACreate
+        (&argc, argv, PGA_DATATYPE_INTEGER, l, PGA_MINIMIZE);
+
+    PGASetCrossoverType (ctx, PGA_CROSSOVER_PMX);
+    PGASetRandomSeed    (ctx, 2);
+    PGASetPopSize       (ctx, 8);
+    PGASetUp (ctx);
+    /* Now init two genes and cross them over */
+    parent0 = (PGAInteger *)PGAGetIndividual (ctx, 0, PGA_OLDPOP)->chrom;
+    parent1 = (PGAInteger *)PGAGetIndividual (ctx, 1, PGA_OLDPOP)->chrom;
+    /* Init random number generator and print first 10 numbers */
+    PGARandom01 (ctx, 1);
+    for (i=0; i<10; i++) {
+        printf ("rand: %d\n", PGARandomInterval (ctx, 0, l - 1));
+    }
+    /* Re-init, we'll get the same numbers as above */
+    PGARandom01 (ctx, 1);
+    /* Make 5 crossovers */
+    for (i=0; i<5; i++) {
+        /* Reset parents */
+        for (j=0; j<l; j++) {
+            parent0 [j] = j;
+            parent1 [l - 1 - j] = j;
+        }
+        PGAIntegerPartiallyMappedCrossover
+            (ctx, 0, 1, PGA_OLDPOP, 0, 1, PGA_NEWPOP);
+        PGAPrintString (ctx, stdout, 0, PGA_NEWPOP);
+        PGAPrintString (ctx, stdout, 1, PGA_NEWPOP);
+    }
+}
+
 int main (int argc, char **argv)
 {
     int i, j;
@@ -55,4 +91,5 @@ int main (int argc, char **argv)
         PGAPrintString (ctx, stdout, 0, PGA_NEWPOP);
         PGAPrintString (ctx, stdout, 1, PGA_NEWPOP);
     }
+    seq_ops_test (argc, argv);
 }

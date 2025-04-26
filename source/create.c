@@ -1278,6 +1278,9 @@ void PGASetUp (PGAContext *ctx)
           case PGA_CROSSOVER_EDGE:
             Crossover  = PGAIntegerEdgeCrossover;
             break;
+          case PGA_CROSSOVER_PMX:
+            Crossover  = PGAIntegerPartiallyMappedCrossover;
+            break;
         }
         PrintString    = PGAIntegerPrintString;
         CopyString     = PGAIntegerCopyString;

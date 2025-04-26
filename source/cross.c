@@ -171,6 +171,9 @@ void PGACrossover ( PGAContext *ctx, int p1, int p2, int pop1,
        case PGA_CROSSOVER_EDGE:
            printf ("Crossover Type = PGA_CROSSOVER_EDGE\n");
            break;
+       case PGA_CROSSOVER_PMX:
+           printf ("Crossover Type = PGA_CROSSOVER_PMX\n");
+           break;
        }
 
     \endrst
@@ -269,13 +272,15 @@ double PGAGetUniformCrossoverProb (PGAContext *ctx)
 
     Valid choices are :c:macro:`PGA_CROSSOVER_ONEPT`,
     :c:macro:`PGA_CROSSOVER_TWOPT`, or :c:macro:`PGA_CROSSOVER_UNIFORM`,
-    :c:macro:`PGA_CROSSOVER_SBX`, and :c:macro:`PGA_CROSSOVER_EDGE`
-    for one-point, two-point, uniform, simulated binary (SBX), and edge
-    crossover, respectively.  The default is :c:macro:`PGA_CROSSOVER_TWOPT`.
-    Edge crossover is only defined for integer genes and SBX is only
-    defined for integer and real genes. See :ref:`group:const-crossover`
-    for the constants and section :ref:`sec:crossover` in the user guide
-    for details.
+    :c:macro:`PGA_CROSSOVER_SBX`, :c:macro:`PGA_CROSSOVER_EDGE`, and
+    :c:macro:`PGA_CROSSOVER_PMX`
+    for one-point, two-point, uniform, simulated binary (SBX), edge
+    crossover, and partially mapped crossover, respectively.
+    The default is :c:macro:`PGA_CROSSOVER_TWOPT`.
+    Edge crossover and partially mapped crossover are only defined for
+    integer genes and SBX is only defined for integer and real genes.
+    See :ref:`group:const-crossover` for the constants and section
+    :ref:`sec:crossover` in the user guide for details.
 
     Example
     -------
@@ -303,6 +308,7 @@ void PGASetCrossoverType (PGAContext *ctx, int crossover_type)
         case PGA_CROSSOVER_UNIFORM:
         case PGA_CROSSOVER_SBX:
         case PGA_CROSSOVER_EDGE:
+        case PGA_CROSSOVER_PMX:
             ctx->ga.CrossoverType = crossover_type;
             break;
         default:

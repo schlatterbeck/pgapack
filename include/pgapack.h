@@ -299,6 +299,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_CROSSOVER_UNIFORM   3    /**< Uniform   crossover              */
 #define PGA_CROSSOVER_SBX       4    /**< Simulated binary crossover (SBX) */
 #define PGA_CROSSOVER_EDGE      5    /**< Edge Recombination               */
+#define PGA_CROSSOVER_PMX       6    /**< Partially Mapped crossover (PMX) */
 /*! @} */
 
 /*!***************************************
@@ -1094,6 +1095,8 @@ void PGAIntegerUniformCrossover
 void PGAIntegerSBXCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGAIntegerEdgeCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerPartiallyMappedCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGAIntegerSetFixedEdges
     (PGAContext *ctx, size_t n, PGAInteger (*edge)[2], int symmetric);
