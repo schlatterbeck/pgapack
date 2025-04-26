@@ -1281,6 +1281,9 @@ void PGASetUp (PGAContext *ctx)
           case PGA_CROSSOVER_PMX:
             Crossover  = PGAIntegerPartiallyMappedCrossover;
             break;
+          case PGA_CROSSOVER_MODIFIED:
+            Crossover  = PGAIntegerModifiedCrossover;
+            break;
         }
         PrintString    = PGAIntegerPrintString;
         CopyString     = PGAIntegerCopyString;
@@ -1574,6 +1577,20 @@ void PGASetUp (PGAContext *ctx)
     if (ctx->scratch.dblscratch == NULL) {
         PGAError
             ( ctx, "PGASetUp: No room to allocate ctx->scratch.dblscratch"
+            , PGA_FATAL, PGA_VOID, NULL
+            );
+    }
+
+    ctx->scratch.pgaintscratch [0] = malloc
+        (sizeof (PGAInteger) * ctx->ga.StringLen);
+    ctx->scratch.pgaintscratch [1] = malloc
+        (sizeof (PGAInteger) * ctx->ga.StringLen);
+    if (  ctx->scratch.pgaintscratch [0] == NULL
+       || ctx->scratch.pgaintscratch [1] == NULL
+       )
+    {
+        PGAError
+            ( ctx, "PGASetUp: No room to allocate ctx->scratch.pgaintscratch"
             , PGA_FATAL, PGA_VOID, NULL
             );
     }

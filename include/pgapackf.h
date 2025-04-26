@@ -103,6 +103,8 @@ c *** CROSSOVER
       parameter ( PGA_CROSSOVER_EDGE =      5)
       integer PGA_CROSSOVER_PMX
       parameter ( PGA_CROSSOVER_PMX =       6)
+      integer PGA_CROSSOVER_MODIFIED
+      parameter ( PGA_CROSSOVER_MODIFIED =  7)
 
 c *** SELECTION
       integer PGA_SELECT_PROPORTIONAL

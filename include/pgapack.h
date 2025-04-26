@@ -300,6 +300,7 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_CROSSOVER_SBX       4    /**< Simulated binary crossover (SBX) */
 #define PGA_CROSSOVER_EDGE      5    /**< Edge Recombination               */
 #define PGA_CROSSOVER_PMX       6    /**< Partially Mapped crossover (PMX) */
+#define PGA_CROSSOVER_MODIFIED  7    /**< Modified crossover (MX)          */
 /*! @} */
 
 /*!***************************************
@@ -840,6 +841,7 @@ typedef struct {
     PGAIndividual **hashed;            /**< For duplicate checking          */
     size_t         serialization_size; /**< Size for Serialize/Deserialize  */
     void          *serialized;         /**< tmp pointer for serialized data */
+    PGAInteger    *pgaintscratch [2];  /**< For permutation crossovers      */
 } PGAScratch;
 
 /*!***************************************
@@ -1097,6 +1099,8 @@ void PGAIntegerSBXCrossover
 void PGAIntegerEdgeCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGAIntegerPartiallyMappedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerModifiedCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGAIntegerSetFixedEdges
     (PGAContext *ctx, size_t n, PGAInteger (*edge)[2], int symmetric);
