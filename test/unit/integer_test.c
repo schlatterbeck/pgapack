@@ -427,6 +427,43 @@ void obx_test (int argc, char **argv)
     PGADestroy (ctx);
 }
 
+void aex_test (int argc, char **argv)
+{
+    int l = 6;
+    int i, j;
+    PGAInteger *parent0, *parent1;
+    static const int p [] = {1, 2, 5, 4, 6, 3};
+    printf ("AEX test\n");
+    PGAContext *ctx = PGACreate
+        (&argc, argv, PGA_DATATYPE_INTEGER, l, PGA_MINIMIZE);
+
+    PGASetCrossoverType (ctx, PGA_CROSSOVER_AEX);
+    PGASetRandomSeed    (ctx, 2);
+    PGASetPopSize       (ctx, 8);
+    PGASetUp (ctx);
+    /* Now init two genes and cross them over */
+    parent0 = (PGAInteger *)PGAGetIndividual (ctx, 0, PGA_OLDPOP)->chrom;
+    parent1 = (PGAInteger *)PGAGetIndividual (ctx, 1, PGA_OLDPOP)->chrom;
+    /* Init random number generator and print first 10 numbers */
+    PGARandom01 (ctx, 2);
+    for (i=0; i<4; i++) {
+        printf ("rand: %d\n", PGARandomInterval (ctx, 0, l - 1));
+    }
+    PGARandom01 (ctx, 2);
+    /* Make crossovers */
+    for (i=0; i<3; i++) {
+        /* Reset parents */
+        for (j=0; j<l; j++) {
+            parent0 [j] = j;
+            parent1 [j] = p [j] - 1;
+        }
+        PGAIntegerAlternatingEdgeCrossover
+            (ctx, 0, 1, PGA_OLDPOP, 0, 1, PGA_NEWPOP);
+        PGAPrintString (ctx, stdout, 0, PGA_NEWPOP);
+        PGAPrintString (ctx, stdout, 1, PGA_NEWPOP);
+    }
+}
+
 int main (int argc, char **argv)
 {
     edge_test (argc, argv);
@@ -438,4 +475,5 @@ int main (int argc, char **argv)
     pbx_test  (argc, argv);
     uox_test  (argc, argv);
     obx_test  (argc, argv);
+    aex_test  (argc, argv);
 }

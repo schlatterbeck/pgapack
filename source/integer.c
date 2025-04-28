@@ -2196,6 +2196,14 @@ void PGAIntegerUniformOrderBasedCrossover
     The operation produces permutations of the integer genes of both
     parents. The result is a permutation again for both children.
 
+    Note that the original paper [GGRG85]_ mandates that the search
+    starts with a random position. We start with a random position but
+    keep the absolute position in the child (and don't copy from the
+    middle of the parent to the start of the child).
+    This may make the crossover work for other problems than just TSP.
+    From the paper it is unclear if edge reversals are possible, we
+    allow them but prefer non-reversed egdes.
+
     Example
     -------
 
@@ -2215,16 +2223,95 @@ void PGAIntegerUniformOrderBasedCrossover
 
 ******************************************************************************/
 
+static void ae_fill_child
+    ( PGAContext *ctx
+    , PGAInteger *parent [2], PGAInteger *child
+    , PGAInteger pidx, PGAInteger off
+    )
+{
+    PGAInteger *idx [2];
+    PGAInteger *val  = ctx->scratch.pgaintscratch [2];
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger i;
+    idx [0] = ctx->scratch.pgaintscratch [0];
+    idx [1] = ctx->scratch.pgaintscratch [1];
+    memset (val, 0, sizeof (PGAInteger) * l);
+
+    child [off] = parent [pidx][off];
+    val [child [off]] = 1;
+    off = (off + 1) % l;
+    child [off] = parent [pidx][off];
+    val [child [off]] = 1;
+    off = (off + 1) % l;
+    for (i=2; i<l; i++) {
+        PGAInteger v = child [(off + l - 1) % l];
+        PGAInteger pos = idx [!pidx][v];
+        if (!val [parent [!pidx][(pos + 1) % l]]) {
+            child [off] = parent [!pidx][(pos + 1) % l];
+            val [child [off]] = 1;
+            pidx = !pidx;
+            off  = (off + 1) % l;
+            continue;
+        }
+        if (!val [parent [!pidx][(pos + l - 1) % l]]) {
+            child [off] = parent [!pidx][(pos + l - 1) % l];
+            val [child [off]] = 1;
+            pidx = !pidx;
+            off  = (off + 1) % l;
+            continue;
+        }
+        /* If not found in other parent try current one */
+        pos = idx [pidx][v];
+        if (!val [parent [pidx][(pos + 1) % l]]) {
+            child [off] = parent [pidx][(pos + 1) % l];
+            val [child [off]] = 1;
+            off  = (off + 1) % l;
+            continue;
+        }
+        if (!val [parent [pidx][(pos + l - 1) % l]]) {
+            child [off] = parent [pidx][(pos + l - 1) % l];
+            val [child [off]] = 1;
+            off  = (off + 1) % l;
+            continue;
+        }
+        /* Select rand index and search from there for free position */
+        pos = PGARandomInterval (ctx, 0, l - 1);
+        for (; val [pos]; pos = (pos + 1) % l)
+            ;
+        child [off] = pos;
+        val [pos] = 1;
+        off  = (off + 1) % l;
+    }
+}
+
 void PGAIntegerAlternatingEdgeCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
     PGAInteger *parent [2];
     PGAInteger *child  [2];
+    PGAInteger *idx [2];
+    PGAInteger i, off;
+    PGAInteger l = ctx->ga.StringLen;
+    idx [0] = ctx->scratch.pgaintscratch [0];
+    idx [1] = ctx->scratch.pgaintscratch [1];
+    for (i=0; i<l; i++) {
+        idx [0][i] = idx[1][i] = -1;
+    }
 
     parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    for (i=0; i<l; i++) {
+        assert (parent [0][i] >= 0 && parent [0][i] <l);
+        assert (parent [1][i] >= 0 && parent [1][i] <l);
+        idx[0][parent [0][i]] = i;
+        idx[1][parent [1][i]] = i;
+    }
+    off = PGARandomInterval (ctx, 0, l - 1);
+    ae_fill_child (ctx, parent, child [0], 0, off);
+    ae_fill_child (ctx, parent, child [1], 1, off);
 }
 
 /*!****************************************************************************
