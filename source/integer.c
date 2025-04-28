@@ -1844,11 +1844,37 @@ void PGAIntegerCycleCrossover
 {
     PGAInteger *parent [2];
     PGAInteger *child  [2];
+    PGAInteger i, j;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger pos;
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+    PGAInteger *pidx = ctx->scratch.pgaintscratch [1];
+    memset (seen, 0, sizeof (PGAInteger) * l);
 
     parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    /* Build parent index */
+    for (i=0; i<l; i++) {
+        assert (parent [0][i] >= 0 && parent [0][i] < l);
+        pidx [parent [0][i]] = i;
+    }
+    pos = PGARandomInterval (ctx, 0, l - 1);
+    for (i=pos; !seen [i]; i=pidx [parent [1][i]]) {
+        assert (i >= 0 && i < l);
+        seen [i] = 1;
+        child [0][i] = parent [0][i];
+        child [1][i] = parent [1][i];
+    }
+    for (i=0; i<l; i++) {
+        if (seen [i]) {
+            continue;
+        }
+        child [0][i] = parent [1][i];
+        child [1][i] = parent [0][i];
+    }
 }
 
 /*!****************************************************************************
