@@ -1648,12 +1648,48 @@ void PGAIntegerPartiallyMappedCrossover
 #define randinterval PGARandomInterval
 #endif
 
+static void copy_middle_part
+    ( PGAContext *ctx
+    , PGAInteger *parent, PGAInteger *child
+    , PGAInteger flag, PGAInteger pos1, PGAInteger pos2
+    )
+{
+    PGAInteger i;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+
+    for (i=pos1; i != pos2; i=(i+1) % l) {
+        child [i] = parent [i];
+        seen [parent [i]] |= flag;
+        assert (child [i] >= 0 && child [i] < l);
+    }
+}
+
+static PGAInteger copy_rest
+    ( PGAContext *ctx
+    , PGAInteger *parent, PGAInteger *child
+    , PGAInteger flag, PGAInteger pidx, PGAInteger sc, PGAInteger ec
+    )
+{
+    PGAInteger i;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+    /* Copy rest from other parent, retaining order in other parent */
+    for (i=sc; i<ec; i++) {
+        while (seen [parent [pidx]] & flag) {
+            pidx = (pidx + 1) % l;
+        }
+        child [i] = parent [pidx];
+        pidx = (pidx + 1) % l;
+    }
+    return pidx;
+}
+
 void PGAIntegerModifiedCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
     PGAInteger *parent [2];
     PGAInteger *child  [2];
-    PGAInteger i, j;
     PGAInteger l = ctx->ga.StringLen;
     PGAInteger pos;
     PGAInteger *seen = ctx->scratch.pgaintscratch [0];
@@ -1667,27 +1703,11 @@ void PGAIntegerModifiedCrossover
 
     /* Chose one position and copy first part */
     pos = PGARandomInterval (ctx, 0, l - 1);
-    for (i=0; i<pos; i++) {
-        child [0][i] = parent [0][i];
-        seen [parent [0][i]] |= 1;
-        child [1][i] = parent [1][i];
-        seen [parent [1][i]] |= 2;
-    }
+    copy_middle_part (ctx, parent [0], child [0], 1, 0, pos);
+    copy_middle_part (ctx, parent [1], child [1], 2, 0, pos);
     /* Copy rest from other parent, retaining order in other parent */
-    for (i=pos, j=0; i<l; i++) {
-        while (seen [parent [1][j]] & 1) {
-            j = (j + 1) % l;
-        }
-        child [0][i] = parent [1][j];
-        j = (j + 1) % l;
-    }
-    for (i=pos, j=0; i<l; i++) {
-        while (seen [parent [0][j]] & 2) {
-            j = (j + 1) % l;
-        }
-        child [1][i] = parent [0][j];
-        j = (j + 1) % l;
-    }
+    (void)copy_rest (ctx, parent [1], child [0], 1, 0, pos, l);
+    (void)copy_rest (ctx, parent [0], child [1], 2, 0, pos, l);
 }
 
 /*!****************************************************************************
@@ -1742,11 +1762,34 @@ void PGAIntegerOrderCrossover
 {
     PGAInteger *parent [2];
     PGAInteger *child  [2];
+    PGAInteger j;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger pos1, pos2;
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+    memset (seen, 0, sizeof (PGAInteger) * l);
 
     parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    /* Chose two positions and copy middle part, note that 'middle' part
+     * can wrap
+     */
+    pos1 = PGARandomInterval (ctx, 0, l - 1);
+    pos2 = PGARandomInterval (ctx, 0, l - 1);
+    copy_middle_part (ctx, parent [0], child [0], 1, pos1, pos2);
+    copy_middle_part (ctx, parent [1], child [1], 2, pos1, pos2);
+    /* Copy rest from other parent, retaining order in other parent */
+    if (pos2 > pos1) {
+        j =   copy_rest (ctx, parent [1], child [0], 1, pos2, pos2, l);
+        (void)copy_rest (ctx, parent [1], child [0], 1, j,    0, pos1);
+        j =   copy_rest (ctx, parent [0], child [1], 2, pos2, pos2, l);
+        (void)copy_rest (ctx, parent [0], child [1], 2, j,    0, pos1);
+    } else {
+        (void)copy_rest (ctx, parent [1], child [0], 1, pos2, pos2, pos1);
+        (void)copy_rest (ctx, parent [0], child [1], 2, pos2, pos2, pos1);
+    }
 }
 
 /*!****************************************************************************
@@ -2096,11 +2139,34 @@ void PGAIntegerNonWrappingOrderCrossover
 {
     PGAInteger *parent [2];
     PGAInteger *child  [2];
+    PGAInteger j;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger pos1, pos2;
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+    memset (seen, 0, sizeof (PGAInteger) * l);
 
     parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    /* Chose two positions and copy middle part, note that 'middle' part
+     * can wrap
+     */
+    pos1 = PGARandomInterval (ctx, 0, l - 1);
+    pos2 = PGARandomInterval (ctx, 0, l - 1);
+    copy_middle_part (ctx, parent [0], child [0], 1, pos1, pos2);
+    copy_middle_part (ctx, parent [1], child [1], 2, pos1, pos2);
+    /* Copy rest from other parent, retaining order in other parent */
+    if (pos2 > pos1) {
+        j =   copy_rest (ctx, parent [1], child [0], 1, 0, 0, pos1);
+        (void)copy_rest (ctx, parent [1], child [0], 1, j, pos2, l);
+        j =   copy_rest (ctx, parent [0], child [1], 2, 0, 0, pos1);
+        (void)copy_rest (ctx, parent [0], child [1], 2, j, pos2, l);
+    } else {
+        (void)copy_rest (ctx, parent [1], child [0], 1, 0, pos2, pos1);
+        (void)copy_rest (ctx, parent [0], child [1], 2, 0, pos2, pos1);
+    }
 }
 
 /*!****************************************************************************
