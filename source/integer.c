@@ -1576,10 +1576,10 @@ void PGAIntegerPartiallyMappedCrossover
     pos2 = PGARandomInterval (ctx, 0, l - 1);
     for (i=pos1; i != (pos2 + 1) % l; i=(i+1) % l) {
         child [0][i] = parent [1][i];
-        assert (child [0][i] >= 0 && child [0][i] <= l);
+        assert (child [0][i] >= 0 && child [0][i] < l);
         c0_seen [parent [1][i]] = parent [0][i];
         child [1][i] = parent [0][i];
-        assert (child [1][i] >= 0 && child [1][i] <= l);
+        assert (child [1][i] >= 0 && child [1][i] < l);
         c1_seen [parent [0][i]] = parent [1][i];
     }
     for (i = (pos2 + 1) % l; i != pos1; i=(i+1) % l) {
@@ -1664,6 +1664,7 @@ void PGAIntegerModifiedCrossover
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
 
+
     /* Chose one position and copy first part */
     pos = PGARandomInterval (ctx, 0, l - 1);
     for (i=0; i<pos; i++) {
@@ -1687,6 +1688,419 @@ void PGAIntegerModifiedCrossover
         child [1][i] = parent [0][j];
         j = (j + 1) % l;
     }
+}
+
+/*!****************************************************************************
+    \brief Perform Order Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerOrderCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerOrderCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+}
+
+/*!****************************************************************************
+    \brief Perform Cycle Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerCycleCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerCycleCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+}
+
+/*!****************************************************************************
+    \brief Perform Order Based Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerOrderBasedCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerOrderBasedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+}
+
+/*!****************************************************************************
+    \brief Perform Position Based Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerPositionBasedCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerPositionBasedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+}
+
+/*!****************************************************************************
+    \brief Perform Uniform Order Based Crossover on two parent strings
+           producing two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerUniformOrderBasedCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerUniformOrderBasedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+}
+
+/*!****************************************************************************
+    \brief Perform Alternating Edge Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerAlternatingEdgeCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerAlternatingEdgeCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+}
+
+/*!****************************************************************************
+    \brief Perform Non-wrapping Order Crossover on two parent strings
+           producing two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerNonWrappingOrderCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerNonWrappingOrderCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
 }
 
 /*!****************************************************************************

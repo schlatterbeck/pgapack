@@ -105,6 +105,20 @@ c *** CROSSOVER
       parameter ( PGA_CROSSOVER_PMX =       6)
       integer PGA_CROSSOVER_MODIFIED
       parameter ( PGA_CROSSOVER_MODIFIED =  7)
+      integer PGA_CROSSOVER_ORDER
+      parameter ( PGA_CROSSOVER_ORDER =     8)
+      integer PGA_CROSSOVER_CYCLE
+      parameter ( PGA_CROSSOVER_CYCLE =     9)
+      integer PGA_CROSSOVER_OBX
+      parameter ( PGA_CROSSOVER_OBX =      10)
+      integer PGA_CROSSOVER_PBX
+      parameter ( PGA_CROSSOVER_PBX =      11)
+      integer PGA_CROSSOVER_UOX
+      parameter ( PGA_CROSSOVER_UOX =      12)
+      integer PGA_CROSSOVER_AEX
+      parameter ( PGA_CROSSOVER_AEX =      13)
+      integer PGA_CROSSOVER_NOX
+      parameter ( PGA_CROSSOVER_NOX =      14)
 
 c *** SELECTION
       integer PGA_SELECT_PROPORTIONAL

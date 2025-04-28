@@ -301,6 +301,13 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_CROSSOVER_EDGE      5    /**< Edge Recombination               */
 #define PGA_CROSSOVER_PMX       6    /**< Partially Mapped crossover (PMX) */
 #define PGA_CROSSOVER_MODIFIED  7    /**< Modified crossover (MX)          */
+#define PGA_CROSSOVER_ORDER     8    /**< Order crossover (OX)             */
+#define PGA_CROSSOVER_CYCLE     9    /**< Cycle crossover (CX)             */
+#define PGA_CROSSOVER_OBX      10    /**< Order Based crossover (OBX)      */
+#define PGA_CROSSOVER_PBX      11    /**< Position Based crossover (PBX)   */
+#define PGA_CROSSOVER_UOX      12    /**< Unified Order Based crossover    */
+#define PGA_CROSSOVER_AEX      13    /**< Alternating Edge crossover (AEX) */
+#define PGA_CROSSOVER_NOX      14    /**< Non-wrapping Order crossover     */
 /*! @} */
 
 /*!***************************************
@@ -1101,6 +1108,20 @@ void PGAIntegerEdgeCrossover
 void PGAIntegerPartiallyMappedCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGAIntegerModifiedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerCycleCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerOrderCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerOrderBasedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerPositionBasedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerAlternatingEdgeCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerUniformOrderBasedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerNonWrappingOrderCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGAIntegerSetFixedEdges
     (PGAContext *ctx, size_t n, PGAInteger (*edge)[2], int symmetric);

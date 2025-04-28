@@ -1284,6 +1284,27 @@ void PGASetUp (PGAContext *ctx)
           case PGA_CROSSOVER_MODIFIED:
             Crossover  = PGAIntegerModifiedCrossover;
             break;
+          case PGA_CROSSOVER_ORDER:
+            Crossover  = PGAIntegerOrderCrossover;
+            break;
+          case PGA_CROSSOVER_CYCLE:
+            Crossover  = PGAIntegerCycleCrossover;
+            break;
+          case PGA_CROSSOVER_OBX:
+            Crossover  = PGAIntegerOrderBasedCrossover;
+            break;
+          case PGA_CROSSOVER_PBX:
+            Crossover  = PGAIntegerPositionBasedCrossover;
+            break;
+          case PGA_CROSSOVER_UOX:
+            Crossover  = PGAIntegerUniformOrderBasedCrossover;
+            break;
+          case PGA_CROSSOVER_AEX:
+            Crossover  = PGAIntegerAlternatingEdgeCrossover;
+            break;
+          case PGA_CROSSOVER_NOX:
+            Crossover  = PGAIntegerNonWrappingOrderCrossover;
+            break;
         }
         PrintString    = PGAIntegerPrintString;
         CopyString     = PGAIntegerCopyString;

@@ -177,6 +177,27 @@ void PGACrossover ( PGAContext *ctx, int p1, int p2, int pop1,
        case PGA_CROSSOVER_MODIFIED:
            printf ("Crossover Type = PGA_CROSSOVER_MODIFIED\n");
            break;
+       case PGA_CROSSOVER_ORDER:
+           printf ("Crossover Type = PGA_CROSSOVER_ORDER\n");
+           break;
+       case PGA_CROSSOVER_CYCLE:
+           printf ("Crossover Type = PGA_CROSSOVER_CYCLE\n");
+           break;
+       case PGA_CROSSOVER_OBX:
+           printf ("Crossover Type = PGA_CROSSOVER_OBX\n");
+           break;
+       case PGA_CROSSOVER_PBX:
+           printf ("Crossover Type = PGA_CROSSOVER_PBX\n");
+           break;
+       case PGA_CROSSOVER_UOX:
+           printf ("Crossover Type = PGA_CROSSOVER_UOX\n");
+           break;
+       case PGA_CROSSOVER_AEX:
+           printf ("Crossover Type = PGA_CROSSOVER_AEX\n");
+           break;
+       case PGA_CROSSOVER_NOX:
+           printf ("Crossover Type = PGA_CROSSOVER_NOX\n");
+           break;
        }
 
     \endrst
@@ -276,12 +297,19 @@ double PGAGetUniformCrossoverProb (PGAContext *ctx)
     Valid choices are :c:macro:`PGA_CROSSOVER_ONEPT`,
     :c:macro:`PGA_CROSSOVER_TWOPT`, or :c:macro:`PGA_CROSSOVER_UNIFORM`,
     :c:macro:`PGA_CROSSOVER_SBX`, :c:macro:`PGA_CROSSOVER_EDGE`,
-    :c:macro:`PGA_CROSSOVER_PMX`, and :c:macro:`PGA_CROSSOVER_MODIFIED`
+    :c:macro:`PGA_CROSSOVER_PMX`, :c:macro:`PGA_CROSSOVER_MODIFIED`
+    :c:macro:`PGA_CROSSOVER_ORDER`, :c:macro:`PGA_CROSSOVER_CYCLE`,
+    :c:macro:`PGA_CROSSOVER_OBX`, :c:macro:`PGA_CROSSOVER_PBX`,
+    :c:macro:`PGA_CROSSOVER_UOX`, `:c:macro:`PGA_CROSSOVER_AEX`,
+    and :c:macro:`PGA_CROSSOVER_NOX`
     for one-point, two-point, uniform, simulated binary (SBX), edge
-    crossover, partially mapped crossover, and modified crossover, respectively.
+    crossover, partially mapped crossover, modified crossover,
+    order crossover, cycle crossover, order based crossover, position
+    based crossover, uniform order based crossover, alternating edges
+    crossover, and non-wrapping order crossover, respectively.
     The default is :c:macro:`PGA_CROSSOVER_TWOPT`.
-    Edge crossover, partially mapped crossover, and modified crossover
-    are only defined for integer genes (they act genes which are a
+    All crossover types starting with Edge crossover are only defined
+    for integer genes (they act on genes which are a
     permutation) and SBX is only defined for integer and real genes.
     See :ref:`group:const-crossover` for the constants and section
     :ref:`sec:crossover` in the user guide for details.
@@ -314,6 +342,13 @@ void PGASetCrossoverType (PGAContext *ctx, int crossover_type)
         case PGA_CROSSOVER_EDGE:
         case PGA_CROSSOVER_PMX:
         case PGA_CROSSOVER_MODIFIED:
+        case PGA_CROSSOVER_ORDER:
+        case PGA_CROSSOVER_CYCLE:
+        case PGA_CROSSOVER_OBX:
+        case PGA_CROSSOVER_PBX:
+        case PGA_CROSSOVER_UOX:
+        case PGA_CROSSOVER_AEX:
+        case PGA_CROSSOVER_NOX:
             ctx->ga.CrossoverType = crossover_type;
             break;
         default:
