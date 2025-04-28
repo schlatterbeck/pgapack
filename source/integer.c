@@ -1929,11 +1929,49 @@ void PGAIntegerOrderBasedCrossover
 {
     PGAInteger *parent [2];
     PGAInteger *child  [2];
+    PGAInteger i, j0, j1;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger *idx0 = ctx->scratch.pgaintscratch [0];
+    PGAInteger *idx1 = ctx->scratch.pgaintscratch [1];
+    PGAInteger *val0 = ctx->scratch.pgaintscratch [2];
+    PGAInteger *val1 = ctx->scratch.pgaintscratch [3];
+
+    for (i=0; i<l; i++) {
+        idx0 [i] = idx1 [i] = val0 [i] = val1 [i] = -1;
+    }
 
     parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    j0 = 0;
+    for (i=0; i<l; i++) {
+        if (PGARandomFlip (ctx, 0.5)) {
+            assert (parent [0][i] >= 0 && parent [0][i] <l);
+            idx0 [parent [0][i]] = j0;
+            val0 [j0] = parent [0][i];
+            assert (parent [1][i] >= 0 && parent [1][i] <l);
+            idx1 [parent [1][i]] = j0;
+            val1 [j0] = parent [1][i];
+            j0++;
+        }
+    }
+    j0 = j1 = 0;
+    for (i=0; i<l; i++) {
+        assert (parent [0][i] >= 0 && parent [0][i] <l);
+        assert (parent [1][i] >= 0 && parent [1][i] <l);
+        if (idx1 [parent [0][i]] < 0) {
+            child [0][i] = parent [0][i];
+        } else {
+            child [0][i] = val1 [j0++];
+        }
+        if (idx0 [parent [1][i]] < 0) {
+            child [1][i] = parent [1][i];
+        } else {
+            child [1][i] = val0 [j1++];
+        }
+    }
 }
 
 /*!****************************************************************************

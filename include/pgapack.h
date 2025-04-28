@@ -848,7 +848,7 @@ typedef struct {
     PGAIndividual **hashed;            /**< For duplicate checking          */
     size_t         serialization_size; /**< Size for Serialize/Deserialize  */
     void          *serialized;         /**< tmp pointer for serialized data */
-    PGAInteger    *pgaintscratch [2];  /**< For permutation crossovers      */
+    PGAInteger    *pgaintscratch [4];  /**< For permutation crossovers      */
 } PGAScratch;
 
 /*!***************************************
