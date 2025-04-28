@@ -233,6 +233,47 @@ void cx_test (int argc, char **argv)
     }
 }
 
+void pbx_test (int argc, char **argv)
+{
+    int l = 10;
+    int i, j;
+    PGAInteger *parent0, *parent1;
+    printf ("PBX test\n");
+    PGAContext *ctx = PGACreate
+        (&argc, argv, PGA_DATATYPE_INTEGER, l, PGA_MINIMIZE);
+
+    PGASetCrossoverType (ctx, PGA_CROSSOVER_PBX);
+    PGASetRandomSeed    (ctx, 2);
+    PGASetPopSize       (ctx, 8);
+    PGASetUp (ctx);
+    /* Now init two genes and cross them over */
+    parent0 = (PGAInteger *)PGAGetIndividual (ctx, 0, PGA_OLDPOP)->chrom;
+    parent1 = (PGAInteger *)PGAGetIndividual (ctx, 1, PGA_OLDPOP)->chrom;
+    /* Init random number generator and print first 10 numbers */
+    PGARandom01 (ctx, 3);
+    for (i=0; i<3; i++) {
+        printf ("rand: ");
+        for (j=0; j<l; j++) {
+            printf ("%d", PGARandomFlip (ctx, 0.5));
+        }
+        printf ("\n");
+    }
+    /* Re-init, we'll get the same numbers as above */
+    PGARandom01 (ctx, 3);
+    /* Make crossovers */
+    for (i=0; i<3; i++) {
+        /* Reset parents */
+        for (j=0; j<l; j++) {
+            parent0 [j] = j;
+            parent1 [l - 1 - j] = j;
+        }
+        PGAIntegerPositionBasedCrossover
+            (ctx, 0, 1, PGA_OLDPOP, 0, 1, PGA_NEWPOP);
+        PGAPrintString (ctx, stdout, 0, PGA_NEWPOP);
+        PGAPrintString (ctx, stdout, 1, PGA_NEWPOP);
+    }
+}
+
 int main (int argc, char **argv)
 {
     edge_test (argc, argv);
@@ -241,4 +282,5 @@ int main (int argc, char **argv)
     ox_test   (argc, argv);
     nox_test  (argc, argv);
     cx_test   (argc, argv);
+    pbx_test  (argc, argv);
 }
