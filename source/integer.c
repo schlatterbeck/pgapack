@@ -2058,6 +2058,9 @@ void PGAIntegerPositionBasedCrossover
     The operation produces permutations of the integer genes of both
     parents. The result is a permutation again for both children.
 
+    Note that this crossover variant is identical to
+    PGAIntegerPositionBasedCrossover for the first child.
+
     Example
     -------
 
@@ -2082,11 +2085,49 @@ void PGAIntegerUniformOrderBasedCrossover
 {
     PGAInteger *parent [2];
     PGAInteger *child  [2];
+    PGAInteger *seen0 = ctx->scratch.pgaintscratch [0];
+    PGAInteger *seen1 = ctx->scratch.pgaintscratch [1];
+    PGAInteger i, j0, j1;
+    PGAInteger l = ctx->ga.StringLen;
+    memset (seen0, 0, sizeof (PGAInteger) * l);
+    memset (seen1, 0, sizeof (PGAInteger) * l);
 
     parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    for (i=0; i<l; i++) {
+        ctx->scratch.intscratch [i] = 0;
+        if (PGARandomFlip (ctx, 0.5)) {
+            child [0][i] = parent [0][i];
+            assert (child [0][i] >= 0 && child [0][i] < l);
+            assert (!seen0 [child [0][i]]);
+            seen0 [child [0][i]] = 1;
+            ctx->scratch.intscratch [i] = 1;
+        } else {
+            child [1][i] = parent [1][i];
+            assert (child [1][i] >= 0 && child [1][i] < l);
+            assert (!seen1 [child [1][i]]);
+            seen1 [child [1][i]] = 1;
+        }
+    }
+    j0 = j1 = 0;
+    for (i=0; i<l; i++) {
+        if (!ctx->scratch.intscratch [i]) {
+            for ( ; seen0 [parent [1][j0]]; j0++)
+                ;
+            assert (j0 < l);
+            child [0][i] = parent [1][j0];
+            j0++;
+        } else {
+            for ( ; seen1 [parent [0][j1]]; j1++)
+                ;
+            assert (j1 < l);
+            child [1][i] = parent [0][j1];
+            j1++;
+        }
+    }
 }
 
 /*!****************************************************************************
