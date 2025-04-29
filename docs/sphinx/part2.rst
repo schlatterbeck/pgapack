@@ -838,7 +838,10 @@ cut points on the gene, swaps the part between these points in the
 children and proceeds to copy the remaining positions from the other
 parent. Whenever a position is encountered that is already present in
 the gene it uses the corresponding swapped allele from the other parent.
-In this way many absolute positions are preserved.
+In this way many absolute positions are preserved. Note that the earlier
+paper [GL85]_ calls the operator "Partially Mapped Crossover" while
+later Goldberg calls it "Partially Matched Crossover" [Gol89]_
+(p. 170-174). We stick to the older name.
 
 The Modified Crossover (MX) [Dav85]_ selects one random cut point and
 copies everything up to this point from the first parent. The
