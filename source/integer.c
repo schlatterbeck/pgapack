@@ -1625,16 +1625,17 @@ void PGAIntegerPartiallyMappedCrossover
         c1_seen [parent [0][i]] = parent [1][i];
     }
     for (i = (pos2 + 1) % l; i != pos1; i=(i+1) % l) {
-        if (c0_seen [parent [0][i]] >= 0) {
-            child [0][i] = c0_seen [parent [0][i]];
-        } else {
-            child [0][i] = parent [0][i];
+        PGAInteger v;
+        v = parent [0][i];
+        while (c0_seen [v] >= 0) {
+            v = c0_seen [v];
         }
-        if (c1_seen [parent [1][i]] >= 0) {
-            child [1][i] = c1_seen [parent [1][i]];
-        } else {
-            child [1][i] = parent [1][i];
+        child [0][i] = v;
+        v = parent [1][i];
+        while (c1_seen [v] >= 0) {
+            v = c1_seen [v];
         }
+        child [1][i] = v;
     }
 }
 

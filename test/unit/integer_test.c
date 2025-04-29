@@ -62,6 +62,14 @@ void pmx_test (int argc, char **argv)
 {
     int l = 10;
     int i, j;
+    static const int p0 [] = 
+        { 24, 10, 22, 16,  3, 21,  6, 18, 15, 12,  5,  0,  4
+        ,  8, 23,  2, 13,  9,  7,  1, 14, 17, 11, 19, 20
+        };
+    static const int p1 [] =
+        { 17,  1, 16, 18, 19, 11, 15, 24,  0, 13, 23,  7, 22
+        , 21,  6,  5,  4,  2,  8, 14, 20, 12, 10,  9,  3
+        };
     PGAInteger *parent0, *parent1;
     printf ("PMX test\n");
     PGAContext *ctx = PGACreate
@@ -93,6 +101,30 @@ void pmx_test (int argc, char **argv)
         PGAPrintString (ctx, stdout, 0, PGA_NEWPOP);
         PGAPrintString (ctx, stdout, 1, PGA_NEWPOP);
     }
+    PGADestroy (ctx);
+
+    /* 2nd test */
+    l = 25;
+    ctx = PGACreate (&argc, argv, PGA_DATATYPE_INTEGER, l, PGA_MINIMIZE);
+    PGASetCrossoverType (ctx, PGA_CROSSOVER_PMX);
+    PGASetRandomSeed    (ctx, 2);
+    PGASetPopSize       (ctx, 8);
+    PGASetUp (ctx);
+    parent0 = (PGAInteger *)PGAGetIndividual (ctx, 0, PGA_OLDPOP)->chrom;
+    parent1 = (PGAInteger *)PGAGetIndividual (ctx, 1, PGA_OLDPOP)->chrom;
+    for (j=0; j<l; j++) {
+        parent0 [j] = p0 [j];
+        parent1 [j] = p1 [j];
+    }
+    PGARandom01 (ctx, 1);
+    for (i=0; i< 193; i++) {
+        (void)PGARandomInterval (ctx, 0, 24);
+    }
+    printf ("pos1: 21 pos2: 8\n");
+    PGAIntegerPartiallyMappedCrossover
+        (ctx, 0, 1, PGA_OLDPOP, 0, 1, PGA_NEWPOP);
+    PGAPrintString (ctx, stdout, 0, PGA_NEWPOP);
+    PGAPrintString (ctx, stdout, 1, PGA_NEWPOP);
     PGADestroy (ctx);
 }
 
