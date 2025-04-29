@@ -653,17 +653,25 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
       }
     case PGA_MUTATION_SCRAMBLE:
       {
-        int l = PGARandomInterval (ctx, 2, ctx->ga.MutateScrambleMax);
-        int pos = PGARandomInterval (ctx, 0, ctx->ga.StringLen - l - 1);
-        PGAShufflePGAInteger (ctx, c + pos, l);
+        int l = 0;
+        int pos;
+        if (PGARandomFlip (ctx, mr)) {
+            l   = PGARandomInterval (ctx, 2, ctx->ga.MutateScrambleMax);
+            pos = PGARandomInterval (ctx, 0, ctx->ga.StringLen - l - 1);
+            PGAShufflePGAInteger (ctx, c + pos, l);
+        }
         return l;
         break;
       }
     case PGA_MUTATION_POSITION:
       {
         int l = ctx->ga.StringLen;
-        int pos1 = PGARandomInterval (ctx, 0, l - 1);
-        int pos2 = PGARandomInterval (ctx, 0, l - 1);
+        int pos1, pos2;
+        if (!PGARandomFlip (ctx, mr)) {
+            return 0;
+        }
+        pos1 = PGARandomInterval (ctx, 0, l - 1);
+        pos2 = PGARandomInterval (ctx, 0, l - 1);
         PGAInteger tmp = c [pos1];
         if (pos1 < pos2) {
             count = pos2 - pos1;

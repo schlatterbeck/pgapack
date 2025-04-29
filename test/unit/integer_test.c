@@ -468,7 +468,7 @@ void mutation_scramble_test (int argc, char **argv)
 {
     int l = 10;
     int i, j;
-    char *scramble [] = { "5 @ 4", "2 @ 2", "3 @ 2", "2 @ 5", "2 @ 3" };
+    char *scramble [] = { "5 @ 4", "2 @ 2", "5 @ 0", "2 @ 1", "2 @ 2" };
     PGAInteger *parent;
     printf ("Scramble mutation test\n");
     PGAContext *ctx = PGACreate
@@ -488,7 +488,7 @@ void mutation_scramble_test (int argc, char **argv)
             parent [j] = j;
         }
         printf ("scramble: %s\n", scramble [i]);
-        PGAIntegerMutation (ctx, 0, PGA_OLDPOP, 0.5);
+        PGAIntegerMutation (ctx, 0, PGA_OLDPOP, 1.0);
         PGAPrintString (ctx, stdout, 0, PGA_OLDPOP);
     }
 }
@@ -497,6 +497,8 @@ void mutation_position_test (int argc, char **argv)
 {
     int l = 10;
     int i, j;
+    char *pos [] =
+        { "9, 8", "2, 4", "3, 0", "3, 7", "1, 7", "1, 4", "0, 1", "8, 2"};
     PGAInteger *parent;
     printf ("Position mutation test\n");
     PGAContext *ctx = PGACreate
@@ -509,17 +511,14 @@ void mutation_position_test (int argc, char **argv)
     /* Now init two genes and cross them over */
     parent = (PGAInteger *)PGAGetIndividual (ctx, 0, PGA_OLDPOP)->chrom;
     PGARandom01 (ctx, 1);
-    for (i=0; i<16; i++) {
-        printf ("rand: %d\n", PGARandomInterval (ctx, 0, l - 1));
-    }
-    PGARandom01 (ctx, 1);
     /* Make mutations */
     for (i=0; i<8; i++) {
         /* Reset parent */
         for (j=0; j<l; j++) {
             parent [j] = j;
         }
-        PGAIntegerMutation (ctx, 0, PGA_OLDPOP, 0.5);
+        printf ("pos: %s\n", pos [i]);
+        PGAIntegerMutation (ctx, 0, PGA_OLDPOP, 1.0);
         PGAPrintString (ctx, stdout, 0, PGA_OLDPOP);
     }
 }
