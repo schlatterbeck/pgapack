@@ -1,14 +1,17 @@
 OBJS = optimize.o
 
-all: optimize
+all: optimize magic
 
-optimize: optimize.o $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o optimize
+optimize: optimize.o
+	$(CC) $(CFLAGS) optimize.o $(LDFLAGS) -o optimize
+
+magic: magic.o
+	$(CC) $(CFLAGS) magic.o $(LDFLAGS) -o magic
 
 %.o: %.c optimize.h
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	rm -f $(OBJS) optimize
+	rm -f $(OBJS) optimize magic
 
 # vim: set noet :

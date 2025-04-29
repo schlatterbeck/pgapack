@@ -1125,7 +1125,9 @@ void PGASetUp (PGAContext *ctx)
         if (ctx->ga.MutateScrambleMax < 2) {
             ctx->ga.MutateScrambleMax = 2;
         }
-        assert (ctx->ga.MutateScrambleMax <= ctx->ga.StringLen);
+        if (ctx->ga.MutateScrambleMax > ctx->ga.StringLen) {
+            ctx->ga.MutateScrambleMax = ctx->ga.StringLen;
+        }
     }
 
     if (ctx->ga.DEVariant         == PGA_UNINITIALIZED_INT) {
