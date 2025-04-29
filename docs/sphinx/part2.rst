@@ -982,9 +982,10 @@ mixed case depending on how the strings were initialized.
 
 For integer-valued strings, if the strings were initialized to a
 permutation and gene :math:`i` is to be mutated, the default mutation
-operator swaps gene :math:`i` with a randomly selected gene. If the
-strings were initialized to a random value from a specified range and
-gene :math:`i` is to be mutated, by default gene :math:`i` will be
+operator swaps gene :math:`i` with a randomly selected gene.
+
+If the strings were initialized to a random value from a specified range
+and gene :math:`i` is to be mutated, by default gene :math:`i` will be
 replaced by a value selected uniformly random from the initialization
 range.
 
@@ -996,11 +997,27 @@ from the initialization range. If the strings were initialized to a
 permutation, the minimum and maximum values of the permutation define
 the range. If :c:func:`PGASetMutationType` is set to
 :c:macro:`PGA_MUTATION_PERMUTE`, gene :math:`i` will be swapped with a
-randomly selected gene. If :c:func:`PGASetMutationType` is set to
+randomly selected gene. Other mutation operators that preserve the
+property that the string is a permutation are
+:c:macro:`PGA_MUTATION_POSITION` which moves one allele to a different
+position in the string and :c:macro:`PGA_MUTATION_SCRAMBLE` which
+scrambles the alleles in a certain range. Both, the position of the
+region that is scrambled and the length are determined randomly. The
+maximum length of that range by default is half the string length, it
+can be limited by calling PGASetMutationScrambleMax with a different
+length value.  If :c:func:`PGASetMutationType` is set to
 :c:macro:`PGA_MUTATION_CONSTANT`, a constant integer value (by default
 one) will be added (subtracted) to (from) the existing allele value. The
 constant value may be set to 34, for example, with
 :c:func:`PGASetMutationIntegerValue` with parameters ``(ctx, 34)``.
+
+Note that for mutation types :c:macro:`PGA_MUTATION_POSITION` and
+:c:macro:`PGA_MUTATION_SCRAMBLE` there will only be a single mutation if
+the coin-flip with the mutation probability returns true. For the other
+mutation operators the coin-flip is performed for each allele.
+This may result in a lower mutation probability than expected, so the
+mutation probability might need a higher value than the other mutation
+types.
 
 Three of the real-valued mutation operators are of the form
 :math:`v \leftarrow v \pm p \times v`, where :math:`v` is the existing
