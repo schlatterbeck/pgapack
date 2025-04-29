@@ -381,6 +381,12 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /** Polynomial mutation */
 #define PGA_MUTATION_POLY       7
 
+/** Scramble sublist mutation, only for Integer data type */
+#define PGA_MUTATION_SCRAMBLE   8
+
+/** Position-based mutation, only for Integer data type */
+#define PGA_MUTATION_POSITION   9
+
 /*! @} */
 
 /*!****************************************
@@ -625,6 +631,7 @@ typedef struct {
     int MutateBounceFlag;    /**< Confine alleles to given range (random)   */
     double MutatePolyEta;    /**< Eta for polynomial mutation               */
     double MutatePolyValue;  /**< Value for polynomial mutation             */
+    int MutateScrambleMax;   /**< Maximum length for scramble mutation      */
     double TournamentSize;   /**< Number of participants in tournament      */
     int RTRWindowSize;       /**< Window for restricted tournament select   */
     int TournamentWithRepl;  /**< Tournament with / without replacement     */
@@ -1200,6 +1207,8 @@ double PGAGetMutationPolyEta (PGAContext *ctx);
 void PGASetMutationPolyValue (PGAContext *ctx, double c);
 double PGAGetMutationPolyValue (PGAContext *ctx);
 double PGASetupDE (PGAContext *ctx, int p, int pop, int maxidx, int *idx);
+void PGASetMutationScrambleMax (PGAContext *ctx, int max);
+int PGAGetMutationScrambleMax (PGAContext *ctx);
 
 /*****************************************
  *          parallel.c
@@ -1457,6 +1466,7 @@ int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 void PGAEvalSort (PGAContext *ctx, int pop, int *idx);
 int PGAEvalSortHelper (const void *i1, const void *i2);
 void PGAShuffle (PGAContext *ctx, int *list, int n);
+void PGAShufflePGAInteger (PGAContext *ctx, PGAInteger *list, int n);
 #define PGA_INITIAL_HASH 0xfeedbeefu
 PGAHash PGAUtilHash (const void *data, size_t len, PGAHash hashv);
 size_t PGAIndividualHashIndex (PGAContext *ctx, int p, int pop);

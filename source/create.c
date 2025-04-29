@@ -277,6 +277,7 @@ PGAContext *PGACreate
     ctx->ga.MutateBounceFlag   = PGA_UNINITIALIZED_INT;
     ctx->ga.MutatePolyEta      = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.MutatePolyValue    = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.MutateScrambleMax  = PGA_UNINITIALIZED_INT;
     ctx->ga.DEVariant          = PGA_UNINITIALIZED_INT;
     ctx->ga.DENumDiffs         = PGA_UNINITIALIZED_INT;
     ctx->ga.DECrossoverType    = PGA_UNINITIALIZED_INT;
@@ -1117,6 +1118,14 @@ void PGASetUp (PGAContext *ctx)
 
     if (ctx->ga.MutatePolyValue  == PGA_UNINITIALIZED_DOUBLE) {
         ctx->ga.MutatePolyValue   = -1.0;
+    }
+
+    if (ctx->ga.MutateScrambleMax  == PGA_UNINITIALIZED_INT) {
+        ctx->ga.MutateScrambleMax   = ctx->ga.StringLen / 2;
+        if (ctx->ga.MutateScrambleMax < 2) {
+            ctx->ga.MutateScrambleMax = 2;
+        }
+        assert (ctx->ga.MutateScrambleMax <= ctx->ga.StringLen);
     }
 
     if (ctx->ga.DEVariant         == PGA_UNINITIALIZED_INT) {

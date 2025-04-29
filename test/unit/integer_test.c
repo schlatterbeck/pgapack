@@ -464,6 +464,66 @@ void aex_test (int argc, char **argv)
     }
 }
 
+void mutation_scramble_test (int argc, char **argv)
+{
+    int l = 10;
+    int i, j;
+    char *scramble [] = { "5 @ 4", "2 @ 2", "3 @ 2", "2 @ 5", "2 @ 3" };
+    PGAInteger *parent;
+    printf ("Scramble mutation test\n");
+    PGAContext *ctx = PGACreate
+        (&argc, argv, PGA_DATATYPE_INTEGER, l, PGA_MINIMIZE);
+
+    PGASetMutationType  (ctx, PGA_MUTATION_SCRAMBLE);
+    PGASetRandomSeed    (ctx, 2);
+    PGASetPopSize       (ctx, 8);
+    PGASetUp (ctx);
+    /* Now init two genes and cross them over */
+    parent = (PGAInteger *)PGAGetIndividual (ctx, 0, PGA_OLDPOP)->chrom;
+    PGARandom01 (ctx, 1);
+    /* Make mutations */
+    for (i=0; i<5; i++) {
+        /* Reset parent */
+        for (j=0; j<l; j++) {
+            parent [j] = j;
+        }
+        printf ("scramble: %s\n", scramble [i]);
+        PGAIntegerMutation (ctx, 0, PGA_OLDPOP, 0.5);
+        PGAPrintString (ctx, stdout, 0, PGA_OLDPOP);
+    }
+}
+
+void mutation_position_test (int argc, char **argv)
+{
+    int l = 10;
+    int i, j;
+    PGAInteger *parent;
+    printf ("Position mutation test\n");
+    PGAContext *ctx = PGACreate
+        (&argc, argv, PGA_DATATYPE_INTEGER, l, PGA_MINIMIZE);
+
+    PGASetMutationType  (ctx, PGA_MUTATION_POSITION);
+    PGASetRandomSeed    (ctx, 2);
+    PGASetPopSize       (ctx, 8);
+    PGASetUp (ctx);
+    /* Now init two genes and cross them over */
+    parent = (PGAInteger *)PGAGetIndividual (ctx, 0, PGA_OLDPOP)->chrom;
+    PGARandom01 (ctx, 1);
+    for (i=0; i<16; i++) {
+        printf ("rand: %d\n", PGARandomInterval (ctx, 0, l - 1));
+    }
+    PGARandom01 (ctx, 1);
+    /* Make mutations */
+    for (i=0; i<8; i++) {
+        /* Reset parent */
+        for (j=0; j<l; j++) {
+            parent [j] = j;
+        }
+        PGAIntegerMutation (ctx, 0, PGA_OLDPOP, 0.5);
+        PGAPrintString (ctx, stdout, 0, PGA_OLDPOP);
+    }
+}
+
 int main (int argc, char **argv)
 {
     edge_test (argc, argv);
@@ -476,4 +536,6 @@ int main (int argc, char **argv)
     uox_test  (argc, argv);
     obx_test  (argc, argv);
     aex_test  (argc, argv);
+    mutation_scramble_test (argc, argv);
+    mutation_position_test (argc, argv);
 }

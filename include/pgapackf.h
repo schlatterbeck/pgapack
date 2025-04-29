@@ -161,6 +161,12 @@ c *** MUTATION
       parameter ( PGA_MUTATION_PERMUTE  =  5)
       integer PGA_MUTATION_DE
       parameter ( PGA_MUTATION_DE       =  6)
+      integer PGA_MUTATION_POLY
+      parameter ( PGA_MUTATION_POLY     =  7)
+      integer PGA_MUTATION_SCRAMBLE
+      parameter ( PGA_MUTATION_SCRAMBLE =  8)
+      integer PGA_MUTATION_POSITION
+      parameter ( PGA_MUTATION_POSITION =  9)
 
 c *** Differential Evolution Variant
       integer PGA_DE_VARIANT_RAND
@@ -387,6 +393,8 @@ c *** mutation
       external PGAGetMutationPolyEta
       double precision PGAGetMutationPolyValue
       external PGAGetMutationPolyValue
+      integer PGAGetMutationScrambleMax
+      external PGAGetMutationScrambleMax
 c *** parallel
       integer(8) PGABuildDatatype
       external PGABuildDatatype

@@ -199,6 +199,8 @@ privately owned rights.
 #define pgagetmutationpolyeta_           PGAGETMUTATIONPOLYETA
 #define pgasetmutationpolyvalue_         PGASETMUTATIONPOLYVALUE
 #define pgagetmutationpolyvalue_         PGAGETMUTATIONPOLYVALUE
+#define pgasetmutationscramblemax_       PGASETMUTATIONSCRAMBLEMAX
+#define pgagetmutationscramblemax_       PGAGETMUTATIONSCRAMBLEMAX
 /* parallel.c */
 #define pgarungm_                        PGARUNGM
 #define pgaevaluate_                     PGAEVALUATE
@@ -451,6 +453,8 @@ privately owned rights.
 #define pgagetmutationpolyeta_           _pgagetmutationpolyeta_
 #define pgasetmutationpolyvalue_         _pgasetmutationpolyvalue_
 #define pgagetmutationpolyvalue_         _pgagetmutationpolyvalue_
+#define pgasetmutationscramblemax_       _pgasetmutationscramblemax_
+#define pgagetmutationscramblemax_       _pgagetmutationscramblemax_
 /* parallel.c */
 #define pgarungm_                        _pgarungm_
 #define pgaevaluate_                     _pgaevaluate_
@@ -703,6 +707,8 @@ privately owned rights.
 #define pgagetmutationpolyeta_           pgagetmutationpolyeta
 #define pgasetmutationpolyvalue_         pgasetmutationpolyvalue
 #define pgagetmutationpolyvalue_         pgagetmutationpolyvalue
+#define pgasetmutationscramblemax_       pgasetmutationscramblemax
+#define pgagetmutationscramblemax_       pgagetmutationscramblemax
 /* parallel.c */
 #define pgarungm_                        pgarungm
 #define pgaevaluate_                     pgaevaluate
@@ -971,6 +977,8 @@ void pgasetmutationpolyeta_ (PGAContext **ftx, double *val);
 double pgagetmutationpolyeta_ (PGAContext **ftx);
 void pgasetmutationpolyvalue_ (PGAContext **ftx, double *val);
 double pgagetmutationpolyvalue_ (PGAContext **ftx);
+void pgasetmutationscramblemax_ (PGAContext **ftx, int *val);
+int pgagetmutationscramblemax_ (PGAContext **ftx);
 /* parallel.c */
 void pgarungm_(PGAContext **ftx, double (*f)(PGAContext *, int, int, double *),
      MPI_Comm *comm);
@@ -1858,6 +1866,16 @@ void pgasetmutationpolyvalue_ (PGAContext **ftx, double *val)
 double pgagetmutationpolyvalue_ (PGAContext **ftx)
 {
     return PGAGetMutationPolyValue (*ftx);
+}
+
+void pgasetmutationscramblemax_ (PGAContext **ftx, int *val)
+{
+    PGASetMutationScrambleMax (*ftx, *val);
+}
+
+int pgagetmutationscramblemax_ (PGAContext **ftx)
+{
+    return PGAGetMutationScrambleMax (*ftx);
 }
 
 

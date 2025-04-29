@@ -636,7 +636,11 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
 
     PGADebugEntered ("PGAIntegerMutation");
 
-    if (ctx->ga.MutationType == PGA_MUTATION_DE) {
+    c = (PGAInteger *)PGAGetIndividual (ctx, p, pop)->chrom;
+
+    switch (ctx->ga.MutationType) {
+    case PGA_MUTATION_DE:
+      {
         DECLARE_DYNARRAY (int, idx, maxidx);
         de_dither = PGASetupDE (ctx, p, pop, maxidx, idx);
         for (i=0; i<maxidx; i++) {
@@ -645,9 +649,39 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
         }
         /* Index of allele that is mutated in any case */
         midx = PGARandomInterval (ctx, 0, ctx->ga.StringLen - 1);
+        break;
+      }
+    case PGA_MUTATION_SCRAMBLE:
+      {
+        int l = PGARandomInterval (ctx, 2, ctx->ga.MutateScrambleMax);
+        int pos = PGARandomInterval (ctx, 0, ctx->ga.StringLen - l - 1);
+        PGAShufflePGAInteger (ctx, c + pos, l);
+        return l;
+        break;
+      }
+    case PGA_MUTATION_POSITION:
+      {
+        int l = ctx->ga.StringLen;
+        int pos1 = PGARandomInterval (ctx, 0, l - 1);
+        int pos2 = PGARandomInterval (ctx, 0, l - 1);
+        PGAInteger tmp = c [pos1];
+        if (pos1 < pos2) {
+            count = pos2 - pos1;
+            for (i=pos1+1; i<=pos2; i++) {
+                c [i-1] = c [i];
+            }
+        } else {
+            count = pos1 - pos2;
+            for (i=pos1; i>pos2; i--) {
+                c [i] = c [i-1];
+            }
+        }
+        c [pos2] = tmp;
+        return count;
+        break;
+      }
     }
 
-    c = (PGAInteger *)PGAGetIndividual (ctx, p, pop)->chrom;
     for (i=0; i<ctx->ga.StringLen; i++) {
         int old_value = c [i];
         int idx = i;
@@ -672,7 +706,7 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
                 }
                 break;
             case PGA_MUTATION_PERMUTE:
-            {
+              {
                 /* could check for j == i if we were noble */
                 /* edd: 16 Jun 2007  applying patch from Debian bug
                  * report #333381 correcting an 'off-by-one' here
@@ -688,7 +722,7 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
                 c [i] = c [j];
                 c [j] = temp;
                 break;
-            }
+              }
             case PGA_MUTATION_RANGE:
                 c [i] = PGARandomInterval
                     (ctx, ctx->init.IntegerMin [i], ctx->init.IntegerMax [i]);
