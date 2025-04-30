@@ -63,7 +63,7 @@ int stop_cond (PGAContext *ctx)
     return PGACheckStoppingConditions (ctx);
 }
 
-void print_string (PGAContext *ctx, FILE *fp, int p, int pop)
+void print_str (PGAContext *ctx, FILE *fp, int p, int pop)
 {
     int x, y;
     phenotype (ctx, p, pop);
@@ -159,21 +159,25 @@ int main (int argc, char **argv)
     ctx = PGACreate
         (&argc, argv, PGA_DATATYPE_INTEGER, 25, PGA_MINIMIZE);
 
-    PGASetRandomSeed          (ctx, seed);
-    PGASetPopSize             (ctx, popsize);
-    PGASetNumReplaceValue     (ctx, 10);
-    PGASetSelectType          (ctx, PGA_SELECT_TOURNAMENT);
-    PGASetPopReplaceType      (ctx, PGA_POPREPL_RTR);
-    PGASetRTRWindowSize       (ctx, 30);
-    PGASetMaxGAIterValue      (ctx, 5000);
-    PGASetMutationType        (ctx, mutation);
-    PGASetMutationScrambleMax (ctx, 5);
-    PGASetCrossoverType       (ctx, crossover);
-    PGASetUserFunction        (ctx, PGA_USERFUNCTION_STOPCOND, stop_cond);
-    PGASetUserFunction        (ctx, PGA_USERFUNCTION_PRINTSTRING, print_string);
-    PGASetPrintOptions        (ctx, PGA_REPORT_STRING);
-    PGASetTournamentSize      (ctx, 2);
-    PGASetMixingType          (ctx, PGA_MIX_MUTATE_OR_CROSS);
+    PGASetRandomSeed           (ctx, seed);
+    PGASetPopSize              (ctx, popsize);
+    PGASetNumReplaceValue      (ctx, (int)(popsize * 0.9));
+    PGASetMaxGAIterValue       (ctx, 1000);
+    PGASetMaxNoChangeValue     (ctx, 400);
+    PGASetPrintOptions         (ctx, PGA_REPORT_STRING);
+    /* PGASetPrintFrequencyValue  (ctx, 1); */
+    PGASetSelectType           (ctx, PGA_SELECT_TRUNCATION);
+    PGASetPopReplaceType       (ctx, PGA_POPREPL_RTR);
+    /* PGASetRTRWindowSize       (ctx, 30); */
+    PGASetMutationType         (ctx, mutation);
+    PGASetMutationScrambleMax  (ctx, 5);
+    PGASetCrossoverType        (ctx, crossover);
+    PGASetNoDuplicatesFlag     (ctx, PGA_TRUE);
+    PGASetTruncationProportion (ctx, 0.5);
+    PGASetUserFunction         (ctx, PGA_USERFUNCTION_STOPCOND, stop_cond);
+    PGASetUserFunction         (ctx, PGA_USERFUNCTION_PRINTSTRING, print_str);
+    /* PGASetTournamentSize       (ctx, 2); */
+    /* PGASetMixingType           (ctx, PGA_MIX_MUTATE_OR_CROSS); */
 
     PGASetUp   (ctx);
     PGARun     (ctx, evaluate);
