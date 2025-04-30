@@ -62,7 +62,7 @@ void pmx_test (int argc, char **argv)
 {
     int l = 10;
     int i, j;
-    static const int p0 [] = 
+    static const int p0 [] =
         { 24, 10, 22, 16,  3, 21,  6, 18, 15, 12,  5,  0,  4
         ,  8, 23,  2, 13,  9,  7,  1, 14, 17, 11, 19, 20
         };

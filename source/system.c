@@ -245,10 +245,13 @@ void PGADestroy (PGAContext *ctx)
         /*  Free the scratch space.  */
         free (ctx->scratch.intscratch);
         free (ctx->scratch.dblscratch);
-        free (ctx->scratch.pgaintscratch [0]);
-        free (ctx->scratch.pgaintscratch [1]);
-        free (ctx->scratch.pgaintscratch [2]);
-        free (ctx->scratch.pgaintscratch [3]);
+        /* Always allocated together */
+        if (ctx->scratch.pgaintscratch [0] != NULL) {
+            free (ctx->scratch.pgaintscratch [0]);
+            free (ctx->scratch.pgaintscratch [1]);
+            free (ctx->scratch.pgaintscratch [2]);
+            free (ctx->scratch.pgaintscratch [3]);
+        }
         if (ctx->scratch.permute != NULL) {
             free (ctx->scratch.permute);
         }

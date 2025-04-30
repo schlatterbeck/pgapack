@@ -1613,20 +1613,27 @@ void PGASetUp (PGAContext *ctx)
             );
     }
 
-    for (i=0; i<4; i++) {
-        ctx->scratch.pgaintscratch [i] = malloc
-            (sizeof (PGAInteger) * ctx->ga.StringLen);
-    }
-    if (  ctx->scratch.pgaintscratch [0] == NULL
-       || ctx->scratch.pgaintscratch [1] == NULL
-       || ctx->scratch.pgaintscratch [2] == NULL
-       || ctx->scratch.pgaintscratch [3] == NULL
-       )
-    {
-        PGAError
-            ( ctx, "PGASetUp: No room to allocate ctx->scratch.pgaintscratch"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+    if (ctx->ga.datatype == PGA_DATATYPE_INTEGER) {
+        for (i=0; i<4; i++) {
+            ctx->scratch.pgaintscratch [i] = malloc
+                (sizeof (PGAInteger) * ctx->ga.StringLen);
+        }
+        if (  ctx->scratch.pgaintscratch [0] == NULL
+           || ctx->scratch.pgaintscratch [1] == NULL
+           || ctx->scratch.pgaintscratch [2] == NULL
+           || ctx->scratch.pgaintscratch [3] == NULL
+           )
+        {
+            PGAError
+                ( ctx, "PGASetUp: No room to allocate ctx->scratch.pgaintscratch"
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+        }
+    } else {
+        ctx->scratch.pgaintscratch [0] = NULL;
+        ctx->scratch.pgaintscratch [1] = NULL;
+        ctx->scratch.pgaintscratch [2] = NULL;
+        ctx->scratch.pgaintscratch [3] = NULL;
     }
 
     /* If we're doing non-dominated sorting */
