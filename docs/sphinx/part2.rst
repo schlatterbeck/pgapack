@@ -2353,13 +2353,21 @@ evaluation user function is called only in the rank-0 instance for a
 parallel implementation.
 
 The hillclimbing function can be used to call a hillclimbing algorithm
-on newly generated individuals *before the are evaluated*. In the
+on newly generated individuals *before they are evaluated*. In the
 parallel version the hillclimber is called in the parallel processes, so
 hillclimbing occurs in parallel. If the hillclimber already computes the
 evaluation it should set the :c:func:`PGASetEvaluationUpToDateFlag` on
 the individual (setting the evaluation with :c:func:`PGASetEvaluation`
-also sets the flag). This avoids a call to the evaluation function. An
-example hillclimber is given in ``./examples/c/maxbit-hc.c`` -- it
+also sets the flag). This avoids a call to the evaluation function.
+
+Note that a hillclimbing function interacts with the
+:c:func:`PGASetNoDuplicatesFlag` setting: When duplicates are avoided
+the hill climber is called *after* duplicate checking (except for
+special replacement schemes like :c:macro:`PGA_POPREPL_RTR` or
+:c:macro:`PGA_POPREPL_PAIRWISE_BEST` where duplicate checking occurs
+at the end) and new duplicates may be introduced by the hill climber.
+
+An example hillclimber is given in ``./examples/c/maxbit-hc.c`` -- it
 randomly sets one of the bits to ``1``. Note that in this case the
 evaluation is not computed and the evaluation is called by PGAPack.
 When this example is run in a parallel version it will terminate after a
