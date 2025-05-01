@@ -1617,11 +1617,17 @@ void PGAIntegerPartiallyMappedCrossover
     pos1 = PGARandomInterval (ctx, 0, l - 1);
     pos2 = PGARandomInterval (ctx, 0, l - 1);
     for (i=pos1; i != (pos2 + 1) % l; i=(i+1) % l) {
+        if (parent [1][i] < 0 || parent [1][i] >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: Second Parent is no permutation");
+        }
         child [0][i] = parent [1][i];
-        assert (child [0][i] >= 0 && child [0][i] < l);
         c0_seen [parent [1][i]] = parent [0][i];
+        if (parent [0][i] < 0 || parent [0][i] >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: First Parent is no permutation");
+        }
         child [1][i] = parent [0][i];
-        assert (child [1][i] >= 0 && child [1][i] < l);
         c1_seen [parent [0][i]] = parent [1][i];
     }
     for (i = (pos2 + 1) % l; i != pos1; i=(i+1) % l) {
@@ -1704,7 +1710,10 @@ static void copy_middle_part
     for (i=pos1; i != pos2; i=(i+1) % l) {
         child [i] = parent [i];
         seen [parent [i]] |= flag;
-        assert (child [i] >= 0 && child [i] < l);
+        if (child [i] < 0 || child [i] >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: Parent is no permutation");
+        }
     }
 }
 
@@ -1901,12 +1910,18 @@ void PGAIntegerCycleCrossover
 
     /* Build parent index */
     for (i=0; i<l; i++) {
-        assert (parent [0][i] >= 0 && parent [0][i] < l);
+        if (parent [0][i] < 0 || parent [0][i] >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: First Parent is no permutation");
+        }
         pidx [parent [0][i]] = i;
     }
     pos = PGARandomInterval (ctx, 0, l - 1);
     for (i=pos; !seen [i]; i=pidx [parent [1][i]]) {
-        assert (i >= 0 && i < l);
+        if (i < 0 || i >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: Second Parent is no permutation");
+        }
         seen [i] = 1;
         child [0][i] = parent [0][i];
         child [1][i] = parent [1][i];
@@ -1991,10 +2006,20 @@ void PGAIntegerOrderBasedCrossover
     j0 = 0;
     for (i=0; i<l; i++) {
         if (PGARandomFlip (ctx, 0.5)) {
-            assert (parent [0][i] >= 0 && parent [0][i] <l);
+            if (parent [0][i] < 0 || parent [0][i] >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: First Parent is no permutation"
+                    );
+            }
             idx0 [parent [0][i]] = j0;
             val0 [j0] = parent [0][i];
-            assert (parent [1][i] >= 0 && parent [1][i] <l);
+            if (parent [1][i] < 0 || parent [1][i] >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: Second Parent is no permutation"
+                    );
+            }
             idx1 [parent [1][i]] = j0;
             val1 [j0] = parent [1][i];
             j0++;
@@ -2002,8 +2027,14 @@ void PGAIntegerOrderBasedCrossover
     }
     j0 = j1 = 0;
     for (i=0; i<l; i++) {
-        assert (parent [0][i] >= 0 && parent [0][i] <l);
-        assert (parent [1][i] >= 0 && parent [1][i] <l);
+        if (parent [0][i] < 0 || parent [0][i] >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: First Parent is no permutation");
+        }
+        if (parent [1][i] < 0 || parent [1][i] >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: Second Parent is no permutation");
+        }
         if (idx1 [parent [0][i]] < 0) {
             child [0][i] = parent [0][i];
         } else {
@@ -2086,8 +2117,18 @@ void PGAIntegerPositionBasedCrossover
         if (PGARandomFlip (ctx, 0.5)) {
             child [0][i] = parent [0][i];
             child [1][i] = parent [1][i];
-            assert (child [0][i] >= 0 && child [0][i] < l);
-            assert (child [1][i] >= 0 && child [1][i] < l);
+            if (parent [0][i] < 0 || parent [0][i] >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: First Parent is no permutation"
+                    );
+            }
+            if (parent [1][i] < 0 || parent [1][i] >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: Second Parent is no permutation"
+                    );
+            }
             assert (!seen0 [child [0][i]]);
             assert (!seen1 [child [1][i]]);
             seen0 [child [0][i]] = 1;
@@ -2182,13 +2223,23 @@ void PGAIntegerUniformOrderBasedCrossover
         ctx->scratch.intscratch [i] = 0;
         if (PGARandomFlip (ctx, 0.5)) {
             child [0][i] = parent [0][i];
-            assert (child [0][i] >= 0 && child [0][i] < l);
+            if (child [0][i] < 0 || child [0][i] >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: First Parent is no permutation"
+                    );
+            }
             assert (!seen0 [child [0][i]]);
             seen0 [child [0][i]] = 1;
             ctx->scratch.intscratch [i] = 1;
         } else {
             child [1][i] = parent [1][i];
-            assert (child [1][i] >= 0 && child [1][i] < l);
+            if (child [1][i] < 0 || child [1][i] >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: Second Parent is no permutation"
+                    );
+            }
             assert (!seen1 [child [1][i]]);
             seen1 [child [1][i]] = 1;
         }
@@ -2347,8 +2398,14 @@ void PGAIntegerAlternatingEdgeCrossover
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
 
     for (i=0; i<l; i++) {
-        assert (parent [0][i] >= 0 && parent [0][i] <l);
-        assert (parent [1][i] >= 0 && parent [1][i] <l);
+        if (parent [0][i] < 0 || parent [0][i] >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: First Parent is no permutation");
+        }
+        if (parent [1][i] < 0 || parent [1][i] >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: Second Parent is no permutation");
+        }
         idx[0][parent [0][i]] = i;
         idx[1][parent [1][i]] = i;
     }
