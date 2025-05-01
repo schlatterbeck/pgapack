@@ -319,8 +319,8 @@ void PGASetIntegerInitPermute (PGAContext *ctx, int min, int max)
     } else {
         ctx->init.IntegerType = PGA_IINIT_PERMUTE;
         for (i = 0; i < ctx->ga.StringLen; i++) {
-            ctx->init.IntegerMin[i] = min;
-            ctx->init.IntegerMax[i] = max;
+            ctx->init.IntegerMin [i] = min;
+            ctx->init.IntegerMax [i] = max;
         }
     }
 
@@ -2828,33 +2828,33 @@ static void compute_idx
 
 void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
 {
-    int *list;
-    int len, i, j;
+    int len = ctx->ga.StringLen;
     PGAInteger *c = (PGAInteger *)PGAGetIndividual (ctx, p, pop)->chrom;
 
     PGADebugEntered ("PGAIntegerInitString");
 
-    len = ctx->ga.StringLen;
-
     switch (ctx->init.IntegerType) {
     case PGA_IINIT_PERMUTE:
-        list = (int *)malloc (sizeof (int) * len);
-        if (list == NULL) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
-                , "PGAIntegerInitString: No room to allocate list"
-                );
+      {
+        PGAInteger ii;
+        /* We need to initialize the array in reverse order to emulate
+         * the old shuffling below
+         */
+        for (ii=0; ii<len; ii++) {
+             c [len - ii - 1] = ii + ctx->init.IntegerMin [0];
         }
-        j = ctx->init.IntegerMin [0];
-        for (i=0; i<len; i++) {
-             list [i] = j++;
+        /* We should really use PGAShufflePGAInteger here but this would
+         * destroy all test cases that rely on random number sequence
+         * and initial population. So we emulate the original
+         * initialization but with only a single tmp variable not with a
+         * whole array (which was allocated dynamically).
+         */
+        for (ii=0; ii<len; ii++) {
+            int j = PGARandomInterval (ctx, 0, len - ii - 1);
+            PGAInteger tmp = c [ii];
+            c [ii] = c [len - j - 1];
+            c [len - j - 1] = tmp;
         }
-        for (i=0; i<len; i++) {
-             j = PGARandomInterval (ctx, 0, len - i - 1);
-             c [i] = list [j];
-             list [j] = list [len - i - 1];
-        }
-        free (list);
         /* Ensure fixed edges if configured, all fixed edges are used in
          * forward direction regardless of the symmetric flag
          */
@@ -2913,11 +2913,15 @@ void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
             # endif /* DEBUG */
         }
         break;
+      }
     case PGA_IINIT_RANGE:
-        for (i = 0; i < len; i++)
-            c[i] = PGARandomInterval
-                (ctx, ctx->init.IntegerMin[i], ctx->init.IntegerMax[i]);
+      {
+        int i;
+        for (i=0; i<len; i++)
+            c [i] = PGARandomInterval
+                (ctx, ctx->init.IntegerMin [i], ctx->init.IntegerMax [i]);
         break;
+      }
     }
 
     PGADebugExited ("PGAIntegerInitString");

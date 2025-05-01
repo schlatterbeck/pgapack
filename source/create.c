@@ -421,13 +421,13 @@ PGAContext *PGACreate
     switch (datatype)
     {
     case PGA_DATATYPE_INTEGER:
-         ctx->init.IntegerMax = (int *) malloc (len * sizeof (PGAInteger));
+         ctx->init.IntegerMax = malloc (len * sizeof (PGAInteger));
          if (!ctx->init.IntegerMax) {
              PGAError ( ctx, "PGACreate: No room to allocate:", PGA_FATAL
                       , PGA_CHAR, (void *) "ctx->init.IntegerMax"
                       );
          }
-         ctx->init.IntegerMin = (int *) malloc (len * sizeof (PGAInteger));
+         ctx->init.IntegerMin = malloc (len * sizeof (PGAInteger));
          if (!ctx->init.IntegerMin) {
              PGAError ( ctx, "PGACreate: No room to allocate:", PGA_FATAL
                       , PGA_CHAR, (void *) "ctx->init.IntegerMin"

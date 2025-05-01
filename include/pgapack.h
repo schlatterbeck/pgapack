@@ -829,17 +829,17 @@ typedef struct {
  * \brief Initialization Structure
  *****************************************/
 typedef struct {
-    int    RandomInit;             /**< flag whether to randomize strings    */
-    double BinaryProbability;      /**< probability that a Bit will be 1     */
-    int    RealType;               /**< type of real      initialization     */
-    int    IntegerType;            /**< type of integer   initialization     */
-    int    CharacterType;          /**< type of character initialization     */
-    int    *IntegerMin;            /**< minimum of range of integers         */
-    int    *IntegerMax;            /**< maximum of range of integers         */
-    double *RealMin;               /**< minimum of range of reals            */
-    double *RealMax;               /**< maximum of range of reals            */
-    int    RandomSeed;             /**< integer to seed random numbers with  */
-    int    RandomDeterministic;    /**< use 2nd rand generator during eval   */
+    int         RandomInit;        /**< flag whether to randomize strings    */
+    double      BinaryProbability; /**< probability that a Bit will be 1     */
+    int         RealType;          /**< type of real      initialization     */
+    int         IntegerType;       /**< type of integer   initialization     */
+    int         CharacterType;     /**< type of character initialization     */
+    PGAInteger *IntegerMin;        /**< minimum of range of integers         */
+    PGAInteger *IntegerMax;        /**< maximum of range of integers         */
+    double     *RealMin;           /**< minimum of range of reals            */
+    double     *RealMax;           /**< maximum of range of reals            */
+    int       RandomSeed;          /**< integer to seed random numbers with  */
+    int       RandomDeterministic; /**< use 2nd rand generator during eval   */
 } PGAInitialize;
 
 /*!***************************************
