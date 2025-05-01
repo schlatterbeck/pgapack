@@ -100,8 +100,8 @@ void PGARunGM
     , MPI_Comm comm
     )
 {
-    int       rank, Restarted;
-    void    (*CreateNewGeneration) (PGAContext *, int, int) = NULL;
+    int  rank, Restarted, p;
+    void (*CreateNewGeneration) (PGAContext *, int, int) = NULL;
 
     /*  Let this be warned:
      *  The communicator is NOT duplicated.  There might be problems with
@@ -169,6 +169,17 @@ void PGARunGM
         break;
     default:
         assert (0);
+    }
+
+    /* Avoid that unused individuals in PGA_NEWPOP are evaluated
+     * this could occur for special replacement schemes.
+     * Note that individuals copied and/or produced by mixing operations
+     * will carry their own UpToDateFlag with them.
+     */
+    for (p=0; p<ctx->ga.PopSize; p++) {
+        PGACopyIndividual (ctx, p, PGA_OLDPOP, p, PGA_NEWPOP);
+        PGASetEvaluation
+            (ctx, p, PGA_NEWPOP, PGAGetEvaluation (ctx, p, PGA_OLDPOP));
     }
 
     while (!PGADone(ctx, comm)) {
