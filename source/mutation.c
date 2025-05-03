@@ -132,8 +132,10 @@ int PGAMutate (PGAContext *ctx, int p, int pop)
     :c:macro:`PGA_MUTATION_UNIFORM` (Real),
     :c:macro:`PGA_MUTATION_GAUSSIAN` (Real),
     :c:macro:`PGA_MUTATION_PERMUTE` (Integer),
-    :c:macro:`PGA_MUTATION_DE` (Real), and
-    :c:macro:`PGA_MUTATION_POLY` (Real/Integer).
+    :c:macro:`PGA_MUTATION_DE` (Real),
+    :c:macro:`PGA_MUTATION_POLY` (Real/Integer),
+    :c:macro:`PGA_MUTATION_SCRAMBLE` (Integer), and
+    :c:macro:`PGA_MUTATION_POSITION` (Integer).
     The default for integer-valued strings conforms to how the strings
     were initialized.  The default for real-valued strings is
     :c:macro:`PGA_MUTATION_GAUSSIAN`.
@@ -165,6 +167,8 @@ void PGASetMutationType (PGAContext *ctx, int mutation_type)
     case PGA_MUTATION_PERMUTE:
     case PGA_MUTATION_DE:
     case PGA_MUTATION_POLY:
+    case PGA_MUTATION_SCRAMBLE:
+    case PGA_MUTATION_POSITION:
          ctx->ga.MutationType = mutation_type;
          break;
     default:
@@ -218,6 +222,12 @@ void PGASetMutationType (PGAContext *ctx, int mutation_type)
            break;
        case PGA_MUTATION_POLY:
            printf ("Mutation Type = PGA_MUTATION_POLY\n");
+           break;
+       case PGA_MUTATION_SCRAMBLE:
+           printf ("Mutation Type = PGA_MUTATION_SCRAMBLE\n");
+           break;
+       case PGA_MUTATION_POSITION:
+           printf ("Mutation Type = PGA_MUTATION_POSITION\n");
            break;
        }
 
@@ -772,6 +782,73 @@ double PGAGetMutationPolyValue (PGAContext *ctx)
 {
     PGAFailIfNotSetUp ("PGAGetMutationPolyValue");
     return ctx->ga.MutatePolyValue;
+}
+
+/*!****************************************************************************
+    \brief Specify the maximum length for scramble mutation.
+    \ingroup init
+    \param  ctx  context variable
+    \param  v    the maximum length for scramble mutation
+    \return None
+
+    \rst
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGASetMutationScrambleMax (ctx, 5);
+
+    \endrst
+
+******************************************************************************/
+void PGASetMutationScrambleMax (PGAContext *ctx, int v)
+{
+    if (v > ctx->ga.StringLen) {
+        PGAError
+            ( ctx, "PGASetMutationScrambleMax: Must not exceet string length:"
+            , PGA_FATAL, PGA_INT, (void *) &v
+            );
+    }
+    if (v < 2) {
+        PGAError
+            ( ctx, "PGASetMutationScrambleMax: Must be >= 2:"
+            , PGA_FATAL, PGA_INT, (void *) &v
+            );
+    }
+    ctx->ga.MutateScrambleMax = v;
+}
+
+/*!***************************************************************************
+    \brief Return the maximum length for scramble mutation
+    \ingroup query
+    \param  ctx  context variable
+    \return The maximum length for scramble mutation
+
+    \rst
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int v;
+
+       ...
+       v = PGAGetMutationScrambleMax (ctx);
+
+    \endrst
+
+*****************************************************************************/
+int PGAGetMutationScrambleMax (PGAContext *ctx)
+{
+    PGAFailIfNotSetUp ("PGAGetMutationScrambleMax");
+    return ctx->ga.MutateScrambleMax;
 }
 
 

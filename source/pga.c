@@ -241,11 +241,12 @@ void PGARunMutationAndCrossover (PGAContext *ctx, int oldpop, int newpop)
     /*** first, copy n best strings to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
-    /*** And neither for PGA_POPREPL_NSGA_II                       ***/
+    /*** And neither for PGA_POPREPL_NSGA_II and _III              ***/
     n = popsize - numreplace;
     if (  ctx->ga.PopReplace != PGA_POPREPL_RTR
        && ctx->ga.PopReplace != PGA_POPREPL_PAIRWISE_BEST
        && ctx->ga.PopReplace != PGA_POPREPL_NSGA_II
+       && ctx->ga.PopReplace != PGA_POPREPL_NSGA_III
        )
     {
         PGASortPop (ctx, oldpop);
@@ -369,11 +370,12 @@ void PGARunMutationOrCrossover (PGAContext *ctx, int oldpop, int newpop)
     /*** first, copy n best strings to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
-    /*** And neither for PGA_POPREPL_NSGA_II                       ***/
+    /*** And neither for PGA_POPREPL_NSGA_II and _III              ***/
     n = popsize - numreplace;
     if (  ctx->ga.PopReplace != PGA_POPREPL_RTR
        && ctx->ga.PopReplace != PGA_POPREPL_PAIRWISE_BEST
        && ctx->ga.PopReplace != PGA_POPREPL_NSGA_II
+       && ctx->ga.PopReplace != PGA_POPREPL_NSGA_III
        )
     {
         PGASortPop (ctx, oldpop);
@@ -490,11 +492,12 @@ void PGARunMutationOnly (PGAContext *ctx, int oldpop, int newpop)
     /*** first, copy n best strings to new pop ***/
     /*** Note that we do not need to do this for PGA_POPREPL_RTR   ***/
     /*** And neither for PGA_POPREPL_PAIRWISE_BEST                 ***/
-    /*** And neither for PGA_POPREPL_NSGA_II                       ***/
+    /*** And neither for PGA_POPREPL_NSGA_II and _III              ***/
     n = popsize - numreplace;
     if (  ctx->ga.PopReplace != PGA_POPREPL_RTR
        && ctx->ga.PopReplace != PGA_POPREPL_PAIRWISE_BEST
        && ctx->ga.PopReplace != PGA_POPREPL_NSGA_II
+       && ctx->ga.PopReplace != PGA_POPREPL_NSGA_III
        )
     {
         PGASortPop (ctx, oldpop);
@@ -570,8 +573,8 @@ void PGAUpdateGeneration (PGAContext *ctx, MPI_Comm comm)
 
     if (rank == 0) {
         DECLARE_DYNARRAY (double, oldbest, ctx->ga.NumAuxEval + 1);
-        /* The three replacement schemes PGA_POPREPL_PAIRWISE_BEST,
-         * PGA_POPREPL_RTR, and PGA_POPREPL_NSGA_II all replace some new
+        /* The replacement schemes PGA_POPREPL_PAIRWISE_BEST,
+         * PGA_POPREPL_RTR, PGA_POPREPL_NSGA_II and _III all replace some new
          * individuals from PGA_NEWPOP into PGA_OLDPOP. Then
          * PGA_NEWPOP/PGA_OLDPOP are switched (resulting in the current
          * population to be PGA_NEWPOP). They are switched *again* at

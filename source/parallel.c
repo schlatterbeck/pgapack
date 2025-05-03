@@ -100,8 +100,8 @@ void PGARunGM
     , MPI_Comm comm
     )
 {
-    int       rank, Restarted;
-    void    (*CreateNewGeneration) (PGAContext *, int, int) = NULL;
+    int  rank, Restarted, p;
+    void (*CreateNewGeneration) (PGAContext *, int, int) = NULL;
 
     /*  Let this be warned:
      *  The communicator is NOT duplicated.  There might be problems with
@@ -169,6 +169,17 @@ void PGARunGM
         break;
     default:
         assert (0);
+    }
+
+    /* Avoid that unused individuals in PGA_NEWPOP are evaluated
+     * this could occur for special replacement schemes.
+     * Note that individuals copied and/or produced by mixing operations
+     * will carry their own UpToDateFlag with them.
+     */
+    for (p=0; p<ctx->ga.PopSize; p++) {
+        PGACopyIndividual (ctx, p, PGA_OLDPOP, p, PGA_NEWPOP);
+        PGASetEvaluation
+            (ctx, p, PGA_NEWPOP, PGAGetEvaluation (ctx, p, PGA_OLDPOP));
     }
 
     while (!PGADone(ctx, comm)) {
@@ -307,6 +318,46 @@ static void gen_randseeds (PGAContext *ctx)
     }
 }
 
+/* Hash / UnHash individuals
+ * For RTR and PAIRWISE_BEST replacement we need to do this in
+ * generation zero and we're called with PGA_OLDPOP as the population.
+ * For all others we need to do this *only* when the generation is
+ * PGA_NEWPOP.
+ * We currently do no duplicate checking for NSGA (-II or -III)
+ * replacement.
+ * Note that hashing is only performed when NoDuplicates is in effect,
+ * but this is checked by PGAHashIndividual and PGAUnHashIndividual.
+ */
+
+static void hash_individual (PGAContext *ctx, int p, int pop)
+{
+    int is_nsga = ctx->ga.PopReplace == PGA_POPREPL_NSGA_II
+               || ctx->ga.PopReplace == PGA_POPREPL_NSGA_III;
+    int is_special = ctx->ga.PopReplace == PGA_POPREPL_RTR
+                  || ctx->ga.PopReplace == PGA_POPREPL_PAIRWISE_BEST;
+    if (is_nsga || (is_special && pop != PGA_OLDPOP)
+       || (!is_special && pop == PGA_OLDPOP)
+       )
+    {
+        return;
+    }
+    PGAHashIndividual (ctx, p, pop);
+}
+
+static void unhash_individual (PGAContext *ctx, int p, int pop)
+{
+    int is_nsga = ctx->ga.PopReplace == PGA_POPREPL_NSGA_II
+               || ctx->ga.PopReplace == PGA_POPREPL_NSGA_III;
+    int is_special = ctx->ga.PopReplace == PGA_POPREPL_RTR
+                  || ctx->ga.PopReplace == PGA_POPREPL_PAIRWISE_BEST;
+    if (is_nsga || (is_special && pop != PGA_OLDPOP)
+       || (!is_special && pop == PGA_OLDPOP)
+       )
+    {
+        return;
+    }
+    PGAUnHashIndividual (ctx, p, pop);
+}
 
 /*!****************************************************************************
     \brief Sequential internal evalution function.
@@ -350,9 +401,17 @@ static void PGAEvaluateSeq
             }
             if (ctx->fops.Hillclimb) {
                 int fp = p + 1;
+                /* Need to unhash before modify */
+                unhash_individual (ctx, p, pop);
                 (*ctx->fops.Hillclimb)(&ctx, &fp, &pop);
+                /* And re-hash after modification */
+                hash_individual (ctx, p, pop);
             } else if (ctx->cops.Hillclimb) {
+                /* Need to unhash before modify */
+                unhash_individual (ctx, p, pop);
                 (*ctx->cops.Hillclimb)(ctx, p, pop);
+                /* And re-hash after modification */
+                hash_individual (ctx, p, pop);
             }
             /* Hillclimbing may have computed evaluation */
             if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
@@ -652,9 +711,17 @@ static void PGAEvaluateCoop
             }
             if (ctx->fops.Hillclimb) {
                 fp = p+1;
+                /* Need to unhash before modify */
+                unhash_individual (ctx, p, pop);
                 (*ctx->fops.Hillclimb)(&ctx, &fp, &pop);
+                /* And re-hash after modification */
+                hash_individual (ctx, p, pop);
             } else if (ctx->cops.Hillclimb) {
+                /* Need to unhash before modify */
+                unhash_individual (ctx, p, pop);
                 (*ctx->cops.Hillclimb)(ctx, p, pop);
+                /* And re-hash after modification */
+                hash_individual (ctx, p, pop);
             }
             /* Hillclimbing may have computed evaluation */
             if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
@@ -681,8 +748,12 @@ static void PGAEvaluateCoop
             PGAReceiveEvaluation
                 (ctx, q, pop, 1, PGA_COMM_EVALOFSTRING, comm, &stat);
             if (ctx->fops.Hillclimb || ctx->cops.Hillclimb) {
+                /* Need to unhash before modify */
+                unhash_individual (ctx, q, pop);
                 PGAReceiveIndividual
                     (ctx, q, pop, 1, PGA_COMM_STRINGTOEVAL, comm, &stat);
+                /* And re-hash after modification */
+                hash_individual (ctx, q, pop);
             }
             PGASetEvaluationUpToDateFlag (ctx, q, pop, PGA_TRUE);
             ctx->rep.nevals++;
@@ -794,8 +865,12 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
         p = work [src];
         PGASetEvaluation (ctx, p, pop, tmp1->evalue, tmp1->auxeval);
         if (ctx->fops.Hillclimb || ctx->cops.Hillclimb) {
+            /* Need to unhash before modify */
+            unhash_individual (ctx, p, pop);
             PGAReceiveIndividual
                 (ctx, p, pop, src, PGA_COMM_STRINGTOEVAL, comm, &stat);
+            /* And re-hash after modification */
+            hash_individual (ctx, p, pop);
         }
         ctx->rep.nevals++;
 #if DEBUG_EVAL
@@ -832,8 +907,12 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
         p = work [src];
         PGASetEvaluation (ctx, p, pop, tmp1->evalue, tmp1->auxeval);
         if (ctx->fops.Hillclimb || ctx->cops.Hillclimb) {
+            /* Need to unhash before modify */
+            unhash_individual (ctx, p, pop);
             PGAReceiveIndividual
                 (ctx, p, pop, src, PGA_COMM_STRINGTOEVAL, comm, &stat);
+            /* And re-hash after modification */
+            hash_individual (ctx, p, pop);
         }
         ctx->rep.nevals++;
         sentout--;
@@ -1014,7 +1093,6 @@ void PGAEvaluate
 
     PGADebugExited ("PGAEvaluate");
 }
-
 
 /*!****************************************************************************
     \brief Build an MPI datatype for string p in population pop.

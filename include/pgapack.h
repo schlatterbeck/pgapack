@@ -299,6 +299,15 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_CROSSOVER_UNIFORM   3    /**< Uniform   crossover              */
 #define PGA_CROSSOVER_SBX       4    /**< Simulated binary crossover (SBX) */
 #define PGA_CROSSOVER_EDGE      5    /**< Edge Recombination               */
+#define PGA_CROSSOVER_PMX       6    /**< Partially Mapped crossover (PMX) */
+#define PGA_CROSSOVER_MODIFIED  7    /**< Modified crossover (MX)          */
+#define PGA_CROSSOVER_ORDER     8    /**< Order crossover (OX)             */
+#define PGA_CROSSOVER_CYCLE     9    /**< Cycle crossover (CX)             */
+#define PGA_CROSSOVER_OBX      10    /**< Order Based crossover (OBX)      */
+#define PGA_CROSSOVER_PBX      11    /**< Position Based crossover (PBX)   */
+#define PGA_CROSSOVER_UOX      12    /**< Unified Order Based crossover    */
+#define PGA_CROSSOVER_AEX      13    /**< Alternating Edge crossover (AEX) */
+#define PGA_CROSSOVER_NOX      14    /**< Non-wrapping Order crossover     */
 /*! @} */
 
 /*!***************************************
@@ -371,6 +380,12 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 
 /** Polynomial mutation */
 #define PGA_MUTATION_POLY       7
+
+/** Scramble sublist mutation, only for Integer data type */
+#define PGA_MUTATION_SCRAMBLE   8
+
+/** Position-based mutation, only for Integer data type */
+#define PGA_MUTATION_POSITION   9
 
 /*! @} */
 
@@ -616,6 +631,7 @@ typedef struct {
     int MutateBounceFlag;    /**< Confine alleles to given range (random)   */
     double MutatePolyEta;    /**< Eta for polynomial mutation               */
     double MutatePolyValue;  /**< Value for polynomial mutation             */
+    int MutateScrambleMax;   /**< Maximum length for scramble mutation      */
     double TournamentSize;   /**< Number of participants in tournament      */
     int RTRWindowSize;       /**< Window for restricted tournament select   */
     int TournamentWithRepl;  /**< Tournament with / without replacement     */
@@ -813,17 +829,17 @@ typedef struct {
  * \brief Initialization Structure
  *****************************************/
 typedef struct {
-    int    RandomInit;             /**< flag whether to randomize strings    */
-    double BinaryProbability;      /**< probability that a Bit will be 1     */
-    int    RealType;               /**< type of real      initialization     */
-    int    IntegerType;            /**< type of integer   initialization     */
-    int    CharacterType;          /**< type of character initialization     */
-    int    *IntegerMin;            /**< minimum of range of integers         */
-    int    *IntegerMax;            /**< maximum of range of integers         */
-    double *RealMin;               /**< minimum of range of reals            */
-    double *RealMax;               /**< maximum of range of reals            */
-    int    RandomSeed;             /**< integer to seed random numbers with  */
-    int    RandomDeterministic;    /**< use 2nd rand generator during eval   */
+    int         RandomInit;        /**< flag whether to randomize strings    */
+    double      BinaryProbability; /**< probability that a Bit will be 1     */
+    int         RealType;          /**< type of real      initialization     */
+    int         IntegerType;       /**< type of integer   initialization     */
+    int         CharacterType;     /**< type of character initialization     */
+    PGAInteger *IntegerMin;        /**< minimum of range of integers         */
+    PGAInteger *IntegerMax;        /**< maximum of range of integers         */
+    double     *RealMin;           /**< minimum of range of reals            */
+    double     *RealMax;           /**< maximum of range of reals            */
+    int       RandomSeed;          /**< integer to seed random numbers with  */
+    int       RandomDeterministic; /**< use 2nd rand generator during eval   */
 } PGAInitialize;
 
 /*!***************************************
@@ -839,6 +855,7 @@ typedef struct {
     PGAIndividual **hashed;            /**< For duplicate checking          */
     size_t         serialization_size; /**< Size for Serialize/Deserialize  */
     void          *serialized;         /**< tmp pointer for serialized data */
+    PGAInteger    *pgaintscratch [4];  /**< For permutation crossovers      */
 } PGAScratch;
 
 /*!***************************************
@@ -1095,6 +1112,24 @@ void PGAIntegerSBXCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGAIntegerEdgeCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerPartiallyMappedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerModifiedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerCycleCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerOrderCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerOrderBasedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerPositionBasedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerAlternatingEdgeCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerUniformOrderBasedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
+void PGAIntegerNonWrappingOrderCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2);
 void PGAIntegerSetFixedEdges
     (PGAContext *ctx, size_t n, PGAInteger (*edge)[2], int symmetric);
 void PGAIntegerPrintString (PGAContext *ctx, FILE *fp, int p, int pop);
@@ -1172,6 +1207,8 @@ double PGAGetMutationPolyEta (PGAContext *ctx);
 void PGASetMutationPolyValue (PGAContext *ctx, double c);
 double PGAGetMutationPolyValue (PGAContext *ctx);
 double PGASetupDE (PGAContext *ctx, int p, int pop, int maxidx, int *idx);
+void PGASetMutationScrambleMax (PGAContext *ctx, int max);
+int PGAGetMutationScrambleMax (PGAContext *ctx);
 
 /*****************************************
  *          parallel.c
@@ -1429,6 +1466,7 @@ int PGAEvalCompare (PGAContext *ctx, int p1, int pop1, int p2, int pop2);
 void PGAEvalSort (PGAContext *ctx, int pop, int *idx);
 int PGAEvalSortHelper (const void *i1, const void *i2);
 void PGAShuffle (PGAContext *ctx, int *list, int n);
+void PGAShufflePGAInteger (PGAContext *ctx, PGAInteger *list, int n);
 #define PGA_INITIAL_HASH 0xfeedbeefu
 PGAHash PGAUtilHash (const void *data, size_t len, PGAHash hashv);
 size_t PGAIndividualHashIndex (PGAContext *ctx, int p, int pop);

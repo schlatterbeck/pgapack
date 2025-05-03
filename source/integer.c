@@ -319,8 +319,8 @@ void PGASetIntegerInitPermute (PGAContext *ctx, int min, int max)
     } else {
         ctx->init.IntegerType = PGA_IINIT_PERMUTE;
         for (i = 0; i < ctx->ga.StringLen; i++) {
-            ctx->init.IntegerMin[i] = min;
-            ctx->init.IntegerMax[i] = max;
+            ctx->init.IntegerMin [i] = min;
+            ctx->init.IntegerMax [i] = max;
         }
     }
 
@@ -636,7 +636,11 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
 
     PGADebugEntered ("PGAIntegerMutation");
 
-    if (ctx->ga.MutationType == PGA_MUTATION_DE) {
+    c = (PGAInteger *)PGAGetIndividual (ctx, p, pop)->chrom;
+
+    switch (ctx->ga.MutationType) {
+    case PGA_MUTATION_DE:
+      {
         DECLARE_DYNARRAY (int, idx, maxidx);
         de_dither = PGASetupDE (ctx, p, pop, maxidx, idx);
         for (i=0; i<maxidx; i++) {
@@ -645,9 +649,47 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
         }
         /* Index of allele that is mutated in any case */
         midx = PGARandomInterval (ctx, 0, ctx->ga.StringLen - 1);
+        break;
+      }
+    case PGA_MUTATION_SCRAMBLE:
+      {
+        int l = 0;
+        int pos;
+        if (PGARandomFlip (ctx, mr)) {
+            l   = PGARandomInterval (ctx, 2, ctx->ga.MutateScrambleMax);
+            pos = PGARandomInterval (ctx, 0, ctx->ga.StringLen - l - 1);
+            PGAShufflePGAInteger (ctx, c + pos, l);
+        }
+        return l;
+        break;
+      }
+    case PGA_MUTATION_POSITION:
+      {
+        int l = ctx->ga.StringLen;
+        int pos1, pos2;
+        if (!PGARandomFlip (ctx, mr)) {
+            return 0;
+        }
+        pos1 = PGARandomInterval (ctx, 0, l - 1);
+        pos2 = PGARandomInterval (ctx, 0, l - 1);
+        PGAInteger tmp = c [pos1];
+        if (pos1 < pos2) {
+            count = pos2 - pos1;
+            for (i=pos1+1; i<=pos2; i++) {
+                c [i-1] = c [i];
+            }
+        } else {
+            count = pos1 - pos2;
+            for (i=pos1; i>pos2; i--) {
+                c [i] = c [i-1];
+            }
+        }
+        c [pos2] = tmp;
+        return count;
+        break;
+      }
     }
 
-    c = (PGAInteger *)PGAGetIndividual (ctx, p, pop)->chrom;
     for (i=0; i<ctx->ga.StringLen; i++) {
         int old_value = c [i];
         int idx = i;
@@ -672,7 +714,7 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
                 }
                 break;
             case PGA_MUTATION_PERMUTE:
-            {
+              {
                 /* could check for j == i if we were noble */
                 /* edd: 16 Jun 2007  applying patch from Debian bug
                  * report #333381 correcting an 'off-by-one' here
@@ -688,7 +730,7 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
                 c [i] = c [j];
                 c [j] = temp;
                 break;
-            }
+              }
             case PGA_MUTATION_RANGE:
                 c [i] = PGARandomInterval
                     (ctx, ctx->init.IntegerMin [i], ctx->init.IntegerMax [i]);
@@ -1501,6 +1543,1024 @@ void PGAIntegerEdgeCrossover
 }
 
 /*!****************************************************************************
+    \brief Perform Partially Mapped Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerPartiallyMappedCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+/* Allow override of random interval for testing */
+#ifndef randinterval
+#define randinterval PGARandomInterval
+#endif
+
+void PGAIntegerPartiallyMappedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+    PGAInteger i;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger pos1, pos2;
+    PGAInteger *c0_seen = ctx->scratch.pgaintscratch [0];
+    PGAInteger *c1_seen = ctx->scratch.pgaintscratch [1];
+    PGAInteger imin = ctx->init.IntegerMin [0];
+    for (i=0; i<l; i++) {
+        c0_seen [i] = c1_seen [i] = -1;
+    }
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    /* Chose two positions */
+    pos1 = PGARandomInterval (ctx, 0, l - 1);
+    pos2 = PGARandomInterval (ctx, 0, l - 1);
+    for (i=pos1; i != (pos2 + 1) % l; i=(i+1) % l) {
+        if (parent [1][i] - imin < 0 || parent [1][i] - imin >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: Second Parent is no permutation");
+        }
+        child [0][i] = parent [1][i];
+        c0_seen [parent [1][i] - imin] = parent [0][i];
+        if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: First Parent is no permutation");
+        }
+        child [1][i] = parent [0][i];
+        c1_seen [parent [0][i] - imin] = parent [1][i];
+    }
+    for (i = (pos2 + 1) % l; i != pos1; i=(i+1) % l) {
+        int j;
+        PGAInteger v;
+        v = parent [0][i];
+        for (j=0; j<l + 5 && c0_seen [v - imin] >= 0; j++) {
+            v = c0_seen [v - imin];
+        }
+        /* Should have been checked above, possibly a bug */
+        if (i > l) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Crossover: no permutation");
+        }
+        child [0][i] = v;
+        v = parent [1][i];
+        for (j=0; j<l + 5 && c1_seen [v - imin] >= 0; j++) {
+            v = c1_seen [v - imin];
+        }
+        /* Should have been checked above, possibly a bug */
+        if (i > l) {
+            PGAErrorPrintf (ctx, PGA_FATAL, "Crossover: no permutation");
+        }
+        child [1][i] = v;
+    }
+}
+
+/*!****************************************************************************
+    \brief Perform Modified Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerModifiedCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+/* Allow override of random interval for testing */
+#ifndef randinterval
+#define randinterval PGARandomInterval
+#endif
+
+static void copy_middle_part
+    ( PGAContext *ctx
+    , PGAInteger *parent, PGAInteger *child
+    , PGAInteger flag, PGAInteger pos1, PGAInteger pos2
+    )
+{
+    PGAInteger i;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+    PGAInteger imin = ctx->init.IntegerMin [0];
+
+    for (i=pos1; i != pos2; i=(i+1) % l) {
+        child [i] = parent [i];
+        if (parent [i] - imin < 0 || parent [i] - imin >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: Parent is no permutation");
+        }
+        seen [parent [i] - imin] |= flag;
+    }
+}
+
+static PGAInteger copy_rest
+    ( PGAContext *ctx
+    , PGAInteger *parent, PGAInteger *child
+    , PGAInteger flag, PGAInteger pidx, PGAInteger sc, PGAInteger ec
+    )
+{
+    PGAInteger i;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+    PGAInteger imin = ctx->init.IntegerMin [0];
+    /* Copy rest from other parent, retaining order in other parent */
+    for (i=sc; i<ec; i++) {
+        while (seen [parent [pidx] - imin] & flag) {
+            pidx = (pidx + 1) % l;
+        }
+        child [i] = parent [pidx];
+        pidx = (pidx + 1) % l;
+    }
+    return pidx;
+}
+
+void PGAIntegerModifiedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger pos;
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+    memset (seen, 0, sizeof (PGAInteger) * l);
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+
+    /* Chose one position and copy first part */
+    pos = PGARandomInterval (ctx, 0, l - 1);
+    copy_middle_part (ctx, parent [0], child [0], 1, 0, pos);
+    copy_middle_part (ctx, parent [1], child [1], 2, 0, pos);
+    /* Copy rest from other parent, retaining order in other parent */
+    (void)copy_rest (ctx, parent [1], child [0], 1, 0, pos, l);
+    (void)copy_rest (ctx, parent [0], child [1], 2, 0, pos, l);
+}
+
+/*!****************************************************************************
+    \brief Perform Order Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerOrderCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerOrderCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+    PGAInteger j;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger pos1, pos2;
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+    memset (seen, 0, sizeof (PGAInteger) * l);
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    /* Chose two positions and copy middle part, note that 'middle' part
+     * can wrap
+     */
+    pos1 = PGARandomInterval (ctx, 0, l - 1);
+    pos2 = PGARandomInterval (ctx, 0, l - 1);
+    copy_middle_part (ctx, parent [0], child [0], 1, pos1, pos2);
+    copy_middle_part (ctx, parent [1], child [1], 2, pos1, pos2);
+    /* Copy rest from other parent, retaining order in other parent */
+    if (pos2 > pos1) {
+        j =   copy_rest (ctx, parent [1], child [0], 1, pos2, pos2, l);
+        (void)copy_rest (ctx, parent [1], child [0], 1, j,    0, pos1);
+        j =   copy_rest (ctx, parent [0], child [1], 2, pos2, pos2, l);
+        (void)copy_rest (ctx, parent [0], child [1], 2, j,    0, pos1);
+    } else {
+        (void)copy_rest (ctx, parent [1], child [0], 1, pos2, pos2, pos1);
+        (void)copy_rest (ctx, parent [0], child [1], 2, pos2, pos2, pos1);
+    }
+}
+
+/*!****************************************************************************
+    \brief Perform Cycle Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerCycleCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerCycleCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+    PGAInteger i;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger pos;
+    PGAInteger imin = ctx->init.IntegerMin [0];
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+    PGAInteger *pidx = ctx->scratch.pgaintscratch [1];
+    memset (seen, 0, sizeof (PGAInteger) * l);
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    /* Build parent index */
+    for (i=0; i<l; i++) {
+        if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: First Parent is no permutation");
+        }
+        pidx [parent [0][i] - imin] = i;
+    }
+    pos = PGARandomInterval (ctx, 0, l - 1);
+    for (i=pos; !seen [i]; i=pidx [parent [1][i] - imin]) {
+        if (i < 0 || i >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: Second Parent is no permutation");
+        }
+        seen [i] = 1;
+        child [0][i] = parent [0][i];
+        child [1][i] = parent [1][i];
+    }
+    for (i=0; i<l; i++) {
+        if (seen [i]) {
+            continue;
+        }
+        child [0][i] = parent [1][i];
+        child [1][i] = parent [0][i];
+    }
+}
+
+/*!****************************************************************************
+    \brief Perform Order Based Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerOrderBasedCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerOrderBasedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+    PGAInteger i, j0, j1;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger imin = ctx->init.IntegerMin [0];
+    PGAInteger *idx0 = ctx->scratch.pgaintscratch [0];
+    PGAInteger *idx1 = ctx->scratch.pgaintscratch [1];
+    PGAInteger *val0 = ctx->scratch.pgaintscratch [2];
+    PGAInteger *val1 = ctx->scratch.pgaintscratch [3];
+
+    for (i=0; i<l; i++) {
+        idx0 [i] = idx1 [i] = val0 [i] = val1 [i] = -1;
+    }
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    j0 = 0;
+    for (i=0; i<l; i++) {
+        if (PGARandomFlip (ctx, 0.5)) {
+            if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: First Parent is no permutation"
+                    );
+            }
+            idx0 [parent [0][i] - imin] = j0;
+            val0 [j0] = parent [0][i];
+            if (parent [1][i] - imin < 0 || parent [1][i] - imin >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: Second Parent is no permutation"
+                    );
+            }
+            idx1 [parent [1][i] - imin] = j0;
+            val1 [j0] = parent [1][i];
+            j0++;
+        }
+    }
+    j0 = j1 = 0;
+    for (i=0; i<l; i++) {
+        if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: First Parent is no permutation");
+        }
+        if (parent [1][i] - imin < 0 || parent [1][i] - imin >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: Second Parent is no permutation");
+        }
+        if (idx1 [parent [0][i] - imin] < 0) {
+            child [0][i] = parent [0][i];
+        } else {
+            child [0][i] = val1 [j0++];
+        }
+        if (idx0 [parent [1][i] - imin] < 0) {
+            child [1][i] = parent [1][i];
+        } else {
+            child [1][i] = val0 [j1++];
+        }
+    }
+}
+
+/*!****************************************************************************
+    \brief Perform Position Based Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerPositionBasedCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerPositionBasedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+    PGAInteger *seen0 = ctx->scratch.pgaintscratch [0];
+    PGAInteger *seen1 = ctx->scratch.pgaintscratch [1];
+    PGAInteger i, j0, j1;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger imin = ctx->init.IntegerMin [0];
+    memset (seen0, 0, sizeof (PGAInteger) * l);
+    memset (seen1, 0, sizeof (PGAInteger) * l);
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    for (i=0; i<l; i++) {
+        ctx->scratch.intscratch [i] = 0;
+        if (PGARandomFlip (ctx, 0.5)) {
+            child [0][i] = parent [0][i];
+            child [1][i] = parent [1][i];
+            if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: First Parent is no permutation"
+                    );
+            }
+            if (parent [1][i] - imin < 0 || parent [1][i] - imin >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: Second Parent is no permutation"
+                    );
+            }
+            assert (!seen0 [child [0][i] - imin]);
+            assert (!seen1 [child [1][i] - imin]);
+            seen0 [child [0][i] - imin] = 1;
+            seen1 [child [1][i] - imin] = 1;
+            ctx->scratch.intscratch [i] = 1;
+        }
+    }
+    j0 = j1 = 0;
+    for (i=0; i<l; i++) {
+        if (!ctx->scratch.intscratch [i]) {
+            for ( ; seen0 [parent [1][j0] - imin]; j0++)
+                ;
+            for ( ; seen1 [parent [0][j1] - imin]; j1++)
+                ;
+            assert (j0 < l && j1 < l);
+            child [0][i] = parent [1][j0];
+            child [1][i] = parent [0][j1];
+            j0++;
+            j1++;
+        }
+    }
+}
+
+/*!****************************************************************************
+    \brief Perform Uniform Order Based Crossover on two parent strings
+           producing two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Note that this crossover variant is identical to
+    PGAIntegerPositionBasedCrossover for the first child.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerUniformOrderBasedCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerUniformOrderBasedCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+    PGAInteger *seen0 = ctx->scratch.pgaintscratch [0];
+    PGAInteger *seen1 = ctx->scratch.pgaintscratch [1];
+    PGAInteger i, j0, j1;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger imin = ctx->init.IntegerMin [0];
+    memset (seen0, 0, sizeof (PGAInteger) * l);
+    memset (seen1, 0, sizeof (PGAInteger) * l);
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    for (i=0; i<l; i++) {
+        ctx->scratch.intscratch [i] = 0;
+        if (PGARandomFlip (ctx, 0.5)) {
+            child [0][i] = parent [0][i];
+            if (child [0][i] - imin < 0 || child [0][i] - imin >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: First Parent is no permutation"
+                    );
+            }
+            assert (!seen0 [child [0][i] - imin]);
+            seen0 [child [0][i] - imin] = 1;
+            ctx->scratch.intscratch [i] = 1;
+        } else {
+            child [1][i] = parent [1][i];
+            if (child [1][i] - imin < 0 || child [1][i] - imin >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: Second Parent is no permutation"
+                    );
+            }
+            assert (!seen1 [child [1][i] - imin]);
+            seen1 [child [1][i] - imin] = 1;
+        }
+    }
+    j0 = j1 = 0;
+    for (i=0; i<l; i++) {
+        if (!ctx->scratch.intscratch [i]) {
+            for ( ; seen0 [parent [1][j0] - imin]; j0++)
+                ;
+            assert (j0 < l);
+            child [0][i] = parent [1][j0];
+            j0++;
+        } else {
+            for ( ; seen1 [parent [0][j1] - imin]; j1++)
+                ;
+            assert (j1 < l);
+            child [1][i] = parent [0][j1];
+            j1++;
+        }
+    }
+}
+
+/*!****************************************************************************
+    \brief Perform Alternating Edge Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Note that the original paper [GGRG85]_ mandates that the search
+    starts with a random position. We start with a random position but
+    keep the absolute position in the child (and don't copy from the
+    middle of the parent to the start of the child).
+    This may make the crossover work for other problems than just TSP.
+    From the paper it is unclear if edge reversals are possible, we
+    allow them but prefer non-reversed egdes.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerAlternatingEdgeCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+static void ae_fill_child
+    ( PGAContext *ctx
+    , PGAInteger *parent [2], PGAInteger *child
+    , PGAInteger pidx, PGAInteger off
+    )
+{
+    PGAInteger *idx [2];
+    PGAInteger *val  = ctx->scratch.pgaintscratch [2];
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger i;
+    PGAInteger imin = ctx->init.IntegerMin [0];
+    idx [0] = ctx->scratch.pgaintscratch [0];
+    idx [1] = ctx->scratch.pgaintscratch [1];
+    memset (val, 0, sizeof (PGAInteger) * l);
+
+    child [off] = parent [pidx][off];
+    if (child [off] - imin < 0 || child [off] - imin >= l) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "Crossover: Parent %d is no permutation"
+            , (pidx) + 1
+            );
+    }
+    val [child [off] - imin] = 1;
+    off = (off + 1) % l;
+    child [off] = parent [pidx][off];
+    if (child [off] - imin < 0 || child [off] - imin >= l) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "Crossover: Parent %d is no permutation"
+            , (pidx) + 1
+            );
+    }
+    val [child [off] - imin] = 1;
+    off = (off + 1) % l;
+    for (i=2; i<l; i++) {
+        PGAInteger v = child [(off + l - 1) % l];
+        PGAInteger pos = idx [!pidx][v - imin];
+        if (!val [parent [!pidx][(pos + 1) % l] - imin]) {
+            child [off] = parent [!pidx][(pos + 1) % l];
+            if (child [off] - imin < 0 || child [off] - imin >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: Parent %d is no permutation"
+                    , (!pidx) + 1
+                    );
+            }
+            assert (val [child [off] - imin] == 0);
+            val [child [off] - imin] = 1;
+            pidx = !pidx;
+            off  = (off + 1) % l;
+            continue;
+        }
+        if (!val [parent [!pidx][(pos + l - 1) % l] - imin]) {
+            child [off] = parent [!pidx][(pos + l - 1) % l];
+            if (child [off] - imin < 0 || child [off] - imin >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: Parent %d is no permutation"
+                    , (!pidx) + 1
+                    );
+            }
+            assert (val [child [off] - imin] == 0);
+            val [child [off] - imin] = 1;
+            pidx = !pidx;
+            off  = (off + 1) % l;
+            continue;
+        }
+        /* If not found in other parent try current one */
+        pos = idx [pidx][v - imin];
+        if (!val [parent [pidx][(pos + 1) % l] - imin]) {
+            child [off] = parent [pidx][(pos + 1) % l];
+            if (child [off] - imin < 0 || child [off] - imin >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: Parent %d is no permutation"
+                    , pidx + 1
+                    );
+            }
+            assert (val [child [off] - imin] == 0);
+            val [child [off] - imin] = 1;
+            off  = (off + 1) % l;
+            continue;
+        }
+        if (!val [parent [pidx][(pos + l - 1) % l] - imin]) {
+            child [off] = parent [pidx][(pos + l - 1) % l];
+            if (child [off] - imin < 0 || child [off] - imin >= l) {
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "Crossover: Parent %d is no permutation"
+                    , pidx + 1
+                    );
+            }
+            assert (val [child [off] - imin] == 0);
+            val [child [off] - imin] = 1;
+            off  = (off + 1) % l;
+            continue;
+        }
+        /* Select rand index and search from there for free position */
+        pos = PGARandomInterval (ctx, 0, l - 1);
+        for (; val [pos]; pos = (pos + 1) % l)
+            ;
+        child [off] = pos + imin;
+        val [pos] = 1;
+        off  = (off + 1) % l;
+    }
+}
+
+void PGAIntegerAlternatingEdgeCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+    PGAInteger *idx [2];
+    PGAInteger i, off;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger imin = ctx->init.IntegerMin [0];
+    idx [0] = ctx->scratch.pgaintscratch [0];
+    idx [1] = ctx->scratch.pgaintscratch [1];
+    for (i=0; i<l; i++) {
+        idx [0][i] = idx[1][i] = -1;
+    }
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    for (i=0; i<l; i++) {
+        if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: First Parent is no permutation");
+        }
+        if (parent [1][i] - imin < 0 || parent [1][i] - imin >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: Second Parent is no permutation");
+        }
+        idx [0][parent [0][i] - imin] = i;
+        idx [1][parent [1][i] - imin] = i;
+    }
+    off = PGARandomInterval (ctx, 0, l - 1);
+    ae_fill_child (ctx, parent, child [0], 0, off);
+    ae_fill_child (ctx, parent, child [1], 1, off);
+}
+
+/*!****************************************************************************
+    \brief Perform Non-wrapping Order Crossover on two parent strings
+           producing two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerNonWrappingOrderCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
+
+void PGAIntegerNonWrappingOrderCrossover
+    (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
+{
+    PGAInteger *parent [2];
+    PGAInteger *child  [2];
+    PGAInteger j;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger pos1, pos2;
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+    memset (seen, 0, sizeof (PGAInteger) * l);
+
+    parent [0] = (PGAInteger *)PGAGetIndividual (ctx, p1, pop1)->chrom;
+    parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
+    child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
+    child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+
+    /* Chose two positions and copy middle part, note that 'middle' part
+     * can wrap
+     */
+    pos1 = PGARandomInterval (ctx, 0, l - 1);
+    pos2 = PGARandomInterval (ctx, 0, l - 1);
+    copy_middle_part (ctx, parent [0], child [0], 1, pos1, pos2);
+    copy_middle_part (ctx, parent [1], child [1], 2, pos1, pos2);
+    /* Copy rest from other parent, retaining order in other parent */
+    if (pos2 > pos1) {
+        j =   copy_rest (ctx, parent [1], child [0], 1, 0, 0, pos1);
+        (void)copy_rest (ctx, parent [1], child [0], 1, j, pos2, l);
+        j =   copy_rest (ctx, parent [0], child [1], 2, 0, 0, pos1);
+        (void)copy_rest (ctx, parent [0], child [1], 2, j, pos2, l);
+    } else {
+        (void)copy_rest (ctx, parent [1], child [0], 1, 0, pos2, pos1);
+        (void)copy_rest (ctx, parent [0], child [1], 2, 0, pos2, pos1);
+    }
+}
+
+/*!****************************************************************************
     \brief Set edges that have to be present.
     \ingroup standard-api
 
@@ -1832,33 +2892,33 @@ static void compute_idx
 
 void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
 {
-    int *list;
-    int len, i, j;
+    int len = ctx->ga.StringLen;
     PGAInteger *c = (PGAInteger *)PGAGetIndividual (ctx, p, pop)->chrom;
 
     PGADebugEntered ("PGAIntegerInitString");
 
-    len = ctx->ga.StringLen;
-
     switch (ctx->init.IntegerType) {
     case PGA_IINIT_PERMUTE:
-        list = (int *)malloc (sizeof (int) * len);
-        if (list == NULL) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
-                , "PGAIntegerInitString: No room to allocate list"
-                );
+      {
+        PGAInteger ii;
+        /* We need to initialize the array in reverse order to emulate
+         * the old shuffling below
+         */
+        for (ii=0; ii<len; ii++) {
+             c [len - ii - 1] = ii + ctx->init.IntegerMin [0];
         }
-        j = ctx->init.IntegerMin [0];
-        for (i=0; i<len; i++) {
-             list [i] = j++;
+        /* We should really use PGAShufflePGAInteger here but this would
+         * destroy all test cases that rely on random number sequence
+         * and initial population. So we emulate the original
+         * initialization but with only a single tmp variable not with a
+         * whole array (which was allocated dynamically).
+         */
+        for (ii=0; ii<len; ii++) {
+            int j = PGARandomInterval (ctx, 0, len - ii - 1);
+            PGAInteger tmp = c [ii];
+            c [ii] = c [len - j - 1];
+            c [len - j - 1] = tmp;
         }
-        for (i=0; i<len; i++) {
-             j = PGARandomInterval (ctx, 0, len - i - 1);
-             c [i] = list [j];
-             list [j] = list [len - i - 1];
-        }
-        free (list);
         /* Ensure fixed edges if configured, all fixed edges are used in
          * forward direction regardless of the symmetric flag
          */
@@ -1917,11 +2977,15 @@ void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
             # endif /* DEBUG */
         }
         break;
+      }
     case PGA_IINIT_RANGE:
-        for (i = 0; i < len; i++)
-            c[i] = PGARandomInterval
-                (ctx, ctx->init.IntegerMin[i], ctx->init.IntegerMax[i]);
+      {
+        int i;
+        for (i=0; i<len; i++)
+            c [i] = PGARandomInterval
+                (ctx, ctx->init.IntegerMin [i], ctx->init.IntegerMax [i]);
         break;
+      }
     }
 
     PGADebugExited ("PGAIntegerInitString");

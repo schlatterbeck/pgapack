@@ -277,6 +277,7 @@ PGAContext *PGACreate
     ctx->ga.MutateBounceFlag   = PGA_UNINITIALIZED_INT;
     ctx->ga.MutatePolyEta      = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.MutatePolyValue    = PGA_UNINITIALIZED_DOUBLE;
+    ctx->ga.MutateScrambleMax  = PGA_UNINITIALIZED_INT;
     ctx->ga.DEVariant          = PGA_UNINITIALIZED_INT;
     ctx->ga.DENumDiffs         = PGA_UNINITIALIZED_INT;
     ctx->ga.DECrossoverType    = PGA_UNINITIALIZED_INT;
@@ -420,13 +421,13 @@ PGAContext *PGACreate
     switch (datatype)
     {
     case PGA_DATATYPE_INTEGER:
-         ctx->init.IntegerMax = (int *) malloc (len * sizeof (PGAInteger));
+         ctx->init.IntegerMax = malloc (len * sizeof (PGAInteger));
          if (!ctx->init.IntegerMax) {
              PGAError ( ctx, "PGACreate: No room to allocate:", PGA_FATAL
                       , PGA_CHAR, (void *) "ctx->init.IntegerMax"
                       );
          }
-         ctx->init.IntegerMin = (int *) malloc (len * sizeof (PGAInteger));
+         ctx->init.IntegerMin = malloc (len * sizeof (PGAInteger));
          if (!ctx->init.IntegerMin) {
              PGAError ( ctx, "PGACreate: No room to allocate:", PGA_FATAL
                       , PGA_CHAR, (void *) "ctx->init.IntegerMin"
@@ -1119,6 +1120,16 @@ void PGASetUp (PGAContext *ctx)
         ctx->ga.MutatePolyValue   = -1.0;
     }
 
+    if (ctx->ga.MutateScrambleMax  == PGA_UNINITIALIZED_INT) {
+        ctx->ga.MutateScrambleMax   = ctx->ga.StringLen / 2;
+        if (ctx->ga.MutateScrambleMax < 2) {
+            ctx->ga.MutateScrambleMax = 2;
+        }
+        if (ctx->ga.MutateScrambleMax > ctx->ga.StringLen) {
+            ctx->ga.MutateScrambleMax = ctx->ga.StringLen;
+        }
+    }
+
     if (ctx->ga.DEVariant         == PGA_UNINITIALIZED_INT) {
         ctx->ga.DEVariant          = PGA_DE_VARIANT_RAND;
     }
@@ -1277,6 +1288,33 @@ void PGASetUp (PGAContext *ctx)
             break;
           case PGA_CROSSOVER_EDGE:
             Crossover  = PGAIntegerEdgeCrossover;
+            break;
+          case PGA_CROSSOVER_PMX:
+            Crossover  = PGAIntegerPartiallyMappedCrossover;
+            break;
+          case PGA_CROSSOVER_MODIFIED:
+            Crossover  = PGAIntegerModifiedCrossover;
+            break;
+          case PGA_CROSSOVER_ORDER:
+            Crossover  = PGAIntegerOrderCrossover;
+            break;
+          case PGA_CROSSOVER_CYCLE:
+            Crossover  = PGAIntegerCycleCrossover;
+            break;
+          case PGA_CROSSOVER_OBX:
+            Crossover  = PGAIntegerOrderBasedCrossover;
+            break;
+          case PGA_CROSSOVER_PBX:
+            Crossover  = PGAIntegerPositionBasedCrossover;
+            break;
+          case PGA_CROSSOVER_UOX:
+            Crossover  = PGAIntegerUniformOrderBasedCrossover;
+            break;
+          case PGA_CROSSOVER_AEX:
+            Crossover  = PGAIntegerAlternatingEdgeCrossover;
+            break;
+          case PGA_CROSSOVER_NOX:
+            Crossover  = PGAIntegerNonWrappingOrderCrossover;
             break;
         }
         PrintString    = PGAIntegerPrintString;
@@ -1573,6 +1611,29 @@ void PGASetUp (PGAContext *ctx)
             ( ctx, "PGASetUp: No room to allocate ctx->scratch.dblscratch"
             , PGA_FATAL, PGA_VOID, NULL
             );
+    }
+
+    if (ctx->ga.datatype == PGA_DATATYPE_INTEGER) {
+        for (i=0; i<4; i++) {
+            ctx->scratch.pgaintscratch [i] = malloc
+                (sizeof (PGAInteger) * ctx->ga.StringLen);
+        }
+        if (  ctx->scratch.pgaintscratch [0] == NULL
+           || ctx->scratch.pgaintscratch [1] == NULL
+           || ctx->scratch.pgaintscratch [2] == NULL
+           || ctx->scratch.pgaintscratch [3] == NULL
+           )
+        {
+            PGAError
+                ( ctx, "PGASetUp: No room to allocate ctx->scratch.pgaintscratch"
+                , PGA_FATAL, PGA_VOID, NULL
+                );
+        }
+    } else {
+        ctx->scratch.pgaintscratch [0] = NULL;
+        ctx->scratch.pgaintscratch [1] = NULL;
+        ctx->scratch.pgaintscratch [2] = NULL;
+        ctx->scratch.pgaintscratch [3] = NULL;
     }
 
     /* If we're doing non-dominated sorting */

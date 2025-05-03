@@ -10,6 +10,9 @@ Bibliography
 .. [BB91]   Richard K. Belew and Lashon B. Booker, editors. Proceedings
             of the Fourth International Conference on Genetic Algorithms
             (ICGA). Morgan Kaufmann, San Diego, CA, July 1991.
+.. [Bea94]  James C. Bean. Genetic algorithms and random keys for
+            sequencing and optimization. ORSA Journal on Computing,
+            6(2):154–160, 1994.
 .. [BH91]   Thomas Bäck and Frank Hoffmeister. Extended selection
             mechanisms in genetic algorithms. In Richard K. Belew and
             Lashon B. Booker, editors, Proceedings of the Fourth
@@ -25,6 +28,11 @@ Bibliography
             Springer, East Lansing, MI, USA, March 2019.
 .. [CEC01]  IEEE Congress on Evolutionary Computation (CEC). IEEE, Seoul,
             South Korea, May 2001.
+.. [CEC94]  First IEEE Congress on Evolutionary Computation (CEC). IEEE,
+            Orlando, FL, June 1994.
+.. [Cic06]  Vincent A. Cicirello. Non-wrapping order crossover: An order
+            preserving crossover operator that respects absolute position.
+            In Keijzer [Kei06]_, pages 1125–1131.
 .. [DD14]   Kalyanmoy Deb and Debayan Deb. Analysing mutation schemes
             for real-parameter genetic algorithms. *International
             Journal of Artificial Intelligence and Soft Computing,*
@@ -36,8 +44,13 @@ Bibliography
 .. [DA95]   Kalyanmoy Deb and Ram Bushan Agrawal. Simulated binary
             crossover for continuous search space.  *Complex Systems,*
             9(2):115–148, 1995.
+.. [Dav85]  Lawrence Davis. Applying adaptive algorithms to epistatic
+            domains. In [IJC85]_, pages 162–164.
 .. [Dav91]  Lawrence Davis, editor. Handbook of Genetic Algorithms.
             Van Nostrand Reinhold, New York, 1991.
+.. [Dav91b] Lawrence Davis. Order-based genetic algorithms and the graph
+            coloring problem. In Handbook of Genetic Algorithms [Dav91]_,
+            chapter 6, pages 72–90.
 .. [Deb00]  Kalyanmoy Deb. An efficient constraint handling method for
             genetic algorithms. *Computer Methods in Applied Mechanics
             and Engineering,* 186(2–4):311–338, June 2000.
@@ -80,14 +93,26 @@ Bibliography
             of selection schemes used in genetic algorithms. In Gregory J.
             E. Rawlins, editor, Foundations of Genetic Algorithms (FOGA 1),
             volume 1, pages 69–93. Elsevier, 1991.
+.. [GGRG85] John Grefenstette, Rajeev Gopal, Brian Rosmaita, and Dirk
+            Van Gucht. Genetic algorithms for the traveling salesman
+            problem. In Grefenstette [Gre85]_, pages 160–168.
 .. [GKD89]  David E. Goldberg, Bradley Korb, and Kalyanmoy Deb. Messy
             genetic algorithms: Motivation, analysis, and first results.
             *Complex Systems,* 3(5):493–530, 1989.
+.. [GL85]   David E. Goldberg and Robert Lingle. Alleles, loci, and the
+            traveling salesman problem. In Grefenstette [Gre85]_, pages 154–159.
 .. [GLS94]  W. Gropp, E. Lusk, and A. Skjellum. *Using MPI Portable
             Parallel Programming with the Message-Passing Interface.*
             The MIT Press, Cambrigde, 1994.
 .. [Gol89]  David E. Goldberg. *Genetic Algorithms in Search,
             Optimization & Machine Learning.* Addison Wesley, October 1989.
+.. [Gre85]  John J. Grefenstette, editor. Proceedings of the first
+            International Conference on Genetic Algorithms (ICGA).
+            L. Erlbaum Associates, Pittsburgh, PA, USA, July 1985.
+.. [Gre87]  John J. Grefenstette, editor. Proceedings of the Second
+            International Conference on Genetic Algorithms and Their
+            Applications (ICGA). Lawrence Erlbaum Associates, Cambridge, MA,
+            July 1987.
 .. [Har94]  Georges Harik. Finding multiple solutions in problems of
             bounded difficulty. IlliGAL Report 94002, Illinois Genetic
             Algorithm Lab, May 1994.
@@ -101,6 +126,10 @@ Bibliography
             August 1996. Morgan Kaufmann.
 .. [Hol92]  J. Holland. *Adaption in Natural and Artificial Systems.*
             MIT Press, Cambrigde, 1992.
+.. [IJC85]  Proceedings of the Ninth International Joint Conferences on
+            Artificial Intelligence (IJCAI), volume 1. IJCAI International
+            Joint Conferences on Artificial Intelligence Organization, Los
+            Angeles, California, August 1985.
 .. [Jam90]  F. James. A review of pseudorandom number generators.
             *Computer Physics Communications,* 60(3):329–344, October 1990.
 .. [JD14]   Himanshu Jain and Kalyanmoy Deb. An evolutionary many-objective
@@ -108,6 +137,11 @@ Bibliography
             nondominated sorting approach, part II: Handling constraints
             and extending to an adaptive approach. *IEEE Transactions on
             Evolutionary Computation,* 18(4):602–622, August 2014.
+.. [Kei06]  Maarten Keijzer, editor. Genetic and Evolutionary Computation
+            GECCO 2006. ACM, Seattle, Washington, July 2006.
+.. [MI94]   Tadahiko Murata and Hisao Ishibuchi. Performance evaluation of
+            genetic algorithms for flowshop scheduling problems. In [CEC94]_,
+            pages 812–817.
 .. [MPI21]  MPI: A message-passing interface standard, version 4.0.
             Message Passing Interface Forum, June 2021.
 .. [MPI94]  Message Passing Interface Forum. MPI: A message-passing
@@ -118,9 +152,18 @@ Bibliography
             a universal random number generator. *Statistics &
             Probability Letters,* 9(1):35-39, January 1990.
 .. [OMPI23] `Open MPI`_ homepage, last visited 2023-01-15.
+.. [OSH87]  I. M. Oliver, D. J. Smith, and J. R. C. Holland. A study of
+            permutation crossover operators on the traveling salesman
+            problem. In Grefenstette [Gre87]_, page 224–230.
 .. [Pel05]  Martin Pelikan. *Hierarchical Bayesian Optimization Algorithm:
             Toward a New Generation of Evolutionary Algorithms,* volume
             170 of *Studies in Fuzziness and Soft Computing.* Springer, 2005.
+.. [PM13]   Krunoslav Puljić and Robert Manger. Comparison of eight
+            evolutionary crossover operators for the vehicle routing
+            problem. Mathematical Communications, 18(2):359–375,
+            November 2013.
+.. [Pot96]  Jean-Yves Potvin. Genetic algorithms for the traveling salesman
+            problem. Annals of Operations Research, 63:339–370, June 1996.
 .. [PSL05]  Kenneth V. Price, Rainer M. Storn, and Jouni A. Lampinen.
             *Differential Evolution: A Practical Approach to Global
             Optimization.* Springer, Berlin, Heidelberg, 2005.
@@ -152,6 +195,8 @@ Bibliography
             Washington DC, June 2005.  ACM.
 .. [Sys89]  Gilbert Syswerda. Uniform crossover in genetic algorithms.
             In Schaffer [Sch89]_, pages 2–9.
+.. [Sys91]  Gilbert Syswerda. Schedule optimization using genetic algorithms.
+            In Davis [Dav91]_, chapter 21, pages 332–349.
 .. [TF14]   Ryoji Tanabe and Alex Fukunaga. Reevaluating exponential
             crossover in differential evolution. In Thomas
             Bartz-Beielstein, Jürgen Branke, Bogdan Filipič, and Jim

@@ -746,11 +746,20 @@ them to create child strings. The type of crossover may be specified by
 setting :c:func:`PGASetCrossoverType` to one of the constants in group
 :ref:`group:const-crossover`. The possible crossover types are
 one-point, two-point, uniform, or simulated
-binary (SBX) crossover, respectively. For integer alleles there is also
-Edge Recombination crossover
-[WSS91]_. If the integer gene is initialized to be a
-permutation, this variant preserves this property. In addition some
-edges can be defined to be fixed (unmutable). This is done with the
+binary (SBX) crossover, respectively.
+
+For integer alleles there are also
+Edge Recombination Crossover (ERX) [WSS91]_, Partially Mapped Crossover
+(PMX) [GL85]_, Modified Crossover (MX) [Dav85]_, Cycle Crossover (CX) [OSH87]_,
+Order Crossover (OX) [OSH87]_, Order Based Crossover (OBX) [Sys91]_,
+Position Based Crossover (PBX) [Sys91]_, Alternating Edge Crossover
+(AEX) [GGRG85]_, and Uniform Order Based Crossover (UOX) [Dav91b]_.
+For these the integer gene needs to be initialized to be a
+permutation, these variants preserve the property that the gene is a
+permutation, see section :ref:`sec:crossover-permutations` for details.
+
+For the Edge Recombination Crossover some edges can be defined to be
+fixed (unmutable). This is done with the
 :c:func:`PGAIntegerSetFixedEdges`. An example is given in
 ``examples/sequence``.
 
@@ -792,6 +801,142 @@ gene for each allele. These parameters work analogous to
 :c:func:`PGASetMutationBoundedFlag` and :c:func:`PGASetMutationBounceBackFlag`
 for mutation. For the bounce-back implementation the parent *nearer* to
 the initialisation boundary is used for each check.
+
+.. _sec:crossover-permutations:
+
+Crossover Types for Permutations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Integer genes can be initialized to be a permutation of the numbers from
+:math:`[0,L-1]`, where :math:`L` is the string length. To preserve the
+property that the string is a permutation we need special crossover
+operators.
+
+Many operators have been proposed in the literature. Especially for the
+traveling salesperson problem (TSP) many operators have been tried.
+When a TSP implementation uses only the total cost (i.e. the salesperson
+is unaware of the distance until the tour is completed), the Edge
+Recombination Crossover works well. Goldberg has called this the
+"blind traveling saleman problem" [Gol89]_ (p. 170).
+
+Which operator is better depends on the type of sequence problem.
+A first indication of this was when Syswerda discovered that the Edge
+Recombination Crossover did not work well for his scheduling problem
+[Sys91]_. Some operators concentrate on edges (i.e. in the TSP the
+connection between two node), others concentrate on absolute position
+and still others concentrate on relative order. An overview is given in
+table :ref:`tab:permutation` [Pot96]_.
+
+An example of an operator that does not work well with the TSP but with
+other problems is the Alternating Edge Crossover. It had been dismissed
+by its creators [GGRG85]_ when they experimented with the TSP but turned
+out to work quite well for a vehicle routing problem [PM13]_.
+
+The Partially Mapped Crossover (PMX) [GL85]_ was historically one of the
+first permutation-preserving crossover operators. It selects two random
+cut points on the gene, swaps the part between these points in the
+children and proceeds to copy the remaining positions from the other
+parent. Whenever a position is encountered that is already present in
+the gene it uses the corresponding swapped allele from the other parent.
+In this way many absolute positions are preserved. Note that the earlier
+paper [GL85]_ calls the operator "Partially Mapped Crossover" while
+later Goldberg calls it "Partially Matched Crossover" [Gol89]_
+(p. 170-174). We stick to the older name.
+
+The Modified Crossover (MX) [Dav85]_ selects one random cut point and
+copies everything up to this point from the first parent. The
+remaining positions are copied in the order they appear from the
+other parent skipping entries that already occur in the gene. This
+preserves the relative order in of the genes of both parents. A variant
+of this operator with two crossover points is the Order Crossover (OX)
+[OSH87]_. It selects two cut points, copies the part between these
+points from the first parent and then proceeds to fill in the positions
+not yet occurring from the other parent *starting after the second cut
+point*. A variant of this scheme that fills the positions not yet
+occurring by *starting at the start of the string* had been described by
+Murata and Ishibuchi [MI94]_ and later termed Non-wrapping Order
+Crossover by Cicirello [Cic06]_ who used the abbreviation NWOX, we use
+the shorter acronym NOX here.
+
+Syswerda's Position-Based Crossover PBX [Sys91]_ is another variant of first
+copying positions from the first gene and filling in from the second
+gene. The only difference is that PBX flips a coin for each position to
+determine if it should be copied from the first parent. Note that PBX
+preserves absolute position only for the alleles copied from the first
+parent and is better understood as an operator that preserves relative
+position. Davis' Uniform Order-Based Crossover (UOX) [Dav91b]_ is the
+same as PBX for the first child. For the second child it *reverses* the
+positions to copy from the second parent to the second child (it uses
+the same coin-flip but copies the alleles where the flip produces a
+zero).
+
+Syswerda's Order-Based Crossover OBX [Sys91]_ also uses a coin-flip to determine
+which positions to use -- but it uses only the relative order of these
+positions. It first selects a number of alleles in both parents. Then it
+starts copying alleles from first parent to first child and second
+parent to second child. Whenever a selected allele *from the other
+parent* is encoutered instead of copying the allele from the respective
+child, the *order from the other parent* is enforced. So only the
+selected alleles from the other parent are used to re-order alleles in
+the current child.
+
+The Alternating Edge Crossover (AEX) [GGRG85]_ starts at a random
+position in the parent and copies the two genes at that position to the
+client (using modulo arithmetics for positions). It then tries to
+alternate edges: The current node is found in the other parent and first
+the right node is tried (the edge is valid if the new node will not form
+a cycle), then the left node (so the algorithm can reverse edges). Only
+if no valid edge can be found in the other parent we try the same in the
+current parent (if this is successful, we try the other parent for the
+next edge). If no valid edge can be found a random edge is chosen.
+This is done for two children with the same start position. Note that
+the original paper doesn't state if edges are reversed and has a simple
+example that leaves many ambiguities unresolved.
+
+.. _tab:permutation:
+
+.. table::  Permutation Crossover Operators
+
+    ============================= ===== ========= ===============
+    Operator                      Short Paper     Type
+    ============================= ===== ========= ===============
+    Alternating Edge Crossover    AEX   [GGRG85]_ Edge
+    Partially Mapped Crossover    PMX   [GL85]_   Position
+    Modified Crossover            MX    [Dav85]_  Relative order
+    Cycle Crossover               CX    [OSH87]_  Position
+    Order Crossover               OX    [OSH87]_  Relative order
+    Edge Recombination Crossover  ERX   [WSS91]_  Edge
+    Order Based Crossover         OBX   [Sys91]_  Relative order
+    Position Based Crossover      PBX   [Sys91]_  Relative order
+    Uniform Order Based Crossover UOX   [Dav91b]_ Relative order
+    Non-wrapping Order Crossover  NOX   [MI94]_   Relative order
+    ============================= ===== ========= ===============
+
+.. table::  Permutation Crossover PGA Constants
+
+    ===== =================================
+    Short PGA crossover type
+    ===== =================================
+    AEX   :c:macro:`PGA_CROSSOVER_AEX`
+    CX    :c:macro:`PGA_CROSSOVER_CYCLE`
+    ERX   :c:macro:`PGA_CROSSOVER_EDGE`
+    MX    :c:macro:`PGA_CROSSOVER_MODIFIED`
+    NOX   :c:macro:`PGA_CROSSOVER_NOX`
+    OBX   :c:macro:`PGA_CROSSOVER_OBX`
+    OX    :c:macro:`PGA_CROSSOVER_ORDER`
+    PBX   :c:macro:`PGA_CROSSOVER_PBX`
+    PMX   :c:macro:`PGA_CROSSOVER_PMX`
+    UOX   :c:macro:`PGA_CROSSOVER_UOX`
+    ===== =================================
+
+
+Another solution to sequence problems which does not use permutations
+and consequently doesn't need a special crossover operator is the
+assignement of priorities: Each item (e.g.  city for the traveling
+salesperson or job-order for scheduling) gets a priority that is
+evolved by the genetic algorithm and items are sorted by the evolved
+priority.  Unfortunately historically these priorities have been termed
+"random keys" [Bea94]_.
 
 Negative Assortative Mating
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -840,9 +985,10 @@ mixed case depending on how the strings were initialized.
 
 For integer-valued strings, if the strings were initialized to a
 permutation and gene :math:`i` is to be mutated, the default mutation
-operator swaps gene :math:`i` with a randomly selected gene. If the
-strings were initialized to a random value from a specified range and
-gene :math:`i` is to be mutated, by default gene :math:`i` will be
+operator swaps gene :math:`i` with a randomly selected gene.
+
+If the strings were initialized to a random value from a specified range
+and gene :math:`i` is to be mutated, by default gene :math:`i` will be
 replaced by a value selected uniformly random from the initialization
 range.
 
@@ -854,11 +1000,27 @@ from the initialization range. If the strings were initialized to a
 permutation, the minimum and maximum values of the permutation define
 the range. If :c:func:`PGASetMutationType` is set to
 :c:macro:`PGA_MUTATION_PERMUTE`, gene :math:`i` will be swapped with a
-randomly selected gene. If :c:func:`PGASetMutationType` is set to
+randomly selected gene. Other mutation operators that preserve the
+property that the string is a permutation are
+:c:macro:`PGA_MUTATION_POSITION` which moves one allele to a different
+position in the string and :c:macro:`PGA_MUTATION_SCRAMBLE` which
+scrambles the alleles in a certain range. Both, the position of the
+region that is scrambled and the length are determined randomly. The
+maximum length of that range by default is half the string length, it
+can be limited by calling PGASetMutationScrambleMax with a different
+length value.  If :c:func:`PGASetMutationType` is set to
 :c:macro:`PGA_MUTATION_CONSTANT`, a constant integer value (by default
 one) will be added (subtracted) to (from) the existing allele value. The
 constant value may be set to 34, for example, with
 :c:func:`PGASetMutationIntegerValue` with parameters ``(ctx, 34)``.
+
+Note that for mutation types :c:macro:`PGA_MUTATION_POSITION` and
+:c:macro:`PGA_MUTATION_SCRAMBLE` there will only be a single mutation if
+the coin-flip with the mutation probability returns true. For the other
+mutation operators the coin-flip is performed for each allele.
+This may result in a lower mutation probability than expected, so the
+mutation probability might need a higher value than the other mutation
+types.
 
 Three of the real-valued mutation operators are of the form
 :math:`v \leftarrow v \pm p \times v`, where :math:`v` is the existing
@@ -2191,13 +2353,21 @@ evaluation user function is called only in the rank-0 instance for a
 parallel implementation.
 
 The hillclimbing function can be used to call a hillclimbing algorithm
-on newly generated individuals *before the are evaluated*. In the
+on newly generated individuals *before they are evaluated*. In the
 parallel version the hillclimber is called in the parallel processes, so
 hillclimbing occurs in parallel. If the hillclimber already computes the
 evaluation it should set the :c:func:`PGASetEvaluationUpToDateFlag` on
 the individual (setting the evaluation with :c:func:`PGASetEvaluation`
-also sets the flag). This avoids a call to the evaluation function. An
-example hillclimber is given in ``./examples/c/maxbit-hc.c`` -- it
+also sets the flag). This avoids a call to the evaluation function.
+
+Note that a hillclimbing function interacts with the
+:c:func:`PGASetNoDuplicatesFlag` setting: When duplicates are avoided
+the hill climber is called *after* duplicate checking (except for
+special replacement schemes like :c:macro:`PGA_POPREPL_RTR` or
+:c:macro:`PGA_POPREPL_PAIRWISE_BEST` where duplicate checking occurs
+at the end) and new duplicates may be introduced by the hill climber.
+
+An example hillclimber is given in ``./examples/c/maxbit-hc.c`` -- it
 randomly sets one of the bits to ``1``. Note that in this case the
 evaluation is not computed and the evaluation is called by PGAPack.
 When this example is run in a parallel version it will terminate after a

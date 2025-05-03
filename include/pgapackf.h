@@ -99,6 +99,26 @@ c *** CROSSOVER
       parameter ( PGA_CROSSOVER_UNIFORM =   3)
       integer PGA_CROSSOVER_SBX
       parameter ( PGA_CROSSOVER_SBX =       4)
+      integer PGA_CROSSOVER_EDGE
+      parameter ( PGA_CROSSOVER_EDGE =      5)
+      integer PGA_CROSSOVER_PMX
+      parameter ( PGA_CROSSOVER_PMX =       6)
+      integer PGA_CROSSOVER_MODIFIED
+      parameter ( PGA_CROSSOVER_MODIFIED =  7)
+      integer PGA_CROSSOVER_ORDER
+      parameter ( PGA_CROSSOVER_ORDER =     8)
+      integer PGA_CROSSOVER_CYCLE
+      parameter ( PGA_CROSSOVER_CYCLE =     9)
+      integer PGA_CROSSOVER_OBX
+      parameter ( PGA_CROSSOVER_OBX =      10)
+      integer PGA_CROSSOVER_PBX
+      parameter ( PGA_CROSSOVER_PBX =      11)
+      integer PGA_CROSSOVER_UOX
+      parameter ( PGA_CROSSOVER_UOX =      12)
+      integer PGA_CROSSOVER_AEX
+      parameter ( PGA_CROSSOVER_AEX =      13)
+      integer PGA_CROSSOVER_NOX
+      parameter ( PGA_CROSSOVER_NOX =      14)
 
 c *** SELECTION
       integer PGA_SELECT_PROPORTIONAL
@@ -141,6 +161,12 @@ c *** MUTATION
       parameter ( PGA_MUTATION_PERMUTE  =  5)
       integer PGA_MUTATION_DE
       parameter ( PGA_MUTATION_DE       =  6)
+      integer PGA_MUTATION_POLY
+      parameter ( PGA_MUTATION_POLY     =  7)
+      integer PGA_MUTATION_SCRAMBLE
+      parameter ( PGA_MUTATION_SCRAMBLE =  8)
+      integer PGA_MUTATION_POSITION
+      parameter ( PGA_MUTATION_POSITION =  9)
 
 c *** Differential Evolution Variant
       integer PGA_DE_VARIANT_RAND
@@ -367,6 +393,8 @@ c *** mutation
       external PGAGetMutationPolyEta
       double precision PGAGetMutationPolyValue
       external PGAGetMutationPolyValue
+      integer PGAGetMutationScrambleMax
+      external PGAGetMutationScrambleMax
 c *** parallel
       integer(8) PGABuildDatatype
       external PGABuildDatatype

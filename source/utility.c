@@ -95,6 +95,50 @@ void PGAShuffle (PGAContext *ctx, int *list, int n)
 }
 
 /*!****************************************************************************
+    \brief Shuffle a list of PGAInteger.
+    \ingroup utility
+    \param  ctx   Context pointer
+    \param  list  array of PGAInteger elements to shuffle
+    \param  n     number of elements in array
+    \return Shuffled array
+
+    \rst
+
+    Description
+    -----------
+
+    We're using Durstenfeld's version of the Fisher-Yates shuffle.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+      PGAContext *ctx;
+      PGAInteger list [ctx->ga.StringLen];
+      ...
+      for (i=0; i<ctx->ga.StringLen; i++) {
+          list [i] = i;
+      }
+      PGAShuffle (ctx, list, ctx->ga.StringLen);
+
+    \endrst
+
+******************************************************************************/
+void PGAShufflePGAInteger (PGAContext *ctx, PGAInteger *list, int n)
+{
+    int i, j;
+    PGAInteger tmp = 0;
+
+    for (i=0; i<n-1; i++) {
+        j = PGARandomInterval (ctx, i, n - 1);
+        tmp = list [j];
+        list [j] = list [i];
+        list [i] = tmp;
+    }
+}
+
+/*!****************************************************************************
     \brief Calculates the mean value of an array of elements
     \ingroup utility
     \param  ctx   context variable
