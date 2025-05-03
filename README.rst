@@ -24,6 +24,36 @@ Documentation is on `Read the Docs`_.
 Updates
 =======
 
+Update May 2025:
+
+- Implement permutation preserving crossover and mutation operators:
+  By default integer genes are initialized with a permutation. But there
+  was only the edge crossover (for TSP problems) that preserves the
+  property that the gene is a permutation. We now have a bunch of new
+  crossover operators that preserve the permuation property. We also add
+  two new mutation operators (there was already the permute mutation
+  operator) that preserve permutations.
+- Bug Fix of feature interaction hillclimber and duplicate checking:
+  This would trigger an assertion. There is still an interaction because
+  the hillclimber can create new individuals that are checked for
+  duplicates only with certain replacement strategies. We cannot get rid
+  of this interaction with the current implementation (the idea of the
+  hillclimber is that it runs in parallel on all MPI processors, these
+  do not have access to the population and cannot check for duplicates).
+- Bug Fix for RTR, PAIRWISE_BEST, and the two NSGA population
+  replacement schemes: These could call the hillclimber and the
+  evaluation function with empty individuals for the first generation
+  (after generation 0 which is called on the old population). Typically
+  these replacement schemes act on the whole population, the bug
+  manifested only when replacing only part of the population each
+  generation (setting PGASetNumReplaceValue to a value smaller than
+  PGASetPopSize).
+- Bug fix of type definitions of IntegerMin and IntegerMax, this is an
+  internal data structure for init ranges and could create problems for
+  architectures where a long int is not the same size as an int. We also
+  refactored the integer permutation initialization to shuffle items in
+  place.
+
 2nd update April 2025:
 
 - Implement new hillclimbing user-function: For the parallel version
