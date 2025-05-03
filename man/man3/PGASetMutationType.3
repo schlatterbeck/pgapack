@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetMutationType" "3" "2025-04-19" "" "PGAPack"
+.TH "PGASetMutationType" "3" "2025-05-03" "" "PGAPack"
 .SH NAME
 PGASetMutationType \- Set type of mutation to use. 
 .SH SYNOPSIS
@@ -46,8 +46,10 @@ Valid choices are \fI\%PGA_MUTATION_CONSTANT\fP (Real/Integer),
 \fI\%PGA_MUTATION_UNIFORM\fP (Real),
 \fI\%PGA_MUTATION_GAUSSIAN\fP (Real),
 \fI\%PGA_MUTATION_PERMUTE\fP (Integer),
-\fI\%PGA_MUTATION_DE\fP (Real), and
-\fI\%PGA_MUTATION_POLY\fP (Real/Integer).
+\fI\%PGA_MUTATION_DE\fP (Real),
+\fI\%PGA_MUTATION_POLY\fP (Real/Integer),
+\fI\%PGA_MUTATION_SCRAMBLE\fP (Integer), and
+\fI\%PGA_MUTATION_POSITION\fP (Integer).
 The default for integer\-valued strings conforms to how the strings
 were initialized.  The default for real\-valued strings is
 \fI\%PGA_MUTATION_GAUSSIAN\fP\&.

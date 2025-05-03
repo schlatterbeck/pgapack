@@ -1589,11 +1589,6 @@ void PGAIntegerEdgeCrossover
 
 ******************************************************************************/
 
-/* Allow override of random interval for testing */
-#ifndef randinterval
-#define randinterval PGARandomInterval
-#endif
-
 void PGAIntegerPartiallyMappedCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
 {
@@ -1655,6 +1650,48 @@ void PGAIntegerPartiallyMappedCrossover
     }
 }
 
+static void copy_middle_part
+    ( PGAContext *ctx
+    , PGAInteger *parent, PGAInteger *child
+    , PGAInteger flag, PGAInteger pos1, PGAInteger pos2
+    )
+{
+    PGAInteger i;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+    PGAInteger imin = ctx->init.IntegerMin [0];
+
+    for (i=pos1; i != pos2; i=(i+1) % l) {
+        child [i] = parent [i];
+        if (parent [i] - imin < 0 || parent [i] - imin >= l) {
+            PGAErrorPrintf
+                (ctx, PGA_FATAL, "Crossover: Parent is no permutation");
+        }
+        seen [parent [i] - imin] |= flag;
+    }
+}
+
+static PGAInteger copy_rest
+    ( PGAContext *ctx
+    , PGAInteger *parent, PGAInteger *child
+    , PGAInteger flag, PGAInteger pidx, PGAInteger sc, PGAInteger ec
+    )
+{
+    PGAInteger i;
+    PGAInteger l = ctx->ga.StringLen;
+    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
+    PGAInteger imin = ctx->init.IntegerMin [0];
+    /* Copy rest from other parent, retaining order in other parent */
+    for (i=sc; i<ec; i++) {
+        while (seen [parent [pidx] - imin] & flag) {
+            pidx = (pidx + 1) % l;
+        }
+        child [i] = parent [pidx];
+        pidx = (pidx + 1) % l;
+    }
+    return pidx;
+}
+
 /*!****************************************************************************
     \brief Perform Modified Crossover on two parent strings producing
            two children via side-effect.
@@ -1701,53 +1738,6 @@ void PGAIntegerPartiallyMappedCrossover
     \endrst
 
 ******************************************************************************/
-
-/* Allow override of random interval for testing */
-#ifndef randinterval
-#define randinterval PGARandomInterval
-#endif
-
-static void copy_middle_part
-    ( PGAContext *ctx
-    , PGAInteger *parent, PGAInteger *child
-    , PGAInteger flag, PGAInteger pos1, PGAInteger pos2
-    )
-{
-    PGAInteger i;
-    PGAInteger l = ctx->ga.StringLen;
-    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
-    PGAInteger imin = ctx->init.IntegerMin [0];
-
-    for (i=pos1; i != pos2; i=(i+1) % l) {
-        child [i] = parent [i];
-        if (parent [i] - imin < 0 || parent [i] - imin >= l) {
-            PGAErrorPrintf
-                (ctx, PGA_FATAL, "Crossover: Parent is no permutation");
-        }
-        seen [parent [i] - imin] |= flag;
-    }
-}
-
-static PGAInteger copy_rest
-    ( PGAContext *ctx
-    , PGAInteger *parent, PGAInteger *child
-    , PGAInteger flag, PGAInteger pidx, PGAInteger sc, PGAInteger ec
-    )
-{
-    PGAInteger i;
-    PGAInteger l = ctx->ga.StringLen;
-    PGAInteger *seen = ctx->scratch.pgaintscratch [0];
-    PGAInteger imin = ctx->init.IntegerMin [0];
-    /* Copy rest from other parent, retaining order in other parent */
-    for (i=sc; i<ec; i++) {
-        while (seen [parent [pidx] - imin] & flag) {
-            pidx = (pidx + 1) % l;
-        }
-        child [i] = parent [pidx];
-        pidx = (pidx + 1) % l;
-    }
-    return pidx;
-}
 
 void PGAIntegerModifiedCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)
@@ -2278,61 +2268,6 @@ void PGAIntegerUniformOrderBasedCrossover
     }
 }
 
-/*!****************************************************************************
-    \brief Perform Alternating Edge Crossover on two parent strings producing
-           two children via side-effect.
-    \ingroup internal
-
-    \param   ctx   context variable
-    \param   p1    the first parent string
-    \param   p2    the second parent string
-    \param   pop1  symbolic constant of the population containing
-                   string p1 and p2
-    \param   c1    the first child string
-    \param   c2    the second child string
-    \param   pop2  symbolic constant of the population to contain
-                   string c1 and c2
-    \return  c1 and c2 in population pop2 are modified by side-effect.
-
-    \rst
-
-    Description
-    -----------
-
-    Note that this function is set in :c:func:`PGASetUp` as the
-    crossover user function for the integer datatype when selecting
-    partially mapped crossover.
-
-    The operation produces permutations of the integer genes of both
-    parents. The result is a permutation again for both children.
-
-    Note that the original paper [GGRG85]_ mandates that the search
-    starts with a random position. We start with a random position but
-    keep the absolute position in the child (and don't copy from the
-    middle of the parent to the start of the child).
-    This may make the crossover work for other problems than just TSP.
-    From the paper it is unclear if edge reversals are possible, we
-    allow them but prefer non-reversed egdes.
-
-    Example
-    -------
-
-    Performs crossover on the two parent strings ``m`` and ``d``, producing
-    children ``s`` and ``b``.
-
-    .. code-block:: c
-
-       PGAContext *ctx;
-       int m, d, s, b;
-
-       ...
-       PGAIntegerAlternatingEdgeCrossover
-           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
-
-    \endrst
-
-******************************************************************************/
-
 static void ae_fill_child
     ( PGAContext *ctx
     , PGAInteger *parent [2], PGAInteger *child
@@ -2440,6 +2375,61 @@ static void ae_fill_child
         off  = (off + 1) % l;
     }
 }
+
+/*!****************************************************************************
+    \brief Perform Alternating Edge Crossover on two parent strings producing
+           two children via side-effect.
+    \ingroup internal
+
+    \param   ctx   context variable
+    \param   p1    the first parent string
+    \param   p2    the second parent string
+    \param   pop1  symbolic constant of the population containing
+                   string p1 and p2
+    \param   c1    the first child string
+    \param   c2    the second child string
+    \param   pop2  symbolic constant of the population to contain
+                   string c1 and c2
+    \return  c1 and c2 in population pop2 are modified by side-effect.
+
+    \rst
+
+    Description
+    -----------
+
+    Note that this function is set in :c:func:`PGASetUp` as the
+    crossover user function for the integer datatype when selecting
+    partially mapped crossover.
+
+    The operation produces permutations of the integer genes of both
+    parents. The result is a permutation again for both children.
+
+    Note that the original paper [GGRG85]_ mandates that the search
+    starts with a random position. We start with a random position but
+    keep the absolute position in the child (and don't copy from the
+    middle of the parent to the start of the child).
+    This may make the crossover work for other problems than just TSP.
+    From the paper it is unclear if edge reversals are possible, we
+    allow them but prefer non-reversed egdes.
+
+    Example
+    -------
+
+    Performs crossover on the two parent strings ``m`` and ``d``, producing
+    children ``s`` and ``b``.
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int m, d, s, b;
+
+       ...
+       PGAIntegerAlternatingEdgeCrossover
+           (ctx, m, d, PGA_OLDPOP, s, b, PGA_NEWPOP);
+
+    \endrst
+
+******************************************************************************/
 
 void PGAIntegerAlternatingEdgeCrossover
     (PGAContext *ctx, int p1, int p2, int pop1, int c1, int c2, int pop2)

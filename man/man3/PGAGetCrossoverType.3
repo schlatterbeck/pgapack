@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetCrossoverType" "3" "2025-04-19" "" "PGAPack"
+.TH "PGAGetCrossoverType" "3" "2025-05-03" "" "PGAPack"
 .SH NAME
 PGAGetCrossoverType \- Return the type of crossover selected. 
 .SH SYNOPSIS
@@ -56,6 +56,33 @@ case PGA_CROSSOVER_SBX:
     break;
 case PGA_CROSSOVER_EDGE:
     printf (\(dqCrossover Type = PGA_CROSSOVER_EDGE\en\(dq);
+    break;
+case PGA_CROSSOVER_PMX:
+    printf (\(dqCrossover Type = PGA_CROSSOVER_PMX\en\(dq);
+    break;
+case PGA_CROSSOVER_MODIFIED:
+    printf (\(dqCrossover Type = PGA_CROSSOVER_MODIFIED\en\(dq);
+    break;
+case PGA_CROSSOVER_ORDER:
+    printf (\(dqCrossover Type = PGA_CROSSOVER_ORDER\en\(dq);
+    break;
+case PGA_CROSSOVER_CYCLE:
+    printf (\(dqCrossover Type = PGA_CROSSOVER_CYCLE\en\(dq);
+    break;
+case PGA_CROSSOVER_OBX:
+    printf (\(dqCrossover Type = PGA_CROSSOVER_OBX\en\(dq);
+    break;
+case PGA_CROSSOVER_PBX:
+    printf (\(dqCrossover Type = PGA_CROSSOVER_PBX\en\(dq);
+    break;
+case PGA_CROSSOVER_UOX:
+    printf (\(dqCrossover Type = PGA_CROSSOVER_UOX\en\(dq);
+    break;
+case PGA_CROSSOVER_AEX:
+    printf (\(dqCrossover Type = PGA_CROSSOVER_AEX\en\(dq);
+    break;
+case PGA_CROSSOVER_NOX:
+    printf (\(dqCrossover Type = PGA_CROSSOVER_NOX\en\(dq);
     break;
 }
 .EE

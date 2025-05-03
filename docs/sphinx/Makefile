@@ -26,7 +26,7 @@ latex: .stamp-doxygen
 
 latexpdf: .stamp-doxygen
 
-fixedman: man man/man3
+fixedman: man man/man3 $(MAN_STAGE2)
 	@echo man pages done
 
 .stamp-doxygen: $(SOURCE) $(INCLUDE) Doxyfile

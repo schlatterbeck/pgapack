@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAGetMutationType" "3" "2025-04-19" "" "PGAPack"
+.TH "PGAGetMutationType" "3" "2025-05-03" "" "PGAPack"
 .SH NAME
 PGAGetMutationType \- Return the type of mutation used. 
 .SH SYNOPSIS
@@ -62,6 +62,12 @@ case PGA_MUTATION_DE:
     break;
 case PGA_MUTATION_POLY:
     printf (\(dqMutation Type = PGA_MUTATION_POLY\en\(dq);
+    break;
+case PGA_MUTATION_SCRAMBLE:
+    printf (\(dqMutation Type = PGA_MUTATION_SCRAMBLE\en\(dq);
+    break;
+case PGA_MUTATION_POSITION:
+    printf (\(dqMutation Type = PGA_MUTATION_POSITION\en\(dq);
     break;
 }
 .EE

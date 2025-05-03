@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGASetCrossoverType" "3" "2025-04-19" "" "PGAPack"
+.TH "PGASetCrossoverType" "3" "2025-05-03" "" "PGAPack"
 .SH NAME
 PGASetCrossoverType \- Specify the type of crossover to use. 
 .SH SYNOPSIS
@@ -37,13 +37,23 @@ PGASetCrossoverType \- Specify the type of crossover to use.
 .sp
 Valid choices are \fI\%PGA_CROSSOVER_ONEPT\fP,
 \fI\%PGA_CROSSOVER_TWOPT\fP, or \fI\%PGA_CROSSOVER_UNIFORM\fP,
-\fI\%PGA_CROSSOVER_SBX\fP, and \fI\%PGA_CROSSOVER_EDGE\fP
-for one\-point, two\-point, uniform, simulated binary (SBX), and edge
-crossover, respectively.  The default is \fI\%PGA_CROSSOVER_TWOPT\fP\&.
-Edge crossover is only defined for integer genes and SBX is only
-defined for integer and real genes. See \fI\%Crossover Constants\fP
-for the constants and section \fI\%Crossover\fP in the user guide
-for details.
+\fI\%PGA_CROSSOVER_SBX\fP, \fI\%PGA_CROSSOVER_EDGE\fP,
+\fI\%PGA_CROSSOVER_PMX\fP, \fI\%PGA_CROSSOVER_MODIFIED\fP
+\fI\%PGA_CROSSOVER_ORDER\fP, \fI\%PGA_CROSSOVER_CYCLE\fP,
+\fI\%PGA_CROSSOVER_OBX\fP, \fI\%PGA_CROSSOVER_PBX\fP,
+\fI\%PGA_CROSSOVER_UOX\fP, \fI:c:macro:\(gaPGA_CROSSOVER_AEX\fP,
+and \fI\%PGA_CROSSOVER_NOX\fP
+for one\-point, two\-point, uniform, simulated binary (SBX), edge
+crossover, partially mapped crossover, modified crossover,
+order crossover, cycle crossover, order based crossover, position
+based crossover, uniform order based crossover, alternating edges
+crossover, and non\-wrapping order crossover, respectively.
+The default is \fI\%PGA_CROSSOVER_TWOPT\fP\&.
+All crossover types starting with Edge crossover are only defined
+for integer genes (they act on genes which are a
+permutation) and SBX is only defined for integer and real genes.
+See \fI\%Crossover Constants\fP for the constants and section
+\fI\%Crossover\fP in the user guide for details.
 .SH EXAMPLE
 .sp
 Use uniform crossover when crossingover strings.
