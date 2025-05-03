@@ -21,7 +21,7 @@ void phenotype (PGAContext *ctx, int p, int pop)
         rowsum [y] = 0;
         colsum [y] = 0;
         for (x=0; x<5; x++) {
-            square [y][x] = chrom [5*y + x] + 1;
+            square [y][x] = chrom [5*y + x];
         }
     }
     for (y=0; y<5; y++) {
@@ -169,6 +169,7 @@ int main (int argc, char **argv)
     PGASetSelectType           (ctx, PGA_SELECT_TRUNCATION);
     PGASetPopReplaceType       (ctx, PGA_POPREPL_RTR);
     /* PGASetRTRWindowSize       (ctx, 30); */
+    PGASetIntegerInitPermute   (ctx, 1, 25);
     PGASetMutationType         (ctx, mutation);
     PGASetMutationScrambleMax  (ctx, 5);
     PGASetCrossoverType        (ctx, crossover);
