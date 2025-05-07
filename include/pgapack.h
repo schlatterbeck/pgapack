@@ -43,6 +43,23 @@
 #define DEREF2_DYNPTR(name, size, idx1, idx2) name[idx1][idx2]
 #endif /* !USE_ALLOCA */
 
+/* Debugging of permutations */
+#ifdef DEBUG_PERMUTE
+#define DEBUG_CHECK_PERMUTE(ctx, chrom) do                       \
+    { long long s = 0;                                           \
+      int i;                                                     \
+      long long ll = ctx->ga.StringLen;                          \
+      PGAInteger imin = ctx->init.IntegerMin [0];                \
+      for (i=0; i<ctx->ga.StringLen; i++) {                      \
+        assert (chrom [i] - imin >= 0 && chrom [i] - imin < ll); \
+        s += chrom [i] - imin;                                   \
+      }                                                          \
+      assert (s == ll * (ll - 1) / 2);                           \
+    } while (0)
+#else
+#define DEBUG_CHECK_PERMUTE(ctx, chrom)
+#endif
+
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 #include <stdio.h>

@@ -1454,6 +1454,8 @@ void PGAIntegerEdgeCrossover
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    DEBUG_CHECK_PERMUTE (ctx, parent [0]);
+    DEBUG_CHECK_PERMUTE (ctx, parent [1]);
 
     /* Build Edge-Map, 0 is unallocated, a node is represented by index+1 */
     build_edge_map (ctx, parent);
@@ -1540,6 +1542,8 @@ void PGAIntegerEdgeCrossover
         fix_edge_map   (ctx);
         remove_edge_from_right (ctx, child [1][0]);
     }
+    DEBUG_CHECK_PERMUTE (ctx, child [0]);
+    DEBUG_CHECK_PERMUTE (ctx, child [1]);
 }
 
 /*!****************************************************************************
@@ -1608,6 +1612,8 @@ void PGAIntegerPartiallyMappedCrossover
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    DEBUG_CHECK_PERMUTE (ctx, parent [0]);
+    DEBUG_CHECK_PERMUTE (ctx, parent [1]);
 
     /* Chose two positions */
     pos1 = PGARandomInterval (ctx, 0, l - 1);
@@ -1648,6 +1654,8 @@ void PGAIntegerPartiallyMappedCrossover
         }
         child [1][i] = v;
     }
+    DEBUG_CHECK_PERMUTE (ctx, child [0]);
+    DEBUG_CHECK_PERMUTE (ctx, child [1]);
 }
 
 static void copy_middle_part
@@ -1753,6 +1761,8 @@ void PGAIntegerModifiedCrossover
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    DEBUG_CHECK_PERMUTE (ctx, parent [0]);
+    DEBUG_CHECK_PERMUTE (ctx, parent [1]);
 
 
     /* Chose one position and copy first part */
@@ -1762,6 +1772,8 @@ void PGAIntegerModifiedCrossover
     /* Copy rest from other parent, retaining order in other parent */
     (void)copy_rest (ctx, parent [1], child [0], 1, 0, pos, l);
     (void)copy_rest (ctx, parent [0], child [1], 2, 0, pos, l);
+    DEBUG_CHECK_PERMUTE (ctx, child [0]);
+    DEBUG_CHECK_PERMUTE (ctx, child [1]);
 }
 
 /*!****************************************************************************
@@ -1826,6 +1838,8 @@ void PGAIntegerOrderCrossover
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    DEBUG_CHECK_PERMUTE (ctx, parent [0]);
+    DEBUG_CHECK_PERMUTE (ctx, parent [1]);
 
     /* Chose two positions and copy middle part, note that 'middle' part
      * can wrap
@@ -1835,7 +1849,7 @@ void PGAIntegerOrderCrossover
     copy_middle_part (ctx, parent [0], child [0], 1, pos1, pos2);
     copy_middle_part (ctx, parent [1], child [1], 2, pos1, pos2);
     /* Copy rest from other parent, retaining order in other parent */
-    if (pos2 > pos1) {
+    if (pos2 >= pos1) {
         j =   copy_rest (ctx, parent [1], child [0], 1, pos2, pos2, l);
         (void)copy_rest (ctx, parent [1], child [0], 1, j,    0, pos1);
         j =   copy_rest (ctx, parent [0], child [1], 2, pos2, pos2, l);
@@ -1844,6 +1858,8 @@ void PGAIntegerOrderCrossover
         (void)copy_rest (ctx, parent [1], child [0], 1, pos2, pos2, pos1);
         (void)copy_rest (ctx, parent [0], child [1], 2, pos2, pos2, pos1);
     }
+    DEBUG_CHECK_PERMUTE (ctx, child [0]);
+    DEBUG_CHECK_PERMUTE (ctx, child [1]);
 }
 
 /*!****************************************************************************
@@ -1910,6 +1926,8 @@ void PGAIntegerCycleCrossover
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    DEBUG_CHECK_PERMUTE (ctx, parent [0]);
+    DEBUG_CHECK_PERMUTE (ctx, parent [1]);
 
     /* Build parent index */
     for (i=0; i<l; i++) {
@@ -1936,6 +1954,8 @@ void PGAIntegerCycleCrossover
         child [0][i] = parent [1][i];
         child [1][i] = parent [0][i];
     }
+    DEBUG_CHECK_PERMUTE (ctx, child [0]);
+    DEBUG_CHECK_PERMUTE (ctx, child [1]);
 }
 
 /*!****************************************************************************
@@ -2006,6 +2026,8 @@ void PGAIntegerOrderBasedCrossover
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    DEBUG_CHECK_PERMUTE (ctx, parent [0]);
+    DEBUG_CHECK_PERMUTE (ctx, parent [1]);
 
     j0 = 0;
     for (i=0; i<l; i++) {
@@ -2050,6 +2072,8 @@ void PGAIntegerOrderBasedCrossover
             child [1][i] = val0 [j1++];
         }
     }
+    DEBUG_CHECK_PERMUTE (ctx, child [0]);
+    DEBUG_CHECK_PERMUTE (ctx, child [1]);
 }
 
 /*!****************************************************************************
@@ -2116,6 +2140,8 @@ void PGAIntegerPositionBasedCrossover
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    DEBUG_CHECK_PERMUTE (ctx, parent [0]);
+    DEBUG_CHECK_PERMUTE (ctx, parent [1]);
 
     for (i=0; i<l; i++) {
         ctx->scratch.intscratch [i] = 0;
@@ -2155,6 +2181,8 @@ void PGAIntegerPositionBasedCrossover
             j1++;
         }
     }
+    DEBUG_CHECK_PERMUTE (ctx, child [0]);
+    DEBUG_CHECK_PERMUTE (ctx, child [1]);
 }
 
 /*!****************************************************************************
@@ -2224,6 +2252,8 @@ void PGAIntegerUniformOrderBasedCrossover
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    DEBUG_CHECK_PERMUTE (ctx, parent [0]);
+    DEBUG_CHECK_PERMUTE (ctx, parent [1]);
 
     for (i=0; i<l; i++) {
         ctx->scratch.intscratch [i] = 0;
@@ -2266,6 +2296,8 @@ void PGAIntegerUniformOrderBasedCrossover
             j1++;
         }
     }
+    DEBUG_CHECK_PERMUTE (ctx, child [0]);
+    DEBUG_CHECK_PERMUTE (ctx, child [1]);
 }
 
 static void ae_fill_child
@@ -2450,6 +2482,8 @@ void PGAIntegerAlternatingEdgeCrossover
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    DEBUG_CHECK_PERMUTE (ctx, parent [0]);
+    DEBUG_CHECK_PERMUTE (ctx, parent [1]);
 
     for (i=0; i<l; i++) {
         if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
@@ -2466,6 +2500,8 @@ void PGAIntegerAlternatingEdgeCrossover
     off = PGARandomInterval (ctx, 0, l - 1);
     ae_fill_child (ctx, parent, child [0], 0, off);
     ae_fill_child (ctx, parent, child [1], 1, off);
+    DEBUG_CHECK_PERMUTE (ctx, child [0]);
+    DEBUG_CHECK_PERMUTE (ctx, child [1]);
 }
 
 /*!****************************************************************************
@@ -2530,6 +2566,8 @@ void PGAIntegerNonWrappingOrderCrossover
     parent [1] = (PGAInteger *)PGAGetIndividual (ctx, p2, pop1)->chrom;
     child  [0] = (PGAInteger *)PGAGetIndividual (ctx, c1, pop2)->chrom;
     child  [1] = (PGAInteger *)PGAGetIndividual (ctx, c2, pop2)->chrom;
+    DEBUG_CHECK_PERMUTE (ctx, parent [0]);
+    DEBUG_CHECK_PERMUTE (ctx, parent [1]);
 
     /* Chose two positions and copy middle part, note that 'middle' part
      * can wrap
@@ -2539,7 +2577,7 @@ void PGAIntegerNonWrappingOrderCrossover
     copy_middle_part (ctx, parent [0], child [0], 1, pos1, pos2);
     copy_middle_part (ctx, parent [1], child [1], 2, pos1, pos2);
     /* Copy rest from other parent, retaining order in other parent */
-    if (pos2 > pos1) {
+    if (pos2 >= pos1) {
         j =   copy_rest (ctx, parent [1], child [0], 1, 0, 0, pos1);
         (void)copy_rest (ctx, parent [1], child [0], 1, j, pos2, l);
         j =   copy_rest (ctx, parent [0], child [1], 2, 0, 0, pos1);
@@ -2548,6 +2586,8 @@ void PGAIntegerNonWrappingOrderCrossover
         (void)copy_rest (ctx, parent [1], child [0], 1, 0, pos2, pos1);
         (void)copy_rest (ctx, parent [0], child [1], 2, 0, pos2, pos1);
     }
+    DEBUG_CHECK_PERMUTE (ctx, child [0]);
+    DEBUG_CHECK_PERMUTE (ctx, child [1]);
 }
 
 /*!****************************************************************************
