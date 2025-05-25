@@ -220,24 +220,23 @@ double ideal [] = {0.00421519, 0.01969276, 0.02649165};
 double nadir [] = {1.96718331, 2.06714265, 1.98465785};
 size_t npop = sizeof (pop) / 3 / sizeof (double);
 
-void test_pop (PGAContext *ctx, void *p)
+void test_pop (PGAContext *ctx, int dim, size_t npop, void *p)
 {
     size_t sz;
     int i, j;
-    double (*pop) [3] = p;
-    double (*extreme) [3];
-    double wpop [3];
-    double wof [3];
+    double (*pop) [dim] = p;
+    double (*extreme) [dim];
+    double wpop [dim];
+    double wof [dim];
     PGAIndividual *start [npop];
-
-    assert (sizeof (pop2) / 3 / sizeof (double) == npop);
+    unsigned int max_rank, idx;
 
     ctx->ga.extreme_valid = ctx->ga.utopian_valid = PGA_FALSE;
     ctx->ga.worst_valid = PGA_FALSE;
     for (sz=0; sz<npop; sz++) {
         PGAIndividual *ind = ctx->ga.newpop + sz;
         start [sz] = ind;
-        for (j=0; j<3; j++) {
+        for (j=0; j<dim; j++) {
             if (j==0) {
                 ind->evalue = pop [sz][j];
             } else {
@@ -245,51 +244,68 @@ void test_pop (PGAContext *ctx, void *p)
             }
         }
     }
-    ranking (ctx, start, npop, npop);
+    max_rank = ranking (ctx, start, npop, npop);
+
+    // Print individuals sorted by rank
+    printf ("Individuals sorted by rank, max_rank=%u:\n", max_rank);
+    i = 0;
+    for (idx=0; idx<max_rank; idx++) {
+        printf ("Rank %u:", idx);
+        for (sz=0; sz<npop; sz++) {
+            if (start [sz]->rank == idx) {
+                printf (" %zu", sz);
+                i++;
+            }
+        }
+        printf ("\n");
+        if ((size_t)i == npop) {
+            break;
+        }
+    }
     compute_utopian   (ctx, start, npop);
     compute_extreme   (ctx, start, npop);
     compute_intersect (ctx, start, npop);
     printf ("Utopian: ");
-    for (j=0; j<3; j++) {
+    for (j=0; j<dim; j++) {
         printf ("%e ", ctx->ga.utopian [j]);
     }
     printf ("\nIntersect: ");
-    for (j=0; j<3; j++) {
+    for (j=0; j<dim; j++) {
         printf ("%e ", ctx->ga.nadir [j]);
     }
     compute_nadir   (ctx, start, npop);
     printf ("\nNadir (norm): ");
-    for (j=0; j<3; j++) {
+    for (j=0; j<dim; j++) {
         printf ("%e ", ctx->ga.nadir [j] - ctx->ga.utopian [j]);
     }
     printf ("\n");
     printf ("Nadir: ");
-    for (j=0; j<3; j++) {
+    for (j=0; j<dim; j++) {
         printf ("%e ", ctx->ga.nadir [j]);
     }
     printf ("\n");
     ctx->ga.worst_valid = PGA_FALSE;
     compute_worst (ctx, start, npop, wpop, wof);
     printf ("worst: ");
-    for (j=0; j<3; j++) {
+    for (j=0; j<dim; j++) {
         printf ("%e ", ctx->ga.worst [j]);
     }
     printf ("\n");
     printf ("wpop: ");
-    for (j=0; j<3; j++) {
+    for (j=0; j<dim; j++) {
         printf ("%e ", wpop [j]);
     }
     printf ("\n");
     printf ("Worst of front: ");
-    for (j=0; j<3; j++) {
+    for (j=0; j<dim; j++) {
         printf ("%e ", wof [j]);
     }
     printf ("\n");
     printf ("Extreme:\n");
     extreme = ctx->ga.extreme;
-    for (i=0; i<3; i++) {
+    for (i=0; i<dim; i++) {
         printf ("[ ");
-        for (j=0; j<3; j++) {
+        for (j=0; j<dim; j++) {
             printf ("%e ", extreme [i][j]);
         }
         printf ("]\n");
@@ -322,8 +338,10 @@ int main (int argc, char **argv)
     PGASetPopReplaceType (ctx, PGA_POPREPL_NSGA_III);
     PGASetPopSize (ctx, 100);
     PGASetUp (ctx);
-    test_pop (ctx, pop);
-    test_pop (ctx, pop2);
+    assert (sizeof (pop)  / 3 / sizeof (double) == npop);
+    assert (sizeof (pop2) / 3 / sizeof (double) == npop);
+    test_pop (ctx, 3, npop, pop);
+    test_pop (ctx, 3, npop, pop2);
     {
         double minasf = -1;
         double d [3];
