@@ -5,6 +5,33 @@
 #include <pgapack.h>
 #include "optimize.h"
 
+void as_c (PGAContext *ctx, FILE *fp, int p, int pop)
+{
+    int i, j;
+    int popsize = PGAGetPopSize (ctx);
+    int dim = PGAGetNumAuxEval (ctx) + 1;
+    const double *aux = NULL;
+    double eval;
+    
+    fprintf (fp, "double pop [][%d] = {\n", dim);
+    for (j=0; j<popsize; j++) {
+        eval = PGAGetEvaluation (ctx, j, pop, &aux);
+        
+        fprintf (fp, "{%e", eval);
+        for (i=0; i<dim-1; i++) {
+            fprintf (fp, ", %e", aux [i]);
+        }
+        fprintf (fp, "}");
+        if (j < popsize-1) {
+            fprintf (fp, ",\n");
+        } else {
+            fprintf (fp, "\n");
+        }
+    }
+    fprintf (fp, "};\n");
+    fflush (fp);
+}
+
 static struct multi_problem *problems [] =
 { &sch
 , &fon
@@ -49,12 +76,19 @@ int main (int argc, char **argv)
     double crossover_prob = 0.8;
     int epsilon_generation = 0;
     MPI_Comm comm;
+    int c_output = 0;
+
+    if (argc > 1 && argv [1][0] == '-' && argv [1][1] == 'C') {
+        c_output = 1;
+        argc--;
+        argv++;
+    }
 
     if (argc > 1) {
         fidx = atoi (argv [1]);
         if (fidx < 0 || fidx > nproblems - 1) {
             fprintf
-                ( stderr, "Usage: %s [f-index]\nIndex in range 0-%d\n"
+                ( stderr, "Usage: %s [-C] [f-index]\nIndex in range 0-%d\n"
                 , argv [0], nproblems - 1
                 );
             exit (1);
@@ -109,6 +143,12 @@ int main (int argc, char **argv)
     if (problem->enforce_bounds) {
         PGASetMutationBounceBackFlag (ctx, PGA_TRUE);
     };
+    
+    if (c_output) {
+        PGASetUserFunction (ctx, PGA_USERFUNCTION_PRINTSTRING, as_c);
+        PGASetPrintFrequencyValue (ctx, 1);
+        PGASetPrintOptions (ctx, PGA_REPORT_STRING);
+    }
     
     PGASetUp   (ctx);
     comm = PGAGetCommunicator (ctx);
