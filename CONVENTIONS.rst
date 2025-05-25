@@ -22,6 +22,13 @@ Indentation and Formatting
     my_function ();
     my_array [0][5] = 5;
 
+- Always include a space before opening parentheses in function calls
+  e.g., ``function_name (arg1, arg2)`` not ``function_name(arg1, arg2)``
+- Always include a space before opening parentheses in macro calls
+  e.g., ``MACRO_NAME (arg1, arg2)`` not ``MACRO_NAME(arg1, arg2)``
+- Always include a space before opening brackets in array indexing
+  e.g., ``array [index]`` not ``array[index]``
+
 Naming Conventions
 ------------------
 
