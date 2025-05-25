@@ -50,7 +50,9 @@ privately owned rights.
 #if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
 #define OPT_DIR_CMP(ctx, e1, e2) \
-    (ctx->ga.optdir == PGA_MAXIMIZE ? CMP ((e1), (e2)) : CMP ((e2), (e1)))
+    (ctx->ga.optdir == PGA_MAXIMIZE ? CMP ((e2), (e1)) : CMP ((e1), (e2)))
+#define OPT_DIR_CMP_EV(ctx, e1, e2, is_ev) \
+    ((is_ev) ? OPT_DIR_CMP((ctx), (e1), (e2)) : CMP ((e1), (e2)))
 #define NORMALIZE(ctx, e, u) \
     (ctx->ga.optdir == PGA_MAXIMIZE ? ((u) - (e)) : ((e) - (u)))
 #define DENORMALIZE(ctx, e, u) \
@@ -919,7 +921,7 @@ STATIC void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n)
     for (i=0; i<n; i++) {
         for (j=0; j<dim; j++) {
             double e = GETEVAL (start [i], j, 1);
-            if (OPT_DIR_CMP (ctx, e, ctx->ga.utopian [j]) > 0) {
+            if (OPT_DIR_CMP (ctx, ctx->ga.utopian [j], e) > 0) {
                 ctx->ga.utopian [j] = e;
             }
         }
@@ -1053,16 +1055,16 @@ STATIC void compute_worst
         for (j=0; j<dim; j++) {
             double e = GETEVAL (start [i], j, 1);
             if (  !ctx->ga.worst_valid
-               || OPT_DIR_CMP (ctx, e, ctx->ga.worst [j]) < 0
+               || OPT_DIR_CMP (ctx, ctx->ga.worst [j], e) < 0
                )
             {
                 ctx->ga.worst [j] = e;
             }
-            if (i==0 || OPT_DIR_CMP (ctx, e, wpop [j]) < 0) {
+            if (i==0 || OPT_DIR_CMP (ctx, wpop [j], e) < 0) {
                 wpop [j] = e;
             }
             if (  start [i]->rank == 0
-               && (wv <= j || OPT_DIR_CMP (ctx, e, wof0 [j]) < 0)
+               && (wv <= j || OPT_DIR_CMP (ctx, wof0 [j], e) < 0)
                )
             {
                 wof0 [j] = e;
@@ -1092,7 +1094,7 @@ STATIC void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
      */
     if (ret == 0) {
         for (j=0; j<dim; j++) {
-            if (OPT_DIR_CMP (ctx, ctx->ga.nadir [j], ctx->ga.worst [j]) < 0) {
+            if (OPT_DIR_CMP (ctx, ctx->ga.worst [j], ctx->ga.nadir [j]) < 0) {
                 ctx->ga.nadir [j] = ctx->ga.worst [j];
             }
         }
@@ -1225,6 +1227,244 @@ static void niching
     }
 }
 
+/* Comparison function for sorting individuals by objectives */
+static int obj_sort_cmp (const void *a1, const void *a2)
+{
+    PGAIndividual * const *i1 = (PGAIndividual * const *)a1;
+    PGAIndividual * const *i2 = (PGAIndividual * const *)a2;
+    PGAContext *ctx = (*i1)->ctx;
+    int is_ev = INDGetAuxTotal (*i1) - ctx->ga.Epsilon <= 0;
+    int nc = ctx->ga.NumConstraint;
+    int na = ctx->ga.NumAuxEval;
+    int base = is_ev ? 0 : (na - nc);
+
+    double e1_i1 = GETEVAL (*i1, base, is_ev);
+    double e1_i2 = GETEVAL (*i2, base, is_ev);
+    int cmp = OPT_DIR_CMP_EV (ctx, e1_i1, e1_i2, is_ev);
+
+    if (cmp == 0) {
+        /* If first objectives are equal, sort by second objective */
+        double e2_i1 = GETEVAL (*i1, base + 1, is_ev);
+        double e2_i2 = GETEVAL (*i2, base + 1, is_ev);
+        cmp = OPT_DIR_CMP_EV (ctx, e2_i1, e2_i2, is_ev);
+    }
+
+    return cmp;
+}
+
+#undef DEBUG_RANKING_2
+#ifdef DEBUG_RANKING_2
+static unsigned int ranking_3_plus_objectives
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal);
+static unsigned int ranking_2_objectives_new
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal);
+static unsigned int ranking_2_objectives
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
+{
+    unsigned int rank1 [n], rank2 [n];
+    unsigned int rankcounts [2 * ctx->ga.PopSize];
+    DECLARE_DYNARRAY (PGAIndividual *, cpy_start, n);
+    unsigned int max_rank = 0, mr2 = 0, mr3 = 0;
+    int i;
+    mr3 = max_rank = ranking_3_plus_objectives (ctx, start, n, goal);
+    memcpy (cpy_start, start, sizeof (*start) * n);
+    for (i=0; i<(int)n; i++) {
+        rank1 [i] = cpy_start [i]->rank;
+    }
+    mr2 = ranking_2_objectives_new (ctx, start, n, goal);
+    for (i=0; i<(int)n; i++) {
+        rank2 [i] = cpy_start [i]->rank;
+    }
+    if (max_rank == UINT_MAX) {
+        int s = 0;
+        memset (rankcounts, 0, ctx->ga.PopSize * sizeof (unsigned int));
+        for (i=0; i<(int)n; i++) {
+            if (cpy_start [i]->rank < 2 * (unsigned int)ctx->ga.PopSize) {
+                rankcounts [cpy_start [i]->rank] += 1;
+            }
+        }
+        for (i=0; i<2*ctx->ga.PopSize; i++) {
+            s += rankcounts [i];
+            max_rank = i;
+            if (s >= goal) {
+                break;
+            }
+        }
+    }
+    for (i=0; i<(int)n; i++) {
+        /* Dump evaluations in error case */
+        if (rank1 [i] != rank2 [i]) {
+#define DEBUG_RANKING_2_DUMP
+#ifdef DEBUG_RANKING_2_DUMP
+            int j, k;
+            for (j=0; j<(int)n; j++) {
+                PGAIndividual *ind = cpy_start [j];
+                printf ("%c{", j == 0 ? '{' : ',');
+                for (k=0; k<ctx->ga.NumAuxEval + 1; k++) {
+                    double ev = (k == 0) ? ind->evalue : ind->auxeval [k - 1];
+                    printf ("%.12g, ", ev);
+                }
+                printf ("}\n");
+            }
+            printf ("\n\n");
+            fflush (stdout);
+#endif /* DEBUG_RANKING_2_DUMP */
+            assert (0);
+        }
+    }
+    assert (mr2 == mr3);
+    return mr2;
+}
+#else /* !DEBUG_RANKING_2 */
+#define ranking_2_objectives_new ranking_2_objectives
+#endif /* !DEBUG_RANKING_2 */
+
+/* Specialized ranking function for the two-objective case */
+static unsigned int ranking_2_objectives_new
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
+{
+    size_t i, j;
+    int is_ev = INDGetAuxTotal (*start) - ctx->ga.Epsilon <= 0;
+    int nc = ctx->ga.NumConstraint;
+    int na = ctx->ga.NumAuxEval;
+    int base = is_ev ? 0 : (na - nc);
+    unsigned int max_rank = 0;
+    int nranked = 0;
+    unsigned int num_fronts = 0;
+    PGAIndividual ***fronts = NULL;
+    size_t *front_sizes = NULL;
+
+    /* Allocate memory for fronts and front_sizes */
+    fronts = (PGAIndividual ***)malloc (n * sizeof (PGAIndividual **));
+    if (!fronts) {
+        PGAErrorPrintf
+            (ctx, PGA_FATAL, "Out of memory in ranking_2_objectives");
+    }
+    memset (fronts, 0, n * sizeof (PGAIndividual **));
+
+    front_sizes = (size_t *)malloc (n * sizeof (size_t));
+    if (!front_sizes) {
+        free (fronts);
+        PGAErrorPrintf
+            (ctx, PGA_FATAL, "Out of memory in ranking_2_objectives");
+    }
+    memset (front_sizes, 0, n * sizeof (size_t));
+
+    /* Sort individuals by first objective (and second if first is equal) */
+    qsort (start, n, sizeof (PGAIndividual *), obj_sort_cmp);
+
+    /* Initialize all ranks to UINT_MAX (unassigned); init crowding */
+    for (i = 0; i < n; i++) {
+        start [i]->rank = UINT_MAX;
+        start [i]->crowding = 0;
+    }
+
+    /* First individual is always in the first front */
+    fronts [0] = (PGAIndividual **)malloc (n * sizeof (PGAIndividual *));
+    if (!fronts [0]) {
+        free (front_sizes);
+        free (fronts);
+        PGAErrorPrintf
+            (ctx, PGA_FATAL, "Out of memory in ranking_2_objectives");
+        exit (23); /* not reached, hint for C-Compiler */
+    }
+
+    fronts [0][0] = start [0];
+    front_sizes [0] = 1;
+    start [0]->rank = 0;
+    num_fronts = 1;
+
+    for (i = 1; i < n; i++) {
+        PGAIndividual *current = start [i];
+        unsigned int current_front = num_fronts - 1;
+        double e1_current = GETEVAL (current, base, is_ev);
+        double e2_current = GETEVAL (current, base + 1, is_ev);
+        int e1cmp, e2cmp;
+
+        /* Check if current individual is dominated by the last front */
+        PGAIndividual *last_in_front =
+            fronts [current_front][front_sizes [current_front] - 1];
+        double e1_last = GETEVAL (last_in_front, base, is_ev);
+        double e2_last = GETEVAL (last_in_front, base + 1, is_ev);
+
+        e1cmp = OPT_DIR_CMP_EV (ctx, e1_last, e1_current, is_ev);
+        e2cmp = OPT_DIR_CMP_EV (ctx, e2_last, e2_current, is_ev);
+        if (e2cmp < 0 || (e2cmp == 0 && e1cmp < 0)) {
+            /* Current individual dominated by last front, create new front */
+            fronts [num_fronts] = malloc (n * sizeof (PGAIndividual *));
+            if (fronts [num_fronts] == NULL) {
+                for (j = 0; j < num_fronts; j++) {
+                    free (fronts [j]);
+                }
+                free (front_sizes);
+                free (fronts);
+                PGAErrorPrintf
+                    (ctx, PGA_FATAL, "Out of memory in ranking_2_objectives");
+                exit (23); /* not reached, hint for C-Compiler */
+            }
+
+            fronts [num_fronts][0] = current;
+            front_sizes [num_fronts] = 1;
+            current->rank = num_fronts;
+            num_fronts++;
+        } else {
+            /* Binary search to find the right front */
+            unsigned int low = 0;
+            unsigned int high = current_front;
+            unsigned int mid;
+
+            while (low < high) {
+                mid = (low + high) / 2;
+                PGAIndividual *last_in_mid =
+                    fronts [mid][front_sizes [mid] - 1];
+                double e1_mid = GETEVAL (last_in_mid, base, is_ev);
+                double e2_mid = GETEVAL (last_in_mid, base + 1, is_ev);
+                e2cmp = OPT_DIR_CMP_EV (ctx, e2_mid, e2_current, is_ev);
+                e1cmp = OPT_DIR_CMP_EV (ctx, e1_mid, e1_current, is_ev);
+                if (e2cmp > 0 || (e2cmp == 0 && e1cmp >= 0)) {
+                    high = mid;
+                } else {
+                    low = mid + 1;
+                }
+            }
+
+            /* Add to the found front */
+            fronts [low][front_sizes [low]] = current;
+            front_sizes [low]++;
+            current->rank = low;
+        }
+    }
+
+    for (i=0; i<num_fronts; i++) {
+        nranked += front_sizes [i];
+        max_rank = i;
+        if (nranked >= goal) {
+            break;
+        }
+    }
+    /* All ranks beyond max_rank need to be set to same value to make
+     * crowding sorting work
+     */
+    for (i=0; i<n; i++) {
+        if (start [i]->rank > max_rank) {
+            start [i]->rank = UINT_MAX;
+        }
+    }
+
+    /* Free allocated memory */
+    for (i = 0; i < num_fronts; i++) {
+        free (fronts [i]);
+    }
+    free (fronts);
+    free (front_sizes);
+
+    if (nranked == goal) {
+        return UINT_MAX;
+    }
+
+    return max_rank;
+}
+
 /* Dominance computation, return the maximum rank given or UINT_MAX if
  * goal was reached exactly (in which case no crowding is necessary)
  * First compute a dominance matrix of N x N bits. The rows are the
@@ -1239,12 +1479,16 @@ static void niching
  * - Increment the rank counter
  * The is_ev flag decides if we're ranking the evaluation functions or
  * if we're ranking constraint violations, it is 0 for eval functions.
+ * This is how we're called: In case we're ranking the eval function the
+ * very first individual doesn't have constraint violations. In case of
+ * ranking constraint violations the very first individual has a
+ * constraint violation (a positive INDGetAuxTotal value).
  * The base specifies which is the first aux evaluation. This is 0 if
  * ranking eval function (not constraint violations) and is the index of
  * the first constraint otherwise. The nfun variable is the number of
  * functions to test in each case.
  */
-STATIC unsigned int ranking
+static unsigned int ranking_3_plus_objectives
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
     size_t i, j;
@@ -1280,11 +1524,7 @@ STATIC unsigned int ranking
                 int ncmp;
                 e1 = GETEVAL (start [i], k + base, is_ev);
                 e2 = GETEVAL (start [j], k + base, is_ev);
-                if (is_ev && ctx->ga.optdir == PGA_MAXIMIZE) {
-                    ncmp = CMP (e2, e1);
-                } else {
-                    ncmp = CMP (e1, e2);
-                }
+                ncmp = OPT_DIR_CMP_EV(ctx, e1, e2, is_ev);
                 if (cmp && ncmp && ncmp != cmp) {
                     break;
                 }
@@ -1325,7 +1565,7 @@ STATIC unsigned int ranking
             }
         }
         /* Need to rank only goal individuals */
-        if (nranked >= goal) {
+        if (nranked >= goal || (size_t)nranked >= n) {
             break;
         }
         /* Remove dominance bits for this rank */
@@ -1343,6 +1583,28 @@ STATIC unsigned int ranking
         return UINT_MAX;
     }
     return rank;
+}
+
+/* Dominance computation, return the maximum rank given or UINT_MAX if
+ * goal was reached exactly (in which case no crowding is necessary)
+ * Main ranking function that selects the appropriate algorithm based on
+ * number of objectives
+ */
+STATIC unsigned int ranking
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
+{
+    int is_ev = INDGetAuxTotal (*start) - ctx->ga.Epsilon <= 0;
+    int nc = ctx->ga.NumConstraint;
+    int na = ctx->ga.NumAuxEval;
+    int nfun = is_ev ? (na - nc + 1) : nc;
+    DECLARE_DYNARRAY (PGAIndividual *, cpy_start, n);
+    memcpy (cpy_start, start, sizeof (*start) * n);
+
+    if (nfun == 2) {
+        return ranking_2_objectives (ctx, cpy_start, n, goal);
+    } else {
+        return ranking_3_plus_objectives (ctx, start, n, goal);
+    }
 }
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
