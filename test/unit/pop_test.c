@@ -1059,8 +1059,7 @@ void test_pop_2gen (PGAContext *ctx, int dim, size_t npop, void *p1, void *p2)
 
 int main (int argc, char **argv)
 {
-    PGAContext *ctx = PGACreate
-        (&argc, argv, PGA_DATATYPE_REAL, npop3, PGA_MINIMIZE);
+    PGAContext *ctx;
     /* Example from slides EMO '19 */
     size_t sz;
     double utop [] = {0.1, 0.1, 0.1};
@@ -1073,6 +1072,9 @@ int main (int argc, char **argv)
         , { 0.3, 0.3, 100 }
         };
     size_t dl = sizeof (f) / (3 * sizeof (double));
+
+    MPI_Init (&argc, &argv);
+    ctx = PGACreate (&argc, argv, PGA_DATATYPE_REAL, npop3, PGA_MINIMIZE);
     printf ("%zu\n", npop3);
     ctx->ga.NumAuxEval = 2;
     ctx->ga.NumConstraint = 0;
@@ -1138,4 +1140,5 @@ int main (int argc, char **argv)
     set_nsga_state (ctx, 0);
     test_pop (ctx, 3, npop33, pop3_3, npop33 - 101);
     test_pop (ctx, 3, npop34, pop3_4, npop34 - 101);
+    MPI_Finalize ();
 }

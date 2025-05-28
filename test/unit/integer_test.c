@@ -557,6 +557,7 @@ void mutation_position_test (int argc, char **argv)
 
 int main (int argc, char **argv)
 {
+    MPI_Init (&argc, &argv);
     edge_test (argc, argv);
     pmx_test  (argc, argv);
     mx_test   (argc, argv);
@@ -569,4 +570,5 @@ int main (int argc, char **argv)
     aex_test  (argc, argv);
     mutation_scramble_test (argc, argv);
     mutation_position_test (argc, argv);
+    MPI_Finalize ();
 }
