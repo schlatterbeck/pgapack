@@ -1319,23 +1319,11 @@ static unsigned int ranking_2_objectives_new
     unsigned int max_rank = 0;
     int nranked = 0;
     unsigned int num_fronts = 0;
-    PGAIndividual ***fronts = NULL;
-    size_t *front_sizes = NULL;
+    DECLARE_DYNARRAY (PGAIndividual **, fronts, n);
+    DECLARE_DYNARRAY (size_t, front_sizes, n);
 
-    /* Allocate memory for fronts and front_sizes */
-    fronts = (PGAIndividual ***)malloc (n * sizeof (PGAIndividual **));
-    if (!fronts) {
-        PGAErrorPrintf
-            (ctx, PGA_FATAL, "Out of memory in ranking_2_objectives");
-    }
+    /* Initialize arrays to zero */
     memset (fronts, 0, n * sizeof (PGAIndividual **));
-
-    front_sizes = (size_t *)malloc (n * sizeof (size_t));
-    if (!front_sizes) {
-        free (fronts);
-        PGAErrorPrintf
-            (ctx, PGA_FATAL, "Out of memory in ranking_2_objectives");
-    }
     memset (front_sizes, 0, n * sizeof (size_t));
 
     /* Sort individuals by first objective (and second if first is equal) */
@@ -1350,8 +1338,6 @@ static unsigned int ranking_2_objectives_new
     /* First individual is always in the first front */
     fronts [0] = (PGAIndividual **)malloc (n * sizeof (PGAIndividual *));
     if (!fronts [0]) {
-        free (front_sizes);
-        free (fronts);
         PGAErrorPrintf
             (ctx, PGA_FATAL, "Out of memory in ranking_2_objectives");
         exit (23); /* not reached, hint for C-Compiler */
@@ -1384,8 +1370,6 @@ static unsigned int ranking_2_objectives_new
                 for (j = 0; j < num_fronts; j++) {
                     free (fronts [j]);
                 }
-                free (front_sizes);
-                free (fronts);
                 PGAErrorPrintf
                     (ctx, PGA_FATAL, "Out of memory in ranking_2_objectives");
                 exit (23); /* not reached, hint for C-Compiler */
@@ -1439,12 +1423,10 @@ static unsigned int ranking_2_objectives_new
         }
     }
 
-    /* Free allocated memory */
+    /* Free allocated memory for each front */
     for (i = 0; i < num_fronts; i++) {
         free (fronts [i]);
     }
-    free (fronts);
-    free (front_sizes);
 
     if (nranked == goal) {
         return UINT_MAX;
