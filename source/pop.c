@@ -1321,10 +1321,12 @@ static unsigned int ranking_2_objectives_new
     unsigned int num_fronts = 0;
     DECLARE_DYNARRAY (PGAIndividual **, fronts, n);
     DECLARE_DYNARRAY (size_t, front_sizes, n);
+    DECLARE_DYNARRAY (size_t, front_alloc_sizes, n);
 
     /* Initialize arrays to zero */
     memset (fronts, 0, n * sizeof (PGAIndividual **));
     memset (front_sizes, 0, n * sizeof (size_t));
+    memset (front_alloc_sizes, 0, n * sizeof (size_t));
 
     /* Sort individuals by first objective (and second if first is equal) */
     qsort (start, n, sizeof (PGAIndividual *), obj_sort_cmp);
@@ -1342,6 +1344,7 @@ static unsigned int ranking_2_objectives_new
             (ctx, PGA_FATAL, "Out of memory in ranking_2_objectives");
         exit (23); /* not reached, hint for C-Compiler */
     }
+    front_alloc_sizes [0] = n;
 
     fronts [0][0] = start [0];
     front_sizes [0] = 1;
@@ -1365,7 +1368,12 @@ static unsigned int ranking_2_objectives_new
         e2cmp = OPT_DIR_CMP_EV (ctx, e2_last, e2_current);
         if (e2cmp < 0 || (e2cmp == 0 && e1cmp < 0)) {
             /* Current individual dominated by last front, create new front */
-            fronts [num_fronts] = malloc (n * sizeof (PGAIndividual *));
+            size_t initial_size = 16;
+            if (initial_size > n) {
+                initial_size = n;
+            }
+            fronts [num_fronts] = malloc
+                (initial_size * sizeof (PGAIndividual *));
             if (fronts [num_fronts] == NULL) {
                 for (j = 0; j < num_fronts; j++) {
                     free (fronts [j]);
@@ -1374,6 +1382,7 @@ static unsigned int ranking_2_objectives_new
                     (ctx, PGA_FATAL, "Out of memory in ranking_2_objectives");
                 exit (23); /* not reached, hint for C-Compiler */
             }
+            front_alloc_sizes [num_fronts] = initial_size;
 
             fronts [num_fronts][0] = current;
             front_sizes [num_fronts] = 1;
@@ -1401,6 +1410,31 @@ static unsigned int ranking_2_objectives_new
             }
 
             /* Add to the found front */
+            /* Check if we need to reallocate */
+            if (front_sizes [low] >= front_alloc_sizes [low]) {
+                size_t new_size = front_alloc_sizes [low] * 2;
+                if (new_size > n) {
+                    new_size = n;
+                }
+                if (new_size > front_alloc_sizes [low]) {
+                    PGAIndividual **new_front = realloc
+                        (fronts [low], new_size * sizeof (PGAIndividual *));
+                    if (new_front == NULL) {
+                        for (j = 0; j < num_fronts; j++) {
+                            free (fronts [j]);
+                        }
+                        PGAErrorPrintf
+                            ( ctx
+                            , PGA_FATAL
+                            , "Out of memory in ranking_2_objectives"
+                            );
+                        exit (23); /* not reached, hint for C-Compiler */
+                    }
+                    fronts [low] = new_front;
+                    front_alloc_sizes [low] = new_size;
+                }
+            }
+
             fronts [low][front_sizes [low]] = current;
             front_sizes [low]++;
             current->rank = low;
