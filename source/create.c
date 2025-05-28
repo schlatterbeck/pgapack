@@ -1636,8 +1636,19 @@ void PGASetUp (PGAContext *ctx)
         ctx->scratch.pgaintscratch [3] = NULL;
     }
 
-    /* If we're doing non-dominated sorting */
-    if (ctx->ga.NumAuxEval - ctx->ga.NumConstraint >= 1) {
+    /* If we're doing non-dominated sorting
+     * Or SumConstraints is False and we're doing nondominated comparison
+     * In the latter case one of the NSGA replacement types must have
+     * been explicitly selected.
+     */
+    if (  (  ctx->ga.PopReplace == PGA_POPREPL_NSGA_III
+          || ctx->ga.PopReplace == PGA_POPREPL_NSGA_II
+          )
+       && (  (ctx->ga.NumAuxEval - ctx->ga.NumConstraint >= 1)
+          || (!ctx->ga.SumConstraints && ctx->ga.NumConstraint > 1)
+          )
+       )
+    {
         int intsfor2pop = (ctx->ga.PopSize * 2 + WL - 1) / WL;
         ctx->scratch.dominance = malloc
             (sizeof (PGABinary) * intsfor2pop * 2 * ctx->ga.PopSize);

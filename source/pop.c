@@ -51,8 +51,8 @@ privately owned rights.
 
 #define OPT_DIR_CMP(ctx, e1, e2) \
     (ctx->ga.optdir == PGA_MAXIMIZE ? CMP ((e2), (e1)) : CMP ((e1), (e2)))
-#define OPT_DIR_CMP_EV(ctx, e1, e2, is_ev) \
-    ((is_ev) ? OPT_DIR_CMP((ctx), (e1), (e2)) : CMP ((e1), (e2)))
+#define OPT_DIR_CMP_EV(ctx, e1, e2) \
+    (((ctx)->nsga.is_ev) ? OPT_DIR_CMP((ctx), (e1), (e2)) : CMP ((e1), (e2)))
 #define NORMALIZE(ctx, e, u) \
     (ctx->ga.optdir == PGA_MAXIMIZE ? ((u) - (e)) : ((e) - (u)))
 #define DENORMALIZE(ctx, e, u) \
@@ -823,14 +823,15 @@ void PGAPairwiseBestReplacement (PGAContext *ctx)
     ? (ind)->evalue                                     \
     : NONNEGEVAL ((ind)->auxeval [(fidx) - 1], (is_ev)) \
     )
+#define GETEVAL_EV(ind, fidx) \
+    GETEVAL((ind), (fidx) + (ind)->ctx->nsga.base, (ind)->ctx->nsga.is_ev)
 
 static int crowdsort_cmp (const void *a1, const void *a2)
 {
     PGAIndividual **i1 = (void *)a1;
     PGAIndividual **i2 = (void *)a2;
-    int is_ev = INDGetAuxTotal (*i1) ? 0 : 1;
-    double e1 = GETEVAL(*i1, (*i1)->funcidx, is_ev);
-    double e2 = GETEVAL(*i2, (*i2)->funcidx, is_ev);
+    double e1 = GETEVAL_EV(*i1, (*i1)->funcidx);
+    double e2 = GETEVAL_EV(*i2, (*i2)->funcidx);
     return CMP(e1, e2);
 }
 
@@ -861,21 +862,16 @@ STATIC void crowding
     size_t i;
     int k;
     size_t nrank = 0;
-    int is_ev = INDGetAuxTotal (*start) ? 0 : 1;
     DECLARE_DYNARRAY (PGAIndividual *, crowd, n);
-    int nc = ctx->ga.NumConstraint;
-    int na = ctx->ga.NumAuxEval;
-    int base = is_ev ? 0 : (na - nc);
-    int nfun = is_ev ? (na - nc + 1) : nc;
-    DECLARE_DYNARRAY (double, f_min, nfun);
-    DECLARE_DYNARRAY (double, f_max, nfun);
+    DECLARE_DYNARRAY (double, f_min, ctx->nsga.nfun);
+    DECLARE_DYNARRAY (double, f_max, ctx->nsga.nfun);
 
     for (i=0; i<n; i++) {
         PGAIndividual *ind = start [i];
         ind->crowding = 0;
         if (ind->rank == rank) {
-            for (k=0; k<nfun; k++) {
-                double e = GETEVAL (ind, k + base, is_ev);
+            for (k=0; k<ctx->nsga.nfun; k++) {
+                double e = GETEVAL_EV (ind, k);
                 if (nrank == 0 || f_min [k] > e) {
                     f_min [k] = e;
                 }
@@ -887,10 +883,10 @@ STATIC void crowding
         }
     }
     assert (nrank > 0);
-    for (k=0; k<nfun; k++) {
+    for (k=0; k<ctx->nsga.nfun; k++) {
         double norm = f_max [k] - f_min [k];
         for (i=0; i<nrank; i++) {
-            (crowd [i])->funcidx = k + base;
+            (crowd [i])->funcidx = k;
         }
         qsort (crowd, nrank, sizeof (crowd [0]), crowdsort_cmp);
         (crowd [0])->crowding = DBL_MAX;
@@ -898,8 +894,8 @@ STATIC void crowding
         for (i=1; i<nrank-1; i++) {
             if ((crowd [i])->crowding != DBL_MAX) {
                 (crowd [i])->crowding +=
-                    ( GETEVAL(crowd [i+1], k + base, is_ev)
-                    - GETEVAL(crowd [i-1], k + base, is_ev)
+                    ( GETEVAL_EV (crowd [i+1], k)
+                    - GETEVAL_EV (crowd [i-1], k)
                     ) / norm;
             }
         }
@@ -1233,20 +1229,16 @@ static int obj_sort_cmp (const void *a1, const void *a2)
     PGAIndividual * const *i1 = (PGAIndividual * const *)a1;
     PGAIndividual * const *i2 = (PGAIndividual * const *)a2;
     PGAContext *ctx = (*i1)->ctx;
-    int is_ev = INDGetAuxTotal (*i1) - ctx->ga.Epsilon <= 0;
-    int nc = ctx->ga.NumConstraint;
-    int na = ctx->ga.NumAuxEval;
-    int base = is_ev ? 0 : (na - nc);
 
-    double e1_i1 = GETEVAL (*i1, base, is_ev);
-    double e1_i2 = GETEVAL (*i2, base, is_ev);
-    int cmp = OPT_DIR_CMP_EV (ctx, e1_i1, e1_i2, is_ev);
+    double e1_i1 = GETEVAL_EV (*i1, 0);
+    double e1_i2 = GETEVAL_EV (*i2, 0);
+    int cmp = OPT_DIR_CMP_EV (ctx, e1_i1, e1_i2);
 
     if (cmp == 0) {
         /* If first objectives are equal, sort by second objective */
-        double e2_i1 = GETEVAL (*i1, base + 1, is_ev);
-        double e2_i2 = GETEVAL (*i2, base + 1, is_ev);
-        cmp = OPT_DIR_CMP_EV (ctx, e2_i1, e2_i2, is_ev);
+        double e2_i1 = GETEVAL_EV (*i1, 1);
+        double e2_i2 = GETEVAL_EV (*i2, 1);
+        cmp = OPT_DIR_CMP_EV (ctx, e2_i1, e2_i2);
     }
 
     return cmp;
@@ -1324,10 +1316,6 @@ static unsigned int ranking_2_objectives_new
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
     size_t i, j;
-    int is_ev = INDGetAuxTotal (*start) - ctx->ga.Epsilon <= 0;
-    int nc = ctx->ga.NumConstraint;
-    int na = ctx->ga.NumAuxEval;
-    int base = is_ev ? 0 : (na - nc);
     unsigned int max_rank = 0;
     int nranked = 0;
     unsigned int num_fronts = 0;
@@ -1377,18 +1365,18 @@ static unsigned int ranking_2_objectives_new
     for (i = 1; i < n; i++) {
         PGAIndividual *current = start [i];
         unsigned int current_front = num_fronts - 1;
-        double e1_current = GETEVAL (current, base, is_ev);
-        double e2_current = GETEVAL (current, base + 1, is_ev);
+        double e1_current = GETEVAL_EV (current, 0);
+        double e2_current = GETEVAL_EV (current, 1);
         int e1cmp, e2cmp;
 
         /* Check if current individual is dominated by the last front */
         PGAIndividual *last_in_front =
             fronts [current_front][front_sizes [current_front] - 1];
-        double e1_last = GETEVAL (last_in_front, base, is_ev);
-        double e2_last = GETEVAL (last_in_front, base + 1, is_ev);
+        double e1_last = GETEVAL_EV (last_in_front, 0);
+        double e2_last = GETEVAL_EV (last_in_front, 1);
 
-        e1cmp = OPT_DIR_CMP_EV (ctx, e1_last, e1_current, is_ev);
-        e2cmp = OPT_DIR_CMP_EV (ctx, e2_last, e2_current, is_ev);
+        e1cmp = OPT_DIR_CMP_EV (ctx, e1_last, e1_current);
+        e2cmp = OPT_DIR_CMP_EV (ctx, e2_last, e2_current);
         if (e2cmp < 0 || (e2cmp == 0 && e1cmp < 0)) {
             /* Current individual dominated by last front, create new front */
             fronts [num_fronts] = malloc (n * sizeof (PGAIndividual *));
@@ -1417,10 +1405,10 @@ static unsigned int ranking_2_objectives_new
                 mid = (low + high) / 2;
                 PGAIndividual *last_in_mid =
                     fronts [mid][front_sizes [mid] - 1];
-                double e1_mid = GETEVAL (last_in_mid, base, is_ev);
-                double e2_mid = GETEVAL (last_in_mid, base + 1, is_ev);
-                e2cmp = OPT_DIR_CMP_EV (ctx, e2_mid, e2_current, is_ev);
-                e1cmp = OPT_DIR_CMP_EV (ctx, e1_mid, e1_current, is_ev);
+                double e1_mid = GETEVAL_EV (last_in_mid, 0);
+                double e2_mid = GETEVAL_EV (last_in_mid, 1);
+                e2cmp = OPT_DIR_CMP_EV (ctx, e2_mid, e2_current);
+                e1cmp = OPT_DIR_CMP_EV (ctx, e1_mid, e1_current);
                 if (e2cmp > 0 || (e2cmp == 0 && e1cmp >= 0)) {
                     high = mid;
                 } else {
@@ -1477,29 +1465,14 @@ static unsigned int ranking_2_objectives_new
  * - Loop over all individuals with the current rank and remove their
  *   bits from the dominance matrix
  * - Increment the rank counter
- * The is_ev flag decides if we're ranking the evaluation functions or
- * if we're ranking constraint violations, it is 0 for eval functions.
- * This is how we're called: In case we're ranking the eval function the
- * very first individual doesn't have constraint violations. In case of
- * ranking constraint violations the very first individual has a
- * constraint violation (a positive INDGetAuxTotal value).
- * The base specifies which is the first aux evaluation. This is 0 if
- * ranking eval function (not constraint violations) and is the index of
- * the first constraint otherwise. The nfun variable is the number of
- * functions to test in each case.
  */
 static unsigned int ranking_3_plus_objectives
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
     size_t i, j;
     int k;
-    int is_ev = INDGetAuxTotal (*start) - ctx->ga.Epsilon <= 0;
     unsigned int rank;
     int nranked = 0;
-    int nc = ctx->ga.NumConstraint;
-    int na = ctx->ga.NumAuxEval;
-    int base = is_ev ? 0 : (na - nc);
-    int nfun = is_ev ? (na - nc + 1) : nc;
     size_t intsforn = (n + WL - 1) / WL;
     DECLARE_DYNPTR (PGABinary, dominance, intsforn) =
         (void *)(ctx->scratch.dominance);
@@ -1519,12 +1492,12 @@ static unsigned int ranking_3_plus_objectives
     for (i=0; i<n; i++) {
         for (j=i+1; j<n; j++) {
             int cmp = 0;
-            for (k=0; k<nfun; k++) {
+            for (k=0; k<ctx->nsga.nfun; k++) {
                 double e1, e2;
                 int ncmp;
-                e1 = GETEVAL (start [i], k + base, is_ev);
-                e2 = GETEVAL (start [j], k + base, is_ev);
-                ncmp = OPT_DIR_CMP_EV(ctx, e1, e2, is_ev);
+                e1 = GETEVAL_EV (start [i], k);
+                e2 = GETEVAL_EV (start [j], k);
+                ncmp = OPT_DIR_CMP_EV(ctx, e1, e2);
                 if (cmp && ncmp && ncmp != cmp) {
                     break;
                 }
@@ -1534,7 +1507,7 @@ static unsigned int ranking_3_plus_objectives
                 }
             }
             /* Non-dominated? */
-            if (!cmp || k<nfun) {
+            if (!cmp || k<ctx->nsga.nfun) {
                 continue;
             }
             /* j dominated by i */
@@ -1585,6 +1558,23 @@ static unsigned int ranking_3_plus_objectives
     return rank;
 }
 
+/*
+ * The is_ev flag decides if we're ranking the evaluation functions or
+ * if we're ranking constraint violations, it is 1 for eval functions.
+ * The base specifies which is the first aux evaluation. This is 0 if
+ * ranking eval function (not constraint violations) and is the index of
+ * the first constraint otherwise. The nfun variable is the number of
+ * functions to test in each case.
+ */
+STATIC void set_nsga_state (PGAContext *ctx, int is_ev)
+{
+    int nc = ctx->ga.NumConstraint;
+    int na = ctx->ga.NumAuxEval;
+    ctx->nsga.is_ev = is_ev;
+    ctx->nsga.nfun = is_ev ? (na - nc + 1) : nc;
+    ctx->nsga.base = is_ev ? 0 : (na - nc + 1);
+}
+
 /* Dominance computation, return the maximum rank given or UINT_MAX if
  * goal was reached exactly (in which case no crowding is necessary)
  * Main ranking function that selects the appropriate algorithm based on
@@ -1593,14 +1583,13 @@ static unsigned int ranking_3_plus_objectives
 STATIC unsigned int ranking
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
-    int is_ev = INDGetAuxTotal (*start) - ctx->ga.Epsilon <= 0;
-    int nc = ctx->ga.NumConstraint;
-    int na = ctx->ga.NumAuxEval;
-    int nfun = is_ev ? (na - nc + 1) : nc;
     DECLARE_DYNARRAY (PGAIndividual *, cpy_start, n);
     memcpy (cpy_start, start, sizeof (*start) * n);
 
-    if (nfun == 2) {
+    if (!n) {
+        return 0;
+    }
+    if (ctx->nsga.nfun == 2) {
         return ranking_2_objectives (ctx, cpy_start, n, goal);
     } else {
         return ranking_3_plus_objectives (ctx, start, n, goal);
@@ -1730,6 +1719,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
             );
     } else {
         unsigned int rank;
+        set_nsga_state (ctx, 1);
         rank = ranking (ctx, all_individuals, n_unc_ind, popsize);
         if (n_unc_ind >= popsize && rank != UINT_MAX) {
             crowding_method (ctx, all_individuals, n_unc_ind, rank);
@@ -1751,7 +1741,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
         /* Normal sorting if only one constraint function or
          * SumConstraints is PGA_TRUE
          */
-        if (ctx->ga.SumConstraints || ctx->ga.NumConstraint == 1) {
+        if (ctx->ga.SumConstraints || ctx->ga.NumConstraint < 2) {
             qsort
                 ( all_individuals + n_unc_ind
                 , n_con_ind
@@ -1760,6 +1750,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
                 );
         } else {
             unsigned int rank;
+            set_nsga_state (ctx, 0);
             rank = ranking
                 ( ctx
                 , all_individuals + n_unc_ind

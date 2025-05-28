@@ -703,6 +703,15 @@ typedef struct {
     PGAIndividual *newpop;   /**< pointer to population (new)               */
 } PGAAlgorithm;
 
+/*!***************************************
+ * \brief NSGA temp state
+ *****************************************/
+typedef struct {
+    int is_ev;    /**< True if evaluating False if constraints  */
+    int base;     /**< Base index of eval functions, 0 for eval */
+    int nfun;     /**< Number of functions                      */
+} PGAStateNSGA;
+
 /** Typedef for the context, think of this as "self" in OO terms */
 typedef struct PGAContext PGAContext;
 
@@ -902,6 +911,7 @@ struct PGAContext {
     PGARandomState         rand1;     /**< Default random no generator state */
     PGARandomState         rand2;     /**< Alt random no generator state */
     PGARandomState        *randstate; /**< Current random no state   */
+    PGAStateNSGA           nsga;      /**< Temp state during nsga    */
 };
 
 #if !defined(DOXYGEN_SHOULD_SKIP_THIS)
