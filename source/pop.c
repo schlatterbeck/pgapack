@@ -1574,6 +1574,157 @@ static unsigned int ranking_3_plus_objectives
     return rank;
 }
 
+/* For sorting an array of double */
+static int double_cmp (const void *a1, const void *a2)
+{
+    const double *d1 = a1;
+    const double *d2 = a2;
+    return CMP (*d1, *d2);
+}
+
+/*
+ * Compute median by sorting and taking the middle elements.
+ * Used for small sizes of values array.
+ */
+static double nlogn_select (double *values, size_t lo, size_t hi, size_t k)
+{
+    qsort (values + lo, hi - lo, sizeof (*values), double_cmp);
+    return values [lo + k];
+}
+
+/* Need forward declaration for recursive call from pick_pivot */
+static double quickselect (double *values, size_t lo, size_t hi, size_t k);
+
+/* Find median of medians to use as pivot */
+static double pick_pivot (double *values, size_t lo, size_t hi)
+{
+    size_t i;
+    DECLARE_DYNARRAY (double, medians, (hi - lo) / 5);
+
+    assert (hi > lo);
+
+    /* Small case: Just return median */
+    if (hi - lo <= 5) {
+        return nlogn_select (values, lo, hi, (lo + hi) / 2);
+    }
+
+    /* This skips the last non-full chunk if (hi - lo) is not divisible
+     * by 5. This doesn't affect the pivot computation too much.
+     */
+    for (i=lo; i<hi; i+=5) {
+        if (i + 5 > hi) {
+            break;
+        }
+        medians [(i - lo) / 5] = nlogn_select (values, i, i + 5, 2);
+    }
+    /* Should be same with truncation */
+    assert ((i - lo) / 5 == (hi - lo) / 5);
+    /* Recursive call to find median of medians */
+    return quickselect (medians, 0, (i - lo) / 5, (i - lo) / 10);
+}
+
+/* Linear-time index value selection algorithm
+ * (quickselect with median-of-medians pivot)
+ * We separate values into three sections: values < pivot (at the start),
+ * values equal to pivot (at the end) and values > pivot in the middle.
+ */
+static double quickselect (double *values, size_t lo, size_t hi, size_t k)
+{
+    size_t i, j, pidx;
+    double pivot, tmp;
+    int n_pivots = 0;
+
+    assert (hi > lo);
+    assert (k >= 0 && k < hi - lo);
+    /* For small arrays, sort and return median */
+    if (hi - lo < 10) {
+        return nlogn_select (values, lo, hi, k);
+    }
+
+    pivot = pick_pivot (values, lo, hi);
+
+    /* Partition values into <= pivot and > pivot */
+    for (pidx = lo; pidx < hi; pidx++) {
+        if (values [pidx] == pivot) {
+            for (j=hi-1; j>=pidx && values [j] == pivot; j--) {
+                n_pivots++;
+                hi--;
+            }
+            if (pidx >= hi) {
+                break;
+            }
+            tmp = values [pidx];
+            values [pidx] = values [hi - 1];
+            values [hi - 1] = tmp;
+            hi--;
+            n_pivots++;
+        }
+        assert (values [pidx] != pivot);
+        if (values [pidx] >= pivot) {
+            break;
+        }
+    }
+    for (i = pidx + 1; i < hi; i++) {
+        if (values [i] < pivot) {
+            tmp = values [i];
+            values [i] = values [pidx];
+            values [pidx] = tmp;
+            pidx++;
+        } else if (values [i] == pivot) {
+            for (j=hi-1; j>=i && values [j] == pivot; j--) {
+                n_pivots++;
+                hi--;
+            }
+            if (i >= hi) {
+                break;
+            }
+            tmp = values [i];
+            values [i] = values [hi - 1];
+            values [hi - 1] = tmp;
+            hi--;
+            n_pivots++;
+            /* Element from above might have been < pivot */
+            if (values [i] < pivot) {
+                tmp = values [i];
+                values [i] = values [pidx];
+                values [pidx] = tmp;
+                pidx++;
+            }
+        }
+    }
+    /* pick_pivot always returns an *existing* value in values */
+    assert (n_pivots);
+
+    if (k < pidx - lo) {
+        return quickselect (values, lo, pidx, k);
+    } else if (k < (pidx - lo) + n_pivots) {
+        return pivot;
+    } else {
+        return quickselect (values, pidx, hi, k - (pidx - lo) - n_pivots);
+    }
+}
+
+/* Find median value for objective m in the set using linear-time
+ * selection algorithm.
+ * We do not find the "real" median, when the number of elements is
+ * even. We only use the median for partitioning, so it makes no sense
+ * to call quickselect twice just to get the average of the two middle
+ * values.
+ */
+STATIC double find_median (PGAIndividual **s, size_t n, int m)
+{
+    DECLARE_DYNARRAY (double, values, n);
+    PGAContext *ctx = (*s)->ctx;
+    size_t i;
+
+    assert (n > 0);
+    assert (m >= 0 && m <= ctx->ga.NumAuxEval);
+    for (i = 0; i < n; i++) {
+        values [i] = GETEVAL_EV (s [i], m);
+    }
+    return quickselect (values, 0, n, n / 2);
+}
+
 /*
  * The is_ev flag decides if we're ranking the evaluation functions or
  * if we're ranking constraint violations, it is 1 for eval functions.

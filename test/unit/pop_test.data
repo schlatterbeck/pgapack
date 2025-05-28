@@ -182,6 +182,8 @@ Rank 1: 2
 Rank 2: 3
 Rank 3: 4
 Rank 4: 5
+med-e (0): 1
+med-e (1): 1
 Individuals sorted by rank, max_rank=46:
 Rank 0: 137 163 167 181 187 191 193 195
 Rank 1: 133 135
@@ -294,6 +296,11 @@ Rank 20: 14 46 59
 Rank 21: 96 128
 Rank 22: 7 118
 Rank 23: 39 42 138
+med-e (0): 328.068864015
+med-e (1): -152.895900531
+med-e (2): 76.6407751332
+med-c (0): 0
+med-c (1): 76.6407751332
 Individuals sorted by rank, max_rank=56:
 Rank 0: 28
 Rank 1: 26
@@ -352,3 +359,8 @@ Rank 53: 46 135 141
 Rank 54: 53 77
 Rank 55: 140
 Rank 56: 45 86
+med-e (0): 1.63441159673
+med-e (1): 0.690951910045
+med-e (2): -2.66416674534
+med-c (0): 0.690951910045
+med-c (1): 0

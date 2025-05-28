@@ -12,6 +12,7 @@ void compute_worst
 void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n);
 int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal);
 void set_nsga_state (PGAContext *ctx, int is_ev);
+double find_median (PGAIndividual **s, size_t n, int m);
 
 double pop3 [][3] =
 {{0.59200264, 1.25973595, 1.06928177}
@@ -1057,6 +1058,27 @@ void test_pop_2gen (PGAContext *ctx, int dim, size_t npop, void *p1, void *p2)
     }
 }
 
+void test_median (PGAContext *ctx, int n)
+{
+    int i;
+    int is_ev = ctx->nsga.is_ev;
+    PGAIndividual *indivs [200];
+    for (i=0; i<n; i++) {
+        indivs [i] = ctx->ga.newpop + i;
+    }
+    set_nsga_state (ctx, 1);
+    for (i=0; i<ctx->ga.NumAuxEval + 1; i++) {
+        printf ("med-e (%d): %.12g\n", i, find_median (indivs, n, i));
+        fflush (stdout);
+    }
+    set_nsga_state (ctx, 0);
+    for (i=0; i<ctx->ga.NumConstraint; i++) {
+        printf ("med-c (%d): %.12g\n", i, find_median (indivs, n, i));
+        fflush (stdout);
+    }
+    set_nsga_state (ctx, is_ev);
+}
+
 int main (int argc, char **argv)
 {
     PGAContext *ctx;
@@ -1100,6 +1122,7 @@ int main (int argc, char **argv)
     ctx->ga.PopReplace = PGA_POPREPL_NSGA_II;
     printf ("np24: %zu\n", np24);
     test_pop (ctx, 2, np24,  pop2_4, np24 + 1);
+    test_median (ctx, np24);
     ctx->ga.PopReplace = PGA_POPREPL_NSGA_III;
     test_pop_2gen (ctx, 2, npop2, pop2, pop2_2);
     ctx->ga.NumAuxEval = 2;
@@ -1139,6 +1162,8 @@ int main (int argc, char **argv)
     PGASetUp (ctx);
     set_nsga_state (ctx, 0);
     test_pop (ctx, 3, npop33, pop3_3, npop33 - 101);
+    test_median (ctx, npop33);
     test_pop (ctx, 3, npop34, pop3_4, npop34 - 101);
+    test_median (ctx, npop34);
     MPI_Finalize ();
 }
