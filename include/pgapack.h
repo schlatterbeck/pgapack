@@ -710,6 +710,7 @@ typedef struct {
     int is_ev;    /**< True if evaluating False if constraints  */
     int base;     /**< Base index of eval functions, 0 for eval */
     int nfun;     /**< Number of functions                      */
+    int oidx;     /**< Current function index for sorting       */
 } PGAStateNSGA;
 
 /** Typedef for the context, think of this as "self" in OO terms */

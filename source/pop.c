@@ -140,7 +140,7 @@ void PGASortPop (PGAContext *ctx, int pop)
         };
         for (i = 0; i < ctx->ga.PopSize; i++) {
             j = PGARandomInterval (ctx, 0, ctx->ga.PopSize-i-1);
-            ctx->ga.sorted[i] = ctx->scratch.intscratch[j];
+            ctx->ga.sorted [i] = ctx->scratch.intscratch [j];
             ctx->scratch.intscratch [j] =
                 ctx->scratch.intscratch [ctx->ga.PopSize-i-1];
         };
@@ -830,9 +830,9 @@ static int crowdsort_cmp (const void *a1, const void *a2)
 {
     PGAIndividual **i1 = (void *)a1;
     PGAIndividual **i2 = (void *)a2;
-    double e1 = GETEVAL_EV(*i1, (*i1)->funcidx);
-    double e2 = GETEVAL_EV(*i2, (*i2)->funcidx);
-    return CMP(e1, e2);
+    double e1 = GETEVAL_EV (*i1, (*i1)->funcidx);
+    double e2 = GETEVAL_EV (*i2, (*i2)->funcidx);
+    return CMP (e1, e2);
 }
 
 static int nondom_cmp (const void *a1, const void *a2)
@@ -845,7 +845,7 @@ static int nondom_cmp (const void *a1, const void *a2)
     if ((*i1)->rank > (*i2)->rank) {
         return 1;
     }
-    return CMP((*i2)->crowding, (*i1)->crowding);
+    return CMP ((*i2)->crowding, (*i1)->crowding);
 }
 
 /* typedef to make it easier to pass crowding functions as parameter */
@@ -1135,7 +1135,7 @@ static int assoc_cmp (const void *a1, const void *a2)
     if ((*i1)->rank > (*i2)->rank) {
         return 1;
     }
-    return CMP((*i1)->distance, (*i2)->distance);
+    return CMP ((*i1)->distance, (*i2)->distance);
 }
 
 /* Compute niche preservation algorithm over the given individuals
@@ -1244,81 +1244,14 @@ static int obj_sort_cmp (const void *a1, const void *a2)
     return cmp;
 }
 
-#undef DEBUG_RANKING_2
-#ifdef DEBUG_RANKING_2
-static unsigned int ranking_3_plus_objectives
-    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal);
-static unsigned int ranking_2_objectives_new
-    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal);
-static unsigned int ranking_2_objectives
-    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
-{
-    unsigned int rank1 [n], rank2 [n];
-    unsigned int rankcounts [2 * ctx->ga.PopSize];
-    DECLARE_DYNARRAY (PGAIndividual *, cpy_start, n);
-    unsigned int max_rank = 0, mr2 = 0, mr3 = 0;
-    int i;
-    mr3 = max_rank = ranking_3_plus_objectives (ctx, start, n, goal);
-    memcpy (cpy_start, start, sizeof (*start) * n);
-    for (i=0; i<(int)n; i++) {
-        rank1 [i] = cpy_start [i]->rank;
-    }
-    mr2 = ranking_2_objectives_new (ctx, start, n, goal);
-    for (i=0; i<(int)n; i++) {
-        rank2 [i] = cpy_start [i]->rank;
-    }
-    if (max_rank == UINT_MAX) {
-        int s = 0;
-        memset (rankcounts, 0, ctx->ga.PopSize * sizeof (unsigned int));
-        for (i=0; i<(int)n; i++) {
-            if (cpy_start [i]->rank < 2 * (unsigned int)ctx->ga.PopSize) {
-                rankcounts [cpy_start [i]->rank] += 1;
-            }
-        }
-        for (i=0; i<2*ctx->ga.PopSize; i++) {
-            s += rankcounts [i];
-            max_rank = i;
-            if (s >= goal) {
-                break;
-            }
-        }
-    }
-    for (i=0; i<(int)n; i++) {
-        /* Dump evaluations in error case */
-        if (rank1 [i] != rank2 [i]) {
-#define DEBUG_RANKING_2_DUMP
-#ifdef DEBUG_RANKING_2_DUMP
-            int j, k;
-            for (j=0; j<(int)n; j++) {
-                PGAIndividual *ind = cpy_start [j];
-                printf ("%c{", j == 0 ? '{' : ',');
-                for (k=0; k<ctx->ga.NumAuxEval + 1; k++) {
-                    double ev = (k == 0) ? ind->evalue : ind->auxeval [k - 1];
-                    printf ("%.12g, ", ev);
-                }
-                printf ("}\n");
-            }
-            printf ("\n\n");
-            fflush (stdout);
-#endif /* DEBUG_RANKING_2_DUMP */
-            assert (0);
-        }
-    }
-    assert (mr2 == mr3);
-    return mr2;
-}
-#else /* !DEBUG_RANKING_2 */
-#define ranking_2_objectives_new ranking_2_objectives
-#endif /* !DEBUG_RANKING_2 */
-
 /* Specialized ranking function for the two-objective case */
-static unsigned int ranking_2_objectives_new
+static unsigned int ranking_2_objectives
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
     size_t i, j;
     unsigned int max_rank = 0;
     int nranked = 0;
-    unsigned int num_fronts = 0;
+    size_t num_fronts = 0;
     DECLARE_DYNARRAY (PGAIndividual **, fronts, n);
     DECLARE_DYNARRAY (size_t, front_sizes, n);
     DECLARE_DYNARRAY (size_t, front_alloc_sizes, n);
@@ -1353,14 +1286,14 @@ static unsigned int ranking_2_objectives_new
 
     for (i = 1; i < n; i++) {
         PGAIndividual *current = start [i];
-        unsigned int current_front = num_fronts - 1;
+        size_t cur_front = num_fronts - 1;
         double e1_current = GETEVAL_EV (current, 0);
         double e2_current = GETEVAL_EV (current, 1);
         int e1cmp, e2cmp;
 
         /* Check if current individual is dominated by the last front */
         PGAIndividual *last_in_front =
-            fronts [current_front][front_sizes [current_front] - 1];
+            fronts [cur_front][front_sizes [cur_front] - 1];
         double e1_last = GETEVAL_EV (last_in_front, 0);
         double e2_last = GETEVAL_EV (last_in_front, 1);
 
@@ -1390,18 +1323,17 @@ static unsigned int ranking_2_objectives_new
             num_fronts++;
         } else {
             /* Binary search to find the right front */
-            unsigned int low = 0;
-            unsigned int high = current_front;
-            unsigned int mid;
+            size_t low = 0;
+            size_t high = cur_front;
 
             while (low < high) {
-                mid = (low + high) / 2;
+                size_t mid = (low + high) / 2;
                 PGAIndividual *last_in_mid =
                     fronts [mid][front_sizes [mid] - 1];
                 double e1_mid = GETEVAL_EV (last_in_mid, 0);
                 double e2_mid = GETEVAL_EV (last_in_mid, 1);
-                e2cmp = OPT_DIR_CMP_EV (ctx, e2_mid, e2_current);
                 e1cmp = OPT_DIR_CMP_EV (ctx, e1_mid, e1_current);
+                e2cmp = OPT_DIR_CMP_EV (ctx, e2_mid, e2_current);
                 if (e2cmp > 0 || (e2cmp == 0 && e1cmp >= 0)) {
                     high = mid;
                 } else {
@@ -1469,8 +1401,12 @@ static unsigned int ranking_2_objectives_new
     return max_rank;
 }
 
-/* Dominance computation, return the maximum rank given or UINT_MAX if
- * goal was reached exactly (in which case no crowding is necessary)
+/* #undef DEBUG_RANKING */
+#ifdef DEBUG_RANKING
+/*
+ * Dominance computation, old version which is O(n**2)
+ * Return the maximum rank given or UINT_MAX if goal was reached exactly
+ * (in which case no crowding is necessary)
  * First compute a dominance matrix of N x N bits. The rows are the
  * dominated-by relation. We loop over all n^2 pairs of individuals and
  * fill the matrix. Initit all ranks with -1.
@@ -1482,7 +1418,7 @@ static unsigned int ranking_2_objectives_new
  *   bits from the dominance matrix
  * - Increment the rank counter
  */
-static unsigned int ranking_3_plus_objectives
+static unsigned int ranking_nsquare
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
     size_t i, j;
@@ -1513,7 +1449,7 @@ static unsigned int ranking_3_plus_objectives
                 int ncmp;
                 e1 = GETEVAL_EV (start [i], k);
                 e2 = GETEVAL_EV (start [j], k);
-                ncmp = OPT_DIR_CMP_EV(ctx, e1, e2);
+                ncmp = OPT_DIR_CMP_EV (ctx, e1, e2);
                 if (cmp && ncmp && ncmp != cmp) {
                     break;
                 }
@@ -1573,6 +1509,7 @@ static unsigned int ranking_3_plus_objectives
     }
     return rank;
 }
+#endif /* DEBUG_RANKING */
 
 /* For sorting an array of double */
 static int double_cmp (const void *a1, const void *a2)
@@ -1725,6 +1662,673 @@ STATIC double find_median (PGAIndividual **s, size_t n, int m)
     return quickselect (values, 0, n, n / 2);
 }
 
+/* Helper function to compare two solutions for domination
+ * Special case when check_eq is 1 we return -1 if s1 == s2 in all
+ * objectives. This case happens when nd_helper_b has partitioned
+ * l and h into two sets (which indicates that l dominates h in a higher
+ * dimension). Now if these are equal in all lower dimensions we still
+ * need to return -1.
+ */
+static int compare_solutions
+    (PGAContext *ctx, PGAIndividual *s1, PGAIndividual *s2, int m, int check_eq)
+{
+    int k;
+    int cmp = 0;
+
+    for (k = 0; k < m; k++) {
+        double e1, e2;
+        int ncmp;
+        e1 = GETEVAL_EV (s1, k);
+        e2 = GETEVAL_EV (s2, k);
+        ncmp = OPT_DIR_CMP_EV (ctx, e1, e2);
+        if (cmp && ncmp && ncmp != cmp) {
+            return 0; /* Non-dominated */
+        }
+        /* Don't allow cmp to get zero again */
+        if (ncmp) {
+            cmp = ncmp;
+        }
+    }
+    if (check_eq && cmp == 0) {
+        return -1;
+    }
+    return cmp;
+}
+
+/* Comparison function for sorting by ctx->nsga.oidx objective
+ * The ctx->nsga.oidx must be set before calling qsort based on this
+ * function. This determined by what function index we sort.
+ */
+static int oidx_sort_cmp (const void *a1, const void *a2)
+{
+    PGAIndividual * const *i1 = a1;
+    PGAIndividual * const *i2 = a2;
+    PGAContext *ctx = (*i1)->ctx;
+
+    double e1_i1 = GETEVAL_EV (*i1, ctx->nsga.oidx);
+    double e1_i2 = GETEVAL_EV (*i2, ctx->nsga.oidx);
+
+    return OPT_DIR_CMP_EV (ctx, e1_i1, e1_i2);
+}
+
+/* Split function to divide a set into two based on the median value of
+ * objective m. We're doing this in-place and return two pointers.
+ * We split so that the pivot ends up in the *upper* half. This is
+ * because the median implementation when called with n/2 for 2 elements
+ * makes n/2 = 1 the pivot. So this ensures that for this median call we
+ * end up with to equal-sized halves.
+ * The variable split_lower should be 0 by default indicates if the
+ * pivot belongs to the lower set (default is the upper set)
+ */
+STATIC void split_set
+    ( PGAIndividual **s, size_t n
+    , PGAIndividual ***l, size_t *nl
+    , PGAIndividual ***h, size_t *nh
+    , int m, double pivot, int split_lower
+    )
+{
+    size_t i, pidx = 0;
+    PGAContext *ctx = (*s)->ctx;
+
+    *nl = 0;
+    *nh = 0;
+
+    for (pidx=0; pidx<n; pidx++) {
+        double val = GETEVAL_EV (s [pidx], m);
+        if (OPT_DIR_CMP_EV (ctx, val, pivot) > 0) {
+            break;
+        }
+        if (!split_lower && val == pivot) {
+            break;
+        }
+    }
+    for (i = pidx + 1; i<n; i++) {
+        double val = GETEVAL_EV (s [i], m);
+        if (  OPT_DIR_CMP_EV (ctx, val, pivot) < 0
+           || (split_lower && val == pivot)
+           )
+        {
+            PGAIndividual *tmp = s [i];
+            s [i] = s [pidx];
+            s [pidx] = tmp;
+            pidx++;
+        }
+    }
+    *l  = s;
+    *nl = pidx;
+    *h  = s + pidx;
+    *nh = n - pidx;
+}
+
+/* 2D ranking of H according to L
+ * Precondition is that ranks in L are already correctly computed.
+ * We may have gaps in the ranks.
+ */
+static void rank_2d_b
+    ( PGAContext *ctx
+    , PGAIndividual **l, size_t nl
+    , PGAIndividual **h, size_t nh
+    )
+{
+    size_t i;
+    size_t l_idx = 0;
+    size_t num_fronts = 0;
+    /* Note: we're keeping only the last in each front */
+    DECLARE_DYNARRAY (PGAIndividual *, fronts, ctx->ga.PopSize * 2);
+    PGAIndividual *cur_l = NULL;
+    PGAIndividual *last = NULL;
+    size_t max_front = 0;
+    double e1_l, e2_l;
+
+    /* Initialize to zero */
+    memset (fronts, 0, ctx->ga.PopSize * sizeof (PGAIndividual *));
+
+    /* nl must be > 0 */
+    assert (nl > 0);
+    /* And it doesn't make sense to call this with h empty */
+    assert (nh > 0);
+
+    /* Sort L by first/second objective (ascending) */
+    qsort (l, nl, sizeof (*l), obj_sort_cmp);
+
+    /* Sort H by first/second objective (ascending) */
+    qsort (h, nh, sizeof (*h), obj_sort_cmp);
+
+    cur_l = l [l_idx];
+    e1_l = GETEVAL_EV (cur_l, 0);
+    e2_l = GETEVAL_EV (cur_l, 1);
+
+    /* Build fronts, we sweep over L and H simultaneously */
+    for (i = 0; i < nh; i++) {
+        PGAIndividual *cur_h = h [i];
+        double e1_h = GETEVAL_EV (cur_h, 0);
+        double e2_h = GETEVAL_EV (cur_h, 1);
+        int e1c = OPT_DIR_CMP_EV (ctx, e1_l, e1_h);
+        int e2c = OPT_DIR_CMP_EV (ctx, e2_l, e2_h);
+        double e1_last, e2_last;
+        int e1cmp, e2cmp;
+
+        /* This *continues* to sweep l */
+        while (l_idx < nl && (e1c < 0 || (e1c == 0 && e2c <= 0))) {
+            int j;
+            size_t front;
+            front = cur_l->rank;
+            /* Going to overwrite existing */
+            if (fronts [front] != NULL) {
+                double ef2 = GETEVAL_EV (fronts [front], 1);
+                int e2fc = OPT_DIR_CMP_EV (ctx, e2_l, ef2);
+                /* Dominated by prev. front, happens due to higher dimension */
+                if (e2fc > 0) {
+                    l_idx++;
+                    if (l_idx < nl) {
+                        cur_l = l [l_idx];
+                        e1_l = GETEVAL_EV (cur_l, 0);
+                        e2_l = GETEVAL_EV (cur_l, 1);
+                        e1c  = OPT_DIR_CMP_EV (ctx, e1_l, e1_h);
+                        e2c  = OPT_DIR_CMP_EV (ctx, e2_l, e2_h);
+                    }
+                    continue;
+                }
+                num_fronts--;
+            }
+            fronts [front] = cur_l;
+            num_fronts++;
+            if (max_front < front) {
+                max_front = front;
+            }
+            /* Need to invalidate lower fronts with larger eval
+             * This is the case where stairs are discontinued in the
+             * published algorithm
+             */
+            for (j = front - 1; j >= 0; j--) {
+                double f_e1, f_e2;
+                int f1_c, f2_c;
+                if (fronts [j] == NULL) {
+                    continue;
+                }
+                f_e1 = GETEVAL_EV (fronts [j], 0);
+                f_e2 = GETEVAL_EV (fronts [j], 1);
+                f1_c = OPT_DIR_CMP_EV (ctx, f_e1, e1_l);
+                f2_c = OPT_DIR_CMP_EV (ctx, f_e2, e2_l);
+                if (f2_c > 0 || (f2_c == 0 && f1_c <= 0)) {
+                    fronts [j] = NULL;
+                    num_fronts--;
+                } else {
+                    break;
+                }
+            }
+            l_idx++;
+            if (l_idx < nl) {
+                cur_l = l [l_idx];
+                e1_l = GETEVAL_EV (cur_l, 0);
+                e2_l = GETEVAL_EV (cur_l, 1);
+                e1c  = OPT_DIR_CMP_EV (ctx, e1_l, e1_h);
+                e2c  = OPT_DIR_CMP_EV (ctx, e2_l, e2_h);
+            }
+        }
+        /* If cur_h is stricly smaller than first cur_l do nothing */
+        if (!num_fronts) {
+            continue;
+        }
+        last = fronts [max_front];
+        e1_last = GETEVAL_EV (last, 0);
+        e2_last = GETEVAL_EV (last, 1);
+        e1cmp = OPT_DIR_CMP_EV (ctx, e1_last, e1_h);
+        e2cmp = OPT_DIR_CMP_EV (ctx, e2_last, e2_h);
+
+        /* When both evals are equal the higher dimensions already
+         * established dominance, so that case is also a dominance case
+         */
+        if (e2cmp < 0 || (e2cmp == 0 && e1cmp <= 0)) {
+            /* Current individual dominated by last front */
+            if (cur_h->rank <= last->rank + 1) {
+                cur_h->rank = last->rank + 1;
+            }
+        } else {
+            /* Binary search to find right front
+             * Note that we have to take gaps in the fronts into account
+             */
+            int low = 0;
+            int high = max_front;
+            PGAIndividual *lo_ind;
+            double e1_lo, e2_lo;
+
+            for (low = 0; fronts [low] == NULL; low++)
+                ;
+            while (low < high) {
+                size_t mid = (low + high) / 2;
+                PGAIndividual *i_mid;
+                double e1_mid, e2_mid;
+
+                for (; fronts [mid] == NULL; mid--)
+                    ;
+                i_mid = fronts [mid];
+                e1_mid = GETEVAL_EV (i_mid, 0);
+                e2_mid = GETEVAL_EV (i_mid, 1);
+                e2cmp = OPT_DIR_CMP_EV (ctx, e2_mid, e2_h);
+                e1cmp = OPT_DIR_CMP_EV (ctx, e1_mid, e1_h);
+
+                if (e2cmp > 0) {
+                    high = mid;
+                } else {
+                    for (low = mid + 1; fronts [low] == NULL; low++)
+                        ;
+                }
+            }
+            /* Skip down to next which should dominate
+             */
+            for (low = low - 1; low >= 0 && fronts [low] == NULL; low--)
+                ;
+            if (low >= 0) {
+                lo_ind = fronts [low];
+                e1_lo = GETEVAL_EV (lo_ind, 0);
+                e2_lo = GETEVAL_EV (lo_ind, 1);
+                e2cmp = OPT_DIR_CMP_EV (ctx, e2_lo, e2_h);
+                e1cmp = OPT_DIR_CMP_EV (ctx, e1_lo, e1_h);
+                assert (e1cmp <= 0 && e2cmp <= 0);
+                /* Dominated even when equal */
+                if (e1cmp <= 0 && e2cmp <= 0) {
+                    if (cur_h->rank < fronts [low]->rank + 1) {
+                        cur_h->rank = fronts [low]->rank + 1;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Assign the front numbers to the solutions in h according to solutions
+ * in l. The solutions in l are assumed to have the correct front
+ * numbers in l [k]->rank already.
+ */
+static void nd_helper_b
+    ( PGAContext *ctx
+    , PGAIndividual **l, size_t nl
+    , PGAIndividual **h, size_t nh, int m
+    )
+{
+    size_t i;
+
+    assert (m > 0);
+    assert (m < ctx->nsga.nfun);
+    /* Handle special cases */
+    if (nl == 0 || nh == 0) {
+        return;
+    } else if (nl == 1) {
+        /* Compare single L solution to all H solutions */
+        /* Note: If l and h got separated into two sets
+         * l already dominated h in one objective. So if we find that
+         * now l == h for all other objectives, l still dominates h.
+         * So we also need to check for equalness if cmp == 0.
+         */
+        PGAIndividual *l1 = l [0];
+        for (i = 0; i < nh; i++) {
+            int cmp = compare_solutions (ctx, l1, h [i], m, 1);
+            if (cmp < 0) { /* l1 dominates h [i] */
+                if (h [i]->rank < l1->rank + 1) {
+                    h [i]->rank = l1->rank + 1;
+                }
+            }
+        }
+    } else if (nh == 1) {
+        /* Compare single H solution to all L solutions
+         * See note above.
+         */
+        PGAIndividual *h1 = h [0];
+        for (i = 0; i < nl; i++) {
+            int cmp = compare_solutions (ctx, l [i], h1, m, 1);
+            if (cmp < 0) { /* l [i] dominates h1 */
+                if (h1->rank < l [i]->rank + 1) {
+                    h1->rank = l [i]->rank + 1;
+                }
+            }
+        }
+    } else if (m == 2) {
+        /* 2D ranking case */
+        rank_2d_b (ctx, l, nl, h, nh);
+    } else {
+        double l_max_m, l_min_m, h_max_m, h_min_m;
+
+        l_max_m = l_min_m = GETEVAL_EV (l [0], m-1);
+        h_max_m = h_min_m = GETEVAL_EV (h [0], m-1);
+        for (i = 1; i < nl; i++) {
+            double val = GETEVAL_EV (l [i], m-1);
+            if (val > l_max_m) l_max_m = val;
+            if (val < l_min_m) l_min_m = val;
+        }
+        for (i = 1; i < nh; i++) {
+            double val = GETEVAL_EV (h [i], m-1);
+            if (val < h_min_m) h_min_m = val;
+            if (val > h_max_m) h_max_m = val;
+        }
+
+        if (l_max_m <= h_min_m) {
+            /* Objective m can be ignored, recursive call with m reduced */
+            nd_helper_b (ctx, l, nl, h, nh, m-1);
+        } else {
+            /* Check if L and H overlap */
+            if (l_min_m <= h_max_m) {
+                PGAIndividual **l1, **l2, **h1, **h2;
+                size_t nl1 = 0, nl2 = 0, nh1 = 0, nh2 = 0;
+                /* L and H overlap, split and recurse */
+                double x_m_split;
+                int alternative;
+
+                if (nl > nh) {
+                    x_m_split = find_median (l, nl, m - 1);
+                } else {
+                    x_m_split = find_median (h, nh, m - 1);
+                }
+                for (alternative=0;alternative<4;alternative++) {
+                    /* Split L and H and assert parts are smaller */
+                    split_set
+                        (l, nl, &l1, &nl1, &l2, &nl2, m - 1, x_m_split, 0);
+                    split_set
+                        (h, nh, &h1, &nh1, &h2, &nh2, m - 1, x_m_split, 0);
+                    /* At least one set got smaller */
+                    if ((nl1 > 0 && nl2 > 0) || (nh1 > 0 && nh2 > 0)) {
+                        break;
+                    }
+                    switch (alternative) {
+                    case 0:
+                        /* Split smaller */
+                        if (nl > nh) {
+                            x_m_split = find_median (h, nh, m - 1);
+                        } else {
+                            x_m_split = find_median (l, nl, m - 1);
+                        }
+                        break;
+                    case 1:
+                        /* Split left max */
+                        x_m_split = l_max_m;;
+                        break;
+                    case 2:
+                        /* Split right min */
+                        x_m_split = h_min_m;
+                        break;
+                    case 3:
+                        /* Split left min */
+                        x_m_split = l_min_m;
+                        break;
+                    case 4:
+                        /* Split right max */
+                        x_m_split = h_max_m;
+                        break;
+                    default:
+                        assert (0);
+                        break;
+                    }
+                }
+
+                /* Recursive calls */
+                nd_helper_b (ctx, l1, nl1, h1, nh1, m);
+                nd_helper_b (ctx, l1, nl1, h2, nh2, m-1);
+                nd_helper_b (ctx, l2, nl2, h2, nh2, m);
+            }
+        }
+    }
+}
+
+static void rank_2d_a (PGAContext *ctx, PGAIndividual **s, size_t n)
+{
+    size_t max_front = ctx->ga.PopSize * 2, last_front = 0;
+    DECLARE_DYNARRAY (PGAIndividual *, fronts, max_front);
+    unsigned int rank = UINT_MAX;
+    int i, j;
+
+    assert (n >= 1);
+    /* Initialize to zero */
+    memset (fronts, 0, sizeof (fronts));
+    /* Sort s by first/second objective (ascending) */
+    qsort (s, n, sizeof (*s), obj_sort_cmp);
+    rank = s [0]->rank;
+    assert (rank < max_front);
+    fronts [rank] = s [0];
+    last_front = rank;
+
+    for (i=1; i<(int)n; i++) {
+        PGAIndividual *last = fronts [last_front];
+        PGAIndividual *cur  = s [i];
+        double e1 = GETEVAL_EV (cur, 0);
+        double e2 = GETEVAL_EV (cur, 1);
+        double e1_last = GETEVAL_EV (last, 0);
+        double e2_last = GETEVAL_EV (last, 1);
+        int e1cmp = OPT_DIR_CMP_EV (ctx, e1_last, e1);
+        int e2cmp = OPT_DIR_CMP_EV (ctx, e2_last, e2);
+        /* Current individual dominated by last front? */
+        if (e2cmp <= 0 && e2cmp <= 0) {
+            /* When both evals are equal the individual is *not* dominated
+             * but in that case it needs to have the same eval as the other
+             */
+            int add = (e2cmp < 0 || e1cmp < 0);
+            if (cur->rank <= last->rank + add) {
+                cur->rank = last->rank + add;
+            }
+        } else {
+            /* Binary search to find right front
+             * Note that we have to take gaps in the fronts into account
+             */
+            size_t low = 0;
+            size_t high = last_front;
+            PGAIndividual *lo_ind;
+            double e1_lo, e2_lo;
+
+            for (low = 0; fronts [low] == NULL; low++)
+                ;
+            while (low < high) {
+                size_t mid = (low + high) / 2;
+                PGAIndividual *i_mid;
+                double e1_mid, e2_mid;
+
+                for (; fronts [mid] == NULL; mid--)
+                    ;
+                i_mid = fronts [mid];
+                e1_mid = GETEVAL_EV (i_mid, 0);
+                e2_mid = GETEVAL_EV (i_mid, 1);
+                e1cmp = OPT_DIR_CMP_EV (ctx, e1_mid, e1);
+                e2cmp = OPT_DIR_CMP_EV (ctx, e2_mid, e2);
+
+                if (e2cmp > 0 || (e2cmp == 0 && e1cmp > 0)) {
+                    high = mid;
+                } else {
+                    for (low = mid + 1; fronts [low] == NULL; low++)
+                        ;
+                }
+            }
+            /* Skip down to next which should dominate
+             * Note unsigned comparison for <= due to wrap
+             */
+            for (low = low - 1; low <= max_front && fronts [low] == NULL; low--)
+                ;
+            if (low <= max_front) {
+                int add = 0;
+                lo_ind = fronts [low];
+                e1_lo = GETEVAL_EV (lo_ind, 0);
+                e2_lo = GETEVAL_EV (lo_ind, 1);
+                e2cmp = OPT_DIR_CMP_EV (ctx, e2_lo, e2);
+                e1cmp = OPT_DIR_CMP_EV (ctx, e1_lo, e1);
+                assert (e1cmp <= 0 && e2cmp <= 0);
+                add = 0;
+                /* Strictly lower */
+                if (e2cmp < 0 || e1cmp < 0) {
+                    add = 1;
+                }
+                if (cur->rank < fronts [low]->rank + add) {
+                    cur->rank = fronts [low]->rank + add;
+                }
+            }
+        }
+        rank = cur->rank;
+        assert (rank < max_front);
+        fronts [rank] = cur;
+        if (rank > last_front) {
+            last_front = rank;
+        }
+        /* Need to invalidate lower fronts with larger eval
+         * This is the case where stairs are discontinued in the
+         * published algorithm
+         */
+        for (j = rank - 1; j >= 0; j--) {
+            double f_e1, f_e2;
+            if (fronts [j] == NULL) {
+                continue;
+            }
+            f_e1 = GETEVAL_EV (fronts [j], 0);
+            f_e2 = GETEVAL_EV (fronts [j], 1);
+            e1cmp = OPT_DIR_CMP_EV (ctx, f_e1, e1);
+            e2cmp = OPT_DIR_CMP_EV (ctx, f_e2, e2);
+            if (e2cmp > 0 || (e2cmp == 0 && e1cmp <= 0)) {
+                fronts [j] = NULL;
+            } else {
+                break;
+            }
+        }
+    }
+}
+
+/* Create a non-dominated sorting of s on the first m objectives.
+ * The front numbers in s [k]->rank are taken as basis for sorting.
+ */
+static void nd_helper_a (PGAContext *ctx, PGAIndividual **s, size_t n, int m)
+{
+    size_t i;
+
+    assert (m >= 2);
+    /* Handle base case */
+    if (n <= 1) {
+        return;
+    } else if (n == 2) {
+        /* Compare the two solutions */
+        int cmp = compare_solutions (ctx, s [0], s [1], m, 0);
+        if (cmp < 0) { /* s [0] dominates s [1] */
+            if (s [1]->rank < s [0]->rank + 1) {
+                s [1]->rank = s [0]->rank + 1;
+            }
+        } else if (cmp > 0) { /* s [1] dominates s [0] */
+            if (s [0]->rank < s [1]->rank + 1) {
+                s [0]->rank = s [1]->rank + 1;
+            }
+        }
+    } else {
+        /* Check if all values for objective m-1 are identical */
+        int all_identical = 1;
+        double first_val = GETEVAL_EV (s [0], m-1);
+
+        for (i = 1; i < n && all_identical; i++) {
+            if (GETEVAL_EV (s [i], m-1) != first_val) {
+                all_identical = 0;
+                break;
+            }
+        }
+        if (all_identical) {
+            if (m == 2) {
+                double e_last;
+                /* Special case: 2D with identical values in one dimension */
+                /* Sort by the other dimension */
+                ctx->nsga.oidx = 0;
+                qsort (s, n, sizeof (*s), oidx_sort_cmp);
+
+                e_last = GETEVAL_EV (s [0], 0);
+                /* Assign ranks */
+                for (i = 1; i < n; i++) {
+                    double e_cur = GETEVAL_EV (s [i], 0);
+                    int cmp = OPT_DIR_CMP_EV (ctx, e_cur, e_last);
+                    assert (cmp >= 0);
+                    if (s [i]->rank < s [i-1]->rank + cmp) {
+                        s [i]->rank = s [i-1]->rank + cmp;
+                    }
+                    e_last = e_cur;
+                }
+            } else {
+                /* If all values are identical, skip this dimension */
+                nd_helper_a (ctx, s, n, m-1);
+            }
+        } else if (m == 2) {
+            rank_2d_a (ctx, s, n);
+        } else {
+            PGAIndividual **l, **h;
+            size_t nl = 0, nh = 0;
+
+            /* Split the set and recurse */
+            double x_m_split = find_median (s, n, m - 1);
+
+            /* Split S into L and H
+             * We know that not all values are identical. So if we're
+             * getting all elements in one of the split sets we know
+             * that more than half the elements are identical to the
+             * pivot and that the pivot is the lowest element.
+             */
+            split_set (s, n, &l, &nl, &h, &nh, m - 1, x_m_split, 0);
+            if (nl == 0 || nh == 0) {
+                assert (nl == 0);
+                split_set (s, n, &l, &nl, &h, &nh, m - 1, x_m_split, 1);
+            }
+
+            /* Split should have split off something, we asserted above
+             * that we have >2 elements
+             */
+            assert (nl > 0 && nh > 0);
+
+            /* Recursive calls */
+            nd_helper_a (ctx, l, nl, m);
+            nd_helper_b (ctx, l, nl, h, nh, m-1);
+            nd_helper_a (ctx, h, nh, m);
+        }
+    }
+}
+
+/* Main non-dominated sorting function */
+static unsigned int ranking_3_plus_objectives
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
+{
+    size_t i;
+    unsigned int max_rank = 0;
+    size_t rankcount = 0;
+    DECLARE_DYNARRAY (size_t, front_sizes, n);
+
+    /* Initialize all ranks to 1 (0-based would be 0) and crowding to 0 */
+    for (i = 0; i < n; i++) {
+        start [i]->rank = 0;
+        start [i]->crowding = 0;
+    }
+
+    /* Call the recursive helper function */
+    nd_helper_a (ctx, start, n, ctx->nsga.nfun);
+
+    /* Count individuals in each front and determine max_rank */
+    memset (front_sizes, 0, sizeof (front_sizes));
+    for (i = 0; i < n; i++) {
+        unsigned int rank = start [i]->rank;
+        assert (rank < n);
+        front_sizes [rank]++;
+        if (rank > max_rank) {
+            max_rank = rank;
+        }
+    }
+    for (i=0; i<max_rank+1; i++) {
+        rankcount += front_sizes [i];
+        if (rankcount >= (size_t)goal) {
+            max_rank = i;
+            break;
+        }
+    }
+    assert (rankcount <= n);
+
+    /* All ranks beyond max_rank need to be set to UINT_MAX */
+    for (i = 0; i < n; i++) {
+        if (start [i]->rank > max_rank) {
+            start [i]->rank = UINT_MAX;
+        }
+    }
+
+    /* No need for crowding computation if we hit goal exactly */
+    if (rankcount == (size_t)goal) {
+        return UINT_MAX;
+    }
+
+    return max_rank;
+}
+
 /*
  * The is_ev flag decides if we're ranking the evaluation functions or
  * if we're ranking constraint violations, it is 1 for eval functions.
@@ -1741,6 +2345,96 @@ STATIC void set_nsga_state (PGAContext *ctx, int is_ev)
     ctx->nsga.nfun = is_ev ? (na - nc + 1) : nc;
     ctx->nsga.base = is_ev ? 0 : (na - nc + 1);
 }
+
+#ifdef DEBUG_RANKING
+
+STATIC unsigned int ranking
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
+{
+    DECLARE_DYNARRAY (unsigned int, rank1, n);
+    DECLARE_DYNARRAY (unsigned int, rank2, n);
+    DECLARE_DYNARRAY (unsigned int, rankcounts, 2 * ctx->ga.PopSize);
+    DECLARE_DYNARRAY (PGAIndividual *, cpy_start, n);
+    unsigned int max_rank = 0, mr_new = 0, mr_old = 0;
+    int i;
+
+    if (!n) {
+        return 0;
+    }
+    memcpy (cpy_start, start, sizeof (*start) * n);
+    mr_old = max_rank = ranking_nsquare (ctx, start, n, goal);
+/* #undef DEBUG_RANKING_USE_NSQUARE_ONLY */
+#ifdef DEBUG_RANKING_USE_NSQUARE_ONLY
+    return mr_old;
+#endif
+    for (i=0; i<(int)n; i++) {
+        rank1 [i] = start [i]->rank;
+    }
+    assert (ctx->nsga.nfun >= 2);
+    if (ctx->nsga.nfun == 2) {
+        mr_new = ranking_2_objectives (ctx, cpy_start, n, goal);
+    } else {
+        mr_new = ranking_3_plus_objectives (ctx, cpy_start, n, goal);
+    }
+    for (i=0; i<(int)n; i++) {
+        rank2 [i] = start [i]->rank;
+    }
+    if (max_rank == UINT_MAX) {
+        int s = 0;
+        memset (rankcounts, 0, 2 * ctx->ga.PopSize * sizeof (unsigned int));
+        for (i=0; i<(int)n; i++) {
+            if (start [i]->rank < 2 * (unsigned int)ctx->ga.PopSize) {
+                rankcounts [start [i]->rank] += 1;
+            }
+        }
+        for (i=0; i<2*ctx->ga.PopSize; i++) {
+            s += rankcounts [i];
+            max_rank = i;
+            if (s >= goal) {
+                break;
+            }
+        }
+    }
+    for (i=0; i<(int)n; i++) {
+        /* Dump evaluations in error case */
+        if (rank1 [i] != rank2 [i]) {
+/* #define DEBUG_RANKING_DUMP */
+#ifdef DEBUG_RANKING_DUMP
+            int j, k;
+            for (j=0; j<(int)n; j++) {
+                int n_ev = ctx->ga.NumAuxEval + 1;
+                PGAIndividual *ind = start [j];
+                printf ("%c{", j == 0 ? '{' : ',');
+                for (k=0; k<n_ev; k++) {
+                    double ev = (k == 0) ? ind->evalue : ind->auxeval [k - 1];
+                    if (n_ev > 3 && k == 0) {
+                        printf (" ");
+                    }
+                    printf ("%.18g", ev);
+                    if (k == n_ev - 1) {
+                        if (n_ev > 3) {
+                            printf ("\n }\n");
+                        } else {
+                            printf ("}\n");
+                        }
+                    } else if (n_ev > 3 && ((k + 1) % 3) == 0) {
+                        printf ("\n , ");
+                    } else {
+                        printf (", ");
+                    }
+                }
+            }
+            printf ("};\n\n\n");
+            fflush (stdout);
+#endif /* DEBUG_RANKING_DUMP */
+            assert (0);
+        }
+    }
+    assert (mr_old == mr_new);
+    return mr_new;
+}
+
+#else /* !DEBUG_RANKING */
 
 /* Dominance computation, return the maximum rank given or UINT_MAX if
  * goal was reached exactly (in which case no crowding is necessary)
@@ -1759,9 +2453,10 @@ STATIC unsigned int ranking
     if (ctx->nsga.nfun == 2) {
         return ranking_2_objectives (ctx, cpy_start, n, goal);
     } else {
-        return ranking_3_plus_objectives (ctx, start, n, goal);
+        return ranking_3_plus_objectives (ctx, cpy_start, n, goal);
     }
 }
+#endif /* !DEBUG_RANKING */
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
