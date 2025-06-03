@@ -5220,20 +5220,38 @@ void test_split (PGAContext *ctx)
     PGAIndividual **l1, **l2;
     size_t nl1, nl2;
     double pivot;
-    int is_ev = ctx->nsga.is_ev;
+    int is_ev  = ctx->nsga.is_ev;
+    int optdir = ctx->ga.optdir;
+    int maxi = 0;
 
     set_nsga_state (ctx, 1);
     for (i=0; i<2; i++) {
         indivs [i] = ctx->ga.newpop + i;
         indivs [i]->evalue = (double)(2 - i);
     }
+
+    /* Normal sorting (PGA_MINIMIZE */
+    ctx->ga.optdir = PGA_MINIMIZE;
+    maxi = ctx->ga.optdir == PGA_MAXIMIZE;
     pivot = find_median (indivs, 2, 0);
     assert (pivot == 2.0);
-    split_set (indivs, 2, &l1, &nl1, &l2, &nl2, 0, pivot, 0);
+    split_set (indivs, 2, &l1, &nl1, &l2, &nl2, 0, pivot, maxi);
     assert (nl1 == 1 && nl2 == 1);
     assert (l1 [0]->evalue == 1.0);
     assert (l2 [0]->evalue == 2.0);
+
+    /* Try comparison in the other direction (PGA_MAXIMIZE) */
+    ctx->ga.optdir = PGA_MAXIMIZE;
+    maxi = ctx->ga.optdir == PGA_MAXIMIZE;
+    pivot = find_median (indivs, 2, 0);
+    assert (pivot == 2.0);
+    split_set (indivs, 2, &l1, &nl1, &l2, &nl2, 0, pivot, maxi);
+    assert (nl1 == 1 && nl2 == 1);
+    assert (l1 [0]->evalue == 2.0);
+    assert (l2 [0]->evalue == 1.0);
+
     set_nsga_state (ctx, is_ev);
+    ctx->ga.optdir = optdir;
 }
 
 void test_median (PGAContext *ctx, int n)

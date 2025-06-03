@@ -2020,11 +2020,12 @@ static void nd_helper_b
                     x_m_split = find_median (h, nh, m - 1);
                 }
                 for (alternative=0;alternative<4;alternative++) {
+                    int maxi = ctx->ga.optdir == PGA_MAXIMIZE;
                     /* Split L and H and assert parts are smaller */
                     split_set
-                        (l, nl, &l1, &nl1, &l2, &nl2, m - 1, x_m_split, 0);
+                        (l, nl, &l1, &nl1, &l2, &nl2, m - 1, x_m_split, maxi);
                     split_set
-                        (h, nh, &h1, &nh1, &h2, &nh2, m - 1, x_m_split, 0);
+                        (h, nh, &h1, &nh1, &h2, &nh2, m - 1, x_m_split, maxi);
                     /* At least one set got smaller */
                     if ((nl1 > 0 && nl2 > 0) || (nh1 > 0 && nh2 > 0)) {
                         break;
@@ -2246,6 +2247,7 @@ static void nd_helper_a (PGAContext *ctx, PGAIndividual **s, size_t n, int m)
         } else if (m == 2) {
             rank_2d_a (ctx, s, n);
         } else {
+            int maxi = ctx->ga.optdir == PGA_MAXIMIZE;
             PGAIndividual **l, **h;
             size_t nl = 0, nh = 0;
 
@@ -2257,11 +2259,13 @@ static void nd_helper_a (PGAContext *ctx, PGAIndividual **s, size_t n, int m)
              * getting all elements in one of the split sets we know
              * that more than half the elements are identical to the
              * pivot and that the pivot is the lowest element.
+             * This is reversed when we do maximization, so the maxi
+             * flags needs to be checked.
              */
-            split_set (s, n, &l, &nl, &h, &nh, m - 1, x_m_split, 0);
+            split_set (s, n, &l, &nl, &h, &nh, m - 1, x_m_split, maxi);
             if (nl == 0 || nh == 0) {
-                assert (nl == 0);
-                split_set (s, n, &l, &nl, &h, &nh, m - 1, x_m_split, 1);
+                assert ((!maxi && nl == 0) || (maxi && nh == 0));
+                split_set (s, n, &l, &nl, &h, &nh, m - 1, x_m_split, !maxi);
             }
 
             /* Split should have split off something, we asserted above
