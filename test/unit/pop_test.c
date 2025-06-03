@@ -3,7 +3,7 @@
 #include <assert.h>
 #include "pgapack.h"
 
-double compute_asf (PGAContext *ctx, double *point, int axis);
+double compute_asf (PGAContext *ctx, const double *point, int axis);
 void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n);
 void compute_extreme (PGAContext *ctx, PGAIndividual **start, int n);
 int compute_intersect (PGAContext *ctx, PGAIndividual **start, int n);
@@ -13,6 +13,13 @@ void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n);
 int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal);
 void set_nsga_state (PGAContext *ctx, int is_ev);
 double find_median (PGAIndividual **s, size_t n, int m);
+void rank_2d_a (PGAContext *ctx, PGAIndividual **s, size_t n);
+unsigned int rank_1d (PGAContext *ctx, PGAIndividual **s, size_t n);
+void rank_2d_b
+    ( PGAContext *ctx
+    , PGAIndividual **l, size_t nl
+    , PGAIndividual **h, size_t nh
+    );
 void split_set
     ( PGAIndividual  **s, size_t n
     , PGAIndividual ***l, size_t *nl
@@ -20,7 +27,7 @@ void split_set
     , int m, double pivot, int split_lower
     );
 
-double pop3 [][3] =
+static const double pop3 [][3] =
 {{0.59200264, 1.25973595, 1.06928177}
 ,{0.33668049, 1.73701836, 0.58860729}
 ,{0.06632383, 0.39695692, 2.04663035}
@@ -122,7 +129,7 @@ double pop3 [][3] =
 ,{0.37152299, 1.48067771, 0.87198931}
 ,{0.83534425, 1.53702138, 0.99724714}};
 
-double pop3_2 [][3] =
+static const double pop3_2 [][3] =
 {{1.75521090e+000, 1.56051315e-014, 2.85987040e-038}
 ,{1.86468364e+000, 6.63720331e-006, 3.35671457e-069}
 ,{2.08582584e+000, 4.77101511e-005, 6.09673412e-006}
@@ -224,7 +231,7 @@ double pop3_2 [][3] =
 ,{1.75806745e+000, 1.12037051e-007, 2.20838283e-048}
 ,{2.01363765e+000, 8.84911811e-017, 2.14305904e-048}};
 
-double pop2 [][2] =
+static const double pop2 [][2] =
 {{3.882596e+05, 3.857712e+05}
 ,{3.880793e+05, 3.855914e+05}
 ,{3.731847e+05, 3.756322e+05}
@@ -326,7 +333,7 @@ double pop2 [][2] =
 ,{3.472679e+01, 6.229857e+01}
 ,{1.825427e+05, 1.808377e+05}};
 
-double pop2_2 [][2] =
+static const double pop2_2 [][2] =
 {{1.598574e+02, 1.132835e+02}
 ,{1.209883e+02, 1.689862e+02}
 ,{1.025240e+02, 1.470257e+02}
@@ -429,7 +436,7 @@ double pop2_2 [][2] =
 ,{4.480289e+01, 2.202891e+01}};
 
 /* From Iter # 20 */
-double pop2_3 [][2] =
+static const double pop2_3 [][2] =
 {{2.168490e-01, 2.354167e+00}
 ,{6.671299e-01, 1.400009e+00}
 ,{2.891270e-02, 3.348763e+00}
@@ -531,7 +538,7 @@ double pop2_3 [][2] =
 ,{2.567107e+00, 1.582294e-01}
 ,{2.173513e+00, 2.763773e-01}};
 
-double pop3_3 [][3] =
+static const double pop3_3 [][3] =
 {{144.022266155, 72.0156483898, -49.4544584698}
 ,{123.880109659, -114.445681475, -125.576623091}
 ,{226.542675065, -207.395411134, -55.178803776}
@@ -705,7 +712,7 @@ double pop3_3 [][3] =
 ,{500.698618155, -181.04730941, 296.491548758}
 ,{462.757275039, -171.267862783, 325.863352234}};
 
-double pop3_4 [][3] =
+static const double pop3_4 [][3] =
 {{1.24200655033, 2.06603593515, -4.88325816792}
 ,{1.56169614634, 1.07837050019, -2.69880358695}
 ,{1.8348130095, 0.919129583654, -3.17023312491}
@@ -888,7 +895,7 @@ double pop3_4 [][3] =
 ,{0.832673496353, 1.28268881894, -1.43639279498}
 ,{2.77919306302, 0.245428686907, -6.7680691508}};
 
-double pop6_1 [][6] =
+static const double pop6_1 [][6] =
 {{ 1.92402761097548392, 0.442688965668608436, 1.6733114808606743e-44
  , -0.121444082273749476, -2.75087562787721351, -2.89785576812077039
  }
@@ -1425,7 +1432,7 @@ double pop6_1 [][6] =
  }
 };
 
-double pop12_1 [][12] =
+static const double pop12_1 [][12] =
 {{ 81565.887074, 1171.15257025, 2750248.22688, 466652.593141
  , 9991.38234061, -0.600344706376, -0.993500686444, -41194.0260728
  , -15919.8549237, -9941.72419574, -1971.20140529, -543.560722322
@@ -2188,7 +2195,7 @@ double pop12_1 [][12] =
  }
 };
 
-double pop12_2 [][12] =
+static const double pop12_2 [][12] =
 {{ 64762.4299327197223, 1262.40542029649623, 531771.743173434632
  , 4664780.12934974767, 3666.23834392400613, -0.853350466243039785
  , -1.04875959904347704, -43885.5378791284093, -16348.7146699073182
@@ -3146,7 +3153,7 @@ double pop12_2 [][12] =
  }
 };
 
-double pop12_3 [][12] =
+static const double pop12_3 [][12] =
 {{ 65823.8001434879552, 249.371105838629035, 815399.432348755072
  , 3142239.07768584089, 13864.6077217293314, -0.445415691130826685
  , -0.958955252867649599, -40273.7009890266781, -15732.9972899226432
@@ -4119,7 +4126,7 @@ double pop12_3 [][12] =
  }
 };
 
-double pop12_4 [][12] =
+static const double pop12_4 [][12] =
 {{ 63840.277399999999, 1249.56163435471149, 285346.896494177985
  , 6575303.126234903, 7577.92580164210267, -0.696882967934315811
  , -1.01431423610640326, -42500.1814031421745, -16112.5500573569752
@@ -5032,7 +5039,7 @@ double pop12_4 [][12] =
  }
 };
 
-double pop2_4 [][2] =
+static const double pop2_4 [][2] =
 {{0.0, 0.0}
 ,{0.0, 0.0}
 ,{0.0, 1.0}
@@ -5040,8 +5047,9 @@ double pop2_4 [][2] =
 ,{1.0, 2.0}
 ,{2.0, 2.0}};
 
-double ideal [] = {0.00421519, 0.01969276, 0.02649165};
-double nadir [] = {1.96718331, 2.06714265, 1.98465785};
+static double pop_grid  [100][2];
+static double pop_grid2 [200][2];
+
 size_t npop2   = sizeof (pop2)    /  2 / sizeof (double);
 size_t npop3   = sizeof (pop3)    /  3 / sizeof (double);
 size_t npop33  = sizeof (pop3_3)  /  3 / sizeof (double);
@@ -5053,16 +5061,258 @@ size_t npop122 = sizeof (pop12_2) / 12 / sizeof (double);
 size_t npop123 = sizeof (pop12_3) / 12 / sizeof (double);
 size_t npop124 = sizeof (pop12_4) / 12 / sizeof (double);
 
-void test_pop (PGAContext *ctx, int dim, size_t npop, void *p, int goal)
+void print_ranks
+    (PGAContext *ctx, PGAIndividual *pop, size_t npop, size_t max_rank)
+{
+    size_t i = 0, idx, sz;
+
+    for (idx=0; idx<max_rank + 1; idx++) {
+        printf ("Rank %3zu:", idx);
+        for (sz=0; sz<npop; sz++) {
+            if (pop [sz].rank == idx) {
+                printf (" %3zu", sz);
+                i++;
+            }
+        }
+        printf ("\n");
+        if ((size_t)i == npop) {
+            break;
+        }
+    }
+    fflush (stdout);
+}
+
+void create_pop_grid (void)
+{
+    int i, j;
+    for (i=0; i<10; i++) {
+        for (j=0; j<10; j++) {
+            pop_grid  [i * 10 + j      ][0] = i + 1;
+            pop_grid  [i * 10 + j      ][1] = j + 1;
+            pop_grid2 [i * 10 + j      ][0] = i + 1;
+            pop_grid2 [i * 10 + j      ][1] = j + 1;
+            pop_grid2 [i * 10 + j + 100][0] = i + 1;
+            pop_grid2 [i * 10 + j + 100][1] = j + 1;
+        }
+    }
+}
+
+void shuffle_individual_pointers (PGAContext *ctx, PGAIndividual **s, size_t n)
+{
+    size_t i, j;
+    /* Shuffle s */
+    for (i=0; i<n-1; i++) {
+        PGAIndividual *tmp;
+        j = PGARandomInterval (ctx, i, n - 1);
+        tmp = s [j];
+        s [j] = s [i];
+        s [i] = tmp;
+    }
+}
+
+void test_ranking (PGAContext *ctx)
+{
+    /* Test rank_2d_a which ranks in-place
+     * We fill both, oldpop and newpop with pop_grid and check it is
+     * ranked correctly. Note that we shuffle the arrays.
+     */
+    static const int n = 100, n2 = 200;
+    static PGAIndividual *l [200];
+    static PGAIndividual *h [200];
+    int i;
+    size_t max_rank = 0;
+
+    create_pop_grid ();
+    ctx->ga.optdir = PGA_MINIMIZE;
+    for (i=0; i<n; i++) {
+        ctx->ga.oldpop [i].evalue = pop_grid [i][0];
+        ctx->ga.oldpop [i].auxeval [0] = pop_grid [i][1];
+        ctx->ga.oldpop [i].rank = 0;
+        ctx->ga.newpop [i].evalue = pop_grid [i][0];
+        ctx->ga.newpop [i].auxeval [0] = pop_grid [i][1];
+        ctx->ga.newpop [i].rank = 2;
+        if (i > 0 && i % 9 == 0 && i <= 90) {
+            ctx->ga.newpop [i].rank = 14;
+        }
+        l [i] = ctx->ga.newpop + i;
+        h [i] = ctx->ga.oldpop + i;
+    }
+    /* Initialize rank0, since it dominates everything else this should
+     * propagate to all the others
+     */
+    ctx->ga.newpop [0].rank = 3;
+    shuffle_individual_pointers (ctx, l, n);
+    rank_2d_a (ctx, l, n);
+    max_rank = 0;
+    for (i=0; i<n; i++) {
+        if (ctx->ga.newpop [i].rank > max_rank) {
+            max_rank = ctx->ga.newpop [i].rank;
+        }
+    }
+    printf ("\nRank 2d, minimize\n");
+    print_ranks (ctx, ctx->ga.newpop, n, max_rank);
+
+    /* Now try rank_2d_b, this should enforce the ranks of newpop on
+     * those of oldpop, it has one rank higher than newpop.
+     */
+    shuffle_individual_pointers (ctx, h, n);
+    rank_2d_b (ctx, l, n, h, n);
+    max_rank++;
+    printf ("\nRank 2d on other population, minimize\n");
+    print_ranks (ctx, ctx->ga.oldpop, n, max_rank);
+
+    /* Test case with maximization */
+    shuffle_individual_pointers (ctx, l, n);
+    ctx->ga.optdir = PGA_MAXIMIZE;
+    for (i=0; i<n; i++) {
+        ctx->ga.newpop [i].rank = 0;
+        if (i > 0 && i % 9 == 0 && i <= 90) {
+            ctx->ga.newpop [i].rank = 14;
+        }
+    }
+    ctx->ga.newpop [99].rank = 3;
+    /* Don't need to recompute max_rank */
+    rank_2d_a (ctx, l, n);
+    max_rank--;
+    printf ("\nRank 2d, maximize\n");
+    print_ranks (ctx, ctx->ga.newpop, n, max_rank);
+
+    /* Now try rank_2d_b, this should enforce the ranks of newpop on
+     * those of oldpop
+     */
+    shuffle_individual_pointers (ctx, h, n);
+    for (i=0; i<n; i++) {
+        ctx->ga.oldpop [i].rank = 0;
+    }
+    rank_2d_b (ctx, l, n, h, n);
+    max_rank++;
+    printf ("\nRank 2d on other population, maximize\n");
+    print_ranks (ctx, ctx->ga.oldpop, n, max_rank);
+
+    /* Test the 1d case */
+    ctx->ga.optdir = PGA_MINIMIZE;
+    shuffle_individual_pointers (ctx, l, n);
+    for (i=0; i<n; i++) {
+        ctx->ga.newpop [i].rank = 0;
+    }
+    ctx->ga.newpop [0].rank = 7;
+    ctx->ga.newpop [40].rank = 14;
+    max_rank = rank_1d (ctx, l, n);
+    printf ("\nRank 1d, minimize\n");
+    print_ranks (ctx, ctx->ga.newpop, n, max_rank);
+
+    /* Same as 1d test-case but 2d, zero upper dimension */
+    for (i=0; i<n; i++) {
+        ctx->ga.newpop [i].rank = 0;
+        ctx->ga.newpop [i].auxeval [0] = 0;
+    }
+    ctx->ga.newpop [0].rank = 7;
+    ctx->ga.newpop [40].rank = 14;
+    shuffle_individual_pointers (ctx, l, n);
+    rank_2d_a (ctx, l, n);
+    printf ("\nRank 2d with upper eval zero\n");
+    print_ranks (ctx, ctx->ga.newpop, n, max_rank);
+
+    /* Now we use the same sequence *twice*
+     * But ranks in the upper half are all zero.
+     */
+    ctx->ga.optdir = PGA_MINIMIZE;
+    for (i=0; i<n; i++) {
+        ctx->ga.oldpop [i].evalue = pop_grid [i][0];
+        ctx->ga.oldpop [i].auxeval [0] = pop_grid [i][1];
+        ctx->ga.oldpop [i].rank = 0;
+        ctx->ga.oldpop [i+n].evalue = pop_grid [i][0];
+        ctx->ga.oldpop [i+n].auxeval [0] = pop_grid [i][1];
+        ctx->ga.oldpop [i+n].rank = 0;
+
+        ctx->ga.newpop [i].evalue = pop_grid [i][0];
+        ctx->ga.newpop [i].auxeval [0] = pop_grid [i][1];
+        ctx->ga.newpop [i].rank = 2;
+        ctx->ga.newpop [i+n].evalue = pop_grid [i][0];
+        ctx->ga.newpop [i+n].auxeval [0] = pop_grid [i][1];
+        ctx->ga.newpop [i+n].rank = 0;
+        if (i > 0 && i % 9 == 0 && i <= 90) {
+            ctx->ga.newpop [i].rank = 14;
+        }
+        l [i]   = ctx->ga.newpop + i;
+        l [i+n] = ctx->ga.newpop + i + n;
+        h [i]   = ctx->ga.oldpop + i;
+        h [i+n] = ctx->ga.oldpop + i + n;
+    }
+    ctx->ga.newpop [0].rank = 3;
+    shuffle_individual_pointers (ctx, l, n2);
+    rank_2d_a (ctx, l, n2);
+    max_rank = 0;
+    for (i=0; i<n; i++) {
+        if (ctx->ga.newpop [i].rank > max_rank) {
+            max_rank = ctx->ga.newpop [i].rank;
+        }
+    }
+    printf ("\nRank 2d double, minimize\n");
+    print_ranks (ctx, ctx->ga.newpop, n2, max_rank);
+
+    /* Now try rank_2d_b, this should enforce the ranks of newpop on
+     * those of oldpop (l on h), it has one rank higher than newpop.
+     * Note that we only use the *first half* of newpop (the upper half
+     * ranks are zerod).
+     */
+    shuffle_individual_pointers (ctx, h, n2);
+    shuffle_individual_pointers (ctx, l, n2);
+    /* Set upper half ranks to zero */
+    for (i=0; i<n; i++) {
+        ctx->ga.newpop [i+n].rank = 0;
+    }
+    rank_2d_b (ctx, l, n2, h, n2);
+    max_rank++;
+    printf ("\nRank 2d double on other population, minimize\n");
+    /* One more than single case */
+    print_ranks (ctx, ctx->ga.oldpop, n2, max_rank);
+
+    /* Now for maximization */
+    ctx->ga.optdir = PGA_MAXIMIZE;
+    for (i=0; i<n; i++) {
+        ctx->ga.newpop [i].rank = 0;
+        ctx->ga.oldpop [i].rank = 0;
+        ctx->ga.newpop [i+100].rank = 0;
+        ctx->ga.oldpop [i+100].rank = 0;
+        if (i > 0 && i % 9 == 0 && i <= 90) {
+            ctx->ga.newpop [i].rank = 14;
+        }
+    }
+    ctx->ga.newpop [99].rank = 3;
+    shuffle_individual_pointers (ctx, l, n2);
+    rank_2d_a (ctx, l, n2);
+    max_rank--;
+    printf ("\nRank 2d double, maximize\n");
+    print_ranks (ctx, ctx->ga.newpop, n2, max_rank);
+
+    /* Now try rank_2d_b, this should enforce the ranks of newpop on
+     * those of oldpop (l on h), it has one rank higher than newpop.
+     * Note that we only use the *first half* of newpop (the upper half
+     * ranks are zerod).
+     */
+    shuffle_individual_pointers (ctx, h, n2);
+    shuffle_individual_pointers (ctx, l, n2);
+    /* Set upper half ranks to zero */
+    for (i=0; i<n; i++) {
+        ctx->ga.newpop [i+n].rank = 0;
+    }
+    rank_2d_b (ctx, l, n2, h, n2);
+    max_rank++;
+    printf ("\nRank 2d double on other population, maximize\n");
+    print_ranks (ctx, ctx->ga.oldpop, n2, max_rank);
+}
+
+void test_pop (PGAContext *ctx, int dim, size_t npop, const void *p, int goal)
 {
     size_t sz;
     int i, j;
-    double (*pop) [dim] = p;
+    const double (*pop) [dim] = p;
     double (*extreme) [dim];
     double wpop [dim];
     double wof [dim];
     PGAIndividual *start [npop];
-    unsigned int max_rank, idx;
+    unsigned int max_rank;
 
     ctx->ga.extreme_valid = ctx->ga.utopian_valid = PGA_FALSE;
     ctx->ga.worst_valid = PGA_FALSE;
@@ -5085,21 +5335,7 @@ void test_pop (PGAContext *ctx, int dim, size_t npop, void *p, int goal)
     if (max_rank > npop) {
         max_rank = npop - 1;
     }
-    i = 0;
-    for (idx=0; idx<max_rank + 1; idx++) {
-        printf ("Rank %u:", idx);
-        for (sz=0; sz<npop; sz++) {
-            if (ctx->ga.newpop [sz].rank == idx) {
-                printf (" %zu", sz);
-                i++;
-            }
-        }
-        printf ("\n");
-        if ((size_t)i == npop) {
-            break;
-        }
-    }
-    fflush (stdout);
+    print_ranks (ctx, ctx->ga.newpop, npop, max_rank);
     if (PGAGetPopReplaceType (ctx) != PGA_POPREPL_NSGA_III) {
         return;
     }
@@ -5158,12 +5394,13 @@ void test_pop (PGAContext *ctx, int dim, size_t npop, void *p, int goal)
 /* We need a test that works over both populations to detect bugs when
  * the ranking stops at goal
  */
-void test_pop_2gen (PGAContext *ctx, int dim, size_t npop, void *p1, void *p2)
+void test_pop_2gen
+    (PGAContext *ctx, int dim, size_t npop, const void *p1, const void *p2)
 {
     size_t sz;
     int i, j;
-    double (*oldpop) [dim] = p1;
-    double (*newpop) [dim] = p2;
+    const double (*oldpop) [dim] = p1;
+    const double (*newpop) [dim] = p2;
     PGAIndividual *start [2 * npop];
     unsigned int max_rank, idx;
 
@@ -5386,6 +5623,24 @@ int main (int argc, char **argv)
     set_nsga_state (ctx, 1);
     printf ("npop61: %zu\n", npop61);
     test_pop (ctx, 6, npop61, pop6_1, 100);
+    PGADestroy (ctx);
+
+    /* Do some tests on 2d ranking */
+    ctx = PGACreate (&argc, argv, PGA_DATATYPE_REAL, 100, PGA_MINIMIZE);
+    PGASetPopReplaceType (ctx, PGA_POPREPL_NSGA_II);
+    PGASetPopSize (ctx, 200);
+    PGASetRandomSeed (ctx, 42);
+    ctx->ga.NumAuxEval = 1;
+    ctx->ga.NumConstraint = 0;
+    PGASetUp (ctx);
+    set_nsga_state (ctx, 1);
+    create_pop_grid ();
+    test_pop (ctx, 2, 100, pop_grid, 101);
+    test_pop (ctx, 2, 200, pop_grid, 201);
+    ctx->ga.optdir = PGA_MAXIMIZE;
+    test_pop (ctx, 2, 100, pop_grid, 101);
+    test_pop (ctx, 2, 200, pop_grid, 201);
+    test_ranking (ctx);
     PGADestroy (ctx);
     MPI_Finalize ();
 }

@@ -933,7 +933,7 @@ STATIC void compute_utopian (PGAContext *ctx, PGAIndividual **start, int n)
 #define WEIGHT(a, j) ((a) == (j) ? 1 : EPS_ASF)
 
 /* Compute ASF (see nsga-iii paper), axis is <= dim - 1 */
-STATIC double compute_asf (PGAContext *ctx, double *point, int axis)
+STATIC double compute_asf (PGAContext *ctx, const double *point, int axis)
 {
     int j;
     int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
@@ -1244,6 +1244,19 @@ static int obj_sort_cmp (const void *a1, const void *a2)
     return cmp;
 }
 
+/* Same as above but in addition reverse by rank */
+static int obj_sort_cmp_rank (const void *a1, const void *a2)
+{
+    PGAIndividual * const *i1 = (PGAIndividual * const *)a1;
+    PGAIndividual * const *i2 = (PGAIndividual * const *)a2;
+    int r = 0;
+
+    if ((r = obj_sort_cmp (a1, a2))) {
+        return r;
+    }
+    return CMP ((*i2)->rank, (*i1)->rank);
+}
+
 /* Specialized ranking function for the two-objective case */
 static unsigned int ranking_2_objectives
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
@@ -1401,7 +1414,6 @@ static unsigned int ranking_2_objectives
     return max_rank;
 }
 
-/* #undef DEBUG_RANKING */
 #ifdef DEBUG_RANKING
 /*
  * Dominance computation, old version which is O(n**2)
@@ -1764,7 +1776,7 @@ STATIC void split_set
  * Precondition is that ranks in L are already correctly computed.
  * We may have gaps in the ranks.
  */
-static void rank_2d_b
+STATIC void rank_2d_b
     ( PGAContext *ctx
     , PGAIndividual **l, size_t nl
     , PGAIndividual **h, size_t nh
@@ -1788,8 +1800,8 @@ static void rank_2d_b
     /* And it doesn't make sense to call this with h empty */
     assert (nh > 0);
 
-    /* Sort L by first/second objective (ascending) */
-    qsort (l, nl, sizeof (*l), obj_sort_cmp);
+    /* Sort L by first/second objective (ascending), rank (descending) */
+    qsort (l, nl, sizeof (*l), obj_sort_cmp_rank);
 
     /* Sort H by first/second objective (ascending) */
     qsort (h, nh, sizeof (*h), obj_sort_cmp);
@@ -1813,12 +1825,11 @@ static void rank_2d_b
             int j;
             size_t front;
             front = cur_l->rank;
-            /* Going to overwrite existing */
             if (fronts [front] != NULL) {
                 double ef2 = GETEVAL_EV (fronts [front], 1);
                 int e2fc = OPT_DIR_CMP_EV (ctx, e2_l, ef2);
-                /* Dominated by prev. front, happens due to higher dimension */
-                if (e2fc > 0) {
+                /* Dominated by this front, happens due to higher dimension */
+                if (e2fc >= 0) {
                     l_idx++;
                     if (l_idx < nl) {
                         cur_l = l [l_idx];
@@ -1829,6 +1840,7 @@ static void rank_2d_b
                     }
                     continue;
                 }
+                /* Going to overwrite existing */
                 num_fronts--;
             }
             fronts [front] = cur_l;
@@ -2070,7 +2082,7 @@ static void nd_helper_b
     }
 }
 
-static void rank_2d_a (PGAContext *ctx, PGAIndividual **s, size_t n)
+STATIC void rank_2d_a (PGAContext *ctx, PGAIndividual **s, size_t n)
 {
     size_t max_front = ctx->ga.PopSize * 2, last_front = 0;
     DECLARE_DYNARRAY (PGAIndividual *, fronts, max_front);
@@ -2080,8 +2092,8 @@ static void rank_2d_a (PGAContext *ctx, PGAIndividual **s, size_t n)
     assert (n >= 1);
     /* Initialize to zero */
     memset (fronts, 0, sizeof (fronts));
-    /* Sort s by first/second objective (ascending) */
-    qsort (s, n, sizeof (*s), obj_sort_cmp);
+    /* Sort s by first/second objective (ascending) and rank (descending) */
+    qsort (s, n, sizeof (*s), obj_sort_cmp_rank);
     rank = s [0]->rank;
     assert (rank < max_front);
     fronts [rank] = s [0];
@@ -2187,6 +2199,49 @@ static void rank_2d_a (PGAContext *ctx, PGAIndividual **s, size_t n)
     }
 }
 
+/* Comparison function for sorting by ctx->nsga.oidx objective
+ * and then by rank in decreasing order.
+ * The ctx->nsga.oidx must be set before calling qsort based on this
+ * function. This determined by what function index we sort.
+ */
+static int oidx_rank_cmp (const void *a1, const void *a2)
+{
+    PGAIndividual * const *i1 = a1;
+    PGAIndividual * const *i2 = a2;
+    int r = 0;
+
+    if ((r = oidx_sort_cmp (a1, a2))) {
+        return r;
+    }
+    return CMP ((*i2)->rank, (*i1)->rank);
+}
+
+/* Special case: 2D with identical values in one dimension:
+ * Sort by the other dimension: First by evalue, then by rank,
+ * we need the rank because all individuals with same eval need to
+ * have the same rank after this procedure.
+ */
+STATIC unsigned int rank_1d (PGAContext *ctx, PGAIndividual **s, size_t n)
+{
+    double e_last;
+    size_t i;
+    ctx->nsga.oidx = 0;
+
+    qsort (s, n, sizeof (*s), oidx_rank_cmp);
+    e_last = GETEVAL_EV (s [0], 0);
+    /* Assign ranks */
+    for (i = 1; i < n; i++) {
+        double e_cur = GETEVAL_EV (s [i], 0);
+        int cmp = OPT_DIR_CMP_EV (ctx, e_cur, e_last);
+        assert (cmp >= 0);
+        if (s [i]->rank < s [i-1]->rank + cmp) {
+            s [i]->rank = s [i-1]->rank + cmp;
+        }
+        e_last = e_cur;
+    }
+    return s [n - 1]->rank;
+}
+
 /* Create a non-dominated sorting of s on the first m objectives.
  * The front numbers in s [k]->rank are taken as basis for sorting.
  */
@@ -2223,23 +2278,7 @@ static void nd_helper_a (PGAContext *ctx, PGAIndividual **s, size_t n, int m)
         }
         if (all_identical) {
             if (m == 2) {
-                double e_last;
-                /* Special case: 2D with identical values in one dimension */
-                /* Sort by the other dimension */
-                ctx->nsga.oidx = 0;
-                qsort (s, n, sizeof (*s), oidx_sort_cmp);
-
-                e_last = GETEVAL_EV (s [0], 0);
-                /* Assign ranks */
-                for (i = 1; i < n; i++) {
-                    double e_cur = GETEVAL_EV (s [i], 0);
-                    int cmp = OPT_DIR_CMP_EV (ctx, e_cur, e_last);
-                    assert (cmp >= 0);
-                    if (s [i]->rank < s [i-1]->rank + cmp) {
-                        s [i]->rank = s [i-1]->rank + cmp;
-                    }
-                    e_last = e_cur;
-                }
+                (void)rank_1d (ctx, s, n);
             } else {
                 /* If all values are identical, skip this dimension */
                 nd_helper_a (ctx, s, n, m-1);
@@ -2367,7 +2406,6 @@ STATIC unsigned int ranking
     }
     memcpy (cpy_start, start, sizeof (*start) * n);
     mr_old = max_rank = ranking_nsquare (ctx, start, n, goal);
-/* #undef DEBUG_RANKING_USE_NSQUARE_ONLY */
 #ifdef DEBUG_RANKING_USE_NSQUARE_ONLY
     return mr_old;
 #endif
@@ -2402,7 +2440,6 @@ STATIC unsigned int ranking
     for (i=0; i<(int)n; i++) {
         /* Dump evaluations in error case */
         if (rank1 [i] != rank2 [i]) {
-/* #define DEBUG_RANKING_DUMP */
 #ifdef DEBUG_RANKING_DUMP
             int j, k;
             for (j=0; j<(int)n; j++) {
