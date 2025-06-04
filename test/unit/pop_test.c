@@ -6591,11 +6591,11 @@ int main (int argc, char **argv)
     PGASetUp (ctx);
     set_nsga_state (ctx, 1);
     create_pop_grid ();
-    test_pop (ctx, 2, 100, pop_grid, 101);
-    test_pop (ctx, 2, 200, pop_grid, 201);
+    test_pop (ctx, 2, 100, pop_grid,  101);
+    test_pop (ctx, 2, 200, pop_grid2, 201);
     ctx->ga.optdir = PGA_MAXIMIZE;
-    test_pop (ctx, 2, 100, pop_grid, 101);
-    test_pop (ctx, 2, 200, pop_grid, 201);
+    test_pop (ctx, 2, 100, pop_grid,  101);
+    test_pop (ctx, 2, 200, pop_grid2, 201);
     test_ranking (ctx);
     PGADestroy (ctx);
     MPI_Finalize ();

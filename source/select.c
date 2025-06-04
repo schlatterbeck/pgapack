@@ -1174,7 +1174,7 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
 
     if (ctx->ga.last_iter != ctx->ga.iter) {
         int i;
-        DECLARE_DYNARRAY (int, bestidx, ctx->ga.PopSize);
+        int *bestidx = ctx->scratch.intscratch;
         /* Returns sorted list of indeces in bestidx, no need to initialize */
         PGAEvalSort (ctx, pop, bestidx);
         /* Copy the k first indeces */

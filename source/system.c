@@ -244,6 +244,7 @@ void PGADestroy (PGAContext *ctx)
 
         /*  Free the scratch space.  */
         free (ctx->scratch.intscratch);
+        free (ctx->scratch.indiv_scratch);
         free (ctx->scratch.dblscratch);
         /* Always allocated together */
         if (ctx->scratch.pgaintscratch [0] != NULL) {
@@ -257,6 +258,18 @@ void PGADestroy (PGAContext *ctx)
         }
         if (ctx->scratch.dominance != NULL) {
             free (ctx->scratch.dominance);
+        }
+        if (ctx->scratch.nsga_tmp.ind_all != NULL) {
+            free (ctx->scratch.nsga_tmp.ind_all);
+        }
+        if (ctx->scratch.nsga_tmp.ind_tmp != NULL) {
+            free (ctx->scratch.nsga_tmp.ind_tmp);
+        }
+        if (ctx->scratch.nsga_tmp.medval != NULL) {
+            free (ctx->scratch.nsga_tmp.medval);
+        }
+        if (ctx->scratch.nsga_tmp.front_sizes != NULL) {
+            free (ctx->scratch.nsga_tmp.front_sizes);
         }
         if (ctx->scratch.hashed != NULL) {
             free (ctx->scratch.hashed);

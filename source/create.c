@@ -1580,11 +1580,19 @@ void PGASetUp (PGAContext *ctx)
                  );
     }
 
-    ctx->scratch.intscratch = malloc( sizeof(int) * ctx->ga.PopSize );
+    ctx->scratch.intscratch = malloc (sizeof(int) * ctx->ga.PopSize);
     if (ctx->scratch.intscratch == NULL) {
         PGAError
             ( ctx, "PGASetUp: No room to allocate ctx->scratch.intscratch"
             , PGA_FATAL, PGA_VOID, NULL
+            );
+    }
+    ctx->scratch.indiv_scratch = malloc
+        (sizeof(*ctx->scratch.indiv_scratch) * ctx->ga.PopSize);
+    if (ctx->scratch.intscratch == NULL) {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetUp: No room to allocate ctx->scratch.indiv_scratch"
             );
     }
     ctx->scratch.permute = NULL;
@@ -1658,8 +1666,44 @@ void PGASetUp (PGAContext *ctx)
                 , "PGASetUp: No room to allocate ctx->scratch.dominance"
                 );
         }
+        ctx->scratch.nsga_tmp.ind_all = malloc
+            (sizeof (*ctx->scratch.nsga_tmp.ind_all) * 2 * ctx->ga.PopSize);
+        if (ctx->scratch.nsga_tmp.ind_all == NULL) {
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
+                , "PGASetUp: No room to allocate ctx->scratch.nsga_tmp"
+                );
+        }
+        ctx->scratch.nsga_tmp.ind_tmp = malloc
+            (sizeof (*ctx->scratch.nsga_tmp.ind_tmp) * 2 * ctx->ga.PopSize);
+        if (ctx->scratch.nsga_tmp.ind_tmp == NULL) {
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
+                , "PGASetUp: No room to allocate ctx->scratch.nsga_tmp"
+                );
+        }
+        ctx->scratch.nsga_tmp.medval = malloc
+            (sizeof (*ctx->scratch.nsga_tmp.medval) * 2 * ctx->ga.PopSize);
+        if (ctx->scratch.nsga_tmp.medval == NULL) {
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
+                , "PGASetUp: No room to allocate ctx->scratch.nsga_tmp"
+                );
+        }
+        ctx->scratch.nsga_tmp.front_sizes = malloc
+            (sizeof (*ctx->scratch.nsga_tmp.front_sizes) * 2 * ctx->ga.PopSize);
+        if (ctx->scratch.nsga_tmp.front_sizes == NULL) {
+            PGAErrorPrintf
+                ( ctx, PGA_FATAL
+                , "PGASetUp: No room to allocate ctx->scratch.nsga_tmp"
+                );
+        }
     } else {
         ctx->scratch.dominance = NULL;
+        ctx->scratch.nsga_tmp.ind_all = NULL;
+        ctx->scratch.nsga_tmp.ind_tmp = NULL;
+        ctx->scratch.nsga_tmp.medval = NULL;
+        ctx->scratch.nsga_tmp.front_sizes = NULL;
     }
 
     if (ctx->ga.NoDuplicates) {

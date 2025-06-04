@@ -24,6 +24,15 @@
 #define ALLOCA _alloca
 #endif
 
+/* In the following the macro DECLARE_DYNARRAY allocates an array *on
+ * the stack*. This should be avoided for large arrays, instead the
+ * array should be allocated in PGACreate (in create.c) and deallocated
+ * in PGADestroy (in system.c). Then a pointer cast using DECLARE_DYNPTR
+ * (dereferenced using DEREF1_DYNPTR) should be used. Note that all
+ * these macros are needed because the MS compiler doesn't support
+ * dynamically sized objects on the stack (even when declaring a pointer
+ * to such an object).
+ */
 #ifdef USE_ALLOCA
 #ifndef ALLOCA
 #define ALLOCA alloca
@@ -869,6 +878,18 @@ typedef struct {
     int       RandomDeterministic; /**< use 2nd rand generator during eval   */
 } PGAInitialize;
 
+/*!*************************************************
+ * \brief Scratch Data Structures for NSGA.
+ * Used for temporary storage for nsga-ii and -iii.
+ ***************************************************/
+typedef struct nsga_temp  {
+    PGAIndividual **ind_all;       /**< Individual pointer array for NSGA */
+    PGAIndividual **ind_tmp;       /**< temporary Individual pointer array */
+    double         *medval;        /**< Used by find_median */
+    size_t         *front_sizes;   /**< Used by max_rank */
+} PGATmpNSGA;
+
+
 /*!***************************************
  * \brief Scratch Data Structures.
  * Used for temporary storage.
@@ -883,6 +904,8 @@ typedef struct {
     size_t         serialization_size; /**< Size for Serialize/Deserialize  */
     void          *serialized;         /**< tmp pointer for serialized data */
     PGAInteger    *pgaintscratch [4];  /**< For permutation crossovers      */
+    PGAIndividual **indiv_scratch;     /**< For sorting individuals         */
+    PGATmpNSGA    nsga_tmp;            /**< temp storage for nsga-ii + -iii */
 } PGAScratch;
 
 /*!***************************************

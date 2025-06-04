@@ -862,7 +862,10 @@ STATIC void crowding
     size_t i;
     int k;
     size_t nrank = 0;
-    DECLARE_DYNARRAY (PGAIndividual *, crowd, n);
+    PGAIndividual **crowd = ctx->scratch.nsga_tmp.ind_tmp;
+    /* declare values of functions as arrays on the stack, this should
+     * never exceed memory limits
+     */
     DECLARE_DYNARRAY (double, f_min, ctx->nsga.nfun);
     DECLARE_DYNARRAY (double, f_max, ctx->nsga.nfun);
 
@@ -1407,9 +1410,15 @@ static double quickselect (double *values, size_t lo, size_t hi, size_t k);
 static double pick_pivot (double *values, size_t lo, size_t hi)
 {
     size_t i;
-    DECLARE_DYNARRAY (double, medians, (hi - lo) / 5);
+    double *medians = NULL;
+    double pivot = 0;
 
     assert (hi > lo);
+    medians = malloc (sizeof (double) * (hi - lo) / 5);
+    if (medians == NULL) {
+        fprintf (stderr, "Out of memory in pick_pivot\nPGAError: Fatal\n");
+        exit (-1);
+    }
 
     /* Small case: Just return median */
     if (hi - lo <= 5) {
@@ -1428,7 +1437,9 @@ static double pick_pivot (double *values, size_t lo, size_t hi)
     /* Should be same with truncation */
     assert ((i - lo) / 5 == (hi - lo) / 5);
     /* Recursive call to find median of medians */
-    return quickselect (medians, 0, (i - lo) / 5, (i - lo) / 10);
+    pivot = quickselect (medians, 0, (i - lo) / 5, (i - lo) / 10);
+    free (medians);
+    return pivot;
 }
 
 /* Linear-time index value selection algorithm
@@ -1443,7 +1454,7 @@ static double quickselect (double *values, size_t lo, size_t hi, size_t k)
     int n_pivots = 0;
 
     assert (hi > lo);
-    assert (k >= 0 && k < hi - lo);
+    assert (k >= 0 && lo + k < hi);
     /* For small arrays, sort and return median */
     if (hi - lo < 10) {
         return nlogn_select (values, lo, hi, k);
@@ -1454,7 +1465,7 @@ static double quickselect (double *values, size_t lo, size_t hi, size_t k)
     /* Partition values into <= pivot and > pivot */
     for (pidx = lo; pidx < hi; pidx++) {
         if (values [pidx] == pivot) {
-            for (j=hi-1; j>=pidx && values [j] == pivot; j--) {
+            for (j=hi-1; hi > 0 && j>=pidx && values [j] == pivot; j--) {
                 n_pivots++;
                 hi--;
             }
@@ -1504,10 +1515,12 @@ static double quickselect (double *values, size_t lo, size_t hi, size_t k)
     assert (n_pivots);
 
     if (k < pidx - lo) {
+        assert (pidx <= hi);
         return quickselect (values, lo, pidx, k);
     } else if (k < (pidx - lo) + n_pivots) {
         return pivot;
     } else {
+        assert ((pidx - lo) + n_pivots <= k);
         return quickselect (values, pidx, hi, k - (pidx - lo) - n_pivots);
     }
 }
@@ -1521,8 +1534,8 @@ static double quickselect (double *values, size_t lo, size_t hi, size_t k)
  */
 STATIC double find_median (PGAIndividual **s, size_t n, int m)
 {
-    DECLARE_DYNARRAY (double, values, n);
     PGAContext *ctx = (*s)->ctx;
+    double *values = ctx->scratch.nsga_tmp.medval;
     size_t i;
 
     assert (n > 0);
@@ -1612,11 +1625,16 @@ STATIC void rank_2d_b
     size_t l_idx = 0;
     size_t num_fronts = 0;
     /* Note: we're keeping only the last in each front */
-    DECLARE_DYNARRAY (PGAIndividual *, fronts, ctx->ga.PopSize * 2);
+    PGAIndividual **fronts = NULL;
     PGAIndividual *cur_l = NULL;
     PGAIndividual *last = NULL;
     size_t max_front = 0;
     double e1_l, e2_l;
+
+    fronts = malloc (sizeof (*fronts) * ctx->ga.PopSize * 2);
+    if (fronts == NULL) {
+        PGAErrorPrintf (ctx, PGA_FATAL, "Out of memory in rank_2d_b");
+    }
 
     /* Initialize to zero */
     memset (fronts, 0, ctx->ga.PopSize * sizeof (PGAIndividual *));
@@ -1775,6 +1793,7 @@ STATIC void rank_2d_b
             }
         }
     }
+    free (fronts);
 }
 
 /* Assign the front numbers to the solutions in h according to solutions
@@ -1916,14 +1935,19 @@ static void nd_helper_b
 
 STATIC void rank_2d_a (PGAContext *ctx, PGAIndividual **s, size_t n)
 {
-    size_t max_front = ctx->ga.PopSize * 2, last_front = 0;
-    DECLARE_DYNARRAY (PGAIndividual *, fronts, max_front);
+    const size_t max_front = ctx->ga.PopSize * 2;
+    size_t last_front = 0;
+    PGAIndividual **fronts = NULL;
     unsigned int rank = UINT_MAX;
     int i, j;
 
     assert (n >= 1);
     /* Initialize to zero */
-    memset (fronts, 0, sizeof (fronts));
+    fronts = malloc (sizeof (*fronts) * max_front);
+    if (fronts == NULL) {
+        PGAErrorPrintf (ctx, PGA_FATAL, "Out of memory in rank_2d_a");
+    }
+    memset (fronts, 0, sizeof (*fronts) * max_front);
     /* Sort s by first/second objective (ascending) and rank (descending) */
     qsort (s, n, sizeof (*s), obj_sort_cmp_rank);
     rank = s [0]->rank;
@@ -2029,6 +2053,7 @@ STATIC void rank_2d_a (PGAContext *ctx, PGAIndividual **s, size_t n)
             }
         }
     }
+    free (fronts);
 }
 
 /* Comparison function for sorting by ctx->nsga.oidx objective
@@ -2158,10 +2183,11 @@ static unsigned int max_rank
     size_t i;
     unsigned int max_rank = 0;
     size_t rankcount = 0;
-    DECLARE_DYNARRAY (size_t, front_sizes, n);
+    const size_t max_front = ctx->ga.PopSize * 2;
+    size_t *front_sizes = ctx->scratch.nsga_tmp.front_sizes;
 
     /* Count individuals in each front and determine max_rank */
-    memset (front_sizes, 0, sizeof (front_sizes));
+    memset (front_sizes, 0, sizeof (*front_sizes) * max_front);
     for (i = 0; i < n; i++) {
         unsigned int rank = start [i]->rank;
         assert (rank < n);
@@ -2239,8 +2265,9 @@ STATIC unsigned int ranking
 {
     DECLARE_DYNARRAY (unsigned int, rank1, n);
     DECLARE_DYNARRAY (unsigned int, rank2, n);
-    DECLARE_DYNARRAY (unsigned int, rankcounts, 2 * ctx->ga.PopSize);
-    DECLARE_DYNARRAY (PGAIndividual *, cpy_start, n);
+    const size_t max_front = ctx->ga.PopSize * 2;
+    size_t *front_sizes = ctx->scratch.nsga_tmp.front_sizes;
+    cpy_start = ctx->scratch.nsga_tmp.ind_tmp;
     unsigned int max_rank = 0, mr_new = 0, mr_old = 0;
     size_t i;
 
@@ -2273,14 +2300,14 @@ STATIC unsigned int ranking
     }
     if (max_rank == UINT_MAX) {
         int s = 0;
-        memset (rankcounts, 0, 2 * ctx->ga.PopSize * sizeof (unsigned int));
+        memset (front_sizes, 0, sizeof (*front_sizes) * max_front);
         for (i=0; i<n; i++) {
             if (start [i]->rank < 2 * (unsigned int)ctx->ga.PopSize) {
-                rankcounts [start [i]->rank] += 1;
+                front_sizes [start [i]->rank] += 1;
             }
         }
         for (i=0; i<2u*ctx->ga.PopSize; i++) {
-            s += rankcounts [i];
+            s += front_sizes [i];
             max_rank = i;
             if (s >= goal) {
                 break;
@@ -2337,7 +2364,7 @@ STATIC unsigned int ranking
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
     size_t i;
-    DECLARE_DYNARRAY (PGAIndividual *, cpy_start, n);
+    PGAIndividual **cpy_start = ctx->scratch.nsga_tmp.ind_tmp;
     memcpy (cpy_start, start, sizeof (*start) * n);
 
     if (!n) {
@@ -2386,7 +2413,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
     int n_unc_ind, n_con_ind;
     int popsize = PGAGetPopSize (ctx);
     int numreplace = PGAGetNumReplaceValue (ctx);
-    DECLARE_DYNARRAY (PGAIndividual *, all_individuals, popsize + numreplace);
+    PGAIndividual **all_individuals = ctx->scratch.nsga_tmp.ind_all;
     PGAIndividual **constrained = all_individuals + popsize + numreplace;
     PGAIndividual **unconstrained = all_individuals;
     PGAIndividual *oldpop = ctx->ga.oldpop;

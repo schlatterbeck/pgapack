@@ -531,7 +531,7 @@ int PGAGetWorstIndex (PGAContext *ctx, int pop)
 int PGAGetBestIndex (PGAContext *ctx, int popidx)
 {
     int p, Best_indx = 0;
-    DECLARE_DYNARRAY (int, bestidxs, ctx->ga.PopSize);
+    int *bestidxs = ctx->scratch.intscratch;
     int nbest = 0;
     int is_multi = ctx->ga.NumAuxEval > ctx->ga.NumConstraint;
     PGAIndividual *pop = PGAGetIndividual (ctx, 0, popidx);
@@ -1375,14 +1375,14 @@ int PGAEvalSortHelper (const void *a1, const void *a2)
 void PGAEvalSort (PGAContext *ctx, int pop, int *idx)
 {
     int i;
-    DECLARE_DYNARRAY (PGAIndividual *, sorttmp, ctx->ga.PopSize);
+    PGAIndividual **sorttmp = ctx->scratch.indiv_scratch;
     /* No need to check validity of pop, done by PGAIndividual */
     PGAIndividual *first = PGAGetIndividual (ctx, 0, pop);
 
     for (i=0; i<ctx->ga.PopSize; i++) {
         sorttmp [i] = first + i;
     }
-    qsort (sorttmp, ctx->ga.PopSize, sizeof (sorttmp [0]), PGAEvalSortHelper);
+    qsort (sorttmp, ctx->ga.PopSize, sizeof (*sorttmp), PGAEvalSortHelper);
     for (i=0; i<ctx->ga.PopSize; i++) {
         idx [i] = sorttmp [i] - first;
     }
