@@ -1800,8 +1800,8 @@ STATIC void rank_2d_b
     /* And it doesn't make sense to call this with h empty */
     assert (nh > 0);
 
-    /* Sort L by first/second objective (ascending), rank (descending) */
-    qsort (l, nl, sizeof (*l), obj_sort_cmp_rank);
+    /* Sort L by first/second objective (ascending) */
+    qsort (l, nl, sizeof (*l), obj_sort_cmp);
 
     /* Sort H by first/second objective (ascending) */
     qsort (h, nh, sizeof (*h), obj_sort_cmp);
@@ -1862,6 +1862,8 @@ STATIC void rank_2d_b
                 f_e2 = GETEVAL_EV (fronts [j], 1);
                 f1_c = OPT_DIR_CMP_EV (ctx, f_e1, e1_l);
                 f2_c = OPT_DIR_CMP_EV (ctx, f_e2, e2_l);
+                /* This should hold by construction: */
+                assert (f1_c <= 0);
                 if (f2_c > 0 || (f2_c == 0 && f1_c <= 0)) {
                     fronts [j] = NULL;
                     num_fronts--;
