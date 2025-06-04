@@ -13,6 +13,7 @@ struct multi_problem
     int dimension;              /* The dimension of the problem */
     int nfunc;                  /* Number of evaluation functions */
     int nconstraint;            /* Number of constraints */
+    int maximize;               /* Maximization problem ? */
     double (*lower);            /* Init ranges lower bounds */
     double (*upper);            /* Init ranges upper bounds */
     int enforce_bounds;         /* Enforce bounds on init range */
@@ -41,3 +42,5 @@ extern struct multi_problem tnk;
 extern struct multi_problem water;
 extern struct multi_problem rotated;
 extern struct multi_problem deb7;
+extern struct multi_problem water_m;
+extern struct multi_problem zdt1_m;

@@ -48,6 +48,8 @@ static struct multi_problem *problems [] =
 , &water
 , &rotated
 , &deb7
+, &water_m
+, &zdt1_m
 };
 static const int nproblems =
     sizeof (problems) / sizeof (struct multi_problem *);
@@ -73,6 +75,7 @@ int main (int argc, char **argv)
     int fidx = 0;
     int maxiter = 250;
     int sum_constraints = PGA_FALSE;
+    int direction;
     double crossover_prob = 0.8;
     int epsilon_generation = 0;
     MPI_Comm comm;
@@ -112,8 +115,9 @@ int main (int argc, char **argv)
     if (problem->crossover_prob > 0) {
         crossover_prob = problem->crossover_prob;
     }
+    direction = problem->maximize ? PGA_MAXIMIZE : PGA_MINIMIZE;
     ctx = PGACreate
-        (&argc, argv, PGA_DATATYPE_REAL, problem->dimension, PGA_MINIMIZE);
+        (&argc, argv, PGA_DATATYPE_REAL, problem->dimension, direction);
     
     PGASetRandomSeed         (ctx, 1);
     PGASetPopSize            (ctx, popsize);
