@@ -1414,6 +1414,39 @@ static unsigned int ranking_2_objectives
     return max_rank;
 }
 
+/* Helper function to compare two solutions for domination
+ * Special case when check_eq is 1 we return -1 if s1 == s2 in all
+ * objectives. This case happens when nd_helper_b has partitioned
+ * l and h into two sets (which indicates that l dominates h in a higher
+ * dimension). Now if these are equal in all lower dimensions we still
+ * need to return -1.
+ */
+static int compare_solutions
+    (PGAContext *ctx, PGAIndividual *s1, PGAIndividual *s2, int m, int check_eq)
+{
+    int k;
+    int cmp = 0;
+
+    for (k = 0; k < m; k++) {
+        double e1, e2;
+        int ncmp;
+        e1 = GETEVAL_EV (s1, k);
+        e2 = GETEVAL_EV (s2, k);
+        ncmp = OPT_DIR_CMP_EV (ctx, e1, e2);
+        if (cmp && ncmp && ncmp != cmp) {
+            return 0; /* Non-dominated */
+        }
+        /* Don't allow cmp to get zero again */
+        if (ncmp) {
+            cmp = ncmp;
+        }
+    }
+    if (check_eq && cmp == 0) {
+        return -1;
+    }
+    return cmp;
+}
+
 #ifdef DEBUG_RANKING
 /*
  * Dominance computation, old version which is O(n**2)
@@ -1434,7 +1467,6 @@ static unsigned int ranking_nsquare
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
     size_t i, j;
-    int k;
     unsigned int rank;
     int nranked = 0;
     size_t intsforn = (n + WL - 1) / WL;
@@ -1455,35 +1487,19 @@ static unsigned int ranking_nsquare
     }
     for (i=0; i<n; i++) {
         for (j=i+1; j<n; j++) {
-            int cmp = 0;
-            for (k=0; k<ctx->nsga.nfun; k++) {
-                double e1, e2;
-                int ncmp;
-                e1 = GETEVAL_EV (start [i], k);
-                e2 = GETEVAL_EV (start [j], k);
-                ncmp = OPT_DIR_CMP_EV (ctx, e1, e2);
-                if (cmp && ncmp && ncmp != cmp) {
-                    break;
-                }
-                /* Don't allow cmp to get zero again */
-                if (ncmp) {
-                    cmp = ncmp;
-                }
-            }
-            /* Non-dominated? */
-            if (!cmp || k<ctx->nsga.nfun) {
-                continue;
-            }
+            int cmp = compare_solutions
+                (ctx, start [i], start [j], ctx->nsga.nfun, 0);
+            /* Non-dominated if cmp == 0 */
             /* j dominated by i */
             if (cmp < 0) {
                 SET_BIT (DEREF1_DYNPTR (dominance, intsforn, j), i);
             /* i dominated by j */
-            } else {
+            } else if (cmp > 0) {
                 SET_BIT (DEREF1_DYNPTR (dominance, intsforn, i), j);
             }
         }
     }
-    /* Now repeatedly loop over individuals and establish rank */
+    /* Now loop over individuals and establish rank */
     nranked = 0;
     for (rank=0; rank<n; rank++) {
         for (i=0; i<n; i++) {
@@ -1672,39 +1688,6 @@ STATIC double find_median (PGAIndividual **s, size_t n, int m)
         values [i] = GETEVAL_EV (s [i], m);
     }
     return quickselect (values, 0, n, n / 2);
-}
-
-/* Helper function to compare two solutions for domination
- * Special case when check_eq is 1 we return -1 if s1 == s2 in all
- * objectives. This case happens when nd_helper_b has partitioned
- * l and h into two sets (which indicates that l dominates h in a higher
- * dimension). Now if these are equal in all lower dimensions we still
- * need to return -1.
- */
-static int compare_solutions
-    (PGAContext *ctx, PGAIndividual *s1, PGAIndividual *s2, int m, int check_eq)
-{
-    int k;
-    int cmp = 0;
-
-    for (k = 0; k < m; k++) {
-        double e1, e2;
-        int ncmp;
-        e1 = GETEVAL_EV (s1, k);
-        e2 = GETEVAL_EV (s2, k);
-        ncmp = OPT_DIR_CMP_EV (ctx, e1, e2);
-        if (cmp && ncmp && ncmp != cmp) {
-            return 0; /* Non-dominated */
-        }
-        /* Don't allow cmp to get zero again */
-        if (ncmp) {
-            cmp = ncmp;
-        }
-    }
-    if (check_eq && cmp == 0) {
-        return -1;
-    }
-    return cmp;
 }
 
 /* Comparison function for sorting by ctx->nsga.oidx objective
