@@ -1990,21 +1990,25 @@ static void nd_helper_b
         h_max_m = h_min_m = GETEVAL_EV (h [0], m-1);
         for (i = 1; i < nl; i++) {
             double val = GETEVAL_EV (l [i], m-1);
-            if (val > l_max_m) l_max_m = val;
-            if (val < l_min_m) l_min_m = val;
+            int maxcmp = OPT_DIR_CMP_EV (ctx, val, l_max_m);
+            int mincmp = OPT_DIR_CMP_EV (ctx, val, l_min_m);
+            if (maxcmp > 0) l_max_m = val;
+            if (mincmp < 0) l_min_m = val;
         }
         for (i = 1; i < nh; i++) {
             double val = GETEVAL_EV (h [i], m-1);
-            if (val < h_min_m) h_min_m = val;
-            if (val > h_max_m) h_max_m = val;
+            int maxcmp = OPT_DIR_CMP_EV (ctx, val, h_max_m);
+            int mincmp = OPT_DIR_CMP_EV (ctx, val, h_min_m);
+            if (maxcmp > 0) h_max_m = val;
+            if (mincmp < 0) h_min_m = val;
         }
 
-        if (l_max_m <= h_min_m) {
+        if (OPT_DIR_CMP_EV (ctx, l_max_m, h_min_m) <= 0) {
             /* Objective m can be ignored, recursive call with m reduced */
             nd_helper_b (ctx, l, nl, h, nh, m-1);
         } else {
             /* Check if L and H overlap */
-            if (l_min_m <= h_max_m) {
+            if (OPT_DIR_CMP_EV (ctx, l_min_m, h_max_m) <= 0) {
                 PGAIndividual **l1, **l2, **h1, **h2;
                 size_t nl1 = 0, nl2 = 0, nh1 = 0, nh2 = 0;
                 /* L and H overlap, split and recurse */
@@ -2425,6 +2429,7 @@ STATIC unsigned int ranking
     for (i=0; i<(int)n; i++) {
         /* Dump evaluations in error case */
         if (rank1 [i] != rank2 [i]) {
+#define DEBUG_RANKING_DUMP
 #ifdef DEBUG_RANKING_DUMP
             int j, k;
             for (j=0; j<(int)n; j++) {
