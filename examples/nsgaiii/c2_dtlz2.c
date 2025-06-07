@@ -3,41 +3,44 @@
 
 #define NOBJ  3
 #define DIM  12
-#define K (DIM - NOBJ + 1)
 
-static double g (double *x)
+static double g (double *x, int k)
 {
     int i;
     double s = 0;
-    for (i=0; i<K; i++) {
+    for (i=0; i<k; i++) {
         s += pow (x [i] - 0.5, 2);
     }
     return s;
 }
 
-static void f (double *x, double *y)
+static void f (double *x, int nx, double *y, int ny)
 {
     int i, j;
-    double gv = g (x + DIM - K);
+    int nobj = ny - 1; /* 1 constraint */
+    int k = nx - nobj + 1;
+    double gv;
     double s1 = 0, s2 = 0;
     double m = 0;
-    double r2 = (NOBJ == 3) ? 0.4 * 0.4 : 0.5 + 0.5;
-    double sqm = sqrt (NOBJ);
-    for (i=0; i<NOBJ; i++) {
+    double r2 = (nobj == 3) ? 0.4 * 0.4 : 0.5 + 0.5;
+    double sqm = sqrt (nobj);
+    assert (k > 0);
+    gv = g (x + nx - k, k);
+    for (i=0; i<nobj; i++) {
         double p = 1;
-        for (j=0; j<NOBJ-i-1; j++) {
+        for (j=0; j<nobj-i-1; j++) {
             p *= cos (x [j] * M_PI / 2.0);
         }
-        if (j < NOBJ-1) {
+        if (j < nobj-1) {
             p *= sin (x [j] * M_PI / 2.0);
         }
         y [i] = p * (1 + gv);
     }
-    for (i=0; i<NOBJ; i++) {
+    for (i=0; i<nobj; i++) {
         double d;
         s2 += pow (y [i] - 1.0 / sqm, 2);
         s1 = 0;
-        for (j=0; j<NOBJ; j++) {
+        for (j=0; j<nobj; j++) {
             if (i != j) {
                 s1 += pow (y [j], 2);
             }
@@ -49,18 +52,18 @@ static void f (double *x, double *y)
     }
     s2 -= r2;
     if (m < s2) {
-        y [NOBJ] = m;
+        y [nobj] = m;
     } else {
-        y [NOBJ] = s2;
+        y [nobj] = s2;
     }
 }
 
 struct multi_problem c2_dtlz2 =
 { .dimension      = DIM
-, .nfunc          = NOBJ + 1
+, .n_obj          = NOBJ
 , .nconstraint    = 1
-, .lower          = (double []){ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-, .upper          = (double []){ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+, .lower          = 0
+, .upper          = 1
 , .popsize        = 0
 , .generations    = 500
 , .f              = f
@@ -69,6 +72,7 @@ struct multi_problem c2_dtlz2 =
 
 #ifdef DEBUG_EVAL
 #include <stdio.h>
+#define K (DIM - NOBJ + 1)
 int main ()
 {
     int i, j;
@@ -378,7 +382,7 @@ int main ()
     size_t sz = sizeof (xx) / (sizeof (double) * DIM);
     for (i=0; i<sz; i++) {
         f (xx [i], yy);
-        printf ("G: %e\n", g (xx [i] + DIM - K));
+        printf ("G: %e\n", g (xx [i] + DIM - K, K));
         if (yy [NOBJ] <= 0) {
             for (j=0; j<NOBJ+1; j++) {
                 printf ("F %d %e\n", j, yy [j]);

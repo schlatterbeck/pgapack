@@ -1,48 +1,52 @@
 #include "optimize.h"
 #include <stdio.h>
 
+/* Defaults */
 #define NOBJ 3
 #define DIM  7
-#define K (DIM - NOBJ + 1)
 
-static double g (double *x)
+static double g (double *x, int k)
 {
     int i;
     double s = 0;
-    for (i=0; i<K; i++) {
+    for (i=0; i<k; i++) {
         s += pow (x [i] - 0.5, 2) - cos (20 * M_PI * (x [i] - 0.5));
     }
-    return 100 * (K + s);
+    return 100 * (k + s);
 }
 
-static void f (double *x, double *y)
+static void f (double *x, int nx, double *y, int ny)
 {
     int i, j;
-    double gv = g (x + DIM - K);
+    int nobj = ny - 1; /* 1 for the constraint */
+    int k = (nx - nobj + 1);
+    double gv;
     double s = 0;
-    for (i=0; i<NOBJ; i++) {
+    assert (k > 0);
+    gv = g (x + nx - k, k);
+    for (i=0; i<nobj; i++) {
         double p = 0.5;
-        for (j=0; j<NOBJ-i-1; j++) {
+        for (j=0; j<nobj-i-1; j++) {
             p *= x [j];
         }
-        if (j < NOBJ-1) {
+        if (j < nobj-1) {
             p *= (1 - x [j]);
         }
         y [i] = p * (1 + gv);
-        if (i < NOBJ-1) {
+        if (i < nobj-1) {
             s += y [i] / 0.5;
         } else {
-            y [NOBJ] = s + y [i] / 0.6 - 1;
+            y [nobj] = s + y [i] / 0.6 - 1;
         }
     }
 }
 
 struct multi_problem c1_dtlz1 =
 { .dimension      = DIM
-, .nfunc          = NOBJ + 1
+, .n_obj          = NOBJ
 , .nconstraint    = 1
-, .lower          = (double []){ 0, 0, 0, 0, 0, 0, 0 }
-, .upper          = (double []){ 1, 1, 1, 1, 1, 1, 1 }
+, .lower          = 0
+, .upper          = 1
 , .popsize        = 300
 , .generations    = 500
 , .f              = f
@@ -50,7 +54,9 @@ struct multi_problem c1_dtlz1 =
 };
 
 #ifdef DEBUG_EVAL
+#define K (DIM - NOBJ + 1)
 #include <stdio.h>
+
 int main ()
 {
     int i, j;
@@ -160,8 +166,8 @@ int main ()
     size_t sz = sizeof (xx) / (sizeof (double) * DIM);
     for (i=0; i<sz; i++) {
         double s = 0;
-        f (xx [i], yy);
-        printf ("G: %e\n", g (xx [i] + DIM - K));
+        f (xx [i], DIM, yy, NOBJ + 1);
+        printf ("G: %e\n", g (xx [i] + DIM - K, K));
         if (yy [NOBJ] <= 0) {
             for (j=0; j<NOBJ+1; j++) {
                 printf ("F %d %e\n", j, yy [j]);

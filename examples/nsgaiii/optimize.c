@@ -25,15 +25,17 @@ static const int nproblems =
     sizeof (problems) / sizeof (struct multi_problem *);
 
 static struct multi_problem *problem;
+static int nfunc = 0;
+static int dimension = 0;
 
 double evaluate (PGAContext *ctx, int p, int pop, double *aux)
 {
     PGAIndividual *ind = PGAGetIndividual (ctx, p, pop);
     double *params = (double *)ind->chrom;
-    double result [problem->nfunc];
+    double result [nfunc];
 
-    problem->f (params, result);
-    memcpy (aux, result + 1, sizeof (double) * (problem->nfunc - 1));
+    problem->f (params, dimension, result, nfunc);
+    memcpy (aux, result + 1, sizeof (double) * (nfunc - 1));
 
     return result [0];
 }
@@ -46,8 +48,10 @@ void usage (char *name, int nproblems)
           "[-s] [f-index]\n"
           "-2: Use NSGA-II not NSGA-III\n"
           "-d: Use reference directions\n"
+          "-D: Dimension (number of decision variables)\n"
           "-g: Maximum number of generations\n"
           "-n: Set old (quadratic) non-dominated sorting algorithm\n"
+          "-o: Number of objectives\n"
           "-p: Population size\n"
           "-r: Random seed (uppercase -R is also accepted)\n"
           "-s: Use SBX crossover and Polynomial mutation instead of DE\n"
@@ -59,6 +63,7 @@ void usage (char *name, int nproblems)
 int main (int argc, char **argv)
 {
     PGAContext *ctx;
+    int i;
     int popsize = 100;
     int popsize_seen = 0;
     int fidx = 0;
@@ -76,8 +81,11 @@ int main (int argc, char **argv)
     int repl_type = PGA_POPREPL_NSGA_III;
     int use_de = 1;
     int nondom = PGA_NDSORT_JENSEN;
+    int n_obj = 0;
+    double *lower = NULL;
+    double *upper = NULL;
 
-    while ((opt = getopt (argc, argv, "2dg:r:R:s")) != -1) {
+    while ((opt = getopt (argc, argv, "2dD:g:no:p:r:R:s")) != -1) {
         switch (opt) {
         case '2':
             repl_type = PGA_POPREPL_NSGA_II;
@@ -85,12 +93,18 @@ int main (int argc, char **argv)
         case 'd':
             refdir = 1;
             break;
+        case 'D':
+            dimension = atoi (optarg);
+            break;
         case 'g':
             maxiter = atoi (optarg);
             maxiter_seen = 1;
             break;
         case 'n':
             nondom = PGA_NDSORT_NSQUARE;
+            break;
+        case 'o':
+            n_obj = atoi (optarg);
             break;
         case 'p':
             popsize = atoi (optarg);
@@ -109,7 +123,6 @@ int main (int argc, char **argv)
             exit (1);
         }
     }
-
     if (optind < argc) {
         fidx = atoi (argv [optind]);
         if (fidx < 0 || fidx > nproblems - 1) {
@@ -118,6 +131,23 @@ int main (int argc, char **argv)
         }
     }
     problem = problems [fidx];
+    if (n_obj <= 0) {
+        n_obj = problem->n_obj;
+    } else if (dimension <= 0) {
+        /* DTLZ suggest k = 5, i.e. dim = n_obj + 5 - 1
+         * But this differs by problem, compute from problem
+         */
+        dimension = n_obj + problem->dimension - problem->n_obj;
+    }
+    if (dimension <= 0) {
+        dimension = problem->dimension;
+    }
+    if (dimension <= n_obj) {
+        fprintf (stderr, "Need dimension >= n_obj\n");
+        exit (1);
+    }
+    nfunc = n_obj + problem->nconstraint;
+
     if (!maxiter_seen && problem->generations != 0) {
         maxiter = problem->generations;
     }
@@ -126,7 +156,17 @@ int main (int argc, char **argv)
     }
     direction = problem->maximize ? PGA_MAXIMIZE : PGA_MINIMIZE;
     ctx = PGACreate
-        (&argc, argv, PGA_DATATYPE_REAL, problem->dimension, direction);
+        (&argc, argv, PGA_DATATYPE_REAL, dimension, direction);
+
+    lower = malloc (sizeof (*lower) * dimension);
+    upper = malloc (sizeof (*upper) * dimension);
+    if (lower == NULL || upper == NULL) {
+        PGAErrorPrintf (ctx, PGA_FATAL, "Out of memory allocating bounds");
+    }
+    for (i=0; i<dimension; i++) {
+        lower [i] = problem->lower;
+        upper [i] = problem->upper;
+    }
     
     PGASetRandomSeed              (ctx, seed);
     PGASetPopSize                 (ctx, popsize);
@@ -150,21 +190,24 @@ int main (int argc, char **argv)
         // FIXME
         PGASetNumReplaceValue     (ctx, popsize);
     }
+    if (repl_type == PGA_POPREPL_NSGA_III) {
+        if (refdir) {
+            PGASetReferenceDirections (ctx, NDIR, directions, 7, 0.05);
+        } else {
+            PGASetReferencePoints     (ctx, np, p);
+        }
+    }
 
     PGASetSortND                  (ctx, nondom);
     PGASetPopReplaceType          (ctx, repl_type);
-    PGASetRealInitRange           (ctx, problem->lower, problem->upper);
+    PGASetRealInitRange           (ctx, lower, upper);
     PGASetMaxGAIterValue          (ctx, maxiter);
-    PGASetNumAuxEval              (ctx, problem->nfunc - 1);
+    PGASetNumAuxEval              (ctx, nfunc - 1);
     PGASetNumConstraint           (ctx, problem->nconstraint);
     PGASetSumConstraintsFlag      (ctx, PGA_FALSE);
     PGASetNoDuplicatesFlag        (ctx, PGA_TRUE);
     PGASetMutationBounceBackFlag  (ctx, PGA_TRUE);
-    if (refdir) {
-        PGASetReferenceDirections (ctx, NDIR, directions, 7, 0.05);
-    } else {
-        PGASetReferencePoints     (ctx, np, p);
-    }
+    PGASetCrossoverBounceBackFlag (ctx, PGA_TRUE);
     if (fidx == 11) {
         /* Avoid regression test failing due to rounding error on different
          * architectures. We reduce the precision printed by one.
