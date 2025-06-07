@@ -14,7 +14,6 @@ int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal);
 void set_nsga_state (PGAContext *ctx, int is_ev);
 double find_median (PGAIndividual **s, size_t n, int m);
 void rank_2d_a (PGAContext *ctx, PGAIndividual **s, size_t n);
-unsigned int rank_1d (PGAContext *ctx, PGAIndividual **s, size_t n);
 void rank_2d_b
     ( PGAContext *ctx
     , PGAIndividual **l, size_t nl
@@ -6143,19 +6142,9 @@ void test_ranking (PGAContext *ctx)
     printf ("\nRank 2d on other population, maximize\n");
     print_ranks (ctx, ctx->ga.oldpop, n, max_rank);
 
-    /* Test the 1d case */
+    /* Same as 1d test-case but 2d, zero upper dimension */
     ctx->ga.optdir = PGA_MINIMIZE;
     shuffle_individual_pointers (ctx, l, n);
-    for (i=0; i<n; i++) {
-        ctx->ga.newpop [i].rank = 0;
-    }
-    ctx->ga.newpop [0].rank = 7;
-    ctx->ga.newpop [40].rank = 14;
-    max_rank = rank_1d (ctx, l, n);
-    printf ("\nRank 1d, minimize\n");
-    print_ranks (ctx, ctx->ga.newpop, n, max_rank);
-
-    /* Same as 1d test-case but 2d, zero upper dimension */
     for (i=0; i<n; i++) {
         ctx->ga.newpop [i].rank = 0;
         ctx->ga.newpop [i].auxeval [0] = 0;

@@ -1546,22 +1546,6 @@ STATIC double find_median (PGAIndividual **s, size_t n, int m)
     return quickselect (values, 0, n, n / 2);
 }
 
-/* Comparison function for sorting by ctx->nsga.oidx objective
- * The ctx->nsga.oidx must be set before calling qsort based on this
- * function. This determined by what function index we sort.
- */
-static int oidx_sort_cmp (const void *a1, const void *a2)
-{
-    PGAIndividual * const *i1 = a1;
-    PGAIndividual * const *i2 = a2;
-    PGAContext *ctx = (*i1)->ctx;
-
-    double e1_i1 = GETEVAL_EV (*i1, ctx->nsga.oidx);
-    double e1_i2 = GETEVAL_EV (*i2, ctx->nsga.oidx);
-
-    return OPT_DIR_CMP_EV (ctx, e1_i1, e1_i2);
-}
-
 /* Split function to divide a set into two based on the median value of
  * objective m. We're doing this in-place and return two pointers.
  * We split so that the pivot ends up in the *upper* half. This is
@@ -2056,49 +2040,6 @@ STATIC void rank_2d_a (PGAContext *ctx, PGAIndividual **s, size_t n)
     free (fronts);
 }
 
-/* Comparison function for sorting by ctx->nsga.oidx objective
- * and then by rank in decreasing order.
- * The ctx->nsga.oidx must be set before calling qsort based on this
- * function. This determined by what function index we sort.
- */
-static int oidx_rank_cmp (const void *a1, const void *a2)
-{
-    PGAIndividual * const *i1 = a1;
-    PGAIndividual * const *i2 = a2;
-    int r = 0;
-
-    if ((r = oidx_sort_cmp (a1, a2))) {
-        return r;
-    }
-    return CMP ((*i2)->rank, (*i1)->rank);
-}
-
-/* Special case: 2D with identical values in one dimension:
- * Sort by the other dimension: First by evalue, then by rank,
- * we need the rank because all individuals with same eval need to
- * have the same rank after this procedure.
- */
-STATIC unsigned int rank_1d (PGAContext *ctx, PGAIndividual **s, size_t n)
-{
-    double e_last;
-    size_t i;
-    ctx->nsga.oidx = 0;
-
-    qsort (s, n, sizeof (*s), oidx_rank_cmp);
-    e_last = GETEVAL_EV (s [0], 0);
-    /* Assign ranks */
-    for (i = 1; i < n; i++) {
-        double e_cur = GETEVAL_EV (s [i], 0);
-        int cmp = OPT_DIR_CMP_EV (ctx, e_cur, e_last);
-        assert (cmp >= 0);
-        if (s [i]->rank < s [i-1]->rank + cmp) {
-            s [i]->rank = s [i-1]->rank + cmp;
-        }
-        e_last = e_cur;
-    }
-    return s [n - 1]->rank;
-}
-
 /* Create a non-dominated sorting of s on the first m objectives.
  * The front numbers in s [k]->rank are taken as basis for sorting.
  */
@@ -2122,6 +2063,8 @@ static void nd_helper_a (PGAContext *ctx, PGAIndividual **s, size_t n, int m)
                 s [0]->rank = s [1]->rank + 1;
             }
         }
+    } else if (m == 2) {
+        rank_2d_a (ctx, s, n);
     } else {
         /* Check if all values for objective m-1 are identical */
         int all_identical = 1;
@@ -2134,14 +2077,9 @@ static void nd_helper_a (PGAContext *ctx, PGAIndividual **s, size_t n, int m)
             }
         }
         if (all_identical) {
-            if (m == 2) {
-                (void)rank_1d (ctx, s, n);
-            } else {
-                /* If all values are identical, skip this dimension */
-                nd_helper_a (ctx, s, n, m-1);
-            }
-        } else if (m == 2) {
-            rank_2d_a (ctx, s, n);
+            assert (m > 2);
+            /* If all values are identical, skip this dimension */
+            nd_helper_a (ctx, s, n, m-1);
         } else {
             int maxi = ctx->ga.optdir == PGA_MAXIMIZE;
             PGAIndividual **l, **h;
