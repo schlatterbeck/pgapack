@@ -567,6 +567,16 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_EPSILON_EXPONENT_MAX  10.0 /**< maximum exponent cp from paper */
 /*! @} */
 
+/*!*************************************************************
+ * \defgroup const-nondom Non-dominated sorting
+ * \brief Constants for chosing non-dominated sorting algorithm
+ *  @{
+ ***************************************************************/
+#define PGA_NDSORT_JENSEN  1 /**< Jensen's algorithm*/
+#define PGA_NDSORT_NSQUARE 2 /**< O(N**2) version */
+#define PGA_NDSORT_BOTH    3 /**< Both versions compared */
+/*! @} */
+
 
 /*!***************************************
  * \brief Individual Structure
@@ -705,6 +715,7 @@ typedef struct {
     int symmetric;           /**< Fixed edges are symmetric?                */
     PGAFixedEdge *edges;     /**< Fixed edges for edge crossover            */
     PGAInteger (*r_edge)[2]; /**< Right node + index into edges             */
+    int ndsort;              /**< Non-dominated sorting algorithm           */
     FILE *OutputFile;        /**< Output file                               */
     char *OutFileName;       /**< Output filename                           */
     void *CustomData;        /**< For the user, not sent via MPI            */
@@ -765,6 +776,8 @@ typedef struct {
     void         (*ChromFree)(PGAIndividual *ind);
     /** Hillclimbing *before* evalution */
     void         (*Hillclimb)(PGAContext *, int, int);
+    /** Nondominated Sorting, used internally only */
+    unsigned int (*SortND)(PGAContext *, PGAIndividual **, size_t, int);
 } PGACOperations;
 
 /*!*****************************************
@@ -1019,6 +1032,7 @@ double PGAGetEpsilonExponent (PGAContext *ctx);
 void PGASetEpsilonTheta (PGAContext *ctx, int theta);
 int PGAGetEpsilonTheta (PGAContext *ctx);
 void PGASetOutputFile (PGAContext *ctx, const char *filename);
+void PGASetSortND (PGAContext *ctx, int algo);
 
 /*****************************************
  *          cross.c
@@ -1356,6 +1370,12 @@ void PGA_NSGA_III_Replacement (PGAContext *ctx);
 void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points);
 void PGASetReferenceDirections
     (PGAContext *ctx, size_t ndirs, void *dirs, int npart, double scale);
+unsigned int PGASortND_Jensen
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal);
+unsigned int PGASortND_NSquare
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal);
+unsigned int PGASortND_Both
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal);
 
 
 /*****************************************

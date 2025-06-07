@@ -10,7 +10,6 @@ int compute_intersect (PGAContext *ctx, PGAIndividual **start, int n);
 void compute_worst
     (PGAContext *ctx, PGAIndividual **start, int n, double *wpop, double *wof);
 void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n);
-int ranking (PGAContext *ctx, PGAIndividual **start, int n, int goal);
 void set_nsga_state (PGAContext *ctx, int is_ev);
 double find_median (PGAIndividual **s, size_t n, int m);
 void rank_2d_a (PGAContext *ctx, PGAIndividual **s, size_t n);
@@ -6272,7 +6271,7 @@ void test_pop (PGAContext *ctx, int dim, size_t npop, const void *p, int goal)
             }
         }
     }
-    max_rank = ranking (ctx, start, npop, goal);
+    max_rank = ctx->cops.SortND (ctx, start, npop, goal);
     // Print individuals sorted by rank
     printf ("Individuals sorted by rank, max_rank=%u:\n", max_rank);
     if (max_rank > npop) {
@@ -6364,7 +6363,7 @@ void test_pop_2gen
             }
         }
     }
-    max_rank = ranking (ctx, start, 2 * npop, npop);
+    max_rank = ctx->cops.SortND (ctx, start, 2 * npop, npop);
     // Print individuals sorted by rank
     printf ("Individuals sorted by rank, max_rank=%u:\n", max_rank);
     if (max_rank > 2 * npop) {

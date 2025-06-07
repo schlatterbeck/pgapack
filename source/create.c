@@ -310,6 +310,7 @@ PGAContext *PGACreate
     ctx->ga.OutFileName        = NULL;
     ctx->ga.CustomData         = NULL;
     ctx->ga.NAMWindow          = PGA_UNINITIALIZED_INT;
+    ctx->ga.ndsort             = PGA_UNINITIALIZED_INT;
 
     /* Fixed edges for Edge Crossover */
     ctx->ga.n_edges            = 0;
@@ -352,6 +353,8 @@ PGAContext *PGACreate
     ctx->cops.Deserialize       = NULL;
     ctx->cops.SerializeFree     = NULL;
     ctx->cops.ChromFree         = NULL;
+    ctx->cops.Hillclimb         = NULL;
+    ctx->cops.SortND            = NULL;
 
     ctx->fops.Mutation          = NULL;
     ctx->fops.Crossover         = NULL;
@@ -364,6 +367,7 @@ PGAContext *PGACreate
     ctx->fops.GeneDistance      = NULL;
     ctx->fops.PreEval           = NULL;
     ctx->fops.Hash              = NULL;
+    ctx->fops.Hillclimb         = NULL;
 
     /* Parallel */
     ctx->par.NumIslands        = PGA_UNINITIALIZED_INT;
@@ -1228,6 +1232,10 @@ void PGASetUp (PGAContext *ctx)
             );
     }
 
+    if (ctx->ga.ndsort == PGA_UNINITIALIZED_INT) {
+        ctx->ga.ndsort = PGA_NDSORT_JENSEN;
+    }
+
 
 /* ops */
     /*  If no user supplied "done" function, use the built in one.
@@ -1489,6 +1497,25 @@ void PGASetUp (PGAContext *ctx)
     }
     if ((ctx->cops.Hash == NULL) && (ctx->fops.Hash == NULL)) {
         ctx->cops.Hash = Hash;
+    }
+    if (ctx->cops.SortND == NULL) {
+        switch (ctx->ga.ndsort) {
+            case PGA_NDSORT_JENSEN:
+                ctx->cops.SortND = PGASortND_Jensen;
+                break;
+            case PGA_NDSORT_NSQUARE:
+                ctx->cops.SortND = PGASortND_NSquare;
+                break;
+            case PGA_NDSORT_BOTH:
+                ctx->cops.SortND = PGASortND_Both;
+                break;
+            default:
+                PGAErrorPrintf
+                    ( ctx, PGA_FATAL
+                    , "PGASetUp: Invalid NDSORT option: %d"
+                    , ctx->ga.ndsort
+                    );
+        }
     }
 
 /* par */
@@ -2345,4 +2372,39 @@ void PGASetOutputFile (PGAContext *ctx, const char *name)
     }
     strcpy (n, name);
     ctx->ga.OutFileName = n;
+}
+/*!****************************************************************************
+    \brief Set non-dominated sorting algorithm
+    \ingroup init
+    \param   ctx       context variable
+    \param   algo      constant defining the algorithm
+    \return  None
+
+    \rst
+
+    Description
+    -----------
+
+    Set the algorithm used for non-dominated sorting. Note that you need
+    this only if performing benchmarks or if you're suspecting a bug in
+    the non-dominated sorting. The three algorithms (should) do the same
+    thing. The default is the fastest. See :ref:`group:const-nondom` for
+    the algorithm constants.
+
+
+******************************************************************************/
+void PGASetSortND (PGAContext *ctx, int algo)
+{
+    if (  algo != PGA_NDSORT_JENSEN
+       && algo != PGA_NDSORT_NSQUARE
+       && algo != PGA_NDSORT_BOTH
+       )
+    {
+        PGAErrorPrintf
+            ( ctx, PGA_FATAL
+            , "PGASetSortND: Invalid algorithm: %d"
+            , algo
+            );
+    }
+    ctx->ga.ndsort = algo;
 }

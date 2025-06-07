@@ -18,6 +18,8 @@ Bibliography
             Lashon B. Booker, editors, Proceedings of the Fourth
             International Conference on Genetic Algorithms (ICGA), pages
             92–99. Morgan Kaufmann, San Diego, CA, July 1991.
+.. [Blu13]  Christian Blum, editor. Genetic and Evolutionary Computation
+            GECCO 2013. ACM, Amsterdam, The Netherlands, July 2013.
 .. [BDR19]  Julian Blank, Kalyanmoy Deb, and Proteek Chandan Roy.
             Investigating the normalization procedure of NSGA-III. In
             Kalyanmoy Deb, Erik Goodman, Carlos A. Coello Coello,
@@ -26,6 +28,14 @@ Bibliography
             Optimization, 10th International Conference (EMO),* volume
             11411 of *Lecture Notes in Computer Science,* pages 229–240.
             Springer, East Lansing, MI, USA, March 2019.
+.. [BBFS14] Thomas Bartz-Beielstein, Jürgen Branke, Bogdan Filipič, and
+            Jim Smith, editors. Parallel Problem Solving from Nature
+            |--| PPSN XIII, volume 8672 of Lecture Notes in Computer
+            Science. Springer, Ljubljana, Slovenia, September 2014.
+.. [BS14]   Maxim Buzdalov and Anatoly Shalyto. A provably asymptotically
+            fast version of the generalized Jensen algorithm for
+            non-dominated sorting. In Bartz-Beielstein et al. [BBFS14],
+            pages 528–537.
 .. [CEC01]  IEEE Congress on Evolutionary Computation (CEC). IEEE, Seoul,
             South Korea, May 2001.
 .. [CEC94]  First IEEE Congress on Evolutionary Computation (CEC). IEEE,
@@ -72,6 +82,9 @@ Bibliography
 .. [ES91]   Larry J. Eshelman and J. David Schaffer. Preventing premature
             convergence in genetic algorithms by preventing incest. In
             Belew and Booker [BB91]_, pages 115–122.
+.. [FGP13]  Félix-Antoine Fortin, Simon Grenier, and Marc Parizeau.
+            Generalizing the improved run-time complexity algorithm for
+            non-dominated sorting. In Blum [Blu13]_, pages 615–622.
 .. [FKTL00] Vladimir Filipović, Jozef Kratica, Dušan Tošić, and Ivana Ljubić.
             Fine grained tournament selection for the simple plant
             location problem. In *5th Online World Conference on Soft
@@ -137,6 +150,10 @@ Bibliography
             nondominated sorting approach, part II: Handling constraints
             and extending to an adaptive approach. *IEEE Transactions on
             Evolutionary Computation,* 18(4):602–622, August 2014.
+.. [Jen03]  Mikkel T. Jensen. Reducing the run-time complexity of
+            multiobjective EAs: The NSGA-II and other algorithms. IEEE
+            Transactions on Evolutionary Computation, 7(5):503–515,
+            October 2003.
 .. [Kei06]  Maarten Keijzer, editor. Genetic and Evolutionary Computation
             GECCO 2006. ACM, Seattle, Washington, July 2006.
 .. [MI94]   Tadahiko Murata and Hisao Ishibuchi. Performance evaluation of

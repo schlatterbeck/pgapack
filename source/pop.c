@@ -67,7 +67,7 @@ privately owned rights.
     \param   ctx  context variable
     \param   pop  symbolic constant of the population from which to
                   create the sorted array
-    \return  An inteneral array of indices sorted according to one of
+    \return  An internal array of indices sorted according to one of
              three criteria is created
 
     \rst
@@ -854,7 +854,6 @@ typedef void (* crowding_t)
 
 /* Compute crowding distance over the given individuals
  * This is specific to NSGA-II.
- * For explanation of is_ev see ranking
  */
 STATIC void crowding
     (PGAContext *ctx, PGAIndividual **start, size_t n, unsigned int rank)
@@ -1292,98 +1291,6 @@ static int compare_solutions
     }
     return cmp;
 }
-
-#ifdef DEBUG_RANKING
-/*
- * Dominance computation, old version which is O(n**2)
- * Return the maximum rank given or UINT_MAX if goal was reached exactly
- * (in which case no crowding is necessary)
- * First compute a dominance matrix of N x N bits. The rows are the
- * dominated-by relation. We loop over all n^2 pairs of individuals and
- * fill the matrix. Initit all ranks with -1.
- * Then starting with rank0:
- * - Get all rows of the matrix which are 0 and where the individual has
- *   no rank yet: These are the currently non-dominated individuals,
- *   assign the current rank
- * - Loop over all individuals with the current rank and remove their
- *   bits from the dominance matrix
- * - Increment the rank counter
- */
-static unsigned int ranking_nsquare
-    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
-{
-    size_t i, j;
-    unsigned int rank;
-    int nranked = 0;
-    size_t intsforn = (n + WL - 1) / WL;
-    DECLARE_DYNPTR (PGABinary, dominance, intsforn) =
-        (void *)(ctx->scratch.dominance);
-
-    /* Initialize rank, dominance, crowding
-     * We initialize crowding here, too because later we compute
-     * crowding metric only for the last dominance rank but we sort
-     * *all* individuals by crowding.
-     */
-    for (i=0; i<n; i++) {
-        (start [i])->rank     = UINT_MAX;
-        (start [i])->crowding = 0;
-        for (j=0; j<intsforn; j++) {
-            DEREF2_DYNPTR (dominance, intsforn, i, j) = 0;
-        }
-    }
-    for (i=0; i<n; i++) {
-        for (j=i+1; j<n; j++) {
-            int cmp = compare_solutions
-                (ctx, start [i], start [j], ctx->nsga.nfun, 0);
-            /* Non-dominated if cmp == 0 */
-            /* j dominated by i */
-            if (cmp < 0) {
-                SET_BIT (DEREF1_DYNPTR (dominance, intsforn, j), i);
-            /* i dominated by j */
-            } else if (cmp > 0) {
-                SET_BIT (DEREF1_DYNPTR (dominance, intsforn, i), j);
-            }
-        }
-    }
-    /* Now loop over individuals and establish rank */
-    nranked = 0;
-    for (rank=0; rank<n; rank++) {
-        for (i=0; i<n; i++) {
-            if ((*(start+i))->rank != UINT_MAX) {
-                continue;
-            }
-            for (j=0; j<intsforn; j++) {
-                if (DEREF2_DYNPTR (dominance, intsforn, i, j)) {
-                    break;
-                }
-            }
-            /* Non-dominated in this rank */
-            if (j == intsforn) {
-                (*(start+i))->rank = rank;
-                nranked ++;
-            }
-        }
-        /* Need to rank only goal individuals */
-        if (nranked >= goal || (size_t)nranked >= n) {
-            break;
-        }
-        /* Remove dominance bits for this rank */
-        for (i=0; i<n; i++) {
-            if ((*(start+i))->rank != rank) {
-                continue;
-            }
-            for (j=0; j<n; j++) {
-                CLEAR_BIT (DEREF1_DYNPTR (dominance, intsforn, j), i);
-            }
-        }
-    }
-    /* No need for crowding computation if we hit goal exactly */
-    if (nranked == goal) {
-        return UINT_MAX;
-    }
-    return rank;
-}
-#endif /* DEBUG_RANKING */
 
 /* For sorting an array of double */
 static int double_cmp (const void *a1, const void *a2)
@@ -2196,16 +2103,145 @@ STATIC void set_nsga_state (PGAContext *ctx, int is_ev)
     ctx->nsga.base = is_ev ? 0 : (na - nc + 1);
 }
 
-#ifdef DEBUG_RANKING
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-STATIC unsigned int ranking
+/*!****************************************************************************
+    \brief Perform nondominated sorting with O(n**2) algorithm
+    \ingroup internal
+    \param   ctx             context variable
+    \param   start           pointer to individuals
+    \param   n               number of individuals
+    \param   goal            number of individuals needed in next generation
+    \return  Maximum rank given or UINT_MAX if goal was reached exactly
+             (in which case no crowding is necessary)
+
+    \rst
+
+    Description
+    -----------
+
+    Perform dominance computation known as nondominated sorting or
+    ranking. This is the old algorithm which is O(n**2).
+    First compute a dominance matrix of N x N bits. The rows are the
+    dominated-by relation. We loop over all n^2 pairs of individuals and
+    fill the matrix. Init all ranks with -1.  Then starting with rank0:
+
+    - Get all rows of the matrix which are 0 and where the individual has
+      no rank yet: These are the currently non-dominated individuals,
+      assign the current rank
+    - Loop over all individuals with the current rank and remove their
+      bits from the dominance matrix
+    - Increment the rank counter
+    - Stop early when goal is reached
+
+    \endrst
+******************************************************************************/
+unsigned int PGASortND_NSquare
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
+{
+    size_t i, j;
+    unsigned int rank;
+    int nranked = 0;
+    size_t intsforn = (n + WL - 1) / WL;
+    DECLARE_DYNPTR (PGABinary, dominance, intsforn) =
+        (void *)(ctx->scratch.dominance);
+
+    /* Initialize rank, dominance, crowding
+     * We initialize crowding here, too because later we compute
+     * crowding metric only for the last dominance rank but we sort
+     * *all* individuals by crowding.
+     */
+    for (i=0; i<n; i++) {
+        (start [i])->rank     = UINT_MAX;
+        (start [i])->crowding = 0;
+        for (j=0; j<intsforn; j++) {
+            DEREF2_DYNPTR (dominance, intsforn, i, j) = 0;
+        }
+    }
+    for (i=0; i<n; i++) {
+        for (j=i+1; j<n; j++) {
+            int cmp = compare_solutions
+                (ctx, start [i], start [j], ctx->nsga.nfun, 0);
+            /* Non-dominated if cmp == 0 */
+            /* j dominated by i */
+            if (cmp < 0) {
+                SET_BIT (DEREF1_DYNPTR (dominance, intsforn, j), i);
+            /* i dominated by j */
+            } else if (cmp > 0) {
+                SET_BIT (DEREF1_DYNPTR (dominance, intsforn, i), j);
+            }
+        }
+    }
+    /* Now loop over individuals and establish rank */
+    nranked = 0;
+    for (rank=0; rank<n; rank++) {
+        for (i=0; i<n; i++) {
+            if ((*(start+i))->rank != UINT_MAX) {
+                continue;
+            }
+            for (j=0; j<intsforn; j++) {
+                if (DEREF2_DYNPTR (dominance, intsforn, i, j)) {
+                    break;
+                }
+            }
+            /* Non-dominated in this rank */
+            if (j == intsforn) {
+                (*(start+i))->rank = rank;
+                nranked ++;
+            }
+        }
+        /* Need to rank only goal individuals */
+        if (nranked >= goal || (size_t)nranked >= n) {
+            break;
+        }
+        /* Remove dominance bits for this rank */
+        for (i=0; i<n; i++) {
+            if ((*(start+i))->rank != rank) {
+                continue;
+            }
+            for (j=0; j<n; j++) {
+                CLEAR_BIT (DEREF1_DYNPTR (dominance, intsforn, j), i);
+            }
+        }
+    }
+    /* No need for crowding computation if we hit goal exactly */
+    if (nranked == goal) {
+        return UINT_MAX;
+    }
+    return rank;
+}
+
+/*!****************************************************************************
+    \brief Perform nondominated sorting, compare old and new implementation
+    \ingroup internal
+    \param   ctx             context variable
+    \param   start           pointer to individuals
+    \param   n               number of individuals
+    \param   goal            number of individuals needed in next generation
+    \return  Maximum rank given or UINT_MAX if goal was reached exactly
+             (in which case no crowding is necessary)
+
+    \rst
+
+    Description
+    -----------
+
+    Perform dominance computation known as nondominated sorting or
+    ranking. This version compares the old O(n**2) implementation against
+    the new O(n*(log(n))**m) algorithm (where n is the population size
+    and m is the number of objectives). It asserts that the two produce
+    identical results.
+
+    \endrst
+******************************************************************************/
+unsigned int PGASortND_Both
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
     DECLARE_DYNARRAY (unsigned int, rank1, n);
     DECLARE_DYNARRAY (unsigned int, rank2, n);
     const size_t max_front = ctx->ga.PopSize * 2;
     size_t *front_sizes = ctx->scratch.nsga_tmp.front_sizes;
-    cpy_start = ctx->scratch.nsga_tmp.ind_tmp;
+    PGAIndividual **cpy_start = ctx->scratch.nsga_tmp.ind_tmp;
     unsigned int max_rank = 0, mr_new = 0, mr_old = 0;
     size_t i;
 
@@ -2218,10 +2254,7 @@ STATIC unsigned int ranking
         start [i]->crowding = 0;
     }
     memcpy (cpy_start, start, sizeof (*start) * n);
-    mr_old = max_rank = ranking_nsquare (ctx, start, n, goal);
-#ifdef DEBUG_RANKING_USE_NSQUARE_ONLY
-    return mr_old;
-#endif
+    mr_old = max_rank = PGASortND_NSquare (ctx, start, n, goal);
     /* Copy ranks and re-initialize to 0 */
     for (i=0; i<n; i++) {
         rank1 [i] = start [i]->rank;
@@ -2291,14 +2324,33 @@ STATIC unsigned int ranking
     return mr_new;
 }
 
-#else /* !DEBUG_RANKING */
+/*!****************************************************************************
+    \brief Perform nondominated sorting using Jensen's algorithm
+    \ingroup internal
+    \param   ctx             context variable
+    \param   start           pointer to individuals
+    \param   n               number of individuals
+    \param   goal            number of individuals needed in next generation
+    \return  Maximum rank given or UINT_MAX if goal was reached exactly
+             (in which case no crowding is necessary)
 
-/* Dominance computation, return the maximum rank given or UINT_MAX if
- * goal was reached exactly (in which case no crowding is necessary)
- * Main ranking function that selects the appropriate algorithm based on
- * number of objectives
- */
-STATIC unsigned int ranking
+    \rst
+
+    Description
+    -----------
+
+    Perform dominance computation known as nondominated sorting or
+    ranking. This is the new algorithm originally by Jensen [Jen03]_,
+    modified to correctly handle duplicates by Fortin et. al [FGP13]_
+    and (for a slightly modified version) shown to be O(N*log(N)**(M-1))
+    by Buzdalov and Shalyto [BS14]_.
+
+    The algorithm selects the appropriate algorithm based on the number
+    of objectives (there is a special case for m=2 objectives).
+
+    \endrst
+******************************************************************************/
+unsigned int PGASortND_Jensen
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
     size_t i;
@@ -2319,9 +2371,6 @@ STATIC unsigned int ranking
         return ranking_3_plus_objectives (ctx, cpy_start, n, goal);
     }
 }
-#endif /* !DEBUG_RANKING */
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /*!****************************************************************************
     \brief Perform NSGA Replacement
@@ -2445,7 +2494,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
     } else {
         unsigned int rank;
         set_nsga_state (ctx, 1);
-        rank = ranking (ctx, all_individuals, n_unc_ind, popsize);
+        rank = ctx->cops.SortND (ctx, all_individuals, n_unc_ind, popsize);
         if (n_unc_ind >= popsize && rank != UINT_MAX) {
             crowding_method (ctx, all_individuals, n_unc_ind, rank);
         }
@@ -2476,7 +2525,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
         } else {
             unsigned int rank;
             set_nsga_state (ctx, 0);
-            rank = ranking
+            rank = ctx->cops.SortND
                 ( ctx
                 , all_individuals + n_unc_ind
                 , n_con_ind
