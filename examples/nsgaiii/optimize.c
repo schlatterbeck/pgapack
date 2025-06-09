@@ -226,5 +226,7 @@ int main (int argc, char **argv)
     if (refdir) {
         free (p);
     }
+    free (lower);
+    free (upper);
     return 0;
 }
