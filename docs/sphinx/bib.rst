@@ -30,11 +30,11 @@ Bibliography
             Springer, East Lansing, MI, USA, March 2019.
 .. [BBFS14] Thomas Bartz-Beielstein, Jürgen Branke, Bogdan Filipič, and
             Jim Smith, editors. Parallel Problem Solving from Nature
-            |--| PPSN XIII, volume 8672 of Lecture Notes in Computer
+            -- PPSN XIII, volume 8672 of Lecture Notes in Computer
             Science. Springer, Ljubljana, Slovenia, September 2014.
 .. [BS14]   Maxim Buzdalov and Anatoly Shalyto. A provably asymptotically
             fast version of the generalized Jensen algorithm for
-            non-dominated sorting. In Bartz-Beielstein et al. [BBFS14],
+            non-dominated sorting. In Bartz-Beielstein et al. [BBFS14]_,
             pages 528–537.
 .. [CEC01]  IEEE Congress on Evolutionary Computation (CEC). IEEE, Seoul,
             South Korea, May 2001.

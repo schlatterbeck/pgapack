@@ -569,11 +569,11 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 
 /*!*************************************************************
  * \defgroup const-nondom Non-dominated sorting
- * \brief Constants for chosing non-dominated sorting algorithm
+ * \brief Constants for chosing non-dominated sorting algorithm.
  *  @{
  ***************************************************************/
-#define PGA_NDSORT_JENSEN  1 /**< Jensen's algorithm*/
-#define PGA_NDSORT_NSQUARE 2 /**< O(N**2) version */
+#define PGA_NDSORT_JENSEN  1 /**< Jensen's algorithm     */
+#define PGA_NDSORT_NSQUARE 2 /**< O(N**2) version        */
 #define PGA_NDSORT_BOTH    3 /**< Both versions compared */
 /*! @} */
 

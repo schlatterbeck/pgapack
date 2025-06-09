@@ -2389,8 +2389,10 @@ void PGASetOutputFile (PGAContext *ctx, const char *name)
     this only if performing benchmarks or if you're suspecting a bug in
     the non-dominated sorting. The three algorithms (should) do the same
     thing. The default is the fastest. See :ref:`group:const-nondom` for
-    the algorithm constants.
+    the algorithm constants. More details are in section
+    :ref:`sec:population-replacement` of the user guide.
 
+    \endrst
 
 ******************************************************************************/
 void PGASetSortND (PGAContext *ctx, int algo)

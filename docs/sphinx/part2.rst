@@ -330,6 +330,30 @@ many-objective optimization, NSGA-III [DJ14]_,
 population replacement algorithms when using multi-objective
 optimization.
 
+Both, NSGA-II and NSGA-III use non-dominated sorting of the union of the
+old and the new population. This establishes ranks of non-domination
+among members of the population. The non-dominated sorting uses an
+:math:`O(n^2\cdot m)` algorithm in the original NSGA-II paper [DPAM02]_
+(:math:`n` being the population size and :math:`m` the number of
+objectives) and was also implemented this way in PGAPack. This algorithm
+has recently been replaced with Jensen's divide-and-conquer algorithm
+[Jen03]_, later modified to correctly handle equal evaluations by Fortin
+et. al. [FGP13]_.  It has later been shown that a slightly modified
+version of the algorithm is :math:`O\left(n\cdot \log(n)^{m-1}\right)`
+by Buzdalov and Shalyto [BS14]_.  The authors of that paper think that
+the approximate runtime effort also applies to the original Jensen
+algorithm.
+
+By default the new Jensen algorithm -- which is strictly faster than the
+old NSGA-II algorithm with a population size larger than 100 -- is used.
+The old algorithm can still be selected by calling :c:func:`PGASetSortND`
+with the constant :c:macro:`PGA_NDSORT_NSQUARE`. For testing the old
+against the new algorithm, this function can be called with
+:c:macro:`PGA_NDSORT_BOTH` which runs both algorithms and compares the
+results. You should never need to set this unless you suspect a bug in
+the Jensen algorithm or want to compare runtimes. The default is
+:c:macro:`PGA_NDSORT_JENSEN`.
+
 With NSGA-III you need to define a regular set of points or a set of
 directions where you want solutions to the multi-objective problem to be
 found, both can be combined, you can specify both, a number of reference
@@ -396,7 +420,7 @@ The difference to the reference points above is that the reference
 directions are in the objective space and the Das/Dennis points are
 generated dynamically in each generation.
 
-Note that by default when no population size if specified, NSGA-III uses
+Note that by default when no population size is specified, NSGA-III uses
 the number of points defined by the reference points and reference
 directions for the population size.
 

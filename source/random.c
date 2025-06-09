@@ -420,6 +420,7 @@ void PGASetRandomSeed (PGAContext *ctx, int seed)
     parallel processes
     \ingroup init
     \param   ctx   context variable
+    \param   flag  boolean flag
     \return  None
 
     \rst

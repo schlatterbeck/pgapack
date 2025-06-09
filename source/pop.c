@@ -2341,7 +2341,7 @@ unsigned int PGASortND_Both
 
     Perform dominance computation known as nondominated sorting or
     ranking. This is the new algorithm originally by Jensen [Jen03]_,
-    modified to correctly handle duplicates by Fortin et. al [FGP13]_
+    modified to correctly handle duplicates by Fortin et. al. [FGP13]_
     and (for a slightly modified version) shown to be O(N*log(N)**(M-1))
     by Buzdalov and Shalyto [BS14]_.
 
