@@ -44,6 +44,44 @@ reproduces some of the results in the paper [1]_. Just pipe the output
 of the optimization run through the script or use the ``nsgaii*.data``
 files in the test directory as input.
 
+The water problem (f-index 12 when calling optimize) has strong correlations
+between objectives 0 and 2, we can see this when we plot the two
+objectives using::
+
+    crowdingplot -x=0 -y=2 ../../test/nsgaii_optimize_12.data
+
+.. raw:: html
+
+    <iframe width="800" height="640" scrolling="no" frameborder="no" src="x_0_y_2.html">
+    </iframe>
+
+This means that getting a better evaluation for objective 0 also gets a
+better evaluation of objective 2 and vice-versa, i.e. the objectives are
+not contradictory. Furthermore objective 3 is redundant [7]_ with the
+other objectives and can be left out when plotting objectives. So the
+5-dimensional (the problem has 5 objectives and 7 constraints) pareto
+front can be reduced to a 3-dimensional front and can be plotted with
+crowdingplot and yield quite similar results (when scaling to the same
+visible range)::
+
+ crowdingplot -3 -x=0 -y=1 -z=4 ../../test/nsgaii_optimize_12.data
+ crowdingplot -3 -x=2 -y=1 -z=4 ../../test/nsgaii_optimize_12.data
+
+This means we can reduce the number of objectives not just for plotting,
+but during optimization, too [7]_. The two outputs of ``crowdingplot``
+above follow here:
+
+.. raw:: html
+
+    <iframe width="800" height="640" scrolling="no" frameborder="no" src="x_0_y_1_z_4.html">
+    </iframe>
+
+.. raw:: html
+
+    <iframe width="800" height="640" scrolling="no" frameborder="no" src="x_2_y_1_z_4.html">
+    </iframe>
+
+
 .. [1] Kalyanmoy Deb, Amrit Pratap, Sameer Agarwal, and T. Meyarivan.
        A fast and elitist multiobjective genetic algorithm: NSGA-II.
        IEEE Transactions on Evolutionary Computation, 6(2):182–197,
@@ -64,3 +102,7 @@ files in the test directory as input.
 .. [6] Tapabrata Ray, Kang Tai, and Kin Chye Seow. Multiobjective design
        optimization by an evolutionary algorithm. Engineering Optimization,
        33(4):399–424, 2001.
+.. [7] Hemant Kumar Singh, Amitay Isaacs, and Tapabrata Ray.  A pareto
+       corner search evolutionary algorithm and dimensionality reduction
+       in many-objective optimization problems. IEEE Transactions on
+       Evolutionary Computation, 15(4):539–556, August 2011.
