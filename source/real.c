@@ -294,11 +294,11 @@ void PGASetRealInitRange (PGAContext *ctx, const double *min, const double *max)
 
     for (i=ctx->ga.StringLen-1; i>=0; i--) {
         if (max [i] < min [i]) {
-            PGAError
+            PGAFatalPrintf
                 ( ctx
                 , "PGASetRealInitRange: Lower bound exceeds upper bound "
-                  "for allele #"
-                , PGA_FATAL, PGA_INT, (void *) &i
+                  "for allele #%d"
+                , i
                 );
         } else {
              ctx->init.RealMin [i] = min [i];
@@ -340,10 +340,8 @@ double PGAGetMinRealInitValue (PGAContext *ctx, int i)
     PGACheckDataType  ("PGAGetMinRealInitValue", PGA_DATATYPE_REAL);
 
     if (i < 0 || i >= ctx->ga.StringLen) {
-        PGAError
-            ( ctx, "PGAGetMinRealInitValue: Index out of range:"
-            , PGA_FATAL, PGA_INT, (int *) &i
-            );
+        PGAFatalPrintf
+            (ctx, "PGAGetMinRealInitValue: Index out of range: %d", i);
     }
 
     PGADebugExited ("PGAGetMinRealInitValue");
@@ -381,10 +379,8 @@ double PGAGetMaxRealInitValue (PGAContext *ctx, int i)
     PGACheckDataType  ("PGAGetMaxRealInitValue", PGA_DATATYPE_REAL);
 
     if (i < 0 || i >= ctx->ga.StringLen) {
-        PGAError
-            ( ctx, "PGAGetMaxRealInitValue: Index out of range:"
-            , PGA_FATAL, PGA_INT, (int *) &i
-            );
+        PGAFatalPrintf
+            (ctx, "PGAGetMaxRealInitValue: Index out of range: %d", i);
     }
 
     PGADebugExited ("PGAGetMaxRealInitValue");
@@ -481,10 +477,8 @@ void PGARealCreateString (PGAContext *ctx, int p, int pop, int initflag)
 
     new->chrom = (void *) malloc (ctx->ga.StringLen * sizeof(PGAReal));
     if (new->chrom == NULL) {
-        PGAError
-            ( ctx, "PGARealCreateString: No room to allocate new->chrom"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+        PGAFatalPrintf
+            (ctx, "PGARealCreateString: No room to allocate new->chrom");
     }
     c = (PGAReal *)new->chrom;
     if (initflag) {
@@ -668,10 +662,10 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                     }
                     break;
                 default:
-                    PGAError
-                        ( ctx, "PGARealMutation: Invalid DE crossover type:"
-                        , PGA_FATAL, PGA_INT
-                        , (void *) &(ctx->ga.DECrossoverType)
+                    PGAFatalPrintf
+                        ( ctx
+                        , "PGARealMutation: Invalid DE crossover type: %d"
+                        , ctx->ga.DECrossoverType
                         );
                     break;
                 }
@@ -707,18 +701,23 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                         }
                         break;
                     default:
-                        PGAError(ctx, "PGARealMutation: Invalid value of "
-                                 "ga.DEVariant:", PGA_FATAL, PGA_INT,
-                                 (void *) &(ctx->ga.DEVariant));
+                        PGAFatalPrintf
+                            ( ctx
+                            , "PGARealMutation: Invalid value of "
+                              "ga.DEVariant: %d"
+                            , ctx->ga.DEVariant
+                            );
                         break;
                     }
                     count++;
                 }
                 break;
             default:
-                PGAError(ctx, "PGARealMutation: Invalid value of "
-                         "ga.MutationType:", PGA_FATAL, PGA_INT,
-                         (void *) &(ctx->ga.MutationType));
+                PGAFatalPrintf
+                    ( ctx
+                    , "PGARealMutation: Invalid value of ga.MutationType: %d"
+                    , ctx->ga.MutationType
+                    );
                 break;
         }
 

@@ -123,20 +123,16 @@ void PGASetUserFunction (PGAContext *ctx, int constant, void *f)
     PGADebugEntered ("PGASetUserFunction");
 
     if (f == NULL) {
-        PGAError
-            ( ctx, "PGASetUserFunction: Invalid function"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+        PGAFatalPrintf (ctx, "PGASetUserFunction: Invalid function");
     }
 
     switch (constant) {
       case PGA_USERFUNCTION_CREATESTRING:
         if (ctx->sys.UserFortran) {
-            PGAError
+            PGAFatalPrintf
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_CREATESTRING from Fortran."
-                , PGA_FATAL, PGA_VOID, NULL
                 );
         } else {
             ctx->cops.CreateString = (void(*)(PGAContext *, int, int, int))f;
@@ -144,11 +140,10 @@ void PGASetUserFunction (PGAContext *ctx, int constant, void *f)
         break;
       case PGA_USERFUNCTION_SERIALIZE:
         if (ctx->sys.UserFortran) {
-            PGAError
+            PGAFatalPrintf
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_SERIALIZE from Fortran."
-                , PGA_FATAL, PGA_VOID, NULL
                 );
         } else {
             ctx->cops.Serialize =
@@ -157,11 +152,10 @@ void PGASetUserFunction (PGAContext *ctx, int constant, void *f)
         break;
       case PGA_USERFUNCTION_DESERIALIZE:
         if (ctx->sys.UserFortran) {
-            PGAError
+            PGAFatalPrintf
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_DESERIALIZE from Fortran."
-                , PGA_FATAL, PGA_VOID, NULL
                 );
         } else {
             ctx->cops.Deserialize =
@@ -170,11 +164,10 @@ void PGASetUserFunction (PGAContext *ctx, int constant, void *f)
         break;
       case PGA_USERFUNCTION_SERIALIZE_FREE:
         if (ctx->sys.UserFortran) {
-            PGAError
+            PGAFatalPrintf
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_SERIALIZE_FREE from Fortran."
-                , PGA_FATAL, PGA_VOID, NULL
                 );
         } else {
             ctx->cops.SerializeFree = (void(*)(void *))f;
@@ -182,11 +175,10 @@ void PGASetUserFunction (PGAContext *ctx, int constant, void *f)
         break;
       case PGA_USERFUNCTION_CHROM_FREE:
         if (ctx->sys.UserFortran) {
-            PGAError
+            PGAFatalPrintf
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_CHROM_FREE from Fortran."
-                , PGA_FATAL, PGA_VOID, NULL
                 );
         } else {
             ctx->cops.ChromFree = (void(*)(PGAIndividual *))f;
@@ -218,11 +210,10 @@ void PGASetUserFunction (PGAContext *ctx, int constant, void *f)
         break;
       case PGA_USERFUNCTION_COPYSTRING:
         if (ctx->sys.UserFortran) {
-            PGAError
+            PGAFatalPrintf
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_COPYSTRING from Fortran."
-                , PGA_FATAL, PGA_VOID, NULL
                 );
         } else {
             ctx->cops.CopyString = (void(*)(PGAContext *, int, int, int, int))f;
@@ -245,11 +236,10 @@ void PGASetUserFunction (PGAContext *ctx, int constant, void *f)
         break;
       case PGA_USERFUNCTION_BUILDDATATYPE:
         if (ctx->sys.UserFortran) {
-            PGAError
+            PGAFatalPrintf
                 ( ctx
                 , "PGASetUserFunction: Cannot call "
                   "PGA_USERFUNCTION_BUILDDATATYPE from Fortran."
-                , PGA_FATAL, PGA_VOID, NULL
                 );
         } else {
             ctx->cops.BuildDatatype =
@@ -301,10 +291,8 @@ void PGASetUserFunction (PGAContext *ctx, int constant, void *f)
         }
         break;
       default:
-        PGAError
-            ( ctx, "PGASetUserFunction: Invalid constant:"
-            , PGA_FATAL, PGA_INT, (void *) &constant
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetUserFunction: Invalid constant: %d", constant);
         break;
     }
 

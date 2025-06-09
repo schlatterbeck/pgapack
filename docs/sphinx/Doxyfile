@@ -35,6 +35,8 @@ PREDEFINED            += PGACheckDataType(a,b)
 PREDEFINED            += INDEX(a,b,c,d)
 PREDEFINED            += _PGAGetEvaluation=PGAGetEvaluation
 PREDEFINED            += _PGASetEvaluation=PGASetEvaluation
+PREDEFINED            += NO_RETURN
+PREDEFINED            += PRINTF_FMT(a,b)
 ALIASES                = "rst=\verbatim embed:rst"
 ALIASES               += "rsts=\verbatim embed:rst:leading-asterisk"
 ALIASES               += "endrst=\endverbatim"

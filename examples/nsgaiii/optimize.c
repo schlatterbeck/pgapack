@@ -161,7 +161,7 @@ int main (int argc, char **argv)
     lower = malloc (sizeof (*lower) * dimension);
     upper = malloc (sizeof (*upper) * dimension);
     if (lower == NULL || upper == NULL) {
-        PGAErrorPrintf (ctx, PGA_FATAL, "Out of memory allocating bounds");
+        PGAFatalPrintf (ctx, "Out of memory allocating bounds");
     }
     for (i=0; i<dimension; i++) {
         lower [i] = problem->lower;

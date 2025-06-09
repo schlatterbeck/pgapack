@@ -16,7 +16,13 @@
  * but throws an exception if allocation fails). We do not bother to
  * catch the exception in the error-case.
  */
-#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+#if defined(DOXYGEN_SHOULD_SKIP_THIS)
+/* The following doesn't seem to work with doxygen, needs to be in
+ * PREDEFINED in the Doxyfile
+ */
+#define NO_RETURN
+#define PRINTF_FMT(a, b)
+#else /* !defined(DOXYGEN_SHOULD_SKIP_THIS) */
 
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS
@@ -69,7 +75,22 @@
 #define DEBUG_CHECK_PERMUTE(ctx, chrom)
 #endif
 
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+/* Declare that a function does not return */
+/* Declare printf-like function */
+#if defined (__clang__)
+#define NO_RETURN __attribute__((noreturn))
+#define PRINTF_FMT(a, b) __attribute__((__format__ (__printf__, a, b)))
+#elif defined(__GNUC__)
+#define NO_RETURN __attribute__((noreturn))
+#define PRINTF_FMT(a, b) __attribute__((format(printf, a, b)))
+#elif defined (__MINGW32__)
+#define NO_RETURN __attribute__((noreturn))
+#define PRINTF_FMT(a, b) __attribute__((format(printf, a, b)))
+#elif defined (_MSC_VER)
+#define NO_RETURN __declspec(noreturn)
+#define PRINTF_FMT(a, b)
+#endif
+#endif /* !DOXYGEN_SHOULD_SKIP_THIS */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -114,17 +135,15 @@ extern "C" {
 /** Check that when this is called everything is set up */
 #define PGAFailIfNotSetUp(Name)  \
   if (ctx->sys.SetUpCalled == PGA_FALSE) \
-     PGAError(ctx, "PGASetUp must be called before " Name, \
-              PGA_FATAL, PGA_VOID, NULL)
+     PGAFatalPrintf(ctx, "PGASetUp must be called before " Name)
 /** Check that when this is called set up is still pending */
 #define PGAFailIfSetUp(Name)  \
   if (ctx->sys.SetUpCalled == PGA_TRUE) \
-     PGAError(ctx, Name " must be called before PGASetUp", PGA_FATAL, \
-              PGA_VOID, NULL)
+     PGAFatalPrintf(ctx, Name " must be called before PGASetUp")
 /** Ensure right GA data type */
 #define PGACheckDataType(Name, DataType) \
   if (ctx->ga.datatype != DataType) \
-     PGAError(ctx, "DataType is incorrect for " Name,PGA_FATAL,PGA_VOID,NULL)
+     PGAFatalPrintf(ctx, "DataType is incorrect for " Name)
 #else
 #undef OPTIMIZE
 #define OPTIMIZE 1
@@ -205,11 +224,14 @@ typedef unsigned int    PGAHash;
 /*! @} */
 
 /*!***********************************************
- *  \defgroup const-err-print Error Printing
- *  \brief Constants for error printing.
- *   Use these with \ref PGAError
- *   or better use \ref PGAErrorPrintf.
- *  @{
+    \defgroup const-err-print Error Printing
+    \brief Constants for error printing.
+   \rst
+     Use these with :c:func:`PGAError`
+     or better use :c:func:`PGAErrorPrintf`.
+     These constants (and :c:func:`PGAError`) are deprecated.
+   \endrst
+    @{
  ************************************************/
 #define PGA_INT                   1 /**< integer value for printing   */
 #define PGA_DOUBLE                2 /**< double value for printing    */
@@ -259,9 +281,13 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 
 
 /*!*******************************************
- * \defgroup const-printflags Print flags
- * \brief Printing flags.
- * @{
+   \defgroup const-printflags Print flags
+   \brief Printing flags.
+   \rst
+   Use of :c:macro:`PGA_FATAL` is deprecated,
+   use :c:func:`PGAFatalPrintf` instead.
+   \endrst
+   @{
  ********************************************/
 #define PGA_FATAL                 1 /**< Fatal error */
 #define PGA_WARNING               2 /**< Warning     */
@@ -416,20 +442,22 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!****************************************
- *  \defgroup const-mixing Mixing Variants
- *  \brief Constants for defining mixing variants.
- *
- * This defines how mutation/crossover are combined (or not)
- * The MUTATE_AND_CROSS variant performs mutation only if crossover was
- * also performed. The TRADITIONAL variant performs mutation with the
- * configured probability and then mutates with the given probability
- * regardless if crossover was performed or not (this is the way all
- * traditional implementations of GA are handling it).
- * Note: This replaces the previous flags
- * (\ref PGASetMutationOrCrossoverFlag and friends)
- * which are still supported for legacy reasons.
- * The default is PGA_MIX_MUTATE_OR_CROSS also for legacy reasons.
- *  @{
+    \defgroup const-mixing Mixing Variants
+    \brief Constants for defining mixing variants.
+
+   \rst
+   This defines how mutation/crossover are combined (or not)
+   The :c:macro:`PGA_MIX_MUTATE_AND_CROSS` variant performs mutation only if
+   crossover was also performed. The :c:macro:`PGA_MIX_TRADITIONAL`
+   variant performs mutation with the configured probability and then
+   mutates with the given probability regardless if crossover was
+   performed or not (this is the way all traditional implementations of
+   GA are handling it).  Note: This replaces the previous flags
+   (:c:macro:`PGASetMutationOrCrossoverFlag` and friends) which are
+   still supported for legacy reasons. The default is
+   :c:macro:`PGA_MIX_MUTATE_OR_CROSS` also for legacy reasons.
+   \endrst
+    @{
  */
 /** Either mutation or crossover (default) */
 #define PGA_MIX_MUTATE_OR_CROSS   1
@@ -1495,9 +1523,15 @@ int PGAGetMaxSimilarityValue (PGAContext *ctx);
  *          system.c
  *****************************************/
 
+/* Deprecated ! */
 void PGAError (PGAContext *ctx, char *msg,
                int level, int datatype, void *data);
+PRINTF_FMT(3, 4)
 void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...);
+/* Use the following instead of PGAErrorPrintf (ctx, PGA_FATAL, ...) */
+NO_RETURN
+PRINTF_FMT(2, 3)
+void PGAFatalPrintf (PGAContext *ctx, char *fmt, ...);
 void PGADestroy (PGAContext *ctx);
 int PGAGetMaxMachineIntValue (PGAContext *ctx);
 int PGAGetMinMachineIntValue (PGAContext *ctx);

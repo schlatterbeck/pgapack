@@ -2193,10 +2193,8 @@ void pgaprintreport_(PGAContext **ftx, char *name, int *pop, int len)
     } else {
         fp = fopen (name, "a");
         if (!fp) {
-            PGAError
-                ( *ftx, "PGAPrintReport: Could not open file:"
-                , PGA_FATAL, PGA_CHAR, (void *) name
-                );
+            PGAFatalPrintf
+                (*ftx, "PGAPrintReport: Could not open file: %s", name);
         } else {
             PGAPrintReport (*ftx, fp, *pop);
             fclose (fp);
@@ -2245,10 +2243,8 @@ void pgaprintpopulation_(PGAContext **ftx, char *name, int *pop, int len)
     } else {
         fp = fopen (name, "a");
         if (!fp) {
-            PGAError
-                ( *ftx, "PGAPrintPopulation: Could not open file:"
-                , PGA_FATAL, PGA_CHAR, (void *) name
-                );
+            PGAFatalPrintf
+                (*ftx, "PGAPrintPopulation: Could not open file: %s", name);
         } else {
             PGAPrintPopulation (*ftx, fp, *pop);
             fclose (fp);
@@ -2275,10 +2271,8 @@ void pgaprintindividual_
     } else {
         fp = fopen(name, "a");
         if (!fp) {
-            PGAError
-                ( *ftx, "PGAPrintIndividual: Could not open file:"
-                , PGA_FATAL, PGA_CHAR, (void *) name
-                );
+            PGAFatalPrintf
+                (*ftx, "PGAPrintIndividual: Could not open file: %s", name);
         } else {
             PGAPrintIndividual
                 ( *ftx, fp
@@ -2309,10 +2303,8 @@ void pgaprintstring_ (PGAContext **ftx, char *name, int *p,
     } else {
         fp = fopen (name, "a");
         if (!fp) {
-            PGAError
-                ( *ftx, "PGAPrintString: Could not open file:"
-                , PGA_FATAL, PGA_CHAR, (void *) name
-                );
+            PGAFatalPrintf
+                (*ftx, "PGAPrintString: Could not open file: %s", name);
         } else {
             PGAPrintString
                 ( *ftx, fp
@@ -2340,9 +2332,10 @@ void pgaprintcontextvariable_(PGAContext **ftx, char *name, int len)
     } else {
         fp = fopen (name, "a");
         if (!fp) {
-            PGAError
-                ( *ftx, "PGAPrintContextVariable: Could not open file:"
-                , PGA_FATAL, PGA_CHAR, (void *) name
+            PGAFatalPrintf
+                ( *ftx
+                , "PGAPrintContextVariable: Could not open file: %s"
+                , name
                 );
         } else {
             PGAPrintContextVariable (*ftx, fp);

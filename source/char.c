@@ -195,10 +195,8 @@ void PGASetCharacterInitType (PGAContext *ctx, int value)
          ctx->init.CharacterType = value;
          break;
     default:
-         PGAError
-            ( ctx, "PGASetCharacterInitType: Invalid case type:"
-            , PGA_FATAL, PGA_INT, (void *)&value
-            );
+         PGAFatalPrintf
+            (ctx, "PGASetCharacterInitType: Invalid case type: %d", value);
          break;
     }
 
@@ -252,10 +250,8 @@ void PGACharacterCreateString (PGAContext *ctx, int p, int pop, int initflag)
 
     new->chrom = (void *)malloc (ctx->ga.StringLen * sizeof(PGACharacter));
     if (new->chrom == NULL) {
-        PGAError
-            ( ctx, "PGACharacterCreateString: No room to allocate new->chrom"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+        PGAFatalPrintf
+            (ctx, "PGACharacterCreateString: No room to allocate new->chrom");
     }
     c = (PGACharacter *)new->chrom;
     if (initflag) {

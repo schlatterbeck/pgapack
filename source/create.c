@@ -185,16 +185,13 @@ PGAContext *PGACreate
         ctx->ga.datatype  = datatype;
         break;
     default:
-        PGAError( ctx, "PGACreate: Invalid value of datatype:"
-                , PGA_FATAL, PGA_INT, (void *) &datatype
-                );
+        PGAFatalPrintf
+            (ctx, "PGACreate: Invalid value of datatype: %d", datatype);
     };
 
     /* required parameter 2: string length */
     if (len <= 0) {
-        PGAError ( ctx, "PGACreate: Invalid value of len:"
-                 , PGA_FATAL, PGA_INT, (void *) &len
-                 );
+        PGAFatalPrintf (ctx, "PGACreate: Invalid value of len: %d", len);
     } else {
         ctx->ga.StringLen = len;
     }
@@ -207,9 +204,8 @@ PGAContext *PGACreate
             ctx->ga.optdir = maxormin;
             break;
         default:
-            PGAError ( ctx, "PGACreate: Invalid value of optdir:"
-                     , PGA_FATAL, PGA_INT, (void *) &maxormin
-                     );
+            PGAFatalPrintf
+                (ctx, "PGACreate: Invalid value of optdir: %d", maxormin);
     };
 
 
@@ -427,15 +423,13 @@ PGAContext *PGACreate
     case PGA_DATATYPE_INTEGER:
          ctx->init.IntegerMax = malloc (len * sizeof (PGAInteger));
          if (!ctx->init.IntegerMax) {
-             PGAError ( ctx, "PGACreate: No room to allocate:", PGA_FATAL
-                      , PGA_CHAR, (void *) "ctx->init.IntegerMax"
-                      );
+             PGAFatalPrintf
+                (ctx, "PGACreate: No room to allocate: ctx->init.IntegerMax");
          }
          ctx->init.IntegerMin = malloc (len * sizeof (PGAInteger));
          if (!ctx->init.IntegerMin) {
-             PGAError ( ctx, "PGACreate: No room to allocate:", PGA_FATAL
-                      , PGA_CHAR, (void *) "ctx->init.IntegerMin"
-                      );
+             PGAFatalPrintf
+                (ctx, "PGACreate: No room to allocate: ctx->init.IntegerMin");
          }
          ctx->init.RealMax = NULL;
          ctx->init.RealMin = NULL;
@@ -447,15 +441,13 @@ PGAContext *PGACreate
     case PGA_DATATYPE_REAL:
          ctx->init.RealMax = (PGAReal *) malloc (len * sizeof (PGAReal));
          if (!ctx->init.RealMax) {
-             PGAError ( ctx, "PGACreate: No room to allocate:", PGA_FATAL
-                      , PGA_CHAR, (void *) "ctx->init.RealMax"
-                      );
+             PGAFatalPrintf
+                (ctx, "PGACreate: No room to allocate: ctx->init.RealMax");
          }
          ctx->init.RealMin = (PGAReal *) malloc(len * sizeof(PGAReal));
          if (!ctx->init.RealMin) {
-              PGAError ( ctx, "PGACreate: No room to allocate:", PGA_FATAL
-                       , PGA_CHAR, (void *) "ctx->init.RealMin"
-                       );
+              PGAFatalPrintf
+                (ctx, "PGACreate: No room to allocate: ctx->init.RealMin");
          }
          ctx->init.IntegerMax = NULL;
          ctx->init.IntegerMin = NULL;
@@ -526,8 +518,8 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
     if (ctx->ga.NumAuxEval) {
         ind->auxeval = malloc (sizeof (double) * ctx->ga.NumAuxEval);
         if (ind->auxeval == NULL) {
-            PGAError(ctx, "PGACreateIndividual: Failed to allocate auxeval",
-                     PGA_FATAL, PGA_VOID, NULL);
+            PGAFatalPrintf
+                (ctx, "PGACreateIndividual: Failed to allocate auxeval");
         }
     } else {
         ind->auxeval = NULL;
@@ -536,7 +528,7 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
         int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
         ind->normalized = malloc (sizeof (double) * dim);
         if (ind->normalized == NULL) {
-            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normalized point");
+            PGAFatalPrintf (ctx, "Cannot allocate normalized point");
         }
         memset (ind->normalized, 0, sizeof (double) * dim);
     } else {
@@ -594,10 +586,8 @@ void PGACreatePop (PGAContext *ctx, int pop)
         ctx->ga.oldpop = (PGAIndividual *)malloc
             (sizeof(PGAIndividual) * (ctx->ga.PopSize + 2));
         if (ctx->ga.oldpop == NULL) {
-            PGAError
-                ( ctx, "PGACreatePop: No room to allocate ctx->ga.oldpop"
-                , PGA_FATAL, PGA_VOID, NULL
-                );
+            PGAFatalPrintf
+                (ctx, "PGACreatePop: No room to allocate ctx->ga.oldpop");
         }
         memset
             (ctx->ga.oldpop, 0, sizeof(PGAIndividual) * (ctx->ga.PopSize + 2));
@@ -607,20 +597,15 @@ void PGACreatePop (PGAContext *ctx, int pop)
         ctx->ga.newpop = (PGAIndividual *)malloc
             (sizeof (PGAIndividual) * (ctx->ga.PopSize + 2));
         if (ctx->ga.newpop == NULL) {
-            PGAError
-                ( ctx, "PGACreatePop: No room to allocate ctx->ga.newpop"
-                , PGA_FATAL, PGA_VOID, NULL
-                );
+            PGAFatalPrintf
+                (ctx, "PGACreatePop: No room to allocate ctx->ga.newpop");
         }
         memset
             (ctx->ga.newpop, 0, sizeof(PGAIndividual) * (ctx->ga.PopSize + 2));
         flag = PGA_FALSE;
         break;
     default:
-        PGAError
-            ( ctx, "PGACreatePop: Invalid value of pop:"
-            , PGA_FATAL, PGA_INT, (void *) &pop
-            );
+        PGAFatalPrintf (ctx, "PGACreatePop: Invalid value of pop: %d", pop);
         break;
     };
     for (p=0; p<ctx->ga.PopSize; p++) {
@@ -687,46 +672,47 @@ void PGASetUp (PGAContext *ctx)
           )
        )
     {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
+        PGAFatalPrintf
+            ( ctx
             , "PGASetUp: Serialize/Deserialize only with user defined datatype"
             );
     }
     if (ctx->ga.datatype != PGA_DATATYPE_USER && ctx->cops.ChromFree) {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "PGASetUp: ChromFree only with user defined datatype"
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetUp: ChromFree only with user defined datatype");
     }
 
     if (  ctx->ga.datatype == PGA_DATATYPE_BINARY
        && ctx->ga.tw       == PGA_UNINITIALIZED_INT
        )
     {
-        PGAError( ctx,
-                  "PGASetUp: Binary: Total Words (ctx->ga.tw) == UNINITIALIZED?"
-                , PGA_FATAL, PGA_INT, (void *) &ctx->ga.tw
-                );
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetUp: Binary: Total Words (ctx->ga.tw) == UNINITIALIZED? %d"
+            , ctx->ga.tw
+            );
     }
 
     if (  ctx->ga.datatype == PGA_DATATYPE_BINARY
        && ctx->ga.fw       == PGA_UNINITIALIZED_INT
        )
     {
-        PGAError ( ctx,
-                   "PGASetUp: Binary: Full Words (ctx->ga.fw) == UNINITIALIZED?"
-                 , PGA_FATAL, PGA_INT,  (void *) &ctx->ga.fw
-                 );
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetUp: Binary: Full Words (ctx->ga.fw) == UNINITIALIZED? %d"
+            , ctx->ga.fw
+            );
     }
 
     if (  ctx->ga.datatype == PGA_DATATYPE_BINARY
        && ctx->ga.eb       == PGA_UNINITIALIZED_INT
        )
     {
-        PGAError ( ctx,
-                   "PGASetUp: Binary: Empty Bits (ctx->ga.eb) == UNINITIALIZED?"
-                 , PGA_FATAL, PGA_INT, (void *) &ctx->ga.eb
-                 );
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetUp: Binary: Empty Bits (ctx->ga.eb) == UNINITIALIZED? %d"
+            , ctx->ga.eb
+            );
     }
 
     if (ctx->ga.NumAuxEval == PGA_UNINITIALIZED_INT) {
@@ -741,9 +727,8 @@ void PGASetUp (PGAContext *ctx)
        || ctx->ga.NumConstraint < 0
        )
     {
-         PGAError ( ctx, "PGASetUp: We need 0 <= NumConstraint <= NumAuxEval"
-                  , PGA_FATAL, PGA_VOID, NULL
-                  );
+         PGAFatalPrintf
+            (ctx, "PGASetUp: We need 0 <= NumConstraint <= NumAuxEval");
     }
 
     if (ctx->ga.PopReplace        == PGA_UNINITIALIZED_INT) {
@@ -755,14 +740,11 @@ void PGASetUp (PGAContext *ctx)
     }
 
     if (ctx->ga.nrefpoints > 0 && ctx->ga.PopReplace != PGA_POPREPL_NSGA_III) {
-        PGAErrorPrintf
-            (ctx, PGA_FATAL, "PGASetUp: Reference points only for NSGA-III");
+        PGAFatalPrintf (ctx, "PGASetUp: Reference points only for NSGA-III");
     }
     if (ctx->ga.nrefdirs > 0 && ctx->ga.PopReplace != PGA_POPREPL_NSGA_III) {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "PGASetUp: Reference directions only for NSGA-III"
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetUp: Reference directions only for NSGA-III");
     }
 
     if (  ctx->ga.NumAuxEval - ctx->ga.NumConstraint > 0
@@ -770,8 +752,8 @@ void PGASetUp (PGAContext *ctx)
        && ctx->ga.PopReplace != PGA_POPREPL_NSGA_III
        )
     {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
+        PGAFatalPrintf
+            ( ctx
             , "PGASetUp: NumAuxEval=%d, NumConstraint=%d: Population "
               "replacement with multi-objective optimization must be NSGA-II"
               " or NSGA-III"
@@ -786,22 +768,22 @@ void PGASetUp (PGAContext *ctx)
         int dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
         ctx->ga.extreme = malloc (sizeof (double) * dim * dim);
         if (ctx->ga.extreme == NULL) {
-            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate extreme point");
+            PGAFatalPrintf (ctx, "Cannot allocate extreme point");
         }
         memset (ctx->ga.extreme, 0, sizeof (double) * dim * dim);
         ctx->ga.utopian = malloc (sizeof (double) * dim);
         if (ctx->ga.utopian == NULL) {
-            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate utopian point");
+            PGAFatalPrintf (ctx, "Cannot allocate utopian point");
         }
         memset (ctx->ga.utopian, 0, sizeof (double) * dim);
         ctx->ga.nadir = malloc (sizeof (double) * dim);
         if (ctx->ga.nadir == NULL) {
-            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate nadir point");
+            PGAFatalPrintf (ctx, "Cannot allocate nadir point");
         }
         memset (ctx->ga.nadir, 0, sizeof (double) * dim);
         ctx->ga.worst = malloc (sizeof (double) * dim);
         if (ctx->ga.worst == NULL) {
-            PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate worst point");
+            PGAFatalPrintf (ctx, "Cannot allocate worst point");
         }
         memset (ctx->ga.worst, 0, sizeof (double) * dim);
         if (ctx->ga.nrefdirs == 0) {
@@ -811,8 +793,7 @@ void PGASetUp (PGAContext *ctx)
                 (void)LIN_dasdennis (dim, 2, &ctx->ga.refpoints, 0, 1, NULL);
                 ctx->ga.nrefpoints = LIN_binom (dim + 2 - 1, 2);
                 if (ctx->ga.refpoints == NULL) {
-                    PGAErrorPrintf
-                        (ctx, PGA_FATAL, "Cannot allocate ref points");
+                    PGAFatalPrintf (ctx, "Cannot allocate ref points");
                 }
             }
         } else {
@@ -825,7 +806,7 @@ void PGASetUp (PGAContext *ctx)
             assert (n < SIZE_MAX / (sizeof (double) * dim));
             ctx->ga.normdirs = malloc (sizeof (double) * dim * n);
             if (ctx->ga.normdirs == NULL) {
-                PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate normdirs");
+                PGAFatalPrintf (ctx, "Cannot allocate normdirs");
             }
             ctx->ga.ndpoints = lb;
             if (ctx->ga.nrefpoints == 0) {
@@ -833,8 +814,7 @@ void PGASetUp (PGAContext *ctx)
                 ctx->ga.nrefpoints = LIN_dasdennis
                     (dim, 1, &ctx->ga.refpoints, 0, 1, NULL);
                 if (ctx->ga.refpoints == NULL) {
-                    PGAErrorPrintf
-                        (ctx, PGA_FATAL, "Cannot allocate ref points");
+                    PGAFatalPrintf (ctx, "Cannot allocate ref points");
                 }
             }
         }
@@ -890,18 +870,14 @@ void PGASetUp (PGAContext *ctx)
     }
 
     if (ctx->ga.NumReplace > ctx->ga.PopSize) {
-        PGAError ( ctx, "PGASetUp: NumReplace > PopSize"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAFatalPrintf (ctx, "PGASetUp: NumReplace > PopSize");
     }
 
     if (ctx->ga.EpsilonGeneration == PGA_UNINITIALIZED_INT) {
         ctx->ga.EpsilonGeneration = 0;
     }
     if (ctx->ga.EpsilonGeneration > ctx->ga.MaxIter) {
-        PGAError ( ctx, "PGASetUp: EpsilonGeneration > MaxIter"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAFatalPrintf (ctx, "PGASetUp: EpsilonGeneration > MaxIter");
     }
 
     if (ctx->ga.EpsilonExponent == PGA_UNINITIALIZED_DOUBLE) {
@@ -925,9 +901,7 @@ void PGASetUp (PGAContext *ctx)
     }
 
     if (ctx->ga.EpsilonTheta >= ctx->ga.PopSize - 1) {
-        PGAError ( ctx, "PGASetUp: EpsilonTheta >= PopSize - 1"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAFatalPrintf (ctx, "PGASetUp: EpsilonTheta >= PopSize - 1");
     }
 
     if (ctx->ga.CrossoverType == PGA_UNINITIALIZED_INT) {
@@ -939,8 +913,8 @@ void PGASetUp (PGAContext *ctx)
        && ctx->ga.datatype != PGA_DATATYPE_REAL
        )
     {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
+        PGAFatalPrintf
+            ( ctx
             , "PGASetUp: SBX crossover only for Integer and Real datatypes"
             );
     }
@@ -994,10 +968,8 @@ void PGASetUp (PGAContext *ctx)
               || ctx->ga.RTRWindowSize <= 0
               )
     {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "PGASetUp: required: 0 < RTR window size <= popsize"
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetUp: required: 0 < RTR window size <= popsize");
     }
 
     if ( ctx->ga.NumAuxEval > 0
@@ -1007,19 +979,19 @@ void PGASetUp (PGAContext *ctx)
        )
     {
         if (ctx->ga.SelectType == PGA_SELECT_SUS) {
-            PGAError ( ctx
-                     , "PGASetUp: Auxiliary evaluation with default"
-                       " string compare is incompatible with "
-                       "Stochastic universal selection"
-                     , PGA_FATAL, PGA_VOID, NULL
-                     );
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetUp: Auxiliary evaluation with default"
+                  " string compare is incompatible with "
+                  "Stochastic universal selection"
+                );
         } else {
-            PGAError ( ctx
-                     , "PGASetUp: Auxiliary evaluation with default"
-                       " string compare is incompatible with "
-                       "Proportional selection"
-                     , PGA_FATAL, PGA_VOID, NULL
-                     );
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetUp: Auxiliary evaluation with default"
+                  " string compare is incompatible with "
+                  "Proportional selection"
+                );
         }
     }
 
@@ -1040,19 +1012,22 @@ void PGASetUp (PGAContext *ctx)
        || ctx->ga.StringLen <= 0
        )
     {
-        PGAError ( ctx, "PGACreate: Invalid value of StringLen:"
-                 , PGA_FATAL, PGA_INT, (void *) &ctx->ga.StringLen
-                 );
+        PGAFatalPrintf
+            ( ctx
+            , "PGACreate: Invalid value of StringLen: %d"
+            , ctx->ga.StringLen
+            );
     }
 
     if (  ctx->ga.CrossoverType == PGA_CROSSOVER_TWOPT
        && ctx->ga.StringLen == 2 && ctx->ga.MixingType != PGA_MIX_MUTATE_ONLY
        )
     {
-        PGAError ( ctx
-                 , "PGASetUp: Invalid Crossover type for string of length 2"
-                 , PGA_FATAL, PGA_INT, (void *) &ctx->ga.CrossoverType
-                 );
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetUp: Invalid Crossover type for string of length 2: %d"
+            , ctx->ga.CrossoverType
+            );
     }
 
     if (ctx->ga.MutationProb      == PGA_UNINITIALIZED_DOUBLE) {
@@ -1081,9 +1056,11 @@ void PGASetUp (PGAContext *ctx)
              }
              break;
         default:
-            PGAError ( ctx, "PGASetup: Invalid value of ctx->ga.datatype:"
-                     , PGA_FATAL, PGA_INT, (void *) &(ctx->ga.datatype)
-                     );
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetup: Invalid value of ctx->ga.datatype: %d"
+                , ctx->ga.datatype
+                );
         }
     }
 
@@ -1182,10 +1159,11 @@ void PGASetUp (PGAContext *ctx)
        && ((ctx->ga.StoppingRule & PGA_STOP_TOOSIMILAR) == PGA_STOP_TOOSIMILAR)
        )
     {
-        PGAError ( ctx
-                 , "PGASetUp: No Duplicates inconsistent with Stopping Rule:"
-                 , PGA_FATAL, PGA_INT, (void *) &ctx->ga.StoppingRule
-                 );
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetUp: No Duplicates inconsistent with Stopping Rule: %d"
+            , ctx->ga.StoppingRule
+            );
     }
 
     if (ctx->ga.CrossoverProb     == PGA_UNINITIALIZED_DOUBLE) {
@@ -1226,10 +1204,8 @@ void PGASetUp (PGAContext *ctx)
     }
 
     if (ctx->ga.NAMWindow > ctx->ga.PopSize - 2) {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "PGASetUp: NAM window size must be <= PopSize - 2"
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetUp: NAM window size must be <= PopSize - 2");
     }
 
     if (ctx->ga.ndsort == PGA_UNINITIALIZED_INT) {
@@ -1246,11 +1222,11 @@ void PGASetUp (PGAContext *ctx)
        || ((void *)ctx->fops.StopCond == (void *)PGADone)
        )
     {
-        PGAError ( ctx
-                 , "PGASetUp: Using PGADone as the user stopping condition will"
-                   " result in an infinite loop!"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetUp: Using PGADone as the user stopping condition will"
+              " result in an infinite loop!"
+            );
     }
 
     switch (ctx->ga.datatype) {
@@ -1381,53 +1357,62 @@ void PGASetUp (PGAContext *ctx)
         break;
       case PGA_DATATYPE_USER:
         if (ctx->cops.CreateString == NULL) {
-            PGAError
-                ( ctx, "PGASetUp: User datatype needs CreateString function:"
-                , PGA_FATAL, PGA_INT, (void *) &err
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetUp: User datatype needs CreateString function: %d"
+                , err
                 );
         }
         if (ctx->cops.Mutation == NULL) {
-            PGAError
-                ( ctx, "PGASetUp: User datatype needs Mutation function:"
-                , PGA_WARNING, PGA_INT, (void *) &err
+            PGAErrorPrintf
+                ( ctx
+                , PGA_WARNING
+                , "PGASetUp: User datatype needs Mutation function: %d"
+                , err
                 );
         }
         if (ctx->cops.Crossover == NULL) {
-            PGAError
-                ( ctx, "PGASetUp: User datatype needs Crossover function:"
-                , PGA_WARNING, PGA_INT, (void *) &err
+            PGAErrorPrintf
+                ( ctx
+                , PGA_WARNING
+                , "PGASetUp: User datatype needs Crossover function: %d"
+                , err
                 );
         }
         if (ctx->cops.PrintString == NULL) {
-            PGAError
-                ( ctx, "PGASetUp: User datatype needs PrintString function:"
-                , PGA_WARNING, PGA_INT, (void *) &err
+            PGAErrorPrintf
+                ( ctx
+                , PGA_WARNING
+                , "PGASetUp: User datatype needs PrintString function: %d"
+                , err
                 );
         }
         if (ctx->cops.Duplicate == NULL && ctx->ga.NoDuplicates) {
-            PGAError
-                ( ctx, "PGASetUp: User datatype needs Duplicate function:"
-                , PGA_FATAL, PGA_INT, (void *) &err
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetUp: User datatype needs Duplicate function: %d"
+                , err
                 );
         }
         if (ctx->cops.CopyString == NULL) {
-            PGAError
-                ( ctx, "PGASetUp: User datatype needs CopyString function:"
-                , PGA_FATAL, PGA_INT, (void *) &err
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetUp: User datatype needs CopyString function: %d"
+                , err
                 );
         }
         if (  ( ctx->cops.Serialize && !ctx->cops.Deserialize)
            || (!ctx->cops.Serialize &&  ctx->cops.Deserialize)
            )
         {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
+            PGAFatalPrintf
+                ( ctx
                 , "PGASetUp: Serialize/Deserialize must be specified together"
                 );
         }
         if (ctx->cops.Serialize && ctx->cops.BuildDatatype) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
+            PGAFatalPrintf
+                ( ctx
                 , "PGASetUp: Serialize/Deserialize must not "
                   "specify BuildDatatype"
                 );
@@ -1440,24 +1425,27 @@ void PGASetUp (PGAContext *ctx)
             }
         }
         if (ctx->cops.BuildDatatype == NULL) {
-             PGAError
-                ( ctx, "PGASetUp: User datatype needs BuildDatatype function:"
-                , PGA_FATAL, PGA_INT, (void *) &err
+             PGAFatalPrintf
+                ( ctx
+                , "PGASetUp: User datatype needs BuildDatatype function: %d"
+                , err
                 );
         }
         if (  ctx->cops.GeneDistance == NULL
            && ctx->ga.PopReplace == PGA_POPREPL_RTR
            )
         {
-             PGAError
-                ( ctx, "PGASetUp: User datatype needs GeneDistance function:"
-                , PGA_FATAL, PGA_INT, (void *) &err
+             PGAFatalPrintf
+                ( ctx
+                , "PGASetUp: User datatype needs GeneDistance function: %d"
+                , err
                 );
         }
         if (ctx->cops.Hash == NULL && ctx->ga.NoDuplicates) {
-            PGAError
-                ( ctx, "PGASetUp: User datatype needs Hash function:"
-                , PGA_FATAL, PGA_INT, (void *) &err
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetUp: User datatype needs Hash function: %d"
+                , err
                 );
         }
         break;
@@ -1471,7 +1459,7 @@ void PGASetUp (PGAContext *ctx)
     if ((ctx->cops.Crossover    == NULL) && (ctx->fops.Crossover   == NULL)) {
         ctx->cops.Crossover     = Crossover;
         if (Crossover == NULL) {
-            PGAErrorPrintf (ctx, PGA_FATAL, "PGASetUp: No crossover specified");
+            PGAFatalPrintf (ctx, "PGASetUp: No crossover specified");
         }
     }
     if ((ctx->cops.PrintString  == NULL) && (ctx->fops.PrintString == NULL)) {
@@ -1510,8 +1498,8 @@ void PGASetUp (PGAContext *ctx)
                 ctx->cops.SortND = PGASortND_Both;
                 break;
             default:
-                PGAErrorPrintf
-                    ( ctx, PGA_FATAL
+                PGAFatalPrintf
+                    ( ctx
                     , "PGASetUp: Invalid NDSORT option: %d"
                     , ctx->ga.ndsort
                     );
@@ -1595,32 +1583,24 @@ void PGASetUp (PGAContext *ctx)
 
     ctx->ga.selected = (int *)malloc( sizeof(int) * ctx->ga.PopSize );
     if (ctx->ga.selected == NULL) {
-        PGAError ( ctx, "PGASetUp: No room to allocate ctx->ga.selected"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAFatalPrintf (ctx, "PGASetUp: No room to allocate ctx->ga.selected");
     }
 
     ctx->ga.sorted = (int *)malloc( sizeof(int) * ctx->ga.PopSize );
     if (ctx->ga.sorted == NULL) {
-        PGAError ( ctx, "PGASetUp: No room to allocate ctx->ga.sorted"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAFatalPrintf (ctx, "PGASetUp: No room to allocate ctx->ga.sorted");
     }
 
     ctx->scratch.intscratch = malloc (sizeof(int) * ctx->ga.PopSize);
     if (ctx->scratch.intscratch == NULL) {
-        PGAError
-            ( ctx, "PGASetUp: No room to allocate ctx->scratch.intscratch"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetUp: No room to allocate ctx->scratch.intscratch");
     }
     ctx->scratch.indiv_scratch = malloc
         (sizeof(*ctx->scratch.indiv_scratch) * ctx->ga.PopSize);
     if (ctx->scratch.intscratch == NULL) {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "PGASetUp: No room to allocate ctx->scratch.indiv_scratch"
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetUp: No room to allocate ctx->scratch.indiv_scratch");
     }
     ctx->scratch.permute = NULL;
     ctx->ga.perm_idx = 0;
@@ -1630,10 +1610,8 @@ void PGASetUp (PGAContext *ctx)
     {
         ctx->scratch.permute = malloc (sizeof (int) * ctx->ga.PopSize);
         if (ctx->scratch.permute == NULL) {
-            PGAError
-                ( ctx, "PGASetUp: No room to allocate ctx->scratch.permute"
-                , PGA_FATAL, PGA_VOID, NULL
-                );
+            PGAFatalPrintf
+                (ctx, "PGASetUp: No room to allocate ctx->scratch.permute");
         }
         /* This forces a first shuffle */
         ctx->ga.perm_idx = ctx->ga.PopSize;
@@ -1642,10 +1620,8 @@ void PGASetUp (PGAContext *ctx)
     ctx->scratch.dblscratch = malloc (sizeof (double) * ctx->ga.PopSize);
 
     if (ctx->scratch.dblscratch == NULL) {
-        PGAError
-            ( ctx, "PGASetUp: No room to allocate ctx->scratch.dblscratch"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetUp: No room to allocate ctx->scratch.dblscratch");
     }
 
     if (ctx->ga.datatype == PGA_DATATYPE_INTEGER) {
@@ -1659,9 +1635,9 @@ void PGASetUp (PGAContext *ctx)
            || ctx->scratch.pgaintscratch [3] == NULL
            )
         {
-            PGAError
-                ( ctx, "PGASetUp: No room to allocate ctx->scratch.pgaintscratch"
-                , PGA_FATAL, PGA_VOID, NULL
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetUp: No room to allocate ctx->scratch.pgaintscratch"
                 );
         }
     } else {
@@ -1688,42 +1664,32 @@ void PGASetUp (PGAContext *ctx)
         ctx->scratch.dominance = malloc
             (sizeof (PGABinary) * intsfor2pop * 2 * ctx->ga.PopSize);
         if (ctx->scratch.dominance == NULL) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
-                , "PGASetUp: No room to allocate ctx->scratch.dominance"
-                );
+            PGAFatalPrintf
+                (ctx, "PGASetUp: No room to allocate ctx->scratch.dominance");
         }
         ctx->scratch.nsga_tmp.ind_all = malloc
             (sizeof (*ctx->scratch.nsga_tmp.ind_all) * 2 * ctx->ga.PopSize);
         if (ctx->scratch.nsga_tmp.ind_all == NULL) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
-                , "PGASetUp: No room to allocate ctx->scratch.nsga_tmp"
-                );
+            PGAFatalPrintf
+                (ctx, "PGASetUp: No room to allocate ctx->scratch.nsga_tmp");
         }
         ctx->scratch.nsga_tmp.ind_tmp = malloc
             (sizeof (*ctx->scratch.nsga_tmp.ind_tmp) * 2 * ctx->ga.PopSize);
         if (ctx->scratch.nsga_tmp.ind_tmp == NULL) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
-                , "PGASetUp: No room to allocate ctx->scratch.nsga_tmp"
-                );
+            PGAFatalPrintf
+                (ctx, "PGASetUp: No room to allocate ctx->scratch.nsga_tmp");
         }
         ctx->scratch.nsga_tmp.medval = malloc
             (sizeof (*ctx->scratch.nsga_tmp.medval) * 2 * ctx->ga.PopSize);
         if (ctx->scratch.nsga_tmp.medval == NULL) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
-                , "PGASetUp: No room to allocate ctx->scratch.nsga_tmp"
-                );
+            PGAFatalPrintf
+                (ctx, "PGASetUp: No room to allocate ctx->scratch.nsga_tmp");
         }
         ctx->scratch.nsga_tmp.front_sizes = malloc
             (sizeof (*ctx->scratch.nsga_tmp.front_sizes) * 2 * ctx->ga.PopSize);
         if (ctx->scratch.nsga_tmp.front_sizes == NULL) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
-                , "PGASetUp: No room to allocate ctx->scratch.nsga_tmp"
-                );
+            PGAFatalPrintf
+                (ctx, "PGASetUp: No room to allocate ctx->scratch.nsga_tmp");
         }
     } else {
         ctx->scratch.dominance = NULL;
@@ -1737,10 +1703,8 @@ void PGASetUp (PGAContext *ctx)
         size_t hashsize = sizeof (PGAIndividual *) * ctx->ga.PopSize;
         ctx->scratch.hashed = malloc (hashsize);
         if (ctx->scratch.hashed == NULL) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
-                , "PGASetUp: No room to allocate ctx->scratch.hashed"
-                );
+            PGAFatalPrintf
+                (ctx, "PGASetUp: No room to allocate ctx->scratch.hashed");
         }
         memset (ctx->scratch.hashed, 0, hashsize);
     } else {
@@ -1752,23 +1716,18 @@ void PGASetUp (PGAContext *ctx)
         ctx->scratch.edgemap = malloc
             (sizeof (PGAInteger) * 4 * ctx->ga.StringLen);
         if (ctx->scratch.edgemap == NULL) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
-                , "PGASetUp: No room to allocate ctx->scratch.edgemap"
-                );
+            PGAFatalPrintf
+                (ctx, "PGASetUp: No room to allocate ctx->scratch.edgemap");
         }
     } else {
         ctx->scratch.edgemap = NULL;
         if (ctx->ga.n_edges) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
-                , "PGASetUp: Fixed edges only for edge crossover"
-                );
+            PGAFatalPrintf
+                (ctx, "PGASetUp: Fixed edges only for edge crossover");
         }
     }
     if (ctx->ga.n_edges && ctx->init.IntegerMin [0] != 0) {
-        PGAErrorPrintf
-            (ctx, PGA_FATAL , "PGASetUp: Fixed edges only with IntegerMin=0");
+        PGAFatalPrintf (ctx, "PGASetUp: Fixed edges only with IntegerMin=0");
     }
     ctx->scratch.serialization_size = 0;
     ctx->scratch.serialized = NULL;
@@ -1781,51 +1740,39 @@ void PGASetUp (PGAContext *ctx)
      */
     ctx->rep.Offline = malloc (sizeof (double) * (1 + ctx->ga.NumAuxEval));
     if (ctx->rep.Offline == NULL) {
-        PGAError ( ctx, "PGASetUp: No room to allocate rep.Offline"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAFatalPrintf (ctx, "PGASetUp: No room to allocate rep.Offline");
     }
     memset (ctx->rep.Offline, 0, sizeof (double) * (1 + ctx->ga.NumAuxEval));
     ctx->rep.Online = malloc (sizeof (double) * (1 + ctx->ga.NumAuxEval));
     if (ctx->rep.Online == NULL) {
-        PGAError ( ctx, "PGASetUp: No room to allocate rep.Online"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAFatalPrintf (ctx, "PGASetUp: No room to allocate rep.Online");
     }
     memset (ctx->rep.Online, 0, sizeof (double) * (1 + ctx->ga.NumAuxEval));
     ctx->rep.Average = malloc (sizeof (double) * (1 + ctx->ga.NumAuxEval));
     if (ctx->rep.Average == NULL) {
-        PGAError ( ctx, "PGASetUp: No room to allocate rep.Average"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAFatalPrintf (ctx, "PGASetUp: No room to allocate rep.Average");
     }
     for (i=0; i<=ctx->ga.NumAuxEval; i++) {
         ctx->rep.Average [i] = PGA_UNINITIALIZED_DOUBLE;
     }
     ctx->rep.Best = malloc (sizeof (double) * (1 + ctx->ga.NumAuxEval));
     if (ctx->rep.Best == NULL) {
-        PGAError ( ctx, "PGASetUp: No room to allocate rep.Best"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAFatalPrintf (ctx, "PGASetUp: No room to allocate rep.Best");
     }
     for (i=0; i<=ctx->ga.NumAuxEval; i++) {
         ctx->rep.Best [i] = PGA_UNINITIALIZED_DOUBLE;
     }
     ctx->rep.BestIdx = malloc (sizeof (int) * (1 + ctx->ga.NumAuxEval));
     if (ctx->rep.BestIdx == NULL) {
-        PGAError ( ctx, "PGASetUp: No room to allocate rep.BestIdx"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAFatalPrintf (ctx, "PGASetUp: No room to allocate rep.BestIdx");
     }
     memset (ctx->rep.BestIdx, 0, sizeof (int) * (1 + ctx->ga.NumAuxEval));
 
     if (ctx->ga.OutFileName != NULL && PGAGetRank (ctx, MPI_COMM_WORLD) == 0) {
         ctx->ga.OutputFile = fopen (ctx->ga.OutFileName, "w");
         if (ctx->ga.OutputFile == NULL) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
-                , "Cannot open output file: %s", strerror (errno)
-                );
+            PGAFatalPrintf
+                (ctx, "Cannot open output file: %s", strerror (errno));
         }
     }
 
@@ -1879,10 +1826,8 @@ void PGASetRandomInitFlag (PGAContext *ctx, int flag)
       ctx->init.RandomInit = flag;
       break;
     default:
-      PGAError
-        ( ctx, "PGASetRandomInitFlag: Invalid value of flag:"
-        , PGA_FATAL, PGA_INT, (void *) &flag
-        );
+      PGAFatalPrintf
+          (ctx, "PGASetRandomInitFlag: Invalid value of flag: %d", flag);
       break;
     }
     PGADebugExited ("PGASetRandomInitFlag");
@@ -1951,8 +1896,8 @@ void PGASetNumAuxEval (PGAContext *ctx, int n)
     PGADebugEntered("PGASetNumAuxEval");
 
     if (n <= 0) {
-        PGAError(ctx, "PGASetNumAuxEval: Parameter needs to be positive",
-                 PGA_FATAL, PGA_VOID, NULL);
+        PGAFatalPrintf
+            (ctx, "PGASetNumAuxEval: Parameter needs to be positive");
     } else {
         ctx->ga.NumAuxEval = n;
     }
@@ -2021,8 +1966,8 @@ void PGASetNumConstraint (PGAContext *ctx, int n)
     PGADebugEntered("PGASetNumConstraint");
 
     if (n < 0) {
-        PGAError(ctx, "PGASetNumConstraint: Parameter needs to be positive",
-                 PGA_FATAL, PGA_VOID, NULL);
+        PGAFatalPrintf
+            (ctx, "PGASetNumConstraint: Parameter needs to be positive");
     } else {
         ctx->ga.NumConstraint = n;
     }
@@ -2098,10 +2043,8 @@ void PGASetSumConstraintsFlag (PGAContext *ctx, int n)
     PGADebugEntered("PGASetSumConstraintsFlag");
 
     if (n != PGA_FALSE && n != PGA_TRUE) {
-        PGAError
-            ( ctx, "PGASetSumConstraints: PGA_TRUE or PGA_FALSE required"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetSumConstraints: PGA_TRUE or PGA_FALSE required");
     }
     ctx->ga.SumConstraints = n;
 
@@ -2230,10 +2173,7 @@ void PGASetEpsilonExponent (PGAContext *ctx, double e)
      * others it is 2. We allow 2.
      */
     if (e < 2 || e > PGA_EPSILON_EXPONENT_MAX) {
-        PGAError
-            ( ctx, "PGASetEpsilonExponent: 2 <= e <= 10 required"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+        PGAFatalPrintf (ctx, "PGASetEpsilonExponent: 2 <= e <= 10 required");
     }
     ctx->ga.EpsilonExponent = e;
 }
@@ -2298,9 +2238,7 @@ double PGAGetEpsilonExponent (PGAContext *ctx)
 void PGASetEpsilonTheta (PGAContext *ctx, int theta)
 {
     if (theta < 1) {
-        PGAError ( ctx, "PGASetUp: EpsilonTheta must be >= 1"
-                 , PGA_FATAL, PGA_VOID, NULL
-                 );
+        PGAFatalPrintf (ctx, "PGASetUp: EpsilonTheta must be >= 1");
     }
     ctx->ga.EpsilonTheta = theta;
 }
@@ -2365,10 +2303,7 @@ void PGASetOutputFile (PGAContext *ctx, const char *name)
 {
     char *n = malloc (strlen (name) + 1);
     if (n == NULL) {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "PGASetOutputFile: Cannot allocate name"
-            );
+        PGAFatalPrintf (ctx, "PGASetOutputFile: Cannot allocate name");
     }
     strcpy (n, name);
     ctx->ga.OutFileName = n;
@@ -2402,11 +2337,7 @@ void PGASetSortND (PGAContext *ctx, int algo)
        && algo != PGA_NDSORT_BOTH
        )
     {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "PGASetSortND: Invalid algorithm: %d"
-            , algo
-            );
+        PGAFatalPrintf (ctx, "PGASetSortND: Invalid algorithm: %d", algo);
     }
     ctx->ga.ndsort = algo;
 }

@@ -115,10 +115,7 @@ void PGASortPop (PGAContext *ctx, int pop)
 
     PGADebugEntered ("PGASortPop");
     if (pop != PGA_OLDPOP && pop != PGA_NEWPOP) {
-        PGAError
-            (ctx, "PGASort: Invalid value of pop:"
-            , PGA_FATAL, PGA_INT, (void *) &pop
-            );
+        PGAFatalPrintf (ctx, "PGASort: Invalid value of pop: %d", pop);
     }
     switch (ctx->ga.PopReplace) {
     case PGA_POPREPL_BEST:
@@ -376,10 +373,7 @@ int PGAGetSortedPopIndex (PGAContext *ctx, int n)
     if (n >= 0 && n < ctx->ga.PopSize) {
         temp = ctx->ga.sorted [n];
     } else {
-        PGAError
-            ( ctx, "PGAGetSorted: Invalid value of n:"
-            , PGA_FATAL, PGA_INT, (void *) &n
-            );
+        PGAFatalPrintf (ctx, "PGAGetSorted: Invalid value of n: %d", n);
     }
 
     PGADebugExited ("PGAGetSortedPopIndex");
@@ -425,10 +419,8 @@ void PGASetPopSize (PGAContext *ctx, int popsize)
     PGAFailIfSetUp  ("PGASetPopSize");
 
     if (popsize < 1 || popsize % 2) {
-        PGAError
-            ( ctx, "PGASetPopSize: Invalid value of popsize:"
-            , PGA_FATAL, PGA_INT, (void *) &popsize
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetPopSize: Invalid value of popsize: %d", popsize);
     } else {
         ctx->ga.PopSize = popsize;
     }
@@ -471,9 +463,10 @@ void PGASetNumReplaceValue (PGAContext *ctx, int pop_replace)
     PGADebugEntered ("PGASetNumReplaceValue");
 
     if (pop_replace < 0) {
-        PGAError
-            ( ctx, "PGASetNumReplaceValue: Invalid value of pop_replace:"
-            , PGA_FATAL, PGA_INT, (void *) &pop_replace
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetNumReplaceValue: Invalid value of pop_replace: %d"
+            , pop_replace
             );
     } else {
         ctx->ga.NumReplace = pop_replace;
@@ -541,9 +534,10 @@ void PGASetPopReplaceType (PGAContext *ctx, int pop_replace)
         ctx->ga.PopReplace = pop_replace;
         break;
     default:
-        PGAError
-            ( ctx, "PGASetPopReplaceType: Invalid value of pop_replace:"
-            , PGA_FATAL, PGA_INT, (void *) &pop_replace
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetPopReplaceType: Invalid value of pop_replace: %d"
+            , pop_replace
             );
         break;
     }
@@ -590,10 +584,10 @@ void PGASetPopReplaceType (PGAContext *ctx, int pop_replace)
 void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points)
 {
     if (ctx->ga.nrefpoints) {
-        PGAErrorPrintf (ctx, PGA_FATAL, "Can't set reference points twice");
+        PGAFatalPrintf (ctx, "Can't set reference points twice");
     }
     if (points == NULL) {
-        PGAErrorPrintf (ctx, PGA_FATAL, "Need non-NULL points");
+        PGAFatalPrintf (ctx, "Need non-NULL points");
     }
     ctx->ga.nrefpoints = npoints;
     ctx->ga.refpoints  = points;
@@ -644,10 +638,10 @@ void PGASetReferenceDirections
     (PGAContext *ctx, size_t ndirs, void *dirs, int npart, double scale)
 {
     if (ctx->ga.nrefdirs) {
-        PGAErrorPrintf (ctx, PGA_FATAL, "Can't set reference directions twice");
+        PGAFatalPrintf (ctx, "Can't set reference directions twice");
     }
     if (dirs == NULL) {
-        PGAErrorPrintf (ctx, PGA_FATAL, "Need non-NULL directions");
+        PGAFatalPrintf (ctx, "Need non-NULL directions");
     }
     ctx->ga.nrefdirs   = ndirs;
     ctx->ga.refdirs    = dirs;
@@ -1036,8 +1030,10 @@ STATIC int compute_intersect (PGAContext *ctx, PGAIndividual **start, int n)
     }
     /* Fail: No nadir estimate via extreme points, fall back to wof0 */
     PGAErrorPrintf
-        ( ctx, PGA_WARNING
-        , "Intercept computation failed in Generation %d\n", ctx->ga.iter
+        ( ctx
+        , PGA_WARNING
+        , "Intercept computation failed in Generation %d\n"
+        , ctx->ga.iter
         );
     return 1;
 }
@@ -1323,6 +1319,7 @@ static double pick_pivot (double *values, size_t lo, size_t hi)
     assert (hi > lo);
     medians = malloc (sizeof (double) * (hi - lo) / 5);
     if (medians == NULL) {
+        /* Cannot use PGAFatalPrintf here, no context variable */
         fprintf (stderr, "Out of memory in pick_pivot\nPGAError: Fatal\n");
         exit (-1);
     }
@@ -1524,7 +1521,7 @@ STATIC void rank_2d_b
 
     fronts = malloc (sizeof (*fronts) * ctx->ga.PopSize * 2);
     if (fronts == NULL) {
-        PGAErrorPrintf (ctx, PGA_FATAL, "Out of memory in rank_2d_b");
+        PGAFatalPrintf (ctx, "Out of memory in rank_2d_b");
     }
 
     /* Initialize to zero */
@@ -1836,7 +1833,7 @@ STATIC void rank_2d_a (PGAContext *ctx, PGAIndividual **s, size_t n)
     /* Initialize to zero */
     fronts = malloc (sizeof (*fronts) * max_front);
     if (fronts == NULL) {
-        PGAErrorPrintf (ctx, PGA_FATAL, "Out of memory in rank_2d_a");
+        PGAFatalPrintf (ctx, "Out of memory in rank_2d_a");
     }
     memset (fronts, 0, sizeof (*fronts) * max_front);
     /* Sort s by first/second objective (ascending) and rank (descending) */

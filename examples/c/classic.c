@@ -122,8 +122,8 @@ int GetIntegerParameter(char *query) {
 
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     if (rank == 0) {
-        printf(query);
-        scanf("%d", &tmp);
+        printf ("%s", query);
+        scanf ("%d", &tmp);
     }
     MPI_Bcast(&tmp, 1, MPI_INT, 0, MPI_COMM_WORLD);
     return(tmp);

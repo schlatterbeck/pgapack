@@ -172,9 +172,10 @@ void PGASetMutationType (PGAContext *ctx, int mutation_type)
          ctx->ga.MutationType = mutation_type;
          break;
     default:
-         PGAError
-            ( ctx, "PGASetMutationType: Invalid value of mutation_type:"
-            , PGA_FATAL, PGA_INT, (void *) &mutation_type
+         PGAFatalPrintf
+            ( ctx
+            , "PGASetMutationType: Invalid value of mutation_type: %d"
+            , mutation_type
             );
          break;
     }
@@ -278,10 +279,8 @@ void PGASetMutationRealValue (PGAContext *ctx, double val)
     PGADebugEntered ("PGASetMutationRealValue");
 
     if (val < 0.0) {
-        PGAError
-            ( ctx, "PGASetMutationRealValue: Invalid value of val:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &val
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetMutationRealValue: Invalid value of val: %g", val);
     } else {
         ctx->ga.MutateRealValue = val;
     }
@@ -358,10 +357,8 @@ void PGASetMutationIntegerValue (PGAContext *ctx, int val)
     PGADebugEntered ("PGASetMutationIntegerValue");
 
     if (val < 0.0) {
-        PGAError
-            ( ctx, "PGASetMutationIntegerValue: Invalid value of val:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &val
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetMutationIntegerValue: Invalid value of val: %d", val);
     } else {
         ctx->ga.MutateIntegerValue = val;
     }
@@ -447,10 +444,8 @@ void PGASetMutationBoundedFlag (PGAContext *ctx, int val)
          ctx->ga.MutateBoundedFlag = val;
          break;
     default:
-         PGAError
-            ( ctx, "PGASetMutationBoundedFlag: Invalid value:"
-            , PGA_FATAL, PGA_INT, (void *) &val
-            );
+         PGAFatalPrintf
+            (ctx, "PGASetMutationBoundedFlag: Invalid value: %d", val);
          break;
     }
 
@@ -542,10 +537,8 @@ void PGASetMutationBounceBackFlag (PGAContext *ctx, int val)
          ctx->ga.MutateBounceFlag = val;
          break;
     default:
-         PGAError
-            ( ctx, "PGASetMutationBounceBackFlag: Invalid value:"
-            , PGA_FATAL, PGA_INT, (void *) &val
-            );
+         PGAFatalPrintf
+            (ctx, "PGASetMutationBounceBackFlag: Invalid value: %d", val);
          break;
     }
 
@@ -621,9 +614,10 @@ void PGASetMutationProb (PGAContext *ctx, double mutation_prob)
     PGADebugEntered ("PGASetMutationProb");
 
     if ((mutation_prob < 0.0) || (mutation_prob > 1.0)) {
-        PGAError
-            ( ctx, "PGASetMutationProb: Invalid value of mutation_prob:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &mutation_prob
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetMutationProb: Invalid value of mutation_prob: %g"
+            , mutation_prob
             );
     } else {
         ctx->ga.MutationProb = mutation_prob;
@@ -687,10 +681,8 @@ double PGAGetMutationProb (PGAContext *ctx)
 void PGASetMutationPolyEta (PGAContext *ctx, double eta)
 {
     if (eta < 0.0) {
-        PGAError
-            ( ctx, "PGASetMutationPolyEta: Invalid value of eta:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &eta
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetMutationPolyEta: Invalid value of eta: %g", eta);
     }
     ctx->ga.MutatePolyEta = eta;
 }
@@ -748,10 +740,8 @@ double PGAGetMutationPolyEta (PGAContext *ctx)
 void PGASetMutationPolyValue (PGAContext *ctx, double v)
 {
     if (v < 0.0) {
-        PGAError
-            ( ctx, "PGASetMutationPolyConstant: Invalid value:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &v
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetMutationPolyConstant: Invalid value: %g", v);
     }
     ctx->ga.MutatePolyValue = v;
 }
@@ -809,16 +799,14 @@ double PGAGetMutationPolyValue (PGAContext *ctx)
 void PGASetMutationScrambleMax (PGAContext *ctx, int v)
 {
     if (v > ctx->ga.StringLen) {
-        PGAError
-            ( ctx, "PGASetMutationScrambleMax: Must not exceet string length:"
-            , PGA_FATAL, PGA_INT, (void *) &v
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetMutationScrambleMax: Must not exceet string length: %d"
+            , v
             );
     }
     if (v < 2) {
-        PGAError
-            ( ctx, "PGASetMutationScrambleMax: Must be >= 2:"
-            , PGA_FATAL, PGA_INT, (void *) &v
-            );
+        PGAFatalPrintf (ctx, "PGASetMutationScrambleMax: Must be >= 2: %d", v);
     }
     ctx->ga.MutateScrambleMax = v;
 }
@@ -894,10 +882,8 @@ void PGASetDEVariant (PGAContext *ctx, int variant)
         ctx->ga.DEVariant = variant;
         break;
     default:
-        PGAError
-            ( ctx, "PGASetDEVariant: Invalid value of DE variant:"
-            , PGA_FATAL, PGA_INT, (void *) &variant
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetDEVariant: Invalid value of DE variant: %d", variant);
         break;
     }
 }
@@ -973,10 +959,8 @@ int PGAGetDEVariant (PGAContext *ctx)
 void PGASetDEScaleFactor (PGAContext *ctx, double val)
 {
     if (val < 0.0 || val > 2.0) {
-        PGAError
-            ( ctx, "PGASetDEScaleFactor: Invalid value of F:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &val
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetDEScaleFactor: Invalid value of F: %g", val);
     } else {
         ctx->ga.DEScaleFactor = val;
     }
@@ -1044,10 +1028,7 @@ double PGAGetDEScaleFactor (PGAContext *ctx)
 void PGASetDEAuxFactor (PGAContext *ctx, double val)
 {
     if (val < 0.0 || val > 2.0) {
-        PGAError
-            ( ctx, "PGASetDEAuxFactor: Invalid value of K:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &val
-            );
+        PGAFatalPrintf (ctx, "PGASetDEAuxFactor: Invalid value of K: %g", val);
     } else {
         ctx->ga.DEAuxFactor = val;
     }
@@ -1115,10 +1096,8 @@ double PGAGetDEAuxFactor (PGAContext *ctx)
 void PGASetDECrossoverProb (PGAContext *ctx, double val)
 {
     if (val < 0.0 || val > 1.0) {
-        PGAError
-            ( ctx, "PGASetDECrossoverProb: Invalid value of crossover:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &val
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetDECrossoverProb: Invalid value of crossover: %g", val);
     } else {
         ctx->ga.DECrossoverProb = val;
     }
@@ -1187,10 +1166,8 @@ double PGAGetDECrossoverProb (PGAContext *ctx)
 void PGASetDEJitter (PGAContext *ctx, double val)
 {
     if (val < 0.0 || val > 2.0) {
-        PGAError
-            ( ctx, "PGASetDEJitter: Invalid value of jitter:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &val
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetDEJitter: Invalid value of jitter: %g", val);
     } else {
         ctx->ga.DEJitter = val;
     }
@@ -1259,9 +1236,10 @@ double PGAGetDEJitter (PGAContext *ctx)
 void PGASetDEProbabilityEO (PGAContext *ctx, double val)
 {
     if (val < 0.0 || val > 1.0) {
-        PGAError
-            ( ctx, "PGASetDEProbabilityEO: Invalid value of EO probabilty:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &val
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetDEProbabilityEO: Invalid value of EO probabilty: %g"
+            , val
             );
     } else {
         ctx->ga.DEProbabilityEO = val;
@@ -1331,10 +1309,8 @@ double PGAGetDEProbabilityEO (PGAContext *ctx)
 void PGASetDENumDiffs (PGAContext *ctx, int val)
 {
     if (val < 1 || val > 2) {
-        PGAError
-            ( ctx, "PGASetDENumDiffs: Invalid value of num diffs:"
-            , PGA_FATAL, PGA_INT, (void *) &val
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetDENumDiffs: Invalid value of num diffs: %d", val);
     } else {
         ctx->ga.DENumDiffs = val;
     }
@@ -1409,10 +1385,8 @@ void PGASetDECrossoverType (PGAContext *ctx, int val)
         ctx->ga.DECrossoverType = val;
         break;
     default:
-        PGAError
-            ( ctx, "PGASetDECrossoverType: Invalid crossover type:"
-            , PGA_FATAL, PGA_INT, (void *) &val
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetDECrossoverType: Invalid crossover type: %d", val);
         break;
     }
 }
@@ -1478,10 +1452,8 @@ int PGAGetDECrossoverType (PGAContext *ctx)
 void PGASetDEDither (PGAContext *ctx, double val)
 {
     if (val < 0.0 || val > 1.0) {
-        PGAError
-            ( ctx, "PGASetDEDither: Invalid value of Dither:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &val
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetDEDither: Invalid value of Dither: %g", val);
     } else {
         ctx->ga.DEDither = val;
     }
@@ -1555,10 +1527,8 @@ void PGASetDEDitherPerIndividual (PGAContext *ctx, int val)
          ctx->ga.DEDitherPerIndividual = val;
          break;
     default:
-         PGAError
-            ( ctx, "PGASetDEDitherPerIndividual: Invalid value:"
-            , PGA_FATAL, PGA_INT, (void *) &val
-            );
+         PGAFatalPrintf
+            (ctx, "PGASetDEDitherPerIndividual: Invalid value: %d", val);
          break;
     }
 }
@@ -1632,10 +1602,7 @@ double PGASetupDE (PGAContext *ctx, int p, int pop, int maxidx, int *idx)
      * case.
      */
     if (pop != PGA_NEWPOP) {
-        PGAError
-            ( ctx, "PGARealMutation: Invalid value of pop:"
-            , PGA_FATAL, PGA_INT, (void *) &(pop)
-            );
+        PGAFatalPrintf (ctx, "PGARealMutation: Invalid value of pop: %d", pop);
     }
 
     /* for BEST strategy we have to avoid collision with running

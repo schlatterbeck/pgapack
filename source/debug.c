@@ -445,8 +445,8 @@ int PGAGetDebugLevelOfName (PGAContext *ctx, char *funcname)
     PGAFuncRec *rec = bsearch
         (&x, PGAFuncIndex, PGANumFcns, sizeof (PGAFuncRec), func_compare);
     if (rec == NULL) {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
+        PGAFatalPrintf
+            ( ctx
             , "PGAGetDebugFlag: Function missing from PGAFuncIndex: '%s'\n"
             , funcname
             );
@@ -454,7 +454,7 @@ int PGAGetDebugLevelOfName (PGAContext *ctx, char *funcname)
         /* Put this in an else clause to avoid spurious NULL deref warning */
         return rec->PGAFuncNum;
     }
-    /* not reached, PGAErrorPrintf with flag PGA_FATAL exits */
+    /* notreached */
     return 0;
 }
 

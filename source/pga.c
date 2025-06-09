@@ -136,15 +136,10 @@ void PGARun
      /**********************************************************************/
      else if ((npops > 1) && (ndemes == 1)) {
          if (nprocs == 1) {
-             PGAError
-                ( ctx, "PGARun: island model with one process"
-                , PGA_FATAL, PGA_VOID, (void *) &nprocs
-                );
+             PGAFatalPrintf (ctx, "PGARun: island model with one process");
          } else if (nprocs != npops) {
-             PGAError
-                ( ctx, "PGARun: island model no. processes != no. pops"
-                , PGA_FATAL, PGA_VOID, (void *) &nprocs
-                );
+             PGAFatalPrintf
+                (ctx, "PGARun: island model no. processes != no. pops");
          }
          PGARunIM (ctx, evaluate, comm);
      }
@@ -154,15 +149,11 @@ void PGARun
      /**********************************************************************/
      else if ((npops == 1) && (ndemes > 1)) {
          if (nprocs == 1) {
-             PGAError
-                ( ctx, "PGARun: neighborhood model with one process"
-                , PGA_FATAL, PGA_VOID, (void *) &nprocs
-                );
+             PGAFatalPrintf
+                (ctx, "PGARun: neighborhood model with one process");
          } else if (nprocs != ndemes) {
-             PGAError
-                ( ctx, "PGARun: neighborhood model no. processes != no. demes"
-                , PGA_FATAL, PGA_VOID, (void *) &nprocs
-                );
+             PGAFatalPrintf
+                (ctx, "PGARun: neighborhood model no. processes != no. demes");
          }
          PGARunNM (ctx, evaluate, comm);
      }
@@ -171,20 +162,16 @@ void PGARun
      /*              Mixed model, > one island, > one deme                 */
      /**********************************************************************/
      else if ((npops > 1) && (ndemes > 1)) {
-         PGAError
-            ( ctx, "PGARun: Cannot execute mixed models"
-            , PGA_FATAL, PGA_VOID, (void *) &nprocs
-            );
+         PGAFatalPrintf (ctx, "PGARun: Cannot execute mixed models");
      }
 
      /**********************************************************************/
      /*                        E R R O R                                   */
      /**********************************************************************/
      else {
-         PGAError
+         PGAFatalPrintf
             ( ctx
             , "PGARun: Invalid combination of numislands, ndemes, and nprocs"
-            , PGA_FATAL, PGA_VOID, (void *) &nprocs
             );
      }
 
@@ -1072,11 +1059,8 @@ void PGASetMixingType (PGAContext *ctx, int type)
         ctx->ga.MixingType = type;
         break;
     default:
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "PGASetMixingType: Invalid value of type: %d"
-            , type
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetMixingType: Invalid value of type: %d", type);
         break;
     }
 }

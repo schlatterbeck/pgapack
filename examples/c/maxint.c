@@ -62,7 +62,7 @@ int GetIntegerParameter (char *query)
 
     MPI_Comm_rank (MPI_COMM_WORLD, &rank);
     if (rank == 0) {
-        printf (query);
+        printf ("%s", query);
         if (fgets (buf, sizeof (buf) - 1, stdin) != NULL) {
             tmp = atoi (buf);
         }
@@ -77,7 +77,7 @@ int GetYN (char *query)
     char buf [100];
     MPI_Comm_rank (MPI_COMM_WORLD, &rank);
     if (rank == 0) {
-        printf (query);
+        printf ("%s", query);
         if (fgets (buf, sizeof (buf) - 1, stdin) != NULL) {
             if (buf [0] == 'y' || buf [0] == 'Y') {
                 tmp = 1;

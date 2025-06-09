@@ -236,10 +236,7 @@ void PGASetBinaryInitProb (PGAContext *ctx, double p)
     if ((p <= 1.0) && (p >= 0.0)) {
         ctx->init.BinaryProbability = p;
     } else {
-        PGAError
-            ( ctx, "PGASetBinaryInitProb: Invalid value of p:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &p
-            );
+        PGAFatalPrintf (ctx, "PGASetBinaryInitProb: Invalid value of p: %g", p);
     }
     PGADebugExited ("PGASetBinaryInitProb");
 }
@@ -338,10 +335,8 @@ void PGABinaryCreateString (PGAContext *ctx, int p, int pop, int initflag)
 
     new->chrom = (void *)malloc(ctx->ga.tw * sizeof(PGABinary));
     if (new->chrom == NULL)
-        PGAError
-            ( ctx, "PGABinaryCreateString: No room to allocate new->chrom"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+        PGAFatalPrintf
+            (ctx, "PGABinaryCreateString: No room to allocate new->chrom");
 
     s = (PGABinary *)new->chrom;
     if (initflag) {

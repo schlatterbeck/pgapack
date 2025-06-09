@@ -305,16 +305,15 @@ void PGASetIntegerInitPermute (PGAContext *ctx, int min, int max)
 
     range = max - min + 1;
     if (max <= min) {
-        PGAError
-            ( ctx, "PGASetIntegerInitPermute: max does not exceed min:"
-            , PGA_FATAL, PGA_INT, (void *) &max
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetIntegerInitPermute: max does not exceed min: %d", max);
     } else if (range != ctx->ga.StringLen) {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
+        PGAFatalPrintf
+            ( ctx
             , "PGASetIntegerInitPermute: range of %d does not equal "
               "StringLen %d"
-            , range, ctx->ga.StringLen
+            , range
+            , ctx->ga.StringLen
             );
     } else {
         ctx->init.IntegerType = PGA_IINIT_PERMUTE;
@@ -377,11 +376,11 @@ void PGASetIntegerInitRange (PGAContext *ctx, const int *min, const int *max)
     for (i = 0; i < ctx->ga.StringLen; i++)
     {
         if (max[i] < min[i]) {
-            PGAError
+            PGAFatalPrintf
                 ( ctx
                 , "PGASetIntegerInitRange: Lower bound exceeds upper "
-                  "bound for allele #"
-                , PGA_FATAL, PGA_INT, (void *) &i
+                  "bound for allele #%d"
+                , i
                 );
         } else {
             ctx->init.IntegerMin [i] = min [i];
@@ -470,10 +469,8 @@ int PGAGetMinIntegerInitValue (PGAContext *ctx, int i)
     PGACheckDataType  ("PGASetIntegerAllele", PGA_DATATYPE_INTEGER);
 
     if (i < 0 || i >= ctx->ga.StringLen) {
-        PGAError
-            ( ctx, "PGAGetMinIntegerInitValue: Index out of range:"
-            , PGA_FATAL, PGA_INT, (int *) &i
-            );
+        PGAFatalPrintf
+            (ctx, "PGAGetMinIntegerInitValue: Index out of range: %d", i);
     }
 
     PGADebugExited ("PGAGetMinIntegerInitValue");
@@ -515,10 +512,8 @@ int PGAGetMaxIntegerInitValue (PGAContext *ctx, int i)
     PGACheckDataType  ("PGAGetMaxIntegerInitValue", PGA_DATATYPE_INTEGER);
 
     if (i < 0 || i >= ctx->ga.StringLen) {
-        PGAError
-            ( ctx, "PGAGetMaxIntegerInitValue: Index out of range:"
-            , PGA_FATAL, PGA_INT, (int *) &i
-            );
+        PGAFatalPrintf
+            (ctx, "PGAGetMaxIntegerInitValue: Index out of range: %d", i);
     }
 
     PGADebugExited ("PGAGetMaxIntegerInitValue");
@@ -575,11 +570,8 @@ initflag)
 
     new->chrom = (void *)malloc(ctx->ga.StringLen * sizeof(PGAInteger));
     if (new->chrom == NULL) {
-        PGAError
-            ( ctx
-            , "PGAIntegerCreateString: No room to allocate new->chrom"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+        PGAFatalPrintf
+            (ctx, "PGAIntegerCreateString: No room to allocate new->chrom");
     }
     c = (PGAInteger *)new->chrom;
     if (initflag) {
@@ -778,10 +770,10 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
                     }
                     break;
                 default:
-                    PGAError
-                        ( ctx, "PGAIntegerMutation: Invalid DE crossover type:"
-                        , PGA_FATAL, PGA_INT
-                        , (void *) &(ctx->ga.DECrossoverType)
+                    PGAFatalPrintf
+                        ( ctx
+                        , "PGAIntegerMutation: Invalid DE crossover type: %d"
+                        , ctx->ga.DECrossoverType
                         );
                     break;
                 }
@@ -818,19 +810,22 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
                         }
                         break;
                     default:
-                        PGAError(ctx, "PGAIntegerMutation: Invalid value of "
-                                 "ga.DEVariant:", PGA_FATAL, PGA_INT,
-                                 (void *) &(ctx->ga.DEVariant));
+                        PGAFatalPrintf
+                            ( ctx
+                            , "PGAIntegerMutation: Invalid value of "
+                              "ga.DEVariant: %d"
+                            , ctx->ga.DEVariant
+                            );
                         break;
                     }
                     count++;
                 }
                 break;
             default:
-                PGAError
+                PGAFatalPrintf
                     ( ctx
-                    , "PGAIntegerMutation: Invalid value of ga.MutationType:"
-                    , PGA_FATAL, PGA_INT, (void *) &(ctx->ga.MutationType)
+                    , "PGAIntegerMutation: Invalid value of ga.MutationType: %d"
+                    , ctx->ga.MutationType
                     );
                 break;
             }
@@ -1201,8 +1196,7 @@ static void build_edge_map (PGAContext *ctx, PGAInteger **parent)
             PGAInteger n1 = parent [j][i];
             PGAInteger n2 = parent [j][(i + 1) % l];
             if (n1 < 0 || n1 >= l || n2 < 0 || n2 >= l) {
-                PGAErrorPrintf
-                    (ctx, PGA_FATAL, "Parent gene is no permutation");
+                PGAFatalPrintf (ctx, "Parent gene is no permutation");
             }
             append_edge (ctx, n1, n2);
             append_edge (ctx, n2, n1);
@@ -1211,7 +1205,7 @@ static void build_edge_map (PGAContext *ctx, PGAInteger **parent)
     }
     for (j=0; j<2; j++) {
         if (s [j] != (unsigned long long)(l) * (unsigned long long)(l-1) / 2) {
-            PGAErrorPrintf (ctx, PGA_FATAL, "Parent gene is no permutation");
+            PGAFatalPrintf (ctx, "Parent gene is no permutation");
         }
     }
 }
@@ -1269,14 +1263,14 @@ static void fix_edge_map (PGAContext *ctx)
                     continue;
                 }
                 for (k=0; k<4; k++) {
-                    if (abs (em [k]) - 1 == other) {
+                    if (labs (em [k]) - 1 == other) {
                         /* This assertion fails if not both of the
                          * parents have the fixed edge
                          */
                         assert (em [k] < 0);
                         found = 1;
                     } else {
-                        em [k] = abs (em [k]);
+                        em [k] = labs (em [k]);
                     }
                 }
                 assert (found);
@@ -1620,14 +1614,12 @@ void PGAIntegerPartiallyMappedCrossover
     pos2 = PGARandomInterval (ctx, 0, l - 1);
     for (i=pos1; i != (pos2 + 1) % l; i=(i+1) % l) {
         if (parent [1][i] - imin < 0 || parent [1][i] - imin >= l) {
-            PGAErrorPrintf
-                (ctx, PGA_FATAL, "Crossover: Second Parent is no permutation");
+            PGAFatalPrintf (ctx, "Crossover: Second Parent is no permutation");
         }
         child [0][i] = parent [1][i];
         c0_seen [parent [1][i] - imin] = parent [0][i];
         if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
-            PGAErrorPrintf
-                (ctx, PGA_FATAL, "Crossover: First Parent is no permutation");
+            PGAFatalPrintf (ctx, "Crossover: First Parent is no permutation");
         }
         child [1][i] = parent [0][i];
         c1_seen [parent [0][i] - imin] = parent [1][i];
@@ -1641,7 +1633,7 @@ void PGAIntegerPartiallyMappedCrossover
         }
         /* Should have been checked above, possibly a bug */
         if (i > l) {
-            PGAErrorPrintf (ctx, PGA_FATAL, "Crossover: no permutation");
+            PGAFatalPrintf (ctx, "Crossover: no permutation");
         }
         child [0][i] = v;
         v = parent [1][i];
@@ -1650,7 +1642,7 @@ void PGAIntegerPartiallyMappedCrossover
         }
         /* Should have been checked above, possibly a bug */
         if (i > l) {
-            PGAErrorPrintf (ctx, PGA_FATAL, "Crossover: no permutation");
+            PGAFatalPrintf (ctx, "Crossover: no permutation");
         }
         child [1][i] = v;
     }
@@ -1672,8 +1664,7 @@ static void copy_middle_part
     for (i=pos1; i != pos2; i=(i+1) % l) {
         child [i] = parent [i];
         if (parent [i] - imin < 0 || parent [i] - imin >= l) {
-            PGAErrorPrintf
-                (ctx, PGA_FATAL, "Crossover: Parent is no permutation");
+            PGAFatalPrintf (ctx, "Crossover: Parent is no permutation");
         }
         seen [parent [i] - imin] |= flag;
     }
@@ -1932,16 +1923,14 @@ void PGAIntegerCycleCrossover
     /* Build parent index */
     for (i=0; i<l; i++) {
         if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
-            PGAErrorPrintf
-                (ctx, PGA_FATAL, "Crossover: First Parent is no permutation");
+            PGAFatalPrintf (ctx, "Crossover: First Parent is no permutation");
         }
         pidx [parent [0][i] - imin] = i;
     }
     pos = PGARandomInterval (ctx, 0, l - 1);
     for (i=pos; !seen [i]; i=pidx [parent [1][i] - imin]) {
         if (i < 0 || i >= l) {
-            PGAErrorPrintf
-                (ctx, PGA_FATAL, "Crossover: Second Parent is no permutation");
+            PGAFatalPrintf (ctx, "Crossover: Second Parent is no permutation");
         }
         seen [i] = 1;
         child [0][i] = parent [0][i];
@@ -2033,18 +2022,14 @@ void PGAIntegerOrderBasedCrossover
     for (i=0; i<l; i++) {
         if (PGARandomFlip (ctx, 0.5)) {
             if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
-                PGAErrorPrintf
-                    ( ctx, PGA_FATAL
-                    , "Crossover: First Parent is no permutation"
-                    );
+                PGAFatalPrintf
+                    (ctx, "Crossover: First Parent is no permutation");
             }
             idx0 [parent [0][i] - imin] = j0;
             val0 [j0] = parent [0][i];
             if (parent [1][i] - imin < 0 || parent [1][i] - imin >= l) {
-                PGAErrorPrintf
-                    ( ctx, PGA_FATAL
-                    , "Crossover: Second Parent is no permutation"
-                    );
+                PGAFatalPrintf
+                    (ctx, "Crossover: Second Parent is no permutation");
             }
             idx1 [parent [1][i] - imin] = j0;
             val1 [j0] = parent [1][i];
@@ -2054,12 +2039,10 @@ void PGAIntegerOrderBasedCrossover
     j0 = j1 = 0;
     for (i=0; i<l; i++) {
         if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
-            PGAErrorPrintf
-                (ctx, PGA_FATAL, "Crossover: First Parent is no permutation");
+            PGAFatalPrintf (ctx, "Crossover: First Parent is no permutation");
         }
         if (parent [1][i] - imin < 0 || parent [1][i] - imin >= l) {
-            PGAErrorPrintf
-                (ctx, PGA_FATAL, "Crossover: Second Parent is no permutation");
+            PGAFatalPrintf (ctx, "Crossover: Second Parent is no permutation");
         }
         if (idx1 [parent [0][i] - imin] < 0) {
             child [0][i] = parent [0][i];
@@ -2149,16 +2132,12 @@ void PGAIntegerPositionBasedCrossover
             child [0][i] = parent [0][i];
             child [1][i] = parent [1][i];
             if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
-                PGAErrorPrintf
-                    ( ctx, PGA_FATAL
-                    , "Crossover: First Parent is no permutation"
-                    );
+                PGAFatalPrintf
+                    (ctx, "Crossover: First Parent is no permutation");
             }
             if (parent [1][i] - imin < 0 || parent [1][i] - imin >= l) {
-                PGAErrorPrintf
-                    ( ctx, PGA_FATAL
-                    , "Crossover: Second Parent is no permutation"
-                    );
+                PGAFatalPrintf
+                    (ctx, "Crossover: Second Parent is no permutation");
             }
             assert (!seen0 [child [0][i] - imin]);
             assert (!seen1 [child [1][i] - imin]);
@@ -2260,10 +2239,8 @@ void PGAIntegerUniformOrderBasedCrossover
         if (PGARandomFlip (ctx, 0.5)) {
             child [0][i] = parent [0][i];
             if (child [0][i] - imin < 0 || child [0][i] - imin >= l) {
-                PGAErrorPrintf
-                    ( ctx, PGA_FATAL
-                    , "Crossover: First Parent is no permutation"
-                    );
+                PGAFatalPrintf
+                    (ctx, "Crossover: First Parent is no permutation");
             }
             assert (!seen0 [child [0][i] - imin]);
             seen0 [child [0][i] - imin] = 1;
@@ -2271,10 +2248,8 @@ void PGAIntegerUniformOrderBasedCrossover
         } else {
             child [1][i] = parent [1][i];
             if (child [1][i] - imin < 0 || child [1][i] - imin >= l) {
-                PGAErrorPrintf
-                    ( ctx, PGA_FATAL
-                    , "Crossover: Second Parent is no permutation"
-                    );
+                PGAFatalPrintf
+                    (ctx, "Crossover: Second Parent is no permutation");
             }
             assert (!seen1 [child [1][i] - imin]);
             seen1 [child [1][i] - imin] = 1;
@@ -2317,21 +2292,15 @@ static void ae_fill_child
 
     child [off] = parent [pidx][off];
     if (child [off] - imin < 0 || child [off] - imin >= l) {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "Crossover: Parent %d is no permutation"
-            , (pidx) + 1
-            );
+        PGAFatalPrintf
+            (ctx, "Crossover: Parent %ld is no permutation", (pidx) + 1);
     }
     val [child [off] - imin] = 1;
     off = (off + 1) % l;
     child [off] = parent [pidx][off];
     if (child [off] - imin < 0 || child [off] - imin >= l) {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "Crossover: Parent %d is no permutation"
-            , (pidx) + 1
-            );
+        PGAFatalPrintf
+            (ctx, "Crossover: Parent %ld is no permutation", (pidx) + 1);
     }
     val [child [off] - imin] = 1;
     off = (off + 1) % l;
@@ -2341,8 +2310,8 @@ static void ae_fill_child
         if (!val [parent [!pidx][(pos + 1) % l] - imin]) {
             child [off] = parent [!pidx][(pos + 1) % l];
             if (child [off] - imin < 0 || child [off] - imin >= l) {
-                PGAErrorPrintf
-                    ( ctx, PGA_FATAL
+                PGAFatalPrintf
+                    ( ctx
                     , "Crossover: Parent %d is no permutation"
                     , (!pidx) + 1
                     );
@@ -2356,8 +2325,8 @@ static void ae_fill_child
         if (!val [parent [!pidx][(pos + l - 1) % l] - imin]) {
             child [off] = parent [!pidx][(pos + l - 1) % l];
             if (child [off] - imin < 0 || child [off] - imin >= l) {
-                PGAErrorPrintf
-                    ( ctx, PGA_FATAL
+                PGAFatalPrintf
+                    (ctx
                     , "Crossover: Parent %d is no permutation"
                     , (!pidx) + 1
                     );
@@ -2373,11 +2342,8 @@ static void ae_fill_child
         if (!val [parent [pidx][(pos + 1) % l] - imin]) {
             child [off] = parent [pidx][(pos + 1) % l];
             if (child [off] - imin < 0 || child [off] - imin >= l) {
-                PGAErrorPrintf
-                    ( ctx, PGA_FATAL
-                    , "Crossover: Parent %d is no permutation"
-                    , pidx + 1
-                    );
+                PGAFatalPrintf
+                    (ctx, "Crossover: Parent %ld is no permutation", pidx + 1);
             }
             assert (val [child [off] - imin] == 0);
             val [child [off] - imin] = 1;
@@ -2387,11 +2353,8 @@ static void ae_fill_child
         if (!val [parent [pidx][(pos + l - 1) % l] - imin]) {
             child [off] = parent [pidx][(pos + l - 1) % l];
             if (child [off] - imin < 0 || child [off] - imin >= l) {
-                PGAErrorPrintf
-                    ( ctx, PGA_FATAL
-                    , "Crossover: Parent %d is no permutation"
-                    , pidx + 1
-                    );
+                PGAFatalPrintf
+                    (ctx, "Crossover: Parent %ld is no permutation", pidx + 1);
             }
             assert (val [child [off] - imin] == 0);
             val [child [off] - imin] = 1;
@@ -2487,12 +2450,11 @@ void PGAIntegerAlternatingEdgeCrossover
 
     for (i=0; i<l; i++) {
         if (parent [0][i] - imin < 0 || parent [0][i] - imin >= l) {
-            PGAErrorPrintf
-                (ctx, PGA_FATAL, "Crossover: First Parent is no permutation");
+            PGAFatalPrintf
+                (ctx, "Crossover: First Parent is no permutation");
         }
         if (parent [1][i] - imin < 0 || parent [1][i] - imin >= l) {
-            PGAErrorPrintf
-                (ctx, PGA_FATAL, "Crossover: Second Parent is no permutation");
+            PGAFatalPrintf (ctx, "Crossover: Second Parent is no permutation");
         }
         idx [0][parent [0][i] - imin] = i;
         idx [1][parent [1][i] - imin] = i;
@@ -2638,11 +2600,11 @@ void PGAIntegerSetFixedEdges
     assert (ctx->ga.edges == NULL);
     ctx->ga.edges = malloc (sizeof (PGAFixedEdge) * n);
     if (ctx->ga.edges == NULL) {
-        PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate edges");
+        PGAFatalPrintf (ctx, "Cannot allocate edges");
     }
     ctx->ga.r_edge = malloc (2 * sizeof (PGAInteger) * n);
     if (ctx->ga.r_edge == NULL) {
-        PGAErrorPrintf (ctx, PGA_FATAL, "Cannot allocate rev-edges");
+        PGAFatalPrintf (ctx, "Cannot allocate rev-edges");
     }
     for (i=0; i<n; i++) {
         ctx->ga.edges  [i].lhs  = edge [i][0];
@@ -2662,15 +2624,14 @@ void PGAIntegerSetFixedEdges
     for (i=0; i<n; i++) {
         PGAFixedEdge *p;
         if (ctx->ga.edges [i].lhs == prev) {
-            PGAErrorPrintf (ctx, PGA_FATAL, "Fixed edges may not share nodes");
+            PGAFatalPrintf (ctx, "Fixed edges may not share nodes");
         }
         prev = ctx->ga.edges [i].lhs;
         /* Try finding predecessor */
         p = get_edge (ctx, ctx->ga.edges [i].rhs);
         if (p != NULL) {
             if (p->prev) {
-                PGAErrorPrintf
-                    (ctx, PGA_FATAL, "Fixed edges may not share nodes");
+                PGAFatalPrintf (ctx, "Fixed edges may not share nodes");
             } else {
                 p->prev = ctx->ga.edges + i;
             }
@@ -2697,7 +2658,7 @@ void PGAIntegerSetFixedEdges
                 }
             }
             if (j == n) {
-                PGAErrorPrintf (ctx, PGA_FATAL, "Fixed edges contain a cycle");
+                PGAFatalPrintf (ctx, "Fixed edges contain a cycle");
             }
         }
     }
@@ -2956,8 +2917,7 @@ void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
             size_t (*x)[2] = malloc (2 * ctx->ga.n_edges * sizeof (size_t));
             size_t k, j = 0;
             if (x == NULL) {
-                PGAErrorPrintf
-                    (ctx, PGA_FATAL, "PGAIntegerInitString: Cannot allocate");
+                PGAFatalPrintf (ctx, "PGAIntegerInitString: Cannot allocate");
             }
             for (k=0; k<ctx->ga.n_edges; k++) {
                 x [k][0] = x [k][1] = SIZE_MAX;

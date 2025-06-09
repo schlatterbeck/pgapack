@@ -163,10 +163,8 @@ void PGASetRestartFlag (PGAContext *ctx, int val)
          ctx->ga.restart = val;
          break;
     default:
-         PGAError
-            ( ctx, "PGASetRestartFlag: Invalid value for restart:"
-            , PGA_FATAL, PGA_INT, (void *) &val
-            );
+         PGAFatalPrintf
+            (ctx, "PGASetRestartFlag: Invalid value for restart: %d", val);
          break;
     }
 
@@ -242,10 +240,11 @@ void PGASetRestartFrequencyValue (PGAContext *ctx, int numiter)
     if (numiter > 0) {
          ctx->ga.restartFreq = numiter;
     } else {
-         PGAError
+         PGAFatalPrintf
             ( ctx
-            , "PGASetRestartFrequencyValue: Invalid value for restart freqency:"
-            , PGA_FATAL, PGA_INT, (void *) &numiter
+            , "PGASetRestartFrequencyValue: "
+              "Invalid value for restart freqency: %d"
+            , numiter
             );
     }
 
@@ -321,9 +320,10 @@ void PGASetRestartAlleleChangeProb (PGAContext *ctx, double prob)
     if (prob >= 0.0 && prob <= 1.0) {
          ctx->ga.restartAlleleProb = prob;
     } else {
-         PGAError
-            ( ctx, "PGASetRestartAlleleChangeProb: Invalid probability:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &prob
+         PGAFatalPrintf
+            ( ctx
+            , "PGASetRestartAlleleChangeProb: Invalid probability: %g"
+            , prob
             );
     }
 
