@@ -27,7 +27,7 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAError" "3" "2025-05-03" "" "PGAPack"
+.TH "PGAError" "3" "2025-06-09" "" "PGAPack"
 .SH NAME
 PGAError \- Report error messages. 
 .SH SYNOPSIS
@@ -36,9 +36,15 @@ PGAError \- Report error messages.
 .SH DESCRIPTION
 .sp
 Prints out the message supplied, and the value of a piece of data.
-Terminates if \fI\%PGA_FATAL\fP\&. See \fI\%Constants for Error Printing Flags\fP
-for the \fBlevel\fP constants and \fI\%Miscellaneous\fP in the user
-guide for more information.
+Terminates if \fI\%PGA_FATAL\fP\&.
+.sp
+The function is deprecated, use \fI\%PGAErrorPrintf()\fP instead.
+.sp
+The use with \fI\%PGA_FATAL\fP is deprecated, use the function
+\fI\%PGAFatalPrintf()\fP\&.
+.sp
+See \fI\%Constants for Error Printing Flags\fP for the \fBlevel\fP constants and
+\fI\%Miscellaneous\fP in the user guide for more information.
 .SH EXAMPLE
 .sp
 .EX

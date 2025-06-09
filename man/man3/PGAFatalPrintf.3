@@ -27,23 +27,20 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.TH "PGAErrorPrintf" "3" "2025-06-09" "" "PGAPack"
+.TH "PGAFatalPrintf" "3" "2025-06-09" "" "PGAPack"
 .SH NAME
-PGAErrorPrintf \- Report error messages using printf-like interface. 
+PGAFatalPrintf \- Report fatal error using printf-like interface. 
 .SH SYNOPSIS
-.B void PGAErrorPrintf(\fI\%PGAContext\fP *ctx, int level, char *fmt, \&...) 
+.B void PGAFatalPrintf(\fI\%PGAContext\fP *ctx, char *fmt, \&...) 
 .sp
 .SH DESCRIPTION
 .sp
 Prints out the message supplied, and optional parameters.
-Uses a printf\-style interface. Terminates if \fI\%PGA_FATAL\fP\&.
-The use with \fI\%PGA_FATAL\fP is deprecated, use the function
-\fI\%PGAFatalPrintf()\fP\&.
-.sp
-Note that compared to \fI\%PGAError()\fP \fBmsg\fP and \fBlevel\fP are
-exchanged, seems more natural.  See \fI\%Constants for Error Printing Flags\fP
-for the \fBlevel\fP constants and \fI\%Miscellaneous\fP in the user
-guide for more information.
+Uses a printf\-style interface. Terminates after printing the
+message. Use this for fatal errors instead of one of the other
+error\-printing functions with the \fI\%PGA_FATAL\fP flag.
+The reason is that the compiler can perform better checking if it
+knows that the method never returns.
 .SH EXAMPLE
 .sp
 .EX
@@ -51,15 +48,13 @@ PGAContext *ctx;
 int         val;
 
 \&...
-PGAErrorPrintf (ctx, PGA_WARNING, \(dqSome Non Fatal Error: val = %d\(dq, val);
+PGAFatalPrintf (ctx, \(dqA Fatal Error!\(dq);
 .EE
 
  
 .SH PARAMETERS
 .IP \(bu 2
 \fBctx\fP \-\- context variable 
-.IP \(bu 2
-\fBlevel\fP \-\- indicate the error\(aqs severity 
 .IP \(bu 2
 \fBfmt\fP \-\- the printf\-style format to print 
 .IP \(bu 2
