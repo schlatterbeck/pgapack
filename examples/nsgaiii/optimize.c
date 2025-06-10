@@ -3,6 +3,7 @@
  *  Functions taken from Deb and Jain, 2014 (both papers) see README.rst
  */
 #include <unistd.h>
+#include <time.h>
 #include "optimize.h"
 
 static struct multi_problem *problems [] =
@@ -27,6 +28,9 @@ static const int nproblems =
 static struct multi_problem *problem;
 static int nfunc = 0;
 static int dimension = 0;
+static clock_t t_ranking = 0;
+static unsigned int (*SortND)
+    (PGAContext *, PGAIndividual **, size_t, int) = NULL;
 
 double evaluate (PGAContext *ctx, int p, int pop, double *aux)
 {
@@ -55,9 +59,20 @@ void usage (char *name, int nproblems)
           "-p: Population size\n"
           "-r: Random seed (uppercase -R is also accepted)\n"
           "-s: Use SBX crossover and Polynomial mutation instead of DE\n"
+          "-t: Measure timing of non-dominated sorting algo and write to file\n"
           "f-index is the function to call in range 0-%d\n"
         , name, nproblems - 1
         );
+}
+
+unsigned int ranking_plugin
+    (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
+{
+    unsigned int retval = 0;
+    clock_t t = clock ();
+    retval = SortND (ctx, start, n, goal);
+    t_ranking += clock () - t;
+    return retval;
 }
 
 int main (int argc, char **argv)
@@ -84,8 +99,9 @@ int main (int argc, char **argv)
     int n_obj = 0;
     double *lower = NULL;
     double *upper = NULL;
+    char *timing_file = NULL;
 
-    while ((opt = getopt (argc, argv, "2dD:g:no:p:r:R:s")) != -1) {
+    while ((opt = getopt (argc, argv, "2dD:g:no:p:r:R:st:")) != -1) {
         switch (opt) {
         case '2':
             repl_type = PGA_POPREPL_NSGA_II;
@@ -117,6 +133,9 @@ int main (int argc, char **argv)
         case 's':
             /* Use SBX crossover/Poly mutation instead of DE */
             use_de = 0;
+            break;
+        case 't':
+            timing_file = optarg;
             break;
         default:
             usage (argv [0], nproblems);
@@ -216,6 +235,10 @@ int main (int argc, char **argv)
     }
     
     PGASetUp   (ctx);
+    if (timing_file != NULL) {
+        SortND = ctx->cops.SortND;
+        ctx->cops.SortND = ranking_plugin;
+    }
     comm = PGAGetCommunicator (ctx);
     if (PGAGetRank (ctx, comm) == 0) {
         printf ("Example: %s\n", problem->name);
@@ -228,5 +251,17 @@ int main (int argc, char **argv)
     }
     free (lower);
     free (upper);
+    if (timing_file != NULL) {
+        FILE *tf = fopen (timing_file, "w");
+        if (tf == NULL) {
+            fprintf (stderr, "Cannot open timing file\n");
+        }
+        fprintf
+            ( tf
+            , "Timing: %.4Lf\n"
+            , (long double)(t_ranking) / (long double)CLOCKS_PER_SEC
+            );
+        fclose (tf);
+    }
     return 0;
 }
