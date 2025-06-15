@@ -52,7 +52,7 @@ objectives using::
 
 .. raw:: html
 
-    <iframe width="800" height="640" scrolling="no" frameborder="no" src="x_0_y_2.html">
+    <iframe width="800" height="640" scrolling="no" frameborder="no" src="https://raw.githack.com/schlatterbeck/pgapack/refs/heads/master/examples/nsgaii/x_0_y_2.html">
     </iframe>
 
 This means that getting a better evaluation for objective 0 also gets a
@@ -73,12 +73,12 @@ above follow here:
 
 .. raw:: html
 
-    <iframe width="800" height="640" scrolling="no" frameborder="no" src="https://raw.githubusercontent.com/schlatterbeck/pgapack/refs/heads/master/examples/nsgaii/x_0_y_1_z_4.html">
+    <iframe width="800" height="640" scrolling="no" frameborder="no" src="https://raw.githack.com/schlatterbeck/pgapack/refs/heads/master/examples/nsgaii/x_0_y_1_z_4.html">
     </iframe>
 
 .. raw:: html
 
-    <iframe width="800" height="640" scrolling="no" frameborder="no" src="https://raw.githubusercontent.com/schlatterbeck/pgapack/refs/heads/master/examples/nsgaii/x_2_y_1_z_4.html">
+    <iframe width="800" height="640" scrolling="no" frameborder="no" src="https://raw.githack.com/schlatterbeck/pgapack/refs/heads/master/examples/nsgaii/x_2_y_1_z_4.html">
     </iframe>
 
 
