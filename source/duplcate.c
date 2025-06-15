@@ -203,7 +203,7 @@ void PGAChange (PGAContext *ctx, int p, int pop)
     if (changed) {
         PGASetEvaluationUpToDateFlag (ctx, p, pop, PGA_FALSE);
     } else {
-        PGAError (ctx, "Could not change string:", PGA_WARNING, PGA_VOID, NULL);
+        PGAErrorPrintf (ctx, PGA_WARNING, "Could not change string:");
         PGAPrintString (ctx, stderr, p, pop);
     }
 
@@ -321,9 +321,10 @@ void PGASetNoDuplicatesFlag (PGAContext *ctx, int no_dup)
             ctx->ga.NoDuplicates = no_dup;
             break;
         default:
-            PGAError
-                ( ctx, "PGASetNoDuplicatesFlag: Invalid value of no_dup:"
-                , PGA_FATAL, PGA_INT, (void *) &no_dup
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetNoDuplicatesFlag: Invalid value of no_dup: %d"
+                , no_dup
                 );
             break;
     }

@@ -12,8 +12,9 @@ testing which shouldn't use too much time).
 
 The multi-objective problems *with* constraints [2]_ are also implemented.
 
-There is a small python script ``crowdingplot3`` which can be used to
-do a 3D-scatter-plot of three objective (in objective space).
+There is a small python script ``crowdingplot`` (in ``../nsgaii``) which
+can be used to do a 3D-scatter-plot of three objective (in objective
+space) using the ``-3`` option (for three dimensions).
 
 .. [1] Kalyanmoy Deb and Himanshu Jain. An evolutionary many-objective
        optimization algorithm using reference-point-based nondominated

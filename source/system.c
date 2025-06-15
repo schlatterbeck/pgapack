@@ -53,7 +53,7 @@ char PGAProgram [100];    /* Holds argv[0] for PGAUsage() call */
 
 /*!****************************************************************************
     \brief Report error messages.
-    \ingroup reporting
+    \ingroup deprecated
     \param   ctx       context variable
     \param   msg       the error message to print
     \param   level     indicate the error's severity
@@ -68,10 +68,15 @@ char PGAProgram [100];    /* Holds argv[0] for PGAUsage() call */
     -----------
 
     Prints out the message supplied, and the value of a piece of data.
-    Terminates if :c:macro:`PGA_FATAL`. See :ref:`group:const-printflags`
-    for the ``level`` constants and :ref:`subsec:other` in the user
-    guide for more information.
+    Terminates if :c:macro:`PGA_FATAL`.
 
+    The function is deprecated, use :c:func:`PGAErrorPrintf` instead.
+
+    The use with :c:macro:`PGA_FATAL` is deprecated, use the function
+    :c:func:`PGAFatalPrintf`.
+
+    See :ref:`group:const-printflags` for the ``level`` constants and
+    :ref:`subsec:other` in the user guide for more information.
 
     Example
     -------
@@ -120,6 +125,54 @@ void PGAError (PGAContext *ctx, char *msg, int level, int datatype, void *data)
 }
 
 /*!****************************************************************************
+    \brief Report fatal error using printf-like interface.
+    \ingroup reporting
+    \param   ctx       context variable
+    \param   fmt       the printf-style format to print
+    \param   ...       additional parameters depending on format string in msg
+    \return  None
+
+    \rst
+
+    Description
+    -----------
+
+    Prints out the message supplied, and optional parameters.
+    Uses a printf-style interface. Terminates after printing the
+    message. Use this for fatal errors instead of one of the other
+    error-printing functions with the :c:macro:`PGA_FATAL` flag.
+    The reason is that the compiler can perform better checking if it
+    knows that the method never returns.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+       int         val;
+
+       ...
+       PGAFatalPrintf (ctx, "A Fatal Error!");
+
+    \endrst
+
+******************************************************************************/
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+NO_RETURN PRINTF_FMT(2,3)
+#endif /* !defined(DOXYGEN_SHOULD_SKIP_THIS) */
+void PGAFatalPrintf (PGAContext *ctx, char *fmt, ...)
+{
+    va_list args;
+    va_start (args, fmt);
+    vfprintf (stderr, fmt, args);
+    va_end (args);
+    fprintf (stderr, "\nPGAError: Fatal\n");
+    PGADestroy (ctx);
+    exit (-1);
+}
+
+/*!****************************************************************************
     \brief Report error messages using printf-like interface.
     \ingroup reporting
     \param   ctx       context variable
@@ -135,6 +188,9 @@ void PGAError (PGAContext *ctx, char *msg, int level, int datatype, void *data)
 
     Prints out the message supplied, and optional parameters.
     Uses a printf-style interface. Terminates if :c:macro:`PGA_FATAL`.
+    The use with :c:macro:`PGA_FATAL` is deprecated, use the function
+    :c:func:`PGAFatalPrintf`.
+
     Note that compared to :c:func:`PGAError` ``msg`` and ``level`` are
     exchanged, seems more natural.  See :ref:`group:const-printflags`
     for the ``level`` constants and :ref:`subsec:other` in the user
@@ -150,11 +206,13 @@ void PGAError (PGAContext *ctx, char *msg, int level, int datatype, void *data)
 
        ...
        PGAErrorPrintf (ctx, PGA_WARNING, "Some Non Fatal Error: val = %d", val);
-       PGAErrorPrintf (ctx, PGA_FATAL, "A Fatal Error!");
 
     \endrst
 
 ******************************************************************************/
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+PRINTF_FMT(3, 4)
+#endif /* !defined(DOXYGEN_SHOULD_SKIP_THIS) */
 void PGAErrorPrintf (PGAContext *ctx, int level, char *fmt, ...)
 {
     va_list args;
@@ -244,6 +302,7 @@ void PGADestroy (PGAContext *ctx)
 
         /*  Free the scratch space.  */
         free (ctx->scratch.intscratch);
+        free (ctx->scratch.indiv_scratch);
         free (ctx->scratch.dblscratch);
         /* Always allocated together */
         if (ctx->scratch.pgaintscratch [0] != NULL) {
@@ -257,6 +316,18 @@ void PGADestroy (PGAContext *ctx)
         }
         if (ctx->scratch.dominance != NULL) {
             free (ctx->scratch.dominance);
+        }
+        if (ctx->scratch.nsga_tmp.ind_all != NULL) {
+            free (ctx->scratch.nsga_tmp.ind_all);
+        }
+        if (ctx->scratch.nsga_tmp.ind_tmp != NULL) {
+            free (ctx->scratch.nsga_tmp.ind_tmp);
+        }
+        if (ctx->scratch.nsga_tmp.medval != NULL) {
+            free (ctx->scratch.nsga_tmp.medval);
+        }
+        if (ctx->scratch.nsga_tmp.front_sizes != NULL) {
+            free (ctx->scratch.nsga_tmp.front_sizes);
         }
         if (ctx->scratch.hashed != NULL) {
             free (ctx->scratch.hashed);

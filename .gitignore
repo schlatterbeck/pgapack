@@ -2,9 +2,10 @@
 *.a
 *.bak
 *.pc
-lib
+*.swp
 .*.swp
+*.html
+lib
 .nfs*
 .coverage*
-*.swp
-README.html
+.aider*

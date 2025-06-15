@@ -298,7 +298,13 @@ void PGARunGM
                     }
                     for (k=0; k<numaux+1; k++) {
                         double e = (k==0) ? ind->evalue : ind->auxeval [k-1];
+                        /* We built that format string above, avoid
+                         * compiler warning about s not being a literal
+                         */
+                        #pragma GCC diagnostic push
+                        #pragma GCC diagnostic ignored "-Wformat-nonliteral"
                         fprintf (ctx->ga.OutputFile, s, k, e);
+                        #pragma GCC diagnostic pop
                     }
                     PGAPrintString (ctx, ctx->ga.OutputFile, i, pop);
                 }
@@ -808,10 +814,7 @@ static void PGAEvaluateMP (PGAContext *ctx, int pop, MPI_Comm comm)
 
     work = malloc (size *sizeof(int));
     if (work == NULL) {
-        PGAError
-            ( ctx, "PGAEvaluateMP:  Couldn't allocate work array"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+        PGAFatalPrintf (ctx, "PGAEvaluateMP:  Couldn't allocate work array");
     }
 
     sentout = 0;
@@ -1388,8 +1391,7 @@ void PGAReceiveIndividual
         assert (ctx->scratch.serialization_size != 0);
         ctx->scratch.serialized = malloc (ctx->scratch.serialization_size);
         if (ctx->scratch.serialized == NULL) {
-            PGAErrorPrintf
-                (ctx, PGA_FATAL, "Cannot allocate serialization buffer");
+            PGAFatalPrintf (ctx, "Cannot allocate serialization buffer");
         }
     }
 
@@ -1523,10 +1525,7 @@ void PGARunIM
     )
 {
      PGADebugEntered ("PGARunIM");
-     PGAError
-        ( ctx, "PGARunIM: Island model not implemented"
-        , PGA_FATAL, PGA_VOID, NULL
-        );
+     PGAFatalPrintf (ctx, "PGARunIM: Island model not implemented");
      PGADebugExited ("PGARunIM");
 }
 
@@ -1571,10 +1570,7 @@ void PGARunNM
     )
 {
     PGADebugEntered ("PGARunNM");
-    PGAError
-        ( ctx, "PGARunNM: Island model not implemented"
-        , PGA_FATAL, PGA_VOID, NULL
-        );
+    PGAFatalPrintf (ctx, "PGARunNM: Island model not implemented");
     PGADebugExited ("PGARunNM");
 }
 
@@ -1717,10 +1713,7 @@ void PGASetNumIslands( PGAContext *ctx, int n)
     PGADebugEntered ("PGASetNumIslands");
 
     if (n < 1) {
-        PGAError
-            ( ctx, "PGASetNumIslands: Invalid value of n:"
-            , PGA_FATAL, PGA_INT, (void *) &n
-            );
+        PGAFatalPrintf (ctx, "PGASetNumIslands: Invalid value of n: %d", n);
     }
 
     ctx->par.NumIslands = n;
@@ -1799,10 +1792,8 @@ void PGASetNumDemes( PGAContext *ctx, int numdemes)
     PGADebugEntered ("PGASetNumDemes");
 
     if (numdemes < 1) {
-        PGAError
-            ( ctx, "PGASetNumDemes: Invalid value of numdemes:"
-            , PGA_FATAL, PGA_INT, (void *) &numdemes
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetNumDemes: Invalid value of numdemes: %d", numdemes);
     }
 
     ctx->par.NumDemes = numdemes;

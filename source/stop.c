@@ -226,9 +226,10 @@ void PGASetStoppingRuleType (PGAContext *ctx, int stoprule)
             ctx->ga.StoppingRule |= stoprule;
             break;
         default:
-            PGAError
-                ( ctx, "PGASetStoppingRuleType: Invalid value of stoprule:"
-                , PGA_FATAL, PGA_INT, (void *) &stoprule
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetStoppingRuleType: Invalid value of stoprule: %d"
+                , stoprule
                 );
     }
 
@@ -314,9 +315,10 @@ void PGASetMaxGAIterValue (PGAContext *ctx, int maxiter)
     PGAFailIfSetUp  ("PGASetMaxGAIterValue");
 
     if (maxiter < 1) {
-        PGAError
-            ( ctx, "PGASetMaxGAIterValue: Invalid value of maxiter:"
-            , PGA_FATAL, PGA_INT, (void *) &maxiter
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetMaxGAIterValue: Invalid value of maxiter: %d"
+            , maxiter
             );
     } else {
         ctx->ga.MaxIter = maxiter;
@@ -396,9 +398,10 @@ void PGASetMaxNoChangeValue (PGAContext *ctx, int max_no_change)
     PGAFailIfSetUp  ("PGASetMaxNoChangeValue");
 
     if (max_no_change <= 0) {
-        PGAError
-            ( ctx, "PGASetMaxNoChangeValue: max_no_change invalid"
-            , PGA_FATAL, PGA_INT, (void *)&max_no_change
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetMaxNoChangeValue: max_no_change invalid: %d"
+            , max_no_change
             );
     }
 
@@ -447,9 +450,10 @@ void PGASetMaxSimilarityValue (PGAContext *ctx, int max_similarity)
     PGAFailIfSetUp  ("PGASetMaxSimilarityValue");
 
     if ((max_similarity <= 0) || (max_similarity > 100)) {
-        PGAError
-            ( ctx, "PGASetMaxSimilarityValue: max_similarity invalid"
-            , PGA_FATAL, PGA_INT, (void *) &max_similarity
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetMaxSimilarityValue: max_similarity invalid: %d"
+            , max_similarity
             );
     }
 

@@ -230,9 +230,10 @@ void PGASelect (PGAContext *ctx, int popix)
         }
         break;
     default:
-        PGAError
-            ( ctx, "PGASelect: Invalid value of SelectType:"
-            , PGA_FATAL, PGA_INT, (void *) &(ctx->ga.SelectType)
+        PGAFatalPrintf
+            ( ctx
+            , "PGASelect: Invalid value of SelectType: %d"
+            , ctx->ga.SelectType
             );
         break;
     }
@@ -419,9 +420,10 @@ void PGASetSelectType (PGAContext *ctx, int select_type)
             ctx->ga.SelectType = select_type;
             break;
         default:
-            PGAError
-                ( ctx, "PGASetSelectType: Invalid value of select_type:"
-                , PGA_FATAL, PGA_INT, (void *) &select_type
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetSelectType: Invalid value of select_type: %d"
+                , select_type
                 );
         break;
     }
@@ -1174,7 +1176,7 @@ int PGASelectTruncation (PGAContext *ctx, int pop)
 
     if (ctx->ga.last_iter != ctx->ga.iter) {
         int i;
-        DECLARE_DYNARRAY (int, bestidx, ctx->ga.PopSize);
+        int *bestidx = ctx->scratch.intscratch;
         /* Returns sorted list of indeces in bestidx, no need to initialize */
         PGAEvalSort (ctx, pop, bestidx);
         /* Copy the k first indeces */

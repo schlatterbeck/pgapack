@@ -1,0 +1,2220 @@
+Example: Deb 7 sum constraints: yes
+Iter #     Field   Idx Value
+10         Best        0 3.466732e-06
+10         Best        1 3.466732e-06
+10         Best        2 -2.100965e+00
+10         Best        3 -3.082630e-01
+10         Best        4 -4.655551e+00
+10         Best        5 -3.462434e+00
+10         Best        6 -1.524885e+00
+10         Best        7 -6.640654e+00
+10         MinConstr     5.569378e+00
+10         Epsilon       1.582697e+01
+Iter #     Field   Idx Value
+20         Best        0 3.466732e-06
+20         Best        1 3.466732e-06
+20         Best        2 -2.669710e+00
+20         Best        3 -1.122032e-01
+20         Best        4 -2.989064e-01
+20         Best        5 -1.851218e+00
+20         Best        6 -4.815691e+00
+20         Best        7 -7.297112e-01
+20         MinConstr     5.569378e+00
+20         Epsilon       1.520215e+01
+Iter #     Field   Idx Value
+30         Best        0 3.466732e-06
+30         Best        1 3.466732e-06
+30         Best        2 -3.025997e+00
+30         Best        3 3.998544e-01
+30         Best        4 -3.675982e+00
+30         Best        5 -9.410986e-01
+30         Best        6 -5.381376e+00
+30         Best        7 -7.297112e-01
+30         MinConstr     4.996813e+00
+30         Epsilon       1.459700e+01
+Iter #     Field   Idx Value
+40         Best        0 5.079077e-08
+40         Best        1 5.079077e-08
+40         Best        2 -3.875602e+00
+40         Best        3 2.902422e+00
+40         Best        4 -6.787971e+00
+40         Best        5 -3.458743e-01
+40         Best        6 -4.734001e-01
+40         Best        7 -3.077622e-01
+40         MinConstr     6.402243e+00
+40         Epsilon       1.401105e+01
+Iter #     Field   Idx Value
+50         Best        0 5.079077e-08
+50         Best        1 5.079077e-08
+50         Best        2 -2.456350e+00
+50         Best        3 2.456348e+00
+50         Best        4 -6.859263e+00
+50         Best        5 -3.458743e-01
+50         Best        6 -2.643932e+00
+50         Best        7 -3.077622e-01
+50         MinConstr     6.402243e+00
+50         Epsilon       1.344386e+01
+Iter #     Field   Idx Value
+60         Best        0 1.309754e-08
+60         Best        1 1.309754e-08
+60         Best        2 -6.975065e+00
+60         Best        3 6.259335e+00
+60         Best        4 -5.554217e-01
+60         Best        5 -1.379454e+00
+60         Best        6 -6.971814e-01
+60         Best        7 -3.077622e-01
+60         MinConstr     8.997426e+00
+60         Epsilon       1.289499e+01
+Iter #     Field   Idx Value
+70         Best        0 1.981097e-09
+70         Best        1 1.981097e-09
+70         Best        2 -9.704972e+00
+70         Best        3 7.660550e+00
+70         Best        4 -3.678537e-02
+70         Best        5 -4.537305e-01
+70         Best        6 -2.944460e-01
+70         Best        7 -4.249556e-01
+70         MinConstr     1.048178e+01
+70         Epsilon       1.236398e+01
+Iter #     Field   Idx Value
+80         Best        0 1.981097e-09
+80         Best        1 1.981097e-09
+80         Best        2 -1.014575e+01
+80         Best        3 8.165517e+00
+80         Best        4 -2.642550e-01
+80         Best        5 -1.300874e+00
+80         Best        6 -3.837513e-01
+80         Best        7 -1.049853e-01
+80         MinConstr     1.085865e+01
+80         Epsilon       1.185041e+01
+Iter #     Field   Idx Value
+90         Best        0 6.673632e-09
+90         Best        1 6.673632e-09
+90         Best        2 -9.047134e+00
+90         Best        3 8.532472e+00
+90         Best        4 -1.696584e-01
+90         Best        5 -2.000025e+00
+90         Best        6 -2.121486e-01
+90         Best        7 -8.124152e-02
+90         MinConstr     1.070506e+01
+90         Epsilon       1.135386e+01
+Iter #     Field   Idx Value
+100        Best        0 1.239718e-08
+100        Best        1 1.239718e-08
+100        Best        2 -9.302945e+00
+100        Best        3 8.779834e+00
+100        Best        4 -1.029781e-02
+100        Best        5 -1.159319e+00
+100        Best        6 -4.915570e-02
+100        Best        7 -2.404268e-02
+100        MinConstr     1.041287e+01
+100        Epsilon       1.087390e+01
+Iter #     Field   Idx Value
+110        Best        0 3.015876e-08
+110        Best        1 3.015876e-08
+110        Best        2 -9.935978e+00
+110        Best        3 7.722811e+00
+110        Best        4 -8.392455e-01
+110        Best        5 -4.216778e-01
+110        Best        6 -4.829789e-02
+110        Best        7 -2.965258e-01
+110        MinConstr     8.718850e+00
+110        Epsilon       1.041013e+01
+Iter #     Field   Idx Value
+120        Best        0 7.533871e-08
+120        Best        1 7.533871e-08
+120        Best        2 -9.184913e+00
+120        Best        3 8.818268e+00
+120        Best        4 -1.985553e-03
+120        Best        5 -5.792406e-01
+120        Best        6 -2.232257e-02
+120        Best        7 -1.492296e-01
+120        MinConstr     9.619953e+00
+120        Epsilon       9.962142e+00
+Iter #     Field   Idx Value
+130        Best        0 1.481419e-07
+130        Best        1 1.481419e-07
+130        Best        2 -9.339509e+00
+130        Best        3 7.898136e+00
+130        Best        4 6.634010e-02
+130        Best        5 -1.284900e-01
+130        Best        6 -3.707402e-02
+130        Best        7 -1.899523e-01
+130        MinConstr     8.926724e+00
+130        Epsilon       9.529535e+00
+Iter #     Field   Idx Value
+140        Best        0 3.911486e-07
+140        Best        1 3.911486e-07
+140        Best        2 -8.572042e+00
+140        Best        3 7.673730e+00
+140        Best        4 1.590876e-01
+140        Best        5 -4.705014e-01
+140        Best        6 -6.434685e-02
+140        Best        7 -6.662871e-03
+140        MinConstr     8.871400e+00
+140        Epsilon       9.111918e+00
+Iter #     Field   Idx Value
+150        Best        0 9.790427e-07
+150        Best        1 9.790427e-07
+150        Best        2 -8.234095e+00
+150        Best        3 7.342461e+00
+150        Best        4 -3.709312e-02
+150        Best        5 -2.960998e-01
+150        Best        6 -9.361895e-02
+150        Best        7 -1.589259e-04
+150        MinConstr     8.323333e+00
+150        Epsilon       8.708906e+00
+Iter #     Field   Idx Value
+160        Best        0 1.777024e-06
+160        Best        1 1.777024e-06
+160        Best        2 -8.155668e+00
+160        Best        3 6.818955e+00
+160        Best        4 -5.472123e-03
+160        Best        5 -4.054886e-01
+160        Best        6 -5.823429e-02
+160        Best        7 -8.336175e-02
+160        MinConstr     7.765186e+00
+160        Epsilon       8.320120e+00
+Iter #     Field   Idx Value
+170        Best        0 3.891336e-06
+170        Best        1 3.891336e-06
+170        Best        2 -7.124511e+00
+170        Best        3 6.887878e+00
+170        Best        4 -2.975718e-02
+170        Best        5 -7.518818e-01
+170        Best        6 -1.525956e-03
+170        Best        7 -3.338286e-02
+170        MinConstr     7.559542e+00
+170        Epsilon       7.945187e+00
+Iter #     Field   Idx Value
+180        Best        0 7.134520e-06
+180        Best        1 7.134520e-06
+180        Best        2 -6.982941e+00
+180        Best        3 6.892765e+00
+180        Best        4 -4.378821e-02
+180        Best        5 -4.623450e-01
+180        Best        6 -1.250478e-01
+180        Best        7 -4.948687e-03
+180        MinConstr     7.154110e+00
+180        Epsilon       7.583740e+00
+Iter #     Field   Idx Value
+190        Best        0 1.366054e-05
+190        Best        1 1.366054e-05
+190        Best        2 -6.956005e+00
+190        Best        3 6.430741e+00
+190        Best        4 -5.223932e-02
+190        Best        5 -2.497867e-01
+190        Best        6 -2.513906e-02
+190        Best        7 -1.157817e-01
+190        MinConstr     6.928160e+00
+190        Epsilon       7.235420e+00
+Iter #     Field   Idx Value
+200        Best        0 2.345381e-05
+200        Best        1 2.345381e-05
+200        Best        2 -6.331068e+00
+200        Best        3 6.158290e+00
+200        Best        4 -5.173426e-02
+200        Best        5 -4.979325e-01
+200        Best        6 -1.148828e-02
+200        Best        7 -1.138252e-03
+200        MinConstr     6.623171e+00
+200        Epsilon       6.899873e+00
+Iter #     Field   Idx Value
+210        Best        0 3.677955e-05
+210        Best        1 3.677955e-05
+210        Best        2 -6.160945e+00
+210        Best        3 5.582820e+00
+210        Best        4 -4.498156e-02
+210        Best        5 -2.903254e-01
+210        Best        6 -6.070775e-02
+210        Best        7 -6.166387e-02
+210        MinConstr     6.255122e+00
+210        Epsilon       6.576751e+00
+Iter #     Field   Idx Value
+220        Best        0 5.572315e-05
+220        Best        1 5.572315e-05
+220        Best        2 -5.589729e+00
+220        Best        3 5.030263e+00
+220        Best        4 1.781161e-01
+220        Best        5 -4.329779e-01
+220        Best        6 -4.665975e-02
+220        Best        7 -1.327161e-02
+220        MinConstr     5.909888e+00
+220        Epsilon       6.265711e+00
+Iter #     Field   Idx Value
+230        Best        0 9.475713e-05
+230        Best        1 9.475713e-05
+230        Best        2 -5.160923e+00
+230        Best        3 4.153903e+00
+230        Best        4 -1.133602e-01
+230        Best        5 -6.763671e-01
+230        Best        6 -9.433578e-02
+230        Best        7 -5.346924e-02
+230        MinConstr     5.054373e+00
+230        Epsilon       5.966420e+00
+Iter #     Field   Idx Value
+240        Best        0 1.622896e-04
+240        Best        1 1.622896e-04
+240        Best        2 -5.139076e+00
+240        Best        3 4.352349e+00
+240        Best        4 -3.367069e-02
+240        Best        5 -3.076218e-01
+240        Best        6 -2.519248e-01
+240        Best        7 -4.815314e-02
+240        MinConstr     5.375489e+00
+240        Epsilon       5.678547e+00
+Iter #     Field   Idx Value
+250        Best        0 1.791637e-04
+250        Best        1 1.791637e-04
+250        Best        2 -5.157036e+00
+250        Best        3 3.592649e+00
+250        Best        4 -3.848282e-02
+250        Best        5 -1.234847e-02
+250        Best        6 -1.471694e-01
+250        Best        7 -1.380365e-02
+250        MinConstr     4.738496e+00
+250        Epsilon       5.401768e+00
+Iter #     Field   Idx Value
+260        Best        0 2.834731e-04
+260        Best        1 2.834731e-04
+260        Best        2 -4.832634e+00
+260        Best        3 3.756654e+00
+260        Best        4 5.203083e-02
+260        Best        5 -5.203283e-02
+260        Best        6 -1.301524e-01
+260        Best        7 -1.388615e-02
+260        MinConstr     4.394328e+00
+260        Epsilon       5.135766e+00
+Iter #     Field   Idx Value
+270        Best        0 5.533602e-04
+270        Best        1 5.533602e-04
+270        Best        2 -4.378993e+00
+270        Best        3 3.861849e+00
+270        Best        4 -1.280233e-01
+270        Best        5 -2.557520e-01
+270        Best        6 -4.371161e-02
+270        Best        7 -1.460805e-01
+270        MinConstr     4.484914e+00
+270        Epsilon       4.880229e+00
+Iter #     Field   Idx Value
+280        Best        0 6.157036e-04
+280        Best        1 6.157036e-04
+280        Best        2 -4.545778e+00
+280        Best        3 3.167987e+00
+280        Best        4 -2.767588e-02
+280        Best        5 -1.015717e-01
+280        Best        6 -2.682086e-02
+280        Best        7 -1.271849e-01
+280        MinConstr     3.986526e+00
+280        Epsilon       4.634852e+00
+Iter #     Field   Idx Value
+290        Best        0 7.132710e-04
+290        Best        1 7.132710e-04
+290        Best        2 -4.012676e+00
+290        Best        3 2.416607e+00
+290        Best        4 -2.707198e-02
+290        Best        5 -3.336308e-01
+290        Best        6 -1.985036e-02
+290        Best        7 -1.078757e-02
+290        MinConstr     3.706080e+00
+290        Epsilon       4.399334e+00
+Iter #     Field   Idx Value
+300        Best        0 1.018448e-03
+300        Best        1 1.018448e-03
+300        Best        2 -3.560412e+00
+300        Best        3 1.584837e+00
+300        Best        4 -1.632608e-01
+300        Best        5 -8.415557e-01
+300        Best        6 -1.833548e-01
+300        Best        7 -3.515676e-02
+300        MinConstr     2.588625e+00
+300        Epsilon       4.173381e+00
+Iter #     Field   Idx Value
+310        Best        0 1.398470e-03
+310        Best        1 1.398470e-03
+310        Best        2 -2.729966e+00
+310        Best        3 2.576800e+00
+310        Best        4 -2.362135e-02
+310        Best        5 -7.264357e-01
+310        Best        6 -2.777841e-01
+310        Best        7 -4.698626e-02
+310        MinConstr     3.500792e+00
+310        Epsilon       3.956703e+00
+Iter #     Field   Idx Value
+320        Best        0 1.887348e-03
+320        Best        1 1.887348e-03
+320        Best        2 -2.809634e+00
+320        Best        3 2.512696e+00
+320        Best        4 -4.668124e-02
+320        Best        5 -7.272764e-01
+320        Best        6 -1.516356e-01
+320        Best        7 -7.574980e-02
+320        MinConstr     3.437830e+00
+320        Epsilon       3.749019e+00
+Iter #     Field   Idx Value
+330        Best        0 1.928632e-03
+330        Best        1 1.928632e-03
+330        Best        2 -3.112099e+00
+330        Best        3 2.600415e+00
+330        Best        4 -4.668124e-02
+330        Best        5 -3.585087e-01
+330        Best        6 -2.756374e-02
+330        Best        7 -5.805283e-02
+330        MinConstr     3.282078e+00
+330        Epsilon       3.550050e+00
+Iter #     Field   Idx Value
+340        Best        0 2.467735e-03
+340        Best        1 2.467735e-03
+340        Best        2 -2.901834e+00
+340        Best        3 2.584940e+00
+340        Best        4 -4.336564e-02
+340        Best        5 -1.404408e-01
+340        Best        6 -1.324282e-01
+340        Best        7 -3.399392e-02
+340        MinConstr     3.076262e+00
+340        Epsilon       3.359524e+00
+Iter #     Field   Idx Value
+350        Best        0 3.200519e-03
+350        Best        1 3.200519e-03
+350        Best        2 -2.901834e+00
+350        Best        3 2.277517e+00
+350        Best        4 6.116221e-02
+350        Best        5 -1.404408e-01
+350        Best        6 -8.119301e-02
+350        Best        7 -3.399392e-02
+350        MinConstr     2.886729e+00
+350        Epsilon       3.177176e+00
+Iter #     Field   Idx Value
+360        Best        0 3.752509e-03
+360        Best        1 3.752509e-03
+360        Best        2 -2.414049e+00
+360        Best        3 1.505402e+00
+360        Best        4 2.076592e-02
+360        Best        5 -5.862430e-01
+360        Best        6 -4.877624e-03
+360        Best        7 -8.838618e-04
+360        MinConstr     2.785123e+00
+360        Epsilon       3.002743e+00
+Iter #     Field   Idx Value
+370        Best        0 4.260392e-03
+370        Best        1 4.260392e-03
+370        Best        2 -2.566622e+00
+370        Best        3 1.993556e+00
+370        Best        4 4.966503e-03
+370        Best        5 -2.169516e-01
+370        Best        6 -2.312797e-02
+370        Best        7 -6.747918e-02
+370        MinConstr     2.377063e+00
+370        Epsilon       2.835972e+00
+Iter #     Field   Idx Value
+380        Best        0 5.163175e-03
+380        Best        1 5.163175e-03
+380        Best        2 -2.065833e+00
+380        Best        3 1.949049e+00
+380        Best        4 9.937355e-03
+380        Best        5 -5.217760e-01
+380        Best        6 -6.945559e-02
+380        Best        7 -2.447465e-02
+380        MinConstr     2.508522e+00
+380        Epsilon       2.676610e+00
+Iter #     Field   Idx Value
+390        Best        0 6.000703e-03
+390        Best        1 6.000703e-03
+390        Best        2 -2.021333e+00
+390        Best        3 1.010943e+00
+390        Best        4 -4.083826e-02
+390        Best        5 -4.472397e-01
+390        Best        6 -2.750299e-02
+390        Best        7 -1.484016e-02
+390        MinConstr     2.108141e+00
+390        Epsilon       2.524413e+00
+Iter #     Field   Idx Value
+400        Best        0 7.177527e-03
+400        Best        1 7.177527e-03
+400        Best        2 -1.548405e+00
+400        Best        3 9.792080e-01
+400        Best        4 6.017257e-02
+400        Best        5 -4.849623e-01
+400        Best        6 -1.969737e-02
+400        Best        7 -5.614521e-03
+400        MinConstr     1.942877e+00
+400        Epsilon       2.379142e+00
+Iter #     Field   Idx Value
+410        Best        0 8.515877e-03
+410        Best        1 8.515877e-03
+410        Best        2 -2.002368e+00
+410        Best        3 1.331326e+00
+410        Best        4 -5.885852e-02
+410        Best        5 -8.669893e-02
+410        Best        6 -6.109937e-02
+410        Best        7 -1.009134e-02
+410        MinConstr     2.084835e+00
+410        Epsilon       2.240562e+00
+Iter #     Field   Idx Value
+420        Best        0 9.337006e-03
+420        Best        1 9.337006e-03
+420        Best        2 -2.002368e+00
+420        Best        3 1.520011e+00
+420        Best        4 -2.290531e-01
+420        Best        5 -8.669893e-02
+420        Best        6 -2.140322e-02
+420        Best        7 -1.009134e-02
+420        MinConstr     1.939502e+00
+420        Epsilon       2.108443e+00
+Iter #     Field   Idx Value
+430        Best        0 1.072014e-02
+430        Best        1 1.072014e-02
+430        Best        2 -1.210374e+00
+430        Best        3 9.384744e-01
+430        Best        4 1.208334e-02
+430        Best        5 -6.728530e-01
+430        Best        6 -1.218077e-02
+430        Best        7 -8.733041e-02
+430        MinConstr     1.687369e+00
+430        Epsilon       1.982561e+00
+Iter #     Field   Idx Value
+440        Best        0 1.182956e-02
+440        Best        1 1.182956e-02
+440        Best        2 -1.546096e+00
+440        Best        3 9.384744e-01
+440        Best        4 1.003199e-01
+440        Best        5 -2.582636e-01
+440        Best        6 -1.591000e-03
+440        Best        7 -5.219081e-02
+440        MinConstr     1.684709e+00
+440        Epsilon       1.862698e+00
+Iter #     Field   Idx Value
+450        Best        0 1.326438e-02
+450        Best        1 1.326438e-02
+450        Best        2 -1.527469e+00
+450        Best        3 8.061342e-01
+450        Best        4 3.944275e-02
+450        Best        5 -5.465366e-02
+450        Best        6 -7.220945e-04
+450        Best        7 -2.291362e-02
+450        MinConstr     1.524300e+00
+450        Epsilon       1.748638e+00
+Iter #     Field   Idx Value
+460        Best        0 1.442091e-02
+460        Best        1 1.442091e-02
+460        Best        2 -1.527469e+00
+460        Best        3 8.798461e-01
+460        Best        4 5.465166e-02
+460        Best        5 -5.465366e-02
+460        Best        6 -7.220945e-04
+460        Best        7 -2.294798e-02
+460        MinConstr     1.538557e+00
+460        Epsilon       1.640172e+00
+Iter #     Field   Idx Value
+470        Best        0 1.604042e-02
+470        Best        1 1.604042e-02
+470        Best        2 -1.211541e+00
+470        Best        3 6.152639e-01
+470        Best        4 5.217464e-02
+470        Best        5 -2.830744e-01
+470        Best        6 -1.301473e-02
+470        Best        7 -3.659922e-02
+470        MinConstr     1.353912e+00
+470        Epsilon       1.537097e+00
+Iter #     Field   Idx Value
+480        Best        0 1.858886e-02
+480        Best        1 1.858886e-02
+480        Best        2 -2.973341e-01
+480        Best        3 1.728900e-01
+480        Best        4 -7.443456e-02
+480        Best        5 -1.087425e+00
+480        Best        6 -7.762019e-02
+480        Best        7 -1.924341e-02
+480        MinConstr     1.105660e+00
+480        Epsilon       1.439212e+00
+Iter #     Field   Idx Value
+490        Best        0 2.021136e-02
+490        Best        1 2.021136e-02
+490        Best        2 -8.470385e-01
+490        Best        3 5.136984e-01
+490        Best        4 -4.937784e-02
+490        Best        5 -4.219832e-01
+490        Best        6 -3.752196e-03
+490        Best        7 -1.742820e-02
+490        MinConstr     1.105660e+00
+490        Epsilon       1.346322e+00
+Iter #     Field   Idx Value
+500        Best        0 2.172879e-02
+500        Best        1 2.172879e-02
+500        Best        2 -8.518488e-01
+500        Best        3 5.482356e-01
+500        Best        4 2.870559e-03
+500        Best        5 -1.940301e-01
+500        Best        6 -8.819199e-02
+500        Best        7 -1.742820e-02
+500        MinConstr     9.865669e-01
+500        Epsilon       1.258239e+00
+Iter #     Field   Idx Value
+510        Best        0 2.203233e-02
+510        Best        1 2.203233e-02
+510        Best        2 -8.518488e-01
+510        Best        3 4.785735e-01
+510        Best        4 2.391875e-02
+510        Best        5 -1.940301e-01
+510        Best        6 -8.819199e-02
+510        Best        7 -4.534335e-02
+510        MinConstr     1.086164e+00
+510        Epsilon       1.174775e+00
+Iter #     Field   Idx Value
+520        Best        0 2.344547e-02
+520        Best        1 2.344547e-02
+520        Best        2 -6.284678e-01
+520        Best        3 5.140526e-01
+520        Best        4 -1.239108e-02
+520        Best        5 -3.584200e-01
+520        Best        6 -1.470395e-03
+520        Best        7 -9.577468e-02
+520        MinConstr     9.742529e-01
+520        Epsilon       1.095751e+00
+Iter #     Field   Idx Value
+530        Best        0 2.517801e-02
+530        Best        1 2.517801e-02
+530        Best        2 -6.580520e-01
+530        Best        3 4.061403e-01
+530        Best        4 -1.278636e-01
+530        Best        5 -3.083913e-01
+530        Best        6 -2.140588e-02
+530        Best        7 -1.046227e-02
+530        MinConstr     7.494462e-01
+530        Epsilon       1.020990e+00
+Iter #     Field   Idx Value
+540        Best        0 2.693607e-02
+540        Best        1 2.693607e-02
+540        Best        2 -8.211772e-01
+540        Best        3 3.981384e-01
+540        Best        4 1.806378e-02
+540        Best        5 -1.806578e-02
+540        Best        6 -5.595488e-02
+540        Best        7 -1.469734e-02
+540        MinConstr     8.339798e-01
+540        Epsilon       9.503213e-01
+Iter #     Field   Idx Value
+550        Best        0 2.807758e-02
+550        Best        1 2.807758e-02
+550        Best        2 -6.226107e-01
+550        Best        3 4.007245e-01
+550        Best        4 9.534838e-03
+550        Best        5 -2.178012e-01
+550        Best        6 -2.174917e-02
+550        Best        7 -1.008199e-02
+550        MinConstr     5.707044e-01
+550        Epsilon       8.835772e-01
+Iter #     Field   Idx Value
+560        Best        0 2.944638e-02
+560        Best        1 2.944638e-02
+560        Best        2 -7.556588e-01
+560        Best        3 3.734829e-01
+560        Best        4 2.587044e-02
+560        Best        5 -2.587244e-02
+560        Best        6 -3.744113e-02
+560        Best        7 -6.441137e-03
+560        MinConstr     7.339858e-01
+560        Epsilon       8.205952e-01
+Iter #     Field   Idx Value
+570        Best        0 3.072960e-02
+570        Best        1 3.072960e-02
+570        Best        2 -5.691656e-01
+570        Best        3 2.155222e-02
+570        Best        4 -5.263620e-02
+570        Best        5 -8.469603e-02
+570        Best        6 -1.634160e-02
+570        Best        7 -1.819637e-03
+570        MinConstr     5.235555e-01
+570        Epsilon       7.612169e-01
+Iter #     Field   Idx Value
+580        Best        0 3.274731e-02
+580        Best        1 3.274731e-02
+580        Best        2 -5.691656e-01
+580        Best        3 9.463421e-02
+580        Best        4 3.675988e-02
+580        Best        5 -8.469603e-02
+580        Best        6 -1.634160e-02
+580        Best        7 -6.084574e-02
+580        MinConstr     5.976988e-01
+580        Epsilon       7.052884e-01
+Iter #     Field   Idx Value
+590        Best        0 3.352160e-02
+590        Best        1 3.352160e-02
+590        Best        2 -3.705194e-01
+590        Best        3 6.177374e-02
+590        Best        4 -1.929109e-02
+590        Best        5 -2.387584e-01
+590        Best        6 -2.081881e-02
+590        Best        7 -6.391445e-02
+590        MinConstr     5.804021e-01
+590        Epsilon       6.526601e-01
+Iter #     Field   Idx Value
+600        Best        0 3.430371e-02
+600        Best        1 3.430371e-02
+600        Best        2 -5.038162e-01
+600        Best        3 1.893891e-01
+600        Best        4 1.449002e-02
+600        Best        5 -9.119471e-02
+600        Best        6 -7.560847e-03
+600        Best        7 -2.821653e-04
+600        MinConstr     5.300181e-01
+600        Epsilon       6.031865e-01
+Iter #     Field   Idx Value
+610        Best        0 3.560133e-02
+610        Best        1 3.560133e-02
+610        Best        2 -4.813564e-01
+610        Best        3 1.613934e-01
+610        Best        4 8.864775e-03
+610        Best        5 -6.406796e-02
+610        Best        6 -8.259016e-03
+610        Best        7 -5.313543e-03
+610        MinConstr     4.675107e-01
+610        Epsilon       5.567262e-01
+Iter #     Field   Idx Value
+620        Best        0 3.665638e-02
+620        Best        1 3.665638e-02
+620        Best        2 -4.008379e-01
+620        Best        3 2.339650e-01
+620        Best        4 6.227008e-03
+620        Best        5 -9.873308e-02
+620        Best        6 -1.174997e-02
+620        Best        7 -6.167022e-05
+620        MinConstr     4.765111e-01
+620        Epsilon       5.131421e-01
+Iter #     Field   Idx Value
+630        Best        0 3.831411e-02
+630        Best        1 3.831411e-02
+630        Best        2 -1.720375e-01
+630        Best        3 4.169996e-02
+630        Best        4 -9.336889e-03
+630        Best        5 -2.658934e-01
+630        Best        6 -1.476315e-02
+630        Best        7 -7.736187e-03
+630        MinConstr     3.304632e-01
+630        Epsilon       4.723011e-01
+Iter #     Field   Idx Value
+640        Best        0 3.931539e-02
+640        Best        1 3.931539e-02
+640        Best        2 -3.099527e-01
+640        Best        3 1.050862e-01
+640        Best        4 7.029751e-03
+640        Best        5 -1.174510e-01
+640        Best        6 -1.690457e-03
+640        Best        7 -7.450530e-03
+640        MinConstr     3.701314e-01
+640        Epsilon       4.340741e-01
+Iter #     Field   Idx Value
+650        Best        0 3.986865e-02
+650        Best        1 3.986865e-02
+650        Best        2 -3.524904e-01
+650        Best        3 1.355768e-01
+650        Best        4 7.033568e-04
+650        Best        5 -2.965402e-02
+650        Best        6 -5.332513e-03
+650        Best        7 -2.400690e-03
+650        MinConstr     3.484164e-01
+650        Epsilon       3.983360e-01
+Iter #     Field   Idx Value
+660        Best        0 4.132497e-02
+660        Best        1 4.132497e-02
+660        Best        2 -2.344513e-01
+660        Best        3 1.330138e-01
+660        Best        4 1.360120e-02
+660        Best        5 -1.088770e-01
+660        Best        6 -1.424067e-02
+660        Best        7 -6.890921e-03
+660        MinConstr     3.272161e-01
+660        Epsilon       3.649654e-01
+Iter #     Field   Idx Value
+670        Best        0 4.252825e-02
+670        Best        1 4.252825e-02
+670        Best        2 -2.199236e-01
+670        Best        3 1.217645e-01
+670        Best        4 9.296172e-03
+670        Best        5 -8.375427e-02
+670        Best        6 -5.163713e-03
+670        Best        7 -1.628351e-04
+670        MinConstr     2.784875e-01
+670        Epsilon       3.338450e-01
+Iter #     Field   Idx Value
+680        Best        0 4.342999e-02
+680        Best        1 4.342999e-02
+680        Best        2 -2.527856e-01
+680        Best        3 1.084796e-01
+680        Best        4 1.072754e-02
+680        Best        5 -4.511835e-02
+680        Best        6 -2.628927e-03
+680        Best        7 -1.628351e-04
+680        MinConstr     2.308983e-01
+680        Epsilon       3.048613e-01
+Iter #     Field   Idx Value
+690        Best        0 4.432413e-02
+690        Best        1 4.432413e-02
+690        Best        2 -1.293102e-01
+690        Best        3 1.084796e-01
+690        Best        4 -9.626552e-03
+690        Best        5 -8.697562e-02
+690        Best        6 -1.687827e-02
+690        Best        7 -1.207531e-03
+690        MinConstr     2.259592e-01
+690        Epsilon       2.779042e-01
+Iter #     Field   Idx Value
+700        Best        0 4.487511e-02
+700        Best        1 4.487511e-02
+700        Best        2 -1.112590e-01
+700        Best        3 4.148605e-02
+700        Best        4 1.147070e-02
+700        Best        5 -1.115307e-01
+700        Best        6 -1.999419e-03
+700        Best        7 -4.885995e-03
+700        MinConstr     2.052346e-01
+700        Epsilon       2.528677e-01
+Iter #     Field   Idx Value
+710        Best        0 4.594476e-02
+710        Best        1 4.594476e-02
+710        Best        2 -1.112590e-01
+710        Best        3 1.413583e-02
+710        Best        4 3.979544e-02
+710        Best        5 -1.115307e-01
+710        Best        6 -1.999419e-03
+710        Best        7 -9.321958e-03
+710        MinConstr     1.794766e-01
+710        Epsilon       2.296491e-01
+Iter #     Field   Idx Value
+720        Best        0 4.669502e-02
+720        Best        1 4.669502e-02
+720        Best        2 -5.205549e-02
+720        Best        3 3.927227e-02
+720        Best        4 6.376129e-03
+720        Best        5 -1.397807e-01
+720        Best        6 -1.243592e-02
+720        Best        7 -2.181837e-02
+720        MinConstr     1.749940e-01
+720        Epsilon       2.081496e-01
+Iter #     Field   Idx Value
+730        Best        0 4.782386e-02
+730        Best        1 4.782386e-02
+730        Best        2 -8.967614e-02
+730        Best        3 5.676367e-03
+730        Best        4 6.376129e-03
+730        Best        5 -8.289594e-02
+730        Best        6 -9.428418e-03
+730        Best        7 -1.218725e-02
+730        MinConstr     1.512305e-01
+730        Epsilon       1.882736e-01
+Iter #     Field   Idx Value
+740        Best        0 4.808916e-02
+740        Best        1 4.808916e-02
+740        Best        2 -9.476066e-02
+740        Best        3 5.676367e-03
+740        Best        4 1.353170e-04
+740        Best        5 -4.525059e-02
+740        Best        6 -2.498579e-02
+740        Best        7 -1.743496e-02
+740        MinConstr     1.400278e-01
+740        Epsilon       1.699292e-01
+Iter #     Field   Idx Value
+750        Best        0 4.887692e-02
+750        Best        1 4.887692e-02
+750        Best        2 -1.573313e-02
+750        Best        3 -4.238137e-02
+750        Best        4 -4.209363e-03
+750        Best        5 -6.504228e-02
+750        Best        6 -6.819483e-02
+750        Best        7 -9.676940e-03
+750        MinConstr     3.962373e-02
+750        Epsilon       1.530277e-01
+Iter #     Field   Idx Value
+760        Best        0 4.951431e-02
+760        Best        1 4.951431e-02
+760        Best        2 -5.909835e-02
+760        Best        3 2.126810e-02
+760        Best        4 -4.940373e-04
+760        Best        5 -2.684634e-02
+760        Best        6 -2.951394e-03
+760        Best        7 -1.799829e-03
+760        MinConstr     7.684564e-02
+760        Epsilon       1.374839e-01
+Iter #     Field   Idx Value
+770        Best        0 4.976496e-02
+770        Best        1 4.976496e-02
+770        Best        2 -6.343499e-02
+770        Best        3 2.612423e-02
+770        Best        4 4.384666e-03
+770        Best        5 -2.033975e-02
+770        Best        6 -3.260689e-02
+770        Best        7 -8.449778e-03
+770        MinConstr     8.342397e-02
+770        Epsilon       1.232159e-01
+Iter #     Field   Idx Value
+780        Best        0 5.010232e-02
+780        Best        1 5.010232e-02
+780        Best        2 -8.716407e-02
+780        Best        3 1.884554e-02
+780        Best        4 -6.677648e-03
+780        Best        5 -6.814018e-03
+780        Best        6 -1.475425e-02
+780        Best        7 -8.449778e-03
+780        MinConstr     8.629026e-02
+780        Epsilon       1.101449e-01
+Iter #     Field   Idx Value
+790        Best        0 5.039964e-02
+790        Best        1 5.039964e-02
+790        Best        2 -7.984506e-02
+790        Best        3 8.274998e-03
+790        Best        4 -6.234627e-04
+790        Best        5 -1.337195e-02
+790        Best        6 -4.508351e-03
+790        Best        7 -7.460799e-04
+790        MinConstr     8.905687e-02
+790        Epsilon       9.819540e-02
+Iter #     Field   Idx Value
+800        Best        0 5.082208e-02
+800        Best        1 5.082208e-02
+800        Best        2 -5.900638e-02
+800        Best        3 -5.135190e-04
+800        Best        4 -9.641679e-03
+800        Best        5 -1.243639e-02
+800        Best        6 -8.707198e-03
+800        Best        7 -7.717718e-03
+800        MinConstr     4.387041e-02
+800        Epsilon       8.729502e-02
+Iter #     Field   Idx Value
+810        Best        0 5.137616e-02
+810        Best        1 5.137616e-02
+810        Best        2 -2.047829e-02
+810        Best        3 -1.692254e-03
+810        Best        4 5.307527e-03
+810        Best        5 -2.176795e-02
+810        Best        6 -1.750591e-02
+810        Best        7 -1.588706e-02
+810        MinConstr     5.276253e-02
+810        Epsilon       7.737438e-02
+Iter #     Field   Idx Value
+820        Best        0 5.154411e-02
+820        Best        1 5.154411e-02
+820        Best        2 -1.183679e-02
+820        Best        3 -2.918916e-04
+820        Best        4 1.523716e-02
+820        Best        5 -4.426832e-02
+820        Best        6 -1.099982e-02
+820        Best        7 -3.329036e-03
+820        MinConstr     5.172458e-02
+820        Epsilon       6.836715e-02
+Iter #     Field   Idx Value
+830        Best        0 5.177222e-02
+830        Best        1 5.177222e-02
+830        Best        2 -2.910503e-02
+830        Best        3 1.543878e-02
+830        Best        4 1.072561e-03
+830        Best        5 -2.332982e-02
+830        Best        6 -7.410119e-04
+830        Best        7 -2.707672e-04
+830        MinConstr     4.694743e-02
+830        Epsilon       6.020992e-02
+Iter #     Field   Idx Value
+840        Best        0 5.209138e-02
+840        Best        1 5.209138e-02
+840        Best        2 -3.132849e-02
+840        Best        3 1.794880e-02
+840        Best        4 -1.329774e-03
+840        Best        5 -1.581442e-02
+840        Best        6 -4.771094e-03
+840        Best        7 -2.293839e-03
+840        MinConstr     4.273523e-02
+840        Epsilon       5.284220e-02
+Iter #     Field   Idx Value
+850        Best        0 5.221646e-02
+850        Best        1 5.221646e-02
+850        Best        2 -4.046718e-02
+850        Best        3 -4.167081e-03
+850        Best        4 2.843535e-04
+850        Best        5 -2.172855e-02
+850        Best        6 -4.486335e-03
+850        Best        7 -4.876516e-03
+850        MinConstr     1.724692e-02
+850        Epsilon       4.620629e-02
+Iter #     Field   Idx Value
+860        Best        0 5.257773e-02
+860        Best        1 5.257773e-02
+860        Best        2 -1.604067e-02
+860        Best        3 5.770798e-04
+860        Best        4 -1.501477e-04
+860        Best        5 -1.491526e-02
+860        Best        6 -3.374137e-03
+860        Best        7 -7.109645e-03
+860        MinConstr     2.482005e-02
+860        Epsilon       4.024730e-02
+Iter #     Field   Idx Value
+870        Best        0 5.286242e-02
+870        Best        1 5.286242e-02
+870        Best        2 -1.604067e-02
+870        Best        3 -1.113797e-03
+870        Best        4 -4.205482e-03
+870        Best        5 -1.491526e-02
+870        Best        6 -3.374137e-03
+870        Best        7 -3.135343e-03
+870        MinConstr     2.400031e-02
+870        Epsilon       3.491302e-02
+Iter #     Field   Idx Value
+880        Best        0 5.292382e-02
+880        Best        1 5.292382e-02
+880        Best        2 -1.689136e-02
+880        Best        3 -1.113797e-03
+880        Best        4 -4.205482e-03
+880        Best        5 -1.983434e-03
+880        Best        6 -8.590777e-03
+880        Best        7 -3.135343e-03
+880        MinConstr     1.683941e-02
+880        Epsilon       3.015391e-02
+Iter #     Field   Idx Value
+890        Best        0 5.313277e-02
+890        Best        1 5.313277e-02
+890        Best        2 -8.919058e-03
+890        Best        3 -1.542503e-03
+890        Best        4 1.363935e-03
+890        Best        5 -1.288544e-02
+890        Best        6 -2.874227e-03
+890        Best        7 -2.802143e-03
+890        MinConstr     1.887506e-02
+890        Epsilon       2.592302e-02
+Iter #     Field   Idx Value
+900        Best        0 5.328521e-02
+900        Best        1 5.328521e-02
+900        Best        2 -4.558041e-03
+900        Best        3 -1.459011e-04
+900        Best        4 1.714793e-03
+900        Best        5 -1.391840e-02
+900        Best        6 -2.914987e-03
+900        Best        7 -2.556296e-03
+900        MinConstr     1.539176e-02
+900        Epsilon       2.217591e-02
+Iter #     Field   Idx Value
+910        Best        0 5.323242e-02
+910        Best        1 5.323242e-02
+910        Best        2 -1.401398e-02
+910        Best        3 -2.970378e-04
+910        Best        4 1.420122e-03
+910        Best        5 -1.846126e-03
+910        Best        6 -1.926353e-03
+910        Best        7 -1.954360e-05
+910        MinConstr     1.377769e-02
+910        Epsilon       1.887062e-02
+Iter #     Field   Idx Value
+920        Best        0 5.340170e-02
+920        Best        1 5.340170e-02
+920        Best        2 -1.401398e-02
+920        Best        3 -4.544174e-04
+920        Best        4 8.004317e-04
+920        Best        5 -1.846126e-03
+920        Best        6 -6.485258e-04
+920        Best        7 -1.954360e-05
+920        MinConstr     1.233521e-02
+920        Epsilon       1.596759e-02
+Iter #     Field   Idx Value
+930        Best        0 5.342417e-02
+930        Best        1 5.342417e-02
+930        Best        2 -8.696144e-04
+930        Best        3 -3.469602e-04
+930        Best        4 1.210782e-04
+930        Best        5 -9.192161e-03
+930        Best        6 -2.280104e-04
+930        Best        7 -1.110071e-03
+930        MinConstr     9.787864e-03
+930        Epsilon       1.342962e-02
+Iter #     Field   Idx Value
+940        Best        0 5.358984e-02
+940        Best        1 5.358984e-02
+940        Best        2 -8.696144e-04
+940        Best        3 8.676144e-04
+940        Best        4 2.367318e-04
+940        Best        5 -9.192161e-03
+940        Best        6 -1.015304e-03
+940        Best        7 -1.110071e-03
+940        MinConstr     8.504118e-03
+940        Epsilon       1.122176e-02
+Iter #     Field   Idx Value
+950        Best        0 5.362605e-02
+950        Best        1 5.362605e-02
+950        Best        2 -2.091676e-03
+950        Best        3 4.200149e-04
+950        Best        4 -2.103146e-04
+950        Best        5 -6.280753e-03
+950        Best        6 -2.009728e-04
+950        Best        7 -6.822626e-04
+950        MinConstr     7.228876e-03
+950        Epsilon       9.311311e-03
+Iter #     Field   Idx Value
+960        Best        0 5.372629e-02
+960        Best        1 5.372629e-02
+960        Best        2 -4.855803e-03
+960        Best        3 -8.550467e-04
+960        Best        4 -2.614025e-03
+960        Best        5 -2.597011e-05
+960        Best        6 -1.228398e-03
+960        Best        7 -1.448184e-03
+960        MinConstr     1.294190e-03
+960        Epsilon       7.667697e-03
+Iter #     Field   Idx Value
+970        Best        0 5.384427e-02
+970        Best        1 5.384427e-02
+970        Best        2 -9.324919e-04
+970        Best        3 -4.752738e-04
+970        Best        4 -1.822793e-03
+970        Best        5 -4.383229e-03
+970        Best        6 -3.231266e-03
+970        Best        7 -1.318099e-03
+970        MinConstr     1.294190e-03
+970        Epsilon       6.262446e-03
+Iter #     Field   Idx Value
+980        Best        0 5.385635e-02
+980        Best        1 5.385635e-02
+980        Best        2 -6.438214e-05
+980        Best        3 -3.789344e-04
+980        Best        4 -1.201677e-03
+980        Best        5 -9.196773e-04
+980        Best        6 -2.281969e-03
+980        Best        7 -3.287376e-03
+980        MinConstr     1.818240e-03
+980        Epsilon       5.069108e-03
+Iter #     Field   Idx Value
+990        Best        0 5.386571e-02
+990        Best        1 5.386571e-02
+990        Best        2 -6.438214e-05
+990        Best        3 -3.789344e-04
+990        Best        4 -9.794695e-04
+990        Best        5 -9.196773e-04
+990        Best        6 -2.281969e-03
+990        Best        7 -9.497506e-04
+990        MinConstr     1.370961e-03
+990        Epsilon       4.063189e-03
+Iter #     Field   Idx Value
+1000       Best        0 5.386571e-02
+1000       Best        1 5.386571e-02
+1000       Best        2 -1.317758e-03
+1000       Best        3 -1.649768e-04
+1000       Best        4 -2.806557e-05
+1000       Best        5 -3.991222e-04
+1000       Best        6 -5.865916e-04
+1000       Best        7 -1.269992e-03
+1000       MinConstr     4.792066e-04
+1000       Epsilon       3.222088e-03
+Iter #     Field   Idx Value
+1010       Best        0 5.388415e-02
+1010       Best        1 5.388415e-02
+1010       Best        2 -3.381368e-04
+1010       Best        3 -1.287118e-04
+1010       Best        4 -7.457957e-04
+1010       Best        5 -8.328611e-04
+1010       Best        6 -1.455059e-04
+1010       Best        7 -5.232588e-04
+1010       MinConstr     1.078532e-03
+1010       Epsilon       2.525028e-03
+Iter #     Field   Idx Value
+1020       Best        0 5.388487e-02
+1020       Best        1 5.388487e-02
+1020       Best        2 -3.381368e-04
+1020       Best        3 -1.287118e-04
+1020       Best        4 -1.493348e-04
+1020       Best        5 -8.328611e-04
+1020       Best        6 -1.455059e-04
+1020       Best        7 -3.372227e-04
+1020       MinConstr     6.547716e-04
+1020       Epsilon       1.952992e-03
+Iter #     Field   Idx Value
+1030       Best        0 5.389999e-02
+1030       Best        1 5.389999e-02
+1030       Best        2 -3.381368e-04
+1030       Best        3 -2.927232e-05
+1030       Best        4 -1.607521e-04
+1030       Best        5 -8.328611e-04
+1030       Best        6 -1.455059e-04
+1030       Best        7 -1.426844e-04
+1030       MinConstr     7.564067e-04
+1030       Epsilon       1.488649e-03
+Iter #     Field   Idx Value
+1040       Best        0 5.391541e-02
+1040       Best        1 5.391541e-02
+1040       Best        2 -8.680072e-04
+1040       Best        3 -2.927232e-05
+1040       Best        4 -3.478620e-05
+1040       Best        5 -3.074226e-04
+1040       Best        6 -6.244944e-05
+1040       Best        7 -1.361691e-04
+1040       MinConstr     5.489271e-04
+1040       Epsilon       1.116291e-03
+Iter #     Field   Idx Value
+1050       Best        0 5.392568e-02
+1050       Best        1 5.392568e-02
+1050       Best        2 -1.052619e-04
+1050       Best        3 -6.565517e-05
+1050       Best        4 -4.885190e-05
+1050       Best        5 -4.182079e-04
+1050       Best        6 -2.511671e-04
+1050       Best        7 -1.174148e-04
+1050       MinConstr     1.925488e-04
+1050       Epsilon       8.217563e-04
+Iter #     Field   Idx Value
+1060       Best        0 5.394419e-02
+1060       Best        1 5.394419e-02
+1060       Best        2 -1.971070e-04
+1060       Best        3 -1.813368e-05
+1060       Best        4 -3.997146e-05
+1060       Best        5 -2.548074e-05
+1060       Best        6 -1.719119e-04
+1060       Best        7 -1.185423e-04
+1060       MinConstr     1.710362e-04
+1060       Epsilon       5.923658e-04
+Iter #     Field   Idx Value
+1070       Best        0 5.394055e-02
+1070       Best        1 5.394055e-02
+1070       Best        2 -1.971070e-04
+1070       Best        3 -5.078354e-05
+1070       Best        4 -5.351568e-05
+1070       Best        5 -2.548074e-05
+1070       Best        6 -1.719119e-04
+1070       Best        7 -7.295514e-05
+1070       MinConstr     1.294218e-04
+1070       Epsilon       4.168457e-04
+Iter #     Field   Idx Value
+1080       Best        0 5.394098e-02
+1080       Best        1 5.394098e-02
+1080       Best        2 -1.493826e-04
+1080       Best        3 -4.315965e-05
+1080       Best        4 -5.535080e-05
+1080       Best        5 -7.354824e-05
+1080       Best        6 -1.809426e-05
+1080       Best        7 -5.762671e-06
+1080       MinConstr     2.043530e-04
+1080       Epsilon       2.852569e-04
+Iter #     Field   Idx Value
+1090       Best        0 5.394532e-02
+1090       Best        1 5.394532e-02
+1090       Best        2 -1.493826e-04
+1090       Best        3 -9.215840e-06
+1090       Best        4 -1.155466e-04
+1090       Best        5 -7.354824e-05
+1090       Best        6 -1.310207e-05
+1090       Best        7 -5.762671e-06
+1090       MinConstr     8.776596e-05
+1090       Epsilon       1.889202e-04
+Iter #     Field   Idx Value
+1100       Best        0 5.394978e-02
+1100       Best        1 5.394978e-02
+1100       Best        2 -1.878871e-05
+1100       Best        3 -6.828497e-07
+1100       Best        4 -3.895335e-06
+1100       Best        5 -8.222042e-05
+1100       Best        6 -6.762556e-05
+1100       Best        7 -2.872749e-05
+1100       MinConstr     3.817859e-05
+1100       Epsilon       1.203411e-04
+Iter #     Field   Idx Value
+1110       Best        0 5.395008e-02
+1110       Best        1 5.395008e-02
+1110       Best        2 -4.661275e-06
+1110       Best        3 -5.164615e-05
+1110       Best        4 -2.470956e-05
+1110       Best        5 -3.757848e-05
+1110       Best        6 -7.002526e-05
+1110       Best        7 -4.320005e-05
+1110       MinConstr     1.471224e-05
+1110       Epsilon       7.313270e-05
+Iter #     Field   Idx Value
+1120       Best        0 5.395933e-02
+1120       Best        1 5.395933e-02
+1120       Best        2 -2.959247e-05
+1120       Best        3 -2.977431e-06
+1120       Best        4 -4.317738e-05
+1120       Best        5 -3.757848e-05
+1120       Best        6 -8.958436e-06
+1120       Best        7 -2.872749e-05
+1120       MinConstr     1.471224e-05
+1120       Epsilon       4.193764e-05
+Iter #     Field   Idx Value
+1130       Best        0 5.396113e-02
+1130       Best        1 5.396113e-02
+1130       Best        2 -6.807943e-06
+1130       Best        3 -1.787100e-05
+1130       Best        4 -1.590991e-05
+1130       Best        5 -3.757848e-05
+1130       Best        6 -2.908104e-05
+1130       Best        7 -2.872749e-05
+1130       MinConstr     1.471224e-05
+1130       Epsilon       2.234768e-05
+Iter #     Field   Idx Value
+1140       Best        0 nan
+1140       Best        1 nan
+1140       Best        2 -6.807943e-06
+1140       Best        3 -2.620028e-05
+1140       Best        4 -1.590991e-05
+1140       Best        5 -4.857202e-06
+1140       Best        6 -2.908104e-05
+1140       Best        7 -1.349228e-05
+1140       MinConstr     1.471224e-05
+1140       Epsilon       1.082161e-05
+Iter #     Field   Idx Value
+1150       Best        0 5.394460e-02
+1150       Best        1 5.394460e-02
+1150       Best        2 -1.523579e-04
+1150       Best        3 -2.347217e-05
+1150       Best        4 -5.070684e-05
+1150       Best        5 -7.582076e-05
+1150       Best        6 -5.910161e-05
+1150       Best        7 -1.988110e-05
+1150       MinConstr     3.256091e-05
+1150       Epsilon       2.338721e-04
+Iter #     Field   Idx Value
+1160       Best        0 5.394862e-02
+1160       Best        1 5.394862e-02
+1160       Best        2 -7.489378e-05
+1160       Best        3 -3.285509e-05
+1160       Best        4 -3.761517e-06
+1160       Best        5 -3.665722e-05
+1160       Best        6 -1.761271e-05
+1160       Best        7 -3.648403e-05
+1160       MinConstr     3.256091e-05
+1160       Epsilon       1.081655e-04
+Iter #     Field   Idx Value
+1170       Best        0 5.394887e-02
+1170       Best        1 5.394887e-02
+1170       Best        2 -2.643748e-05
+1170       Best        3 -3.331920e-06
+1170       Best        4 -3.761517e-06
+1170       Best        5 -7.292853e-05
+1170       Best        6 -5.910161e-05
+1170       Best        7 -6.513800e-06
+1170       MinConstr     3.256091e-05
+1170       Epsilon       4.028027e-05
+Iter #     Field   Idx Value
+1180       Best        0 5.395067e-02
+1180       Best        1 5.395067e-02
+1180       Best        2 -1.727431e-05
+1180       Best        3 -5.771515e-06
+1180       Best        4 -1.848198e-06
+1180       Best        5 -1.518020e-07
+1180       Best        6 -5.290513e-06
+1180       Best        7 -2.934973e-05
+1180       MinConstr     7.062029e-06
+1180       Epsilon       1.017409e-05
+Iter #     Field   Idx Value
+1190       Best        0 nan
+1190       Best        1 nan
+1190       Best        2 -2.493047e-06
+1190       Best        3 -5.771515e-06
+1190       Best        4 -1.848198e-06
+1190       Best        5 -1.518020e-07
+1190       Best        6 -5.290513e-06
+1190       Best        7 -2.188210e-05
+1190       MinConstr     7.062029e-06
+1190       Epsilon       1.035875e-06
+Iter #     Field   Idx Value
+1200       Best        0 nan
+1200       Best        1 nan
+1200       Best        2 -2.493047e-06
+1200       Best        3 -5.771515e-06
+1200       Best        4 -1.848198e-06
+1200       Best        5 -1.518020e-07
+1200       Best        6 -5.290513e-06
+1200       Best        7 -1.697206e-05
+1200       MinConstr     6.057809e-06
+1200       Epsilon       2.167523e-10
+Iter #     Field   Idx Value
+1210       Best        0 nan
+1210       Best        1 nan
+1210       Best        2 -1.931900e-06
+1210       Best        3 -5.771515e-06
+1210       Best        4 -1.848198e-06
+1210       Best        5 -1.518020e-07
+1210       Best        6 -5.290513e-06
+1210       Best        7 -6.653861e-06
+1210       MinConstr     3.581195e-06
+1210       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1220       Best        0 nan
+1220       Best        1 nan
+1220       Best        2 -4.885403e-06
+1220       Best        3 -5.771515e-06
+1220       Best        4 -1.848198e-06
+1220       Best        5 -1.518020e-07
+1220       Best        6 -5.290513e-06
+1220       Best        7 -4.789802e-06
+1220       MinConstr     1.766113e-06
+1220       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1230       Best        0 nan
+1230       Best        1 nan
+1230       Best        2 -3.993920e-06
+1230       Best        3 -1.614828e-06
+1230       Best        4 -4.878162e-06
+1230       Best        5 -1.101356e-06
+1230       Best        6 -3.097502e-06
+1230       Best        7 -2.645437e-06
+1230       MinConstr     2.779238e-07
+1230       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1240       Best        0 nan
+1240       Best        1 nan
+1240       Best        2 -3.993920e-06
+1240       Best        3 -2.059258e-06
+1240       Best        4 -4.878162e-06
+1240       Best        5 -1.423012e-06
+1240       Best        6 -3.097502e-06
+1240       Best        7 -2.645437e-06
+1240       MinConstr     2.779238e-07
+1240       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1250       Best        0 nan
+1250       Best        1 nan
+1250       Best        2 -3.851721e-07
+1250       Best        3 -6.179837e-06
+1250       Best        4 -2.052989e-06
+1250       Best        5 -1.423012e-06
+1250       Best        6 -3.522872e-06
+1250       Best        7 -2.645437e-06
+1250       MinConstr     2.779238e-07
+1250       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1260       Best        0 nan
+1260       Best        1 nan
+1260       Best        2 -2.076950e-07
+1260       Best        3 -1.792305e-06
+1260       Best        4 -5.953925e-06
+1260       Best        5 -1.423012e-06
+1260       Best        6 -2.164584e-06
+1260       Best        7 -2.645437e-06
+1260       MinConstr     2.779238e-07
+1260       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1270       Best        0 nan
+1270       Best        1 nan
+1270       Best        2 -2.076950e-07
+1270       Best        3 -1.792305e-06
+1270       Best        4 -5.953925e-06
+1270       Best        5 -1.423012e-06
+1270       Best        6 -2.164584e-06
+1270       Best        7 -2.645437e-06
+1270       MinConstr     2.779238e-07
+1270       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1280       Best        0 nan
+1280       Best        1 nan
+1280       Best        2 -2.076950e-07
+1280       Best        3 -1.792305e-06
+1280       Best        4 -5.953925e-06
+1280       Best        5 -1.423012e-06
+1280       Best        6 -2.164584e-06
+1280       Best        7 -2.645437e-06
+1280       MinConstr     2.779238e-07
+1280       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1290       Best        0 nan
+1290       Best        1 nan
+1290       Best        2 -2.076950e-07
+1290       Best        3 -1.792305e-06
+1290       Best        4 -5.953925e-06
+1290       Best        5 -1.423012e-06
+1290       Best        6 -2.164584e-06
+1290       Best        7 -2.645437e-06
+1290       MinConstr     2.779238e-07
+1290       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1300       Best        0 nan
+1300       Best        1 nan
+1300       Best        2 -1.299718e-06
+1300       Best        3 -7.002819e-07
+1300       Best        4 -5.769879e-07
+1300       Best        5 -3.425928e-06
+1300       Best        6 -4.253979e-06
+1300       Best        7 -2.645437e-06
+1300       MinConstr     2.779238e-07
+1300       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1310       Best        0 nan
+1310       Best        1 nan
+1310       Best        2 -3.031492e-07
+1310       Best        3 -1.696851e-06
+1310       Best        4 -2.997761e-06
+1310       Best        5 -1.423012e-06
+1310       Best        6 -2.197828e-06
+1310       Best        7 -2.053311e-06
+1310       MinConstr     2.779238e-07
+1310       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1320       Best        0 nan
+1320       Best        1 nan
+1320       Best        2 -3.031492e-07
+1320       Best        3 -1.696851e-06
+1320       Best        4 -2.997761e-06
+1320       Best        5 -1.423012e-06
+1320       Best        6 -2.197828e-06
+1320       Best        7 -2.053311e-06
+1320       MinConstr     2.779238e-07
+1320       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1330       Best        0 nan
+1330       Best        1 nan
+1330       Best        2 -3.031492e-07
+1330       Best        3 -1.696851e-06
+1330       Best        4 -2.997761e-06
+1330       Best        5 -5.946113e-07
+1330       Best        6 -2.197828e-06
+1330       Best        7 -1.063739e-06
+1330       MinConstr     2.779238e-07
+1330       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1340       Best        0 nan
+1340       Best        1 nan
+1340       Best        2 -3.031492e-07
+1340       Best        3 -1.696851e-06
+1340       Best        4 -2.997761e-06
+1340       Best        5 -5.946113e-07
+1340       Best        6 -2.197828e-06
+1340       Best        7 -1.063739e-06
+1340       MinConstr     5.024840e-08
+1340       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1350       Best        0 5.395013e-02
+1350       Best        1 5.395013e-02
+1350       Best        2 -3.031492e-07
+1350       Best        3 -1.696851e-06
+1350       Best        4 -2.997761e-06
+1350       Best        5 -5.946113e-07
+1350       Best        6 -2.197828e-06
+1350       Best        7 -1.063739e-06
+1350       MinConstr     0.000000e+00
+1350       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1360       Best        0 5.395013e-02
+1360       Best        1 5.395013e-02
+1360       Best        2 -2.456376e-06
+1360       Best        3 -8.165219e-07
+1360       Best        4 -1.343210e-06
+1360       Best        5 -6.567904e-07
+1360       Best        6 -4.400057e-07
+1360       Best        7 -1.559994e-06
+1360       MinConstr     0.000000e+00
+1360       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1370       Best        0 5.395013e-02
+1370       Best        1 5.395013e-02
+1370       Best        2 -2.456376e-06
+1370       Best        3 -1.163037e-06
+1370       Best        4 -1.343210e-06
+1370       Best        5 -6.567904e-07
+1370       Best        6 -4.400057e-07
+1370       Best        7 -1.559994e-06
+1370       MinConstr     0.000000e+00
+1370       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1380       Best        0 5.395013e-02
+1380       Best        1 5.395013e-02
+1380       Best        2 -1.132278e-06
+1380       Best        3 -8.677216e-07
+1380       Best        4 -1.202527e-06
+1380       Best        5 -7.974732e-07
+1380       Best        6 -2.105923e-06
+1380       Best        7 -1.429917e-06
+1380       MinConstr     0.000000e+00
+1380       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1390       Best        0 5.395013e-02
+1390       Best        1 5.395013e-02
+1390       Best        2 -1.132278e-06
+1390       Best        3 -8.677216e-07
+1390       Best        4 -1.202527e-06
+1390       Best        5 -7.974732e-07
+1390       Best        6 -2.105923e-06
+1390       Best        7 -1.778485e-06
+1390       MinConstr     0.000000e+00
+1390       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1400       Best        0 5.395013e-02
+1400       Best        1 5.395013e-02
+1400       Best        2 -1.132278e-06
+1400       Best        3 -8.677216e-07
+1400       Best        4 -1.202527e-06
+1400       Best        5 -7.974732e-07
+1400       Best        6 -2.105923e-06
+1400       Best        7 -1.778485e-06
+1400       MinConstr     0.000000e+00
+1400       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1410       Best        0 5.395013e-02
+1410       Best        1 5.395013e-02
+1410       Best        2 -5.002824e-07
+1410       Best        3 -1.499718e-06
+1410       Best        4 -1.197864e-06
+1410       Best        5 -8.021360e-07
+1410       Best        6 -9.356449e-07
+1410       Best        7 -1.064355e-06
+1410       MinConstr     0.000000e+00
+1410       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1420       Best        0 5.395003e-02
+1420       Best        1 5.395003e-02
+1420       Best        2 -1.403438e-06
+1420       Best        3 -5.965621e-07
+1420       Best        4 -2.240944e-07
+1420       Best        5 -1.775906e-06
+1420       Best        6 -1.152521e-06
+1420       Best        7 -8.474794e-07
+1420       MinConstr     0.000000e+00
+1420       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1430       Best        0 5.395003e-02
+1430       Best        1 5.395003e-02
+1430       Best        2 -1.636011e-06
+1430       Best        3 -3.639886e-07
+1430       Best        4 -7.574021e-07
+1430       Best        5 -1.242598e-06
+1430       Best        6 -7.444110e-07
+1430       Best        7 -1.255589e-06
+1430       MinConstr     0.000000e+00
+1430       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1440       Best        0 5.395003e-02
+1440       Best        1 5.395003e-02
+1440       Best        2 -1.458724e-06
+1440       Best        3 -5.412763e-07
+1440       Best        4 -1.505131e-06
+1440       Best        5 -4.948686e-07
+1440       Best        6 -1.576055e-06
+1440       Best        7 -4.239452e-07
+1440       MinConstr     0.000000e+00
+1440       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1450       Best        0 5.395002e-02
+1450       Best        1 5.395002e-02
+1450       Best        2 -1.287028e-06
+1450       Best        3 -7.129717e-07
+1450       Best        4 -1.736187e-06
+1450       Best        5 -2.638133e-07
+1450       Best        6 -1.590615e-06
+1450       Best        7 -4.093854e-07
+1450       MinConstr     0.000000e+00
+1450       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1460       Best        0 5.395000e-02
+1460       Best        1 5.395000e-02
+1460       Best        2 -1.123702e-06
+1460       Best        3 -8.762984e-07
+1460       Best        4 -1.292230e-06
+1460       Best        5 -7.077699e-07
+1460       Best        6 -1.941147e-06
+1460       Best        7 -5.885254e-08
+1460       MinConstr     0.000000e+00
+1460       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1470       Best        0 5.394999e-02
+1470       Best        1 5.394999e-02
+1470       Best        2 -1.340162e-06
+1470       Best        3 -6.598381e-07
+1470       Best        4 -8.969045e-07
+1470       Best        5 -1.103095e-06
+1470       Best        6 -8.208282e-07
+1470       Best        7 -1.179172e-06
+1470       MinConstr     0.000000e+00
+1470       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1480       Best        0 5.394999e-02
+1480       Best        1 5.394999e-02
+1480       Best        2 -1.666629e-06
+1480       Best        3 -3.333713e-07
+1480       Best        4 -3.534431e-07
+1480       Best        5 -1.646557e-06
+1480       Best        6 -9.322959e-08
+1480       Best        7 -1.906770e-06
+1480       MinConstr     0.000000e+00
+1480       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1490       Best        0 5.394999e-02
+1490       Best        1 5.394999e-02
+1490       Best        2 -1.712442e-06
+1490       Best        3 -2.875583e-07
+1490       Best        4 -6.962188e-07
+1490       Best        5 -1.303781e-06
+1490       Best        6 -3.531032e-07
+1490       Best        7 -1.646897e-06
+1490       MinConstr     0.000000e+00
+1490       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1500       Best        0 5.394998e-02
+1500       Best        1 5.394998e-02
+1500       Best        2 -8.488097e-07
+1500       Best        3 -1.151190e-06
+1500       Best        4 -3.425897e-07
+1500       Best        5 -1.657410e-06
+1500       Best        6 -3.129023e-07
+1500       Best        7 -1.687098e-06
+1500       MinConstr     0.000000e+00
+1500       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1510       Best        0 5.394997e-02
+1510       Best        1 5.394997e-02
+1510       Best        2 -9.912876e-07
+1510       Best        3 -1.008712e-06
+1510       Best        4 -1.696340e-07
+1510       Best        5 -1.830366e-06
+1510       Best        6 -6.965049e-07
+1510       Best        7 -1.303495e-06
+1510       MinConstr     0.000000e+00
+1510       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1520       Best        0 5.394997e-02
+1520       Best        1 5.394997e-02
+1520       Best        2 -1.471174e-06
+1520       Best        3 -5.288257e-07
+1520       Best        4 -5.917575e-07
+1520       Best        5 -1.408243e-06
+1520       Best        6 -1.312444e-06
+1520       Best        7 -6.875565e-07
+1520       MinConstr     0.000000e+00
+1520       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1530       Best        0 5.394997e-02
+1530       Best        1 5.394997e-02
+1530       Best        2 -1.250730e-06
+1530       Best        3 -7.492700e-07
+1530       Best        4 -4.165317e-07
+1530       Best        5 -1.583468e-06
+1530       Best        6 -7.930760e-07
+1530       Best        7 -1.206924e-06
+1530       MinConstr     0.000000e+00
+1530       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1540       Best        0 5.394996e-02
+1540       Best        1 5.394996e-02
+1540       Best        2 -1.250730e-06
+1540       Best        3 -7.492700e-07
+1540       Best        4 -4.165317e-07
+1540       Best        5 -1.583468e-06
+1540       Best        6 -7.930760e-07
+1540       Best        7 -1.206924e-06
+1540       MinConstr     0.000000e+00
+1540       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1550       Best        0 5.394996e-02
+1550       Best        1 5.394996e-02
+1550       Best        2 -1.683212e-06
+1550       Best        3 -3.167884e-07
+1550       Best        4 -4.314092e-07
+1550       Best        5 -1.568591e-06
+1550       Best        6 -8.940539e-07
+1550       Best        7 -1.105946e-06
+1550       MinConstr     0.000000e+00
+1550       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1560       Best        0 5.394996e-02
+1560       Best        1 5.394996e-02
+1560       Best        2 -1.421048e-06
+1560       Best        3 -5.789515e-07
+1560       Best        4 -2.925965e-07
+1560       Best        5 -1.707404e-06
+1560       Best        6 -1.952821e-06
+1560       Best        7 -4.717875e-08
+1560       MinConstr     0.000000e+00
+1560       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1570       Best        0 5.394995e-02
+1570       Best        1 5.394995e-02
+1570       Best        2 -1.617748e-06
+1570       Best        3 -3.822517e-07
+1570       Best        4 -6.668152e-07
+1570       Best        5 -1.333185e-06
+1570       Best        6 -7.452119e-07
+1570       Best        7 -1.254788e-06
+1570       MinConstr     0.000000e+00
+1570       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1580       Best        0 5.394995e-02
+1580       Best        1 5.394995e-02
+1580       Best        2 -1.617748e-06
+1580       Best        3 -3.822517e-07
+1580       Best        4 -6.668152e-07
+1580       Best        5 -1.333185e-06
+1580       Best        6 -7.452119e-07
+1580       Best        7 -1.254788e-06
+1580       MinConstr     0.000000e+00
+1580       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1590       Best        0 5.394995e-02
+1590       Best        1 5.394995e-02
+1590       Best        2 -1.905459e-06
+1590       Best        3 -9.454058e-08
+1590       Best        4 -7.757206e-08
+1590       Best        5 -1.922428e-06
+1590       Best        6 -1.293553e-06
+1590       Best        7 -7.064473e-07
+1590       MinConstr     0.000000e+00
+1590       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1600       Best        0 5.394995e-02
+1600       Best        1 5.394995e-02
+1600       Best        2 -1.563969e-06
+1600       Best        3 -4.360308e-07
+1600       Best        4 -7.796646e-07
+1600       Best        5 -1.220335e-06
+1600       Best        6 -8.576995e-07
+1600       Best        7 -1.142300e-06
+1600       MinConstr     0.000000e+00
+1600       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1610       Best        0 5.394994e-02
+1610       Best        1 5.394994e-02
+1610       Best        2 -1.102912e-06
+1610       Best        3 -8.970884e-07
+1610       Best        4 -5.207899e-07
+1610       Best        5 -1.479210e-06
+1610       Best        6 -8.621728e-07
+1610       Best        7 -1.137827e-06
+1610       MinConstr     0.000000e+00
+1610       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1620       Best        0 5.394994e-02
+1620       Best        1 5.394994e-02
+1620       Best        2 -1.315745e-06
+1620       Best        3 -6.842553e-07
+1620       Best        4 -2.496339e-07
+1620       Best        5 -1.750366e-06
+1620       Best        6 -1.695255e-06
+1620       Best        7 -3.047453e-07
+1620       MinConstr     0.000000e+00
+1620       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1630       Best        0 5.394994e-02
+1630       Best        1 5.394994e-02
+1630       Best        2 -1.368358e-06
+1630       Best        3 -6.316420e-07
+1630       Best        4 -1.788105e-07
+1630       Best        5 -1.821189e-06
+1630       Best        6 -5.702948e-07
+1630       Best        7 -1.429705e-06
+1630       MinConstr     0.000000e+00
+1630       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1640       Best        0 5.394994e-02
+1640       Best        1 5.394994e-02
+1640       Best        2 -1.827778e-06
+1640       Best        3 -1.722225e-07
+1640       Best        4 -1.068549e-06
+1640       Best        5 -9.314511e-07
+1640       Best        6 -1.559673e-06
+1640       Best        7 -4.403270e-07
+1640       MinConstr     0.000000e+00
+1640       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1650       Best        0 5.394994e-02
+1650       Best        1 5.394994e-02
+1650       Best        2 -1.834834e-06
+1650       Best        3 -1.651660e-07
+1650       Best        4 -5.559509e-07
+1650       Best        5 -1.444049e-06
+1650       Best        6 -1.021846e-06
+1650       Best        7 -9.781540e-07
+1650       MinConstr     0.000000e+00
+1650       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1660       Best        0 5.394994e-02
+1660       Best        1 5.394994e-02
+1660       Best        2 -1.731034e-06
+1660       Best        3 -2.689657e-07
+1660       Best        4 -1.065654e-06
+1660       Best        5 -9.343456e-07
+1660       Best        6 -1.834221e-06
+1660       Best        7 -1.657795e-07
+1660       MinConstr     0.000000e+00
+1660       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1670       Best        0 5.394994e-02
+1670       Best        1 5.394994e-02
+1670       Best        2 -1.679180e-06
+1670       Best        3 -3.208203e-07
+1670       Best        4 -4.864124e-07
+1670       Best        5 -1.513588e-06
+1670       Best        6 -1.017416e-06
+1670       Best        7 -9.825841e-07
+1670       MinConstr     0.000000e+00
+1670       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1680       Best        0 5.394994e-02
+1680       Best        1 5.394994e-02
+1680       Best        2 -1.635353e-06
+1680       Best        3 -3.646474e-07
+1680       Best        4 -4.923064e-07
+1680       Best        5 -1.507694e-06
+1680       Best        6 -6.181639e-07
+1680       Best        7 -1.381836e-06
+1680       MinConstr     0.000000e+00
+1680       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1690       Best        0 5.394994e-02
+1690       Best        1 5.394994e-02
+1690       Best        2 -1.154831e-06
+1690       Best        3 -8.451688e-07
+1690       Best        4 -3.404620e-08
+1690       Best        5 -1.965954e-06
+1690       Best        6 -1.479351e-06
+1690       Best        7 -5.206491e-07
+1690       MinConstr     0.000000e+00
+1690       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1700       Best        0 5.394994e-02
+1700       Best        1 5.394994e-02
+1700       Best        2 -1.192846e-06
+1700       Best        3 -8.071539e-07
+1700       Best        4 -2.866514e-07
+1700       Best        5 -1.713349e-06
+1700       Best        6 -7.567835e-07
+1700       Best        7 -1.243216e-06
+1700       MinConstr     0.000000e+00
+1700       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1710       Best        0 5.394993e-02
+1710       Best        1 5.394993e-02
+1710       Best        2 -1.017698e-06
+1710       Best        3 -9.823019e-07
+1710       Best        4 -4.183229e-08
+1710       Best        5 -1.958168e-06
+1710       Best        6 -9.004276e-07
+1710       Best        7 -1.099572e-06
+1710       MinConstr     0.000000e+00
+1710       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1720       Best        0 5.394993e-02
+1720       Best        1 5.394993e-02
+1720       Best        2 -1.466003e-06
+1720       Best        3 -5.339974e-07
+1720       Best        4 -9.172259e-07
+1720       Best        5 -1.082774e-06
+1720       Best        6 -1.473395e-06
+1720       Best        7 -5.266045e-07
+1720       MinConstr     0.000000e+00
+1720       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1730       Best        0 5.394993e-02
+1730       Best        1 5.394993e-02
+1730       Best        2 -1.232673e-06
+1730       Best        3 -7.673274e-07
+1730       Best        4 -4.012252e-07
+1730       Best        5 -1.598775e-06
+1730       Best        6 -1.094346e-06
+1730       Best        7 -9.056537e-07
+1730       MinConstr     0.000000e+00
+1730       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1740       Best        0 5.394993e-02
+1740       Best        1 5.394993e-02
+1740       Best        2 -1.473674e-06
+1740       Best        3 -5.263265e-07
+1740       Best        4 -7.422103e-07
+1740       Best        5 -1.257790e-06
+1740       Best        6 -5.460328e-07
+1740       Best        7 -1.453967e-06
+1740       MinConstr     0.000000e+00
+1740       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1750       Best        0 5.394993e-02
+1750       Best        1 5.394993e-02
+1750       Best        2 -1.210585e-06
+1750       Best        3 -7.894153e-07
+1750       Best        4 -5.948996e-07
+1750       Best        5 -1.405100e-06
+1750       Best        6 -1.315872e-06
+1750       Best        7 -6.841279e-07
+1750       MinConstr     0.000000e+00
+1750       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1760       Best        0 5.394992e-02
+1760       Best        1 5.394992e-02
+1760       Best        2 -1.278011e-06
+1760       Best        3 -7.219887e-07
+1760       Best        4 -4.136331e-07
+1760       Best        5 -1.586367e-06
+1760       Best        6 -3.750691e-07
+1760       Best        7 -1.624931e-06
+1760       MinConstr     0.000000e+00
+1760       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1770       Best        0 5.394991e-02
+1770       Best        1 5.394991e-02
+1770       Best        2 -1.617810e-06
+1770       Best        3 -3.821900e-07
+1770       Best        4 -4.294305e-07
+1770       Best        5 -1.570570e-06
+1770       Best        6 -7.043307e-07
+1770       Best        7 -1.295669e-06
+1770       MinConstr     0.000000e+00
+1770       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1780       Best        0 5.394991e-02
+1780       Best        1 5.394991e-02
+1780       Best        2 -1.293280e-06
+1780       Best        3 -7.067196e-07
+1780       Best        4 -3.743719e-07
+1780       Best        5 -1.625628e-06
+1780       Best        6 -7.858445e-07
+1780       Best        7 -1.214156e-06
+1780       MinConstr     0.000000e+00
+1780       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1790       Best        0 5.394990e-02
+1790       Best        1 5.394990e-02
+1790       Best        2 -1.528182e-06
+1790       Best        3 -4.718181e-07
+1790       Best        4 -4.969721e-07
+1790       Best        5 -1.503028e-06
+1790       Best        6 -1.069357e-06
+1790       Best        7 -9.306432e-07
+1790       MinConstr     0.000000e+00
+1790       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1800       Best        0 5.394990e-02
+1800       Best        1 5.394990e-02
+1800       Best        2 -1.650506e-06
+1800       Best        3 -3.494944e-07
+1800       Best        4 -4.851660e-07
+1800       Best        5 -1.514834e-06
+1800       Best        6 -1.783362e-06
+1800       Best        7 -2.166381e-07
+1800       MinConstr     0.000000e+00
+1800       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1810       Best        0 5.394990e-02
+1810       Best        1 5.394990e-02
+1810       Best        2 -1.574206e-06
+1810       Best        3 -4.257943e-07
+1810       Best        4 -2.434088e-07
+1810       Best        5 -1.756591e-06
+1810       Best        6 -4.751455e-07
+1810       Best        7 -1.524854e-06
+1810       MinConstr     0.000000e+00
+1810       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1820       Best        0 5.394990e-02
+1820       Best        1 5.394990e-02
+1820       Best        2 -1.563952e-06
+1820       Best        3 -4.360480e-07
+1820       Best        4 -2.205981e-07
+1820       Best        5 -1.779402e-06
+1820       Best        6 -1.179307e-06
+1820       Best        7 -8.206933e-07
+1820       MinConstr     0.000000e+00
+1820       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1830       Best        0 5.394990e-02
+1830       Best        1 5.394990e-02
+1830       Best        2 -1.702053e-06
+1830       Best        3 -2.979466e-07
+1830       Best        4 -1.364276e-07
+1830       Best        5 -1.863572e-06
+1830       Best        6 -1.197324e-06
+1830       Best        7 -8.026762e-07
+1830       MinConstr     0.000000e+00
+1830       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1840       Best        0 5.394990e-02
+1840       Best        1 5.394990e-02
+1840       Best        2 -1.705579e-06
+1840       Best        3 -2.944210e-07
+1840       Best        4 -6.025574e-07
+1840       Best        5 -1.397443e-06
+1840       Best        6 -1.866790e-06
+1840       Best        7 -1.332098e-07
+1840       MinConstr     0.000000e+00
+1840       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1850       Best        0 5.394990e-02
+1850       Best        1 5.394990e-02
+1850       Best        2 -1.639110e-06
+1850       Best        3 -3.608903e-07
+1850       Best        4 -4.479275e-07
+1850       Best        5 -1.552073e-06
+1850       Best        6 -1.975587e-06
+1850       Best        7 -2.441319e-08
+1850       MinConstr     0.000000e+00
+1850       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1860       Best        0 5.394990e-02
+1860       Best        1 5.394990e-02
+1860       Best        2 -1.701093e-06
+1860       Best        3 -2.989065e-07
+1860       Best        4 -3.238275e-07
+1860       Best        5 -1.676172e-06
+1860       Best        6 -9.856742e-07
+1860       Best        7 -1.014326e-06
+1860       MinConstr     0.000000e+00
+1860       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1870       Best        0 5.394989e-02
+1870       Best        1 5.394989e-02
+1870       Best        2 -1.669052e-06
+1870       Best        3 -3.309479e-07
+1870       Best        4 -4.105957e-07
+1870       Best        5 -1.589404e-06
+1870       Best        6 -1.239189e-06
+1870       Best        7 -7.608111e-07
+1870       MinConstr     0.000000e+00
+1870       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1880       Best        0 5.394989e-02
+1880       Best        1 5.394989e-02
+1880       Best        2 -1.642341e-06
+1880       Best        3 -3.576589e-07
+1880       Best        4 -2.541254e-07
+1880       Best        5 -1.745875e-06
+1880       Best        6 -9.396308e-07
+1880       Best        7 -1.060369e-06
+1880       MinConstr     0.000000e+00
+1880       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1890       Best        0 5.394989e-02
+1890       Best        1 5.394989e-02
+1890       Best        2 -1.788705e-06
+1890       Best        3 -2.112953e-07
+1890       Best        4 -3.216637e-07
+1890       Best        5 -1.678336e-06
+1890       Best        6 -8.656538e-07
+1890       Best        7 -1.134346e-06
+1890       MinConstr     0.000000e+00
+1890       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1900       Best        0 5.394989e-02
+1900       Best        1 5.394989e-02
+1900       Best        2 -1.812705e-06
+1900       Best        3 -1.872950e-07
+1900       Best        4 -4.193375e-07
+1900       Best        5 -1.580662e-06
+1900       Best        6 -1.445876e-06
+1900       Best        7 -5.541239e-07
+1900       MinConstr     0.000000e+00
+1900       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1910       Best        0 5.394989e-02
+1910       Best        1 5.394989e-02
+1910       Best        2 -1.812705e-06
+1910       Best        3 -1.872950e-07
+1910       Best        4 -4.193375e-07
+1910       Best        5 -1.580662e-06
+1910       Best        6 -1.445876e-06
+1910       Best        7 -5.541239e-07
+1910       MinConstr     0.000000e+00
+1910       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1920       Best        0 5.394989e-02
+1920       Best        1 5.394989e-02
+1920       Best        2 -1.760318e-06
+1920       Best        3 -2.396824e-07
+1920       Best        4 -4.679801e-07
+1920       Best        5 -1.532020e-06
+1920       Best        6 -1.232312e-06
+1920       Best        7 -7.676882e-07
+1920       MinConstr     0.000000e+00
+1920       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1930       Best        0 5.394989e-02
+1930       Best        1 5.394989e-02
+1930       Best        2 -1.739483e-06
+1930       Best        3 -2.605166e-07
+1930       Best        4 -9.748430e-08
+1930       Best        5 -1.902516e-06
+1930       Best        6 -6.279883e-07
+1930       Best        7 -1.372012e-06
+1930       MinConstr     0.000000e+00
+1930       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1940       Best        0 5.394989e-02
+1940       Best        1 5.394989e-02
+1940       Best        2 -1.839914e-06
+1940       Best        3 -1.600863e-07
+1940       Best        4 -4.117948e-07
+1940       Best        5 -1.588205e-06
+1940       Best        6 -9.708935e-07
+1940       Best        7 -1.029106e-06
+1940       MinConstr     0.000000e+00
+1940       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1950       Best        0 5.394989e-02
+1950       Best        1 5.394989e-02
+1950       Best        2 -1.575916e-06
+1950       Best        3 -4.240836e-07
+1950       Best        4 -3.534393e-08
+1950       Best        5 -1.964656e-06
+1950       Best        6 -4.960963e-07
+1950       Best        7 -1.503904e-06
+1950       MinConstr     0.000000e+00
+1950       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1960       Best        0 5.394989e-02
+1960       Best        1 5.394989e-02
+1960       Best        2 -1.687543e-06
+1960       Best        3 -3.124572e-07
+1960       Best        4 -1.348523e-07
+1960       Best        5 -1.865148e-06
+1960       Best        6 -3.651670e-07
+1960       Best        7 -1.634833e-06
+1960       MinConstr     0.000000e+00
+1960       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1970       Best        0 5.394989e-02
+1970       Best        1 5.394989e-02
+1970       Best        2 -1.871853e-06
+1970       Best        3 -1.281473e-07
+1970       Best        4 -3.799176e-07
+1970       Best        5 -1.620082e-06
+1970       Best        6 -2.436647e-07
+1970       Best        7 -1.756335e-06
+1970       MinConstr     0.000000e+00
+1970       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1980       Best        0 5.394989e-02
+1980       Best        1 5.394989e-02
+1980       Best        2 -1.874388e-06
+1980       Best        3 -1.256122e-07
+1980       Best        4 -3.183202e-07
+1980       Best        5 -1.681680e-06
+1980       Best        6 -1.301795e-07
+1980       Best        7 -1.869821e-06
+1980       MinConstr     0.000000e+00
+1980       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+1990       Best        0 5.394989e-02
+1990       Best        1 5.394989e-02
+1990       Best        2 -1.949789e-06
+1990       Best        3 -5.021069e-08
+1990       Best        4 -2.969068e-07
+1990       Best        5 -1.703093e-06
+1990       Best        6 -1.751952e-07
+1990       Best        7 -1.824805e-06
+1990       MinConstr     0.000000e+00
+1990       Epsilon       0.000000e+00
+Iter #     Field   Idx Value
+2000       Best        0 5.394989e-02
+2000       Best        1 5.394989e-02
+2000       Best        2 -1.860744e-06
+2000       Best        3 -1.392556e-07
+2000       Best        4 -2.409090e-07
+2000       Best        5 -1.759091e-06
+2000       Best        6 -7.731624e-08
+2000       Best        7 -1.922684e-06
+2000       MinConstr     0.000000e+00
+2000       Epsilon       0.000000e+00
+The Best (0) evaluation: 5.394989e-02
+The Best (1) evaluation: 5.394989e-02
+The Best (2) evaluation: -1.860744e-06
+The Best (3) evaluation: -1.392556e-07
+The Best (4) evaluation: -2.409090e-07
+The Best (5) evaluation: -1.759091e-06
+The Best (6) evaluation: -7.731624e-08
+The Best (7) evaluation: -1.922684e-06
+The Nondominated Strings:
+F     0 5.39498916098589e-02
+F     1 5.39498916098589e-02
+F     2 -1.81275066321496e-06
+F     3 -1.87249336785044e-07
+F     4 -1.44499844394573e-07
+F     5 -1.85550015560543e-06
+F     6 -8.82893717995103e-07
+F     7 -1.11710628200490e-06
+#   0: [  -1.716932], [   1.595465], [   1.827638], [ -0.7629311], [ -0.7644029]
+

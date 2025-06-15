@@ -1,3 +1,4 @@
 *.o
 *.vrfy
+*.out
 *_test

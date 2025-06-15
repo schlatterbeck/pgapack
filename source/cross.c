@@ -352,9 +352,11 @@ void PGASetCrossoverType (PGAContext *ctx, int crossover_type)
             ctx->ga.CrossoverType = crossover_type;
             break;
         default:
-            PGAError( ctx,
-                     "PGASetCrossoverType: Invalid value of crossover_type:",
-                      PGA_FATAL, PGA_INT, (void *) &crossover_type );
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetCrossoverType: Invalid value of crossover_type: %d"
+                , crossover_type
+                );
     };
 
     PGADebugExited("PGASetCrossoverType");
@@ -395,10 +397,7 @@ void PGASetCrossoverProb (PGAContext *ctx, double p)
     PGADebugEntered ("PGASetCrossoverProb");
 
     if ((p < 0.0) || (p > 1.0)) {
-        PGAError
-            ( ctx, "PGASetCrossoverProb: Invalid value of p:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &p
-            );
+        PGAFatalPrintf (ctx, "PGASetCrossoverProb: Invalid value of p: %g", p);
     } else {
         ctx->ga.CrossoverProb = p;
     }
@@ -441,10 +440,8 @@ void PGASetUniformCrossoverProb (PGAContext *ctx, double p)
     PGADebugEntered ("PGASetUniformCrossoverProb");
 
     if ((p < 0.0) || (p > 1.0)) {
-        PGAError
-            ( ctx, "PGASetUniformCrossoverProb: Invalid value of p:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &p
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetUniformCrossoverProb: Invalid value of p: %g", p);
     } else {
         ctx->ga.UniformCrossProb = p;
     }
@@ -487,10 +484,8 @@ void PGASetCrossoverBoundedFlag (PGAContext *ctx, int flag)
          ctx->ga.CrossBoundedFlag = flag;
          break;
     default:
-         PGAError
-            ( ctx, "PGASetCrossoverBoundedFlag: Invalid value:"
-            , PGA_FATAL, PGA_INT, (void *) &flag
-            );
+         PGAFatalPrintf
+            (ctx, "PGASetCrossoverBoundedFlag: Invalid value: %d", flag);
          break;
     }
 }
@@ -566,8 +561,8 @@ void PGASetCrossoverBounceBackFlag (PGAContext *ctx, int flag)
          ctx->ga.CrossBounceFlag = flag;
          break;
     default:
-         PGAError(ctx, "PGASetCrossoverBounceBackFlag: Invalid value:",
-                  PGA_FATAL, PGA_INT, (void *) &flag);
+         PGAFatalPrintf
+            (ctx, "PGASetCrossoverBounceBackFlag: Invalid value: %d", flag);
          break;
     }
 }
@@ -634,8 +629,7 @@ int PGAGetCrossoverBounceBackFlag (PGAContext *ctx)
 void PGASetCrossoverSBXEta (PGAContext *ctx, double eta)
 {
     if (eta < 0) {
-        PGAError(ctx, "PGASetCrossoverSBXEta: Invalid value:",
-                 PGA_FATAL, PGA_DOUBLE, (void *) &eta);
+        PGAFatalPrintf (ctx, "PGASetCrossoverSBXEta: Invalid value: %g", eta);
     }
     ctx->ga.CrossSBXEta = eta;
 }
@@ -702,8 +696,8 @@ double PGAGetCrossoverSBXEta (PGAContext *ctx)
 void PGASetCrossoverSBXOncePerString (PGAContext *ctx, int val)
 {
     if (val != PGA_TRUE && val != PGA_FALSE) {
-        PGAError(ctx, "PGASetCrossoverSBXOncePerString: Invalid value:",
-                 PGA_FATAL, PGA_INT, (void *) &val);
+        PGAFatalPrintf
+            (ctx, "PGASetCrossoverSBXOncePerString: Invalid value: %d", val);
     }
     ctx->ga.CrossSBXOnce = val;
 }

@@ -3,57 +3,66 @@
 
 #define NOBJ  3
 #define DIM  12
-#define K (DIM - NOBJ + 1)
 
-static double g (double *x)
+static double g (double *x, int k)
 {
     int i;
     double s = 0;
-    for (i=0; i<K; i++) {
+    for (i=0; i<k; i++) {
         s += pow (x [i] - 0.5, 2);
     }
     return s;
 }
 
-// radius in range 3 .. 15
+/* radius in range 3 .. 15, higher indeces re-use last value */
 double r [] = { 0.225, 0.225, 0.225
               , 0.26, 0.26, 0.26, 0.26, 0.26
               , 0.27, 0.27, 0.27, 0.27, 0.27
               };
+#define R_SIZE (sizeof (r) / sizeof (*r))
 
-static void f (double *x, double *y)
+static void f (double *x, int nx, double *y, int ny)
 {
     int i, j;
-    double gv = g (x + DIM - K);
+    int nobj = ny - 1; /* 1 constraint */
+    int k = nx - nobj + 1;
+    size_t r2_idx = nobj - 3;
+    double gv;
     double s = 0;
-    double r2 = pow (r [NOBJ - 3], 2);
+    double r2;
     double lambda = 0;
-    for (i=0; i<NOBJ; i++) {
+    assert (k > 0);
+    gv = g (x + nx - k, k);
+    if (r2_idx >= R_SIZE) {
+        r2_idx = R_SIZE - 1;
+    }
+    r2 = pow (r [r2_idx], 2);
+    for (i=0; i<nobj; i++) {
         double p = 1;
-        for (j=0; j<NOBJ-i-1; j++) {
+        for (j=0; j<nobj-i-1; j++) {
             p *= cos (x [j] * M_PI / 2.0);
         }
-        if (j < NOBJ-1) {
+        if (j < nobj-1) {
             p *= sin (x [j] * M_PI / 2.0);
         }
-        y [i] = pow (p * (1 + gv), (i == NOBJ - 1) ? 2 : 4);
+        y [i] = pow (p * (1 + gv), (i == nobj - 1) ? 2 : 4);
     }
-    for (i=0; i<NOBJ; i++) {
+    for (i=0; i<nobj; i++) {
         lambda += y [i];
     }
-    lambda /= NOBJ;
-    for (i=0; i<NOBJ; i++) {
+    lambda /= nobj;
+    for (i=0; i<nobj; i++) {
         s += pow (y [i] - lambda, 2);
     }
-    y [NOBJ] = r2 - s;
+    y [nobj] = r2 - s;
 }
 
 struct multi_problem c2_convex_dtlz2 =
 { .dimension      = DIM
-, .nfunc          = NOBJ + 1
+, .n_obj          = NOBJ
 , .nconstraint    = 1
-, .lower          = (double []){ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-, .upper          = (double []){ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+, .lower          = 0
+, .upper          = 1
 , .popsize        = 0
 , .generations    = 250
 , .f              = f
@@ -62,6 +71,7 @@ struct multi_problem c2_convex_dtlz2 =
 
 #ifdef DEBUG_EVAL
 #include <stdio.h>
+#define K (DIM - NOBJ + 1)
 int main ()
 {
     int i, j;
@@ -370,8 +380,8 @@ int main ()
     double yy [NOBJ + 1];
     size_t sz = sizeof (xx) / (sizeof (double) * DIM);
     for (i=0; i<sz; i++) {
-        f (xx [i], yy);
-        printf ("G: %e\n", g (xx [i] + DIM - K));
+        f (xx [i], DIM, yy, NOBJ + 1);
+        printf ("G: %e\n", g (xx [i] + DIM - K, K));
         if (yy [NOBJ] <= 0) {
             for (j=0; j<NOBJ; j++) {
                 printf ("F %d %e\n", j, yy [j]);

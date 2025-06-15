@@ -415,9 +415,10 @@ int PGACheckSum (PGAContext *ctx, int p, int pop)
         break;
       default:
         totalbytes = 0;
-        PGAError
-            ( ctx, "PGACheckSum: User datatype checksum may be invalid."
-            , PGA_WARNING, PGA_VOID, NULL
+        PGAErrorPrintf
+            ( ctx
+            , PGA_WARNING
+            , "PGACheckSum: User datatype checksum may be invalid."
             );
         break;
     }
@@ -475,9 +476,10 @@ int PGAGetWorstIndex (PGAContext *ctx, int pop)
 
     for (p=0; p<ctx->ga.PopSize; p++) {
         if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
-            PGAError
-                ( ctx, "PGAGetWorstIndex: Evaluate function not up to date:"
-                , PGA_FATAL, PGA_INT, (void *) &p
+            PGAFatalPrintf
+                ( ctx
+                , "PGAGetWorstIndex: Evaluate function not up to date: %d"
+                , p
                 );
         }
     }
@@ -531,7 +533,7 @@ int PGAGetWorstIndex (PGAContext *ctx, int pop)
 int PGAGetBestIndex (PGAContext *ctx, int popidx)
 {
     int p, Best_indx = 0;
-    DECLARE_DYNARRAY (int, bestidxs, ctx->ga.PopSize);
+    int *bestidxs = ctx->scratch.intscratch;
     int nbest = 0;
     int is_multi = ctx->ga.NumAuxEval > ctx->ga.NumConstraint;
     PGAIndividual *pop = PGAGetIndividual (ctx, 0, popidx);
@@ -540,9 +542,10 @@ int PGAGetBestIndex (PGAContext *ctx, int popidx)
 
     for (p=0; p<ctx->ga.PopSize; p++) {
         if (!PGAGetEvaluationUpToDateFlag (ctx, p, popidx)) {
-            PGAError
-                ( ctx, "PGAGetBestIndex: Evaluate function not up to date:"
-                , PGA_FATAL, PGA_INT, (void *) &p
+            PGAFatalPrintf
+                ( ctx
+                , "PGAGetBestIndex: Evaluate function not up to date: %d"
+                , p
                 );
         }
     }
@@ -611,14 +614,11 @@ int PGAGetBestIndex (PGAContext *ctx, int popidx)
 double PGAGetBestReport (PGAContext *ctx, int pop, int idx)
 {
     if (pop != PGA_OLDPOP) {
-        PGAErrorPrintf (ctx, PGA_FATAL, "Index must be PGA_OLDPOP");
+        PGAFatalPrintf (ctx, "Index must be PGA_OLDPOP");
     }
     if (idx < 0 || idx > ctx->ga.NumAuxEval) {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "Index must be 0 <= idx <= NumAuxEval, got %d"
-            , idx
-            );
+        PGAFatalPrintf
+            (ctx, "Index must be 0 <= idx <= NumAuxEval, got %d", idx);
     }
 
     return ctx->rep.Best [idx];
@@ -664,14 +664,11 @@ double PGAGetBestReport (PGAContext *ctx, int pop, int idx)
 int PGAGetBestReportIndex (PGAContext *ctx, int pop, int idx)
 {
     if (pop != PGA_OLDPOP) {
-        PGAErrorPrintf (ctx, PGA_FATAL, "Index must be PGA_OLDPOP");
+        PGAFatalPrintf (ctx, "Index must be PGA_OLDPOP");
     }
     if (idx < 0 || idx > ctx->ga.NumAuxEval) {
-        PGAErrorPrintf
-            ( ctx, PGA_FATAL
-            , "Index must be 0 <= idx <= NumAuxEval, got %d"
-            , idx
-            );
+        PGAFatalPrintf
+            (ctx, "Index must be 0 <= idx <= NumAuxEval, got %d", idx);
     }
 
     return ctx->rep.BestIdx [idx];
@@ -726,10 +723,8 @@ PGAIndividual *PGAGetIndividual (PGAContext *ctx, int p, int pop)
         if (pop == PGA_NEWPOP) {
             ind = ctx->ga.newpop;
         } else {
-            PGAError
-              ( ctx, "PGAGetIndividual: Invalid value of pop:"
-              , PGA_FATAL, PGA_INT, (void *) &pop
-              );
+            PGAFatalPrintf
+              (ctx, "PGAGetIndividual: Invalid value of pop: %d", pop);
         }
     }
 
@@ -742,10 +737,8 @@ PGAIndividual *PGAGetIndividual (PGAContext *ctx, int p, int pop)
             if (p == PGA_TEMP2) {
                 ind += ctx->ga.PopSize + 1;
             } else {
-                PGAError
-                    ( ctx, "PGAGetIndividual: Invalid value of p:"
-                    , PGA_FATAL, PGA_INT, (void *) &p
-                    );
+                PGAFatalPrintf
+                    (ctx, "PGAGetIndividual: Invalid value of p: %d", p);
             }
         }
     }
@@ -797,10 +790,8 @@ void PGAUpdateBest (PGAContext *ctx, int popix)
     ind++;
     for (p=1; p<ctx->ga.PopSize; p++) {
         if (!PGAGetEvaluationUpToDateFlag (ctx, p, popix)) {
-            PGAError
-                ( ctx, "PGAUpdateBest: Evaluate function not up to date:"
-                , PGA_FATAL, PGA_INT, (void *) &p
-                );
+            PGAFatalPrintf
+                (ctx, "PGAUpdateBest: Evaluate function not up to date: %d", p);
         }
         if (!INDGetAuxTotal (ind)) {
             validcount++;
@@ -896,9 +887,10 @@ void PGAUpdateAverage (PGAContext *ctx, int pop)
     }
     for (p=0; p<ctx->ga.PopSize; p++) {
         if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
-            PGAError
-                ( ctx, "PGAUpdateAverage: Evaluate function not up to date:"
-                , PGA_FATAL, PGA_INT, (void *) &p
+            PGAFatalPrintf
+                ( ctx
+                , "PGAUpdateAverage: Evaluate function not up to date: %d"
+                , p
                 );
         }
         if (INDGetAuxTotal (ind) == 0) {
@@ -977,9 +969,10 @@ void PGAUpdateOnline (PGAContext *ctx, int pop)
     }
     for (p=0; p<ctx->ga.PopSize; p++) {
         if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
-            PGAError
-                ( ctx, "PGAUpdateOnline: Evaluate function not up to date:"
-                , PGA_FATAL, PGA_INT, (void *) &p
+            PGAFatalPrintf
+                ( ctx
+                , "PGAUpdateOnline: Evaluate function not up to date: %d"
+                , p
                 );
         }
         if (INDGetAuxTotal (ind) == 0) {
@@ -1186,18 +1179,10 @@ int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2)
     assert (ind1->ctx == ind2->ctx);
 
     if (!ind1->evaluptodate) {
-        PGAError
-            ( ctx
-            , "EvalCompare: first individual not up to date:"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+        PGAFatalPrintf (ctx, "EvalCompare: first individual not up to date:");
     }
     if (!ind2->evaluptodate) {
-        PGAError
-            ( ctx
-            , "EvalCompare: second individual not up to date:"
-            , PGA_FATAL, PGA_VOID, NULL
-            );
+        PGAFatalPrintf (ctx, "EvalCompare: second individual not up to date:");
     }
     if (ctx->ga.NumConstraint > 0) {
         auxt1 = INDGetAuxTotal (ind1);
@@ -1233,11 +1218,8 @@ int INDEvalCompare (PGAIndividual *ind1, PGAIndividual *ind2)
         return CMP (ind1->evalue, ind2->evalue);
         break;
     default:
-        PGAError
-            (ctx
-            , "EvalCompare: Invalid value of PGAGetOptDirFlag:"
-            , PGA_FATAL, PGA_INT, (void *) &dir
-            );
+        PGAFatalPrintf
+            (ctx, "EvalCompare: Invalid value of PGAGetOptDirFlag: %d", dir);
         break;
     }
     /* notreached */
@@ -1375,14 +1357,14 @@ int PGAEvalSortHelper (const void *a1, const void *a2)
 void PGAEvalSort (PGAContext *ctx, int pop, int *idx)
 {
     int i;
-    DECLARE_DYNARRAY (PGAIndividual *, sorttmp, ctx->ga.PopSize);
+    PGAIndividual **sorttmp = ctx->scratch.indiv_scratch;
     /* No need to check validity of pop, done by PGAIndividual */
     PGAIndividual *first = PGAGetIndividual (ctx, 0, pop);
 
     for (i=0; i<ctx->ga.PopSize; i++) {
         sorttmp [i] = first + i;
     }
-    qsort (sorttmp, ctx->ga.PopSize, sizeof (sorttmp [0]), PGAEvalSortHelper);
+    qsort (sorttmp, ctx->ga.PopSize, sizeof (*sorttmp), PGAEvalSortHelper);
     for (i=0; i<ctx->ga.PopSize; i++) {
         idx [i] = sorttmp [i] - first;
     }

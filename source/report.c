@@ -284,10 +284,8 @@ void PGASetPrintOptions (PGAContext *ctx, int option)
         ctx->rep.PrintOptions |= option;
         break;
     default:
-        PGAError
-            ( ctx, "PGASetPrintOption: Invalid value of option:"
-            , PGA_FATAL, PGA_INT, (void *) &option
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetPrintOption: Invalid value of option: %d", option);
         break;
     }
 
@@ -329,9 +327,10 @@ void PGASetPrintFrequencyValue (PGAContext *ctx, int print_freq)
     PGADebugEntered ("PGASetPrintFrequencyValue");
 
     if (print_freq < 0) {
-        PGAError
-            ( ctx, "PGASetPrintFrequencyValue: Invalid value of print_freq:"
-            , PGA_FATAL, PGA_INT, (void *) &print_freq
+        PGAFatalPrintf
+            ( ctx
+            , "PGASetPrintFrequencyValue: Invalid value of print_freq: %d"
+            , print_freq
             );
     } else {
         ctx->rep.PrintFreq = print_freq;
@@ -398,11 +397,8 @@ int PGAGetPrintFrequencyValue (PGAContext *ctx)
 void PGASetMultiObjPrecision (PGAContext *ctx, int prec)
 {
     if (prec < 1 || prec > 20) {
-        PGAError
-            ( ctx
-            , "PGASetMultiObjPrecision: 1 <= prec <= 20"
-            , PGA_FATAL, PGA_INT, (void *) &prec
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetMultiObjPrecision: 1 <= prec <= 20 got: %d", prec);
     }
     ctx->rep.MOPrecision = prec;
 }

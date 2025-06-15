@@ -404,10 +404,8 @@ void PGASetRandomSeed (PGAContext *ctx, int seed)
     PGAFailIfSetUp  ("PGASetRandomSeed");
 
     if ((seed < 1) || (seed + MAX_PROCESSORS > 900000000)) {
-        PGAError
-            ( ctx, "PGASetRandomSeed: Invalid value of seed:"
-            , PGA_FATAL, PGA_INT, (void *) &seed
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetRandomSeed: Invalid value of seed: %d", seed);
     } else {
         ctx->init.RandomSeed = seed;
     }
@@ -420,6 +418,7 @@ void PGASetRandomSeed (PGAContext *ctx, int seed)
     parallel processes
     \ingroup init
     \param   ctx   context variable
+    \param   flag  boolean flag
     \return  None
 
     \rst
@@ -519,22 +518,13 @@ void PGARandomSampleInit (PGAContext *ctx, PGASampleState *state, int k, int n)
 {
     PGADebugEntered ("PGARandomSampleInit");
     if (k <= 0) {
-        PGAError
-            ( ctx, "PGARandomSampleInit: Invalid value of k:"
-            , PGA_FATAL, PGA_INT, (void *) &k
-            );
+        PGAFatalPrintf (ctx, "PGARandomSampleInit: Invalid value of k: %d", k);
     }
     if (n <= 0) {
-        PGAError
-            ( ctx, "PGARandomSampleInit: Invalid value of n:"
-            , PGA_FATAL, PGA_INT, (void *) &n
-            );
+        PGAFatalPrintf (ctx, "PGARandomSampleInit: Invalid value of n: %d", n);
     }
     if (k > n) {
-        PGAError
-            ( ctx, "PGARandomSampleInit: Invalid value of k:"
-            , PGA_FATAL, PGA_INT, (void *) &k
-            );
+        PGAFatalPrintf (ctx, "PGARandomSampleInit: Invalid value of k: %d", k);
     }
     memset (state, 0, sizeof (*state));
     state->n   = n;
@@ -568,9 +558,10 @@ int PGARandomNextSample (PGASampleState *state)
     PGAContext *ctx = state->ctx; /* Needed for debug below */
     PGADebugEntered ("PGARandomNextSample");
     if (state->k <= 0) {
-        PGAError
-            ( state->ctx, "PGARandomNextSample: Invalid value of k:"
-            , PGA_FATAL, PGA_INT, (void *) &(state->k)
+        PGAFatalPrintf
+            ( state->ctx
+            , "PGARandomNextSample: Invalid value of k: %d"
+            , state->k
             );
     }
     if (state->k > 1 && state->n - state->k > CUTOFF) {

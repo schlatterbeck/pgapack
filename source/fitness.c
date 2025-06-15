@@ -81,7 +81,8 @@ static void remap_to_positive (PGAContext *ctx, PGAIndividual *pop)
                || (fitness != 0 && fitness + mineval == mineval)
                )
             {
-                PGAErrorPrintf(ctx, PGA_FATAL
+                PGAFatalPrintf
+                    ( ctx
                     , "PGAFitness: Overflow computing positive fitness\n"
                       "Values: mineval=%e, fitness=%e\n"
                       "You can use a ranking variant of fitness computation\n"
@@ -149,20 +150,16 @@ void PGAFitness (PGAContext *ctx, int popindex)
     PGADebugEntered ("PGAFitness");
 
     if (popindex != PGA_OLDPOP && popindex != PGA_NEWPOP) {
-        PGAError
-            ( ctx, "PGAFitness: Invalid value of popindex:"
-            , PGA_FATAL, PGA_INT, (void *) &popindex
-            );
+        PGAFatalPrintf
+            (ctx, "PGAFitness: Invalid value of popindex: %d", popindex);
     }
 
     /* make sure all evaluation function values are up-to-date */
 
     for (i=0; i<ctx->ga.PopSize; i++) {
         if ((pop+i)->evaluptodate != PGA_TRUE) {
-            PGAError
-                ( ctx, "PGAFitness: evaluptodate not PGA_TRUE for:"
-                , PGA_FATAL, PGA_INT, (void *) &i
-                );
+            PGAFatalPrintf
+                (ctx, "PGAFitness: evaluptodate not PGA_TRUE for: %d", i);
         }
     }
 
@@ -183,11 +180,11 @@ void PGAFitness (PGAContext *ctx, int popindex)
             PGAFitnessMinCmax (ctx, pop);
             break;
         default:
-            PGAError( ctx,
-                     "PGAFitness: Invalid FitnessMinType:",
-                      PGA_FATAL,
-                      PGA_INT,
-                      (void *) &(ctx->ga.FitnessMinType) );
+            PGAFatalPrintf
+                ( ctx
+                , "PGAFitness: Invalid FitnessMinType: %d"
+                , ctx->ga.FitnessMinType
+                );
             break;
         }
     }
@@ -213,11 +210,8 @@ void PGAFitness (PGAContext *ctx, int popindex)
         PGAFitnessLinearRank (ctx, popindex);
         break;
     default:
-        PGAError( ctx,
-                 "PGAFitness: Invalid FitnessType:",
-                  PGA_FATAL,
-                  PGA_INT,
-                  (void *) &(ctx->ga.FitnessType) );
+        PGAFatalPrintf
+            (ctx, "PGAFitness: Invalid FitnessType: %d", ctx->ga.FitnessType);
         break;
     }
 
@@ -272,10 +266,8 @@ int PGARank (PGAContext *ctx, int p, int *order, int n)
      *  number that is not in the population), fail.
      */
     if ((p<0) || (p >= PGAGetPopSize (ctx))) {
-        PGAError
-            ( ctx, "PGARank: Not a valid population member, p = "
-            , PGA_FATAL, PGA_INT, (void *)&p
-            );
+        PGAFatalPrintf
+            (ctx, "PGARank: Not a valid population member, p = %d", p);
     }
 
     /*  Search through all the orderings until we find the one that
@@ -290,13 +282,10 @@ int PGARank (PGAContext *ctx, int p, int *order, int n)
     }
 
     /*  Ideally, we should print out the order array, but, well, ideally,
-     *  we should never get here anyway...Also, to make some compilers
-     *  shut up, return(0) is here, even though PGAError doesn't return.
+     *  we should never get here anyway...
      */
-    PGAError
-        ( ctx, "PGARank: Bottom of loop in rank, p = ", PGA_FATAL
-        , PGA_INT, (void *) &p
-        );
+    PGAFatalPrintf (ctx, "PGARank: Bottom of loop in rank, p = %d" , p);
+    /* notreached */
     return 0;
 }
 
@@ -515,9 +504,10 @@ void PGASetFitnessType (PGAContext *ctx, int fitness_type)
             ctx->ga.FitnessType = fitness_type;
             break;
         default:
-            PGAError
-                ( ctx, "PGASetFitnessType: Invalid value of fitness_type:"
-                , PGA_FATAL, PGA_INT, (void *) &fitness_type
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetFitnessType: Invalid value of fitness_type: %d"
+                , fitness_type
                 );
             break;
     }
@@ -571,9 +561,10 @@ void PGASetFitnessMinType (PGAContext *ctx, int fitness_type)
             ctx->ga.FitnessMinType = fitness_type;
             break;
         default:
-            PGAError
-                ( ctx, "PGASetFitnessMinType: Invalid value of fitness_type:"
-                , PGA_FATAL, PGA_INT, (void *) &fitness_type
+            PGAFatalPrintf
+                ( ctx
+                , "PGASetFitnessMinType: Invalid value of fitness_type: %d"
+                , fitness_type
                 );
         break;
     }
@@ -618,10 +609,8 @@ void PGASetMaxFitnessRank (PGAContext *ctx, double max)
     PGADebugEntered ("PGASetMaxFitnessRank");
 
     if ((max < 1.0) || (max > 2.0)) {
-        PGAError
-            ( ctx, "PGASetMaxFitnessRank: Invalid value of max:"
-            , PGA_FATAL, PGA_DOUBLE, (void *) &max
-            );
+        PGAFatalPrintf
+            (ctx, "PGASetMaxFitnessRank: Invalid value of max: %g", max);
     } else {
         ctx->ga.FitnessRankMax = max;
     }
@@ -784,9 +773,10 @@ static void PGAFitnessMinReciprocal (PGAContext *ctx, PGAIndividual *pop)
         if ((pop+i)->fitness != 0.) {
             (pop+i)->fitness = 1. / (pop+i)->fitness;
         } else {
-            PGAError
-                ( ctx, "PGAFitnessReciprocal: Value 0.0 for fitness member:"
-                , PGA_FATAL, PGA_INT, (void *) &i
+            PGAFatalPrintf
+                ( ctx
+                , "PGAFitnessReciprocal: Value 0.0 for fitness member: %d"
+                , i
                 );
         }
     }
@@ -839,8 +829,8 @@ static void PGAFitnessMinCmax (PGAContext *ctx, PGAIndividual *pop)
          */
         double evalue = (pop+i)->evalue;
         if (cmax == cmax - evalue && evalue != 0) {
-            PGAErrorPrintf
-                ( ctx, PGA_FATAL
+            PGAFatalPrintf
+                ( ctx
                 , "PGAFitness: Overflow computing cmax fitness\n"
                   "Values: cmax=%e, evalue=%e\n"
                   "You can use a ranking variant of fitness computation\n"

@@ -323,3 +323,9 @@ Constants for User Functions
 
 .. doxygengroup:: const-ufun
 
+.. _group:const-nondom:
+
+Constants for Non-dominated sorting
++++++++++++++++++++++++++++++++++++
+
+.. doxygengroup:: const-nondom

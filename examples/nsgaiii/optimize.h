@@ -12,15 +12,15 @@
 struct multi_problem
 {
     int dimension;              /* The dimension of the problem */
-    int nfunc;                  /* Number of evaluation functions */
+    int n_obj;                  /* Number of objectives */
     int nconstraint;            /* Number of constraints */
     int maximize;               /* Maximization problem ? */
-    double (*lower);            /* Init ranges lower bounds */
-    double (*upper);            /* Init ranges upper bounds */
+    double lower;               /* Init range lower bounds */
+    double upper;               /* Init range upper bounds */
     int generations;            /* Number of generations if 0 default = 100 */
     int popsize;                /* Population size if 0 default = 60 */
     char *name;                 /* Name of the example */
-    void (*f)(double *x, double *y); /* input: x, output: y */
+    void (*f)(double *x, int nx, double *y, int ny); /* input: x, output: y */
 };
 
 extern struct multi_problem dtlz1;
