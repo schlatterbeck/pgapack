@@ -50,11 +50,6 @@ objectives using::
 
     crowdingplot -x=0 -y=2 ../../test/nsgaii_optimize_12.data
 
-.. raw:: html
-
-    <iframe width="800" height="640" scrolling="no" frameborder="no" src="https://raw.githack.com/schlatterbeck/pgapack/refs/heads/master/examples/nsgaii/x_0_y_2.html">
-    </iframe>
-
 This means that getting a better evaluation for objective 0 also gets a
 better evaluation of objective 2 and vice-versa, i.e. the objectives are
 not contradictory. Furthermore objective 3 is redundant [7]_ with the
@@ -68,19 +63,10 @@ visible range)::
  crowdingplot -3 -x=2 -y=1 -z=4 ../../test/nsgaii_optimize_12.data
 
 This means we can reduce the number of objectives not just for plotting,
-but during optimization, too [7]_. The two outputs of ``crowdingplot``
-above follow here:
+but during optimization, too [7]_.
 
-.. raw:: html
-
-    <iframe width="800" height="640" scrolling="no" frameborder="no" src="https://raw.githack.com/schlatterbeck/pgapack/refs/heads/master/examples/nsgaii/x_0_y_1_z_4.html">
-    </iframe>
-
-.. raw:: html
-
-    <iframe width="800" height="640" scrolling="no" frameborder="no" src="https://raw.githack.com/schlatterbeck/pgapack/refs/heads/master/examples/nsgaii/x_2_y_1_z_4.html">
-    </iframe>
-
+Details on the "water" benchmark including graphics can be found on my
+blog [8]_.
 
 .. [1] Kalyanmoy Deb, Amrit Pratap, Sameer Agarwal, and T. Meyarivan.
        A fast and elitist multiobjective genetic algorithm: NSGA-II.
@@ -106,3 +92,5 @@ above follow here:
        corner search evolutionary algorithm and dimensionality reduction
        in many-objective optimization problems. IEEE Transactions on
        Evolutionary Computation, 15(4):539–556, August 2011.
+.. [8] Ralf Schlatterbeck. Water: A multi-objective benchmark problem.
+       Blog post, Open Source Consulting, June 2025.
