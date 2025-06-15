@@ -24,6 +24,25 @@ Documentation is on `Read the Docs`_.
 Updates
 =======
 
+Update June 2025:
+
+- Implement Jensen's algorithm for non-dominated sorting. The previous
+  implementation was O(n**2) while the new is O(n*log(n)**(m-1)) where n
+  is the population size and m is the number of objectives.
+- Add maximization examples for NSGA-II
+- Add coding conventions, mostly for use with AI assisted coding
+- Document new Jensen algorithm
+- Better document the "water" problem in ``examples/nsgaii``
+- Allow scaling of examples in ``examples/nsgaiii``: The DTLZ test
+  problems allow scaling the number of objectives, remove hard-coded
+  dimension, also allow to optimize these problems with NSGA-II
+  (not just -III) and allow to measure timing
+- Replace all calls to ``PGAError`` and ``PGAErrorPrintf`` where the
+  flag ``PGA_FATAL`` was used with new ``PGAFatalPrintf``: This allows
+  hints for the compiler that this function doesn't return
+- Allow to set the old non-dominated sorting algorithm or a combined
+  algorithm that compares old and new versions with ``PGASetSortND``
+
 Update May 2025:
 
 - Implement permutation preserving crossover and mutation operators:

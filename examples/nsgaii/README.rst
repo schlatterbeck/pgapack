@@ -92,5 +92,8 @@ blog [8]_.
        corner search evolutionary algorithm and dimensionality reduction
        in many-objective optimization problems. IEEE Transactions on
        Evolutionary Computation, 15(4):539–556, August 2011.
-.. [8] Ralf Schlatterbeck. Water: A multi-objective benchmark problem.
+.. [8] Ralf Schlatterbeck. `Water: A multi-objective benchmark problem`_.
        Blog post, Open Source Consulting, June 2025.
+
+.. _`Water: A multi-objective benchmark problem`:
+    https://blog.runtux.com/posts/2025/06/15/
