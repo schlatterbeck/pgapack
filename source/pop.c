@@ -2314,10 +2314,12 @@ unsigned int PGASortND_Both
             printf ("};\n\n\n");
             fflush (stdout);
 #endif /* DEBUG_RANKING_DUMP */
-            assert (0);
+            PGAFatalPrintf (ctx, "Non-dominated sorting of old/new differs");
         }
     }
-    assert (mr_old == mr_new);
+    if (mr_old != mr_new) {
+        PGAFatalPrintf (ctx, "Non-dominated sorting: max_rank differs");
+    }
     return mr_new;
 }
 
