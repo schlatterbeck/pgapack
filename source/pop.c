@@ -1555,10 +1555,16 @@ STATIC void rank_2d_b
         /* This *continues* to sweep l */
         while (l_idx < nl && (e1c < 0 || (e1c == 0 && e2c <= 0))) {
             int j;
-            size_t front;
+            size_t front, k;
             front = cur_l->rank;
-            if (fronts [front] != NULL) {
-                double ef2 = GETEVAL_EV (fronts [front], 1);
+            /* Get *next* front that is non-zero */
+            for (k=front; k<=max_front; k++) {
+                if (fronts [k] != NULL) {
+                    break;
+                }
+            }
+            if (k <= max_front && fronts [k] != NULL) {
+                double ef2 = GETEVAL_EV (fronts [k], 1);
                 int e2fc = OPT_DIR_CMP_EV (ctx, e2_l, ef2);
                 /* Dominated by this front, happens due to higher dimension */
                 if (e2fc >= 0) {
@@ -1572,6 +1578,8 @@ STATIC void rank_2d_b
                     }
                     continue;
                 }
+            }
+            if (fronts [front] != NULL) {
                 /* Going to overwrite existing */
                 num_fronts--;
             }
