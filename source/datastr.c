@@ -141,22 +141,27 @@ void rb_remove (rb_tree_t *tree, rb_node_t *node)
         while (c->child [0] != NULL) {
             c = c->child [0];
         }
-        /* First check if c has a right child */
-        if (c->child [1] != NULL) {
-            assert (c->child [1]->color == RB_RED);
-            c->child [1]->parent = c->parent;
-            c->child [1]->color  = RB_BLACK;
-            c->parent->child [DIRECTION (c)] = c->child [1];
-        }
-        /* Now put this child into the node's place */
-        c->parent = parent;
-        if (parent != NULL) {
-            parent->child [dir] = c;
+        /* Removing the child may need rebalancing */
+        rb_remove (tree, c);
+        /* Now put this child into the node's place
+         * Note that parent of node may have changed!
+         * This also means dir can have changed!
+         */
+        if (node->parent != NULL) {
+            node->parent->child [DIRECTION (node)] = c;
         } else {
             tree->root = c;
         }
+        c->parent    = node->parent;
         c->child [0] = node->child [0];
         c->child [1] = node->child [1];
+        c->color     = node->color;
+        if (c->child [0] != NULL) {
+            c->child [0]->parent = c;
+        }
+        if (c->child [1] != NULL) {
+            c->child [1]->parent = c;
+        }
         return;
     } else if (node->child [0] != NULL) {
         assert (node->color == RB_BLACK);
