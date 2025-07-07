@@ -1086,6 +1086,36 @@ void PGACrossoverSBX
     (PGAContext *ctx, double p1, double p2, double u, double *c1, double *c2);
 
 /*****************************************
+ *          datastr.c
+ *****************************************/
+typedef enum e_color { RB_BLACK, RB_RED } color_t;
+typedef enum e_dir   { RB_LEFT, RB_RIGHT } dir_t;
+
+typedef struct rbtree {
+    struct rbnode *root;
+    int (*cmp)(const void *, const void*);
+} rb_tree_t;
+
+typedef struct rbnode {
+    struct rbnode *parent;
+    struct rbnode *child [2];
+    void          *content;
+    color_t        color;
+} rb_node_t;
+
+rb_node_t *rb_left_leaf (rb_node_t *node);
+rb_node_t *rb_search    (rb_tree_t *tree, void *item, rb_node_t **parent);
+
+void rb_insert (rb_tree_t *tree, rb_node_t *node, rb_node_t *parent, dir_t dir);
+void rb_remove (rb_tree_t *tree, rb_node_t *node);
+void rb_walk
+    ( rb_node_t *node
+    , void (*pre_func)(rb_node_t *)
+    , void (*func)(rb_node_t *)
+    , void (*post_func)(rb_node_t *)
+    );
+
+/*****************************************
  *          debug.c
  *****************************************/
 
