@@ -1,4 +1,8 @@
 PROGS=testprog testprogde testprogdertr testprogmax
+GCNO = $(PROGS:=.gcno)
+GCDA = $(PROGS:=.gcda)
+ROBJ = $(PROGS:=.o)
+
 all: $(PROGS)
 
 COMPILE.f = @$(FC) $(FFLAGS) -c
@@ -13,19 +17,19 @@ tprobs.a: $(OBJS)
 %.o: %.f
 	$(FC) $(FFLAGS) -c $<
 
-testprog: testprog.f tprobs.a
-	$(FC) $(FFLAGS) testprog.f tprobs.a $(LDFLAGS) -o testprog
+testprog: testprog.o tprobs.a
+	$(FC) testprog.o tprobs.a $(LDFLAGS) -o testprog
 
-testprogmax: testprogmax.f tprobs.a
-	$(FC) $(FFLAGS) testprogmax.f tprobs.a $(LDFLAGS) -o testprogmax
+testprogmax: testprogmax.o tprobs.a
+	$(FC) testprogmax.o tprobs.a $(LDFLAGS) -o testprogmax
 
-testprogde: testprogde.c tprobs.a
-	$(CC) $(CFLAGS) testprogde.c tprobs.a $(LDFLAGS) -o testprogde
+testprogde: testprogde.o tprobs.a
+	$(CC) testprogde.o tprobs.a $(LDFLAGS) -o testprogde
 
-testprogdertr: testprogdertr.c tprobs.a
-	$(CC) $(CFLAGS) testprogdertr.c tprobs.a $(LDFLAGS) -o testprogdertr
+testprogdertr: testprogdertr.o tprobs.a
+	$(CC) testprogdertr.o tprobs.a $(LDFLAGS) -o testprogdertr
 
 clean:
-	rm -f $(OBJS) tprobs.a $(PROGS)
+	rm -f $(OBJS) $(ROBJ) tprobs.a $(PROGS) $(GCDA) $(GCNO)
 
 # vim: set noet :

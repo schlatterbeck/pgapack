@@ -9,10 +9,16 @@ PGA_DIR = ${CURDIR}
 # Defaults for various compiler settings.
 # We leave CC and FC settings to the make defaults.
 CPPFLAGS = -DFORTRANUNDERSCORE -D_REENTRANT
+# For coverage analysis call make with:
+# ADD_CFLAGS="-fprofile-arcs -ftest-coverage --coverage"
+# ADD_LDFLAGS="-fprofile-arcs"
+# ADD_LIBS="-lgcov"
+# SHAREDLIBS=no
+# I was unable to get it to work with shared libs
 CFLAGS = -fPIC -Wall -Wsign-compare $(ADD_CFLAGS)
 FFLAGS = $(ADD_FFLAGS)
 LDFLAGS = $(ADD_LDFLAGS)
-LIBS = -lm
+LIBS = -lm $(ADD_LIBS)
 INCLUDES =
 RANLIB = ranlib
 OPT = -O3

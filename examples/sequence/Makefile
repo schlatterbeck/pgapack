@@ -1,4 +1,6 @@
-OBJS = optimize.o
+OBJS = optimize.o magic.o
+GCNO = $(OBJS:.o=.gcno)
+GCDA = $(OBJS:.o=.gcda)
 
 all: optimize magic
 
@@ -12,6 +14,6 @@ magic: magic.o
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	rm -f $(OBJS) optimize magic
+	rm -f $(OBJS) $(GCNO) $(GCDA) optimize magic
 
 # vim: set noet :
