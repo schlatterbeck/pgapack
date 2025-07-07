@@ -351,6 +351,7 @@ PGAContext *PGACreate
     ctx->cops.ChromFree         = NULL;
     ctx->cops.Hillclimb         = NULL;
     ctx->cops.SortND            = NULL;
+    ctx->cops.Crowding          = NULL;
 
     ctx->fops.Mutation          = NULL;
     ctx->fops.Crossover         = NULL;
@@ -1505,6 +1506,9 @@ void PGASetUp (PGAContext *ctx)
                     );
         }
     }
+    if (ctx->cops.Crowding == NULL) {
+        PGA_Set_Crowding_Method (ctx);
+    }
 
 /* par */
     if (ctx->par.NumIslands == PGA_UNINITIALIZED_INT) {
@@ -1691,12 +1695,26 @@ void PGASetUp (PGAContext *ctx)
             PGAFatalPrintf
                 (ctx, "PGASetUp: No room to allocate ctx->scratch.nsga_tmp");
         }
+        ctx->scratch.nsga_tmp.f_min = malloc
+            (sizeof (*ctx->scratch.nsga_tmp.f_min) * (ctx->ga.NumAuxEval + 1));
+        if (ctx->scratch.nsga_tmp.f_min == NULL) {
+            PGAFatalPrintf
+                (ctx, "PGASetUp: No room to allocate ctx->scratch.f_min");
+        }
+        ctx->scratch.nsga_tmp.f_max = malloc
+            (sizeof (*ctx->scratch.nsga_tmp.f_max) * (ctx->ga.NumAuxEval + 1));
+        if (ctx->scratch.nsga_tmp.f_max == NULL) {
+            PGAFatalPrintf
+                (ctx, "PGASetUp: No room to allocate ctx->scratch.f_max");
+        }
     } else {
         ctx->scratch.dominance = NULL;
         ctx->scratch.nsga_tmp.ind_all = NULL;
         ctx->scratch.nsga_tmp.ind_tmp = NULL;
         ctx->scratch.nsga_tmp.medval = NULL;
         ctx->scratch.nsga_tmp.front_sizes = NULL;
+        ctx->scratch.nsga_tmp.f_min = NULL;
+        ctx->scratch.nsga_tmp.f_max = NULL;
     }
 
     if (ctx->ga.NoDuplicates) {

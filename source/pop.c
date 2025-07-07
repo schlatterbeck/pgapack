@@ -824,8 +824,9 @@ static int crowdsort_cmp (const void *a1, const void *a2)
 {
     PGAIndividual **i1 = (void *)a1;
     PGAIndividual **i2 = (void *)a2;
-    double e1 = GETEVAL_EV (*i1, (*i1)->funcidx);
-    double e2 = GETEVAL_EV (*i2, (*i2)->funcidx);
+    PGAContext *ctx = (*i1)->ctx;
+    double e1 = GETEVAL_EV (*i1, ctx->nsga.oidx);
+    double e2 = GETEVAL_EV (*i2, ctx->nsga.oidx);
     return CMP (e1, e2);
 }
 
@@ -856,11 +857,8 @@ STATIC void crowding
     int k;
     size_t nrank = 0;
     PGAIndividual **crowd = ctx->scratch.nsga_tmp.ind_tmp;
-    /* declare values of functions as arrays on the stack, this should
-     * never exceed memory limits
-     */
-    DECLARE_DYNARRAY (double, f_min, ctx->nsga.nfun);
-    DECLARE_DYNARRAY (double, f_max, ctx->nsga.nfun);
+    double *f_min = ctx->scratch.nsga_tmp.f_min;
+    double *f_max = ctx->scratch.nsga_tmp.f_max;
 
     for (i=0; i<n; i++) {
         PGAIndividual *ind = start [i];
@@ -881,9 +879,7 @@ STATIC void crowding
     assert (nrank > 0);
     for (k=0; k<ctx->nsga.nfun; k++) {
         double norm = f_max [k] - f_min [k];
-        for (i=0; i<nrank; i++) {
-            (crowd [i])->funcidx = k;
-        }
+        ctx->nsga.oidx = k;
         qsort (crowd, nrank, sizeof (crowd [0]), crowdsort_cmp);
         (crowd [0])->crowding = DBL_MAX;
         (crowd [nrank-1])->crowding = DBL_MAX;
@@ -2383,7 +2379,6 @@ unsigned int PGASortND_Jensen
     \brief Perform NSGA Replacement
     \ingroup internal
     \param   ctx             context variable
-    \param   crowding_method Method used for crowding sort
     \return  None
 
     \rst
@@ -2392,8 +2387,8 @@ unsigned int PGASortND_Jensen
     -----------
 
     - Perform dominance computation (ranking)
-    - Perform crowding computation specific to the NSGA-Variant given as
-      the parameter crowding_method
+    - Perform crowding computation specific to the NSGA-Variant the
+      crowding method is taken from ctx->cops.Crowding.
     - Sort individuals and replace into next generation
 
     Note that the crowding_method makes the difference between NSGA-II
@@ -2401,7 +2396,7 @@ unsigned int PGASortND_Jensen
 
     \endrst
 ******************************************************************************/
-static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
+static void PGA_NSGA_Replacement (PGAContext *ctx)
 {
     int i;
     int n_unc_ind, n_con_ind;
@@ -2503,7 +2498,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
         set_nsga_state (ctx, 1);
         rank = ctx->cops.SortND (ctx, all_individuals, n_unc_ind, popsize);
         if (n_unc_ind >= popsize && rank != UINT_MAX) {
-            crowding_method (ctx, all_individuals, n_unc_ind, rank);
+            ctx->cops.Crowding (ctx, all_individuals, n_unc_ind, rank);
         }
         qsort \
             ( all_individuals
@@ -2614,7 +2609,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx, crowding_t crowding_method)
 
 void PGA_NSGA_II_Replacement (PGAContext *ctx)
 {
-    PGA_NSGA_Replacement (ctx, crowding);
+    PGA_NSGA_Replacement (ctx);
 }
 
 /*!****************************************************************************
@@ -2648,5 +2643,41 @@ void PGA_NSGA_II_Replacement (PGAContext *ctx)
 
 void PGA_NSGA_III_Replacement (PGAContext *ctx)
 {
-    PGA_NSGA_Replacement (ctx, niching);
+    PGA_NSGA_Replacement (ctx);
+}
+
+/*!****************************************************************************
+    \brief Set crowding / niching method to use
+    \ingroup explicit
+    \param   ctx          context variable
+    \return  None
+
+    \rst
+
+    Description
+    -----------
+
+    Depending on the NSGA replacement method in use this sets the
+    crowding or niching method to use.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGA_Set_Crowding_Method (ctx);
+
+    \endrst
+
+******************************************************************************/
+
+void PGA_Set_Crowding_Method (PGAContext *ctx)
+{
+    ctx->cops.Crowding = crowding;
+    if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_III) {
+        ctx->cops.Crowding = niching;
+    }
 }

@@ -624,7 +624,7 @@ typedef struct PGAIndividual {         /**< primary population data structure */
   struct PGAContext    *ctx;           /**< Pointer to our PGAContext         */
   struct PGAIndividual *pop;           /**< The population of this indiv.     */
   double                crowding;      /**< Crowding metric for NSGA-II,-III  */
-  int                   funcidx;       /**< Temporary function index          */
+  int                   funcidx;       /**< Temporary function index, unused  */
   /* The following are for NSGA-III only */
   double               *normalized;    /**< Normalized point for NSGA-III     */
   double                distance;      /**< Distance to associated point      */
@@ -806,6 +806,9 @@ typedef struct {
     void         (*Hillclimb)(PGAContext *, int, int);
     /** Nondominated Sorting, used internally only */
     unsigned int (*SortND)(PGAContext *, PGAIndividual **, size_t, int);
+    /** Crowding metric, used internally only */
+    void         (*Crowding)
+                 (PGAContext *, PGAIndividual **, size_t, unsigned int);
 } PGACOperations;
 
 /*!*****************************************
@@ -924,10 +927,12 @@ typedef struct {
  * Used for temporary storage for nsga-ii and -iii.
  ***************************************************/
 typedef struct nsga_temp  {
-    PGAIndividual **ind_all;       /**< Individual pointer array for NSGA */
+    PGAIndividual **ind_all;       /**< Individual pointer array for NSGA  */
     PGAIndividual **ind_tmp;       /**< temporary Individual pointer array */
-    double         *medval;        /**< Used by find_median */
-    size_t         *front_sizes;   /**< Used by max_rank */
+    double         *medval;        /**< Used by find_median                */
+    size_t         *front_sizes;   /**< Used by max_rank                   */
+    double         *f_min;         /**< Minima of functions for crowding   */
+    double         *f_max;         /**< Maxima of functions for crowding   */
 } PGATmpNSGA;
 
 
@@ -1425,6 +1430,7 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx);
 void PGAPairwiseBestReplacement (PGAContext *ctx);
 void PGA_NSGA_II_Replacement (PGAContext *ctx);
 void PGA_NSGA_III_Replacement (PGAContext *ctx);
+void PGA_Set_Crowding_Method (PGAContext *ctx);
 void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points);
 void PGASetReferenceDirections
     (PGAContext *ctx, size_t ndirs, void *dirs, int npart, double scale);

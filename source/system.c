@@ -329,6 +329,12 @@ void PGADestroy (PGAContext *ctx)
         if (ctx->scratch.nsga_tmp.front_sizes != NULL) {
             free (ctx->scratch.nsga_tmp.front_sizes);
         }
+        if (ctx->scratch.nsga_tmp.f_min != NULL) {
+            free (ctx->scratch.nsga_tmp.f_min);
+        }
+        if (ctx->scratch.nsga_tmp.f_max != NULL) {
+            free (ctx->scratch.nsga_tmp.f_max);
+        }
         if (ctx->scratch.hashed != NULL) {
             free (ctx->scratch.hashed);
         }
