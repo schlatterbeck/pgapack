@@ -67,17 +67,38 @@ static rb_node_t *rotate_subtree (rb_tree_t *tree, rb_node_t *sub, dir_t dir)
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /* Assumes that node is the corrent point of insertion */
-void rb_insert (rb_tree_t *tree, rb_node_t *node, rb_node_t *parent, dir_t dir)
+static void rb_insert_internal
+    (rb_tree_t *tree, rb_node_t *node, rb_node_t *parent, dir_t dir)
 {
+    rb_node_t *c = NULL;
     node->color  = RB_RED;
-    node->parent = parent;
     if (parent == NULL) {
-        assert (tree->root == NULL);
-        tree->root = node;
-        return;
+        if (tree->root == NULL) {
+            tree->root = node;
+            return;
+        } else {
+            c = tree->root;
+        }
+    } else {
+        c = parent->child [dir];
+    }
+    if (c != NULL) {
+        rb_node_t *n = c;
+        if (n->child [RB_LEFT] == NULL) {
+            parent = n;
+            dir = RB_LEFT;
+        } else {
+            n = n->child [RB_LEFT];
+            while (n->child [RB_RIGHT]) {
+                n = n->child [RB_RIGHT];
+            }
+            parent = n;
+            dir = RB_RIGHT;
+        }
     }
     assert (parent->child [dir] == NULL);
     parent->child [dir] = node;
+    node->parent = parent;
     do {
         rb_node_t *grandparent = parent->parent;
         rb_node_t *uncle;
@@ -106,6 +127,18 @@ void rb_insert (rb_tree_t *tree, rb_node_t *node, rb_node_t *parent, dir_t dir)
         grandparent->color = RB_RED;
         node = grandparent;
     } while (NULL != (parent = node->parent));
+}
+
+void rb_insert (rb_tree_t *tree, rb_node_t *node)
+{
+    rb_node_t *parent = NULL;
+    rb_node_t *found = rb_search (tree, node->content, &parent);
+    assert (found == NULL || tree->cmp (found->content, node->content) == 0);
+    dir_t dir = parent != NULL
+              ? tree->cmp (node->content, parent->content) > 0
+              : RB_LEFT
+              ;
+    rb_insert_internal (tree, node, parent, dir);
 }
 
 rb_node_t *rb_left_leaf (rb_node_t *node)
@@ -276,19 +309,28 @@ void rb_remove (rb_tree_t *tree, rb_node_t *node)
 rb_node_t *rb_search (rb_tree_t *tree, void *item, rb_node_t **parent)
 {
     rb_node_t *n = tree->root;
-    *parent = NULL;
+    if (parent != NULL) {
+        *parent = NULL;
+    }
     while (n != NULL) {
         int c = tree->cmp (item, n->content);
         switch (c) {
         case -1:
-            *parent = n;
+            if (parent != NULL) {
+                *parent = n;
+            }
             n = n->child [0];
             break;
         case  0:
+            if (parent != NULL) {
+                *parent = n->parent;
+            }
             return n;
             break;
         case  1:
-            *parent = n;
+            if (parent != NULL) {
+                *parent = n;
+            }
             n = n->child [1];
             break;
         }

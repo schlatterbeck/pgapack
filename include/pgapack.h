@@ -1111,7 +1111,7 @@ typedef struct rbnode {
 rb_node_t *rb_left_leaf (rb_node_t *node);
 rb_node_t *rb_search    (rb_tree_t *tree, void *item, rb_node_t **parent);
 
-void rb_insert (rb_tree_t *tree, rb_node_t *node, rb_node_t *parent, dir_t dir);
+void rb_insert (rb_tree_t *tree, rb_node_t *node);
 void rb_remove (rb_tree_t *tree, rb_node_t *node);
 void rb_walk
     ( rb_node_t *node
