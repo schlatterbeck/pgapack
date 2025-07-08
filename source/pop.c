@@ -843,14 +843,7 @@ static int nondom_cmp (const void *a1, const void *a2)
     return CMP ((*i2)->crowding, (*i1)->crowding);
 }
 
-/* typedef to make it easier to pass crowding functions as parameter */
-typedef void (* crowding_t)
-    (PGAContext *, PGAIndividual **, size_t, unsigned int);
-
-/* Compute crowding distance over the given individuals
- * This is specific to NSGA-II.
- */
-STATIC void crowding
+static size_t crowding_setup
     (PGAContext *ctx, PGAIndividual **start, size_t n, unsigned int rank)
 {
     size_t i;
@@ -877,20 +870,113 @@ STATIC void crowding
         }
     }
     assert (nrank > 0);
+    return nrank;
+}
+
+/* Crowding metric is manhattan metric, the original NSGA-II metric */
+static void compute_manhattan_crowding_neighbors
+    (PGAContext *ctx, PGAIndividual **crowd, size_t ncrowd)
+{
+    size_t i;
+    int k;
+
     for (k=0; k<ctx->nsga.nfun; k++) {
-        double norm = f_max [k] - f_min [k];
         ctx->nsga.oidx = k;
-        qsort (crowd, nrank, sizeof (crowd [0]), crowdsort_cmp);
-        (crowd [0])->crowding = DBL_MAX;
-        (crowd [nrank-1])->crowding = DBL_MAX;
-        for (i=1; i<nrank-1; i++) {
-            if ((crowd [i])->crowding != DBL_MAX) {
-                (crowd [i])->crowding +=
-                    ( GETEVAL_EV (crowd [i+1], k)
-                    - GETEVAL_EV (crowd [i-1], k)
-                    ) / norm;
+        qsort (crowd, ncrowd, sizeof (crowd [0]), crowdsort_cmp);
+        for (i=0; i<ncrowd; i++) {
+            if (i > 0) {
+                crowd [i]->neighbor [0][k] = crowd [i - 1];
+            } else {
+                crowd [i]->neighbor [0][k] = NULL;
+            }
+            if (i + 1 < ncrowd) {
+                crowd [i]->neighbor [1][k] = crowd [i + 1];
+            } else {
+                crowd [i]->neighbor [1][k] = NULL;
             }
         }
+    }
+}
+
+double manhattan_crowding (PGAContext *ctx, PGAIndividual *ind)
+{
+    int k;
+    double v = 0;
+    double *f_min = ctx->scratch.nsga_tmp.f_min;
+    double *f_max = ctx->scratch.nsga_tmp.f_max;
+
+    for (k=0; k<ctx->nsga.nfun; k++) {
+        double norm = f_max [k] - f_min [k];
+        if (ind->neighbor [0][k] == NULL || ind->neighbor [1][k] == NULL)
+        {
+            return DBL_MAX;
+        }
+        v +=
+            ( GETEVAL_EV (ind->neighbor [1][k], k)
+            - GETEVAL_EV (ind->neighbor [0][k], k)
+            ) / norm;
+    }
+    return v;
+}
+
+/* typedef to make it easier to pass crowding functions as parameter */
+typedef void (* crowding_t)
+    (PGAContext *, PGAIndividual **, size_t, unsigned int);
+
+/* Compute crowding distance over the given individuals
+ * This is specific to NSGA-II.
+ * It is the original NSGA-II crowding metric.
+ */
+STATIC void crowding
+    ( PGAContext *ctx
+    , PGAIndividual **start, size_t n
+    , PGAIndividual **crowd, size_t ncrowd
+    , int goal
+    )
+{
+    size_t i;
+
+    compute_manhattan_crowding_neighbors (ctx, crowd, ncrowd);
+    for (i=0; i<ncrowd; i++) {
+        crowd [i]->crowding = manhattan_crowding (ctx, crowd [i]);
+    }
+}
+
+static int individual_crowding_cmp (const void *a, const void *b)
+{
+    const PGAIndividual *i1 = a;
+    const PGAIndividual *i2 = b;
+    return i1->crowding < i2->crowding
+           ? -1
+           : (i1->crowding > i2->crowding ? 1 : 0)
+           ;
+}
+
+STATIC void crowding_optimized_2
+    ( PGAContext *ctx
+    , PGAIndividual **start, size_t n
+    , PGAIndividual **crowd, size_t ncrowd
+    , int goal
+    )
+{
+    size_t i;
+    rb_tree_t heap;
+
+    memset (&heap, 0, sizeof (heap));
+    heap.cmp = individual_crowding_cmp;
+
+    compute_manhattan_crowding_neighbors (ctx, crowd, ncrowd);
+    for (i=0; i<ncrowd; i++) {
+        rb_node_t *node = malloc (sizeof (*node));
+        if (node == NULL) {
+            PGAFatalPrintf (ctx, "Cannot allocate memory for head item");
+        }
+        memset (node, 0, sizeof (*node));
+        node->content = crowd [i];
+        crowd [i]->crowding = manhattan_crowding (ctx, crowd [i]);
+        rb_insert (&heap, node);
+    }
+    for (i=ncrowd; i>(size_t)goal; i--) {
     }
 }
 
@@ -1136,7 +1222,11 @@ static int assoc_cmp (const void *a1, const void *a2)
  * This is specific to NSGA-III.
  */
 static void niching
-    (PGAContext *ctx, PGAIndividual **start, size_t n, unsigned int rank)
+    ( PGAContext *ctx
+    , PGAIndividual **start, size_t n
+    , PGAIndividual **crowd, size_t ncrowd
+    , int goal
+    )
 {
     size_t i, j;
     size_t dim = ctx->ga.NumAuxEval - ctx->ga.NumConstraint + 1;
@@ -2062,29 +2152,25 @@ static unsigned int max_rank
     if (rankcount == (size_t)goal) {
         return UINT_MAX;
     }
+    ctx->nsga.excess = rankcount - goal;
 
     return max_rank;
 }
 
 /* Specialized ranking function for the two-objective case */
-static unsigned int ranking_2_objectives
+static void ranking_2_objectives
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
     /* Call 2d special case */
     rank_2d_a (ctx, start, n);
-    /* Compute max_rank and return it */
-    return max_rank (ctx, start, n, goal);
 }
 
 /* Main non-dominated sorting function */
-static unsigned int ranking_3_plus_objectives
+static void ranking_3_plus_objectives
     (PGAContext *ctx, PGAIndividual **start, size_t n, int goal)
 {
     /* Call the recursive helper function */
     nd_helper_a (ctx, start, n, ctx->nsga.nfun);
-
-    /* Compute max_rank and return it */
-    return max_rank (ctx, start, n, goal);
 }
 
 /*
@@ -2209,6 +2295,7 @@ unsigned int PGASortND_NSquare
     if (nranked == goal) {
         return UINT_MAX;
     }
+    ctx->nsga.excess = nranked - goal;
     return rank;
 }
 
@@ -2243,7 +2330,7 @@ unsigned int PGASortND_Both
     const size_t max_front = ctx->ga.PopSize * 2;
     size_t *front_sizes = ctx->scratch.nsga_tmp.front_sizes;
     PGAIndividual **cpy_start = ctx->scratch.nsga_tmp.ind_tmp;
-    unsigned int max_rank = 0, mr_new = 0, mr_old = 0;
+    unsigned int mr = 0, mr_new = 0, mr_old = 0;
     size_t i;
 
     if (!n) {
@@ -2255,7 +2342,7 @@ unsigned int PGASortND_Both
         start [i]->crowding = 0;
     }
     memcpy (cpy_start, start, sizeof (*start) * n);
-    mr_old = max_rank = PGASortND_NSquare (ctx, start, n, goal);
+    mr_old = mr = PGASortND_NSquare (ctx, start, n, goal);
     /* Copy ranks and re-initialize to 0 */
     for (i=0; i<n; i++) {
         rank1 [i] = start [i]->rank;
@@ -2263,14 +2350,17 @@ unsigned int PGASortND_Both
     }
     assert (ctx->nsga.nfun >= 2);
     if (ctx->nsga.nfun == 2) {
-        mr_new = ranking_2_objectives (ctx, cpy_start, n, goal);
+        ranking_2_objectives (ctx, cpy_start, n, goal);
     } else {
-        mr_new = ranking_3_plus_objectives (ctx, cpy_start, n, goal);
+        ranking_3_plus_objectives (ctx, cpy_start, n, goal);
     }
+
+    mr_new = max_rank (ctx, start, n, goal);
+
     for (i=0; i<n; i++) {
         rank2 [i] = start [i]->rank;
     }
-    if (max_rank == UINT_MAX) {
+    if (mr == UINT_MAX) {
         int s = 0;
         memset (front_sizes, 0, sizeof (*front_sizes) * max_front);
         for (i=0; i<n; i++) {
@@ -2280,7 +2370,7 @@ unsigned int PGASortND_Both
         }
         for (i=0; i<2u*ctx->ga.PopSize; i++) {
             s += front_sizes [i];
-            max_rank = i;
+            mr = i;
             if (s >= goal) {
                 break;
             }
@@ -2369,10 +2459,11 @@ unsigned int PGASortND_Jensen
         start [i]->crowding = 0;
     }
     if (ctx->nsga.nfun == 2) {
-        return ranking_2_objectives (ctx, cpy_start, n, goal);
+        ranking_2_objectives (ctx, cpy_start, n, goal);
     } else {
-        return ranking_3_plus_objectives (ctx, cpy_start, n, goal);
+        ranking_3_plus_objectives (ctx, cpy_start, n, goal);
     }
+    return max_rank (ctx, start, n, goal);
 }
 
 /*!****************************************************************************
@@ -2497,8 +2588,15 @@ static void PGA_NSGA_Replacement (PGAContext *ctx)
         unsigned int rank;
         set_nsga_state (ctx, 1);
         rank = ctx->cops.SortND (ctx, all_individuals, n_unc_ind, popsize);
-        if (n_unc_ind >= popsize && rank != UINT_MAX) {
-            ctx->cops.Crowding (ctx, all_individuals, n_unc_ind, rank);
+        if (n_unc_ind > popsize && rank != UINT_MAX) {
+            int goal;
+            size_t ncrowd = 0;
+            PGAIndividual **crowd = ctx->scratch.nsga_tmp.ind_tmp;
+            ncrowd = crowding_setup (ctx, all_individuals, n_unc_ind, rank);
+            goal = ncrowd - ctx->nsga.excess;
+            assert (goal > 0);
+            ctx->cops.Crowding
+                (ctx, all_individuals, n_unc_ind, crowd, ncrowd, goal);
         }
         qsort \
             ( all_individuals
@@ -2534,7 +2632,14 @@ static void PGA_NSGA_Replacement (PGAContext *ctx)
                 , popsize - n_unc_ind
                 );
             if (rank != UINT_MAX) {
-                crowding (ctx, all_individuals + n_unc_ind, n_con_ind, rank);
+                int goal;
+                size_t ncrowd = 0;
+                PGAIndividual **crowd = ctx->scratch.nsga_tmp.ind_tmp;
+                ncrowd = crowding_setup
+                    (ctx, all_individuals + n_unc_ind, n_con_ind, rank);
+                goal = ncrowd - ctx->nsga.excess;
+                assert (goal > 0);
+                crowding (ctx, NULL, 0, crowd, ncrowd, goal);
             }
             qsort \
                 ( all_individuals + n_unc_ind

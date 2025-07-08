@@ -258,6 +258,12 @@ static void PGAFreeIndividual (PGAContext *ctx, PGAIndividual *ind)
     if (ind->normalized != NULL) {
         free (ind->normalized);
     }
+    if (ind->neighbor [0] != NULL) {
+        assert (ind->neighbor [1] != NULL);
+        free (ind->neighbor [0]);
+        free (ind->neighbor [1]);
+        ind->neighbor [0] = ind->neighbor [1] = NULL;
+    }
 }
 
 /*!****************************************************************************

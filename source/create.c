@@ -516,6 +516,8 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
     ind->distance         = 0;
     ind->point_idx        = 0;
     ind->next_hash        = NULL;
+    ind->neighbor [0]     = NULL;
+    ind->neighbor [1]     = NULL;
     if (ctx->ga.NumAuxEval) {
         ind->auxeval = malloc (sizeof (double) * ctx->ga.NumAuxEval);
         if (ind->auxeval == NULL) {
@@ -550,6 +552,14 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
             PGAChange (ctx, p, pop);
         }
         PGAHashIndividual (ctx, p, pop);
+    }
+    if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_II) {
+        size_t sz = ctx->ga.NumAuxEval + 1;
+        ind->neighbor [0] = malloc (sizeof (*ind->neighbor [0]) * sz);
+        ind->neighbor [1] = malloc (sizeof (*ind->neighbor [1]) * sz);
+        if (ind->neighbor [0] == NULL || ind->neighbor [1] == NULL) {
+            PGAFatalPrintf (ctx, "Cannot allocate neighbors");
+        }
     }
 }
 

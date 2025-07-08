@@ -630,6 +630,8 @@ typedef struct PGAIndividual {         /**< primary population data structure */
   double                distance;      /**< Distance to associated point      */
   int                   point_idx;     /**< Index of associated point         */
   struct PGAIndividual *next_hash;     /**< Next hash value in chain          */
+  /* For NSGA-II only */
+  struct PGAIndividual **neighbor [2]; /**< Crowding metric neighbors         */
 } PGAIndividual;
 
 /*!***************************************
@@ -759,6 +761,7 @@ typedef struct {
     int base;     /**< Base index of eval functions, 0 for eval */
     int nfun;     /**< Number of functions                      */
     int oidx;     /**< Current function index for sorting       */
+    int excess;   /**< Overhang of last dominance rank          */
 } PGAStateNSGA;
 
 /** Typedef for the context, think of this as "self" in OO terms */
@@ -808,7 +811,11 @@ typedef struct {
     unsigned int (*SortND)(PGAContext *, PGAIndividual **, size_t, int);
     /** Crowding metric, used internally only */
     void         (*Crowding)
-                 (PGAContext *, PGAIndividual **, size_t, unsigned int);
+                 ( PGAContext *
+                 , PGAIndividual **, size_t
+                 , PGAIndividual **, size_t
+                 , int
+                 );
 } PGACOperations;
 
 /*!*****************************************
