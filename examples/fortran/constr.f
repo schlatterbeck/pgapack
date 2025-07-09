@@ -37,6 +37,7 @@
       call PGASetNumConstraint          (ctx, 2)
       call PGASetNoDuplicatesFlag       (ctx, PGA_TRUE)
       call PGASetMutationBounceBackFlag (ctx, PGA_TRUE)
+      call PGASetCrowdingMethod         (ctx, PGA_CROWDING_CD_PRUNE)
 
       call PGASetUp                     (ctx)
       call PGARun                       (ctx, evaluate)

@@ -120,6 +120,24 @@ c *** CROSSOVER
       integer PGA_CROSSOVER_NOX
       parameter ( PGA_CROSSOVER_NOX =      14)
 
+c *** CROWDING
+      integer PGA_CROWDING_NSGA_II
+      parameter ( PGA_CROWDING_NSGA_II  = 1)
+      integer PGA_CROWDING_CD_PRUNE
+      parameter ( PGA_CROWDING_CD_PRUNE = 2)
+      integer PGA_CROWDING_ENNS_2NN
+      parameter ( PGA_CROWDING_ENNS_2NN = 3)
+      integer PGA_CROWDING_ENNS_MNN
+      parameter ( PGA_CROWDING_ENNS_MNN = 4)
+
+c *** NON-DOMINATED SORTING
+      integer PGA_NDSORT_JENSEN
+      parameter ( PGA_NDSORT_JENSEN  = 1)
+      integer PGA_NDSORT_NSQUARE
+      parameter ( PGA_NDSORT_NSQUARE = 2)
+      integer PGA_NDSORT_BOTH
+      parameter ( PGA_NDSORT_BOTH    = 3)
+
 c *** SELECTION
       integer PGA_SELECT_PROPORTIONAL
       parameter ( PGA_SELECT_PROPORTIONAL = 1)
@@ -308,8 +326,6 @@ c *** cross
       external PGAGetCrossoverBoundedFlag
       integer PGAGetCrossoverBounceBackFlag
       external PGAGetCrossoverBounceBackFlag
-      integer PGASetCrossoverSBXOncePerString
-      external PGASetCrossoverSBXOncePerString
       double precision PGAGetCrossoverSBXEta
       external PGAGetCrossoverSBXEta
 c *** duplcate
