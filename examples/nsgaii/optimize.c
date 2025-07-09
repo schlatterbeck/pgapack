@@ -75,6 +75,7 @@ void usage (char *name, int nproblems)
         ( stderr
         , "Usage: %s [-C] [-e eps-gen] [-g maxgen] [-r seed] [-s] [f-index]\n"
           "-C: Print C-output in every generation\n"
+          "-c: Crowding, one of nsga-ii, cd, 2nn, mnn\n"
           "-e: Epsilon generation\n"
           "-g: Maximum number of generations\n"
           "-r: Random seed (uppercase -R is also accepted)\n"
@@ -99,11 +100,26 @@ int main (int argc, char **argv)
     int c_output = 0;
     int opt;
     int random_seed = 1;
+    int crowding = PGA_CROWDING_CD_PRUNE;
 
-    while ((opt = getopt (argc, argv, "Ce:g:r:R:s")) != -1) {
+    while ((opt = getopt (argc, argv, "Cc:e:g:r:R:s")) != -1) {
         switch (opt) {
         case 'C':
             c_output = 1;
+            break;
+        case 'c':
+            if (!strcmp (optarg, "nsga-ii")) {
+                crowding = PGA_CROWDING_NSGA_II;
+            } else if (!strcmp (optarg, "cd")) {
+                crowding = PGA_CROWDING_CD_PRUNE;
+            } else if (!strcmp (optarg, "2nn")) {
+                crowding = PGA_CROWDING_ENNS_2NN;
+            } else if (!strcmp (optarg, "mnn")) {
+                crowding = PGA_CROWDING_ENNS_MNN;
+            } else {
+                fprintf (stderr, "Invalid crowding: %s\n", optarg);
+                exit (1);
+            }
             break;
         case 'e':
             epsilon_generation = atoi (optarg);
@@ -165,6 +181,7 @@ int main (int argc, char **argv)
     PGASetSumConstraintsFlag (ctx, sum_constraints);
     PGASetNoDuplicatesFlag   (ctx, PGA_TRUE);
     PGASetMultiObjPrecision  (ctx, problem->precision ? problem->precision:14);
+    PGASetCrowdingMethod     (ctx, crowding);
     if (problem->dither) {
         PGASetDEDither       (ctx, 0.5);
     }

@@ -66,12 +66,26 @@ static rb_node_t *rotate_subtree (rb_tree_t *tree, rb_node_t *sub, dir_t dir)
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
+/* Compute smallest item in tree */
+rb_node_t *rb_first (rb_tree_t *tree)
+{
+    rb_node_t *n = tree->root;
+    if (n == NULL) {
+        return NULL;
+    }
+    while (n->child [RB_LEFT] != NULL) {
+        n = n->child [RB_LEFT];
+    }
+    return n;
+}
+
 /* Assumes that node is the corrent point of insertion */
 static void rb_insert_internal
     (rb_tree_t *tree, rb_node_t *node, rb_node_t *parent, dir_t dir)
 {
     rb_node_t *c = NULL;
     node->color  = RB_RED;
+    node->child [0] = node->child [1] = node->parent = NULL;
     if (parent == NULL) {
         if (tree->root == NULL) {
             tree->root = node;
@@ -139,6 +153,19 @@ void rb_insert (rb_tree_t *tree, rb_node_t *node)
               : RB_LEFT
               ;
     rb_insert_internal (tree, node, parent, dir);
+}
+
+/* Compute largest item in tree */
+rb_node_t *rb_last (rb_tree_t *tree)
+{
+    rb_node_t *n = tree->root;
+    if (n == NULL) {
+        return NULL;
+    }
+    while (n->child [RB_RIGHT] != NULL) {
+        n = n->child [RB_RIGHT];
+    }
+    return n;
 }
 
 rb_node_t *rb_left_leaf (rb_node_t *node)

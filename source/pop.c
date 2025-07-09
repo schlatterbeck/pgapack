@@ -916,6 +916,7 @@ double manhattan_crowding (PGAContext *ctx, PGAIndividual *ind)
             - GETEVAL_EV (ind->neighbor [0][k], k)
             ) / norm;
     }
+    assert (v >= 0);
     return v;
 }
 
@@ -927,7 +928,7 @@ typedef void (* crowding_t)
  * This is specific to NSGA-II.
  * It is the original NSGA-II crowding metric.
  */
-STATIC void crowding
+STATIC void crowding_nsga_ii
     ( PGAContext *ctx
     , PGAIndividual **start, size_t n
     , PGAIndividual **crowd, size_t ncrowd
@@ -942,26 +943,52 @@ STATIC void crowding
     }
 }
 
+/*
+ * Compare individuals by their crowding metric. Should the metric be
+ * the same we use the unique index + population of each individual: We
+ * want to be able to retrieve an indivdual from the heap, for this we
+ * need to match it exactly.
+ */
 static int individual_crowding_cmp (const void *a, const void *b)
 {
     const PGAIndividual *i1 = a;
     const PGAIndividual *i2 = b;
-    return i1->crowding < i2->crowding
-           ? -1
-           : (i1->crowding > i2->crowding ? 1 : 0)
-           ;
+    const PGAContext *ctx = i1->ctx;
+    if (i1->crowding < i2->crowding) {
+        return -1;
+    }
+    if (i1->crowding > i2->crowding) {
+        return 1;
+    }
+    if (i1->pop != i2->pop) {
+        return i1->pop == ctx->ga.oldpop ? -1 : 1;
+    }
+    assert (i1 == i2 || i1->index != i2->index);
+    if (i1 == i2) {
+        return 0;
+    }
+    return i1->index < i2->index ? -1 : 1;
 }
 
-STATIC void crowding_optimized_2
+/*
+ * Crowding method using iterative pruning
+ * Saku Kukkonen and Kalyanmoy Deb. Improved pruning of nondominated
+ * solutions based on crowding distance for bi-objective optimization
+ * problems. In IEEE International Conference on Evolutionary
+ * Computation (CEC), pages 1179–1186. Vancouver, BC, Canada, July 2006.
+ */
+STATIC void crowding_cd_prune
     ( PGAContext *ctx
     , PGAIndividual **start, size_t n
     , PGAIndividual **crowd, size_t ncrowd
     , int goal
     )
 {
+    int k;
     size_t i;
     rb_tree_t heap;
 
+    assert ((int)ncrowd > goal);
     memset (&heap, 0, sizeof (heap));
     heap.cmp = individual_crowding_cmp;
 
@@ -969,15 +996,62 @@ STATIC void crowding_optimized_2
     for (i=0; i<ncrowd; i++) {
         rb_node_t *node = malloc (sizeof (*node));
         if (node == NULL) {
-            PGAFatalPrintf (ctx, "Cannot allocate memory for head item");
+            PGAFatalPrintf (ctx, "Cannot allocate memory for heap item");
         }
         memset (node, 0, sizeof (*node));
         node->content = crowd [i];
         crowd [i]->crowding = manhattan_crowding (ctx, crowd [i]);
         rb_insert (&heap, node);
+        #ifdef DEBUG_CROWDING
+        node = rb_search (&heap, crowd [i], NULL);
+        assert (node != NULL);
+        assert (node->content == crowd [i]);
+        #endif
     }
     for (i=ncrowd; i>(size_t)goal; i--) {
+        rb_node_t *n = rb_first (&heap);
+        PGAIndividual *ind;
+        assert (n != NULL);
+        ind = n->content;
+        rb_remove (&heap, n);
+        free (n);
+        /* We could set the crowding metric of the removed individual to
+         * zero here but the crowding metric is guaranteed to be lower
+         * than the ones still in the heap, so we don't do it.
+         * Note that the replacement may be different if the order of
+         * individuals is different.
+         */
+        /* Update neighbors */
+        for (k=0; k<ctx->nsga.nfun; k++) {
+            if (ind->neighbor [0][k] != NULL) {
+                ind->neighbor [0][k]->neighbor [1][k] = ind->neighbor [1][k];
+            }
+            if (ind->neighbor [1][k] != NULL) {
+                ind->neighbor [1][k]->neighbor [0][k] = ind->neighbor [0][k];
+            }
+        }
+        /* Now recompute neighbor crowding, we risk computing this several
+         * times should a neighbor be a neighbor in multiple dimensions.
+         */
+        for (k=0; k<ctx->nsga.nfun; k++) {
+            int dir;
+            for (dir=0; dir<2; dir++) {
+                if (ind->neighbor [dir][k] != NULL) {
+                    PGAIndividual *neigh = ind->neighbor [dir][k];
+                    rb_node_t *nn = rb_search (&heap, neigh, NULL);
+                    assert (nn != NULL);
+                    assert (nn->content == neigh);
+                    rb_remove (&heap, nn);
+                    /* Re-compute crowding after changed neighbors */
+                    neigh->crowding = manhattan_crowding (ctx, neigh);
+                    /* Re-insert, might be a different position now */
+                    rb_insert (&heap, nn);
+                }
+            }
+        }
     }
+    /* Now free heap */
+    rb_walk (heap.root, NULL, NULL, (void (*)(rb_node_t *))free);
 }
 
 /* Compute utopian point as the minimum over all solutions */
@@ -2639,7 +2713,7 @@ static void PGA_NSGA_Replacement (PGAContext *ctx)
                     (ctx, all_individuals + n_unc_ind, n_con_ind, rank);
                 goal = ncrowd - ctx->nsga.excess;
                 assert (goal > 0);
-                crowding (ctx, NULL, 0, crowd, ncrowd, goal);
+                crowding_nsga_ii (ctx, NULL, 0, crowd, ncrowd, goal);
             }
             qsort \
                 ( all_individuals + n_unc_ind
@@ -2752,7 +2826,7 @@ void PGA_NSGA_III_Replacement (PGAContext *ctx)
 }
 
 /*!****************************************************************************
-    \brief Set crowding / niching method to use
+    \brief Set crowding / niching function to use
     \ingroup explicit
     \param   ctx          context variable
     \return  None
@@ -2763,7 +2837,9 @@ void PGA_NSGA_III_Replacement (PGAContext *ctx)
     -----------
 
     Depending on the NSGA replacement method in use this sets the
-    crowding or niching method to use.
+    crowding or niching method to use. This takes into account the
+    preferences set via :c:func:`PGA_Set_Crowding_Method`. The function
+    is called internally during :c:func:`PGACreate`.
 
     Example
     -------
@@ -2773,16 +2849,72 @@ void PGA_NSGA_III_Replacement (PGAContext *ctx)
        PGAContext *ctx;
 
        ...
-       PGA_Set_Crowding_Method (ctx);
+       PGA_Set_Crowding_Function (ctx);
 
     \endrst
 
 ******************************************************************************/
 
-void PGA_Set_Crowding_Method (PGAContext *ctx)
+void PGASetCrowdingFunction (PGAContext *ctx)
 {
-    ctx->cops.Crowding = crowding;
     if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_III) {
         ctx->cops.Crowding = niching;
+    } else {
+        switch (ctx->ga.CrowdingMethod) {
+        case PGA_CROWDING_NSGA_II:
+            ctx->cops.Crowding = crowding_nsga_ii;
+            break;
+        case PGA_CROWDING_CD_PRUNE:
+            ctx->cops.Crowding = crowding_cd_prune;
+            break;
+        case PGA_CROWDING_ENNS_2NN:
+            PGAFatalPrintf (ctx, "Not implemented: PGA_CROWDING_ENNS_2NN");
+            break;
+        case PGA_CROWDING_ENNS_MNN:
+            PGAFatalPrintf (ctx, "Not implemented: PGA_CROWDING_ENNS_MNN");
+            break;
+        default:
+            PGAFatalPrintf
+                (ctx, "Invalid crowding method: %d", ctx->ga.CrowdingMethod);
+        }
     }
+}
+
+/*!****************************************************************************
+    \brief Set crowding / niching method to use
+    \ingroup explicit
+    \param   ctx          context variable
+    \param   method       method to use
+    \return  None
+
+    \rst
+
+    Description
+    -----------
+
+    In NSGA-II different crowding algorithms can be used. The crowding
+    algorithm tries to ensure that solutions are spread over the whole
+    pareto front. See :ref:`group:crowding-algorithms` for the possible
+    values.
+
+    Example
+    -------
+
+    .. code-block:: c
+
+       PGAContext *ctx;
+
+       ...
+       PGA_Set_Crowding_Method (ctx, PGA_CROWDING_CD_PRUNE);
+
+    \endrst
+
+******************************************************************************/
+
+void PGASetCrowdingMethod (PGAContext *ctx, int method)
+{
+    if (method < PGA_CROWDING_NSGA_II ||  method > PGA_CROWDING_ENNS_MNN) {
+        PGAFatalPrintf (ctx, "Invalid crowding method: %d", method);
+    }
+    ctx->ga.CrowdingMethod = method;
 }

@@ -257,6 +257,7 @@ PGAContext *PGACreate
     ctx->ga.CrossBounceFlag    = PGA_UNINITIALIZED_INT;
     ctx->ga.CrossSBXEta        = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.CrossSBXOnce       = PGA_UNINITIALIZED_INT;
+    ctx->ga.CrowdingMethod     = PGA_UNINITIALIZED_INT;
     ctx->ga.SelectType         = PGA_UNINITIALIZED_INT;
     ctx->ga.TournamentSize     = PGA_UNINITIALIZED_INT;
     ctx->ga.TournamentWithRepl = PGA_UNINITIALIZED_INT;
@@ -1516,8 +1517,15 @@ void PGASetUp (PGAContext *ctx)
                     );
         }
     }
+    if (ctx->ga.CrowdingMethod == PGA_UNINITIALIZED_INT) {
+        ctx->ga.CrowdingMethod = PGA_CROWDING_NSGA_II;
+        /* Use pruning for 2-objective case */
+        if (ctx->ga.NumAuxEval - ctx->ga.NumConstraint == 1) {
+            ctx->ga.CrowdingMethod = PGA_CROWDING_CD_PRUNE;
+        }
+    }
     if (ctx->cops.Crowding == NULL) {
-        PGA_Set_Crowding_Method (ctx);
+        PGASetCrowdingFunction (ctx);
     }
 
 /* par */

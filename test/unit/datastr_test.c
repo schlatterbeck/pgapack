@@ -113,6 +113,7 @@ int main (int argc, char **argv)
     PGAContext *ctx = NULL;
     tree.root = NULL;
     tree.cmp  = cmp;
+    rb_node_t *fl = NULL;
     for (i=0; i<N_ITEMS; i++) {
         scrambled [i] = i;
         rb_node_t *node = create_node (i);
@@ -121,6 +122,10 @@ int main (int argc, char **argv)
         assert (found == NULL);
         rb_insert (&tree, node);
     }
+    fl = rb_first (&tree);
+    assert (fl != NULL && ((struct content *)fl->content)->i == 0);
+    fl = rb_last (&tree);
+    assert (fl != NULL && ((struct content *)fl->content)->i == N_ITEMS - 1);
     for (i=0; i<N_ITEMS; i++) {
         struct content c, *content;
         c.i = i;

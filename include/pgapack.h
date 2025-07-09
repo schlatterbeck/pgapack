@@ -8,7 +8,7 @@
 
 /* Microsoft choses to arbitrarily deprecate some standard C-Library functions
  * (CRT stands for C runtime library) Disable deprecation warning
- * And Microsoft ist stuck in the 1980s with their C Compiler (well
+ * And Microsoft is stuck in the 1980s with their C Compiler (well
  * technically it isn't a C-Compiler because it doesn't support the
  * latest version of the standard) because they do not support
  * dynamically allocated variable arrays (in the C standard since 1999).
@@ -361,6 +361,18 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_CROSSOVER_AEX      13    /**< Alternating Edge crossover (AEX) */
 #define PGA_CROSSOVER_NOX      14    /**< Non-wrapping Order crossover     */
 /*! @} */
+
+/*!***************************************
+ *  \defgroup crowding-algorithms Crowding
+ *  \brief Different crowding/pruning algorithms
+ *  @{
+ *****************************************/
+#define PGA_CROWDING_NSGA_II  1    /**< The original NSGA-II crowding      */
+#define PGA_CROWDING_CD_PRUNE 2    /**< Iterated Crowding-distance pruning */
+#define PGA_CROWDING_ENNS_2NN 3    /**< 2 nearest neighbors efficient NN   */
+#define PGA_CROWDING_ENNS_MNN 4    /**< M nearest neighbors efficient NN   */
+/*! @} */
+
 
 /*!***************************************
  *  \defgroup const-selection Selection
@@ -721,6 +733,7 @@ typedef struct {
     double FitnessCmaxValue; /**< Cmax value used to convert minimizations  */
     double restartAlleleProb;/**< prob of changing an allele in a restart   */
     double TruncProportion;  /**< proportion for truncation selection       */
+    int CrowdingMethod;      /**< NSGA-II crowding method to use            */
     int NAMWindow;           /**< Win size for negative assortative mating  */
     int restart;             /**< whether to use the restart operator       */
     int restartFreq;         /**< frequency with which to restart           */
@@ -1116,6 +1129,8 @@ typedef struct rbnode {
 } rb_node_t;
 
 rb_node_t *rb_left_leaf (rb_node_t *node);
+rb_node_t *rb_first     (rb_tree_t *tree);
+rb_node_t *rb_last      (rb_tree_t *tree);
 rb_node_t *rb_search    (rb_tree_t *tree, void *item, rb_node_t **parent);
 
 void rb_insert (rb_tree_t *tree, rb_node_t *node);
@@ -1437,7 +1452,8 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx);
 void PGAPairwiseBestReplacement (PGAContext *ctx);
 void PGA_NSGA_II_Replacement (PGAContext *ctx);
 void PGA_NSGA_III_Replacement (PGAContext *ctx);
-void PGA_Set_Crowding_Method (PGAContext *ctx);
+void PGASetCrowdingFunction (PGAContext *ctx);
+void PGASetCrowdingMethod (PGAContext *ctx, int method);
 void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points);
 void PGASetReferenceDirections
     (PGAContext *ctx, size_t ndirs, void *dirs, int npart, double scale);
