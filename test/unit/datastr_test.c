@@ -23,13 +23,13 @@ int cmp (const void *a, const void *b)
     return v1->i < v2->i ? -1 : (v1->i > v2->i ? 1 : 0);
 }
 
-void print_node (rb_node_t *node)
+void print_node (rb_node_t *node, void *x)
 {
     struct content *content = node->content;
     printf ("visit %d\n", content->i);
 }
 
-void check_consistency (rb_node_t *node)
+void check_consistency (rb_node_t *node, void *x)
 {
     struct content *content = node->content;
     if (node->child [0] != NULL) {
@@ -83,7 +83,7 @@ void rm_single_child_node (rb_node_t *node)
         /* We may not memset the node to zero during walk */
         free (node);
     }
-    rb_walk (tree.root, count_black, check_consistency, NULL);
+    rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
 }
 
 rb_node_t *create_node (int i)
@@ -122,10 +122,17 @@ int main (int argc, char **argv)
         assert (found == NULL);
         rb_insert (&tree, node);
     }
-    fl = rb_first (&tree);
-    assert (fl != NULL && ((struct content *)fl->content)->i == 0);
-    fl = rb_last (&tree);
-    assert (fl != NULL && ((struct content *)fl->content)->i == N_ITEMS - 1);
+    i = 0;
+    for (fl = rb_first (&tree), i=0; fl; fl = rb_next (fl), i++) {
+        struct content *c = fl->content;
+        assert (i == c->i);
+    }
+    assert (i == N_ITEMS);
+    for (fl = rb_last (&tree), i=N_ITEMS - 1; fl; fl = rb_prev (fl), i--) {
+        struct content *c = fl->content;
+        assert (i == c->i);
+    }
+    assert (i == -1);
     for (i=0; i<N_ITEMS; i++) {
         struct content c, *content;
         c.i = i;
@@ -143,18 +150,18 @@ int main (int argc, char **argv)
         }
         assert (j < 20);
     }
-    rb_walk (tree.root, NULL, print_node, NULL);
-    rb_walk (tree.root, count_black, check_consistency, NULL);
+    rb_walk (tree.root, NULL, print_node, NULL, NULL);
+    rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
     assert (tree.root->parent == NULL);
     for (i=0; i<N_ITEMS; i++) {
         struct content c;
         c.i = i;
         rb_node_t *n = rb_search (&tree, &c, NULL);
         printf ("n: %d\n", i);
-        rb_walk (tree.root, count_black, check_consistency, NULL);
+        rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
         assert (n != NULL);
         rb_remove (&tree, n);
-        rb_walk (tree.root, count_black, check_consistency, NULL);
+        rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
         assert (n->content != NULL);
         free (n->content);
         memset (n, 0, sizeof (*n));
@@ -174,7 +181,7 @@ int main (int argc, char **argv)
     }
     /* Check consistency after insert */
     assert (tree.root->parent == NULL);
-    rb_walk (tree.root, count_black, check_consistency, NULL);
+    rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
     /* Test removing root node */
     for (i=0; i<5; i++) {
         struct content *c;
@@ -186,13 +193,13 @@ int main (int argc, char **argv)
         memset (n, 0, sizeof (*n));
         free (n);
         assert (tree.root->parent == NULL);
-        rb_walk (tree.root, count_black, check_consistency, NULL);
+        rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
     }
     /* Find nodes with one child and remove */
     left_count = right_count = 0;
-    rb_walk (tree.root, NULL, NULL, rm_single_child_node);
+    rb_walk (tree.root, NULL, NULL, rm_single_child_node, NULL);
     assert (left_count && right_count);
-    rb_walk (tree.root, count_black, check_consistency, NULL);
+    rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
     /* Finally loop over remaining nodes and remove again in random order */
     PGAShuffle (ctx, scrambled, N_ITEMS);
     for (i=0; i<N_ITEMS; i++) {
@@ -201,11 +208,11 @@ int main (int argc, char **argv)
         rb_node_t *n;
         c.i = idx;
         n = rb_search (&tree, &c, NULL);
-        rb_walk (tree.root, count_black, check_consistency, NULL);
+        rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
         if (n != NULL) {
             printf ("Remove: %d\n", idx);
             rb_remove (&tree, n);
-            rb_walk (tree.root, count_black, check_consistency, NULL);
+            rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
             assert (n->content != NULL);
             free (n->content);
             memset (n, 0, sizeof (*n));
@@ -228,7 +235,7 @@ int main (int argc, char **argv)
         rb_insert (&tree, node);
     }
     assert (tree.root->parent == NULL);
-    rb_walk (tree.root, count_black, check_consistency, NULL);
+    rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
     PGAShuffle (ctx, scrambled, N_SMALL);
     for (i=0; i<N_SMALL; i++) {
         int idx = scrambled [i];
@@ -238,7 +245,7 @@ int main (int argc, char **argv)
         rb_insert (&tree, node);
     }
     assert (tree.root->parent == NULL);
-    rb_walk (tree.root, count_black, check_consistency, NULL);
+    rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
     PGAShuffle (ctx, scrambled, N_SMALL);
     for (i=0; i<N_SMALL; i++) {
         int idx = scrambled [i];
@@ -249,8 +256,8 @@ int main (int argc, char **argv)
         rb_insert (&tree, node);
     }
     assert (tree.root->parent == NULL);
-    rb_walk (tree.root, count_black, check_consistency, NULL);
-    rb_walk (tree.root, NULL, print_node, NULL);
+    rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
+    rb_walk (tree.root, NULL, print_node, NULL, NULL);
     PGAShuffle (ctx, scrambled, N_SMALL);
     for (i=0; i<N_SMALL * 3; i++) {
         rb_node_t *n;
@@ -261,6 +268,6 @@ int main (int argc, char **argv)
         printf ("Remove: %d\n", idx);
         assert (n != NULL);
         rb_remove (&tree, n);
-        rb_walk (tree.root, count_black, check_consistency, NULL);
+        rb_walk (tree.root, count_black, check_consistency, NULL, NULL);
     }
 }

@@ -1129,17 +1129,21 @@ typedef struct rbnode {
 } rb_node_t;
 
 rb_node_t *rb_left_leaf (rb_node_t *node);
-rb_node_t *rb_first     (rb_tree_t *tree);
-rb_node_t *rb_last      (rb_tree_t *tree);
-rb_node_t *rb_search    (rb_tree_t *tree, void *item, rb_node_t **parent);
+rb_node_t *rb_first     (const rb_tree_t *tree);
+rb_node_t *rb_last      (const rb_tree_t *tree);
+rb_node_t *rb_next      (rb_node_t *node);
+rb_node_t *rb_prev      (rb_node_t *node);
+rb_node_t *rb_search
+    (const rb_tree_t *tree, const void *item, rb_node_t **parent);
 
 void rb_insert (rb_tree_t *tree, rb_node_t *node);
 void rb_remove (rb_tree_t *tree, rb_node_t *node);
 void rb_walk
     ( rb_node_t *node
     , void (*pre_func)(rb_node_t *)
-    , void (*func)(rb_node_t *)
+    , void (*func)(rb_node_t *, void *)
     , void (*post_func)(rb_node_t *)
+    , void *payload
     );
 
 /*****************************************

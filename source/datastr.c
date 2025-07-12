@@ -67,7 +67,7 @@ static rb_node_t *rotate_subtree (rb_tree_t *tree, rb_node_t *sub, dir_t dir)
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 /* Compute smallest item in tree */
-rb_node_t *rb_first (rb_tree_t *tree)
+rb_node_t *rb_first (const rb_tree_t *tree)
 {
     rb_node_t *n = tree->root;
     if (n == NULL) {
@@ -156,7 +156,7 @@ void rb_insert (rb_tree_t *tree, rb_node_t *node)
 }
 
 /* Compute largest item in tree */
-rb_node_t *rb_last (rb_tree_t *tree)
+rb_node_t *rb_last (const rb_tree_t *tree)
 {
     rb_node_t *n = tree->root;
     if (n == NULL) {
@@ -185,6 +185,52 @@ rb_node_t *rb_left_leaf (rb_node_t *node)
         n = n->child [1];
     }
     return n;
+}
+
+rb_node_t *rb_next (rb_node_t *node)
+{
+    rb_node_t *n = node;
+    if (n->child [1]) {
+        n = n->child [1];
+        while (n->child [0]) {
+            n = n->child [0];
+        }
+        return n;
+    } else if (n->parent != NULL) {
+        dir_t dir = DIRECTION (n);
+        while (n->parent != NULL && dir == RB_RIGHT) {
+            n = n->parent;
+            dir = DIRECTION (n);
+        }
+        if (n->parent != NULL) {
+            assert (dir == RB_LEFT);
+            return n->parent;
+        }
+    }
+    return NULL;
+}
+
+rb_node_t *rb_prev (rb_node_t *node)
+{
+    rb_node_t *n = node;
+    if (n->child [0]) {
+        n = n->child [0];
+        while (n->child [1]) {
+            n = n->child [1];
+        }
+        return n;
+    } else if (n->parent != NULL) {
+        dir_t dir = DIRECTION (n);
+        while (n->parent != NULL && dir == RB_LEFT) {
+            n = n->parent;
+            dir = DIRECTION (n);
+        }
+        if (n->parent != NULL) {
+            assert (dir == RB_RIGHT);
+            return n->parent;
+        }
+    }
+    return NULL;
 }
 
 void rb_remove (rb_tree_t *tree, rb_node_t *node)
@@ -333,7 +379,8 @@ void rb_remove (rb_tree_t *tree, rb_node_t *node)
 	return;
 }
 
-rb_node_t *rb_search (rb_tree_t *tree, void *item, rb_node_t **parent)
+rb_node_t *rb_search
+    (const rb_tree_t *tree, const void *item, rb_node_t **parent)
 {
     rb_node_t *n = tree->root;
     if (parent != NULL) {
@@ -368,8 +415,9 @@ rb_node_t *rb_search (rb_tree_t *tree, void *item, rb_node_t **parent)
 void rb_walk
     ( rb_node_t *node
     , void (*pre_func)(rb_node_t *)
-    , void (*func)(rb_node_t *)
+    , void (*func)(rb_node_t *, void *payload)
     , void (*post_func)(rb_node_t *)
+    , void *payload
     )
 {
     if (node == NULL) {
@@ -378,11 +426,11 @@ void rb_walk
     if (pre_func != NULL) {
         pre_func (node);
     }
-    rb_walk (node->child [0], pre_func, func, post_func);
+    rb_walk (node->child [0], pre_func, func, post_func, payload);
     if (func != NULL) {
-        func (node);
+        func (node, payload);
     }
-    rb_walk (node->child [1], pre_func, func, post_func);
+    rb_walk (node->child [1], pre_func, func, post_func, payload);
     if (post_func != NULL) {
         post_func (node);
     }
