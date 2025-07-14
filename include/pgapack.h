@@ -617,6 +617,13 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_NDSORT_BOTH    3 /**< Both versions compared */
 /*! @} */
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+/* Forward declaration of rb_tree_t */
+typedef struct rbtree {
+    struct rbnode *root;
+    int (*cmp)(const void *, const void*);
+} rb_tree_t;
+#endif
 
 /*!***************************************
  * \brief Individual Structure
@@ -644,6 +651,11 @@ typedef struct PGAIndividual {         /**< primary population data structure */
   struct PGAIndividual *next_hash;     /**< Next hash value in chain          */
   /* For NSGA-II only */
   struct PGAIndividual **neighbor [2]; /**< Crowding metric neighbors         */
+  double                evsum;         /**< Sum of evals for ENNS             */
+  rb_tree_t             dist_tree;     /**< Euclidean distances               */
+  rb_tree_t             neig_tree;     /**< ENNS neighbors                    */
+  double                max_dist;      /**< Max distance for enns             */
+  int                   crowd_idx;     /**< Individual's index into crowd     */
 } PGAIndividual;
 
 /*!***************************************
@@ -775,6 +787,7 @@ typedef struct {
     int nfun;     /**< Number of functions                      */
     int oidx;     /**< Current function index for sorting       */
     int excess;   /**< Overhang of last dominance rank          */
+    int fun_idx;  /**< Function index for ENNS crowding metrics */
 } PGAStateNSGA;
 
 /** Typedef for the context, think of this as "self" in OO terms */
@@ -1115,11 +1128,6 @@ void PGACrossoverSBX
  *****************************************/
 typedef enum e_color { RB_BLACK, RB_RED } color_t;
 typedef enum e_dir   { RB_LEFT, RB_RIGHT } dir_t;
-
-typedef struct rbtree {
-    struct rbnode *root;
-    int (*cmp)(const void *, const void*);
-} rb_tree_t;
 
 typedef struct rbnode {
     struct rbnode *parent;

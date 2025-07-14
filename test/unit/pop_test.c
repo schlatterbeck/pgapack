@@ -24,6 +24,20 @@ void split_set
     , PGAIndividual ***h, size_t *nh
     , int m, double pivot, int split_lower
     );
+size_t crowding_setup
+    (PGAContext *ctx, PGAIndividual **start, size_t n, unsigned int rank);
+void crowding_enns_2nn
+    ( PGAContext *ctx
+    , PGAIndividual **start, size_t n
+    , PGAIndividual **crowd, size_t ncrowd
+    , int goal
+    );
+void crowding_enns_mnn
+    ( PGAContext *ctx
+    , PGAIndividual **start, size_t n
+    , PGAIndividual **crowd, size_t ncrowd
+    , int goal
+    );
 
 static const double pop3 [][3] =
 {{0.59200264, 1.25973595, 1.06928177}
@@ -6750,6 +6764,101 @@ void test_median (PGAContext *ctx, int n)
     set_nsga_state (ctx, is_ev);
 }
 
+void init_indivs (PGAContext *ctx, int n, PGAIndividual **indivs)
+{
+    int i;
+    for (i=0; i<n; i++) {
+        double r = PGARandom01 (ctx, 0) * 20, r2 = 20 - r;
+        indivs [i] = ctx->ga.newpop + i;
+        indivs [i]->evalue = r;
+        indivs [i]->auxeval [0] = r2;
+        indivs [i]->rank = 0;
+    }
+}
+
+int dbl_cmp (const void *a, const void *b)
+{
+    const double *d1 = a, *d2 = b;
+    return CMP (*d1, *d2);
+}
+
+int indiv_cmp (const void *a, const void *b)
+{
+    const PGAIndividual * const *i1 = a;
+    const PGAIndividual * const *i2 = b;
+    return CMP ((*i1)->evalue, (*i2)->evalue);
+}
+
+void test_crowd_2 (PGAContext *ctx, int n)
+{
+    int i;
+    PGAIndividual *indivs [n];
+    double crd [n];
+    double *f_min = ctx->scratch.nsga_tmp.f_min;
+    double *f_max = ctx->scratch.nsga_tmp.f_max;
+    double dist = -1, dist2 = -1;
+    double l1 = -1, l2 = -1, l3 = -1;
+
+    init_indivs (ctx, n, indivs);
+    set_nsga_state (ctx, 1);
+    crowding_setup (ctx, indivs, n, 0);
+    ctx->ga.CrowdingMethod = PGA_CROWDING_ENNS_2NN;
+    crowding_enns_2nn (ctx, indivs, 0, indivs, n, n / 2);
+    for (i=0; i<n; i++) {
+        PGAIndividual *ind = ctx->ga.newpop + i;
+        indivs [i] = ind;
+        printf ("Crowding: %d %g\n", i, ind->crowding);
+    }
+    for (i=0; i<n; i++) {
+        PGAIndividual *ind = ctx->ga.newpop + i;
+        if (ind->crowding != 0) {
+            printf ("F     0 %g\n",   ind->evalue);
+            printf ("F     1 %g\n\n", ind->auxeval [0]);
+        }
+    }
+    crowding_setup (ctx, indivs, n, 0);
+    ctx->ga.CrowdingMethod = PGA_CROWDING_ENNS_MNN;
+    crowding_enns_mnn (ctx, indivs, 0, indivs, n, n / 2);
+    for (i=0; i<n; i++) {
+        PGAIndividual *ind = ctx->ga.newpop + i;
+        crd [i] = ind->crowding;
+        printf ("Crowding: %d %g\n", i, ind->crowding);
+    }
+    qsort (crd, n, sizeof (*crd), dbl_cmp);
+    for (i=0; i<n; i++) {
+        PGAIndividual *ind = ctx->ga.newpop + i;
+        indivs [i] = ind;
+        if (ind->crowding <= crd [49]) {
+            continue;
+        }
+        //printf ("F     0 %g\n",   ind->evalue);
+        //printf ("F     1 %g\n\n", ind->auxeval [0]);
+    }
+    qsort (indivs, n, sizeof (*indivs), indiv_cmp);
+    for (i=0; i<n; i++) {
+        PGAIndividual *ind = indivs [i];
+        double n1 = f_max [0] - f_min [0];
+        double n2 = f_max [1] - f_min [1];
+        double e1 = (ind->evalue - f_min [0]) / n1;
+        double e2 = (ind->auxeval [0] - f_min [1]) / n2;
+        if (l1 >= 0) {
+            double d1 = l1 - e1;
+            double d2 = l2 - e2;
+            double d3 = l3 - ind->evsum;
+            dist  = d1 * d1 + d2 * d2;
+            dist2 = d3 * d3 / 2;
+        }
+        if (dist >= 0) {
+            printf ("                                   ");
+            printf ("dist: %.9f dist2: %.9f\n", dist, dist2);
+        }
+        printf ("Ind %.6f %.6f evs: %.6f\n", e1, e2, ind->evsum);
+        l1 = e1;
+        l2 = e2;
+        l3 = ind->evsum;
+    }
+}
+
 int main (int argc, char **argv)
 {
     PGAContext *ctx;
@@ -6894,6 +7003,15 @@ int main (int argc, char **argv)
     PGASetUp (ctx);
     set_nsga_state (ctx, 0);
     test_pop (ctx, 7, npop71, pop7_1, 100);
+    PGADestroy (ctx);
+    /* Test new crowding algo */
+    ctx = PGACreate (&argc, argv, PGA_DATATYPE_REAL, 100, PGA_MINIMIZE);
+    PGASetRandomSeed (ctx, 42);
+    /* 2 dimensions */
+    ctx->ga.NumAuxEval = 1;
+    ctx->ga.NumConstraint = 0;
+    PGASetUp (ctx);
+    test_crowd_2 (ctx, 100);
     PGADestroy (ctx);
     MPI_Finalize ();
 }

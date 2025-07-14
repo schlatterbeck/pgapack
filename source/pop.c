@@ -843,7 +843,7 @@ static int nondom_cmp (const void *a1, const void *a2)
     return CMP ((*i2)->crowding, (*i1)->crowding);
 }
 
-static size_t crowding_setup
+STATIC size_t crowding_setup
     (PGAContext *ctx, PGAIndividual **start, size_t n, unsigned int rank)
 {
     size_t i;
@@ -852,6 +852,10 @@ static size_t crowding_setup
     PGAIndividual **crowd = ctx->scratch.nsga_tmp.ind_tmp;
     double *f_min = ctx->scratch.nsga_tmp.f_min;
     double *f_max = ctx->scratch.nsga_tmp.f_max;
+    DECLARE_DYNARRAY (double, ksum, ctx->nsga.nfun);
+    memset (ksum, 0, sizeof (*ksum));
+    double max_variance = 0;
+    int max_variance_idx = -1;
 
     for (i=0; i<n; i++) {
         PGAIndividual *ind = start [i];
@@ -865,11 +869,50 @@ static size_t crowding_setup
                 if (nrank == 0 || f_max [k] < e) {
                     f_max [k] = e;
                 }
+                /* Compute ksum (for average) in any case, needed only
+                 * for enns variants of crowding
+                 */
+                ksum [k] += e;
             }
             crowd [nrank++] = ind;
         }
     }
     assert (nrank > 0);
+    if (  ctx->ga.CrowdingMethod == PGA_CROWDING_ENNS_2NN
+       || ctx->ga.CrowdingMethod == PGA_CROWDING_ENNS_MNN
+       )
+    {
+        for (k=0; k<ctx->nsga.nfun; k++) {
+            double variance = 0;
+            double avg = (ksum [k] - n * f_min [k])
+                       / (f_max [k] - f_min [k]) / n;
+            /* Mark at most one minimum and one maximum per dimension */
+            int min_seen = 0;
+            int max_seen = 0;
+            for (i=0; i<nrank; i++) {
+                PGAIndividual *ind = start [i];
+                double e = GETEVAL_EV (ind, k);
+                double e_norm = (e - f_min [k]) / (f_max [k] - f_min [k]);
+                if (e == f_min [k] && !min_seen) {
+                    ind->crowding = DBL_MAX;
+                    ind->max_dist = -1;
+                    min_seen = 1;
+                }
+                if (e == f_max [k] && !max_seen) {
+                    ind->crowding = DBL_MAX;
+                    ind->max_dist = -1;
+                    max_seen = 1;
+                }
+                variance += (e_norm - avg) * (e_norm - avg);
+            }
+            if (variance > max_variance) {
+                max_variance = variance;
+                max_variance_idx = k;
+            }
+        }
+        assert (max_variance_idx >= 0);
+        ctx->nsga.fun_idx = max_variance_idx;
+    }
     return nrank;
 }
 
@@ -943,23 +986,12 @@ STATIC void crowding_nsga_ii
     }
 }
 
-/*
- * Compare individuals by their crowding metric. Should the metric be
- * the same we use the unique index + population of each individual: We
- * want to be able to retrieve an indivdual from the heap, for this we
- * need to match it exactly.
- */
-static int individual_crowding_cmp (const void *a, const void *b)
+/* Compare two individuals, possibly from different populations */
+static int individual_cmp (const void *a, const void *b)
 {
     const PGAIndividual *i1 = a;
     const PGAIndividual *i2 = b;
-    const PGAContext *ctx = i1->ctx;
-    if (i1->crowding < i2->crowding) {
-        return -1;
-    }
-    if (i1->crowding > i2->crowding) {
-        return 1;
-    }
+    PGAContext *ctx = i1->ctx;
     if (i1->pop != i2->pop) {
         return i1->pop == ctx->ga.oldpop ? -1 : 1;
     }
@@ -968,6 +1000,25 @@ static int individual_crowding_cmp (const void *a, const void *b)
         return 0;
     }
     return i1->index < i2->index ? -1 : 1;
+}
+
+/*
+ * Compare individuals by their crowding metric. Should the metric be
+ * the same we use the unique index + population of each individual: We
+ * want to be able to retrieve an indivdual from the tree, for this we
+ * need to match it exactly.
+ */
+static int individual_crowding_cmp (const void *a, const void *b)
+{
+    const PGAIndividual *i1 = a;
+    const PGAIndividual *i2 = b;
+    if (i1->crowding < i2->crowding) {
+        return -1;
+    }
+    if (i1->crowding > i2->crowding) {
+        return 1;
+    }
+    return individual_cmp (a, b);
 }
 
 /*
@@ -986,38 +1037,38 @@ STATIC void crowding_cd_prune
 {
     int k;
     size_t i;
-    rb_tree_t heap;
+    rb_tree_t tree;
 
     assert ((int)ncrowd > goal);
-    memset (&heap, 0, sizeof (heap));
-    heap.cmp = individual_crowding_cmp;
+    memset (&tree, 0, sizeof (tree));
+    tree.cmp = individual_crowding_cmp;
 
     compute_manhattan_crowding_neighbors (ctx, crowd, ncrowd);
     for (i=0; i<ncrowd; i++) {
         rb_node_t *node = malloc (sizeof (*node));
         if (node == NULL) {
-            PGAFatalPrintf (ctx, "Cannot allocate memory for heap item");
+            PGAFatalPrintf (ctx, "Cannot allocate memory for tree item");
         }
         memset (node, 0, sizeof (*node));
         node->content = crowd [i];
         crowd [i]->crowding = manhattan_crowding (ctx, crowd [i]);
-        rb_insert (&heap, node);
+        rb_insert (&tree, node);
         #ifdef DEBUG_CROWDING
-        node = rb_search (&heap, crowd [i], NULL);
+        node = rb_search (&tree, crowd [i], NULL);
         assert (node != NULL);
         assert (node->content == crowd [i]);
         #endif
     }
     for (i=ncrowd; i>(size_t)goal; i--) {
-        rb_node_t *n = rb_first (&heap);
+        rb_node_t *n = rb_first (&tree);
         PGAIndividual *ind;
         assert (n != NULL);
         ind = n->content;
-        rb_remove (&heap, n);
+        rb_remove (&tree, n);
         free (n);
         /* We could set the crowding metric of the removed individual to
          * zero here but the crowding metric is guaranteed to be lower
-         * than the ones still in the heap, so we don't do it.
+         * than the ones still in the tree, so we don't do it.
          * Note that the replacement may be different if the order of
          * individuals is different.
          */
@@ -1038,20 +1089,535 @@ STATIC void crowding_cd_prune
             for (dir=0; dir<2; dir++) {
                 if (ind->neighbor [dir][k] != NULL) {
                     PGAIndividual *neigh = ind->neighbor [dir][k];
-                    rb_node_t *nn = rb_search (&heap, neigh, NULL);
+                    rb_node_t *nn = rb_search (&tree, neigh, NULL);
                     assert (nn != NULL);
                     assert (nn->content == neigh);
-                    rb_remove (&heap, nn);
+                    rb_remove (&tree, nn);
                     /* Re-compute crowding after changed neighbors */
                     neigh->crowding = manhattan_crowding (ctx, neigh);
                     /* Re-insert, might be a different position now */
-                    rb_insert (&heap, nn);
+                    rb_insert (&tree, nn);
                 }
             }
         }
     }
-    /* Now free heap */
-    rb_walk (heap.root, NULL, NULL, (void (*)(rb_node_t *))free);
+    /* Now free tree */
+    rb_walk (tree.root, NULL, NULL, (void (*)(rb_node_t *))free, NULL);
+}
+
+static int evsum_cmp (const void *a1, const void *a2)
+{
+    const PGAIndividual * const *i1 = a1;
+    const PGAIndividual * const *i2 = a2;
+    return CMP ((*i1)->evsum, (*i2)->evsum);
+}
+
+struct dist_s {
+    double         d;
+    PGAIndividual *ind;
+};
+
+static int distance_cmp (const void *a1, const void *a2)
+{
+    const struct dist_s *d1 = a1, *d2 = a2;
+    int cmp = CMP (d1->d, d2->d);
+    if (cmp != 0) {
+        return cmp;
+    }
+    return individual_cmp (d1->ind, d2->ind);
+}
+
+/* Search neighbor without taking distance into account */
+static int neighbor_cmp (const void *a1, const void *a2)
+{
+    const struct dist_s *d1 = a1, *d2 = a2;
+    return individual_cmp (d1->ind, d2->ind);
+}
+
+rb_node_t *dist_node_alloc (PGAIndividual *ind, double distance)
+{
+    struct dist_s *dist = malloc (sizeof (*dist));
+    rb_node_t *node = malloc (sizeof (*node));
+    if (dist == NULL || node == NULL) {
+        PGAFatalPrintf (ind->ctx, "Cannot allocate dist");
+    }
+    memset (dist, 0, sizeof (*dist));
+    dist->ind = ind;
+    dist->d = distance;
+    memset (node, 0, sizeof (*node));
+    node->content = dist;
+    return node;
+}
+
+struct dist_s *compute_distance
+    (PGAIndividual *frm, PGAIndividual *to, double cutoff)
+{
+    int k;
+    PGAContext *ctx = frm->ctx;
+    double *f_min = ctx->scratch.nsga_tmp.f_min;
+    double *f_max = ctx->scratch.nsga_tmp.f_max;
+    double d = 0;
+    rb_node_t *node = NULL;
+    for (k=0; k<ctx->nsga.nfun; k++) {
+        double norm = (f_max [k] - f_min [k]);
+        double e1 = GETEVAL_EV (frm, k);
+        double e2 = GETEVAL_EV (to, k);
+        double dif = 0;
+        if (norm == 0) {
+            norm = 1;
+        }
+        e1 = (e1 - f_min [k]) / norm;
+        e2 = (e2 - f_min [k]) / norm;
+        dif = e1 - e2;
+        d += dif * dif;
+        if (cutoff > 0 && d > cutoff) {
+            return NULL;
+        }
+    }
+    node = dist_node_alloc (frm, d);
+    rb_insert (&to->dist_tree, node);
+    node = dist_node_alloc (frm, d);
+    rb_insert (&to->neig_tree, node);
+    node = dist_node_alloc (to, d);
+    rb_insert (&frm->dist_tree, node);
+    node = dist_node_alloc (to, d);
+    rb_insert (&frm->neig_tree, node);
+    return node->content;
+}
+
+/* Compute distances (including ind->dist_tree and ind->neig_tree) to
+ * neighbors. We stop when we cannot find neighbors with smaller distance.
+ */
+void compute_metric
+    (PGAIndividual *ind, PGAIndividual **crowd, size_t ncrowd, int neigh_goal)
+{
+    PGAContext *ctx = ind->ctx;
+    int offset = 1;
+    int max_off = ind->crowd_idx;
+    static const int dirs [] = {-1, 1};
+    int nseen = 0;
+    double cutoff = -1;
+    struct dist_s *max_d = NULL;
+    struct dist_s search;
+    int cut_reach = 0; /* 1: left, 2: right, 3: both */
+    memset (&search, 0, sizeof (search));
+
+    if ((size_t)max_off < ncrowd - ind->crowd_idx) {
+        max_off = ncrowd - ind->crowd_idx;
+    }
+    if (ind->crowding == DBL_MAX) {
+        return;
+    }
+    while (offset < max_off && cut_reach != 3) {
+        int i;
+        for (i=0; i<2; i++) {
+            struct dist_s *found = NULL;
+            double d = 0;
+            double diff = -1;
+            rb_node_t *node = NULL;
+            int idx = ind->crowd_idx + offset * dirs [i];
+            if (idx < 0 || idx >= (int)ncrowd || crowd [idx] == NULL) {
+                continue;
+            }
+            if (cut_reach & (i + 1)) {
+                continue;
+            }
+            search.ind = crowd [idx];
+            diff = crowd [idx]->evsum - ind->evsum;
+            diff = diff * diff / ctx->nsga.nfun;
+            if (cutoff > 0 && diff > cutoff) {
+                cut_reach |= (i + 1);
+                continue;
+            }
+            if ((node = rb_search (&ind->neig_tree, &search, NULL)) != NULL) {
+                found = node->content;
+                assert (found->ind == crowd [idx]);
+                d = found->d;
+            } else {
+                found = compute_distance (ind, crowd [idx], cutoff);
+                if (found != NULL) {
+                    assert (found->ind == crowd [idx]);
+                    d = found->d;
+                }
+            }
+            if (found == NULL) {
+                continue;
+            }
+            if (nseen < neigh_goal) {
+                nseen++;
+                if (max_d == NULL || max_d->d < d) {
+                    max_d = found;
+                }
+                if (nseen == neigh_goal) {
+                    cutoff = max_d->d;
+                }
+            } else {
+                if (d < max_d->d) {
+                    node = rb_search (&ind->dist_tree, max_d, NULL);
+                    assert (node != NULL);
+                    node = rb_prev (node);
+                    assert (node != NULL);
+                    max_d = node->content;
+                    cutoff = max_d->d;
+                }
+            }
+        }
+        offset++;
+    }
+    if (cutoff >= 0) {
+        ind->max_dist = cutoff;
+    } else if (max_d != NULL) {
+        ind->max_dist = max_d->d;
+    } else { /* This happens when we remove all but one item */
+        ind->max_dist = 2;
+    }
+}
+
+void enns_init (PGAContext *ctx, PGAIndividual **crowd, size_t ncrowd)
+{
+    size_t i;
+    int k;
+    double *f_min = ctx->scratch.nsga_tmp.f_min;
+    double *f_max = ctx->scratch.nsga_tmp.f_max;
+    for (i=0; i<ncrowd; i++) {
+        PGAIndividual *ind = crowd [i];
+        assert (ind->dist_tree.root == NULL);
+        assert (ind->neig_tree.root == NULL);
+        ind->dist_tree.cmp = distance_cmp;
+        ind->neig_tree.cmp = neighbor_cmp;
+        ind->evsum = 0;
+        for (k=0; k<ctx->nsga.nfun; k++) {
+            double e = GETEVAL_EV (ind, k);
+            e = (e - f_min [k]);
+            /* Check if we have a degenerate zero-length interval */
+            if (f_max [k] - f_min [k] != 0) {
+                e /= (f_max [k] - f_min [k]);
+            } else {
+                assert (e == 0);
+            }
+            if (k == ctx->nsga.fun_idx) {
+                e = 1 - e;
+            }
+            ind->evsum += e;
+        }
+    }
+    qsort (crowd, ncrowd, sizeof (*crowd), evsum_cmp);
+    for (i=0; i<ncrowd; i++) {
+        PGAIndividual *ind = crowd [i];
+        ind->crowd_idx = i;
+    }
+}
+
+static int enns_2_cmp (const void *a, const void *b)
+{
+    const PGAIndividual *i1 = a, *i2 = b;
+    rb_node_t *min1 = NULL, *min2 = NULL;
+    struct dist_s *d1 = NULL, *d2 = NULL;
+    if (i1->crowding == DBL_MAX || i2->crowding == DBL_MAX) {
+        if (i1->crowding != DBL_MAX) {
+            return 1;
+        }
+        if (i2->crowding != DBL_MAX) {
+            return -1;
+        }
+        return 0;
+    }
+    min1 = rb_first (&i1->dist_tree);
+    min2 = rb_first (&i2->dist_tree);
+    if (min1 == NULL || min2 == NULL) {
+        if (min1 != NULL) {
+            return 1;
+        }
+        if (min2 != NULL) {
+            return -1;
+        }
+    } else {
+        d1 = min1->content;
+        d2 = min2->content;
+        if (d1->d != d2->d) {
+            return d1->d < d2->d ? -1 : 1;
+        }
+        min1 = rb_next (min1);
+        min2 = rb_next (min2);
+        if (min1 == NULL || min2 == NULL) {
+            if (min1 != NULL) {
+                return 1;
+            }
+            if (min2 != NULL) {
+                return -1;
+            }
+        } else {
+            d1 = min1->content;
+            d2 = min2->content;
+            if (d1->d != d2->d) {
+                return d1->d < d2->d ? -1 : 1;
+            }
+        }
+    }
+    if (i1->crowd_idx != i2->crowd_idx) {
+        return i1->crowd_idx < i2->crowd_idx ? -1 : 1;
+    }
+    return 0;
+}
+
+static double enns_m_metric (PGAIndividual *ind, int m)
+{
+    int i;
+    rb_node_t *n;
+    double s = 1;
+
+    for ((n = rb_first (&ind->dist_tree)), i=0
+        ; n && i <m
+        ; n = rb_next (n), i++
+        )
+    {
+        struct dist_s *dist = n->content;
+        s *= dist->d;
+    }
+    return s;
+}
+
+static int enns_m_cmp (const void *a, const void *b)
+{
+    const PGAIndividual *i1 = a, *i2 = b;
+    double s1 = i1->crowding, s2 = i2->crowding;
+    if (s1 != s2) {
+        return s1 < s2 ? -1 : 1;
+    }
+    if (i1->crowd_idx != i2->crowd_idx) {
+        return i1->crowd_idx < i2->crowd_idx ? -1 : 1;
+    }
+    return 0;
+}
+
+struct payload {
+    PGAIndividual *ind;
+    PGAIndividual **crowd;
+    size_t ncrowd;
+    int neigh_goal;
+    rb_tree_t *crowd_tree;
+};
+
+static void rm_individual (rb_node_t *n, void *x)
+{
+    struct dist_s dist, *d2, *d = n->content;
+    PGAIndividual *frm = d->ind;
+    struct payload *p = x;
+    PGAIndividual *ind = p->ind;
+    PGAContext *ctx = ind->ctx;
+    rb_node_t *node;
+    rb_node_t *crowd_node = NULL;
+
+    /* Need to remove node from crowding tree before modifying metric */
+    if (d->d <= frm->max_dist) {
+        crowd_node = rb_search (p->crowd_tree, frm, NULL);
+        assert (crowd_node != NULL);
+        assert (crowd_node->content == (void *)frm);
+        /* remove from crowd tree */
+        rb_remove (p->crowd_tree, crowd_node);
+    }
+    memset (&dist, 0, sizeof (dist));
+    dist.ind = ind;
+    node = rb_search (&frm->neig_tree, &dist, NULL);
+    assert (node != NULL);
+    d = node->content;
+    rb_remove (&frm->neig_tree, node);
+    /* Need to search for d now, this has correct distance! */
+    node = rb_search (&frm->dist_tree, d, NULL);
+    assert (node != NULL);
+    rb_remove (&frm->dist_tree, node);
+    d2 = node->content;
+    assert (d->ind == d2->ind);
+    assert (d->d   == d2->d);
+    free (node);
+    free (d2);
+    if (d->d <= frm->max_dist) {
+        /* Need to recompute metric */
+        compute_metric (frm, p->crowd, p->ncrowd, p->neigh_goal);
+        if (ctx->ga.CrowdingMethod == PGA_CROWDING_ENNS_MNN) {
+            /* Cannot happen due to comparison in if above */
+            assert (frm->crowding != DBL_MAX);
+            frm->crowding = enns_m_metric (frm, ctx->nsga.nfun);
+        }
+        /* re-insert into crowd tree with new metric */
+        assert (crowd_node != NULL);
+        rb_insert (p->crowd_tree, crowd_node);
+        crowd_node = NULL;
+    }
+    assert (crowd_node == NULL);
+    free (d);
+}
+
+static void free_neigh_node (rb_node_t *node)
+{
+    free (node->content);
+    free (node);
+}
+
+static void crowd_rm
+    ( PGAContext *ctx
+    , PGAIndividual **crowd, size_t ncrowd
+    , int idx, int neigh_goal
+    , rb_tree_t *crowd_tree
+    )
+{
+    struct payload payload;
+    PGAIndividual *ind = crowd [idx];
+    rb_node_t *n = ind->neig_tree.root;
+    memset (&payload, 0, sizeof (payload));
+    payload.crowd      = crowd;
+    payload.ncrowd     = ncrowd;
+    payload.neigh_goal = neigh_goal;
+    payload.ind        = ind;
+    payload.crowd_tree = crowd_tree;
+    crowd [idx] = NULL;
+    rb_walk (n, NULL, rm_individual, NULL, &payload);
+    rb_walk (n, NULL, NULL, free_neigh_node, NULL);
+    rb_walk (ind->dist_tree.root, NULL, NULL, free_neigh_node, NULL);
+    ind->neig_tree.root = NULL;
+    ind->dist_tree.root = NULL;
+    if (ind->ctx->ga.CrowdingMethod != PGA_CROWDING_ENNS_MNN) {
+        ind->crowding = 0;
+    }
+}
+
+#ifdef DEBUG_CROWDING
+static void print_metric (PGAIndividual *ind, const char *prefix)
+{
+    struct PGAContext *ctx = ind->ctx;
+    printf ("%s: crowd-idx: %3d ", prefix, ind->crowd_idx);
+    if (ctx->ga.CrowdingMethod == PGA_CROWDING_ENNS_2NN) {
+        if (ind->crowding == DBL_MAX) {
+            printf ("INF\n");
+        } else {
+            rb_node_t *n1, *n2;
+            struct dist_s *d1, *d2;
+            n1 = rb_first (&ind->dist_tree);
+            n2 = rb_next (n1);
+            d1 = n1->content;
+            d2 = n2->content;
+            printf ("neighbors: %11.5e %11.5e\n", d1->d, d2->d);
+        }
+    } else {
+        printf ("crowding: %11.5e\n", ind->crowding);
+    }
+}
+static void print_distance (rb_node_t *n, void *v)
+{
+    struct PGAIndividual *ind = n->content;
+    print_metric (ind, "walk");
+}
+#endif
+
+static void crowding_enns
+    ( PGAContext *ctx
+    , PGAIndividual **crowd, size_t ncrowd
+    , int goal
+    , int (*cmp)(const void *, const void *)
+    , int neigh_goal
+    )
+{
+    size_t i;
+    rb_tree_t tree;
+    memset (&tree, 0, sizeof (tree));
+    tree.cmp = cmp;
+
+    assert ((int)ncrowd > goal);
+    enns_init (ctx, crowd, ncrowd);
+    for (i=0; i<ncrowd; i++) {
+        rb_node_t *n = malloc (sizeof (*n));
+        if (n == NULL) {
+            PGAFatalPrintf (ctx, "Cannot alloc memory for node");
+        }
+        memset (n, 0, sizeof (*n));
+        n->content = crowd [i];
+        assert (crowd [i]->crowd_idx == (int)i);
+        compute_metric (crowd [i], crowd, ncrowd, neigh_goal);
+        if (cmp == enns_m_cmp && crowd [i]->crowding != DBL_MAX) {
+            crowd [i]->crowding = enns_m_metric (crowd [i], ctx->nsga.nfun);
+        }
+        rb_insert (&tree, n);
+    }
+    #ifdef DEBUG_CROWDING
+    printf ("Current tree:\n");
+    rb_walk (tree.root, NULL, print_distance, NULL, NULL);
+    printf ("start removing\n");
+    #endif
+    for (i=ncrowd; i>(size_t)goal; i--) {
+        rb_node_t *n = rb_first (&tree);
+        struct PGAIndividual *ind = n->content;
+        assert (crowd [ind->crowd_idx] != NULL);
+        if (ind->crowding == DBL_MAX) {
+            /* leave it to chance what individual is selected if we came
+             * down to the edge individuals
+             */
+            #ifdef DEBUG_CROWDING
+            printf ("Stop uncrowding: crowd_idx=%d\n", ind->crowd_idx);
+            #endif
+            break;
+        }
+        #ifdef DEBUG_CROWDING
+        print_metric (ind, "rm");
+        #endif
+        rb_remove (&tree, n);
+        crowd_rm (ctx, crowd, ncrowd, ind->crowd_idx, neigh_goal, &tree);
+    }
+    /* Free our tree */
+    rb_walk (tree.root, NULL, NULL, (void (*)(rb_node_t *))free, NULL);
+    /* Free remaining trees */
+    for (i=0; i<ncrowd; i++) {
+        if (crowd [i] == NULL) {
+            continue;
+        }
+        if (cmp != enns_m_cmp) {
+            crowd [i]->crowding = ncrowd - i;
+        }
+        rb_walk (crowd [i]->neig_tree.root, NULL, NULL, free_neigh_node, NULL);
+        crowd [i]->neig_tree.root = NULL;
+        crowd [i]->dist_tree.root = NULL;
+    }
+}
+
+/*
+ * Crowding method using iterative pruning with euclidean distance.
+ * Variant with 2 nearest neighbors.
+ * Saku Kukkonen and Kalyanmoy Deb. A fast and effective method
+ * for pruning of non-dominated solutions in many-objective problems.
+ * In Thomas Philip Runarsson, Hans-Georg Beyer, Edmund Burke,
+ * Juan J. Merelo-Guervós, L. Darrell Whitley, and Xin Yao, editors,
+ * Parallel Problem Solving from Nature – PPSN IX, volume 4193 of
+ * Lecture Notes in Computer Science, pages 553–562. Springer,
+ * Reykjavik, Iceland, September 2006.
+ */
+STATIC void crowding_enns_2nn
+    ( PGAContext *ctx
+    , PGAIndividual **start, size_t n
+    , PGAIndividual **crowd, size_t ncrowd
+    , int goal
+    )
+{
+    crowding_enns (ctx, crowd, ncrowd, goal, enns_2_cmp, 2);
+}
+
+/*
+ * Crowding method using iterative pruning with euclidean distance.
+ * Variant with M nearest neighbors (M = number of objectives).
+ * Saku Kukkonen and Kalyanmoy Deb. A fast and effective method
+ * for pruning of non-dominated solutions in many-objective problems.
+ * In Thomas Philip Runarsson, Hans-Georg Beyer, Edmund Burke,
+ * Juan J. Merelo-Guervós, L. Darrell Whitley, and Xin Yao, editors,
+ * Parallel Problem Solving from Nature – PPSN IX, volume 4193 of
+ * Lecture Notes in Computer Science, pages 553–562. Springer,
+ * Reykjavik, Iceland, September 2006.
+ */
+STATIC void crowding_enns_mnn
+    ( PGAContext *ctx
+    , PGAIndividual **start, size_t n
+    , PGAIndividual **crowd, size_t ncrowd
+    , int goal
+    )
+{
+    crowding_enns (ctx, crowd, ncrowd, goal, enns_m_cmp, ctx->nsga.nfun);
 }
 
 /* Compute utopian point as the minimum over all solutions */
@@ -2868,10 +3434,10 @@ void PGASetCrowdingFunction (PGAContext *ctx)
             ctx->cops.Crowding = crowding_cd_prune;
             break;
         case PGA_CROWDING_ENNS_2NN:
-            PGAFatalPrintf (ctx, "Not implemented: PGA_CROWDING_ENNS_2NN");
+            ctx->cops.Crowding = crowding_enns_2nn;
             break;
         case PGA_CROWDING_ENNS_MNN:
-            PGAFatalPrintf (ctx, "Not implemented: PGA_CROWDING_ENNS_MNN");
+            ctx->cops.Crowding = crowding_enns_mnn;
             break;
         default:
             PGAFatalPrintf

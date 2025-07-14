@@ -1518,10 +1518,13 @@ void PGASetUp (PGAContext *ctx)
         }
     }
     if (ctx->ga.CrowdingMethod == PGA_UNINITIALIZED_INT) {
+        /* Old default */
         ctx->ga.CrowdingMethod = PGA_CROWDING_NSGA_II;
         /* Use pruning for 2-objective case */
         if (ctx->ga.NumAuxEval - ctx->ga.NumConstraint == 1) {
             ctx->ga.CrowdingMethod = PGA_CROWDING_CD_PRUNE;
+        } else {
+            ctx->ga.CrowdingMethod = PGA_CROWDING_ENNS_2NN;
         }
     }
     if (ctx->cops.Crowding == NULL) {
