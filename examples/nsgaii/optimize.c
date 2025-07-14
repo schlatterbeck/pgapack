@@ -34,23 +34,23 @@ void as_c (PGAContext *ctx, FILE *fp, int p, int pop)
 }
 
 static struct multi_problem *problems [] =
-{ &sch
-, &fon
-, &pol
-, &kur
-, &zdt1
-, &zdt2
-, &zdt3
-, &zdt4
-, &zdt6
-, &constr
-, &srn
-, &tnk
-, &water
-, &rotated
-, &deb7
-, &water_m
-, &zdt1_m
+{ &sch      /* 2 objectives 0 constraints */
+, &fon      /* 2 objectives 0 constraints */
+, &pol      /* 2 objectives 0 constraints */
+, &kur      /* 2 objectives 0 constraints */
+, &zdt1     /* 2 objectives 0 constraints */
+, &zdt2     /* 2 objectives 0 constraints */
+, &zdt3     /* 2 objectives 0 constraints */
+, &zdt4     /* 2 objectives 0 constraints */
+, &zdt6     /* 2 objectives 0 constraints */
+, &constr   /* 2 objectives 2 constraints */
+, &srn      /* 2 objectives 2 constraints */
+, &tnk      /* 2 objectives 2 constraints */
+, &water    /* 5 objectives 7 constraints */
+, &rotated  /* 2 objectives 2 constraints */
+, &deb7     /* 2 objectives 6 constraints */
+, &water_m  /* 5 objectives 7 constraints */
+, &zdt1_m   /* 2 objectives 0 constraints */
 };
 static const int nproblems =
     sizeof (problems) / sizeof (struct multi_problem *);
@@ -71,6 +71,7 @@ double evaluate (PGAContext *ctx, int p, int pop, double *aux)
 
 void usage (char *name, int nproblems)
 {
+    int i;
     fprintf
         ( stderr
         , "Usage: %s [-C] [-e eps-gen] [-g maxgen] [-r seed] [-s] [f-index]\n"
@@ -80,9 +81,16 @@ void usage (char *name, int nproblems)
           "-g: Maximum number of generations\n"
           "-r: Random seed (uppercase -R is also accepted)\n"
           "-s: Sum constraints\n"
-          "f-index is the function to call in range 0-%d\n"
+          "f-index is the function to call in range 0-%d:\n"
         , name, nproblems - 1
         );
+    for (i=0; i<nproblems; i++) {
+        struct multi_problem *p = problems [i];
+        fprintf
+            (stderr, "%3d: %d obj %d constr %s\n"
+            , i, p->nfunc - p->nconstraint, p->nconstraint, p->name
+            );
+    }
 }
 
 int main (int argc, char **argv)
