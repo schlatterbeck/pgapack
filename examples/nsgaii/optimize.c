@@ -87,7 +87,7 @@ void usage (char *name, int nproblems)
     for (i=0; i<nproblems; i++) {
         struct multi_problem *p = problems [i];
         fprintf
-            (stderr, "%3d: %d obj %d constr %s\n"
+            ( stderr, "%3d: %d obj %d constr %s\n"
             , i, p->nfunc - p->nconstraint, p->nconstraint, p->name
             );
     }

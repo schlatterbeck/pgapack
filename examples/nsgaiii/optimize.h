@@ -37,3 +37,5 @@ extern struct multi_problem c2_dtlz2;
 extern struct multi_problem c2_convex_dtlz2;
 extern struct multi_problem c3_dtlz1;
 extern struct multi_problem c3_dtlz4;
+extern struct multi_problem dtlz5;
+extern struct multi_problem dtlz7;
