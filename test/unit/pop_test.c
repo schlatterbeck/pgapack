@@ -6768,12 +6768,16 @@ void init_indivs (PGAContext *ctx, int n, PGAIndividual **indivs)
 {
     int i;
     for (i=0; i<n; i++) {
+        PGAIndividual *ind = ctx->ga.newpop + i;
         double r = PGARandom01 (ctx, 0) * 20, r2 = 20 - r;
-        indivs [i] = ctx->ga.newpop + i;
-        indivs [i]->evalue = r;
-        indivs [i]->auxeval [0] = r2;
-        indivs [i]->rank = 0;
+        indivs [i] = ind;
+        ind->evalue = r;
+        ind->auxeval [0] = r2;
+        ind->rank = 0;
+        printf ("F     0 %g\n",   ind->evalue);
+        printf ("F     1 %g\n\n", ind->auxeval [0]);
     }
+    printf ("SOLUTION END\n");
 }
 
 int dbl_cmp (const void *a, const void *b)
@@ -6816,6 +6820,7 @@ void test_crowd_2 (PGAContext *ctx, int n)
             printf ("F     1 %g\n\n", ind->auxeval [0]);
         }
     }
+    printf ("SOLUTION END\n");
     crowding_setup (ctx, indivs, n, 0);
     ctx->ga.CrowdingMethod = PGA_CROWDING_ENNS_MNN;
     crowding_enns_mnn (ctx, indivs, 0, indivs, n, n / 2);
@@ -6831,9 +6836,10 @@ void test_crowd_2 (PGAContext *ctx, int n)
         if (ind->crowding <= crd [49]) {
             continue;
         }
-        //printf ("F     0 %g\n",   ind->evalue);
-        //printf ("F     1 %g\n\n", ind->auxeval [0]);
+        printf ("F     0 %g\n",   ind->evalue);
+        printf ("F     1 %g\n\n", ind->auxeval [0]);
     }
+    printf ("SOLUTION END\n");
     qsort (indivs, n, sizeof (*indivs), indiv_cmp);
     for (i=0; i<n; i++) {
         PGAIndividual *ind = indivs [i];

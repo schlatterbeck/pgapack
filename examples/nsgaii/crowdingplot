@@ -19,7 +19,8 @@ class Opt_Log:
         self.f     = f
         self.coord = []
         self._mask = None
-        self.dominated_idx = set ()
+        self.remainging_data = False
+        self.dominated_idx   = set ()
         for line in f:
             line = line.strip ()
             if line.startswith ('Example:') or line.startswith ('Title:'):
@@ -32,6 +33,11 @@ class Opt_Log:
                     assert idx == len (self.coord)
                     self.coord.append ([])
                 self.coord [idx].append (num)
+            if line == 'SOLUTION END':
+                self.remainging_data = True
+                break
+        if not self.coord:
+            raise ValueError ('Empty data')
         self.coord = np.array (self.coord)
     # end def __init__
 
@@ -97,15 +103,33 @@ class Graphics:
         if args.filename:
             for n, fn in enumerate (args.filename):
                 with open (fn, 'r') as f:
-                    self.data.append (Opt_Log (args, f))
-                    dt = getattr (self.data [-1], 'title', None)
-                    if not args.title and dt:
-                        args.title = dt
+                    try:
+                        data = Opt_Log (args, f)
+                    except ValueError:
+                        data = None
+                    while data is not None:
+                        dt = getattr (data, 'title', None)
+                        if not args.title and dt:
+                            args.title = dt
+                        self.data.append (data)
+                        try:
+                            data = Opt_Log (args, f)
+                        except ValueError:
+                            data = None
         else:
-            self.data.append (Opt_Log (args, sys.stdin))
-            dt = getattr (self.data [-1], 'title', None)
-            if not args.title and dt:
-                args.title = dt
+            try:
+                data = Opt_Log (args, sys.stdin)
+            except ValueError:
+                data = None
+            while data is not None:
+                dt = getattr (data, 'title', None)
+                if not args.title and dt:
+                    args.title = dt
+                self.data.append (data)
+                try:
+                    data = Opt_Log (args, f)
+                except ValueError:
+                    data = None
 
         if not args.x_label:
             args.x_label = 'Objective %d' % args.x_axis

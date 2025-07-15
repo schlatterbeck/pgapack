@@ -652,6 +652,7 @@ typedef struct PGAIndividual {         /**< primary population data structure */
   /* For NSGA-II only */
   struct PGAIndividual **neighbor [2]; /**< Crowding metric neighbors         */
   double                evsum;         /**< Sum of evals for ENNS             */
+  double                crowding2;     /**< Second metric for 2nn             */
   rb_tree_t             dist_tree;     /**< Euclidean distances               */
   rb_tree_t             neig_tree;     /**< ENNS neighbors                    */
   double                max_dist;      /**< Max distance for enns             */

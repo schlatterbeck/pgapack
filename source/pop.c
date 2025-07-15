@@ -894,13 +894,15 @@ STATIC size_t crowding_setup
                 double e = GETEVAL_EV (ind, k);
                 double e_norm = (e - f_min [k]) / (f_max [k] - f_min [k]);
                 if (e == f_min [k] && !min_seen) {
-                    ind->crowding = DBL_MAX;
-                    ind->max_dist = -1;
+                    ind->crowding  = DBL_MAX;
+                    ind->crowding2 = 0;
+                    ind->max_dist  = -1;
                     min_seen = 1;
                 }
                 if (e == f_max [k] && !max_seen) {
-                    ind->crowding = DBL_MAX;
-                    ind->max_dist = -1;
+                    ind->crowding  = DBL_MAX;
+                    ind->crowding2 = 0;
+                    ind->max_dist  = -1;
                     max_seen = 1;
                 }
                 variance += (e_norm - avg) * (e_norm - avg);
@@ -1185,6 +1187,75 @@ struct dist_s *compute_distance
     return node->content;
 }
 
+static void enns_2_metric (PGAIndividual *ind)
+{
+    rb_node_t *n = rb_first (&ind->dist_tree);
+    struct dist_s *dist = NULL;
+
+    if (ind->crowding == DBL_MAX) {
+        return;
+    }
+    if (n == NULL) {
+        ind->crowding = ind->crowding2 = 0;
+        return;
+    }
+    dist = n->content;
+    ind->crowding = dist->d;
+
+    n = rb_next (n);
+    if (n == NULL) {
+        ind->crowding2 = 0;
+        return;
+    }
+    dist = n->content;
+    ind->crowding2 = dist->d;
+}
+
+static int enns_2_cmp (const void *a, const void *b)
+{
+    const PGAIndividual *i1 = a, *i2 = b;
+    if (i1->crowding != i2->crowding) {
+        return i1->crowding < i2->crowding ? -1 : 1;
+    }
+    if (i1->crowding2 != i2->crowding2) {
+        return i1->crowding2 < i2->crowding2 ? -1 : 1;
+    }
+    if (i1->crowd_idx != i2->crowd_idx) {
+        return i1->crowd_idx < i2->crowd_idx ? -1 : 1;
+    }
+    return 0;
+}
+
+static void enns_m_metric (PGAIndividual *ind, int m)
+{
+    int i;
+    rb_node_t *n;
+    double s = 1;
+
+    for ((n = rb_first (&ind->dist_tree)), i=0
+        ; n && i <m
+        ; n = rb_next (n), i++
+        )
+    {
+        struct dist_s *dist = n->content;
+        s *= dist->d;
+    }
+    ind->crowding = s;
+}
+
+static int enns_m_cmp (const void *a, const void *b)
+{
+    const PGAIndividual *i1 = a, *i2 = b;
+    double s1 = i1->crowding, s2 = i2->crowding;
+    if (s1 != s2) {
+        return s1 < s2 ? -1 : 1;
+    }
+    if (i1->crowd_idx != i2->crowd_idx) {
+        return i1->crowd_idx < i2->crowd_idx ? -1 : 1;
+    }
+    return 0;
+}
+
 /* Compute distances (including ind->dist_tree and ind->neig_tree) to
  * neighbors. We stop when we cannot find neighbors with smaller distance.
  */
@@ -1271,6 +1342,13 @@ void compute_metric
     } else { /* This happens when we remove all but one item */
         ind->max_dist = 2;
     }
+    if (ind->crowding != DBL_MAX) {
+        if (ctx->ga.CrowdingMethod == PGA_CROWDING_ENNS_MNN) {
+            enns_m_metric (ind, ctx->nsga.nfun);
+        } else {
+            enns_2_metric (ind);
+        }
+    }
 }
 
 void enns_init (PGAContext *ctx, PGAIndividual **crowd, size_t ncrowd)
@@ -1308,88 +1386,6 @@ void enns_init (PGAContext *ctx, PGAIndividual **crowd, size_t ncrowd)
     }
 }
 
-static int enns_2_cmp (const void *a, const void *b)
-{
-    const PGAIndividual *i1 = a, *i2 = b;
-    rb_node_t *min1 = NULL, *min2 = NULL;
-    struct dist_s *d1 = NULL, *d2 = NULL;
-    if (i1->crowding == DBL_MAX || i2->crowding == DBL_MAX) {
-        if (i1->crowding != DBL_MAX) {
-            return 1;
-        }
-        if (i2->crowding != DBL_MAX) {
-            return -1;
-        }
-        return 0;
-    }
-    min1 = rb_first (&i1->dist_tree);
-    min2 = rb_first (&i2->dist_tree);
-    if (min1 == NULL || min2 == NULL) {
-        if (min1 != NULL) {
-            return 1;
-        }
-        if (min2 != NULL) {
-            return -1;
-        }
-    } else {
-        d1 = min1->content;
-        d2 = min2->content;
-        if (d1->d != d2->d) {
-            return d1->d < d2->d ? -1 : 1;
-        }
-        min1 = rb_next (min1);
-        min2 = rb_next (min2);
-        if (min1 == NULL || min2 == NULL) {
-            if (min1 != NULL) {
-                return 1;
-            }
-            if (min2 != NULL) {
-                return -1;
-            }
-        } else {
-            d1 = min1->content;
-            d2 = min2->content;
-            if (d1->d != d2->d) {
-                return d1->d < d2->d ? -1 : 1;
-            }
-        }
-    }
-    if (i1->crowd_idx != i2->crowd_idx) {
-        return i1->crowd_idx < i2->crowd_idx ? -1 : 1;
-    }
-    return 0;
-}
-
-static double enns_m_metric (PGAIndividual *ind, int m)
-{
-    int i;
-    rb_node_t *n;
-    double s = 1;
-
-    for ((n = rb_first (&ind->dist_tree)), i=0
-        ; n && i <m
-        ; n = rb_next (n), i++
-        )
-    {
-        struct dist_s *dist = n->content;
-        s *= dist->d;
-    }
-    return s;
-}
-
-static int enns_m_cmp (const void *a, const void *b)
-{
-    const PGAIndividual *i1 = a, *i2 = b;
-    double s1 = i1->crowding, s2 = i2->crowding;
-    if (s1 != s2) {
-        return s1 < s2 ? -1 : 1;
-    }
-    if (i1->crowd_idx != i2->crowd_idx) {
-        return i1->crowd_idx < i2->crowd_idx ? -1 : 1;
-    }
-    return 0;
-}
-
 struct payload {
     PGAIndividual *ind;
     PGAIndividual **crowd;
@@ -1404,7 +1400,6 @@ static void rm_individual (rb_node_t *n, void *x)
     PGAIndividual *frm = d->ind;
     struct payload *p = x;
     PGAIndividual *ind = p->ind;
-    PGAContext *ctx = ind->ctx;
     rb_node_t *node;
     rb_node_t *crowd_node = NULL;
 
@@ -1434,11 +1429,6 @@ static void rm_individual (rb_node_t *n, void *x)
     if (d->d <= frm->max_dist) {
         /* Need to recompute metric */
         compute_metric (frm, p->crowd, p->ncrowd, p->neigh_goal);
-        if (ctx->ga.CrowdingMethod == PGA_CROWDING_ENNS_MNN) {
-            /* Cannot happen due to comparison in if above */
-            assert (frm->crowding != DBL_MAX);
-            frm->crowding = enns_m_metric (frm, ctx->nsga.nfun);
-        }
         /* re-insert into crowd tree with new metric */
         assert (crowd_node != NULL);
         rb_insert (p->crowd_tree, crowd_node);
@@ -1476,9 +1466,7 @@ static void crowd_rm
     rb_walk (ind->dist_tree.root, NULL, NULL, free_neigh_node, NULL);
     ind->neig_tree.root = NULL;
     ind->dist_tree.root = NULL;
-    if (ind->ctx->ga.CrowdingMethod != PGA_CROWDING_ENNS_MNN) {
-        ind->crowding = 0;
-    }
+    ind->crowding = 0;
 }
 
 #ifdef DEBUG_CROWDING
@@ -1533,9 +1521,6 @@ static void crowding_enns
         n->content = crowd [i];
         assert (crowd [i]->crowd_idx == (int)i);
         compute_metric (crowd [i], crowd, ncrowd, neigh_goal);
-        if (cmp == enns_m_cmp && crowd [i]->crowding != DBL_MAX) {
-            crowd [i]->crowding = enns_m_metric (crowd [i], ctx->nsga.nfun);
-        }
         rb_insert (&tree, n);
     }
     #ifdef DEBUG_CROWDING
