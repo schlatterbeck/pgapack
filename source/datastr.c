@@ -43,6 +43,16 @@ privately owned rights.
                      : ((N) == (N)->parent->child [1] ? RB_RIGHT : RB_LEFT) \
                      )
 
+/*!****************************************************************************
+    \brief Rotate a subtree in red/black tree
+    \ingroup internal
+    \param  tree  the tree
+    \param  sub   subtree
+    \param  dir   direction of rotation
+    \return The new root after rotation
+
+******************************************************************************/
+
 static rb_node_t *rotate_subtree (rb_tree_t *tree, rb_node_t *sub, dir_t dir)
 {
     rb_node_t *sub_parent = sub->parent;
@@ -66,7 +76,15 @@ static rb_node_t *rotate_subtree (rb_tree_t *tree, rb_node_t *sub, dir_t dir)
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-/* Compute smallest item in tree */
+/*!****************************************************************************
+    \brief Compute smallest item in tree
+    \ingroup internal
+
+    \param  tree  the tree
+    \return First node in tree or NULL if tree is empty
+
+******************************************************************************/
+
 rb_node_t *rb_first (const rb_tree_t *tree)
 {
     rb_node_t *n = tree->root;
@@ -79,7 +97,25 @@ rb_node_t *rb_first (const rb_tree_t *tree)
     return n;
 }
 
-/* Assumes that node is the corrent point of insertion */
+/*!****************************************************************************
+    \brief Internal insertion routine
+    \ingroup internal
+
+    \param  tree   the tree
+    \param  node   the node to insert
+    \param  parent the parent of the node
+    \param  dir    direction from parent
+
+    \rst
+
+    Description
+    -----------
+
+    Assumes that node is the corrent point of insertion.
+
+    \endrst
+
+******************************************************************************/
 static void rb_insert_internal
     (rb_tree_t *tree, rb_node_t *node, rb_node_t *parent, dir_t dir)
 {
@@ -143,6 +179,14 @@ static void rb_insert_internal
     } while (NULL != (parent = node->parent));
 }
 
+/*!****************************************************************************
+    \brief Insert node into tree
+    \ingroup internal
+
+    \param  tree  the tree
+    \param  node  the node to insert
+
+******************************************************************************/
 void rb_insert (rb_tree_t *tree, rb_node_t *node)
 {
     rb_node_t *parent = NULL;
@@ -155,7 +199,14 @@ void rb_insert (rb_tree_t *tree, rb_node_t *node)
     rb_insert_internal (tree, node, parent, dir);
 }
 
-/* Compute largest item in tree */
+/*!****************************************************************************
+    \brief Compute largest item in tree
+    \ingroup internal
+
+    \param  tree  the tree
+    \return The last node in the tree or NULL if tree is empty
+
+******************************************************************************/
 rb_node_t *rb_last (const rb_tree_t *tree)
 {
     rb_node_t *n = tree->root;
@@ -168,6 +219,14 @@ rb_node_t *rb_last (const rb_tree_t *tree)
     return n;
 }
 
+/*!****************************************************************************
+    \brief Compute left leaf in tree from given node
+    \ingroup internal
+
+    \param  node  the start node
+    \return The left leaf from the given node
+
+******************************************************************************/
 rb_node_t *rb_left_leaf (rb_node_t *node)
 {
     rb_node_t *n = node;
@@ -187,6 +246,14 @@ rb_node_t *rb_left_leaf (rb_node_t *node)
     return n;
 }
 
+/*!****************************************************************************
+    \brief Compute next node from given node
+    \ingroup internal
+
+    \param  node  the start node
+    \return The next node after node
+
+******************************************************************************/
 rb_node_t *rb_next (rb_node_t *node)
 {
     rb_node_t *n = node;
@@ -210,6 +277,14 @@ rb_node_t *rb_next (rb_node_t *node)
     return NULL;
 }
 
+/*!****************************************************************************
+    \brief Compute previous node from given node
+    \ingroup internal
+
+    \param  node  the start node
+    \return The previous node before node
+
+******************************************************************************/
 rb_node_t *rb_prev (rb_node_t *node)
 {
     rb_node_t *n = node;
@@ -233,6 +308,14 @@ rb_node_t *rb_prev (rb_node_t *node)
     return NULL;
 }
 
+/*!****************************************************************************
+    \brief Remove node in tree
+    \ingroup internal
+
+    \param  tree  the tree
+    \param  node  the node to remove
+
+******************************************************************************/
 void rb_remove (rb_tree_t *tree, rb_node_t *node)
 {
     rb_node_t *parent = node->parent;
@@ -379,6 +462,27 @@ void rb_remove (rb_tree_t *tree, rb_node_t *node)
 	return;
 }
 
+/*!****************************************************************************
+    \brief Search node in tree
+    \ingroup internal
+
+    \param  tree   the tree
+    \param  item   Content to search for
+    \param  parent Optional parent of found (or not found) node
+    \return pointer to node found or NULL if no node is found
+
+    \rst
+
+    Description
+    -----------
+
+    When inserting the parent is returned for the insertion position
+    even if the node is not found. Specify NULL for the parent if this
+    feature is not needed.
+
+    \endrst
+
+******************************************************************************/
 rb_node_t *rb_search
     (const rb_tree_t *tree, const void *item, rb_node_t **parent)
 {
@@ -412,6 +516,26 @@ rb_node_t *rb_search
     return n;
 }
 
+/*!****************************************************************************
+    \brief Walk the tree
+    \ingroup internal
+
+    \param  tree      the node to start from
+    \param  pre_func  Function to call before descending or NULL
+    \param  func      Function before descending to right subtree or NULL
+    \param  post_func Function to call before descending or NULL
+    \param  payload   Payload to pass to func
+
+    Description
+    -----------
+
+    This is a recursive method that descends into the left subtree, then
+    into the right subtree. The function func is called in the middle
+    and will get the nodes in tree sort order.
+
+    \endrst
+
+******************************************************************************/
 void rb_walk
     ( rb_node_t *node
     , void (*pre_func)(rb_node_t *)

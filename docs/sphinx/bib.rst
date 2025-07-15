@@ -2,6 +2,10 @@ Bibliography
 ------------
 
 
+.. [AJG05]  Ajith Abraham, Lakhmi Jain, and Robert Goldberg, editors.
+            Evolutionary Multiobjective Optimization, Theoretical
+            Advances and Applications. Advanced Information and
+            Knowledge Processing. Springer, 2005.
 .. [Bak87]  J. Baker. Reducing bias and inefficiency in the selection
             algorithm. In J. Grefenstette, editor, *Proceedings of the
             Second International Conference on Genetic Algorithms and
@@ -38,6 +42,8 @@ Bibliography
             pages 528–537.
 .. [CEC01]  IEEE Congress on Evolutionary Computation (CEC). IEEE, Seoul,
             South Korea, May 2001.
+.. [CEC06]  IEEE International Conference on Evolutionary Computation (CEC).
+            Vancouver, BC, Canada, July 2006.
 .. [CEC94]  First IEEE Congress on Evolutionary Computation (CEC). IEEE,
             Orlando, FL, June 1994.
 .. [Cic06]  Vincent A. Cicirello. Non-wrapping order crossover: An order
@@ -79,6 +85,9 @@ Bibliography
             A fast and elitist multiobjective genetic algorithm: NSGA-II.
             *IEEE Transactions on Evolutionary Computation,* 6(2):182–197,
             April 2002.
+.. [DTLZ05] Kalyanmoy Deb, Lothar Thiele, Marco Laumanns, and Eckart
+            Zitzler. Scalable test problems for evolutionary multiobjective
+            optimization. In Abraham et al. [AJG05]_, pages 105–145.
 .. [ES91]   Larry J. Eshelman and J. David Schaffer. Preventing premature
             convergence in genetic algorithms by preventing incest. In
             Belew and Booker [BB91]_, pages 115–122.
@@ -154,6 +163,12 @@ Bibliography
             multiobjective EAs: The NSGA-II and other algorithms. IEEE
             Transactions on Evolutionary Computation, 7(5):503–515,
             October 2003.
+.. [KD06a]  Saku Kukkonen and Kalyanmoy Deb. Improved pruning of
+            non-dominated solutions based on crowding distance for
+            bi-objective optimization problems. In [CEC06]_, pages 1179–1186.
+.. [KD06b]  Saku Kukkonen and Kalyanmoy Deb. A fast and effective method
+            for pruning of non-dominated solutions in many-objective
+            problems. In Runarsson et al. [RBB+06]_, pages 553–562.
 .. [Kei06]  Maarten Keijzer, editor. Genetic and Evolutionary Computation
             GECCO 2006. ACM, Seattle, Washington, July 2006.
 .. [MI94]   Tadahiko Murata and Hisao Ishibuchi. Performance evaluation of
@@ -184,6 +199,11 @@ Bibliography
 .. [PSL05]  Kenneth V. Price, Rainer M. Storn, and Jouni A. Lampinen.
             *Differential Evolution: A Practical Approach to Global
             Optimization.* Springer, Berlin, Heidelberg, 2005.
+.. [RBB+06] Thomas Philip Runarsson, Hans-Georg Beyer, Edmund Burke,
+            Juan J. Merelo-Guervós, L. Darrell Whitley, and Xin Yao,
+            editors. Parallel Problem Solving from Nature – PPSN IX,
+            volume 4193 of Lecture Notes in Computer Science. Springer,
+            Reykjavik, Iceland, September 2006.
 .. [Sal96]  Ralf Salomon. Re-evaluating genetic algorithm performance
             under coordinate rotation of benchmark functions. A survey
             of some theoretical and practical aspects of genetic

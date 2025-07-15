@@ -1524,7 +1524,7 @@ void PGASetUp (PGAContext *ctx)
         if (ctx->ga.NumAuxEval - ctx->ga.NumConstraint == 1) {
             ctx->ga.CrowdingMethod = PGA_CROWDING_CD_PRUNE;
         } else {
-            ctx->ga.CrowdingMethod = PGA_CROWDING_ENNS_2NN;
+            ctx->ga.CrowdingMethod = PGA_CROWDING_ENNS_MNN;
         }
     }
     if (ctx->cops.Crowding == NULL) {

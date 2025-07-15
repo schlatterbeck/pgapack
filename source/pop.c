@@ -3378,7 +3378,7 @@ void PGA_NSGA_III_Replacement (PGAContext *ctx)
 
 /*!****************************************************************************
     \brief Set crowding / niching function to use
-    \ingroup explicit
+    \ingroup internal
     \param   ctx          context variable
     \return  None
 
@@ -3388,7 +3388,7 @@ void PGA_NSGA_III_Replacement (PGAContext *ctx)
     -----------
 
     Depending on the NSGA replacement method in use this sets the
-    crowding or niching method to use. This takes into account the
+    crowding or niching function to use. This takes into account the
     preferences set via :c:func:`PGA_Set_Crowding_Method`. The function
     is called internally during :c:func:`PGACreate`.
 
@@ -3433,7 +3433,7 @@ void PGASetCrowdingFunction (PGAContext *ctx)
 
 /*!****************************************************************************
     \brief Set crowding / niching method to use
-    \ingroup explicit
+    \ingroup init
     \param   ctx          context variable
     \param   method       method to use
     \return  None

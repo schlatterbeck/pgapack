@@ -354,6 +354,68 @@ results. You should never need to set this unless you suspect a bug in
 the Jensen algorithm or want to compare runtimes. The default is
 :c:macro:`PGA_NDSORT_JENSEN`.
 
+After the nondominated sorting, NSGA-II applies a crowding metric. The
+original NSGA-II algorithm has been shown to be sub-optimal even in the
+case of two objectives [KD06a]_. The paper proposes to prune the most
+crowded solution one-by-one and update the metrics after each removal.
+The original NSGA-II pruning can be seen in figure
+:ref:`fig:kursawe-nsga`. You can compare this to the iterative
+method in figure :ref:`fig:kursawe-cd`. This metric is now the
+default for problems with two-objectives.
+
+.. figure:: ../kursawe-nsga.png
+   :alt: Two dimensional crowding with original NSGA-II metric
+   :width: 90%
+   :name: fig:kursawe-nsga
+
+   Two dimensional crowding with original NSGA-II metric
+
+.. figure:: ../kursawe-cd.png
+   :alt: Two dimensional crowding with new iterative pruning metric
+   :width: 90%
+   :name: fig:kursawe-cd
+
+   Two dimensional crowding with new iterative pruning metric
+
+
+For more than two objectives the previously described metric does not
+work very well. Two metrics based on nearest neighbors have been
+proposed in a second paper [KD06b]_. The authors define two metrics, one
+based on only the nearest two neighbors, one based on :math:`M`
+neighbors where :math:`M` is the number of objectives. An example of the
+original NSGA-II metric can be seen in figure :ref:`fig:crowding-nsga`.
+Compare this to the metric based on :math:`M` nearest neighbors which
+can be seen in figure :ref:`fig:crowding-mnn`. Note that the pictured
+DTLZ7 problem does have four disconnected Pareto-optimal regions [DTLZ05]_.
+The default for more than two objectives is the metric based on :math:`M`
+nearest neighbors. Note that depending on the problem, taking two or
+:math:`M` neighbors may give better results.
+
+.. figure:: ../crowding-nsga.png
+   :alt: Crowding with original NSGA-II metric
+   :width: 90%
+   :name: fig:crowding-nsga
+
+   Three dimensional Crowding with original NSGA-II metric
+
+.. figure:: ../crowding-mnn.png
+   :alt: Crowding with new M-nearest neighbors metric
+   :width: 90%
+   :name: fig:crowding-mnn
+
+   Three dimensional crowding with new M-nearest neighbors metric
+
+The metric to use can be set explicitly via the function
+:c:func:`PGASetCrowdingMethod`. The constant :c:macro:`PGA_CROWDING_NSGA_II` 
+set the original NSGA-II crowding metric. The constant
+:c:macro:`PGA_CROWDING_CD_PRUNE` specifies the method in the first paper
+[KD06a]_ and is the default for two objectives. The constant
+:c:macro:`PGA_CROWDING_ENNS_2NN` specifies the method using two nearest
+neighbors and the constant :c:macro:`PGA_CROWDING_ENNS_MNN` specifies
+the method based on :math:`M` nearest neighbors. It is also the default
+for more than two objective functions. See :ref:`group:crowding-algorithms`
+for a summary of the available crowding algorithms.
+
 With NSGA-III you need to define a regular set of points or a set of
 directions where you want solutions to the multi-objective problem to be
 found, both can be combined, you can specify both, a number of reference
