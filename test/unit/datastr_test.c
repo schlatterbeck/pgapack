@@ -74,8 +74,7 @@ void rm_single_child_node (rb_node_t *node)
         free (c);
         /* We may not memset the node to zero during walk */
         free (node);
-    }
-    if (node->child [1] != NULL && node->child [0] == NULL) {
+    } else if (node->child [1] != NULL && node->child [0] == NULL) {
         right_count++;
         printf ("Remove: %d\n", c->i);
         rb_remove (&tree, node);
