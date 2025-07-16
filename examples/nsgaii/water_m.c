@@ -73,5 +73,5 @@ struct multi_problem water_m =
 , .f              = { &f1, &f2, &f3, &f4, &f5
                     , &g1, &g2, &g3, &g4, &g5, &g6, &g7
                     }
-, .name           = "Ray, Tai, Seow (WATER)"
+, .name           = "Ray, Tai, Seow (WATER) (as maximization problem)"
 };

@@ -27,6 +27,7 @@ struct multi_problem zdt1 =
 { .dimension      = 30
 , .nfunc          = 2
 , .nconstraint    = 0
+, .generations    = 1000
 , .lower          = (double [])
   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   , 0, 0, 0, 0, 0, 0, 0, 0, 0, 0

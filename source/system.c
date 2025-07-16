@@ -258,6 +258,12 @@ static void PGAFreeIndividual (PGAContext *ctx, PGAIndividual *ind)
     if (ind->normalized != NULL) {
         free (ind->normalized);
     }
+    if (ind->neighbor [0] != NULL) {
+        assert (ind->neighbor [1] != NULL);
+        free (ind->neighbor [0]);
+        free (ind->neighbor [1]);
+        ind->neighbor [0] = ind->neighbor [1] = NULL;
+    }
 }
 
 /*!****************************************************************************
@@ -328,6 +334,12 @@ void PGADestroy (PGAContext *ctx)
         }
         if (ctx->scratch.nsga_tmp.front_sizes != NULL) {
             free (ctx->scratch.nsga_tmp.front_sizes);
+        }
+        if (ctx->scratch.nsga_tmp.f_min != NULL) {
+            free (ctx->scratch.nsga_tmp.f_min);
+        }
+        if (ctx->scratch.nsga_tmp.f_max != NULL) {
+            free (ctx->scratch.nsga_tmp.f_max);
         }
         if (ctx->scratch.hashed != NULL) {
             free (ctx->scratch.hashed);

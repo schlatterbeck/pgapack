@@ -176,6 +176,13 @@ Boolean Constants
 
 .. doxygengroup:: const-bool
 
+.. _group:crowding-algorithms:
+
+Constants for Crowding Methods
+++++++++++++++++++++++++++++++
+
+.. doxygengroup:: crowding-algorithms
+
 .. _group:const-crossover:
 
 Crossover Constants

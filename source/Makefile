@@ -1,27 +1,28 @@
 OBJS = $(PGA_LIB_DIR)/binary.o        \
-      $(PGA_LIB_DIR)/char.o          \
-      $(PGA_LIB_DIR)/cmdline.o       \
-      $(PGA_LIB_DIR)/create.o        \
-      $(PGA_LIB_DIR)/cross.o         \
-      $(PGA_LIB_DIR)/debug.o         \
-      $(PGA_LIB_DIR)/duplcate.o      \
-      $(PGA_LIB_DIR)/evaluate.o      \
-      $(PGA_LIB_DIR)/fitness.o       \
-      $(PGA_LIB_DIR)/integer.o       \
-      $(PGA_LIB_DIR)/linalg.o        \
-      $(PGA_LIB_DIR)/mutation.o      \
-      $(PGA_LIB_DIR)/parallel.o      \
-      $(PGA_LIB_DIR)/pga.o           \
-      $(PGA_LIB_DIR)/pop.o           \
-      $(PGA_LIB_DIR)/random.o        \
-      $(PGA_LIB_DIR)/real.o          \
-      $(PGA_LIB_DIR)/report.o        \
-      $(PGA_LIB_DIR)/restart.o       \
-      $(PGA_LIB_DIR)/select.o        \
-      $(PGA_LIB_DIR)/stop.o          \
-      $(PGA_LIB_DIR)/system.o        \
-      $(PGA_LIB_DIR)/user.o          \
-      $(PGA_LIB_DIR)/utility.o $(PGA_LIB_DIR)/f2c.o $(MPI_STUB)
+       $(PGA_LIB_DIR)/char.o          \
+       $(PGA_LIB_DIR)/cmdline.o       \
+       $(PGA_LIB_DIR)/create.o        \
+       $(PGA_LIB_DIR)/cross.o         \
+       $(PGA_LIB_DIR)/datastr.o       \
+       $(PGA_LIB_DIR)/debug.o         \
+       $(PGA_LIB_DIR)/duplcate.o      \
+       $(PGA_LIB_DIR)/evaluate.o      \
+       $(PGA_LIB_DIR)/fitness.o       \
+       $(PGA_LIB_DIR)/integer.o       \
+       $(PGA_LIB_DIR)/linalg.o        \
+       $(PGA_LIB_DIR)/mutation.o      \
+       $(PGA_LIB_DIR)/parallel.o      \
+       $(PGA_LIB_DIR)/pga.o           \
+       $(PGA_LIB_DIR)/pop.o           \
+       $(PGA_LIB_DIR)/random.o        \
+       $(PGA_LIB_DIR)/real.o          \
+       $(PGA_LIB_DIR)/report.o        \
+       $(PGA_LIB_DIR)/restart.o       \
+       $(PGA_LIB_DIR)/select.o        \
+       $(PGA_LIB_DIR)/stop.o          \
+       $(PGA_LIB_DIR)/system.o        \
+       $(PGA_LIB_DIR)/user.o          \
+       $(PGA_LIB_DIR)/utility.o $(PGA_LIB_DIR)/f2c.o $(MPI_STUB)
 
 INSTALL=install
 INSTALL_PLAIN=install -m 0644

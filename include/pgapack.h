@@ -8,7 +8,7 @@
 
 /* Microsoft choses to arbitrarily deprecate some standard C-Library functions
  * (CRT stands for C runtime library) Disable deprecation warning
- * And Microsoft ist stuck in the 1980s with their C Compiler (well
+ * And Microsoft is stuck in the 1980s with their C Compiler (well
  * technically it isn't a C-Compiler because it doesn't support the
  * latest version of the standard) because they do not support
  * dynamically allocated variable arrays (in the C standard since 1999).
@@ -363,6 +363,18 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 /*! @} */
 
 /*!***************************************
+ *  \defgroup crowding-algorithms Crowding
+ *  \brief Different crowding/pruning algorithms
+ *  @{
+ *****************************************/
+#define PGA_CROWDING_NSGA_II  1    /**< The original NSGA-II crowding      */
+#define PGA_CROWDING_CD_PRUNE 2    /**< Iterated Crowding-distance pruning */
+#define PGA_CROWDING_ENNS_2NN 3    /**< 2 nearest neighbors efficient NN   */
+#define PGA_CROWDING_ENNS_MNN 4    /**< M nearest neighbors efficient NN   */
+/*! @} */
+
+
+/*!***************************************
  *  \defgroup const-selection Selection
  *  \brief Constants for selection variants.
  *  @{
@@ -605,6 +617,13 @@ static inline void CLEAR_BIT (PGABinary *bitptr, int idx)
 #define PGA_NDSORT_BOTH    3 /**< Both versions compared */
 /*! @} */
 
+#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
+/* Forward declaration of rb_tree_t */
+typedef struct rbtree {
+    struct rbnode *root;
+    int (*cmp)(const void *, const void*);
+} rb_tree_t;
+#endif
 
 /*!***************************************
  * \brief Individual Structure
@@ -624,12 +643,20 @@ typedef struct PGAIndividual {         /**< primary population data structure */
   struct PGAContext    *ctx;           /**< Pointer to our PGAContext         */
   struct PGAIndividual *pop;           /**< The population of this indiv.     */
   double                crowding;      /**< Crowding metric for NSGA-II,-III  */
-  int                   funcidx;       /**< Temporary function index          */
+  int                   funcidx;       /**< Temporary function index, unused  */
   /* The following are for NSGA-III only */
   double               *normalized;    /**< Normalized point for NSGA-III     */
   double                distance;      /**< Distance to associated point      */
   int                   point_idx;     /**< Index of associated point         */
   struct PGAIndividual *next_hash;     /**< Next hash value in chain          */
+  /* For NSGA-II only */
+  struct PGAIndividual **neighbor [2]; /**< Crowding metric neighbors         */
+  double                evsum;         /**< Sum of evals for ENNS             */
+  double                crowding2;     /**< Second metric for 2nn             */
+  rb_tree_t             dist_tree;     /**< Euclidean distances               */
+  rb_tree_t             neig_tree;     /**< ENNS neighbors                    */
+  double                max_dist;      /**< Max distance for enns             */
+  int                   crowd_idx;     /**< Individual's index into crowd     */
 } PGAIndividual;
 
 /*!***************************************
@@ -719,6 +746,7 @@ typedef struct {
     double FitnessCmaxValue; /**< Cmax value used to convert minimizations  */
     double restartAlleleProb;/**< prob of changing an allele in a restart   */
     double TruncProportion;  /**< proportion for truncation selection       */
+    int CrowdingMethod;      /**< NSGA-II crowding method to use            */
     int NAMWindow;           /**< Win size for negative assortative mating  */
     int restart;             /**< whether to use the restart operator       */
     int restartFreq;         /**< frequency with which to restart           */
@@ -759,6 +787,8 @@ typedef struct {
     int base;     /**< Base index of eval functions, 0 for eval */
     int nfun;     /**< Number of functions                      */
     int oidx;     /**< Current function index for sorting       */
+    int excess;   /**< Overhang of last dominance rank          */
+    int fun_idx;  /**< Function index for ENNS crowding metrics */
 } PGAStateNSGA;
 
 /** Typedef for the context, think of this as "self" in OO terms */
@@ -806,6 +836,13 @@ typedef struct {
     void         (*Hillclimb)(PGAContext *, int, int);
     /** Nondominated Sorting, used internally only */
     unsigned int (*SortND)(PGAContext *, PGAIndividual **, size_t, int);
+    /** Crowding metric, used internally only */
+    void         (*Crowding)
+                 ( PGAContext *
+                 , PGAIndividual **, size_t
+                 , PGAIndividual **, size_t
+                 , int
+                 );
 } PGACOperations;
 
 /*!*****************************************
@@ -924,10 +961,12 @@ typedef struct {
  * Used for temporary storage for nsga-ii and -iii.
  ***************************************************/
 typedef struct nsga_temp  {
-    PGAIndividual **ind_all;       /**< Individual pointer array for NSGA */
+    PGAIndividual **ind_all;       /**< Individual pointer array for NSGA  */
     PGAIndividual **ind_tmp;       /**< temporary Individual pointer array */
-    double         *medval;        /**< Used by find_median */
-    size_t         *front_sizes;   /**< Used by max_rank */
+    double         *medval;        /**< Used by find_median                */
+    size_t         *front_sizes;   /**< Used by max_rank                   */
+    double         *f_min;         /**< Minima of functions for crowding   */
+    double         *f_max;         /**< Maxima of functions for crowding   */
 } PGATmpNSGA;
 
 
@@ -1084,6 +1123,37 @@ void PGASetCrossoverSBXOncePerString (PGAContext *ctx, int val);
 int PGAGetCrossoverSBXOncePerString (PGAContext *ctx);
 void PGACrossoverSBX
     (PGAContext *ctx, double p1, double p2, double u, double *c1, double *c2);
+
+/*****************************************
+ *          datastr.c
+ *****************************************/
+typedef enum e_color { RB_BLACK, RB_RED } color_t;
+typedef enum e_dir   { RB_LEFT, RB_RIGHT } dir_t;
+
+typedef struct rbnode {
+    struct rbnode *parent;
+    struct rbnode *child [2];
+    void          *content;
+    color_t        color;
+} rb_node_t;
+
+rb_node_t *rb_left_leaf (rb_node_t *node);
+rb_node_t *rb_first     (const rb_tree_t *tree);
+rb_node_t *rb_last      (const rb_tree_t *tree);
+rb_node_t *rb_next      (rb_node_t *node);
+rb_node_t *rb_prev      (rb_node_t *node);
+rb_node_t *rb_search
+    (const rb_tree_t *tree, const void *item, rb_node_t **parent);
+
+void rb_insert (rb_tree_t *tree, rb_node_t *node);
+void rb_remove (rb_tree_t *tree, rb_node_t *node);
+void rb_walk
+    ( rb_node_t *node
+    , void (*pre_func)(rb_node_t *)
+    , void (*func)(rb_node_t *, void *)
+    , void (*post_func)(rb_node_t *)
+    , void *payload
+    );
 
 /*****************************************
  *          debug.c
@@ -1395,6 +1465,8 @@ void PGARestrictedTournamentReplacement (PGAContext *ctx);
 void PGAPairwiseBestReplacement (PGAContext *ctx);
 void PGA_NSGA_II_Replacement (PGAContext *ctx);
 void PGA_NSGA_III_Replacement (PGAContext *ctx);
+void PGASetCrowdingFunction (PGAContext *ctx);
+void PGASetCrowdingMethod (PGAContext *ctx, int method);
 void PGASetReferencePoints (PGAContext *ctx, size_t npoints, void *points);
 void PGASetReferenceDirections
     (PGAContext *ctx, size_t ndirs, void *dirs, int npart, double scale);

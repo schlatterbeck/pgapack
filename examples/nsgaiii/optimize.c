@@ -21,6 +21,8 @@ static struct multi_problem *problems [] =
 , &c2_convex_dtlz2
 , &c3_dtlz1
 , &c3_dtlz4
+, &dtlz5
+, &dtlz7
 };
 static const int nproblems =
     sizeof (problems) / sizeof (struct multi_problem *);
@@ -46,11 +48,13 @@ double evaluate (PGAContext *ctx, int p, int pop, double *aux)
 
 void usage (char *name, int nproblems)
 {
+    int i;
     fprintf
         ( stderr
         , "Usage: %s [-2] [-d] [-g maxiter] [-p popsize] [-r seed] "
           "[-s] [f-index]\n"
           "-2: Use NSGA-II not NSGA-III\n"
+          "-c: Crowding, one of nsga-ii, cd, 2nn, mnn (only for NSGA-II)\n"
           "-d: Use reference directions\n"
           "-D: Dimension (number of decision variables)\n"
           "-g: Maximum number of generations\n"
@@ -60,8 +64,19 @@ void usage (char *name, int nproblems)
           "-r: Random seed (uppercase -R is also accepted)\n"
           "-s: Use SBX crossover and Polynomial mutation instead of DE\n"
           "-t: Measure timing of non-dominated sorting algo and write to file\n"
-          "f-index is the function to call in range 0-%d\n"
+          "f-index is the function to call in range 0-%d:\n"
         , name, nproblems - 1
+        );
+    for (i=0; i<nproblems; i++) {
+        struct multi_problem *p = problems [i];
+        fprintf
+            ( stderr, "%3d: %d obj %d constr %s\n"
+            , i, p->n_obj, p->nconstraint, p->name
+            );
+    }
+    fprintf
+        ( stderr
+        , "Note that number of objectives can be set via command-line\n"
         );
 }
 
@@ -85,7 +100,7 @@ int main (int argc, char **argv)
     int maxiter = 400;
     int maxiter_seen = 0;
     void *p = NULL;
-    int np = LIN_dasdennis (3, 12, &p, 0, 1, NULL);
+    int np = 0;
     int seed = 1;
     int direction;
     int refdir = 0;
@@ -100,11 +115,26 @@ int main (int argc, char **argv)
     double *lower = NULL;
     double *upper = NULL;
     char *timing_file = NULL;
+    int crowding = PGA_CROWDING_CD_PRUNE;
 
-    while ((opt = getopt (argc, argv, "2dD:g:no:p:r:R:st:")) != -1) {
+    while ((opt = getopt (argc, argv, "2c:dD:g:no:p:r:R:st:")) != -1) {
         switch (opt) {
         case '2':
             repl_type = PGA_POPREPL_NSGA_II;
+            break;
+        case 'c':
+            if (!strcmp (optarg, "nsga-ii")) {
+                crowding = PGA_CROWDING_NSGA_II;
+            } else if (!strcmp (optarg, "cd")) {
+                crowding = PGA_CROWDING_CD_PRUNE;
+            } else if (!strcmp (optarg, "2nn")) {
+                crowding = PGA_CROWDING_ENNS_2NN;
+            } else if (!strcmp (optarg, "mnn")) {
+                crowding = PGA_CROWDING_ENNS_MNN;
+            } else {
+                fprintf (stderr, "Invalid crowding: %s\n", optarg);
+                exit (1);
+            }
             break;
         case 'd':
             refdir = 1;
@@ -149,6 +179,9 @@ int main (int argc, char **argv)
             exit (1);
         }
     }
+    if (repl_type == PGA_POPREPL_NSGA_III && !refdir) {
+        np = LIN_dasdennis (3, 12, &p, 0, 1, NULL);
+    }
     problem = problems [fidx];
     if (n_obj <= 0) {
         n_obj = problem->n_obj;
@@ -170,7 +203,7 @@ int main (int argc, char **argv)
     if (!maxiter_seen && problem->generations != 0) {
         maxiter = problem->generations;
     }
-    if (!popsize_seen && problem->popsize > popsize) {
+    if (!popsize_seen && problem->popsize > 0) {
         popsize = problem->popsize;
     }
     direction = problem->maximize ? PGA_MAXIMIZE : PGA_MINIMIZE;
@@ -218,6 +251,7 @@ int main (int argc, char **argv)
     }
 
     PGASetSortND                  (ctx, nondom);
+    PGASetCrowdingMethod          (ctx, crowding);
     PGASetPopReplaceType          (ctx, repl_type);
     PGASetRealInitRange           (ctx, lower, upper);
     PGASetMaxGAIterValue          (ctx, maxiter);

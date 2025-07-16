@@ -1,6 +1,8 @@
 OBJS = sch.o fon.o kur.o pol.o zdt1.o zdt2.o zdt3.o zdt4.o zdt6.o \
     constr.o srn.o tnk.o water.o rotated.o deb7.o optimize.o zdt1_m.o \
     water_m.o
+GCNO = $(OBJS:.o=.gcno)
+GCDA = $(OBJS:.o=.gcda)
 
 all: optimize
 
@@ -11,6 +13,6 @@ optimize: optimize.o $(OBJS)
 	$(CC) $(CFLAGS) -c $<
 
 clean: 
-	rm -f $(OBJS) optimize
+	rm -f $(OBJS) $(GCNO) $(GCDA) optimize
 
 # vim: set noet :

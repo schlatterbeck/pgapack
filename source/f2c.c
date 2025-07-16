@@ -100,6 +100,7 @@ privately owned rights.
 #define pgasetepsilontheta_              PGASETEPSILONTHETA
 #define pgagetepsilontheta_              PGAGETEPSILONTHETA
 #define pgasetoutputfile_                PGASETOUTPUTFILE
+#define pgasetsortnd_                    PGASETSORTND
 
 /* cross.c */
 #define pgacrossover_                    PGACROSSOVER
@@ -242,6 +243,7 @@ privately owned rights.
 #define pgasetnumreplacevalue_           PGASETNUMREPLACEVALUE
 #define pgasetpopreplacetype_            PGASETPOPREPLACETYPE
 #define pgasetrtrwindowsize_             PGASETRTRWINDOWSIZE
+#define pgasetcrowdingmethod_            PGASETCROWDINGMETHOD
 /* random.c */
 #define pgarandomflip_                   PGARANDOMFLIP
 #define pgarandominterval_               PGARANDOMINTERVAL
@@ -355,6 +357,7 @@ privately owned rights.
 #define pgasetepsilontheta_              _pgasetepsilontheta_
 #define pgagetepsilontheta_              _pgagetepsilontheta_
 #define pgasetoutputfile_                _pgasetoutputfile_
+#define pgasetsortnd_                    _pgasetsortnd_
 /* cross.c */
 #define pgacrossover_                    _pgacrossover_
 #define pgagetcrossovertype_             _pgagetcrossovertype_
@@ -496,6 +499,7 @@ privately owned rights.
 #define pgasetnumreplacevalue_           _pgasetnumreplacevalue_
 #define pgasetpopreplacetype_            _pgasetpopreplacetype_
 #define pgasetrtrwindowsize_             _pgasetrtrwindowsize_
+#define pgasetcrowdingmethod_            _pgasetcrowdingmethod_
 /* random.c */
 #define pgarandomflip_                   _pgarandomflip_
 #define pgarandominterval_               _pgarandominterval_
@@ -609,6 +613,7 @@ privately owned rights.
 #define pgasetepsilontheta_              pgasetepsilontheta
 #define pgagetepsilontheta_              pgagetepsilontheta
 #define pgasetoutputfile_                pgasetoutputfile
+#define pgasetsortnd_                    pgasetsortnd
 /* cross.c */
 #define pgacrossover_                    pgacrossover
 #define pgagetcrossovertype_             pgagetcrossovertype
@@ -750,6 +755,7 @@ privately owned rights.
 #define pgasetnumreplacevalue_           pgasetnumreplacevalue
 #define pgasetpopreplacetype_            pgasetpopreplacetype
 #define pgasetrtrwindowsize_             pgasetrtrwindowsize
+#define pgasetcrowdingmethod_            pgasetcrowdingmethod
 /* random.c */
 #define pgarandomflip_                   pgarandomflip
 #define pgarandominterval_               pgarandominterval
@@ -866,6 +872,7 @@ float pgagetepsilonexponent_ (PGAContext **ftx);
 void pgasetepsilontheta_ (PGAContext **ftx, int *n);
 int pgagetepsilontheta_ (PGAContext **ftx);
 void pgasetoutputfile_ (PGAContext **ftx, char *name);
+void pgasetsortnd_ (PGAContext **ftx, int *algo);
 /* cross.c */
 void pgacrossover_(PGAContext **ftx, int *m1, int *m2, int *oldpop, int *t1,
      int *t2, int *newpop);
@@ -1024,6 +1031,7 @@ void pgasetpopsize_(PGAContext **ftx, int *popsize);
 void pgasetnumreplacevalue_(PGAContext **ftx, int *pop_replace);
 void pgasetpopreplacetype_(PGAContext **ftx, int *pop_replace);
 void pgasetrtrwindowsize_(PGAContext **ftx, int *size);
+void pgasetcrowdingmethod_(PGAContext **ftx, int *method);
 /* random.c */
 int pgarandomflip_(PGAContext **ftx, double *p);
 int pgarandominterval_(PGAContext **ftx, int *start, int *end);
@@ -1263,6 +1271,11 @@ int pgagetepsilontheta_ (PGAContext **ftx)
 void pgasetoutputfile_ (PGAContext **ftx, char *name)
 {
     PGASetOutputFile (*ftx, name);
+}
+
+void pgasetsortnd_ (PGAContext **ftx, int *algo)
+{
+    PGASetSortND (*ftx, *algo);
 }
 
 /* cross.c */
@@ -2087,6 +2100,11 @@ void pgasetpopreplacetype_(PGAContext **ftx, int *pop_replace)
 void pgasetrtrwindowsize_(PGAContext **ftx, int *size)
 {
     PGASetRTRWindowSize(*ftx, *size);
+}
+
+void pgasetcrowdingmethod_(PGAContext **ftx, int *method)
+{
+    PGASetCrowdingMethod(*ftx, *method);
 }
 
 /* random.c */

@@ -6,7 +6,7 @@ PROG_F := \
     $(PFX)/fortran/classic $(PFX)/fortran/dejong $(PFX)/fortran/example \
     $(PFX)/fortran/maxbit $(PFX)/fortran/maxchar $(PFX)/fortran/maxint  \
     $(PFX)/fortran/name $(PFX)/fortran/namefull
-PROG_C := $(PFX)/c/udtstr                                                 \
+PROG_C := $(PFX)/c/udtstr                                               \
     $(PFX)/c/classic $(PFX)/c/dejong $(PFX)/c/example $(PFX)/c/maxbit   \
     $(PFX)/c/maxchar $(PFX)/c/maxint $(PFX)/c/name $(PFX)/c/namefull    \
     $(PFX)/c/maxint-de
@@ -74,7 +74,7 @@ testclean:
 	make -C unit clobber
 
 clean: testclean
-	rm -f instverf instverf.o
+	rm -f instverf instverf.o instverf.gcno instverf.gcda
 
 .PHONY: all clean unit
 

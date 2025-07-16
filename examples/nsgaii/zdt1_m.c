@@ -27,6 +27,7 @@ struct multi_problem zdt1_m =
 { .dimension      = 30
 , .nfunc          = 2
 , .nconstraint    = 0
+, .generations    = 1000
 , .maximize       = 1
 , .lower          = (double [])
   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -40,7 +41,7 @@ struct multi_problem zdt1_m =
   }
 , .enforce_bounds = 1
 , .f              = { &f1, &f2 }
-, .name           = "Zitzler et. al. (ZDT1)"
+, .name           = "Zitzler et. al. (ZDT1) (as maximization problem)"
 };
 
 #ifdef DEBUG_EVAL

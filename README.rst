@@ -24,6 +24,23 @@ Documentation is on `Read the Docs`_.
 Updates
 =======
 
+Update July 2025:
+
+Implement new crowding metrics. The original crowding metric in NSGA-II
+does not work very well, especially in higher dimensions. The update
+implements three new metrics. An example is given in the following
+figures. New metrics are used depending on the number of objectives.
+More details can be found in the user guide in the `section on
+population replacement`_.
+
+|fig1| |fig2|
+
+.. |fig1| image:: docs/crowding-nsga.png
+   :width: 45%
+
+.. |fig2| image:: docs/crowding-mnn.png
+   :width: 45%
+
 Update June 2025:
 
 - Implement Jensen's algorithm for non-dominated sorting. The previous
@@ -815,3 +832,5 @@ of maintaining a working automake environment seems not justified.
     https://www.sphinx-doc.org/en/master/usage/installation.html#using-virtual-environments
 .. _`monkey patching`: https://en.wikipedia.org/wiki/Monkey_patch
 .. _`plotly`: https://plotly.com/
+.. _`section on population replacement`:
+    https://pgapack.readthedocs.io/en/latest/part2.html#population-replacement

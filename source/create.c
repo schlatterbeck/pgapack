@@ -257,6 +257,7 @@ PGAContext *PGACreate
     ctx->ga.CrossBounceFlag    = PGA_UNINITIALIZED_INT;
     ctx->ga.CrossSBXEta        = PGA_UNINITIALIZED_DOUBLE;
     ctx->ga.CrossSBXOnce       = PGA_UNINITIALIZED_INT;
+    ctx->ga.CrowdingMethod     = PGA_UNINITIALIZED_INT;
     ctx->ga.SelectType         = PGA_UNINITIALIZED_INT;
     ctx->ga.TournamentSize     = PGA_UNINITIALIZED_INT;
     ctx->ga.TournamentWithRepl = PGA_UNINITIALIZED_INT;
@@ -351,6 +352,7 @@ PGAContext *PGACreate
     ctx->cops.ChromFree         = NULL;
     ctx->cops.Hillclimb         = NULL;
     ctx->cops.SortND            = NULL;
+    ctx->cops.Crowding          = NULL;
 
     ctx->fops.Mutation          = NULL;
     ctx->fops.Crossover         = NULL;
@@ -515,6 +517,8 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
     ind->distance         = 0;
     ind->point_idx        = 0;
     ind->next_hash        = NULL;
+    ind->neighbor [0]     = NULL;
+    ind->neighbor [1]     = NULL;
     if (ctx->ga.NumAuxEval) {
         ind->auxeval = malloc (sizeof (double) * ctx->ga.NumAuxEval);
         if (ind->auxeval == NULL) {
@@ -549,6 +553,14 @@ void PGACreateIndividual (PGAContext *ctx, int p, int pop, int initflag)
             PGAChange (ctx, p, pop);
         }
         PGAHashIndividual (ctx, p, pop);
+    }
+    if (ctx->ga.PopReplace == PGA_POPREPL_NSGA_II) {
+        size_t sz = ctx->ga.NumAuxEval + 1;
+        ind->neighbor [0] = malloc (sizeof (*ind->neighbor [0]) * sz);
+        ind->neighbor [1] = malloc (sizeof (*ind->neighbor [1]) * sz);
+        if (ind->neighbor [0] == NULL || ind->neighbor [1] == NULL) {
+            PGAFatalPrintf (ctx, "Cannot allocate neighbors");
+        }
     }
 }
 
@@ -1505,6 +1517,19 @@ void PGASetUp (PGAContext *ctx)
                     );
         }
     }
+    if (ctx->ga.CrowdingMethod == PGA_UNINITIALIZED_INT) {
+        /* Old default */
+        ctx->ga.CrowdingMethod = PGA_CROWDING_NSGA_II;
+        /* Use pruning for 2-objective case */
+        if (ctx->ga.NumAuxEval - ctx->ga.NumConstraint == 1) {
+            ctx->ga.CrowdingMethod = PGA_CROWDING_CD_PRUNE;
+        } else {
+            ctx->ga.CrowdingMethod = PGA_CROWDING_ENNS_MNN;
+        }
+    }
+    if (ctx->cops.Crowding == NULL) {
+        PGASetCrowdingFunction (ctx);
+    }
 
 /* par */
     if (ctx->par.NumIslands == PGA_UNINITIALIZED_INT) {
@@ -1691,12 +1716,26 @@ void PGASetUp (PGAContext *ctx)
             PGAFatalPrintf
                 (ctx, "PGASetUp: No room to allocate ctx->scratch.nsga_tmp");
         }
+        ctx->scratch.nsga_tmp.f_min = malloc
+            (sizeof (*ctx->scratch.nsga_tmp.f_min) * (ctx->ga.NumAuxEval + 1));
+        if (ctx->scratch.nsga_tmp.f_min == NULL) {
+            PGAFatalPrintf
+                (ctx, "PGASetUp: No room to allocate ctx->scratch.f_min");
+        }
+        ctx->scratch.nsga_tmp.f_max = malloc
+            (sizeof (*ctx->scratch.nsga_tmp.f_max) * (ctx->ga.NumAuxEval + 1));
+        if (ctx->scratch.nsga_tmp.f_max == NULL) {
+            PGAFatalPrintf
+                (ctx, "PGASetUp: No room to allocate ctx->scratch.f_max");
+        }
     } else {
         ctx->scratch.dominance = NULL;
         ctx->scratch.nsga_tmp.ind_all = NULL;
         ctx->scratch.nsga_tmp.ind_tmp = NULL;
         ctx->scratch.nsga_tmp.medval = NULL;
         ctx->scratch.nsga_tmp.front_sizes = NULL;
+        ctx->scratch.nsga_tmp.f_min = NULL;
+        ctx->scratch.nsga_tmp.f_max = NULL;
     }
 
     if (ctx->ga.NoDuplicates) {

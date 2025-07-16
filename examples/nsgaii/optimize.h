@@ -17,8 +17,8 @@ struct multi_problem
     double (*lower);            /* Init ranges lower bounds */
     double (*upper);            /* Init ranges upper bounds */
     int enforce_bounds;         /* Enforce bounds on init range */
-    int generations;            /* Number of generations if 0 default = 100 */
-    int popsize;                /* Population size if 0 default = 60 */
+    int generations;            /* Number of generations, if 0 use default */
+    int popsize;                /* Population size, if 0 use default */
     char *name;                 /* Name of the example */
     double dither;              /* Dither for differential evolution */
     double jitter;              /* Jitter for differential evolution */

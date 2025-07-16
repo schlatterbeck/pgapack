@@ -1,5 +1,7 @@
 OBJS = deb0.o deb1.o deb2.o deb3.o deb4.o deb5.o deb6.o deb7.o \
        deb8.o deb9.o optimize.o
+GCNO = $(OBJS:.o=.gcno)
+GCDA = $(OBJS:.o=.gcda)
 
 all: optimize
 
@@ -10,6 +12,6 @@ optimize: optimize.o $(OBJS)
 	$(CC) $(CFLAGS) -c $<
 
 clean: 
-	rm -f $(OBJS) optimize
+	rm -f $(OBJS) $(GCNO) $(GCDA) optimize
 
 # vim: set noet :
