@@ -30,6 +30,7 @@ void p_dasdennis (int dim, int npart)
     int n = LIN_dasdennis (dim, npart, &p, 0, 1, NULL);
     printf ("dasdennis (%d, %d):\n", dim, npart);
     p_vec (dim, n, p);
+    free (p);
 }
 
 int main ()
@@ -104,6 +105,7 @@ int main ()
            );
     v [0] = v [1] = v [2] = 1.0 / sqrt (3);
     printf ("norm2 (1/sqrt(3),1/sqrt(3),1/sqrt(3)) = %e\n", LIN_2norm (3, v));
+    free (vec);
 
     return 0;
 }
