@@ -853,10 +853,11 @@ STATIC size_t crowding_setup
     double *f_min = ctx->scratch.nsga_tmp.f_min;
     double *f_max = ctx->scratch.nsga_tmp.f_max;
     DECLARE_DYNARRAY (double, ksum, ctx->nsga.nfun);
-    memset (ksum, 0, sizeof (*ksum));
+    memset (ksum, 0, sizeof (double) * ctx->nsga.nfun);
     double max_variance = 0;
     int max_variance_idx = -1;
 
+    assert (n > 0);
     for (i=0; i<n; i++) {
         PGAIndividual *ind = start [i];
         ind->crowding = 0;
@@ -890,9 +891,15 @@ STATIC size_t crowding_setup
             int min_seen = 0;
             int max_seen = 0;
             for (i=0; i<nrank; i++) {
-                PGAIndividual *ind = start [i];
+                PGAIndividual *ind = crowd [i];
                 double e = GETEVAL_EV (ind, k);
-                double e_norm = (e - f_min [k]) / (f_max [k] - f_min [k]);
+                double norm = f_max [k] - f_min [k];
+                double e_norm;
+                if (norm == 0) {
+                    norm = 1;
+                    assert (e == f_min [k]);
+                }
+                e_norm = (e - f_min [k]) / norm;
                 if (e == f_min [k] && !min_seen) {
                     ind->crowding  = DBL_MAX;
                     ind->crowding2 = 0;
@@ -1417,6 +1424,7 @@ static void rm_individual (rb_node_t *n, void *x)
     assert (node != NULL);
     d = node->content;
     rb_remove (&frm->neig_tree, node);
+    free (node);
     /* Need to search for d now, this has correct distance! */
     node = rb_search (&frm->dist_tree, d, NULL);
     assert (node != NULL);
@@ -1453,7 +1461,6 @@ static void crowd_rm
 {
     struct payload payload;
     PGAIndividual *ind = crowd [idx];
-    rb_node_t *n = ind->neig_tree.root;
     memset (&payload, 0, sizeof (payload));
     payload.crowd      = crowd;
     payload.ncrowd     = ncrowd;
@@ -1461,8 +1468,8 @@ static void crowd_rm
     payload.ind        = ind;
     payload.crowd_tree = crowd_tree;
     crowd [idx] = NULL;
-    rb_walk (n, NULL, rm_individual, NULL, &payload);
-    rb_walk (n, NULL, NULL, free_neigh_node, NULL);
+    rb_walk (ind->neig_tree.root, NULL, rm_individual, NULL, &payload);
+    rb_walk (ind->neig_tree.root, NULL, NULL, free_neigh_node, NULL);
     rb_walk (ind->dist_tree.root, NULL, NULL, free_neigh_node, NULL);
     ind->neig_tree.root = NULL;
     ind->dist_tree.root = NULL;
@@ -1545,6 +1552,7 @@ static void crowding_enns
         print_metric (ind, "rm");
         #endif
         rb_remove (&tree, n);
+        free (n);
         crowd_rm (ctx, crowd, ncrowd, ind->crowd_idx, neigh_goal, &tree);
     }
     /* Free our tree */
@@ -1558,6 +1566,7 @@ static void crowding_enns
             crowd [i]->crowding = ncrowd - i;
         }
         rb_walk (crowd [i]->neig_tree.root, NULL, NULL, free_neigh_node, NULL);
+        rb_walk (crowd [i]->dist_tree.root, NULL, NULL, free_neigh_node, NULL);
         crowd [i]->neig_tree.root = NULL;
         crowd [i]->dist_tree.root = NULL;
     }
