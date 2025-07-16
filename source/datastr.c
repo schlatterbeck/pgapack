@@ -187,9 +187,12 @@ static void rb_insert_internal
     \param  node  the node to insert
 
 ******************************************************************************/
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
 void rb_insert (rb_tree_t *tree, rb_node_t *node)
 {
     rb_node_t *parent = NULL;
+    /* If assertions are turned off, 'found' is unused, see #pragma above */
     rb_node_t *found = rb_search (tree, node->content, &parent);
     assert (found == NULL || tree->cmp (found->content, node->content) == 0);
     dir_t dir = parent != NULL
@@ -198,6 +201,7 @@ void rb_insert (rb_tree_t *tree, rb_node_t *node)
               ;
     rb_insert_internal (tree, node, parent, dir);
 }
+#pragma GCC diagnostic pop
 
 /*!****************************************************************************
     \brief Compute largest item in tree
