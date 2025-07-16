@@ -100,7 +100,7 @@ int main (int argc, char **argv)
     int maxiter = 400;
     int maxiter_seen = 0;
     void *p = NULL;
-    int np = LIN_dasdennis (3, 12, &p, 0, 1, NULL);
+    int np = 0;
     int seed = 1;
     int direction;
     int refdir = 0;
@@ -178,6 +178,9 @@ int main (int argc, char **argv)
             usage (argv [0], nproblems);
             exit (1);
         }
+    }
+    if (repl_type == PGA_POPREPL_NSGA_III && !refdir) {
+        np = LIN_dasdennis (3, 12, &p, 0, 1, NULL);
     }
     problem = problems [fidx];
     if (n_obj <= 0) {
