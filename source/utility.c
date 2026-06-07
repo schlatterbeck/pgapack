@@ -1126,7 +1126,6 @@ int PGAComputeSimilarity (PGAContext *ctx, int popindex)
                 max = curr;
             curr = 1;
         }
-        same = 0;
     }
 
     PGADebugExited ("PGAComputeSimilarity");

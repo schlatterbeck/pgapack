@@ -2037,16 +2037,16 @@ static double pick_pivot (double *values, size_t lo, size_t hi)
     double pivot = 0;
 
     assert (hi > lo);
+    /* Small case: Just return median */
+    if (hi - lo <= 5) {
+        return nlogn_select (values, lo, hi, (lo + hi) / 2);
+    }
+
     medians = malloc (sizeof (double) * (hi - lo) / 5);
     if (medians == NULL) {
         /* Cannot use PGAFatalPrintf here, no context variable */
         fprintf (stderr, "Out of memory in pick_pivot\nPGAError: Fatal\n");
         exit (-1);
-    }
-
-    /* Small case: Just return median */
-    if (hi - lo <= 5) {
-        return nlogn_select (values, lo, hi, (lo + hi) / 2);
     }
 
     /* This skips the last non-full chunk if (hi - lo) is not divisible
@@ -2964,7 +2964,7 @@ unsigned int PGASortND_Both
     const size_t max_front = ctx->ga.PopSize * 2;
     size_t *front_sizes = ctx->scratch.nsga_tmp.front_sizes;
     PGAIndividual **cpy_start = ctx->scratch.nsga_tmp.ind_tmp;
-    unsigned int mr = 0, mr_new = 0, mr_old = 0;
+    unsigned int mr_new = 0, mr_old = 0;
     size_t i;
 
     if (!n) {
@@ -2976,7 +2976,7 @@ unsigned int PGASortND_Both
         start [i]->crowding = 0;
     }
     memcpy (cpy_start, start, sizeof (*start) * n);
-    mr_old = mr = PGASortND_NSquare (ctx, start, n, goal);
+    mr_old = PGASortND_NSquare (ctx, start, n, goal);
     /* Copy ranks and re-initialize to 0 */
     for (i=0; i<n; i++) {
         rank1 [i] = start [i]->rank;
@@ -2994,7 +2994,7 @@ unsigned int PGASortND_Both
     for (i=0; i<n; i++) {
         rank2 [i] = start [i]->rank;
     }
-    if (mr == UINT_MAX) {
+    if (mr_old == UINT_MAX) {
         int s = 0;
         memset (front_sizes, 0, sizeof (*front_sizes) * max_front);
         for (i=0; i<n; i++) {
@@ -3004,7 +3004,6 @@ unsigned int PGASortND_Both
         }
         for (i=0; i<2u*ctx->ga.PopSize; i++) {
             s += front_sizes [i];
-            mr = i;
             if (s >= goal) {
                 break;
             }
