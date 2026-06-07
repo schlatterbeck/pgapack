@@ -161,7 +161,7 @@ class Graphics:
     # end def plot
 
     def plot_matplotlib (self):
-        fig = plt.figure ()
+        fig = plt.figure (dpi = self.args.dpi)
         axa = {}
         if self.args.plot3d:
             axa ['projection'] = '3d'
@@ -268,6 +268,12 @@ cmd.add_argument \
     , help    = "Title of the plot, default is first found "
                 "'Example' or 'Title' line"
     , default = ''
+    )
+cmd.add_argument \
+    ( "-d", "--dpi"
+    , help    = "Resolution for matplotlib, default = %(default)s"
+    , type    = int
+    , default = 100
     )
 cmd.add_argument \
     ( "-D", "--dominance-dimension"
