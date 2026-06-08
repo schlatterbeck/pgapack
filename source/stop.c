@@ -78,7 +78,7 @@ privately owned rights.
 ******************************************************************************/
 int PGADone (PGAContext *ctx, MPI_Comm comm)
 {
-    int rank, size, done;
+    int rank, size, done = 0;
 
     PGADebugEntered ("PGADone");
 
