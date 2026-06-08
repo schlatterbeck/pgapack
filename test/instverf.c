@@ -46,12 +46,13 @@ int       ResultsIndex;
 #define   PRINTFREQ  100
 #define   RBS        24
 
-int main(int argc, char **argv) {
+int main (int argc, char **argv)
+{
     PGAContext     *ctx;
     int             i, rank;
     FILE           *ResultsFile;
-    double          R[5];
-    int             E[5];
+    double          R [5] = {0.0, 0.0, 0.0, 0.0, 0.0};
+    int             E [5] = {0, 0, 0, 0, 0};
 
 
     /*  Even though we aren't doing I/O, we MUST initialize MPI ourselves.
@@ -152,8 +153,9 @@ int main(int argc, char **argv) {
      *  stored in "./test/data/Results.data"
      */
     if (rank == 0) {
-	ResultsFile = fopen("instverf.data", "r");
+	ResultsFile = fopen ("instverf.data", "r");
 	if (ResultsFile) {
+            int f_result = 0;
 	    E[0] = E[1] = E[2] = E[3] = E[4] = 0;
 	    
 	    for (i=1; i<1001; i++) {
@@ -163,15 +165,20 @@ int main(int argc, char **argv) {
 		       Results[0][i], Results[1][i], Results[2][i],
 		       Results[3][i], Results[4][i]);
 #endif
-		fscanf(ResultsFile, "%lf %lf %lf %lf %lf",
+		f_result = fscanf(ResultsFile, "%lf %lf %lf %lf %lf",
 		       R, R+1, R+2, R+3, R+4);
+                if (f_result != 5) {
+                    printf ("Error scanning result file\n");
+                    E [0] = E [1] = E [2] = E [3] = E [4] = 2000;
+                    break;
+                }
 		if (fabs(R[0] - Results[0][i]) > 0.001)   E[0]++;
 		if (fabs(R[1] - Results[1][i]) > 0.001)   E[1]++;
 		if (fabs(R[2] - Results[2][i]) > 0.001)   E[2]++;
 		if (fabs(R[3] - Results[3][i]) > 0.001)   E[3]++;
 		if (fabs(R[4] - Results[4][i]) > 0.001)   E[4]++;
 	    }
-	    fclose(ResultsFile);
+	    fclose (ResultsFile);
 	    for (i=0; i<5; i++) {
 		if (E[i])
 		    printf("Test %d had %d errors.\n", i, E[i]);
@@ -463,4 +470,3 @@ void Rb_PrintString(PGAContext *ctx, FILE *file, int p, int pop) {
 	}
     }
 }
-

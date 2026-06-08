@@ -121,7 +121,6 @@ int main (int argc, char **argv)
         assert (found == NULL);
         rb_insert (&tree, node);
     }
-    i = 0;
     for (fl = rb_first (&tree), i=0; fl; fl = rb_next (fl), i++) {
         struct content *c = fl->content;
         assert (i == c->i);
