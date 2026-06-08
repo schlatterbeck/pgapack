@@ -12,7 +12,8 @@ static double rotmatrix [DIMENSION][DIMENSION];
 
 static void compute_rotation (void)
 {
-    int done = 0;
+    /* Compute rotmatrix only once */
+    static int done = 0;
     int i, j;
     double g1 [DIMENSION];
     double g2 [DIMENSION];
