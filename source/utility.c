@@ -780,6 +780,10 @@ void PGAUpdateBest (PGAContext *ctx, int popix)
 
     PGADebugEntered ("PGAUpdateBest");
 
+    /* Avoid warning of uninitialized best from clang even though it is
+     * clearly initialized in the next lines
+     */
+    memset (best, 0, sizeof (PGAIndividual *) * ctx->ga.NumAuxEval + 1);
     for (k=0; k<=ctx->ga.NumAuxEval; k++) {
         best [k] = ind;
     }
@@ -957,6 +961,7 @@ void PGAUpdateOnline (PGAContext *ctx, int pop)
     int p, k;
 
     PGADebugEntered ("PGAUpdateOnline");
+    memset (evalsum, 0, sizeof (double) * ctx->ga.NumAuxEval + 1);
 
     for (k=0; k<=ctx->ga.NumAuxEval; k++) {
         if (k > numfun) {
@@ -965,7 +970,6 @@ void PGAUpdateOnline (PGAContext *ctx, int pop)
         } else {
             ctx->rep.Online [k] *= (double)ctx->rep.validonline;
         }
-        evalsum [k] = 0;
     }
     for (p=0; p<ctx->ga.PopSize; p++) {
         if (!PGAGetEvaluationUpToDateFlag (ctx, p, pop)) {
