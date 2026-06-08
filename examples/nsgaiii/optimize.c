@@ -289,6 +289,7 @@ int main (int argc, char **argv)
         FILE *tf = fopen (timing_file, "w");
         if (tf == NULL) {
             fprintf (stderr, "Cannot open timing file\n");
+            exit (1);
         }
         fprintf
             ( tf
