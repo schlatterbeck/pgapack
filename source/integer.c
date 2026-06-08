@@ -628,6 +628,7 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
 
     PGADebugEntered ("PGAIntegerMutation");
 
+    memset (indivs, 0, sizeof (PGAInteger *) * maxidx);
     c = (PGAInteger *)PGAGetIndividual (ctx, p, pop)->chrom;
 
     switch (ctx->ga.MutationType) {
@@ -788,15 +789,21 @@ int PGAIntegerMutation (PGAContext *ctx, int p, int pop, double mr)
                         /* the last element is either a random individual
                          * or the best depending on variant
                          */
+                        assert (indivs [maxidx - 1] != NULL);
                         c [idx] = indivs [maxidx - 1][idx];
                         /* Add difference vectors */
                         for (j=0; j < (maxidx - 1); j+=2) {
+                            assert (indivs [j]     != NULL);
+                            assert (indivs [j + 1] != NULL);
                             c [idx] += (int)round
                                 (f * (indivs [j][idx] - indivs [j+1][idx]));
                         }
                         break;
                     case PGA_DE_VARIANT_EITHER_OR:
                         /* We use only 1 difference and ignore DENumDiffs */
+                        assert (indivs [0] != NULL);
+                        assert (indivs [1] != NULL);
+                        assert (indivs [2] != NULL);
                         if (PGARandom01 (ctx, 0) < ctx->ga.DEProbabilityEO) {
                             c [idx] = indivs [0][idx] + (int)round
                                 (f * (indivs [1][idx] - indivs [2][idx]));

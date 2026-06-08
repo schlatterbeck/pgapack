@@ -561,6 +561,7 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
 
     PGADebugEntered ("PGARealMutation");
 
+    memset (indivs, 0, sizeof (PGAReal *) * maxidx);
     if (ctx->ga.MutationType == PGA_MUTATION_DE) {
         DECLARE_DYNARRAY (int, idx, maxidx);
         de_dither = PGASetupDE (ctx, p, pop, maxidx, idx);
@@ -680,14 +681,20 @@ int PGARealMutation (PGAContext *ctx, int p, int pop, double mr)
                         /* the last element is either a random individual
                          * or the best depending on variant
                          */
+                        assert (indivs [maxidx - 1] != NULL);
                         c [idx] = indivs [maxidx - 1][idx];
                         /* Add difference vectors */
                         for (j=0; j < (maxidx - 1); j+=2) {
+                            assert (indivs [j]     != NULL);
+                            assert (indivs [j + 1] != NULL);
                             c [idx] +=
                                 f * (indivs [j][idx] - indivs [j+1][idx]);
                         }
                         break;
                     case PGA_DE_VARIANT_EITHER_OR:
+                        assert (indivs [0] != NULL);
+                        assert (indivs [1] != NULL);
+                        assert (indivs [2] != NULL);
                         /* We use only 1 difference and ignore DENumDiffs */
                         if (PGARandom01 (ctx, 0) < ctx->ga.DEProbabilityEO) {
                             c [idx] = indivs [0][idx]
