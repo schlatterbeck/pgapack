@@ -164,7 +164,6 @@ static void rb_insert_internal
         if (uncle == NULL || uncle->color == RB_BLACK) {
             if (node == parent->child [1 - dir]) {
                 rotate_subtree (tree, parent, dir);
-                node = parent;
                 parent = grandparent->child [dir];
             }
             rotate_subtree (tree, grandparent, 1 - dir);
