@@ -52,15 +52,14 @@ privately owned rights.
 #include "pgapack.h"
 
 /*!****************************************************************************
-    \brief Maps the value v defined on [a,b] to r defined on [l,u].
+    \brief Map the value v defined on [0,(1<<nbits)-1] to double in [l,u].
     \ingroup internal
     \param  ctx   context variable
     \param  v     value from original interval (usually the decoded bit string)
-    \param  a     lower bound of integer interval
-    \param  b     upper bound of integer interval
-    \param  l     lower bound of real interval
-    \param  u     upper bound of real interval
-    \return Scaled value of v defined on [l,u]
+    \param  nbits number of bits in integer
+    \param  l     lower bound of double interval
+    \param  u     upper bound of double interval
+    \return Scaled double value of v defined on [l,u]
 
     \rst
 
@@ -76,7 +75,7 @@ privately owned rights.
     -------
 
     Map a five bit (that is, an integer with a range of [0, 31]) integer
-    5 to a real in the range [0, 3.14].
+    7 to a real in the range [0, 3.14].
 
     .. code-block:: c
 
@@ -84,15 +83,25 @@ privately owned rights.
         double x;
 
         ...
-        x = PGAMapIntegerToReal (ctx, 5, 0, 31, 0.0, 3.14);
+        x = PGAMapIntegerToReal (ctx, 7, 5, 0.0, 3.14);
 
     \endrst
 
 ******************************************************************************/
 static double PGAMapIntegerToReal
-    (PGAContext *ctx, int v, int a, int b, double l, double u)
+    (PGAContext *ctx, unsigned int v, unsigned int nbits, double l, double u)
 {
-    double retval = ((v-a) * (u-l) / (b-a) + l);
+    double upper = 0, retval = 0;
+    /* This only happens if sizeof (unsigned long) == sizeof (unsigned int)
+     * and in that case it is likely the size is 64 bit and we won't
+     * have a string this length.
+     */
+    if (nbits > sizeof (unsigned long) * 8 + 1) {
+        PGAFatalPrintf
+            (ctx, "PGAMapIntegerToReal: bitlength must fit into unsigned long");
+    }
+    upper  = (double)((1ul << nbits) - 1);
+    retval = (v * (u - l) / upper + l);
     /* This may exceed the upper bound due to imprecision */
     if (retval > u) {
         return u;
@@ -533,13 +542,13 @@ double PGAGetRealFromBinary
     , double lower, double upper
     )
 {
-    int length, sum;
+    unsigned int nbits, ivalue;
     double value;
 
     PGADebugEntered  ("PGAGetRealFromBinary");
     PGACheckDataType ("PGAGetRealFromBinary", PGA_DATATYPE_BINARY);
 
-    length = end - start + 1;
+    nbits = end - start + 1;
 
     if (start < 0) {
         PGAFatalPrintf
@@ -561,16 +570,12 @@ double PGAGetRealFromBinary
             (ctx, "PGAGetRealFromBinary: lower exceeds upper: %g", lower);
     }
 
-    sum = PGAGetIntegerFromBinary (ctx, p, pop, start, end);
-    value = PGAMapIntegerToReal
-        ( ctx, sum, 0
-        , (length == sizeof (unsigned) * 8 - 1) ? INT_MAX : (1u << length) - 1
-        , lower, upper
-        );
+    ivalue = PGAGetIntegerFromBinary (ctx, p, pop, start, end);
+    value  = PGAMapIntegerToReal (ctx, ivalue, nbits, lower, upper);
 
     PGADebugExited ("PGAGetRealFromBinary");
 
-     return (value);
+    return value;
 }
 
 /*!****************************************************************************
@@ -614,13 +619,13 @@ double PGAGetRealFromGrayCode
     , double lower, double upper
     )
 {
-    int length, sum;
+    unsigned int nbits, ivalue;
     double value;
 
     PGADebugEntered  ("PGAGetRealFromGrayCode");
     PGACheckDataType ("PGAGetRealFromGrayCode", PGA_DATATYPE_BINARY);
 
-    length = end - start + 1;
+    nbits = end - start + 1;
 
     if (start < 0) {
         PGAFatalPrintf
@@ -642,12 +647,8 @@ double PGAGetRealFromGrayCode
             (ctx, "PGAGetRealFromGrayCode: lower exceeds upper: %f", lower);
     }
 
-    sum = PGAGetIntegerFromGrayCode (ctx, p, pop, start, end);
-    value = PGAMapIntegerToReal
-        ( ctx, sum, 0
-        , (length == sizeof (unsigned) * 8 - 1) ? INT_MAX : (1u << length) - 1
-        , lower, upper
-        );
+    ivalue = PGAGetIntegerFromGrayCode (ctx, p, pop, start, end);
+    value  = PGAMapIntegerToReal (ctx, ivalue, nbits, lower, upper);
 
     PGADebugExited ("PGAGetRealFromGrayCode");
 
@@ -853,11 +854,11 @@ unsigned int PGAGetIntegerFromBinary
     PGACheckDataType ("PGAGetIntegerFromBinary", PGA_DATATYPE_BINARY);
 
     length = end - start + 1;
-    if (length > sizeof (int) * 8 - 1) {
+    if (length > sizeof (unsigned int) * 8 - 1) {
         PGAFatalPrintf
             ( ctx
             , "PGAGetIntegerFromBinary: "
-              "length of bit string exceeds sizeof type int: %zu"
+              "length of bit string exceeds sizeof type unsigned int: %zu"
             , length
             );
     }
@@ -933,11 +934,11 @@ unsigned int PGAGetIntegerFromGrayCode
     PGACheckDataType ("PGAGetIntegerFromGrayCode", PGA_DATATYPE_BINARY);
 
     length = end - start + 1;
-    if (length > sizeof (int) * 8 - 1) {
+    if (length > sizeof (unsigned int) * 8 - 1) {
         PGAFatalPrintf
             ( ctx
             , "PGAGetIntegerFromGrayCode: "
-              "length of binary string exceeds size of type int: %zu"
+              "length of binary string exceeds size of type unsigned int: %zu"
             , length
             );
     }
