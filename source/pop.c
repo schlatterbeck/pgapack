@@ -1798,6 +1798,8 @@ STATIC void compute_nadir (PGAContext *ctx, PGAIndividual **start, int n)
     DECLARE_DYNARRAY (double, wpop, dim); /* Worst of population */
     int ret;
 
+    memset (wof0, 0, sizeof (double) * dim);
+    memset (wpop, 0, sizeof (double) * dim);
     ret = compute_intersect (ctx, start, n);
     compute_worst (ctx, start, n, wpop, wof0);
     /* If a component in estimated nadir is *worse* than corresponding
