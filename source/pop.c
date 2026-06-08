@@ -1330,6 +1330,8 @@ void compute_metric
                     cutoff = max_d->d;
                 }
             } else {
+                /* This is non-NULL when nseen is > 0 */
+                assert (max_d != NULL);
                 if (d < max_d->d) {
                     node = rb_search (&ind->dist_tree, max_d, NULL);
                     assert (node != NULL);
