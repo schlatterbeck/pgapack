@@ -4,9 +4,9 @@
 #define NOBJ  3
 #define DIM  12
 
-static double g (double *x, int k)
+static double g (double *x, unsigned int k)
 {
-    int i;
+    unsigned int i;
     double s = 0;
     for (i=0; i<k; i++) {
         s += pow (x [i] - 0.5, 2);
@@ -21,11 +21,11 @@ double r [] = { 0.225, 0.225, 0.225
               };
 #define R_SIZE (sizeof (r) / sizeof (*r))
 
-static void f (double *x, int nx, double *y, int ny)
+static void f (double *x, unsigned int nx, double *y, unsigned int ny)
 {
-    int i, j;
-    int nobj = ny - 1; /* 1 constraint */
-    int k = nx - nobj + 1;
+    unsigned int i, j;
+    unsigned int nobj = ny - 1; /* 1 constraint */
+    unsigned int k = nx - nobj + 1;
     size_t r2_idx = nobj - 3;
     double gv;
     double s = 0;

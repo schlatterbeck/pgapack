@@ -4,6 +4,7 @@
  */
 #include <unistd.h>
 #include <time.h>
+#include <assert.h>
 #include "optimize.h"
 
 static struct multi_problem *problems [] =
@@ -29,7 +30,7 @@ static const int nproblems =
 
 static struct multi_problem *problem;
 static int nfunc = 0;
-static int dimension = 0;
+static unsigned int dimension = 0;
 static clock_t t_ranking = 0;
 static unsigned int (*SortND)
     (PGAContext *, PGAIndividual **, size_t, int) = NULL;
@@ -93,11 +94,11 @@ unsigned int ranking_plugin
 int main (int argc, char **argv)
 {
     PGAContext *ctx;
-    int i;
+    unsigned int i;
     int popsize = 100;
     int popsize_seen = 0;
     int fidx = 0;
-    int maxiter = 400;
+    unsigned int maxiter = 400;
     int maxiter_seen = 0;
     void *p = NULL;
     int np = 0;
@@ -111,7 +112,7 @@ int main (int argc, char **argv)
     int repl_type = PGA_POPREPL_NSGA_III;
     int use_de = 1;
     int nondom = PGA_NDSORT_JENSEN;
-    int n_obj = 0;
+    unsigned int n_obj = 0;
     double *lower = NULL;
     double *upper = NULL;
     char *timing_file = NULL;
@@ -140,17 +141,17 @@ int main (int argc, char **argv)
             refdir = 1;
             break;
         case 'D':
-            dimension = atoi (optarg);
+            dimension = strtoul (optarg, NULL, 10);
             break;
         case 'g':
-            maxiter = atoi (optarg);
+            maxiter = strtoul (optarg, NULL, 10);
             maxiter_seen = 1;
             break;
         case 'n':
             nondom = PGA_NDSORT_NSQUARE;
             break;
         case 'o':
-            n_obj = atoi (optarg);
+            n_obj = strtoul (optarg, NULL, 10);
             break;
         case 'p':
             popsize = atoi (optarg);
@@ -185,13 +186,13 @@ int main (int argc, char **argv)
     problem = problems [fidx];
     if (n_obj <= 0) {
         n_obj = problem->n_obj;
-    } else if (dimension <= 0) {
+    } else if (dimension == 0) {
         /* DTLZ suggest k = 5, i.e. dim = n_obj + 5 - 1
          * But this differs by problem, compute from problem
          */
         dimension = n_obj + problem->dimension - problem->n_obj;
     }
-    if (dimension <= 0) {
+    if (dimension == 0) {
         dimension = problem->dimension;
     }
     if (dimension <= n_obj) {
@@ -210,6 +211,7 @@ int main (int argc, char **argv)
     ctx = PGACreate
         (&argc, argv, PGA_DATATYPE_REAL, dimension, direction);
 
+    assert (dimension > 0);
     lower = malloc (sizeof (*lower) * dimension);
     upper = malloc (sizeof (*upper) * dimension);
     if (lower == NULL || upper == NULL) {

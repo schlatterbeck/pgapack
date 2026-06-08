@@ -4,9 +4,9 @@
 #define NOBJ  3
 #define DIM  12
 
-static double g (double *x, int k)
+static double g (double *x, unsigned int k)
 {
-    int i;
+    unsigned int i;
     double s = 0;
     for (i=0; i<k; i++) {
         s += pow (x [i] - 0.5, 2);
@@ -14,7 +14,7 @@ static double g (double *x, int k)
     return s;
 }
 
-static double theta (double *x, int i, double gv)
+static double theta (double *x, unsigned int i, double gv)
 {
     if (i == 0) {
         return x [i];
@@ -26,10 +26,10 @@ static double theta (double *x, int i, double gv)
     return 1 / (2 * (1 + gv)) * (1 + 2 * gv * x [i]);
 }
 
-static void f (double *x, int nx, double *y, int ny)
+static void f (double *x, unsigned int nx, double *y, unsigned int ny)
 {
-    int i, j;
-    int k = nx - ny + 1;
+    unsigned int i, j;
+    unsigned int k = nx - ny + 1;
     double gv;
     assert (k > 0);
     gv = g (x + nx - k, k);

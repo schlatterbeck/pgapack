@@ -4,9 +4,9 @@
 #define NOBJ  3
 #define DIM  22
 
-static double g (double *x, int k)
+static double g (double *x, unsigned int k)
 {
-    int i;
+    unsigned int i;
     double s = 0;
     for (i=0; i<k; i++) {
         s += x [i];
@@ -14,10 +14,10 @@ static double g (double *x, int k)
     return 1 + s * 9.0 / k;
 }
 
-static void f (double *x, int nx, double *y, int ny)
+static void f (double *x, unsigned int nx, double *y, unsigned int ny)
 {
-    int i;
-    int k = nx - ny + 1;
+    unsigned int i;
+    unsigned int k = nx - ny + 1;
     double gv;
     double h;
     assert (k > 0);

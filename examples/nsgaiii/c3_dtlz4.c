@@ -4,9 +4,9 @@
 #define NOBJ  3
 #define DIM  12
 
-static double g (double *x, int k)
+static double g (double *x, unsigned int k)
 {
-    int i;
+    unsigned int i;
     double s = 0;
     for (i=0; i<k; i++) {
         s += pow (x [i] - 0.5, 2);
@@ -14,11 +14,11 @@ static double g (double *x, int k)
     return s;
 }
 
-static void f (double *x, int nx, double *y, int ny)
+static void f (double *x, unsigned int nx, double *y, unsigned int ny)
 {
-    int i, j;
-    int nobj = ny - NOBJ;
-    int k = nx - nobj + 1;
+    unsigned int i, j;
+    unsigned int nobj = ny - NOBJ;
+    unsigned int k = nx - nobj + 1;
     double gv;
     assert (nobj > 0);
     assert (k > 0);

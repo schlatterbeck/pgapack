@@ -11,16 +11,17 @@
  */
 struct multi_problem
 {
-    int dimension;              /* The dimension of the problem */
-    int n_obj;                  /* Number of objectives */
-    int nconstraint;            /* Number of constraints */
+    unsigned int dimension;     /* The dimension of the problem */
+    unsigned int n_obj;         /* Number of objectives */
+    unsigned int nconstraint;   /* Number of constraints */
     int maximize;               /* Maximization problem ? */
     double lower;               /* Init range lower bounds */
     double upper;               /* Init range upper bounds */
     int generations;            /* Number of generations if 0 default = 100 */
     int popsize;                /* Population size if 0 default = 60 */
     char *name;                 /* Name of the example */
-    void (*f)(double *x, int nx, double *y, int ny); /* input: x, output: y */
+    /* input: x, output: y */
+    void (*f)(double *x, unsigned int nx, double *y, unsigned int ny);
 };
 
 extern struct multi_problem dtlz1;
