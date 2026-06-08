@@ -91,6 +91,7 @@ int main (int argc, char **argv)
 {
     int dimension = 0;
     int maxiter   = 0;
+    int pidx      = 0;
     PGAContext *ctx;
     if (argc != 4) {
         fprintf ( stderr
@@ -114,13 +115,15 @@ int main (int argc, char **argv)
         fprintf (stderr, "Iterations >= 10\n");
         exit (1);
     }
+    pidx = nprob - 1;
+    assert (pidx >=0 && pidx < 18);
     ctx = PGACreate (&argc, argv, PGA_DATATYPE_REAL, dimension, PGA_MINIMIZE);
     PGASetMaxGAIterValue   (ctx, maxiter);
-    PGASetPopSize          (ctx, popsizes [nprob - 1]);
-    PGASetNumReplaceValue  (ctx, popsizes [nprob - 1]);
-    if (init_lower [nprob - 1] != NULL) {
-        assert (init_upper [nprob - 1] != NULL);
-        PGASetRealInitRange (ctx, init_lower [nprob-1], init_upper [nprob-1]);
+    PGASetPopSize          (ctx, popsizes [pidx]);
+    PGASetNumReplaceValue  (ctx, popsizes [pidx]);
+    if (init_lower [pidx] != NULL) {
+        assert (init_upper [pidx] != NULL);
+        PGASetRealInitRange (ctx, init_lower [pidx], init_upper [pidx]);
     }
     PGASetRandomSeed       (ctx, 1);
     PGASetSelectType       (ctx, PGA_SELECT_LINEAR);
