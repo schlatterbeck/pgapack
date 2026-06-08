@@ -2376,15 +2376,13 @@ STATIC void rank_2d_b
             while (low < high) {
                 size_t mid = (low + high) / 2;
                 PGAIndividual *i_mid;
-                double e1_mid, e2_mid;
+                double e2_mid;
 
                 for (; fronts [mid] == NULL; mid--)
                     ;
                 i_mid = fronts [mid];
-                e1_mid = GETEVAL_EV (i_mid, 0);
                 e2_mid = GETEVAL_EV (i_mid, 1);
                 e2cmp = OPT_DIR_CMP_EV (ctx, e2_mid, e2_h);
-                e1cmp = OPT_DIR_CMP_EV (ctx, e1_mid, e1_h);
 
                 if (e2cmp > 0) {
                     high = mid;
