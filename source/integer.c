@@ -2602,7 +2602,7 @@ void PGAIntegerSetFixedEdges
     if (ctx->ga.edges == NULL) {
         PGAFatalPrintf (ctx, "Cannot allocate edges");
     }
-    ctx->ga.r_edge = malloc (2 * sizeof (PGAInteger) * n);
+    ctx->ga.r_edge = malloc (sizeof (PGAInteger [2]) * n);
     if (ctx->ga.r_edge == NULL) {
         PGAFatalPrintf (ctx, "Cannot allocate rev-edges");
     }
@@ -2914,7 +2914,7 @@ void PGAIntegerInitString (PGAContext *ctx, int p, int pop)
          * forward direction regardless of the symmetric flag
          */
         if (ctx->ga.n_edges) {
-            size_t (*x)[2] = malloc (2 * ctx->ga.n_edges * sizeof (size_t));
+            size_t (*x)[2] = malloc (ctx->ga.n_edges * sizeof (size_t [2]));
             size_t k, j = 0;
             if (x == NULL) {
                 PGAFatalPrintf (ctx, "PGAIntegerInitString: Cannot allocate");

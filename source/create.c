@@ -1753,7 +1753,7 @@ void PGASetUp (PGAContext *ctx)
     /* If the crossover type is Edge crossover */
     if (ctx->ga.CrossoverType == PGA_CROSSOVER_EDGE) {
         ctx->scratch.edgemap = malloc
-            (sizeof (PGAInteger) * 4 * ctx->ga.StringLen);
+            (sizeof (PGAInteger [4]) * ctx->ga.StringLen);
         if (ctx->scratch.edgemap == NULL) {
             PGAFatalPrintf
                 (ctx, "PGASetUp: No room to allocate ctx->scratch.edgemap");
